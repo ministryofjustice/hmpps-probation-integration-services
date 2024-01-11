@@ -81,6 +81,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Staff'
+  /staff/{staffCode}/caseload/managed-offenders:
+    get:
+      tags:
+      - staff-resource
+      operationId: getManagedOffenders
+      parameters:
+      - name: staffCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManagedOffender'
   /staff/{boroughCode}/pdu-head:
     get:
       tags:
@@ -247,17 +267,49 @@ components:
           type: boolean
     Team:
       required:
+      - borough
       - code
       - description
       - district
+      - startDate
       type: object
       properties:
         code:
           type: string
         description:
           type: string
+        telephone:
+          type: string
+        emailAddress:
+          type: string
         district:
           $ref: '#/components/schemas/District'
+        borough:
+          $ref: '#/components/schemas/Borough'
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+    ManagedOffender:
+      required:
+      - crn
+      - name
+      - staff
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        allocationDate:
+          type: string
+          format: date
+        staff:
+          $ref: '#/components/schemas/Staff'
+        team:
+          $ref: '#/components/schemas/Team'
     PDUHead:
       required:
       - name
