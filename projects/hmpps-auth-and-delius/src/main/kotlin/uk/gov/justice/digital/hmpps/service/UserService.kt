@@ -7,6 +7,7 @@ import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.ldap.query.SearchScope
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.LdapUser
+import uk.gov.justice.digital.hmpps.entity.UserRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.byUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
@@ -17,10 +18,16 @@ import javax.naming.Name
 @Service
 class UserService(
     private val ldapTemplate: LdapTemplate,
-    private val auditUserService: AuditUserService
+    private val auditUserService: AuditUserService,
+    private val userRepository: UserRepository
 ) {
 
     fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
+
+    fun getUserDetailsById(userId: Long) =
+        userRepository.findUserById(userId)?.let {
+            ldapTemplate.findByUsername<LdapUser>(it.username)?.toUserDetails(it.id)
+        }
 
     fun getUsersByEmail(email: String) = ldapTemplate.find(
         query()
@@ -53,6 +60,16 @@ class UserService(
             "username",
             username
         ),
+        username = username,
+        firstName = forename,
+        surname = surname,
+        email = email,
+        enabled = enabled,
+        roles = getUserRoles(dn)
+    )
+
+    private fun LdapUser.toUserDetails(userId: Long) = UserDetails(
+        userId = userId,
         username = username,
         firstName = forename,
         surname = surname,
