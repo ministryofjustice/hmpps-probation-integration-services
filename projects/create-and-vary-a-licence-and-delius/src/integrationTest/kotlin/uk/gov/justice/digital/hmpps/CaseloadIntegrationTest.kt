@@ -16,8 +16,10 @@ import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.CASELOAD_ROLE_OM_1
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.CASELOAD_ROLE_OM_2
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.CASELOAD_ROLE_OM_3
+import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.CASELOAD_ROLE_OM_4
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.STAFF1
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.STAFF2
+import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.TEAM1
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.generateManagedOffender
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -32,9 +34,7 @@ internal class CaseloadIntegrationTest {
     @ParameterizedTest
     @MethodSource("caseloadArgs")
     fun getManagedOffenders(url: String, expected: List<ManagedOffender>?) {
-        val res = mockMvc
-            .perform(get(url).withToken())
-            .andExpect(status().isOk)
+        val res = mockMvc.perform(get(url).withToken()).andExpect(status().isOk)
             .andReturn().response.contentAsJson<List<ManagedOffender>>()
         assertThat(res, equalTo(expected))
     }
@@ -42,19 +42,28 @@ internal class CaseloadIntegrationTest {
     companion object {
         @JvmStatic
         fun caseloadArgs(): List<Arguments> = listOf(
-            Arguments.of("/staff/STCDEXX/caseload/managed-offenders", listOf<ManagedOffender>()),
-            Arguments.of(
-                "/staff/STCDE01/caseload/managed-offenders",
-                listOf(
+            Arguments.of("/staff/STCDEXX/caseload/managed-offenders", listOf<ManagedOffender>()), Arguments.of(
+                "/staff/STCDE01/caseload/managed-offenders", listOf(
                     generateManagedOffender(CASELOAD_ROLE_OM_1, STAFF1, DEFAULT_TEAM),
                     generateManagedOffender(CASELOAD_ROLE_OM_2, STAFF1, DEFAULT_TEAM)
-                ),
-                Arguments.of(
-                    "/staff/STCDE02/caseload/managed-offenders",
-                    listOf(
-                        generateManagedOffender(CASELOAD_ROLE_OM_3, STAFF2, DEFAULT_TEAM),
-                    )
                 )
+            ), Arguments.of(
+                "/staff/STCDE02/caseload/managed-offenders", listOf(
+                    generateManagedOffender(CASELOAD_ROLE_OM_3, STAFF2, DEFAULT_TEAM),
+                    generateManagedOffender(CASELOAD_ROLE_OM_4, STAFF2, TEAM1)
+                )
+            ), Arguments.of(
+                "/team/N01BDT/caseload/managed-offenders", listOf(
+                    generateManagedOffender(CASELOAD_ROLE_OM_3, STAFF2, DEFAULT_TEAM),
+                    generateManagedOffender(CASELOAD_ROLE_OM_2, STAFF1, DEFAULT_TEAM),
+                    generateManagedOffender(CASELOAD_ROLE_OM_1, STAFF1, DEFAULT_TEAM)
+                )
+            ), Arguments.of(
+                "/team/N02BDT/caseload/managed-offenders", listOf(
+                    generateManagedOffender(CASELOAD_ROLE_OM_4, STAFF2, TEAM1)
+                )
+            ), Arguments.of(
+                "/team/N03BDT/caseload/managed-offenders", listOf<ManagedOffender>()
             )
         )
     }

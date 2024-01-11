@@ -15,12 +15,16 @@ object CaseloadGenerator {
     val STAFF1 = StaffGenerator.generateStaff("STCDE01", "Bob", "Smith")
     val STAFF2 = StaffGenerator.generateStaff("STCDE02", "Joe", "Bloggs")
 
+    val TEAM1 = ProviderGenerator.generateTeam("N02BDT")
+
     val CASELOAD_ROLE_OM_1 = generateCaseload(
-        staff = STAFF1, team = DEFAULT_TEAM,
+        staff = STAFF1,
+        team = DEFAULT_TEAM,
         crn = "crn0001",
         firstName = "John",
         secondName = "x",
         surname = "Brown",
+        allocationDate = LocalDate.of(2024, 1, 8),
         roleCode = Caseload.CaseloadRole.OFFENDER_MANAGER.value
     )
     val CASELOAD_ROLE_OM_2 = generateCaseload(
@@ -30,6 +34,7 @@ object CaseloadGenerator {
         firstName = "Jane",
         secondName = "y",
         surname = "Doe",
+        allocationDate = LocalDate.of(2024, 1, 9),
         roleCode = Caseload.CaseloadRole.OFFENDER_MANAGER.value
     )
 
@@ -40,6 +45,18 @@ object CaseloadGenerator {
         firstName = "Ano",
         secondName = "no",
         surname = "mys",
+        allocationDate = LocalDate.of(2024, 1, 10),
+        roleCode = Caseload.CaseloadRole.OFFENDER_MANAGER.value
+    )
+
+    val CASELOAD_ROLE_OM_4 = generateCaseload(
+        staff = STAFF2,
+        team = TEAM1,
+        crn = "crn0078",
+        firstName = "Joe",
+        secondName = "Denis",
+        surname = "Doe",
+        allocationDate = LocalDate.of(2024, 1, 10),
         roleCode = Caseload.CaseloadRole.OFFENDER_MANAGER.value
     )
 

@@ -15,8 +15,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
 
 interface CaseloadRepository : JpaRepository<Caseload, Long> {
-
-    fun findByStaffCodeAndRoleCode(staffCode: String, role: String): List<Caseload>;
+    fun findByStaffCodeAndRoleCode(staffCode: String, role: String): List<Caseload>
+    fun findByTeamCodeAndRoleCodeOrderByAllocationDateDesc(staffCode: String, role: String): List<Caseload>
 }
 
 @Immutable
