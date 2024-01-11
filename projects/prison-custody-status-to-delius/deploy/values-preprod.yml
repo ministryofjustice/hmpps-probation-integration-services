@@ -8,7 +8,7 @@ generic-service:
   env:
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/oauth/token
     SENTRY_ENVIRONMENT: preprod
-    INTEGRATIONS_PRISON-API_URL: https://api-preprod.prison.service.justice.gov.uk
+    INTEGRATIONS_PRISON-API_URL: https://prison-api-preprod.prison.service.justice.gov.uk
 
 generic-prometheus-alerts:
   businessHoursOnly: true
