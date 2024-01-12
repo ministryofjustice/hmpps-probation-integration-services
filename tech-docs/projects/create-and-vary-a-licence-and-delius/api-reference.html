@@ -104,6 +104,9 @@
         <a href="./api-reference.html#staff"><span>/staff</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#team-teamcode-caseload-managed-offenders"><span>/team/{teamCode}/caseload/managed-offenders</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#staff-username"><span>/staff/{username}</span></a>
       </li>
       <li>
@@ -274,6 +277,65 @@
 
 
 <h4 id="staff-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="team-teamcode-caseload-managed-offenders">/team/{teamCode}/caseload/managed-offenders</h2>
+
+<h3 id="team-teamcode-caseload-managed-offenders-get">get</h3>
+
+
+
+
+<h4 id="team-teamcode-caseload-managed-offenders-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>teamCode</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="team-teamcode-caseload-managed-offenders-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -920,6 +982,68 @@
 </tbody>
 </table>
 
+<h3 id="schema-managedoffender">ManagedOffender</h3>
+
+
+<table class='schema-managedoffender'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>allocationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-staff'>Staff</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-staff">Staff</h3>
 
 
@@ -1078,68 +1202,6 @@
 <td></td>
 <td>
   
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-managedoffender">ManagedOffender</h3>
-
-
-<table class='schema-managedoffender'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>allocationDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>staff</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-staff'>Staff</a>
-</td>
-</tr>
-
-<tr>
-<td>team</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-team'>Team</a>
 </td>
 </tr>
 

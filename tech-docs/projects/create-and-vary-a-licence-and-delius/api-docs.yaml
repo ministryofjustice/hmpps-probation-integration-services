@@ -63,6 +63,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StaffName'
+  /team/{teamCode}/caseload/managed-offenders:
+    get:
+      tags:
+      - team-resource
+      operationId: getManagedOffendersByTeam
+      parameters:
+      - name: teamCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManagedOffender'
   /staff/{username}:
     get:
       tags:
@@ -243,6 +263,24 @@ components:
           type: string
         borough:
           $ref: '#/components/schemas/Borough'
+    ManagedOffender:
+      required:
+      - crn
+      - name
+      - staff
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        allocationDate:
+          type: string
+          format: date
+        staff:
+          $ref: '#/components/schemas/Staff'
+        team:
+          $ref: '#/components/schemas/Team'
     Staff:
       required:
       - code
@@ -292,24 +330,6 @@ components:
         endDate:
           type: string
           format: date
-    ManagedOffender:
-      required:
-      - crn
-      - name
-      - staff
-      type: object
-      properties:
-        crn:
-          type: string
-        name:
-          $ref: '#/components/schemas/Name'
-        allocationDate:
-          type: string
-          format: date
-        staff:
-          $ref: '#/components/schemas/Staff'
-        team:
-          $ref: '#/components/schemas/Team'
     PDUHead:
       required:
       - name
