@@ -12,6 +12,8 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
 
+    INTEGRATIONS_ORDS_URL: https://t2.oasys.service.justice.gov.uk/eor/oasys
+
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 generic-prometheus-alerts:

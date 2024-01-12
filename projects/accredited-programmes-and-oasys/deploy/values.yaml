@@ -9,11 +9,9 @@ generic-service:
     tlsSecretName: accredited-programmes-and-oasys-cert
 
   namespace_secrets:
-    common:
-      SPRING_DATASOURCE_URL: DB_URL
-    accredited-programmes-and-oasys-database:
-      SPRING_DATASOURCE_USERNAME: DB_USERNAME
-      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    accredited-programmes-and-oasys-client-credentials:
+      INTEGRATIONS_ORDS_CLIENT-ID: ORDS_CLIENT_ID
+      INTEGRATIONS_ORDS_CLIENT-SECRET: ORDS_CLIENT_SECRET
     accredited-programmes-and-oasys-sentry:
       SENTRY_DSN: SENTRY_DSN
 
