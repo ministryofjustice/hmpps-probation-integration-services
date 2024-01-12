@@ -8,7 +8,7 @@ resource "aws_sns_topic_subscription" "SERVICE_NAME-queue-subscription" {
 }
 
 module "SERVICE_NAME-queue" {
-  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
+  source = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
 
   # Queue configuration
   sqs_name = "SERVICE_NAME-queue"
@@ -33,20 +33,20 @@ resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
 }
 
 module "SERVICE_NAME-dlq" {
-  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
+  source = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
 
   # Queue configuration
   sqs_name                  = "SERVICE_NAME-dlq"
   message_retention_seconds = 7 * 24 * 3600 # 1 week
 
   # Tags
-  application   = "SERVICE_NAME"
-  business_unit = var.business_unit
+  application            = "SERVICE_NAME"
+  business_unit          = var.business_unit
   environment_name       = var.environment_name
   infrastructure_support = var.infrastructure_support
   is_production          = var.is_production
-  namespace     = var.namespace
-  team_name     = var.team_name
+  namespace              = var.namespace
+  team_name              = var.team_name
 }
 
 resource "aws_sqs_queue_policy" "SERVICE_NAME-dlq-policy" {
