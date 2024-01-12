@@ -1,0 +1,22 @@
+# Common values
+generic-service:
+  nameOverride: accredited-programmes-and-oasys
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/accredited-programmes-and-oasys
+
+  ingress:
+    tlsSecretName: accredited-programmes-and-oasys-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    accredited-programmes-and-oasys-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    accredited-programmes-and-oasys-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: accredited-programmes-and-oasys
+
