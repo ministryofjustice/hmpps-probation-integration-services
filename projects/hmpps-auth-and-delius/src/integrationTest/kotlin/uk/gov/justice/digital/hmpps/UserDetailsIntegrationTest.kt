@@ -43,6 +43,35 @@ internal class UserDetailsIntegrationTest {
     }
 
     @Test
+    fun `calling user by id without userId returns 400`() {
+        mockMvc.perform(get("/user").withToken())
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `missing user by id returns 404`() {
+        mockMvc.perform(get("/user/details/99999").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `get user by id`() {
+        mockMvc.perform(get("/user/details/" + TEST_USER.id).withToken())
+            .andExpect(status().isOk)
+            .andExpectJson(
+                UserDetails(
+                    userId = TEST_USER.id,
+                    username = "test.user",
+                    firstName = "Test",
+                    surname = "User",
+                    email = "test.user@example.com",
+                    enabled = true,
+                    roles = listOf("ABC001", "ABC002")
+                )
+            )
+    }
+
+    @Test
     fun `search by email`() {
         mockMvc.perform(get("/user?email=test.user@example.com").withToken())
             .andExpect(status().isOk)

@@ -7,20 +7,25 @@ import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.ldap.query.SearchScope
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.LdapUser
+import uk.gov.justice.digital.hmpps.entity.UserRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.byUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.UserDetails
-import uk.gov.justice.digital.hmpps.user.AuditUserService
 import javax.naming.Name
 
 @Service
 class UserService(
     private val ldapTemplate: LdapTemplate,
-    private val auditUserService: AuditUserService
+    private val userRepository: UserRepository
 ) {
 
     fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
+
+    fun getUserDetailsById(userId: Long) =
+        userRepository.findUserById(userId)?.let {
+            ldapTemplate.findByUsername<LdapUser>(it.username)?.toUserDetails(it.id)
+        }
 
     fun getUsersByEmail(email: String) = ldapTemplate.find(
         query()
@@ -47,12 +52,11 @@ class UserService(
         AttributesMapper { it["cn"].get().toString() }
     )
 
-    private fun LdapUser.toUserDetails() = UserDetails(
-        userId = auditUserService.findUser(username)?.id ?: throw NotFoundException(
-            "User entity",
-            "username",
-            username
-        ),
+    private fun LdapUser.toUserDetails() = userRepository.findUserByUsername(username)?.let { toUserDetails(it.id) }
+        ?: throw NotFoundException("User entity", "username", username)
+
+    private fun LdapUser.toUserDetails(userId: Long) = UserDetails(
+        userId = userId,
         username = username,
         firstName = forename,
         surname = surname,
