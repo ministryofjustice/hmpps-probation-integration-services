@@ -110,6 +110,9 @@
         <a href="./api-reference.html#user-username"><span>/user/{username}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#user-details-userid"><span>/user/details/{userId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -376,6 +379,78 @@
 
 
 <h4 id="user-username-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "userId": "integer",
+  "username": "string",
+  "firstName": "string",
+  "surname": "string",
+  "email": "string",
+  "enabled": "boolean",
+  "roles": [
+    {
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-userdetails'>UserDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="user-details-userid">/user/details/{userId}</h2>
+
+<h3 id="user-details-userid-get">get</h3>
+
+
+  <p>Get user details by Id. Requires <code>ROLE_DELIUS_USER_AUTH</code> or <code>ROLE_DELIUS_USER_DETAILS</code>.</p>
+
+
+
+
+<h4 id="user-details-userid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>userId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-details-userid-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>

@@ -102,6 +102,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDetails'
+  /user/details/{userId}:
+    get:
+      tags:
+      - User details
+      description: Get user details by Id. Requires `ROLE_DELIUS_USER_AUTH` or `ROLE_DELIUS_USER_DETAILS`.
+      operationId: getUserDetailsById
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
 components:
   schemas:
     PasswordChangeRequest:
