@@ -36,6 +36,7 @@ on:
           - cas3-and-delius-queue
           - prison-identifier-and-delius-queue
           - assessment-summary-and-delius-queue
+          - cas2-and-delius-queue
           # ^ add new queues here
 
 jobs:

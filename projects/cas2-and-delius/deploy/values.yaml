@@ -1,0 +1,28 @@
+# Common values
+generic-service:
+  nameOverride: cas2-and-delius
+  serviceAccountName: cas2-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/cas2-and-delius
+
+  ingress:
+    tlsSecretName: cas2-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    cas2-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    cas2-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    cas2-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    cas2-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: cas2-and-delius
+
