@@ -1,0 +1,44 @@
+# Default config
+server.shutdown: graceful
+spring:
+  jackson:
+    default-property-inclusion: non_empty
+    parser:
+      allow-unquoted-control-chars: true
+  security.oauth2.client:
+    registration:
+      default:
+        provider: oasys-ords-auth
+        authorization-grant-type: client_credentials
+        client-id: ${integrations.ords.client-id}
+        client-secret: ${integrations.ords.client-secret}
+    provider:
+      oasys-ords-auth:
+        token-uri: ${integrations.ords.url}/oauth/token
+  threads.virtual.enabled: true
+
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: [ "health", "info" ]
+  endpoint.health.show-details: always
+
+---
+# Shared dev/test config
+spring.config.activate.on-profile: [ "dev", "integration-test" ]
+
+context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+jwt.authorities:
+  - ROLE_EXAMPLE
+
+integrations:
+  ords:
+    url: http://localhost:${wiremock.port}/eor/oasys
+    client-id: accredited-programmes-and-oasys
+    client-secret: accredited-programmes-and-oasys
+
+logging.level:
+  uk.gov.justice.digital.hmpps: DEBUG
+  org.hibernate.tool.schema: ERROR
+  org.apache.activemq: WARN
