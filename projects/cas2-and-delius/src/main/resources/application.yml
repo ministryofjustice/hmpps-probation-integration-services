@@ -1,0 +1,94 @@
+# Default config
+server.shutdown: graceful
+spring:
+  jackson:
+    default-property-inclusion: non_null
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate.ddl-auto: validate
+    properties:
+      hibernate:
+        query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
+        timezone.default_storage: NORMALIZE
+        hql.bulk_id_strategy:
+          persistent:
+            create_tables: false
+            drop_tables: false
+          global_temporary:
+            create_tables: false
+            drop_tables: false
+  security.oauth2.client:
+    registration:
+      default:
+        provider: hmpps-auth
+        authorization-grant-type: client_credentials
+        client-id: ${oauth2.client-id}
+        client-secret: ${oauth2.client-secret}
+    provider:
+      hmpps-auth:
+        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+  threads.virtual.enabled: true
+
+delius.db.username: Cas2AndDelius # Should match value in [deploy/database/access.yml].
+
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: [ "health", "info" ]
+  endpoint.health.show-details: always
+
+
+---
+# Shared dev/test config
+spring.config.activate.on-profile: [ "dev", "integration-test" ]
+
+spring:
+  datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
+  jpa.hibernate.ddl-auto: create-drop
+
+seed.database: true
+wiremock.enabled: true
+context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+messaging.consumer.queue: message-queue
+
+integrations:
+  example:
+    url: http://localhost:${wiremock.port}/example
+
+oauth2:
+  client-id: cas2-and-delius
+  client-secret: cas2-and-delius
+
+logging.level:
+  uk.gov.justice.digital.hmpps: DEBUG
+  org.hibernate.tool.schema: ERROR
+  org.apache.activemq: WARN
+
+---
+spring.config.activate.on-profile: integration-test
+spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
+
+---
+spring.config.activate.on-profile: oracle
+spring.datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
+
+---
+spring.config.activate.on-profile: delius-db
+spring:
+  datasource:
+    url: 'jdbc:oracle:thin:@//localhost:1521/XEPDB1'
+    username: delius_pool
+    password: NDelius1
+  jpa.hibernate.ddl-auto: validate
+seed.database: false
+delius.db.username: NationalUser
+
+---
+spring.config.activate.on-profile: localstack
+spring.cloud.aws:
+  sqs.endpoint: http://localhost:4566
+  sns.endpoint: http://localhost:4566
+  credentials:
+    access-key: localstack
+    secret-key: localstack
