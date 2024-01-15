@@ -93,6 +93,7 @@ internal class OpdIntegrationTest {
         val opdContact = contactRepository.findAll()
             .firstOrNull { it.personId == com.person.id && it.type.code == ContactType.Code.PENDING_CONSULTATION.value }
         assertNotNull(opdContact!!)
+        assertThat(opdContact.nsiId, equalTo(nsi.id))
 
         verify(telemetryService).trackEvent(
             "OpdAssessmentScreenedIn",

@@ -42,6 +42,8 @@ class Contact(
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime?,
 
+    val nsiId: Long?,
+
     @Lob
     @Column
     val notes: String?,

@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.messaging.OpdAssessment
 class ContactService(
     private val contactRepository: ContactRepository
 ) {
-    fun createContact(com: PersonManager, type: ContactType?, opdAssessment: OpdAssessment) {
+    fun createContact(com: PersonManager, type: ContactType?, nsiId: Long, opdAssessment: OpdAssessment) {
         type?.also {
             contactRepository.save(
                 Contact(
@@ -19,6 +19,7 @@ class ContactService(
                     it,
                     opdAssessment.date.toLocalDate(),
                     opdAssessment.date,
+                    nsiId,
                     opdAssessment.notes,
                     com.teamId,
                     com.staffId
