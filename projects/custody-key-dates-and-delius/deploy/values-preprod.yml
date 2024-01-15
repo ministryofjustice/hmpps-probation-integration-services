@@ -9,7 +9,7 @@ generic-service:
     SENTRY_ENVIRONMENT: preprod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/oauth/token
     INTEGRATIONS_PRISON-API_URL: https://prison-api-preprod.prison.service.justice.gov.uk
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI:  http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
 
 generic-prometheus-alerts:
