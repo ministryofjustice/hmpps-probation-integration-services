@@ -1,0 +1,47 @@
+{
+  "source": "OASys",
+  "inputs": {
+    "laoPrivilege": "ALLOW",
+    "assessmentPk": 90123456
+  },
+  "probNumber": "T123456",
+  "prisNumber": "A1234YZ",
+  "limitedAccessOffender": false,
+  "assessments": [
+    {
+      "assessmentPk": 90123456,
+      "assessmentType": "LAYER3",
+      "dateCompleted": "2024-01-15T11:30:00",
+      "initiationDate": "2024-01-15T09:00:00",
+      "assessmentStatus": "COMPLETE",
+      "superStatus": "COMPLETE",
+      "laterWIPAssessmentExists": false,
+      "latestWIPDate": null,
+      "laterSignLockAssessmentExists": false,
+      "latestSignLockDate": null,
+      "laterPartCompUnsignedAssessmentExists": false,
+      "latestPartCompUnsignedDate": null,
+      "laterPartCompSignedAssessmentExists": false,
+      "latestPartCompSignedDate": null,
+      "laterCompleteAssessmentExists": false,
+      "latestCompleteDate": "2024-01-15T11:30:00",
+      "whoAtRisk": "Who is at risk",
+      "riskPrisonersCustody": "Low",
+      "riskStaffCustody": "Low",
+      "riskStaffCommunity": "Low",
+      "riskKnownAdultCustody": "Low",
+      "riskKnownAdultCommunity": "Medium",
+      "riskPublicCustody": "Low",
+      "riskPublicCommunity": "High",
+      "riskChildrenCustody": "Low",
+      "riskChildrenCommunity": "Low",
+      "factorsLikelyToReduceRisk": "Factors likely to reduce Risk",
+      "factorsLikelyToIncreaseRisk": "Factors likely to increase Risk",
+      "riskGreatest": "Greatest Risk",
+      "natureOfRisk": "Nature of risk",
+      "assessor": {
+        "name": "John Smith"
+      }
+    }
+  ]
+}

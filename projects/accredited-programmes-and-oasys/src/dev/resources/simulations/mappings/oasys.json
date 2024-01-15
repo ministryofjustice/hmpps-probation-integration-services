@@ -1,0 +1,71 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/eor/oasys/oauth/token"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "oasys-auth-token-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ass/allasslist/pris/A1234YZ/ALLOW",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer oasys.token$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "timeline-A1234YZ.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ass/sectionroshfull/ALLOW/90123456",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer oasys.token$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "section-rosh-full-A1234YZ.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ass/sectionroshsumm/ALLOW/90123456",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer oasys.token$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "section-rosh-summary-A1234YZ.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}
