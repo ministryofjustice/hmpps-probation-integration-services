@@ -7,7 +7,7 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_ORDS-OASYS-AUTH_TOKEN-URI: https://bridge-oasys.az.justice.gov.uk/eor/oasys/oauth/token
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
 
     INTEGRATIONS_ORDS_OASYS_URL: https://bridge-oasys.az.justice.gov.uk/eor/oasys
