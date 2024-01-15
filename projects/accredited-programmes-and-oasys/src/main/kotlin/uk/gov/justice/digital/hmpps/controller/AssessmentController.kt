@@ -2,11 +2,11 @@ package uk.gov.justice.digital.hmpps.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.HttpClientErrorException
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
 
 @RestController
@@ -20,6 +20,11 @@ class AssessmentController(private val ordsClient: OrdsClient) {
     @GetMapping("/{id}/section/{name}")
     fun getSection(@PathVariable id: Long, @PathVariable name: String): JsonNode =
         ordsClient.getSection(id, name.lowercase()).asResponse()
+
+    @ExceptionHandler
+    fun handleNotFound(e: HttpClientErrorException) = ResponseEntity
+        .status(e.statusCode)
+        .body(ErrorResponse(status = e.statusCode.value(), message = e.message))
 }
 
 private fun ObjectNode.asResponse(): JsonNode {
