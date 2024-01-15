@@ -66,6 +66,26 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ass/sectionroshsumm/ALLOW/90123451",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer oasys.token$"
+          }
+        }
+      },
+      "response": {
+        "status": 404,
+        "jsonBody": {
+          "message": "No assessments"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

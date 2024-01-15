@@ -71,4 +71,11 @@ internal class IntegrationTest {
         assertThat(json["dateCompleted"].asText(), equalTo("2024-01-15T11:30:00"))
         assertThat(json["riskPublicCommunity"].asText(), equalTo("High"))
     }
+
+    @Test
+    fun `get section returns 404 if oasys returns 404`() {
+        mockMvc
+            .perform(get("/assessments/90123451/section/sectionroshsumm").withToken())
+            .andExpect(status().isNotFound)
+    }
 }
