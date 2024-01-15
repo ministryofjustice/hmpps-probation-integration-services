@@ -122,8 +122,9 @@ jobs:
         run: |
           gh issue create \
             --title "${{ inputs.issue_number }} Complete project setup for ${{ inputs.project_name }}" \
-            --body "- [ ] Merge project pull request: ${{ steps.pr.outputs.pull-request-url }}" \
-            --body "- [ ] Merge e2e tests pull request: ${{ steps.e2e-pr.outputs.pull-request-url }}" \
+            --body '
+          - [ ] Merge project pull request: ${{ steps.pr.outputs.pull-request-url }}
+          - [ ] Merge e2e tests pull request: ${{ steps.e2e-pr.outputs.pull-request-url }}' \
             --label bootstrap
         env:
           GITHUB_TOKEN: ${{ github.token }}
