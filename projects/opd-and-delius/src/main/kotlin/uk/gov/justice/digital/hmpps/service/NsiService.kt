@@ -2,18 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.integrations.delius.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiManager
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiStatus
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiSubTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiType
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nsiSubType
+import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.messaging.OpdAssessment
 
 @Transactional
@@ -55,6 +44,6 @@ class NsiService(
                 opdAssessment.date
             )
         )
-        contactService.createContact(com, status.contactType, opdAssessment)
+        contactService.createContact(com, status.contactType, nsi.id, opdAssessment)
     }
 }
