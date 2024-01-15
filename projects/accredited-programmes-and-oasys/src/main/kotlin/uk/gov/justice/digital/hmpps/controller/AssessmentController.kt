@@ -2,14 +2,11 @@ package uk.gov.justice.digital.hmpps.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.RestClientException
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
 
 @RestController

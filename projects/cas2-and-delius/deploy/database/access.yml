@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /cas2-and-delius/db-username
+    password_key: /cas2-and-delius/db-password
+
+  audit:
+    username: Cas2AndDelius
+    forename: Bail Accommodation and Support (CAS2)
+    surname: Service
