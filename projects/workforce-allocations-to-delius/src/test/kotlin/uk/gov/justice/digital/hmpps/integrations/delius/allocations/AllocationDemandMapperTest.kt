@@ -56,7 +56,8 @@ class AllocationDemandMapperTest {
                 Name("Bob", null, "Smith"),
                 "Team1",
                 "PSO"
-            )
+            ),
+            LocalDate.now()
         )
 
         whenever(resultSet.getString("crn")).thenReturn(expected.crn)
@@ -88,6 +89,7 @@ class AllocationDemandMapperTest {
         whenever(resultSet.getString("ias_middle_name")).thenReturn(expected.initialAppointment?.staff?.name?.middleName)
         whenever(resultSet.getString("ias_surname")).thenReturn(expected.initialAppointment?.staff?.name?.surname)
         whenever(resultSet.getString("ias_grade")).thenReturn(expected.initialAppointment?.staff?.grade)
+        whenever(resultSet.getDate("com_handover_date")).thenReturn(Date.valueOf(expected.comHandoverDate))
     }
 
     @Test
