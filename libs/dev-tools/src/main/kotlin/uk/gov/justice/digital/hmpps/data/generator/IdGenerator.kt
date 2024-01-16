@@ -7,5 +7,7 @@ object IdGenerator {
 
     fun getAndIncrement() = id.getAndIncrement()
 
+    fun id() = getAndIncrement()
+
     fun get() = id.get()
 }
