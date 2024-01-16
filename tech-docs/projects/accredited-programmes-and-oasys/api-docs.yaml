@@ -14,13 +14,19 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /assessments/{id}/section/{name}:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - assessment-controller
+      operationId: getSection
       parameters:
-      - name: inputId
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: name
         in: path
         required: true
         schema:
@@ -28,7 +34,62 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+  /assessments/timeline/{nomsId}:
+    get:
+      tags:
+      - assessment-controller
+      operationId: getTimeline
+      parameters:
+      - name: nomsId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Timeline'
 components:
+  schemas:
+    JsonNode:
+      type: object
+    AssessmentSummary:
+      required:
+      - id
+      - status
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        completedAt:
+          type: string
+          format: date-time
+        type:
+          type: string
+        status:
+          type: string
+    Timeline:
+      required:
+      - timeline
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsId:
+          type: string
+        timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessmentSummary'
   securitySchemes:
     hmpps-auth-token:
       type: http
