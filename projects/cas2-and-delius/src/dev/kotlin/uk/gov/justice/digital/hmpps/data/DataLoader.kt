@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.data.generator.EntityGenerator.BUSINESS_INTERACTIONS
+import uk.gov.justice.digital.hmpps.data.generator.EntityGenerator.BUSINESS_INTERACTION
 import uk.gov.justice.digital.hmpps.data.generator.EntityGenerator.CONTACT_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.EntityGenerator.MANAGER
 import uk.gov.justice.digital.hmpps.data.generator.EntityGenerator.PERSON
@@ -29,10 +29,10 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(applicationReadyEvent: ApplicationReadyEvent) {
         listOf(
+            BUSINESS_INTERACTION,
             PERSON,
             MANAGER,
             *CONTACT_TYPES,
-            *BUSINESS_INTERACTIONS,
         ).forEach {
             entityManager.persist(it)
         }

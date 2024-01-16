@@ -1,0 +1,15 @@
+{
+  "eventType": "applications.cas2.application.status-updated",
+  "version": 1,
+  "description": "A CAS2 application has been updated",
+  "detailUrl": "http://localhost:{wiremock.port}/approved-premises-api/events/cas2/application-status-updated/1",
+  "occurredAt": "2020-01-01T12:34:56Z[Europe/London]",
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}

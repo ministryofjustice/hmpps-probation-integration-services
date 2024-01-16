@@ -1,0 +1,15 @@
+{
+  "id": "1",
+  "timestamp": "2020-01-01T12:34:56Z[Europe/London]",
+  "eventType": "applications.cas2.application.status-updated",
+  "eventDetails": {
+    "applicationId": "00000000-0000-0000-0000-000000000001",
+    "applicationUrl": "https://example.com/application/00000000-0000-0000-0000-000000000001",
+    "updatedAt": "2020-01-01T12:34:56Z[Europe/London]",
+    "newStatus": {
+      "name": "moreInfoRequested",
+      "label": "More information requested",
+      "description": "More information about the application has been requested from the POM (Prison Offender Manager)."
+    }
+  }
+}
