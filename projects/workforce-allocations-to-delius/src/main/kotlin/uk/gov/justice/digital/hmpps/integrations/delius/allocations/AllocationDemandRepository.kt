@@ -98,7 +98,8 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                         rs.getString("community_manager_team_code"),
                         gradeMap[rs.getString("community_manager_grade")]
                     )
-                }
+                },
+                rs.getDate("com_handover_date").toLocalDate()
             )
         }
     }
@@ -234,7 +235,8 @@ SELECT o.CRN                                                            crn,
        ias.FORENAME                                                     ias_forename,
        ias.FORENAME2                                                    ias_middle_name,
        ias.SURNAME                                                      ias_surname,
-       iasg.CODE_DESCRIPTION                                            ias_grade
+       iasg.CODE_DESCRIPTION                                            ias_grade,
+       kd.KEY_DATE                                                      com_handover_date
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
          JOIN OFFENDER_MANAGER cm ON cm.OFFENDER_ID = o.OFFENDER_ID AND cm.ACTIVE_FLAG = 1
@@ -249,6 +251,12 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cmsg ON cms.STAFF_GRADE_ID = cmsg.STANDARD_REFERENCE_LIST_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST du ON du.STANDARD_REFERENCE_LIST_ID = d.ENTRY_LENGTH_UNITS_ID
          LEFT OUTER JOIN CUSTODY c ON c.DISPOSAL_ID = d.DISPOSAL_ID AND c.SOFT_DELETED = 0
+         LEFT OUTER JOIN (SELECT kd.CUSTODY_ID, kd.KEY_DATE 
+                          FROM KEY_DATE kd
+                          JOIN R_STANDARD_REFERENCE_LIST srl 
+                          ON srl.STANDARD_REFERENCE_LIST_ID = kd.KEY_DATE_TYPE_ID
+                          AND srl.CODE_VALUE = 'POM2'
+                          AND kd.SOFT_DELETED = 0) kd ON kd.CUSTODY_ID = c.CUSTODY_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cs ON cs.STANDARD_REFERENCE_LIST_ID = c.CUSTODIAL_STATUS_ID
          LEFT OUTER JOIN INITIAL_APPOINTMENT ia ON e.EVENT_ID = ia.EVENT_ID AND ia.ROW_NUM = 1
          LEFT OUTER JOIN STAFF ias ON ias.STAFF_ID = ia.STAFF_ID
