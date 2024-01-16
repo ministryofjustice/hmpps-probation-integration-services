@@ -81,7 +81,7 @@ class AllocationDemandIntegrationTest {
                 CaseType.CUSTODY,
                 ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
                 Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO"),
-                LocalDate.of(2023,12,31)
+                LocalDate.of(2023, 12, 31)
             ),
             AllocationResponse(
                 "T456789",
