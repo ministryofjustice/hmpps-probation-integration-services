@@ -4,17 +4,16 @@ spring:
   jackson:
     default-property-inclusion: non_empty
   jpa:
-    database-platform: org.hibernate.dialect.OracleDialect
     hibernate.ddl-auto: validate
+    database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
-        query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
         timezone.default_storage: NORMALIZE
-        hql.bulk_id_strategy:
-          persistent:
+        query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
+        query.mutation_strategy.persistent:
             create_tables: false
             drop_tables: false
-          global_temporary:
+        query.mutation_strategy.global_temporary:
             create_tables: false
             drop_tables: false
   security.oauth2.client:
