@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import java.time.LocalDate
+
 data class AllocationResponse(
     val crn: String,
     val name: Name,
@@ -9,7 +11,8 @@ data class AllocationResponse(
     val court: NamedCourt,
     val type: CaseType = CaseType.UNKNOWN,
     val probationStatus: ProbationStatus,
-    val communityPersonManager: Manager?
+    val communityPersonManager: Manager?,
+    val comHandoverDate: LocalDate?
 )
 
 data class AllocationDemandResponse(val cases: List<AllocationResponse>)
