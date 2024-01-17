@@ -98,9 +98,9 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                         ),
                         rs.getString("community_manager_team_code"),
                         gradeMap[rs.getString("community_manager_grade")],
-                        handoverDate?.toLocalDate()
                     )
-                }
+                },
+                handoverDate?.toLocalDate()
             )
         }
     }

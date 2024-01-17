@@ -80,7 +80,8 @@ class AllocationDemandIntegrationTest {
                 NamedCourt("Court One"),
                 CaseType.CUSTODY,
                 ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
-                Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO", LocalDate.of(2023, 12, 31))
+                Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO"),
+                LocalDate.of(2023, 12, 31)
             ),
             AllocationResponse(
                 "T456789",
@@ -91,7 +92,8 @@ class AllocationDemandIntegrationTest {
                 NamedCourt("Court Two"),
                 CaseType.CUSTODY,
                 ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
-                Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
+                Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO"),
+                null
             )
         )
 
@@ -101,8 +103,8 @@ class AllocationDemandIntegrationTest {
         mockMvc.perform(post("/allocation-demand").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("\$.cases.length()", `is`(2)))
-            .andExpect(jsonPath("$.cases[0].communityPersonManager.handoverDate").value("2023-12-31"))
-            .andExpect(jsonPath("$.cases[1].communityPersonManager.handoverDate").doesNotExist())
+            .andExpect(jsonPath("$.cases[0].handoverDate").value("2023-12-31"))
+            .andExpect(jsonPath("$.cases[1].handoverDate").doesNotExist())
     }
 
     @Test
