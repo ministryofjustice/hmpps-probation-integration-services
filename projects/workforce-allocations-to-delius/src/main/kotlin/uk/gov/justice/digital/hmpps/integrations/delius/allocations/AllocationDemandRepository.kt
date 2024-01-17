@@ -42,7 +42,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
             val iad: Date? = rs.getDate("initial_appointment_date")
             val managementStatus = ManagementStatus.valueOf(rs.getString("management_status"))
             val managerCode = rs.getString("community_manager_code")
-            val comHandoverCode: Date? = rs.getDate("com_handover_date")
+            val handoverDate: Date? = rs.getDate("com_handover_date")
             AllocationResponse(
                 rs.getString("crn"),
                 Name(rs.getString("forename"), rs.getString("middle_name"), rs.getString("surname")),
@@ -97,10 +97,10 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                             rs.getString("community_manager_surname")
                         ),
                         rs.getString("community_manager_team_code"),
-                        gradeMap[rs.getString("community_manager_grade")]
+                        gradeMap[rs.getString("community_manager_grade")],
+                        handoverDate?.toLocalDate()
                     )
-                },
-                comHandoverCode?.toLocalDate()
+                }
             )
         }
     }

@@ -21,7 +21,13 @@ data class StaffMember(
     val grade: String? = null
 )
 
-data class Manager(val code: String, val name: Name, val teamCode: String, val grade: String? = null)
+data class Manager(
+    val code: String,
+    val name: Name,
+    val teamCode: String,
+    val grade: String? = null,
+    val handoverDate: LocalDate? = null
+)
 
 data class InitialAppointment(val date: LocalDate, val staff: StaffMember)
 
