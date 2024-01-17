@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.REFERRAL_UPDATE
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
 import java.time.ZonedDateTime
 
 object EntityGenerator {
@@ -18,8 +17,5 @@ object EntityGenerator {
         ContactType(id(), REFERRAL_SUBMITTED),
         ContactType(id(), REFERRAL_UPDATED)
     )
-    val BUSINESS_INTERACTIONS = arrayOf(
-        BusinessInteraction(id(), ADD_CONTACT.code, ZonedDateTime.now()),
-        BusinessInteraction(id(), UPDATE_CONTACT.code, ZonedDateTime.now()),
-    )
+    val BUSINESS_INTERACTION = BusinessInteraction(id(), ADD_CONTACT.code, ZonedDateTime.now())
 }

@@ -19,6 +19,7 @@ class Handler(
         val event = notification.message
         when (event.eventType) {
             "applications.cas2.application.submitted" -> cas2Service.applicationSubmitted(event)
+            "applications.cas2.application.status-updated" -> cas2Service.applicationStatusUpdated(event)
 
             else -> throw IllegalArgumentException("Unexpected event type ('${event.eventType}')")
         }

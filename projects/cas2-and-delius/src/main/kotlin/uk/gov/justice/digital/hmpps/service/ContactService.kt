@@ -15,24 +15,27 @@ class ContactService(
     auditedInteractionService: AuditedInteractionService,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
+    private val personRepository: PersonRepository,
+    private val personManagerRepository: PersonManagerRepository,
     private val telemetryService: TelemetryService,
 ) : AuditableService(auditedInteractionService) {
 
     fun createContact(
-        personId: Long,
+        crn: String,
         type: String,
         date: ZonedDateTime,
-        manager: PersonManager,
         notes: String,
         urn: String,
     ) = if (contactRepository.existsByExternalReference(urn)) {
         telemetryService.trackEvent("ContactAlreadyExists", mapOf("urn" to urn))
         false
     } else audit(BusinessInteractionCode.ADD_CONTACT) { audit ->
+        val person = personRepository.getByCrn(crn)
+        val manager = personManagerRepository.getActiveManager(person.id)
         val contact = contactRepository.save(
             Contact(
-                personId = personId,
-                type = contactTypeRepository.getByCode(ContactType.REFERRAL_SUBMITTED),
+                personId = person.id,
+                type = contactTypeRepository.getByCode(type),
                 date = date.toLocalDate(),
                 startTime = date,
                 staffId = manager.staffId,
@@ -43,7 +46,7 @@ class ContactService(
             )
         )
         audit["contactId"] = contact.id
-        audit["offenderId"] = personId
+        audit["offenderId"] = person.id
         true
     }
 }

@@ -12,6 +12,19 @@
         "status": 200,
         "bodyFileName": "application-submitted.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/cas2/application-status-updated/1"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "application-status-updated.json"
+      }
     }
   ]
 }
