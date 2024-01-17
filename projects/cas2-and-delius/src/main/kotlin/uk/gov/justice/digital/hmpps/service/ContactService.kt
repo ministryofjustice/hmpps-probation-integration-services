@@ -23,6 +23,7 @@ class ContactService(
     fun createContact(
         crn: String,
         type: String,
+        description: String? = null,
         date: ZonedDateTime,
         notes: String,
         urn: String,
@@ -36,6 +37,7 @@ class ContactService(
             Contact(
                 personId = person.id,
                 type = contactTypeRepository.getByCode(type),
+                description = description,
                 date = date.toLocalDate(),
                 startTime = date,
                 staffId = manager.staffId,
