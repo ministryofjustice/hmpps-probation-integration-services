@@ -741,6 +741,9 @@ components:
           $ref: '#/components/schemas/ProbationStatus'
         communityPersonManager:
           $ref: '#/components/schemas/Manager'
+        comHandoverDate:
+          type: string
+          format: date
     Event:
       required:
       - number
