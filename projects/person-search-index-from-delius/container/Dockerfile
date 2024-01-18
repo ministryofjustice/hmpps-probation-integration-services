@@ -4,7 +4,7 @@ COPY --chown=yq /pipelines /pipelines
 RUN find /pipelines -type f -name '*.yml' -exec sh -c 'f="$1"; yq -o=json "$f" > "${f%.yml}.json"' shell {} +;
 
 
-FROM logstash:8.11.3
+FROM logstash:8.11.4
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
