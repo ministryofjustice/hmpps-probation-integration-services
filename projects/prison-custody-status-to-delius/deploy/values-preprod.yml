@@ -6,7 +6,7 @@ generic-service:
     enabled: true
 
   env:
-    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/oauth/token
+    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/oauth/token
     SENTRY_ENVIRONMENT: preprod
     INTEGRATIONS_PRISON-API_URL: https://prison-api-preprod.prison.service.justice.gov.uk
 
