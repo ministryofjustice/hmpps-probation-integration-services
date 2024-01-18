@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.config.defaultTypeForNonNsi
 import uk.gov.justice.digital.hmpps.config.setDescription
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
@@ -16,7 +15,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
-import uk.gov.justice.digital.hmpps.integrations.delius.model.isAlertType
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.*
 import java.time.temporal.ChronoUnit
 
@@ -66,13 +64,8 @@ class DeliusService(
 
         val relatedIds = relatedService.findRelatedCaseNoteIds(offender.id, body.typeLookup())
 
-        val defaultType = lazy { caseNoteTypeRepository.getByCode(CaseNoteType.DEFAULT_CODE) }
-        val caseNoteType =
-            if (featureFlags.defaultTypeForNonNsi() && !body.typeLookup().isAlertType() && relatedIds.nsiId == null) {
-                defaultType.value
-            } else {
-                nomisTypeRepository.findByIdOrNull(body.typeLookup())?.type ?: defaultType.value
-            }
+        val caseNoteType = nomisTypeRepository.findByIdOrNull(body.typeLookup())?.type
+            ?: caseNoteTypeRepository.getByCode(CaseNoteType.DEFAULT_CODE)
 
         val description = if (featureFlags.setDescription()) body.description(caseNoteType) else null
 

@@ -317,7 +317,7 @@ class DeliusServiceTest {
 
     @Test
     fun `does not set description for new case note of mapped type`() {
-        givenNewCaseNote(type = CaseNoteNomisTypeGenerator.NEG, relatedIds = CaseNoteRelatedIds(nsiId = 123))
+        givenNewCaseNote(type = CaseNoteNomisTypeGenerator.NEG)
         whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
