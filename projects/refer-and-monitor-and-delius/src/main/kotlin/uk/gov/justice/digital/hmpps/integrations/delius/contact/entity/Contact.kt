@@ -231,11 +231,11 @@ class ContactOutcome(
     val id: Long
 ) {
     enum class Code(val value: String) {
+        APPOINTMENT_KEPT("APPK"),
         COMPLIED("ATTC"),
         FAILED_TO_COMPLY("AFTC"),
         FAILED_TO_ATTEND("AFTA"),
         RESCHEDULED_SERVICE_REQUEST("RSSR"),
-        RESCHEDULED_POP_REQUEST("RSOF"),
         SENT_HOME("ATSS"),
         WITHDRAWN("APPW")
     }

@@ -280,7 +280,7 @@ class AppointmentService(
 
         private fun noSession(outcome: Outcome) = when (outcome.noSessionReasonType) {
             NoSessionReasonType.POP_UNACCEPTABLE -> Code.FAILED_TO_COMPLY
-            NoSessionReasonType.POP_ACCEPTABLE -> Code.RESCHEDULED_POP_REQUEST
+            NoSessionReasonType.POP_ACCEPTABLE -> Code.APPOINTMENT_KEPT
             NoSessionReasonType.LOGISTICS -> Code.SENT_HOME
             else -> throw IllegalArgumentException("Outcome Scenario Not Mapped: $outcome")
         }
