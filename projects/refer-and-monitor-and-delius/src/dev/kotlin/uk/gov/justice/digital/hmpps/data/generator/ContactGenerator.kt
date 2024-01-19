@@ -19,7 +19,7 @@ object ContactGenerator {
     }.associateBy { it.code }
     val OUTCOMES = ContactOutcome.Code.entries.map {
         when (it) {
-            ContactOutcome.Code.COMPLIED, ContactOutcome.Code.SENT_HOME -> generateOutcome(
+            ContactOutcome.Code.COMPLIED, ContactOutcome.Code.SENT_HOME, ContactOutcome.Code.APPOINTMENT_KEPT -> generateOutcome(
                 it.value,
                 attendance = true,
                 compliantAcceptable = true
@@ -37,7 +37,7 @@ object ContactGenerator {
                 compliantAcceptable = false
             )
 
-            ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST, ContactOutcome.Code.APPOINTMENT_KEPT -> generateOutcome(
+            ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST -> generateOutcome(
                 it.value,
                 attendance = false,
                 compliantAcceptable = true
