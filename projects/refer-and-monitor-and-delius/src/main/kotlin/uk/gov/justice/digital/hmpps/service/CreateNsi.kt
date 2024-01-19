@@ -1,8 +1,12 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException.BadRequest
+import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByPersonIdAndEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
@@ -31,6 +35,9 @@ class CreateNsi(
     fun new(crn: String, rs: ReferralStarted, additions: (nsi: Nsi) -> Unit): Nsi? {
         val person = personRepository.getByCrn(crn)
         val sentence = disposalRepository.getByPersonIdAndEventId(person.id, rs.sentenceId)
+        if (sentence.type.code == DisposalType.Code.COMMITTAL_PSSR_BREACH.value) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot add referral to Committal for PSS Breach")
+        }
         val req = requirementRepository.findForPersonAndEvent(
             person.id,
             sentence.id,
