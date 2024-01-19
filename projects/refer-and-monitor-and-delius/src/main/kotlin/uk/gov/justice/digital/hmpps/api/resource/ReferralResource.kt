@@ -2,13 +2,7 @@ package uk.gov.justice.digital.hmpps.api.resource
 
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
@@ -16,7 +10,7 @@ import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.NsiService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.format.DateTimeFormatter
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("probation-case/{crn}/referrals")
