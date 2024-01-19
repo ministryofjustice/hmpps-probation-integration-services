@@ -28,7 +28,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatu
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatusHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @Service
@@ -41,8 +40,7 @@ class NsiService(
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
-    private val createNsi: CreateNsi,
-    private val telemetryService: TelemetryService // temporarily added here for determining fuzzy matches
+    private val createNsi: CreateNsi
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional

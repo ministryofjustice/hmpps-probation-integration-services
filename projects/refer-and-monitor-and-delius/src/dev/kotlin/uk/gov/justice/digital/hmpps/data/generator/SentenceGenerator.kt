@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Requirem
 import java.time.LocalDate
 
 object SentenceGenerator {
-    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("Default Sentence Type", "NP", 0)
+    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
     val EVENT_WITH_NSI = generateEvent(PersonGenerator.DEFAULT.id)
     val SENTENCE_WITH_NSI = generateSentence(EVENT_WITH_NSI)
     val EVENT_WITHOUT_NSI = generateEvent(PersonGenerator.SENTENCED_WITHOUT_NSI.id)
@@ -35,11 +35,12 @@ object SentenceGenerator {
     ) = Event(personId, convictionDate, null, ftcCount, inBreach, breachEnd, null, active, softDeleted, id)
 
     fun generateDisposalType(
+        code: String,
         description: String,
         sentenceType: String? = null,
         ftcLimit: Long? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = DisposalType(description, sentenceType, ftcLimit, id)
+    ) = DisposalType(code, description, sentenceType, ftcLimit, id)
 
     fun generateSentence(
         event: Event,

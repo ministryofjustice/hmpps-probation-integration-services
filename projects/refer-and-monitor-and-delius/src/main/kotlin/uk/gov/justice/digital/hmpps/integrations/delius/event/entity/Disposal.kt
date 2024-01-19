@@ -53,6 +53,9 @@ class Disposal(
 @Table(name = "r_disposal_type")
 class DisposalType(
 
+    @Column(name = "disposal_type_code")
+    val code: String,
+
     val description: String,
 
     @Column(name = "sentence_type")
@@ -66,6 +69,10 @@ class DisposalType(
     val id: Long
 ) {
     fun overLimit(count: Long): Boolean = sentenceType != null && ftcLimit != null && count > ftcLimit
+
+    enum class Code(val value: String) {
+        COMMITTAL_PSSR_BREACH("326")
+    }
 }
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
