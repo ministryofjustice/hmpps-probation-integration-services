@@ -98,6 +98,7 @@ interface EventRepository : JpaRepository<Event, Long> {
         and e.active = true and e.softDeleted = false
         and d.active = true and d.softDeleted = false
         and mo.softDeleted = false
+        and d.type.code <> '326' 
     """
     )
     fun findAllByCrn(crn: String): List<Event>
