@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType.Code.COMMITTAL_PSSR_BREACH
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entity.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
@@ -19,11 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
-import uk.gov.justice.digital.hmpps.messaging.ActionResult
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementAction
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
-import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
+import uk.gov.justice.digital.hmpps.messaging.*
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -88,10 +85,29 @@ class ReleaseAction(
             )
             eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
             return ActionResult.Success(ActionResult.Type.Released, prisonerMovement.telemetryProperties())
+        } else if (custody.disposal.type.code == COMMITTAL_PSSR_BREACH.value) {
+            val event = custody.disposal.event
+            contactService.createContact(
+                ContactDetail(
+                    ContactType.Code.PSS_BREACH_COMMITTAL_RELEASE,
+                    prisonerMovement.occurredAt,
+                    """
+                    |Delius has been informed of a Post PSSR Committal Breach release. 
+                    |The Event should now be terminated with a reason of "Released - No Licence to Supervise"
+                    """.trimMargin(),
+                    alert = true
+                ),
+                event.person,
+                event,
+                event.manager()
+            )
         }
         return ActionResult.Ignored(
             "UnableToRelease",
-            prisonerMovement.telemetryProperties() + ("currentStatus" to custody.status.code)
+            prisonerMovement.telemetryProperties() + mapOf(
+                "currentStatus" to custody.status.code,
+                "disposalTypeCode" to custody.disposal.type.code
+            )
         )
     }
 }

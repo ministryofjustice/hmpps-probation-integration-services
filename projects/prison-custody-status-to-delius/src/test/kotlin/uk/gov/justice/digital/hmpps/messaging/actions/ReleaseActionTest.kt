@@ -11,21 +11,13 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.withManager
+import org.mockito.kotlin.*
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entity.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -99,6 +91,32 @@ internal class ReleaseActionTest {
         assertThat(res, instanceOf(ActionResult.Ignored::class.java))
         val ignored = res as ActionResult.Ignored
         assertThat(ignored.reason, equalTo("UnableToRelease"))
+    }
+
+    @Test
+    fun `does not release pss breach committal events`() {
+        val event = EventGenerator.custodialEvent(
+            PersonGenerator.RELEASABLE,
+            InstitutionGenerator.DEFAULT,
+            CustodialStatusCode.IN_CUSTODY,
+            disposalCode = DisposalType.Code.COMMITTAL_PSSR_BREACH.value
+        ).withManager()
+        val prisonerMovement = PrisonerMovement.Released(
+            event.person.nomsNumber,
+            InstitutionGenerator.DEFAULT.nomisCdeCode,
+            PrisonerMovement.Type.RELEASED,
+            "",
+            ZonedDateTime.now().minusDays(1)
+        )
+        withReferenceData(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
+
+        val res = action.accept(PrisonerMovementContext(prisonerMovement, event.disposal!!.custody!!))
+        assertThat(res, instanceOf(ActionResult.Ignored::class.java))
+        val ignored = res as ActionResult.Ignored
+        assertThat(ignored.reason, equalTo("UnableToRelease"))
+        assertThat(ignored.properties["disposalTypeCode"], equalTo(DisposalType.Code.COMMITTAL_PSSR_BREACH.value))
+
+        verify(releaseRepository, never()).save(any())
     }
 
     @Test
