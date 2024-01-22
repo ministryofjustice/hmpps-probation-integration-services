@@ -18,6 +18,13 @@ enum class ApprovedPremisesCategoryCode(
     LIFE("J", CategoryMappings(SentenceType.LifeSentence to ReleaseType.Licence)),
     IPP("K", CategoryMappings(SentenceType.IndeterminatePublicProtection to ReleaseType.Licence)),
     LICENCE("L", CategoryMappings(SentenceType.StandardDeterminate to ReleaseType.Licence)),
+    PAROLE_DIRECTED(
+        "M",
+        CategoryMappings(
+            SentenceType.ExtendedDeterminate to ReleaseType.ParoleDirectedLicence,
+            SentenceType.StandardDeterminate to ReleaseType.ParoleDirectedLicence
+        )
+    ),
     VOLUNTARY_MAPPA(
         "MAP",
         CategoryMappings(*ReleaseType.entries.map { SentenceType.NonStatutory to it }.toTypedArray())
@@ -32,13 +39,6 @@ enum class ApprovedPremisesCategoryCode(
         )
     ),
     OTHER("O", CategoryMappings()),
-    PAROLE_DIRECTED(
-        "M",
-        CategoryMappings(
-            SentenceType.ExtendedDeterminate to ReleaseType.ParoleDirectedLicence,
-            SentenceType.StandardDeterminate to ReleaseType.ParoleDirectedLicence
-        )
-    ),
     ORA_PSS("U", CategoryMappings(SentenceType.StandardDeterminate to ReleaseType.PostSentenceSupervision)),
     RESIDENCY_REQUIREMENT(
         "X",
