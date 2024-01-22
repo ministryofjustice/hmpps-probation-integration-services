@@ -1,15 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinColumns
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -18,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType.Code.COMMITTAL_PSSR_BREACH
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CAN_RECALL_STATUSES
@@ -132,6 +125,7 @@ fun Custody.canBeRecalled(): Boolean {
     return mrr != null && mrr.recall == null && status.code in CAN_RECALL_STATUSES.map { it.code }
 }
 
-fun Custody.canBeReleased() = status.code in CAN_RELEASE_STATUSES.map { it.code }
+fun Custody.canBeReleased() =
+    status.code in CAN_RELEASE_STATUSES.map { it.code } && disposal.type.code != COMMITTAL_PSSR_BREACH.value
 
 interface CustodyRepository : JpaRepository<Custody, Long>

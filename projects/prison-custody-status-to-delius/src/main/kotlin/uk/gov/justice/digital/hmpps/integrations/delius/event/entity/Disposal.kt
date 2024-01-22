@@ -58,6 +58,13 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
 
+    @Column(name = "disposal_type_code")
+    val code: String,
+
     @Column
     val sentenceType: String
-)
+) {
+    enum class Code(val value: String) {
+        COMMITTAL_PSSR_BREACH("326")
+    }
+}
