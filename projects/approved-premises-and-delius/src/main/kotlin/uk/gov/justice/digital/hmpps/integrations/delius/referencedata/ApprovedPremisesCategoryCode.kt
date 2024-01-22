@@ -32,7 +32,15 @@ enum class ApprovedPremisesCategoryCode(
         )
     ),
     OTHER("O", CategoryMappings()),
+    PAROLE_DIRECTED(
+        "M",
+        CategoryMappings(
+            SentenceType.ExtendedDeterminate to ReleaseType.ParoleDirectedLicence,
+            SentenceType.StandardDeterminate to ReleaseType.ParoleDirectedLicence
+        )
+    ),
     ORA_PSS("U", CategoryMappings(SentenceType.StandardDeterminate to ReleaseType.PostSentenceSupervision)),
+
     RESIDENCY_REQUIREMENT(
         "X",
         CategoryMappings(
@@ -40,7 +48,12 @@ enum class ApprovedPremisesCategoryCode(
             SentenceType.SuspendedSentence to ReleaseType.ResidencyManagement
         )
     ),
-    EXTENDED_DETERMINATE("Y", CategoryMappings(SentenceType.ExtendedDeterminate to ReleaseType.Licence));
+    EXTENDED_DETERMINATE(
+        "Y", CategoryMappings(
+            SentenceType.ExtendedDeterminate to ReleaseType.Licence,
+            SentenceType.ExtendedDeterminate to ReleaseType.ExtendedDeterminateLicence
+        )
+    );
 
     companion object {
         fun from(sentenceType: SentenceType, releaseType: ReleaseType) =
@@ -68,8 +81,10 @@ enum class SentenceType(val value: String) {
 enum class ReleaseType(val value: String) {
     BailAssessment("bailAssessment"),
     BailSentence("bailSentence"),
+    ExtendedDeterminateLicence("extendedDeterminateLicence"),
     HomeDetentionCurfew("hdc"),
     Licence("licence"),
+    ParoleDirectedLicence("paroleDirectedLicence"),
     PostSentenceSupervision("pss"),
     ResidencyManagement("residencyManagement"),
     RiskManagement("riskManagement"),
