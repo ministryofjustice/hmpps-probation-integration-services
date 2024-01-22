@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Address
 import uk.gov.justice.digital.hmpps.api.model.OfficeLocation
+import uk.gov.justice.digital.hmpps.api.model.Provider
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -35,7 +37,8 @@ class OfficeLocationResourceTest {
                     "TESTONE",
                     "Description of TESTONE",
                     Address.from(buildingName = "Test One", streetName = "Mantle Place", postcode = "MP1 1PM"),
-                    null
+                    null,
+                    provider()
                 )
             )
         )
@@ -46,7 +49,8 @@ class OfficeLocationResourceTest {
                     "TESTTWO",
                     "Description of TESTTWO",
                     Address.from(buildingName = "Test Two", postcode = "MP2 2PM"),
-                    telephoneNumber = "020 123 6789"
+                    telephoneNumber = "020 123 6789",
+                    provider()
                 )
             )
         )
@@ -57,9 +61,12 @@ class OfficeLocationResourceTest {
                     "DEFAULT",
                     description = "Description of DEFAULT",
                     address = null,
-                    telephoneNumber = null
+                    telephoneNumber = null,
+                    provider()
                 )
             )
         )
     }
+
+    fun provider() = Provider(ProviderGenerator.INTENDED_PROVIDER.code, ProviderGenerator.INTENDED_PROVIDER.description)
 }

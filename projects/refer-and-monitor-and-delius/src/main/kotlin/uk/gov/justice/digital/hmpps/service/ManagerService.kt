@@ -13,8 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.Pe
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import uk.gov.justice.digital.hmpps.integrations.ldap.entity.LdapUserDetails
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 
@@ -22,6 +21,7 @@ import uk.gov.justice.digital.hmpps.ldap.findByUsername
 class ManagerService(
     private val personManagerRepository: PersonManagerRepository,
     private val prisonManagerRepository: PrisonManagerRepository,
+    private val locationRepository: LocationRepository,
     private val ldapTemplate: LdapTemplate
 ) {
     fun findResponsibleCommunityManager(crn: String): ResponsibleOfficer {
@@ -32,8 +32,9 @@ class ManagerService(
                 telephone = it.telephone
             }
         }
+        val locations = locationRepository.findLocationsForTeam(com.team.id)
         val pom = if (com.responsibleOfficer == null) prisonManagerRepository.findByPersonId(com.person.id) else null
-        return com.toResponsibleOfficer(pom)
+        return com.toResponsibleOfficer(locations, pom)
     }
 
     fun findCasesManagedBy(username: String) = ManagedCases(
@@ -42,7 +43,7 @@ class ManagerService(
     )
 }
 
-fun PersonManager.toResponsibleOfficer(pom: PrisonManager?) = ResponsibleOfficer(
+fun PersonManager.toResponsibleOfficer(locations: List<Location>, pom: PrisonManager?) = ResponsibleOfficer(
     Manager(
         staff.code,
         staff.name(),
@@ -51,7 +52,8 @@ fun PersonManager.toResponsibleOfficer(pom: PrisonManager?) = ResponsibleOfficer
         staff.user?.telephone,
         responsibleOfficer != null,
         team.pdu(),
-        team.team()
+        team.team(),
+        officeLocations = locations.map(Location::location)
     ),
     pom?.toManager()
 )

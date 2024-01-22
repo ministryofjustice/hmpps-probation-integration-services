@@ -13,7 +13,8 @@ data class Manager(
     val telephoneNumber: String?,
     val responsibleOfficer: Boolean,
     val pdu: Pdu,
-    val team: Team
+    val team: Team,
+    val officeLocations: List<OfficeLocation> = listOf()
 ) {
     val unallocated = code.endsWith("U")
 }
