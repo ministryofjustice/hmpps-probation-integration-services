@@ -18,6 +18,13 @@ enum class ApprovedPremisesCategoryCode(
     LIFE("J", CategoryMappings(SentenceType.LifeSentence to ReleaseType.Licence)),
     IPP("K", CategoryMappings(SentenceType.IndeterminatePublicProtection to ReleaseType.Licence)),
     LICENCE("L", CategoryMappings(SentenceType.StandardDeterminate to ReleaseType.Licence)),
+    PAROLE_DIRECTED(
+        "M",
+        CategoryMappings(
+            SentenceType.ExtendedDeterminate to ReleaseType.ParoleDirectedLicence,
+            SentenceType.StandardDeterminate to ReleaseType.ParoleDirectedLicence
+        )
+    ),
     VOLUNTARY_MAPPA(
         "MAP",
         CategoryMappings(*ReleaseType.entries.map { SentenceType.NonStatutory to it }.toTypedArray())
@@ -40,7 +47,12 @@ enum class ApprovedPremisesCategoryCode(
             SentenceType.SuspendedSentence to ReleaseType.ResidencyManagement
         )
     ),
-    EXTENDED_DETERMINATE("Y", CategoryMappings(SentenceType.ExtendedDeterminate to ReleaseType.Licence));
+    EXTENDED_DETERMINATE(
+        "Y", CategoryMappings(
+            SentenceType.ExtendedDeterminate to ReleaseType.Licence,
+            SentenceType.ExtendedDeterminate to ReleaseType.ExtendedDeterminateLicence
+        )
+    );
 
     companion object {
         fun from(sentenceType: SentenceType, releaseType: ReleaseType) =
@@ -68,8 +80,10 @@ enum class SentenceType(val value: String) {
 enum class ReleaseType(val value: String) {
     BailAssessment("bailAssessment"),
     BailSentence("bailSentence"),
+    ExtendedDeterminateLicence("extendedDeterminateLicence"),
     HomeDetentionCurfew("hdc"),
     Licence("licence"),
+    ParoleDirectedLicence("paroleDirectedLicence"),
     PostSentenceSupervision("pss"),
     ResidencyManagement("residencyManagement"),
     RiskManagement("riskManagement"),
