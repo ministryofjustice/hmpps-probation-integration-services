@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -19,6 +20,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.address
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -60,6 +62,11 @@ class ProbationCaseResourceTest {
             assertThat(ro.prisonManager!!.email, equalTo("manager@prison.gov.uk"))
             assertThat(ro.prisonManager!!.pdu.code, equalTo(ProviderGenerator.PRISON_BOROUGH.code))
         }
+
+        assertThat(com.officeLocations.size, equalTo(1))
+        val ol = com.officeLocations.first()
+        assertThat(ol.code, equalTo(ProviderGenerator.DEFAULT_LOCATION.code))
+        assertThat(ol.description, equalTo(ProviderGenerator.DEFAULT_LOCATION.description))
     }
 
     @Test

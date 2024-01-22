@@ -8,18 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
-import uk.gov.justice.digital.hmpps.data.generator.CaseDetailsGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateExclusion
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateRestriction
-import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.Exclusion
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -27,11 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRe
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Disability
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonDetailRepository
@@ -39,21 +26,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.ResponsibleOfficer
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.DeliveryUnit
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PduRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.RequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
@@ -96,7 +72,8 @@ class DataLoader(
     private val personAddressRepository: PersonAddressRepository,
     private val disabilityRepository: DisabilityRepository,
     private val offenceRepository: OffenceRepository,
-    private val mainOffenceRepository: MainOffenceRepository
+    private val mainOffenceRepository: MainOffenceRepository,
+    private val teamOfficeLinkRepository: TeamOfficeLinkRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -355,6 +332,17 @@ class DataLoader(
         eventRepository.save(SentenceGenerator.FULL_DETAIL_EVENT)
         mainOffenceRepository.save(SentenceGenerator.FULL_DETAIL_MAIN_OFFENCE)
         disposalRepository.save(SentenceGenerator.FULL_DETAIL_SENTENCE)
+
+        teamOfficeLinkRepository.saveAll(
+            listOf(
+                ProviderGenerator.linkTeamAndOfficeLocation(
+                    ProviderGenerator.INTENDED_TEAM, ProviderGenerator.DEFAULT_LOCATION
+                ),
+                ProviderGenerator.linkTeamAndOfficeLocation(
+                    ProviderGenerator.PROBATION_TEAM, ProviderGenerator.DEFAULT_LOCATION
+                )
+            )
+        )
     }
 }
 
@@ -369,3 +357,5 @@ interface ExclusionRepository : JpaRepository<Exclusion, Long>
 interface DisabilityRepository : JpaRepository<Disability, Long>
 interface OffenceRepository : JpaRepository<Offence, Long>
 interface MainOffenceRepository : JpaRepository<MainOffence, Long>
+
+interface TeamOfficeLinkRepository : JpaRepository<TeamOfficeLink, TeamOfficeLinkId>

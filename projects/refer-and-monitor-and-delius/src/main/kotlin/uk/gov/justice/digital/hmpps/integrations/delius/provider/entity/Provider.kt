@@ -5,8 +5,11 @@ import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.Address
+import uk.gov.justice.digital.hmpps.api.model.OfficeLocation
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider.Companion.INTENDED_PROVIDER_CODE
+import java.io.Serializable
 import java.time.LocalDate
 
 @Entity
@@ -118,6 +121,24 @@ class Borough(
     val id: Long
 )
 
+@Embeddable
+class TeamOfficeLinkId(
+    @Column(name = "team_id")
+    val teamId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "office_location_id")
+    val officeLocation: Location
+) : Serializable
+
+@Immutable
+@Entity
+@Table(name = "team_office_location")
+class TeamOfficeLink(
+    @Id
+    val id: TeamOfficeLinkId
+)
+
 interface ProviderRepository : JpaRepository<Provider, Long> {
     fun findByCode(code: String): Provider?
 }
@@ -154,7 +175,26 @@ interface LocationRepository : JpaRepository<Location, Long> {
     """
     )
     fun findAllLocationsForProvider(providerId: Long): List<Location>
+
+    @Query(
+        """
+        select l
+        from TeamOfficeLink tol 
+        join tol.id.officeLocation l
+        join fetch l.provider p
+        where tol.id.teamId = :teamId
+        and (p.endDate is null or p.endDate > current_date)
+        and (l.endDate is null or l.endDate > current_date)
+        """
+    )
+    fun findLocationsForTeam(teamId: Long): List<Location>
 }
 
 fun LocationRepository.getByCode(code: String) =
     findActiveLocationByCode(code) ?: throw NotFoundException("Location", "code", code)
+
+fun Location.address() = Address.from(buildingName, buildingNumber, streetName, district, townCity, county, postcode)
+
+fun Location.provider() = uk.gov.justice.digital.hmpps.api.model.Provider(this.provider.code, this.provider.description)
+
+fun Location.location() = OfficeLocation(code, description, address(), telephoneNumber, provider())

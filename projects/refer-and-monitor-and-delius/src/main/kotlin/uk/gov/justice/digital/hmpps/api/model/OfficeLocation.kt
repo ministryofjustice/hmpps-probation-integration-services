@@ -4,7 +4,8 @@ data class OfficeLocation(
     val code: String,
     val description: String,
     val address: Address?,
-    val telephoneNumber: String?
+    val telephoneNumber: String?,
+    val provider: Provider
 )
 
 data class Address(
@@ -36,3 +37,5 @@ data class Address(
             }
     }
 }
+
+data class Provider(val code: String, val description: String)

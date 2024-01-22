@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Borough
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Location
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 
@@ -109,4 +103,6 @@ object ProviderGenerator {
         provider,
         id
     )
+
+    fun linkTeamAndOfficeLocation(team: Team, location: Location) = TeamOfficeLink(TeamOfficeLinkId(team.id, location))
 }
