@@ -29,7 +29,7 @@ object EventGenerator {
         )
         val disposal = Disposal(
             id = IdGenerator.getAndIncrement(),
-            type = DisposalType(IdGenerator.getAndIncrement(),disposalCode, "NC"),
+            type = DisposalType(IdGenerator.getAndIncrement(), disposalCode, "NC"),
             date = disposalDate,
             lengthInDays = lengthInDays,
             event = event
