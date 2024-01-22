@@ -75,9 +75,10 @@ class Handler(
             }
 
             "accommodation.cas3.person.arrived.updated" -> {
-                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
-                    cas3ApiClient.getPersonArrived(event.url())
-                }
+                val person = personRepository.getByCrn(event.crn())
+                val detail = cas3ApiClient.getPersonArrived(event.url())
+                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) { detail }
+                addressService.updateMainAddress(person, detail.eventDetails)
                 telemetryService.trackEvent("PersonArrivedUpdated", event.telemetryProperties())
             }
 
