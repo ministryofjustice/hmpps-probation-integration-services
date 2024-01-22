@@ -40,7 +40,6 @@ enum class ApprovedPremisesCategoryCode(
         )
     ),
     ORA_PSS("U", CategoryMappings(SentenceType.StandardDeterminate to ReleaseType.PostSentenceSupervision)),
-
     RESIDENCY_REQUIREMENT(
         "X",
         CategoryMappings(
