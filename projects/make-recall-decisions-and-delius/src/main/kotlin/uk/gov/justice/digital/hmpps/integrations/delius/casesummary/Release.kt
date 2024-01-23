@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.casesummary
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
@@ -76,5 +70,5 @@ class Institution(
 
 interface CaseSummaryReleaseRepository : JpaRepository<Release, Long> {
     @EntityGraph(attributePaths = ["recall", "institution"])
-    fun findFirstByCustodyIdOrderByDateDesc(custodyId: Long): Release?
+    fun findFirstByCustodyIdInOrderByDateDesc(custodyIds: List<Long>): Release?
 }

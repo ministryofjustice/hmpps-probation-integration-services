@@ -1,18 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.AdditionalOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.DisposalType
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Institution
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.KeyDate
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.LicenceCondition
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.LicenceConditionMainCategory
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.MainOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Offence
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Recall
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Release
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
@@ -21,6 +9,20 @@ object EventGenerator {
     val CASE_SUMMARY = custodialEvent(PersonGenerator.CASE_SUMMARY.id)
 
     fun custodialEvent(personId: Long): Event {
+        val event = nonCustodialEvent(personId)
+        val disposal = event.disposal!!
+        val custody = Custody(
+            id = IdGenerator.getAndIncrement(),
+            disposal = disposal,
+            status = ReferenceData(IdGenerator.getAndIncrement(), "B", "Released on licence")
+        )
+        custody.set(Custody::sentenceExpiryDate, custody.keyDate("SED", LocalDate.of(2023, 1, 1)))
+        custody.set(Custody::licenceExpiryDate, custody.keyDate("LED", LocalDate.of(2024, 1, 1)))
+        disposal.set(Disposal::custody, custody)
+        return event
+    }
+
+    fun nonCustodialEvent(personId: Long): Event {
         val event = Event(
             id = IdGenerator.getAndIncrement(),
             personId = personId,
@@ -38,14 +40,6 @@ object EventGenerator {
             secondEntryLength = 2,
             secondEntryLengthUnit = ReferenceData(IdGenerator.getAndIncrement(), "Y", "Years")
         )
-        val custody = Custody(
-            id = IdGenerator.getAndIncrement(),
-            disposal = disposal,
-            status = ReferenceData(IdGenerator.getAndIncrement(), "B", "Released on licence")
-        )
-        custody.set(Custody::sentenceExpiryDate, custody.keyDate("SED", LocalDate.of(2023, 1, 1)))
-        custody.set(Custody::licenceExpiryDate, custody.keyDate("LED", LocalDate.of(2024, 1, 1)))
-        disposal.set(Disposal::custody, custody)
         disposal.set(Disposal::licenceConditions, listOf(disposal.licenceCondition("TEST", "Freedom of movement")))
         event.set(Event::disposal, disposal)
         event.set(Event::mainOffence, mainOffence(event))
@@ -76,11 +70,13 @@ object EventGenerator {
         )
     )
 
-    fun Custody.release(): Release {
+    fun Custody.release(
+        date: LocalDate = LocalDate.now().minusMonths(6),
+    ): Release {
         val release = Release(
             id = IdGenerator.getAndIncrement(),
             custodyId = id,
-            date = LocalDate.now().minusMonths(6),
+            date = date,
             institution = Institution(IdGenerator.getAndIncrement(), "Test institution", "Description of institution")
         )
         release.set(
