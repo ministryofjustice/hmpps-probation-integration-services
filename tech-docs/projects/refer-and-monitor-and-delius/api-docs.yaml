@@ -489,10 +489,28 @@ components:
           type: string
         description:
           type: string
+    Address:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
     Manager:
       required:
       - code
       - name
+      - officeLocations
       - pdu
       - responsibleOfficer
       - team
@@ -515,9 +533,40 @@ components:
           $ref: '#/components/schemas/Pdu'
         team:
           $ref: '#/components/schemas/Team'
+        officeLocations:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfficeLocation'
         unallocated:
           type: boolean
+    OfficeLocation:
+      required:
+      - code
+      - description
+      - provider
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        telephoneNumber:
+          type: string
+        provider:
+          $ref: '#/components/schemas/Provider'
     Pdu:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    Provider:
       required:
       - code
       - description
@@ -549,23 +598,6 @@ components:
         email:
           type: string
         telephoneNumber:
-          type: string
-    Address:
-      type: object
-      properties:
-        buildingName:
-          type: string
-        buildingNumber:
-          type: string
-        streetName:
-          type: string
-        district:
-          type: string
-        town:
-          type: string
-        county:
-          type: string
-        postcode:
           type: string
     CaseDetail:
       required:
@@ -693,20 +725,6 @@ components:
           $ref: '#/components/schemas/CaseDetail'
         conviction:
           $ref: '#/components/schemas/Conviction'
-    OfficeLocation:
-      required:
-      - code
-      - description
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-        address:
-          $ref: '#/components/schemas/Address'
-        telephoneNumber:
-          type: string
   securitySchemes:
     hmpps-auth-token:
       type: http

@@ -685,6 +685,26 @@
       "email": "string",
       "telephoneNumber": "string"
     },
+    "officeLocations": [
+      {
+        "code": "string",
+        "description": "string",
+        "address": {
+          "buildingName": "string",
+          "buildingNumber": "string",
+          "streetName": "string",
+          "district": "string",
+          "town": "string",
+          "county": "string",
+          "postcode": "string"
+        },
+        "telephoneNumber": "string",
+        "provider": {
+          "code": "string",
+          "description": "string"
+        }
+      }
+    ],
     "unallocated": "boolean"
   },
   "prisonManager": {
@@ -707,6 +727,26 @@
       "email": "string",
       "telephoneNumber": "string"
     },
+    "officeLocations": [
+      {
+        "code": "string",
+        "description": "string",
+        "address": {
+          "buildingName": "string",
+          "buildingNumber": "string",
+          "streetName": "string",
+          "district": "string",
+          "town": "string",
+          "county": "string",
+          "postcode": "string"
+        },
+        "telephoneNumber": "string",
+        "provider": {
+          "code": "string",
+          "description": "string"
+        }
+      }
+    ],
     "unallocated": "boolean"
   }
 }</code></pre>
@@ -1748,6 +1788,88 @@
 </tbody>
 </table>
 
+<h3 id="schema-address">Address</h3>
+
+
+<table class='schema-address'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-manager">Manager</h3>
 
 
@@ -1838,6 +1960,16 @@
 </tr>
 
 <tr>
+<td>officeLocations</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-officelocation'>OfficeLocation</a>
+</td>
+</tr>
+
+<tr>
 <td>unallocated</td>
 <td>boolean</td>
 <td>true</td>
@@ -1850,10 +1982,104 @@
 </tbody>
 </table>
 
+<h3 id="schema-officelocation">OfficeLocation</h3>
+
+
+<table class='schema-officelocation'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>address</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-pdu">Pdu</h3>
 
 
 <table class='schema-pdu'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
@@ -1955,88 +2181,6 @@
 
 <tr>
 <td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-address">Address</h3>
-
-
-<table class='schema-address'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>buildingName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>buildingNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>streetName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>district</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>town</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>county</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>postcode</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -2460,58 +2604,6 @@
 <td></td>
 <td>
   <a href='#schema-conviction'>Conviction</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-officelocation">OfficeLocation</h3>
-
-
-<table class='schema-officelocation'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>address</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-address'>Address</a>
-</td>
-</tr>
-
-<tr>
-<td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
