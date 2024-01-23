@@ -1,39 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.ContactHistory
-import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
-import uk.gov.justice.digital.hmpps.api.model.MappaAndRoshHistory
-import uk.gov.justice.digital.hmpps.api.model.Overview
-import uk.gov.justice.digital.hmpps.api.model.PersonalDetails
-import uk.gov.justice.digital.hmpps.api.model.PersonalDetailsOverview
-import uk.gov.justice.digital.hmpps.api.model.RecommendationModel
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.api.model.RecommendationModel.Institution
-import uk.gov.justice.digital.hmpps.api.model.dates
-import uk.gov.justice.digital.hmpps.api.model.identifiers
-import uk.gov.justice.digital.hmpps.api.model.name
-import uk.gov.justice.digital.hmpps.api.model.toAddress
-import uk.gov.justice.digital.hmpps.api.model.toContact
-import uk.gov.justice.digital.hmpps.api.model.toConviction
-import uk.gov.justice.digital.hmpps.api.model.toConvictionDetails
-import uk.gov.justice.digital.hmpps.api.model.toConvictionWithLicenceConditions
-import uk.gov.justice.digital.hmpps.api.model.toManager
-import uk.gov.justice.digital.hmpps.api.model.toMappa
-import uk.gov.justice.digital.hmpps.api.model.toRosh
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryAddressRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryEventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryRegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryReleaseRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMappa
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findRoshHistory
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.getPerson
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.searchContacts
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.*
 import java.time.LocalDate
 
 @Service
@@ -143,8 +113,8 @@ class CaseSummaryService(
         )
     }
 
-    private fun List<Event>.lastRelease() = map { it.disposal?.custody }.singleOrNull()
-        ?.let { releaseRepository.findFirstByCustodyIdOrderByDateDesc(it.id) }
+    private fun List<Event>.lastRelease() = mapNotNull { it.disposal?.custody?.id }
+        .let { releaseRepository.findFirstByCustodyIdInOrderByDateDesc(it) }
 
     private fun List<Event>.custodial() = filter { it.disposal?.custody != null }
 }
