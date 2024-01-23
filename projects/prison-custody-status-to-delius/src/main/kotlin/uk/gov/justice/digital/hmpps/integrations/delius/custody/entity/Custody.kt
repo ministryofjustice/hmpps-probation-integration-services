@@ -9,7 +9,6 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType.Code.COMMITTAL_PSSR_BREACH
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
