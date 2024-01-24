@@ -168,11 +168,6 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT_REDEF.EVENT_ID references EVENT.EVENT_ID via TMP$$_SYS_C00246710"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">TMP$$_SYS_C00246710</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="COURT_APPEARANCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0025030"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.EVENT_ID</span></td>
                                                 <td class="constraint detail">SYS_C0025030</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
@@ -821,24 +816,24 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>TRUE_OR_FALSE54</td>
+                                    <td>ACTIVE_FLAG IN (0, 1)</td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE52</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE53</td>
+                                    <td>IN_BREACH IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_1415501270</td>
                                     <td>PENDING_TRANSFER IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE54</td>
-                                    <td>ACTIVE_FLAG IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_1988266100</td>
                                     <td>PSS_RQMNT_FLAG IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE53</td>
-                                    <td>IN_BREACH IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -863,72 +858,70 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="ADDITIONAL_OFFENCE.html" target="_top" title="ADDITIONAL_OFFENCE" alt="" coords="1215,767,1472,1119">
-<area shape="rect" id="node2" href="EVENT.html" target="_top" title="EVENT" alt="" coords="649,5803,1127,6605">
-<area shape="rect" id="node3" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="5,6868,229,7015">
-<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="273,2957,605,4160">
-<area shape="rect" id="node22" href="COURT.html" target="_top" title="COURT" alt="" coords="312,6509,567,6891">
-<area shape="rect" id="node4" href="ADDITIONAL_SENTENCE.html" target="_top" title="ADDITIONAL_SENTENCE" alt="" coords="1191,1208,1496,1560">
-<area shape="rect" id="node6" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1177,4665,1510,5956">
-<area shape="rect" id="node7" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="1942,645,2261,1261">
-<area shape="rect" id="node8" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1560,1108,1883,2575">
-<area shape="rect" id="node9" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1560,2592,1883,4029">
-<area shape="rect" id="node10" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1187,104,1500,749">
-<area shape="rect" id="node14" href="NSI.html" target="_top" title="NSI" alt="" coords="1201,4025,1485,4612">
-<area shape="rect" id="node11" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1177,3356,1510,3972">
-<area shape="rect" id="node12" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1927,6545,2276,7513">
-<area shape="rect" id="node13" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1173,7632,1514,8219">
-<area shape="rect" id="node15" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1591,6663,1851,7367">
-<area shape="rect" id="node16" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1171,10079,1516,10900">
-<area shape="rect" id="node27" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1177,6881,1510,7615">
-<area shape="rect" id="node17" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1197,1685,1490,2037">
-<area shape="rect" id="node18" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1591,6117,1851,6645">
-<area shape="rect" id="node19" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="1216,8664,1471,9075">
-<area shape="rect" id="node20" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1197,2055,1490,2407">
-<area shape="rect" id="node21" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1173,9092,1514,9649">
-<area shape="rect" id="node23" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="1196,2424,1491,2629">
-<area shape="rect" id="node24" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1216,8236,1471,8647">
-<area shape="rect" id="node25" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1203,6189,1483,6864">
-<area shape="rect" id="node26" href="OGRS_ASSESSMENT.html" target="_top" title="OGRS_ASSESSMENT" alt="" coords="1216,9667,1471,9989">
-<area shape="rect" id="node28" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1561,4680,1881,5531">
-<area shape="rect" id="node29" href="SPG_DOCUMENT_REQUEST.html" target="_top" title="SPG_DOCUMENT_REQUEST" alt="" coords="1199,2647,1487,2911">
-<area shape="rect" id="node30" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1177,2928,1510,3339">
+<area shape="rect" id="node1" href="ADDITIONAL_OFFENCE.html" target="_top" title="ADDITIONAL_OFFENCE" alt="" coords="1215,2039,1472,2391">
+<area shape="rect" id="node2" href="EVENT.html" target="_top" title="EVENT" alt="" coords="649,5541,1127,6344">
+<area shape="rect" id="node3" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="5,6628,229,6775">
+<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="273,3883,605,5085">
+<area shape="rect" id="node21" href="COURT.html" target="_top" title="COURT" alt="" coords="312,7012,567,7393">
+<area shape="rect" id="node4" href="ADDITIONAL_SENTENCE.html" target="_top" title="ADDITIONAL_SENTENCE" alt="" coords="1191,2480,1496,2832">
+<area shape="rect" id="node6" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1177,731,1510,2021">
+<area shape="rect" id="node7" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="1942,1911,2261,2527">
+<area shape="rect" id="node8" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1560,2380,1883,3524">
+<area shape="rect" id="node9" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1187,68,1500,713">
+<area shape="rect" id="node13" href="NSI.html" target="_top" title="NSI" alt="" coords="1201,5297,1485,5884">
+<area shape="rect" id="node10" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1177,4628,1510,5244">
+<area shape="rect" id="node11" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1927,6437,2276,7405">
+<area shape="rect" id="node12" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1173,8380,1514,8967">
+<area shape="rect" id="node14" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1591,6555,1851,7259">
+<area shape="rect" id="node15" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1171,9971,1516,10792">
+<area shape="rect" id="node26" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1177,6509,1510,7243">
+<area shape="rect" id="node16" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1197,2957,1490,3309">
+<area shape="rect" id="node17" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1591,6009,1851,6537">
+<area shape="rect" id="node18" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="1216,6081,1471,6492">
+<area shape="rect" id="node19" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1197,3327,1490,3679">
+<area shape="rect" id="node20" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1173,9324,1514,9881">
+<area shape="rect" id="node22" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="1196,3696,1491,3901">
+<area shape="rect" id="node23" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1216,7260,1471,7671">
+<area shape="rect" id="node24" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1203,7688,1483,8363">
+<area shape="rect" id="node25" href="OGRS_ASSESSMENT.html" target="_top" title="OGRS_ASSESSMENT" alt="" coords="1216,8984,1471,9307">
+<area shape="rect" id="node27" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1561,5069,1881,5920">
+<area shape="rect" id="node28" href="SPG_DOCUMENT_REQUEST.html" target="_top" title="SPG_DOCUMENT_REQUEST" alt="" coords="1199,3919,1487,4183">
+<area shape="rect" id="node29" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1177,4200,1510,4611">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/EVENT.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="ADDITIONAL_OFFENCE.html" target="_top" title="ADDITIONAL_OFFENCE" alt="" coords="1339,3994,1596,4346">
-<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,5895,353,6218">
-<area shape="rect" id="node3" href="EVENT.html" target="_top" title="EVENT" alt="" coords="773,5902,1251,6704">
-<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="67,3136,291,3283">
-<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="397,6991,729,8194">
-<area shape="rect" id="node22" href="COURT.html" target="_top" title="COURT" alt="" coords="436,5792,691,6174">
-<area shape="rect" id="node5" href="ADDITIONAL_SENTENCE.html" target="_top" title="ADDITIONAL_SENTENCE" alt="" coords="1315,4967,1620,5319">
-<area shape="rect" id="node7" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1301,6199,1634,7490">
-<area shape="rect" id="node8" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2066,8232,2385,8848">
-<area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1684,9087,2007,10554">
-<area shape="rect" id="node10" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1684,10607,2007,12044">
-<area shape="rect" id="node11" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1311,2639,1624,3284">
-<area shape="rect" id="node15" href="NSI.html" target="_top" title="NSI" alt="" coords="1325,8858,1609,9444">
-<area shape="rect" id="node12" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1301,10390,1634,11006">
-<area shape="rect" id="node13" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2051,2534,2400,3502">
-<area shape="rect" id="node14" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1297,4363,1638,4950">
-<area shape="rect" id="node16" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1715,138,1975,842">
-<area shape="rect" id="node17" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1295,1424,1640,2246">
-<area shape="rect" id="node28" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1301,674,1634,1407">
-<area shape="rect" id="node18" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1321,7730,1614,8082">
-<area shape="rect" id="node19" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1715,7024,1975,7552">
-<area shape="rect" id="node20" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="1340,9962,1595,10372">
-<area shape="rect" id="node21" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1321,8099,1614,8451">
-<area shape="rect" id="node23" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1297,5336,1638,5894">
-<area shape="rect" id="node24" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="1320,7507,1615,7712">
-<area shape="rect" id="node25" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1340,246,1595,656">
-<area shape="rect" id="node26" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1327,3302,1607,3976">
-<area shape="rect" id="node27" href="OGRS_ASSESSMENT.html" target="_top" title="OGRS_ASSESSMENT" alt="" coords="1340,2263,1595,2586">
-<area shape="rect" id="node29" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1685,5151,2005,6002">
-<area shape="rect" id="node30" href="SPG_DOCUMENT_REQUEST.html" target="_top" title="SPG_DOCUMENT_REQUEST" alt="" coords="1323,8576,1611,8840">
-<area shape="rect" id="node31" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1301,9498,1634,9908">
+<area shape="rect" id="node1" href="ADDITIONAL_OFFENCE.html" target="_top" title="ADDITIONAL_OFFENCE" alt="" coords="1339,903,1596,1255">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,4963,353,5285">
+<area shape="rect" id="node3" href="EVENT.html" target="_top" title="EVENT" alt="" coords="773,5212,1251,6015">
+<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="67,2676,291,2823">
+<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="397,5259,729,6461">
+<area shape="rect" id="node21" href="COURT.html" target="_top" title="COURT" alt="" coords="436,4860,691,5241">
+<area shape="rect" id="node5" href="ADDITIONAL_SENTENCE.html" target="_top" title="ADDITIONAL_SENTENCE" alt="" coords="1315,1272,1620,1624">
+<area shape="rect" id="node7" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1301,1641,1634,2932">
+<area shape="rect" id="node8" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2066,556,2385,1172">
+<area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1684,3725,2007,4869">
+<area shape="rect" id="node10" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1311,168,1624,813">
+<area shape="rect" id="node14" href="NSI.html" target="_top" title="NSI" alt="" coords="1325,7481,1609,8068">
+<area shape="rect" id="node11" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1301,10028,1634,10644">
+<area shape="rect" id="node12" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2051,6777,2400,7745">
+<area shape="rect" id="node13" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1297,8549,1638,9136">
+<area shape="rect" id="node15" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1715,5765,1975,6469">
+<area shape="rect" id="node16" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1295,9189,1640,10011">
+<area shape="rect" id="node27" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1301,6731,1634,7464">
+<area shape="rect" id="node17" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1321,5380,1614,5732">
+<area shape="rect" id="node18" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1715,8024,1975,8552">
+<area shape="rect" id="node19" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="1340,10661,1595,11072">
+<area shape="rect" id="node20" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1321,5749,1614,6101">
+<area shape="rect" id="node22" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1297,4553,1638,5111">
+<area shape="rect" id="node23" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="1320,6119,1615,6324">
+<area shape="rect" id="node24" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1340,3325,1595,3736">
+<area shape="rect" id="node25" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1327,3861,1607,4536">
+<area shape="rect" id="node26" href="OGRS_ASSESSMENT.html" target="_top" title="OGRS_ASSESSMENT" alt="" coords="1340,2985,1595,3308">
+<area shape="rect" id="node28" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1685,6487,2005,7337">
+<area shape="rect" id="node29" href="SPG_DOCUMENT_REQUEST.html" target="_top" title="SPG_DOCUMENT_REQUEST" alt="" coords="1323,6377,1611,6641">
+<area shape="rect" id="node30" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1301,8121,1634,8532">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/EVENT.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

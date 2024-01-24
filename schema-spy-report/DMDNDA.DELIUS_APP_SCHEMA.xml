@@ -502,7 +502,6 @@
             <child column="TRUST_PROVIDER_FLAG" foreignKey="R_1018" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_DIARY"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024658" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024412" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT"/>
-            <child column="TRUST_PROVIDER_FLAG" foreignKey="TMP$$_SYS_C00246580" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024224" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_MANAGER"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024386" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFENDER_MANAGER"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024252" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ORDER_MANAGER"/>
@@ -515,7 +514,6 @@
             <child column="TRUST_PROVIDER_TEAM_ID" foreignKey="R_1018" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_DIARY"/>
             <child column="TRUST_PROVIDER_TEAM_ID" foreignKey="SYS_C0024658" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="TRUST_PROVIDER_TEAM_ID" foreignKey="SYS_C0024412" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT"/>
-            <child column="TRUST_PROVIDER_TEAM_ID" foreignKey="TMP$$_SYS_C00246580" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="TRUST_PROVIDER_TEAM_ID" foreignKey="SYS_C0024224" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_MANAGER"/>
             <child column="TRUST_PROVIDER_TEAM_ID" foreignKey="SYS_C0024386" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFENDER_MANAGER"/>
             <child column="TRUST_PROVIDER_TEAM_ID" foreignKey="SYS_C0024252" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ORDER_MANAGER"/>
@@ -1221,7 +1219,6 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="28" name="ENFORCEABLE_CONTACT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="R_1332" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_R_13320" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="29" name="EVENT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="EVENT_ID" foreignKey="R_1346" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="EVENT"/>
@@ -1624,8 +1621,8 @@
             <parent column="RQMNT_MANAGER_ID" foreignKey="SYS_C0024940" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="RQMNT_MANAGER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="TRUST_PROVIDER_FLAG" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024931" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024925" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024931" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="TRUST_PROVIDER_TEAM_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="TRUST_PROVIDER_TEAM_ID" foreignKey="SYS_C0024925" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
@@ -1950,8 +1947,8 @@
             <parent column="DISPOSAL_TYPE_ID" foreignKey="R_1017" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_DISPOSAL_TYPE"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="TRUST_PROVIDER_FLAG" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="R_1019" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="R_1018" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="R_1019" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="TRUST_PROVIDER_TEAM_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="TRUST_PROVIDER_TEAM_ID" foreignKey="R_1018" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
@@ -2183,7 +2180,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="OFFICE_LOCATION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="OFFICE_LOCATION_ID" foreignKey="SYS_C0024674" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICE_LOCATION"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="ROW_VERSION" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="0 " digits="0" id="19" name="ROW_VERSION" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="ALERT_ACTIVE" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="ATTENDED" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="CREATED_DATETIME" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
@@ -2213,8 +2210,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="33" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="34" name="TRUST_PROVIDER_FLAG" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024654" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024658" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024654" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="35" name="STAFF_EMPLOYEE_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024654" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
@@ -2228,7 +2225,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="38" name="ENFORCEMENT" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="39" name="DOCUMENT_LINKED" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="40" name="UPLOAD_LINKED" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="41" name="LATEST_ENFORCEMENT_ACTION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="41" name="LATEST_ENFORCEMENT_ACTION_ID" nullable="true" remarks="" size="22" type="NUMBER" typeCode="2">
             <parent column="ENFORCEMENT_ACTION_ID" foreignKey="SYS_C0024664" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_ENFORCEMENT_ACTION"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="42" name="NSI_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
@@ -2253,8 +2250,10 @@
             <parent column="CONTACT_TYPE_ID" foreignKey="R_1395" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CONTACT_TYPE"/>
          </column>
          <primaryKey column="CONTACT_ID" sequenceNumberInPK="1"/>
-         <index name="XPKCONTACT" unique="true">
+         <primaryKey column="SOFT_DELETED" sequenceNumberInPK="2"/>
+         <index name="XPKCONTACT" unique="false">
             <column ascending="true" name="CONTACT_ID"/>
+            <column ascending="true" name="SOFT_DELETED"/>
          </index>
          <index name="XAK1CONTACT" unique="true">
             <column ascending="true" name="NOMIS_CASE_NOTE_ID"/>
@@ -2263,191 +2262,36 @@
             <column ascending="true" name="EXTERNAL_REFERENCE"/>
          </index>
          <index name="XIE10CONTACT" unique="false">
-            <column ascending="true" name="RQMNT_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
             <column ascending="true" name="OFFENDER_ID"/>
             <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
          </index>
          <index name="XIE11CONTACT" unique="false">
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
             <column ascending="true" name="OFFENDER_ID"/>
             <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE12CONTACT" unique="false">
-            <column ascending="true" name="VISOR_CONTACT"/>
-            <column ascending="true" name="VISOR_EXPORTED"/>
-            <column ascending="true" name="PROBATION_AREA_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE13CONTACT" unique="false">
-            <column ascending="true" name="VISOR_CONTACT"/>
-            <column ascending="true" name="VISOR_EXPORTED"/>
-            <column ascending="true" name="TEAM_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
+            <column ascending="true" name="CONTACT_TYPE_ID"/>
          </index>
          <index name="XIE14CONTACT" unique="false">
             <column ascending="true" name="EVENT_ID"/>
+            <column ascending="true" name="CONTACT_DATE"/>
             <column ascending="true" name="ENFORCEMENT"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE15CONTACT" unique="false">
-            <column ascending="true" name="TRUST_PROVIDER_FLAG"/>
-            <column ascending="true" name="STAFF_EMPLOYEE_ID"/>
-            <column ascending="true" name="ENFORCEMENT"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE16CONTACT" unique="false">
-            <column ascending="true" name="TRUST_PROVIDER_FLAG"/>
-            <column ascending="true" name="TRUST_PROVIDER_TEAM_ID"/>
-            <column ascending="true" name="ENFORCEMENT"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE17CONTACT" unique="false">
-            <column ascending="true" name="OFFICE_LOCATION_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
          </index>
          <index name="XIE18CONTACT" unique="false">
             <column ascending="true" name="OFFENDER_ID"/>
             <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="RQMNT_ID"/>
-            <column ascending="true" name="LIC_CONDITION_ID"/>
             <column ascending="true" name="SOFT_DELETED"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
             <column ascending="true" name="CONTACT_START_TIME"/>
-            <column ascending="true" name="CONTACT_END_TIME"/>
-            <column ascending="true" name="CREATED_DATETIME"/>
-         </index>
-         <index name="XIE19CONTACT" unique="false">
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_START_TIME"/>
-         </index>
-         <index name="XIE1CONTACT" unique="false">
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="PROBATION_AREA_ID"/>
-         </index>
-         <index name="XIE20CONTACT" unique="false">
-            <column ascending="true" name="CREATED_DATETIME"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-         </index>
-         <index name="XIE21CONTACT" unique="false">
-            <column ascending="true" name="ALERT_ACTIVE"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE22CONTACT" unique="false">
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="RQMNT_ID"/>
-            <column ascending="true" name="LIC_CONDITION_ID"/>
-            <column ascending="true" name="SOFT_DELETED"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_START_TIME"/>
-            <column ascending="true" name="CONTACT_END_TIME"/>
-            <column ascending="true" name="CREATED_DATETIME"/>
-            <column ascending="true" name="LINKED_CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_OUTCOME_TYPE_ID"/>
-            <column ascending="true" name="TRUST_PROVIDER_FLAG"/>
-            <column ascending="true" name="STAFF_EMPLOYEE_ID"/>
-            <column ascending="true" name="DOCUMENT_LINKED"/>
-            <column ascending="true" name="NSI_ID"/>
-            <column ascending="true" name="PSS_RQMNT_ID"/>
-            <column ascending="true" name="ROW_VERSION"/>
-         </index>
-         <index name="XIE23CONTACT" unique="false">
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_START_TIME"/>
-            <column ascending="true" name="SOFT_DELETED"/>
          </index>
          <index name="XIE24CONTACT" unique="false">
             <column ascending="true" name="VISOR_CONTACT"/>
             <column ascending="true" name="VISOR_EXPORTED"/>
             <column ascending="true" name="CONTACT_DATE"/>
          </index>
-         <index name="XIE25CONTACT" unique="false">
-            <column ascending="true" name="PRIMARY_KEY_ID"/>
-            <column ascending="true" name="TABLE_NAME"/>
-         </index>
-         <index name="XIE2CONTACT" unique="false">
-            <column ascending="true" name="CONTACT_START_TIME"/>
-         </index>
-         <index name="XIE3CONTACT" unique="false">
-            <column ascending="true" name="CONTACT_END_TIME"/>
-         </index>
-         <index name="XIE4CONTACT" unique="false">
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="SENSITIVE"/>
-         </index>
-         <index name="XIE6CONTACT" unique="false">
-            <column ascending="true" name="SOFT_DELETED"/>
-         </index>
-         <index name="XIF11CONTACT" unique="false">
-            <column ascending="true" name="TEAM_ID"/>
-         </index>
-         <index name="XIF15CONTACT" unique="false">
-            <column ascending="true" name="PARTITION_AREA_ID"/>
-         </index>
-         <index name="XIF19CONTACT" unique="false">
-            <column ascending="true" name="EVENT_ID"/>
-         </index>
-         <index name="XIF20CONTACT" unique="false">
-            <column ascending="true" name="LATEST_ENFORCEMENT_ACTION_ID"/>
-         </index>
-         <index name="XIF21CONTACT" unique="false">
-            <column ascending="true" name="PROVIDER_TEAM_ID"/>
-         </index>
-         <index name="XIF22CONTACT" unique="false">
-            <column ascending="true" name="CONTACT_OUTCOME_TYPE_ID"/>
-         </index>
          <index name="XIF23CONTACT" unique="false">
             <column ascending="true" name="LINKED_CONTACT_ID"/>
          </index>
-         <index name="XIF24CONTACT" unique="false">
-            <column ascending="true" name="EXPLANATION_ID"/>
-         </index>
-         <index name="XIF25CONTACT" unique="false">
-            <column ascending="true" name="TRAINING_SESSION_ID"/>
-         </index>
-         <index name="XIF27CONTACT" unique="false">
-            <column ascending="true" name="PROBATION_AREA_ID"/>
-         </index>
          <index name="XIF29CONTACT" unique="false">
             <column ascending="true" name="NSI_ID"/>
-         </index>
-         <index name="XIF2CONTACT" unique="false">
-            <column ascending="true" name="OFFENDER_ID"/>
-         </index>
-         <index name="XIF30CONTACT" unique="false">
-            <column ascending="true" name="PSS_RQMNT_ID"/>
+            <column ascending="true" name="CONTACT_START_TIME"/>
          </index>
          <index name="XIF31CONTACT" unique="false">
             <column ascending="true" name="LINKED_DOCUMENT_CONTACT_ID"/>
@@ -2455,23 +2299,16 @@
          <index name="XIF32CONTACT" unique="false">
             <column ascending="true" name="RAR_LINKED_CONTACT_ID"/>
          </index>
-         <index name="XIF33CONTACT" unique="false">
-            <column ascending="true" name="SESSION_DELIVERED_CON_TYPE_ID"/>
-         </index>
          <index name="XIF4CONTACT" unique="false">
             <column ascending="true" name="RQMNT_ID"/>
          </index>
          <index name="XIF5CONTACT" unique="false">
             <column ascending="true" name="LIC_CONDITION_ID"/>
          </index>
-         <index name="XIF7CONTACT" unique="false">
-            <column ascending="true" name="PROVIDER_LOCATION_ID"/>
-         </index>
-         <index name="XIF8CONTACT" unique="false">
-            <column ascending="true" name="PROVIDER_EMPLOYEE_ID"/>
-         </index>
-         <index name="XIF9CONTACT" unique="false">
-            <column ascending="true" name="STAFF_ID"/>
+         <index name="XIG1CONTACT" unique="false">
+            <column ascending="true" name="CONTACT_DATE"/>
+            <column ascending="true" name="SOFT_DELETED"/>
+            <column ascending="true" name="CONTACT_START_TIME"/>
          </index>
          <checkConstraint constraint="TABLE_NAME IN ('APPROVED_PREMISES_REFERRAL', 'APPROVED_PREMISES_RESIDENCE', 'COURT_REPORT',&#10;   'INSTITUTIONAL_REPORT', 'REFERRAL', 'DRUGS_TEST', 'ASSESSMENT')" name="CONTACT_TABLE_69233217"/>
          <checkConstraint constraint=" (&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NOT NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NOT NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NOT NULL)&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL )&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;) " name="CONTACT_TYPE"/>
@@ -2499,7 +2336,6 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="CONTACT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0024415" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00244150" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="CONTACT_TYPE_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_TYPE_ID" foreignKey="SYS_C0024413" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CONTACT_TYPE"/>
@@ -2508,8 +2344,8 @@
             <parent column="CONTACT_OUTCOME_TYPE_ID" foreignKey="SYS_C0024414" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CONTACT_OUTCOME_TYPE"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="TRUST_PROVIDER_FLAG" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024416" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024412" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024416" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="TRUST_PROVIDER_TEAM_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="TRUST_PROVIDER_TEAM_ID" foreignKey="SYS_C0024412" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
@@ -2566,7 +2402,6 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="CONTACT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="R_1216" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_R_12160" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="SPG_NOTIFICATION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="SPG_NOTIFICATION_ID" foreignKey="R_1217" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="SPG_NOTIFICATION"/>
@@ -2656,376 +2491,6 @@
          </index>
          <checkConstraint constraint=" FAILED_JMESSAGE IS JSON " name="FAILED_JMESSAGE_1531013277"/>
       </table>
-      <table name="CONTACT_REDEF" remarks="" schema="DELIUS_APP_SCHEMA" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="CONTACT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <child column="ENFORCEABLE_CONTACT_ID" foreignKey="TMP$$_R_13320" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ASSESSMENT"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00244150" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_R_12160" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT_CLEAR"/>
-            <child column="LINKED_CONTACT_ID" foreignKey="TMP$$_SYS_C00246570" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
-            <child column="LINKED_DOCUMENT_CONTACT_ID" foreignKey="TMP$$_R_12250" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
-            <child column="RAR_LINKED_CONTACT_ID" foreignKey="TMP$$_R_13940" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00250260" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_UPLOAD_DOCUMENT"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00248070" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DEREGISTRATION"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00244470" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ENFORCEMENT"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00250530" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OASYS_ASSESSMENT"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00245900" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="REGISTRATION"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00247360" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="REGISTRATION_REVIEW"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00242060" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="SUBJECT_ACCESS_REPORT_CONTACT"/>
-            <child column="CONTACT_ID" foreignKey="TMP$$_SYS_C00247060" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="UPW_APPOINTMENT"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="LINKED_CONTACT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00246570" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="CONTACT_DATE" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="OFFENDER_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="OFFENDER_ID" foreignKey="TMP$$_SYS_C00246700" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFENDER"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="CONTACT_START_TIME" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="CONTACT_END_TIME" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="RQMNT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="RQMNT_ID" foreignKey="TMP$$_SYS_C00246620" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="RQMNT"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="LIC_CONDITION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="LIC_CONDITION_ID" foreignKey="TMP$$_SYS_C00246550" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="PROVIDER_LOCATION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="PROVIDER_LOCATION_ID" foreignKey="TMP$$_SYS_C00246690" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PROVIDER_LOCATION"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="PROVIDER_EMPLOYEE_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="PROVIDER_EMPLOYEE_ID" foreignKey="TMP$$_SYS_C00246530" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PROVIDER_EMPLOYEE"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="2" id="10" name="HOURS_CREDITED" nullable="true" remarks="" size="10" type="NUMBER" typeCode="2"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="NOTES" nullable="true" remarks="" size="4000" type="CLOB" typeCode="2005"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="VISOR_CONTACT" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="STAFF_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="STAFF_ID" foreignKey="TMP$$_SYS_C00246610" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="STAFF"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="TEAM_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TEAM_ID" foreignKey="TMP$$_SYS_C00246600" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="TEAM"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="SOFT_DELETED" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="VISOR_EXPORTED" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="PARTITION_AREA_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="PARTITION_AREA_ID" foreignKey="TMP$$_SYS_C00246730" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PARTITION_AREA"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="OFFICE_LOCATION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="OFFICE_LOCATION_ID" foreignKey="TMP$$_SYS_C00246740" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICE_LOCATION"/>
-         </column>
-         <column autoUpdated="false" defaultValue="0 " digits="0" id="19" name="ROW_VERSION" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="ALERT_ACTIVE" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="ATTENDED" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="CREATED_DATETIME" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="23" name="COMPLIED" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="24" name="SENSITIVE" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="25" name="LAST_UPDATED_DATETIME" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="26" name="EVENT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="EVENT_ID" foreignKey="TMP$$_SYS_C00246710" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="EVENT"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="27" name="CONTACT_TYPE_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="CONTACT_TYPE_ID" foreignKey="TMP$$_SYS_C00246650" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CONTACT_TYPE"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="28" name="PROVIDER_TEAM_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="PROVIDER_TEAM_ID" foreignKey="TMP$$_SYS_C00246680" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PROVIDER_TEAM"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="29" name="CONTACT_OUTCOME_TYPE_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="CONTACT_OUTCOME_TYPE_ID" foreignKey="TMP$$_SYS_C00246720" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CONTACT_OUTCOME_TYPE"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="30" name="CREATED_BY_USER_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="USER_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="USER_"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="31" name="EXPLANATION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="EXPLANATION_ID" foreignKey="TMP$$_SYS_C00246630" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_EXPLANATION"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="32" name="LAST_UPDATED_USER_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="USER_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="USER_"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="33" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="34" name="TRUST_PROVIDER_FLAG" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="TMP$$_SYS_C00246540" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="TMP$$_SYS_C00246580" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="35" name="STAFF_EMPLOYEE_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="STAFF_EMPLOYEE_ID" foreignKey="TMP$$_SYS_C00246540" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="36" name="PROBATION_AREA_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="PROBATION_AREA_ID" foreignKey="TMP$$_SYS_C00246670" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PROBATION_AREA"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="37" name="TRUST_PROVIDER_TEAM_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_TEAM_ID" foreignKey="TMP$$_SYS_C00246580" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="38" name="ENFORCEMENT" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="39" name="DOCUMENT_LINKED" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="40" name="UPLOAD_LINKED" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="41" name="LATEST_ENFORCEMENT_ACTION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="ENFORCEMENT_ACTION_ID" foreignKey="TMP$$_SYS_C00246640" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_ENFORCEMENT_ACTION"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="42" name="NSI_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="NSI_ID" foreignKey="TMP$$_R_8950" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="NSI"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="43" name="TABLE_NAME" nullable="true" remarks="" size="30" type="VARCHAR2" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="44" name="PRIMARY_KEY_ID" nullable="true" remarks="" size="22" type="NUMBER" typeCode="2"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="45" name="PSS_RQMNT_ID" nullable="true" remarks="" size="22" type="NUMBER" typeCode="2">
-            <parent column="PSS_RQMNT_ID" foreignKey="TMP$$_R_9810" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PSS_RQMNT"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="46" name="RAR_ACTIVITY" nullable="true" remarks="" size="1" type="CHAR" typeCode="1"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="47" name="NOMIS_CASE_NOTE_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="48" name="LINKED_DOCUMENT_CONTACT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="CONTACT_ID" foreignKey="TMP$$_R_12250" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
-         </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="49" name="DESCRIPTION" nullable="true" remarks="" size="200" type="VARCHAR2" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="50" name="EXTERNAL_REFERENCE" nullable="true" remarks="" size="200" type="VARCHAR2" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="51" name="RAR_LINKED_CONTACT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="CONTACT_ID" foreignKey="TMP$$_R_13940" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
-         </column>
-         <primaryKey column="CONTACT_ID" sequenceNumberInPK="1"/>
-         <index name="XPKCONTACTREDEF" unique="true">
-            <column ascending="true" name="CONTACT_ID"/>
-         </index>
-         <index name="TMP$$_XAK2CONTACT0" unique="true">
-            <column ascending="true" name="EXTERNAL_REFERENCE"/>
-         </index>
-         <index name="XAK1CONTACTREDEF" unique="true">
-            <column ascending="true" name="NOMIS_CASE_NOTE_ID"/>
-         </index>
-         <index name="XIE10CONTACTREDEF" unique="false">
-            <column ascending="true" name="RQMNT_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
-         </index>
-         <index name="XIE11CONTACTREDEF" unique="false">
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE12CONTACTREDEF" unique="false">
-            <column ascending="true" name="VISOR_CONTACT"/>
-            <column ascending="true" name="VISOR_EXPORTED"/>
-            <column ascending="true" name="PROBATION_AREA_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE13CONTACTREDEF" unique="false">
-            <column ascending="true" name="VISOR_CONTACT"/>
-            <column ascending="true" name="VISOR_EXPORTED"/>
-            <column ascending="true" name="TEAM_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE14CONTACTREDEF" unique="false">
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="ENFORCEMENT"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE15CONTACTREDEF" unique="false">
-            <column ascending="true" name="TRUST_PROVIDER_FLAG"/>
-            <column ascending="true" name="STAFF_EMPLOYEE_ID"/>
-            <column ascending="true" name="ENFORCEMENT"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE16CONTACTREDEF" unique="false">
-            <column ascending="true" name="TRUST_PROVIDER_FLAG"/>
-            <column ascending="true" name="TRUST_PROVIDER_TEAM_ID"/>
-            <column ascending="true" name="ENFORCEMENT"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE17CONTACTREDEF" unique="false">
-            <column ascending="true" name="OFFICE_LOCATION_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE18CONTACTREDEF" unique="false">
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="RQMNT_ID"/>
-            <column ascending="true" name="LIC_CONDITION_ID"/>
-            <column ascending="true" name="SOFT_DELETED"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_START_TIME"/>
-            <column ascending="true" name="CONTACT_END_TIME"/>
-            <column ascending="true" name="CREATED_DATETIME"/>
-         </index>
-         <index name="XIE19CONTACTREDEF" unique="false">
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_START_TIME"/>
-         </index>
-         <index name="XIE1CONTACTREDEF" unique="false">
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="PROBATION_AREA_ID"/>
-         </index>
-         <index name="XIE20CONTACTREDEF" unique="false">
-            <column ascending="true" name="CREATED_DATETIME"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-         </index>
-         <index name="XIE21CONTACTREDEF" unique="false">
-            <column ascending="true" name="ALERT_ACTIVE"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE22CONTACTREDEF" unique="false">
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="RQMNT_ID"/>
-            <column ascending="true" name="LIC_CONDITION_ID"/>
-            <column ascending="true" name="SOFT_DELETED"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_START_TIME"/>
-            <column ascending="true" name="CONTACT_END_TIME"/>
-            <column ascending="true" name="CREATED_DATETIME"/>
-            <column ascending="true" name="LINKED_CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_OUTCOME_TYPE_ID"/>
-            <column ascending="true" name="TRUST_PROVIDER_FLAG"/>
-            <column ascending="true" name="STAFF_EMPLOYEE_ID"/>
-            <column ascending="true" name="DOCUMENT_LINKED"/>
-            <column ascending="true" name="NSI_ID"/>
-            <column ascending="true" name="PSS_RQMNT_ID"/>
-            <column ascending="true" name="ROW_VERSION"/>
-         </index>
-         <index name="XIE23CONTACTREDEF" unique="false">
-            <column ascending="true" name="EVENT_ID"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="CONTACT_TYPE_ID"/>
-            <column ascending="true" name="ATTENDED"/>
-            <column ascending="true" name="COMPLIED"/>
-            <column ascending="true" name="OFFENDER_ID"/>
-            <column ascending="true" name="SENSITIVE"/>
-            <column ascending="true" name="CONTACT_ID"/>
-            <column ascending="true" name="CONTACT_START_TIME"/>
-            <column ascending="true" name="SOFT_DELETED"/>
-         </index>
-         <index name="XIE24CONTACTREDEF" unique="false">
-            <column ascending="true" name="VISOR_CONTACT"/>
-            <column ascending="true" name="VISOR_EXPORTED"/>
-            <column ascending="true" name="CONTACT_DATE"/>
-         </index>
-         <index name="XIE25CONTACTREDEF" unique="false">
-            <column ascending="true" name="PRIMARY_KEY_ID"/>
-            <column ascending="true" name="TABLE_NAME"/>
-         </index>
-         <index name="XIE2CONTACTREDEF" unique="false">
-            <column ascending="true" name="CONTACT_START_TIME"/>
-         </index>
-         <index name="XIE3CONTACTREDEF" unique="false">
-            <column ascending="true" name="CONTACT_END_TIME"/>
-         </index>
-         <index name="XIE4CONTACTREDEF" unique="false">
-            <column ascending="true" name="CONTACT_DATE"/>
-            <column ascending="true" name="SENSITIVE"/>
-         </index>
-         <index name="XIE6CONTACTREDEF" unique="false">
-            <column ascending="true" name="SOFT_DELETED"/>
-         </index>
-         <index name="XIF11CONTACTREDEF" unique="false">
-            <column ascending="true" name="TEAM_ID"/>
-         </index>
-         <index name="XIF15CONTACTREDEF" unique="false">
-            <column ascending="true" name="PARTITION_AREA_ID"/>
-         </index>
-         <index name="XIF19CONTACTREDEF" unique="false">
-            <column ascending="true" name="EVENT_ID"/>
-         </index>
-         <index name="XIF20CONTACTREDEF" unique="false">
-            <column ascending="true" name="LATEST_ENFORCEMENT_ACTION_ID"/>
-         </index>
-         <index name="XIF21CONTACTREDEF" unique="false">
-            <column ascending="true" name="PROVIDER_TEAM_ID"/>
-         </index>
-         <index name="XIF22CONTACTREDEF" unique="false">
-            <column ascending="true" name="CONTACT_OUTCOME_TYPE_ID"/>
-         </index>
-         <index name="XIF23CONTACTREDEF" unique="false">
-            <column ascending="true" name="LINKED_CONTACT_ID"/>
-         </index>
-         <index name="XIF24CONTACTREDEF" unique="false">
-            <column ascending="true" name="EXPLANATION_ID"/>
-         </index>
-         <index name="XIF25CONTACTREDEF" unique="false">
-            <column ascending="true" name="TRAINING_SESSION_ID"/>
-         </index>
-         <index name="XIF27CONTACTREDEF" unique="false">
-            <column ascending="true" name="PROBATION_AREA_ID"/>
-         </index>
-         <index name="XIF29CONTACTREDEF" unique="false">
-            <column ascending="true" name="NSI_ID"/>
-         </index>
-         <index name="XIF2CONTACTREDEF" unique="false">
-            <column ascending="true" name="OFFENDER_ID"/>
-         </index>
-         <index name="XIF30CONTACTREDEF" unique="false">
-            <column ascending="true" name="PSS_RQMNT_ID"/>
-         </index>
-         <index name="XIF31CONTACTREDEF" unique="false">
-            <column ascending="true" name="LINKED_DOCUMENT_CONTACT_ID"/>
-         </index>
-         <index name="XIF32CONTACTREDEF" unique="false">
-            <column ascending="true" name="RAR_LINKED_CONTACT_ID"/>
-         </index>
-         <index name="XIF4CONTACTREDEF" unique="false">
-            <column ascending="true" name="RQMNT_ID"/>
-         </index>
-         <index name="XIF5CONTACTREDEF" unique="false">
-            <column ascending="true" name="LIC_CONDITION_ID"/>
-         </index>
-         <index name="XIF7CONTACTREDEF" unique="false">
-            <column ascending="true" name="PROVIDER_LOCATION_ID"/>
-         </index>
-         <index name="XIF8CONTACTREDEF" unique="false">
-            <column ascending="true" name="PROVIDER_EMPLOYEE_ID"/>
-         </index>
-         <index name="XIF9CONTACTREDEF" unique="false">
-            <column ascending="true" name="STAFF_ID"/>
-         </index>
-         <checkConstraint constraint="TABLE_NAME IN ('APPROVED_PREMISES_REFERRAL', 'APPROVED_PREMISES_RESIDENCE', 'COURT_REPORT',&#10;   'INSTITUTIONAL_REPORT', 'REFERRAL', 'DRUGS_TEST', 'ASSESSMENT')" name="TMP$$_CONTACT_TABLE_692332170"/>
-         <checkConstraint constraint=" (&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NOT NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NOT NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NOT NULL)&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL )&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;) " name="TMP$$_CONTACT_TYPE0"/>
-         <checkConstraint constraint="ENFORCEMENT = 1 OR ENFORCEMENT IS NULL" name="TMP$$_ENFORCEMENT_ONE_OR_N_4708101650"/>
-         <checkConstraint constraint="HOURS_CREDITED &gt; 0" name="TMP$$_GREATER_THAN_00"/>
-         <checkConstraint constraint=" (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) " name="TMP$$_OFFENDER_MANAGER_TEAM_XOR0"/>
-         <checkConstraint constraint=" (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) " name="TMP$$_PROVIDER_EMPLOYEE_OR_STAFF0"/>
-         <checkConstraint constraint=" (&#10;STAFF_EMPLOYEE_ID = STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID = PROVIDER_EMPLOYEE_ID&#10;) " name="TMP$$_STAFF_OR_TEAM10"/>
-         <checkConstraint constraint="CONTACT_ID IS NOT NULL" name="TMP$$_SYS_C00223620"/>
-         <checkConstraint constraint="CONTACT_DATE IS NOT NULL" name="TMP$$_SYS_C00223630"/>
-         <checkConstraint constraint="OFFENDER_ID IS NOT NULL" name="TMP$$_SYS_C00223640"/>
-         <checkConstraint constraint="SOFT_DELETED IS NOT NULL" name="TMP$$_SYS_C00223650"/>
-         <checkConstraint constraint="PARTITION_AREA_ID IS NOT NULL" name="TMP$$_SYS_C00223660"/>
-         <checkConstraint constraint="ROW_VERSION IS NOT NULL" name="TMP$$_SYS_C00223670"/>
-         <checkConstraint constraint="CREATED_DATETIME IS NOT NULL" name="TMP$$_SYS_C00223680"/>
-         <checkConstraint constraint="LAST_UPDATED_DATETIME IS NOT NULL" name="TMP$$_SYS_C00223690"/>
-         <checkConstraint constraint="CONTACT_TYPE_ID IS NOT NULL" name="TMP$$_SYS_C00223700"/>
-         <checkConstraint constraint="CREATED_BY_USER_ID IS NOT NULL" name="TMP$$_SYS_C00223710"/>
-         <checkConstraint constraint="LAST_UPDATED_USER_ID IS NOT NULL" name="TMP$$_SYS_C00223720"/>
-         <checkConstraint constraint="TRUST_PROVIDER_FLAG IS NOT NULL" name="TMP$$_SYS_C00223730"/>
-         <checkConstraint constraint="STAFF_EMPLOYEE_ID IS NOT NULL" name="TMP$$_SYS_C00223740"/>
-         <checkConstraint constraint="PROBATION_AREA_ID IS NOT NULL" name="TMP$$_SYS_C00223750"/>
-         <checkConstraint constraint="TRUST_PROVIDER_TEAM_ID IS NOT NULL" name="TMP$$_SYS_C00223760"/>
-         <checkConstraint constraint="SOFT_DELETED IN (0, 1)" name="TMP$$_TRUE_OR_FALSE160"/>
-         <checkConstraint constraint="TRUST_PROVIDER_FLAG IN (0, 1)" name="TMP$$_TRUE_OR_FALSE180"/>
-         <checkConstraint constraint=" (&#10;TRUST_PROVIDER_TEAM_ID = TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID = PROVIDER_TEAM_ID&#10;) " name="TMP$$_TRUST_OR_PROVIDER10"/>
-         <checkConstraint constraint="VISOR_EXPORTED IN ('Y','N')" name="TMP$$_YES_OR_NO_4000"/>
-         <checkConstraint constraint="ATTENDED IN ('Y','N')" name="TMP$$_YES_OR_NO_4010"/>
-         <checkConstraint constraint="COMPLIED IN ('Y','N')" name="TMP$$_YES_OR_NO_4020"/>
-         <checkConstraint constraint="SENSITIVE IN ('Y','N')" name="TMP$$_YES_OR_NO_4030"/>
-         <checkConstraint constraint="RAR_ACTIVITY IN ('Y','N')" name="TMP$$_YES_OR_NO_ONLY_18853062060"/>
-      </table>
       <table name="CONTACT_TYPE_ICON" remarks="" schema="DELIUS_APP_SCHEMA" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="CONTACT_TYPE_ICON_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <child column="CONTACT_TYPE_ICON_ID" foreignKey="SYS_C0024918" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CONTACT_TYPE"/>
@@ -3051,7 +2516,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="CONTACT_UPLOAD_DOCUMENT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="CONTACT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0025026" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00250260" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="DOCUMENT" nullable="false" remarks="" size="4000" type="BLOB" typeCode="2004"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="CREATED_BY_USER_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
@@ -3724,7 +3188,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="LAST_UPDATED_DATETIME" nullable="false" remarks="" size="7" type="DATE" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="CONTACT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0024807" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00248070" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="OFFENDER_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
@@ -5112,7 +4575,6 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="CONTACT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0024447" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00244470" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="ACTION_TAKEN_DATE" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="ACTION_TAKEN_TIME" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
@@ -5218,7 +4680,6 @@
             <child column="EVENT_ID" foreignKey="R_1014" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_DIARY"/>
             <child column="EVENT_ID" foreignKey="R_926" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_HISTORY"/>
             <child column="EVENT_ID" foreignKey="SYS_C0024671" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="EVENT_ID" foreignKey="TMP$$_SYS_C00246710" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="EVENT_ID" foreignKey="SYS_C0025030" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_APPEARANCE"/>
             <child column="EVENT_ID" foreignKey="R_1248" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DATA_SCRIPT_MESSAGE"/>
             <child column="EVENT_ID" foreignKey="SYS_C0024798" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DISPOSAL"/>
@@ -5906,7 +5367,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="LIC_CONDITION_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <child column="LIC_CONDITION_ID" foreignKey="SYS_C0024937" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CASELOAD"/>
             <child column="LIC_CONDITION_ID" foreignKey="SYS_C0024655" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="LIC_CONDITION_ID" foreignKey="TMP$$_SYS_C00246550" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="LIC_CONDITION_ID" foreignKey="SYS_C0024225" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_MANAGER"/>
             <child column="LIC_CONDITION_ID" foreignKey="R_859" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_TRANSFER"/>
             <child column="LIC_CONDITION_ID" foreignKey="R_1161" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="REJECTED_TRANSFER_DIARY"/>
@@ -6052,8 +5512,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="TRUST_PROVIDER_FLAG" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024223" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024224" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024223" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="STAFF_EMPLOYEE_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024223" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
@@ -7373,7 +6833,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="NSI_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <child column="NSI_ID" foreignKey="R_1170" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CASELOAD"/>
             <child column="NSI_ID" foreignKey="R_895" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="NSI_ID" foreignKey="TMP$$_R_8950" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="NSI_ID" foreignKey="R_837" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="NSI_MANAGER"/>
             <child column="NSI_ID" foreignKey="R_1312" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="NSI_STATUS_HISTORY"/>
             <child column="NSI_ID" foreignKey="R_825" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="NSI_TRANSFER"/>
@@ -7757,7 +7216,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="28" name="OBJECTIVE_STATUS" nullable="true" remarks="" size="50" type="VARCHAR2" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="29" name="CONTACT_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0025053" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00250530" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="30" name="LAYER_1_OBJECTIVE" nullable="true" remarks="" size="4000" type="VARCHAR2" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="31" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
@@ -8094,7 +7552,6 @@
             <child column="OFFENDER_ID" foreignKey="SYS_C0024670" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="OFFENDER_ID" foreignKey="SYS_C0024417" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT"/>
             <child column="OFFENDER_ID" foreignKey="R_1215" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT_CLEAR"/>
-            <child column="OFFENDER_ID" foreignKey="TMP$$_SYS_C00246700" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="OFFENDER_ID" foreignKey="SYS_C0025033" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_APPEARANCE"/>
             <child column="OFFENDER_ID" foreignKey="SYS_C0024640" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_REPORT"/>
             <child column="OFFENDER_ID" foreignKey="R_1021" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_REPORT_TRANSFER"/>
@@ -8826,8 +8283,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="TRUST_PROVIDER_FLAG" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024379" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024386" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024379" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="STAFF_EMPLOYEE_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024379" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
@@ -9161,7 +8618,6 @@
       <table name="OFFICE_LOCATION" remarks="" schema="DELIUS_APP_SCHEMA" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="OFFICE_LOCATION_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <child column="OFFICE_LOCATION_ID" foreignKey="SYS_C0024674" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="OFFICE_LOCATION_ID" foreignKey="TMP$$_SYS_C00246740" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="LOCATION_ID" foreignKey="R_1324" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DRUGS_TEST"/>
             <child column="LINK_FROM_OFFICE_LOCATION_ID" foreignKey="R_968" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_OFFICE_LOCATION_LINK"/>
             <child column="LINK_TO_OFFICE_LOCATION_ID" foreignKey="R_969" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_OFFICE_LOCATION_LINK"/>
@@ -9230,7 +8686,6 @@
             <child column="TRUST_PROVIDER_FLAG" foreignKey="R_1019" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_DIARY"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024654" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024416" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT"/>
-            <child column="TRUST_PROVIDER_FLAG" foreignKey="TMP$$_SYS_C00246540" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024223" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_MANAGER"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024379" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFENDER_MANAGER"/>
             <child column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024251" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ORDER_MANAGER"/>
@@ -9243,7 +8698,6 @@
             <child column="STAFF_EMPLOYEE_ID" foreignKey="R_1019" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_DIARY"/>
             <child column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024654" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024416" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT"/>
-            <child column="STAFF_EMPLOYEE_ID" foreignKey="TMP$$_SYS_C00246540" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024223" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_MANAGER"/>
             <child column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024379" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFENDER_MANAGER"/>
             <child column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024251" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ORDER_MANAGER"/>
@@ -9437,8 +8891,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="TRUST_PROVIDER_FLAG" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024251" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024252" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024251" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="STAFF_EMPLOYEE_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024251" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
@@ -9742,7 +9196,6 @@
             <child column="PARTITION_AREA_ID" foreignKey="SYS_C0024959" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ASSESSMENT"/>
             <child column="PARTITION_AREA_ID" foreignKey="SYS_C0024934" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CASELOAD"/>
             <child column="PARTITION_AREA_ID" foreignKey="SYS_C0024673" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="PARTITION_AREA_ID" foreignKey="TMP$$_SYS_C00246730" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="PARTITION_AREA_ID" foreignKey="SYS_C0025031" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_APPEARANCE"/>
             <child column="PARTITION_AREA_ID" foreignKey="SYS_C0024642" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_REPORT"/>
             <child column="PARTITION_AREA_ID" foreignKey="SYS_C0024652" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CUSTODY"/>
@@ -10192,7 +9645,6 @@
             <child column="AUTHORISATION_PROVIDER_ID" foreignKey="R_928" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_HISTORY"/>
             <child column="COHORT_PROVIDER_ID" foreignKey="R_934" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_HISTORY"/>
             <child column="PROBATION_AREA_ID" foreignKey="SYS_C0024667" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="PROBATION_AREA_ID" foreignKey="TMP$$_SYS_C00246670" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="PROBATION_AREA_ID" foreignKey="SYS_C0024559" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT"/>
             <child column="CRC_PROVIDER_ID" foreignKey="R_1245" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CRC_INACTIVE_OFFENDER"/>
             <child column="CREATED_PROVIDER_ID" foreignKey="R_1092" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DOCUMENT"/>
@@ -10548,7 +10000,6 @@
             <child column="PROVIDER_EMPLOYEE_ID" foreignKey="SYS_C0024836" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ADDRESS_ASSESSMENT"/>
             <child column="PROVIDER_EMPLOYEE_ID" foreignKey="SYS_C0024958" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ASSESSMENT"/>
             <child column="PROVIDER_EMPLOYEE_ID" foreignKey="SYS_C0024653" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="PROVIDER_EMPLOYEE_ID" foreignKey="TMP$$_SYS_C00246530" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="PROVIDER_EMPLOYEE_ID" foreignKey="SYS_C0024968" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DRUG_TEST_PROFILE"/>
             <child column="PROVIDER_EMPLOYEE_ID" foreignKey="SYS_C0024229" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_MANAGER"/>
             <child column="ORIGIN_PROVIDER_EMPLOYEE_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_TRANSFER"/>
@@ -10662,7 +10113,6 @@
       <table name="PROVIDER_LOCATION" remarks="" schema="DELIUS_APP_SCHEMA" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="PROVIDER_LOCATION_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <child column="PROVIDER_LOCATION_ID" foreignKey="SYS_C0024669" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="PROVIDER_LOCATION_ID" foreignKey="TMP$$_SYS_C00246690" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="PROVIDER_LOCATION_ID" foreignKey="SYS_C0024297" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PROVIDER_TEAM_LOCATION"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="CODE" nullable="false" remarks="" size="7" type="CHAR" typeCode="1"/>
@@ -10722,7 +10172,6 @@
             <child column="PROVIDER_TEAM_ID" foreignKey="SYS_C0024837" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ADDRESS_ASSESSMENT"/>
             <child column="PROVIDER_TEAM_ID" foreignKey="SYS_C0024953" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ASSESSMENT"/>
             <child column="PROVIDER_TEAM_ID" foreignKey="SYS_C0024668" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="PROVIDER_TEAM_ID" foreignKey="TMP$$_SYS_C00246680" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="PROVIDER_TEAM_ID" foreignKey="SYS_C0024438" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DPA_REPORT"/>
             <child column="PROVIDER_TEAM_ID" foreignKey="SYS_C0024969" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DRUG_TEST_PROFILE"/>
             <child column="PROVIDER_TEAM_ID" foreignKey="SYS_C0024231" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="LIC_CONDITION_MANAGER"/>
@@ -10951,7 +10400,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="PSS_RQMNT_ID" nullable="false" remarks="" size="22" type="NUMBER" typeCode="2">
             <child column="PSS_RQMNT_ID" foreignKey="R_1002" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CASELOAD"/>
             <child column="PSS_RQMNT_ID" foreignKey="R_981" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="PSS_RQMNT_ID" foreignKey="TMP$$_R_9810" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="PSS_RQMNT_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="MLOG$_PSS_RQMNT"/>
             <child column="PSS_RQMNT_ID" foreignKey="R_943" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PSS_RQMNT_MANAGER"/>
             <child column="PSS_RQMNT_ID" foreignKey="R_951" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PSS_RQMNT_TRANSFER"/>
@@ -11041,8 +10489,8 @@
             <parent column="TRANSFER_REASON_ID" foreignKey="R_946" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_TRANSFER_REASON"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="TRUST_PROVIDER_FLAG" nullable="false" remarks="" size="22" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="R_950" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="R_948" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="R_950" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="TRUST_PROVIDER_TEAM_ID" nullable="false" remarks="" size="22" type="NUMBER" typeCode="2">
             <parent column="TRUST_PROVIDER_TEAM_ID" foreignKey="R_948" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
@@ -11891,7 +11339,6 @@
             <child column="CONTACT_OUTCOME_TYPE_ID" foreignKey="R_1330" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ASSESSMENT"/>
             <child column="CONTACT_OUTCOME_TYPE_ID" foreignKey="SYS_C0024672" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="CONTACT_OUTCOME_TYPE_ID" foreignKey="SYS_C0024414" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT"/>
-            <child column="CONTACT_OUTCOME_TYPE_ID" foreignKey="TMP$$_SYS_C00246720" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="CONTACT_OUTCOME_TYPE_ID" foreignKey="R_1326" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DRUGS_TEST"/>
             <child column="CONTACT_OUTCOME_TYPE_ID" foreignKey="SYS_C0024348" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CON_OUT_TYPE_CONTACT_TYPE"/>
             <child column="CONTACT_OUTCOME_TYPE_ID" foreignKey="XFK1CONTACT_OUTPUT_UPW_REASON" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CONTACT_OUTCOME_UPW_REASON"/>
@@ -11962,7 +11409,6 @@
             <child column="CONTACT_TYPE_ID" foreignKey="SYS_C0024665" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="SESSION_DELIVERED_CON_TYPE_ID" foreignKey="R_1395" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="CONTACT_TYPE_ID" foreignKey="SYS_C0024413" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT"/>
-            <child column="CONTACT_TYPE_ID" foreignKey="TMP$$_SYS_C00246650" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="CONTACT_TYPE_ID" foreignKey="R_1303" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="MANAGEMENT_TIER_EVENT"/>
             <child column="CONTACT_TYPE_ID" foreignKey="SYS_C0024480" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_ASSESSMENT_TYPE"/>
             <child column="CONTACT_TYPE_ID" foreignKey="SYS_C0024349" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_CON_OUT_TYPE_CONTACT_TYPE"/>
@@ -12626,7 +12072,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="ENFORCEMENT_ACTION_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <child column="CONTACT_EA_ID" foreignKey="R_1331" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ASSESSMENT"/>
             <child column="LATEST_ENFORCEMENT_ACTION_ID" foreignKey="SYS_C0024664" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="LATEST_ENFORCEMENT_ACTION_ID" foreignKey="TMP$$_SYS_C00246640" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="CONTACT_EA_ID" foreignKey="R_1327" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="DRUGS_TEST"/>
             <child column="ENFORCEMENT_ACTION_ID" foreignKey="SYS_C0024449" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ENFORCEMENT"/>
             <child column="ENFORCEMENT_ACTION_ID" foreignKey="SYS_C0024323" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_ENF_ACT_CONTACT_OUT_TYPE"/>
@@ -12668,7 +12113,6 @@
       <table name="R_EXPLANATION" remarks="" schema="DELIUS_APP_SCHEMA" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="EXPLANATION_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <child column="EXPLANATION_ID" foreignKey="SYS_C0024663" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="EXPLANATION_ID" foreignKey="TMP$$_SYS_C00246630" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="CODE" nullable="false" remarks="" size="10" type="VARCHAR2" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="DESCRIPTION" nullable="false" remarks="" size="100" type="VARCHAR2" typeCode="12"/>
@@ -14811,7 +14255,6 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="CONTACT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0024590" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00245900" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="DEREGISTERED" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2"/>
@@ -14940,7 +14383,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="LAST_UPDATED_DATETIME" nullable="false" remarks="" size="7" type="DATE" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="CONTACT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0024736" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00247360" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="OFFENDER_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
@@ -15287,8 +14729,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="TRUST_PROVIDER_FLAG" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024546" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024547" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024546" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="STAFF_EMPLOYEE_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024546" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
@@ -15518,7 +14960,6 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="RQMNT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <child column="RQMNT_ID" foreignKey="SYS_C0024939" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CASELOAD"/>
             <child column="RQMNT_ID" foreignKey="SYS_C0024662" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="RQMNT_ID" foreignKey="TMP$$_SYS_C00246620" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="RQMNT_ID" foreignKey="R_1039" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="NSI"/>
             <child column="RQMNT_ID" foreignKey="R_1159" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="REJECTED_TRANSFER_DIARY"/>
             <child column="RQMNT_ID" foreignKey="SYS_C0024119" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="RQMNT_MANAGER"/>
@@ -15661,8 +15102,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="TRAINING_SESSION_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="TRUST_PROVIDER_FLAG" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
-            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024117" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
             <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024113" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="ALL_TEAM"/>
+            <parent column="TRUST_PROVIDER_FLAG" foreignKey="SYS_C0024117" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="STAFF_EMPLOYEE_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="STAFF_EMPLOYEE_ID" foreignKey="SYS_C0024117" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="OFFICER"/>
@@ -16801,7 +16242,6 @@
             <child column="AUTHORISATION_STAFF_ID" foreignKey="R_924" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT"/>
             <child column="AUTHORISATION_STAFF_ID" foreignKey="R_932" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_HISTORY"/>
             <child column="STAFF_ID" foreignKey="SYS_C0024661" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="STAFF_ID" foreignKey="TMP$$_SYS_C00246610" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="STAFF_ID" foreignKey="SYS_C0025034" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_APPEARANCE"/>
             <child column="ORIGIN_STAFF_ID" foreignKey="R_1027" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_REPORT_TRANSFER"/>
             <child column="RECEIVING_STAFF_ID" foreignKey="R_1029" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_REPORT_TRANSFER"/>
@@ -16993,7 +16433,6 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="CONTACT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0024206" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00242060" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="DPA_SAR_EXCLUSION_REASON_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="STANDARD_REFERENCE_LIST_ID" foreignKey="SYS_C0024207" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="R_STANDARD_REFERENCE_LIST"/>
@@ -17076,7 +16515,6 @@
             <child column="AUTHORISATION_TEAM_ID" foreignKey="R_923" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT"/>
             <child column="AUTHORISATION_TEAM_ID" foreignKey="R_931" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COHORT_HISTORY"/>
             <child column="TEAM_ID" foreignKey="SYS_C0024660" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <child column="TEAM_ID" foreignKey="TMP$$_SYS_C00246600" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="TEAM_ID" foreignKey="SYS_C0025029" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_APPEARANCE"/>
             <child column="ORIGIN_TEAM_ID" foreignKey="R_1026" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_REPORT_TRANSFER"/>
             <child column="RECEIVING_TEAM_ID" foreignKey="R_1028" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT_REPORT_TRANSFER"/>
@@ -17544,7 +16982,6 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="25" name="CONTACT_ID" nullable="false" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="CONTACT_ID" foreignKey="SYS_C0024706" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
-            <parent column="CONTACT_ID" foreignKey="TMP$$_SYS_C00247060" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="26" name="PROVIDER_TEAM_ID" nullable="true" remarks="" size="38" type="NUMBER" typeCode="2">
             <parent column="PROVIDER_TEAM_ID" foreignKey="SYS_C0024707" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="PROVIDER_TEAM"/>
@@ -18254,8 +17691,6 @@
             <child column="LAST_UPDATED_USER_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT"/>
             <child column="CREATED_BY_USER_ID" foreignKey="R_1218" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT_CLEAR"/>
             <child column="LAST_UPDATED_USER_ID" foreignKey="R_1219" implied="false" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_ALERT_CLEAR"/>
-            <child column="CREATED_BY_USER_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
-            <child column="LAST_UPDATED_USER_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_REDEF"/>
             <child column="CREATED_BY_USER_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_UPLOAD_DOCUMENT"/>
             <child column="LAST_UPDATED_USER_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="CONTACT_UPLOAD_DOCUMENT"/>
             <child column="CREATED_BY_USER_ID" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="DELIUS_APP_SCHEMA" table="COURT"/>

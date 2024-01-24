@@ -178,11 +178,6 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT_REDEF.STAFF_ID references STAFF.STAFF_ID via TMP$$_SYS_C00246610"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">TMP$$_SYS_C00246610</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="COURT_APPEARANCE.STAFF_ID references STAFF.STAFF_ID via SYS_C0025034"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.STAFF_ID</span></td>
                                                 <td class="constraint detail">SYS_C0025034</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
@@ -856,12 +851,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_925119186</td>
-                                    <td>PRIVATE IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>PROVIDER_LOCATION_DATE_VALID7</td>
                                     <td> (&#10;(START_DATE &lt;&#61; END_DATE) OR (END_DATE IS NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_925119186</td>
+                                    <td>PRIVATE IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -886,111 +881,109 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="ADDRESS_ASSESSMENT.html" target="_top" title="ADDRESS_ASSESSMENT" alt="" coords="1480,1426,1740,1866">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,11487,324,11751">
-<area shape="rect" id="node3" href="STAFF.html" target="_top" title="STAFF" alt="" coords="1033,9926,1387,10523">
-<area shape="rect" id="node5" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="368,6991,691,7519">
-<area shape="rect" id="node43" href="SC_PROVIDER.html" target="_top" title="SC_PROVIDER" alt="" coords="735,7395,989,7659">
-<area shape="rect" id="node4" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1443,1883,1777,3174">
-<area shape="rect" id="node6" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="1835,5015,2177,5543">
-<area shape="rect" id="node7" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="1847,4346,2165,4962">
-<area shape="rect" id="node8" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1449,4110,1771,5576">
-<area shape="rect" id="node9" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1449,5594,1771,7031">
-<area shape="rect" id="node10" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1453,130,1767,775">
-<area shape="rect" id="node11" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1443,792,1777,1408">
-<area shape="rect" id="node12" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1463,3371,1757,3723">
-<area shape="rect" id="node13" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1463,3740,1757,4092">
-<area shape="rect" id="node14" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1439,13436,1781,13994">
-<area shape="rect" id="node15" href="COURT_REPORT_TRANSFER.html" target="_top" title="COURT_REPORT_TRANSFER" alt="" coords="1465,16346,1755,16903">
-<area shape="rect" id="node16" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="2226,4323,2481,4763">
-<area shape="rect" id="node17" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1878,3728,2134,4256">
-<area shape="rect" id="node18" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1483,9471,1737,9882">
-<area shape="rect" id="node19" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1470,14011,1750,14686">
-<area shape="rect" id="node20" href="EXCLUSION.html" target="_top" title="EXCLUSION" alt="" coords="1870,6731,2142,7230">
-<area shape="rect" id="node21" href="USER_.html" target="_top" title="USER_" alt="" coords="1436,7300,1784,7623">
-<area shape="rect" id="node22" href="INSTITUTIONAL_REPORT_TRANSFER.html" target="_top" title="INSTITUTIONAL_REPORT_TRANSFER" alt="" coords="1431,15830,1789,16328">
-<area shape="rect" id="node23" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1860,7247,2152,7980">
-<area shape="rect" id="node24" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1443,10567,1777,11300">
-<area shape="rect" id="node25" href="NOMIS_CASE_NOTE_ERROR.html" target="_top" title="NOMIS_CASE_NOTE_ERROR" alt="" coords="1465,9899,1755,10104">
-<area shape="rect" id="node26" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="1879,5560,2133,6000">
-<area shape="rect" id="node27" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="1482,7712,1738,8328">
-<area shape="rect" id="node28" href="OFFENDER_DRUG_PROFILE.html" target="_top" title="OFFENDER_DRUG_PROFILE" alt="" coords="1466,14739,1754,15062">
-<area shape="rect" id="node29" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="1876,7998,2136,8614">
-<area shape="rect" id="node30" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1443,11318,1777,12080">
-<area shape="rect" id="node31" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1876,9994,2136,10698">
-<area shape="rect" id="node32" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1443,12134,1777,12867">
-<area shape="rect" id="node33" href="PRISON_OFFENDER_MANAGER.html" target="_top" title="PRISON_OFFENDER_MANAGER" alt="" coords="1451,8382,1769,8734">
-<area shape="rect" id="node34" href="PSS_RQMNT_MANAGER.html" target="_top" title="PSS_RQMNT_MANAGER" alt="" coords="1875,10715,2137,11126">
-<area shape="rect" id="node35" href="PSS_RQMNT_TRANSFER.html" target="_top" title="PSS_RQMNT_TRANSFER" alt="" coords="1479,12920,1741,13419">
-<area shape="rect" id="node36" href="R_APPROVED_PREMISES_STAFF.html" target="_top" title="R_APPROVED_PREMISES_STAFF" alt="" coords="1451,10194,1769,10370">
-<area shape="rect" id="node37" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="2223,5100,2484,5482">
-<area shape="rect" id="node38" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1846,11143,2166,11994">
-<area shape="rect" id="node39" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="1443,15079,1777,15812">
-<area shape="rect" id="node40" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1833,15472,2179,16294">
-<area shape="rect" id="node41" href="RESTRICTION.html" target="_top" title="RESTRICTION" alt="" coords="1863,8631,2149,9130">
-<area shape="rect" id="node42" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="1876,13267,2136,13971">
-<area shape="rect" id="node44" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1483,17603,1737,17926">
-<area shape="rect" id="node45" href="SPG_EXCEPTION.html" target="_top" title="SPG_EXCEPTION" alt="" coords="1483,17943,1737,18295">
-<area shape="rect" id="node46" href="STAFF_TEAM.html" target="_top" title="STAFF_TEAM" alt="" coords="1483,9219,1737,9454">
-<area shape="rect" id="node47" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1443,18312,1777,18723">
-<area shape="rect" id="node48" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="1866,17552,2146,18432">
-<area shape="rect" id="node49" href="UPW_DETAILS.html" target="_top" title="UPW_DETAILS" alt="" coords="1483,17028,1737,17586">
+<area shape="rect" id="node1" href="ADDRESS_ASSESSMENT.html" target="_top" title="ADDRESS_ASSESSMENT" alt="" coords="1480,793,1740,1233">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,9741,324,10005">
+<area shape="rect" id="node3" href="STAFF.html" target="_top" title="STAFF" alt="" coords="1033,8653,1387,9250">
+<area shape="rect" id="node5" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="368,6035,691,6563">
+<area shape="rect" id="node42" href="SC_PROVIDER.html" target="_top" title="SC_PROVIDER" alt="" coords="735,6921,989,7185">
+<area shape="rect" id="node4" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1443,1919,1777,3210">
+<area shape="rect" id="node6" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="1835,5570,2177,6098">
+<area shape="rect" id="node7" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="1847,4937,2165,5553">
+<area shape="rect" id="node8" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1449,4861,1771,6005">
+<area shape="rect" id="node9" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1453,130,1767,775">
+<area shape="rect" id="node10" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1443,1250,1777,1866">
+<area shape="rect" id="node11" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1463,4122,1757,4474">
+<area shape="rect" id="node12" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1463,4491,1757,4843">
+<area shape="rect" id="node13" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1439,11659,1781,12217">
+<area shape="rect" id="node14" href="COURT_REPORT_TRANSFER.html" target="_top" title="COURT_REPORT_TRANSFER" alt="" coords="1465,14569,1755,15126">
+<area shape="rect" id="node15" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="2226,4597,2481,5037">
+<area shape="rect" id="node16" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1878,4355,2134,4883">
+<area shape="rect" id="node17" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1483,8085,1737,8495">
+<area shape="rect" id="node18" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1470,12234,1750,12909">
+<area shape="rect" id="node19" href="EXCLUSION.html" target="_top" title="EXCLUSION" alt="" coords="1870,7465,2142,7963">
+<area shape="rect" id="node20" href="USER_.html" target="_top" title="USER_" alt="" coords="1436,6715,1784,7038">
+<area shape="rect" id="node21" href="INSTITUTIONAL_REPORT_TRANSFER.html" target="_top" title="INSTITUTIONAL_REPORT_TRANSFER" alt="" coords="1431,14053,1789,14551">
+<area shape="rect" id="node22" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1860,3134,2152,3867">
+<area shape="rect" id="node23" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1443,3335,1777,4069">
+<area shape="rect" id="node24" href="NOMIS_CASE_NOTE_ERROR.html" target="_top" title="NOMIS_CASE_NOTE_ERROR" alt="" coords="1465,8837,1755,9042">
+<area shape="rect" id="node25" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="1879,6183,2133,6623">
+<area shape="rect" id="node26" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="1482,7055,1738,7671">
+<area shape="rect" id="node27" href="OFFENDER_DRUG_PROFILE.html" target="_top" title="OFFENDER_DRUG_PROFILE" alt="" coords="1466,12962,1754,13285">
+<area shape="rect" id="node28" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="1876,6705,2136,7321">
+<area shape="rect" id="node29" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1443,9505,1777,10267">
+<area shape="rect" id="node30" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1876,8931,2136,9635">
+<area shape="rect" id="node31" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1443,10357,1777,11090">
+<area shape="rect" id="node32" href="PRISON_OFFENDER_MANAGER.html" target="_top" title="PRISON_OFFENDER_MANAGER" alt="" coords="1451,6310,1769,6662">
+<area shape="rect" id="node33" href="PSS_RQMNT_MANAGER.html" target="_top" title="PSS_RQMNT_MANAGER" alt="" coords="1875,10715,2137,11126">
+<area shape="rect" id="node34" href="PSS_RQMNT_TRANSFER.html" target="_top" title="PSS_RQMNT_TRANSFER" alt="" coords="1479,11143,1741,11642">
+<area shape="rect" id="node35" href="R_APPROVED_PREMISES_STAFF.html" target="_top" title="R_APPROVED_PREMISES_STAFF" alt="" coords="1451,9095,1769,9271">
+<area shape="rect" id="node36" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="2223,5870,2484,6251">
+<area shape="rect" id="node37" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1846,9653,2166,10503">
+<area shape="rect" id="node38" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="1443,13302,1777,14035">
+<area shape="rect" id="node39" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1833,13695,2179,14517">
+<area shape="rect" id="node40" href="RESTRICTION.html" target="_top" title="RESTRICTION" alt="" coords="1863,8399,2149,8898">
+<area shape="rect" id="node41" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="1876,12041,2136,12745">
+<area shape="rect" id="node43" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1483,15826,1737,16149">
+<area shape="rect" id="node44" href="SPG_EXCEPTION.html" target="_top" title="SPG_EXCEPTION" alt="" coords="1483,16166,1737,16518">
+<area shape="rect" id="node45" href="STAFF_TEAM.html" target="_top" title="STAFF_TEAM" alt="" coords="1483,8549,1737,8783">
+<area shape="rect" id="node46" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1443,16535,1777,16946">
+<area shape="rect" id="node47" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="1866,16327,2146,17207">
+<area shape="rect" id="node48" href="UPW_DETAILS.html" target="_top" title="UPW_DETAILS" alt="" coords="1483,15251,1737,15809">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/STAFF.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="ADDRESS_ASSESSMENT.html" target="_top" title="ADDRESS_ASSESSMENT" alt="" coords="1898,13755,2158,14195">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="1484,6511,1802,6775">
-<area shape="rect" id="node3" href="USER_.html" target="_top" title="USER_" alt="" coords="1090,11627,1438,11950">
-<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="692,9536,1046,10134">
-<area shape="rect" id="node45" href="SC_PROVIDER.html" target="_top" title="SC_PROVIDER" alt="" coords="394,11386,648,11650">
-<area shape="rect" id="node7" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="27,7830,350,8358">
-<area shape="rect" id="node5" href="AP_REFERRAL_DELTA_ERROR.html" target="_top" title="AP_REFERRAL_DELTA_ERROR" alt="" coords="1864,16510,2191,16744">
-<area shape="rect" id="node6" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1861,4955,2194,6246">
-<area shape="rect" id="node8" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="2253,820,2594,1348">
-<area shape="rect" id="node9" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2264,13396,2583,14012">
-<area shape="rect" id="node10" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1482,13355,1804,14822">
-<area shape="rect" id="node11" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1482,14875,1804,16312">
-<area shape="rect" id="node12" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1871,8302,2184,8947">
-<area shape="rect" id="node13" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1861,1624,2194,2240">
-<area shape="rect" id="node14" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1881,408,2174,760">
-<area shape="rect" id="node15" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1881,778,2174,1130">
-<area shape="rect" id="node16" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1857,7547,2198,8104">
-<area shape="rect" id="node17" href="COURT_REPORT_TRANSFER.html" target="_top" title="COURT_REPORT_TRANSFER" alt="" coords="1882,3524,2173,4082">
-<area shape="rect" id="node18" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="2296,14828,2551,15268">
-<area shape="rect" id="node19" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1900,15016,2156,15544">
-<area shape="rect" id="node20" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1516,12639,1770,13050">
-<area shape="rect" id="node21" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1888,11094,2168,11768">
-<area shape="rect" id="node22" href="EXCLUSION.html" target="_top" title="EXCLUSION" alt="" coords="1892,15958,2164,16456">
-<area shape="rect" id="node23" href="INSTITUTIONAL_REPORT_TRANSFER.html" target="_top" title="INSTITUTIONAL_REPORT_TRANSFER" alt="" coords="1848,4439,2207,4938">
-<area shape="rect" id="node24" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2278,5938,2570,6671">
-<area shape="rect" id="node25" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1861,2258,2194,2991">
-<area shape="rect" id="node26" href="NOMIS_CASE_NOTE_ERROR.html" target="_top" title="NOMIS_CASE_NOTE_ERROR" alt="" coords="1498,10760,1788,10966">
-<area shape="rect" id="node27" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="2296,16032,2551,16472">
-<area shape="rect" id="node28" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="1900,9304,2156,9920">
-<area shape="rect" id="node29" href="OFFENDER_DRUG_PROFILE.html" target="_top" title="OFFENDER_DRUG_PROFILE" alt="" coords="1884,4099,2172,4422">
-<area shape="rect" id="node30" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="2294,7694,2554,8310">
-<area shape="rect" id="node31" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1861,6767,2194,7530">
-<area shape="rect" id="node32" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="2294,16490,2554,17194">
-<area shape="rect" id="node33" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1861,9938,2194,10671">
-<area shape="rect" id="node34" href="PRISON_OFFENDER_MANAGER.html" target="_top" title="PRISON_OFFENDER_MANAGER" alt="" coords="1869,1255,2186,1607">
-<area shape="rect" id="node35" href="PSS_RQMNT_MANAGER.html" target="_top" title="PSS_RQMNT_MANAGER" alt="" coords="2292,192,2555,603">
-<area shape="rect" id="node36" href="PSS_RQMNT_TRANSFER.html" target="_top" title="PSS_RQMNT_TRANSFER" alt="" coords="1897,3008,2158,3507">
-<area shape="rect" id="node37" href="R_APPROVED_PREMISES_STAFF.html" target="_top" title="R_APPROVED_PREMISES_STAFF" alt="" coords="1104,12874,1423,13050">
-<area shape="rect" id="node38" href="REGISTRATION_CFO_15fb2de1.html" target="_top" title="REGISTRATION$CFO" alt="" coords="2296,15294,2552,15616">
-<area shape="rect" id="node39" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="2293,15634,2554,16015">
-<area shape="rect" id="node40" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2264,2820,2584,3671">
-<area shape="rect" id="node41" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="1861,12932,2194,13666">
-<area shape="rect" id="node42" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="2251,6744,2596,7566">
-<area shape="rect" id="node43" href="RESTRICTION.html" target="_top" title="RESTRICTION" alt="" coords="1885,14212,2170,14711">
-<area shape="rect" id="node44" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="2294,17211,2554,17915">
-<area shape="rect" id="node46" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1900,8964,2155,9287">
-<area shape="rect" id="node47" href="SPG_EXCEPTION.html" target="_top" title="SPG_EXCEPTION" alt="" coords="1900,10724,2155,11076">
-<area shape="rect" id="node48" href="STAFF_TEAM.html" target="_top" title="STAFF_TEAM" alt="" coords="1516,12387,1770,12622">
-<area shape="rect" id="node49" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1861,11786,2194,12196">
-<area shape="rect" id="node50" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="2284,12414,2564,13294">
-<area shape="rect" id="node51" href="UPW_DETAILS.html" target="_top" title="UPW_DETAILS" alt="" coords="1900,12358,2155,12915">
+<area shape="rect" id="node1" href="ADDRESS_ASSESSMENT.html" target="_top" title="ADDRESS_ASSESSMENT" alt="" coords="1898,12060,2158,12500">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="1484,6298,1802,6562">
+<area shape="rect" id="node3" href="USER_.html" target="_top" title="USER_" alt="" coords="1090,11924,1438,12247">
+<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="692,9856,1046,10454">
+<area shape="rect" id="node44" href="SC_PROVIDER.html" target="_top" title="SC_PROVIDER" alt="" coords="394,11800,648,12064">
+<area shape="rect" id="node7" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="27,6487,350,7015">
+<area shape="rect" id="node5" href="AP_REFERRAL_DELTA_ERROR.html" target="_top" title="AP_REFERRAL_DELTA_ERROR" alt="" coords="1864,16192,2191,16427">
+<area shape="rect" id="node6" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1861,3583,2194,4874">
+<area shape="rect" id="node8" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="2253,719,2594,1247">
+<area shape="rect" id="node9" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2264,14046,2583,14662">
+<area shape="rect" id="node10" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1482,14707,1804,15851">
+<area shape="rect" id="node11" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1871,13412,2184,14058">
+<area shape="rect" id="node12" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1861,1595,2194,2211">
+<area shape="rect" id="node13" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1881,271,2174,623">
+<area shape="rect" id="node14" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1881,640,2174,992">
+<area shape="rect" id="node15" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1857,11486,2198,12043">
+<area shape="rect" id="node16" href="COURT_REPORT_TRANSFER.html" target="_top" title="COURT_REPORT_TRANSFER" alt="" coords="1882,2228,2173,2786">
+<area shape="rect" id="node17" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="2296,14679,2551,15119">
+<area shape="rect" id="node18" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1900,14843,2156,15371">
+<area shape="rect" id="node19" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1516,13919,1770,14330">
+<area shape="rect" id="node20" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1888,9990,2168,10664">
+<area shape="rect" id="node21" href="EXCLUSION.html" target="_top" title="EXCLUSION" alt="" coords="1892,15604,2164,16103">
+<area shape="rect" id="node22" href="INSTITUTIONAL_REPORT_TRANSFER.html" target="_top" title="INSTITUTIONAL_REPORT_TRANSFER" alt="" coords="1848,4927,2207,5426">
+<area shape="rect" id="node23" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2278,11751,2570,12484">
+<area shape="rect" id="node24" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1861,6427,2194,7160">
+<area shape="rect" id="node25" href="NOMIS_CASE_NOTE_ERROR.html" target="_top" title="NOMIS_CASE_NOTE_ERROR" alt="" coords="1498,11058,1788,11263">
+<area shape="rect" id="node26" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="2296,15875,2551,16315">
+<area shape="rect" id="node27" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="1900,8200,2156,8816">
+<area shape="rect" id="node28" href="OFFENDER_DRUG_PROFILE.html" target="_top" title="OFFENDER_DRUG_PROFILE" alt="" coords="1884,11146,2172,11468">
+<area shape="rect" id="node29" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="2294,5415,2554,6031">
+<area shape="rect" id="node30" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1861,2803,2194,3566">
+<area shape="rect" id="node31" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="2294,16332,2554,17036">
+<area shape="rect" id="node32" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1861,8834,2194,9567">
+<area shape="rect" id="node33" href="PRISON_OFFENDER_MANAGER.html" target="_top" title="PRISON_OFFENDER_MANAGER" alt="" coords="1869,1226,2186,1578">
+<area shape="rect" id="node34" href="PSS_RQMNT_MANAGER.html" target="_top" title="PSS_RQMNT_MANAGER" alt="" coords="2292,6314,2555,6724">
+<area shape="rect" id="node35" href="PSS_RQMNT_TRANSFER.html" target="_top" title="PSS_RQMNT_TRANSFER" alt="" coords="1897,5515,2158,6014">
+<area shape="rect" id="node36" href="R_APPROVED_PREMISES_STAFF.html" target="_top" title="R_APPROVED_PREMISES_STAFF" alt="" coords="1104,10206,1423,10382">
+<area shape="rect" id="node37" href="REGISTRATION_CFO_15fb2de1.html" target="_top" title="REGISTRATION$CFO" alt="" coords="2296,15136,2552,15459">
+<area shape="rect" id="node38" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="2293,15476,2554,15858">
+<area shape="rect" id="node39" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2264,4282,2584,5132">
+<area shape="rect" id="node40" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="1861,12518,2194,13251">
+<area shape="rect" id="node41" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="2251,1420,2596,2242">
+<area shape="rect" id="node42" href="RESTRICTION.html" target="_top" title="RESTRICTION" alt="" coords="1885,14075,2170,14574">
+<area shape="rect" id="node43" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="2294,17054,2554,17758">
+<area shape="rect" id="node45" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1900,7860,2155,8183">
+<area shape="rect" id="node46" href="SPG_EXCEPTION.html" target="_top" title="SPG_EXCEPTION" alt="" coords="1900,9584,2155,9936">
+<area shape="rect" id="node47" href="STAFF_TEAM.html" target="_top" title="STAFF_TEAM" alt="" coords="1516,13667,1770,13902">
+<area shape="rect" id="node48" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1861,10718,2194,11128">
+<area shape="rect" id="node49" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="2284,7256,2564,8136">
+<area shape="rect" id="node50" href="UPW_DETAILS.html" target="_top" title="UPW_DETAILS" alt="" coords="1900,7286,2155,7843">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/STAFF.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

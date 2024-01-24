@@ -649,11 +649,6 @@
                                                 <td class="constraint detail">SYS_C0025053</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
-                                            <tr>
-                                                <td title="OASYS_ASSESSMENT.CONTACT_ID references CONTACT_REDEF.CONTACT_ID via TMP$$_SYS_C00250530"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.CONTACT_ID</span></td>
-                                                <td class="constraint detail">TMP$$_SYS_C00250530</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -962,20 +957,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>GREATER_THAN_09</td>
-                                    <td>OGRS_SCORE_2 &gt; 0</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE59</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO_420</td>
                                     <td>REVIEW_TERMINATED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>GREATER_THAN_08</td>
                                     <td>OGRS_SCORE_1 &gt; 0</td>
+                                </tr>
+                                <tr>
+                                    <td>GREATER_THAN_09</td>
+                                    <td>OGRS_SCORE_2 &gt; 0</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE59</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -1000,32 +995,30 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="744,284,1067,1751">
-<area shape="rect" id="node2" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,1640,700,2843">
-<area shape="rect" id="node3" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,389,277,536">
-<area shape="rect" id="node6" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,2300,324,2564">
-<area shape="rect" id="node4" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="744,1768,1067,3205">
-<area shape="rect" id="node5" href="COURT.html" target="_top" title="COURT" alt="" coords="407,2860,661,3241">
-<area shape="rect" id="node7" href="OASYS_ASSESSMENT.html" target="_top" title="OASYS_ASSESSMENT" alt="" coords="1111,215,1620,1428">
-<area shape="rect" id="node8" href="R_OFFENCE.html" target="_top" title="R_OFFENCE" alt="" coords="379,376,689,581">
-<area shape="rect" id="node9" href="OASYS_ASSMNT_SECTION_SCORE.html" target="_top" title="OASYS_ASSMNT_SECTION_SCORE" alt="" coords="1664,5,2000,211">
-<area shape="rect" id="node10" href="OASYS_SENTENCE_PLAN.html" target="_top" title="OASYS_SENTENCE_PLAN" alt="" coords="1698,228,1966,463">
+<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="744,268,1067,1412">
+<area shape="rect" id="node2" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,337,700,1540">
+<area shape="rect" id="node3" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,192,277,339">
+<area shape="rect" id="node5" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1159,324,1423">
+<area shape="rect" id="node4" href="COURT.html" target="_top" title="COURT" alt="" coords="407,1593,661,1975">
+<area shape="rect" id="node6" href="OASYS_ASSESSMENT.html" target="_top" title="OASYS_ASSESSMENT" alt="" coords="1111,823,1620,2036">
+<area shape="rect" id="node7" href="R_OFFENCE.html" target="_top" title="R_OFFENCE" alt="" coords="751,1465,1060,1671">
+<area shape="rect" id="node8" href="OASYS_ASSMNT_SECTION_SCORE.html" target="_top" title="OASYS_ASSMNT_SECTION_SCORE" alt="" coords="1664,320,2000,525">
+<area shape="rect" id="node9" href="OASYS_SENTENCE_PLAN.html" target="_top" title="OASYS_SENTENCE_PLAN" alt="" coords="1698,796,1966,1031">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/OASYS_ASSESSMENT.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1136,1775,1459,3241">
-<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,2681,353,3004">
-<area shape="rect" id="node3" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="760,1849,1092,3052">
-<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="445,292,669,439">
-<area shape="rect" id="node7" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,2421,716,2685">
-<area shape="rect" id="node5" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1136,320,1459,1757">
-<area shape="rect" id="node6" href="COURT.html" target="_top" title="COURT" alt="" coords="799,1228,1053,1609">
-<area shape="rect" id="node8" href="OASYS_ASSESSMENT.html" target="_top" title="OASYS_ASSESSMENT" alt="" coords="1503,215,2012,1428">
-<area shape="rect" id="node9" href="R_OFFENCE.html" target="_top" title="R_OFFENCE" alt="" coords="771,1627,1081,1832">
-<area shape="rect" id="node10" href="OASYS_ASSMNT_SECTION_SCORE.html" target="_top" title="OASYS_ASSMNT_SECTION_SCORE" alt="" coords="2056,5,2392,211">
-<area shape="rect" id="node11" href="OASYS_SENTENCE_PLAN.html" target="_top" title="OASYS_SENTENCE_PLAN" alt="" coords="2090,228,2358,463">
+<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1136,777,1459,1921">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1521,353,1844">
+<area shape="rect" id="node3" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="760,719,1092,1921">
+<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="445,136,669,283">
+<area shape="rect" id="node6" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,1261,716,1525">
+<area shape="rect" id="node5" href="COURT.html" target="_top" title="COURT" alt="" coords="799,248,1053,629">
+<area shape="rect" id="node7" href="OASYS_ASSESSMENT.html" target="_top" title="OASYS_ASSESSMENT" alt="" coords="1503,176,2012,1389">
+<area shape="rect" id="node8" href="R_OFFENCE.html" target="_top" title="R_OFFENCE" alt="" coords="1143,388,1452,593">
+<area shape="rect" id="node9" href="OASYS_ASSMNT_SECTION_SCORE.html" target="_top" title="OASYS_ASSMNT_SECTION_SCORE" alt="" coords="2056,5,2392,211">
+<area shape="rect" id="node10" href="OASYS_SENTENCE_PLAN.html" target="_top" title="OASYS_SENTENCE_PLAN" alt="" coords="2090,228,2358,463">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/OASYS_ASSESSMENT.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

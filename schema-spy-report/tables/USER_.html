@@ -308,16 +308,6 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT_REDEF.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.CREATED_BY_USER_ID</span></td>
-                                                <td class="constraint detail">Implied Constraint</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="CONTACT_REDEF.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.LAST_UPDATED_USER_ID</span></td>
-                                                <td class="constraint detail">Implied Constraint</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="CONTACT_UPLOAD_DOCUMENT.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='CONTACT_UPLOAD_DOCUMENT.html'>CONTACT_UPLOAD_DOCUMENT</a><span class='relatedKey'>.CREATED_BY_USER_ID</span></td>
                                                 <td class="constraint detail">Implied Constraint</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
@@ -2281,12 +2271,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_435</td>
-                                    <td>EXTERNAL_PROVIDER_EMPLOYEEFLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_941631159</td>
                                     <td>PRIVATE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_435</td>
+                                    <td>EXTERNAL_PROVIDER_EMPLOYEEFLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -2331,174 +2321,173 @@
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="ADDITIONAL_IDENTIFIER.html" target="_top" title="ADDITIONAL_IDENTIFIER" alt="" coords="2680,25780,2954,26132">
-<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="1712,15336,2166,15992">
-<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="325,27153,644,27417">
-<area shape="rect" id="node4" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="2231,18775,2563,19977">
-<area shape="rect" id="node13" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="1413,15232,1668,15613">
-<area shape="rect" id="node15" href="STAFF.html" target="_top" title="STAFF" alt="" coords="1413,18016,1668,18456">
-<area shape="rect" id="node83" href="EXTERNAL_PROVIDER.html" target="_top" title="EXTERNAL_PROVIDER" alt="" coords="1080,13680,1335,13944">
-<area shape="rect" id="node115" href="ORGANISATION.html" target="_top" title="ORGANISATION" alt="" coords="718,11119,972,11353">
-<area shape="rect" id="node146" href="SC_PROVIDER.html" target="_top" title="SC_PROVIDER" alt="" coords="357,16133,612,16397">
-<area shape="rect" id="node24" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="688,18251,1002,18573">
-<area shape="rect" id="node5" href="ADDITIONAL_IDENTIFIER_CFO_82fb54e9.html" target="_top" title="ADDITIONAL_IDENTIFIER$CFO" alt="" coords="3086,24188,3400,24423">
-<area shape="rect" id="node6" href="ADDITIONAL_OFFENCE.html" target="_top" title="ADDITIONAL_OFFENCE" alt="" coords="3114,22237,3372,22589">
-<area shape="rect" id="node7" href="R_DETAILED_OFFENCE.html" target="_top" title="R_DETAILED_OFFENCE" alt="" coords="2246,21356,2548,21591">
-<area shape="rect" id="node8" href="EVENT.html" target="_top" title="EVENT" alt="" coords="2672,16056,2962,16555">
-<area shape="rect" id="node49" href="COURT.html" target="_top" title="COURT" alt="" coords="2270,4109,2524,4491">
-<area shape="rect" id="node9" href="ADDITIONAL_SENTENCE.html" target="_top" title="ADDITIONAL_SENTENCE" alt="" coords="3090,23819,3396,24171">
-<area shape="rect" id="node10" href="ADDRESS.html" target="_top" title="ADDRESS" alt="" coords="26,13863,281,14097">
-<area shape="rect" id="node11" href="ADDRESS_ASSESSMENT.html" target="_top" title="ADDRESS_ASSESSMENT" alt="" coords="4294,22808,4554,23248">
-<area shape="rect" id="node12" href="OFFENDER_ADDRESS.html" target="_top" title="OFFENDER_ADDRESS" alt="" coords="3873,21445,4208,21885">
-<area shape="rect" id="node14" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="2270,10124,2524,10417">
-<area shape="rect" id="node16" href="TEAM.html" target="_top" title="TEAM" alt="" coords="701,17505,989,17857">
-<area shape="rect" id="node27" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="3484,21897,3825,22425">
-<area shape="rect" id="node25" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="1046,17904,1369,18432">
-<area shape="rect" id="node50" href="DISTRICT.html" target="_top" title="DISTRICT" alt="" coords="357,1205,612,1469">
-<area shape="rect" id="node91" href="LOCAL_DELIVERY_UNIT.html" target="_top" title="LOCAL_DELIVERY_UNIT" alt="" coords="355,13749,614,14013">
-<area shape="rect" id="node17" href="ALIAS.html" target="_top" title="ALIAS" alt="" coords="2690,4904,2944,5403">
-<area shape="rect" id="node18" href="ALIAS_CFO_56e67d8.html" target="_top" title="ALIAS$CFO" alt="" coords="3116,4832,3370,5067">
-<area shape="rect" id="node19" href="AP_AUDIT_REGISTER.html" target="_top" title="AP_AUDIT_REGISTER" alt="" coords="2655,8763,2979,9027">
-<area shape="rect" id="node20" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="2244,24985,2550,25367">
-<area shape="rect" id="node21" href="AP_REFERRAL_DELTA_ERROR.html" target="_top" title="AP_REFERRAL_DELTA_ERROR" alt="" coords="2234,12280,2560,12515">
-<area shape="rect" id="node22" href="APPROVED_PREMISES_PREFERRED.html" target="_top" title="APPROVED_PREMISES_PREFERRED" alt="" coords="3482,28737,3826,29060">
-<area shape="rect" id="node23" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="3076,28767,3410,30057">
-<area shape="rect" id="node26" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="2690,13056,2944,13291">
-<area shape="rect" id="node28" href="R_MOVE_ON_CATEGORY.html" target="_top" title="R_MOVE_ON_CATEGORY" alt="" coords="2260,21104,2534,21339">
-<area shape="rect" id="node29" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="4650,14776,4968,15392">
-<area shape="rect" id="node30" href="R_ASSESSMENT_OUTCOME.html" target="_top" title="R_ASSESSMENT_OUTCOME" alt="" coords="2254,15173,2540,15408">
-<area shape="rect" id="node31" href="R_ASSESSMENT_TYPE.html" target="_top" title="R_ASSESSMENT_TYPE" alt="" coords="2671,14737,2963,15001">
-<area shape="rect" id="node32" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="2658,16968,2976,17203">
-<area shape="rect" id="node33" href="R_CONTACT_OUTCOME_TYPE.html" target="_top" title="R_CONTACT_OUTCOME_TYPE" alt="" coords="2648,15127,2986,15332">
-<area shape="rect" id="node34" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="4263,23553,4586,25020">
-<area shape="rect" id="node35" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="4263,25037,4586,26475">
-<area shape="rect" id="node36" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="3086,5084,3400,5729">
-<area shape="rect" id="node40" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="2222,20211,2572,20475">
-<area shape="rect" id="node41" href="R_EXPLANATION.html" target="_top" title="R_EXPLANATION" alt="" coords="3527,27175,3782,27409">
-<area shape="rect" id="node42" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="3510,22443,3799,23059">
-<area shape="rect" id="node43" href="NSI.html" target="_top" title="NSI" alt="" coords="3898,25448,4182,26035">
-<area shape="rect" id="node44" href="OFFICE_LOCATION.html" target="_top" title="OFFICE_LOCATION" alt="" coords="2270,11825,2524,12119">
-<area shape="rect" id="node45" href="PROVIDER_LOCATION.html" target="_top" title="PROVIDER_LOCATION" alt="" coords="2270,27609,2524,27932">
-<area shape="rect" id="node46" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="3480,25045,3829,25661">
-<area shape="rect" id="node134" href="R_REFERRAL_TYPE.html" target="_top" title="R_REFERRAL_TYPE" alt="" coords="2690,5564,2944,5828">
-<area shape="rect" id="node37" href="AUDITED_INTERACTION.html" target="_top" title="AUDITED_INTERACTION" alt="" coords="2236,7129,2558,7276">
-<area shape="rect" id="node38" href="BOROUGH.html" target="_top" title="BOROUGH" alt="" coords="26,1599,281,1863">
-<area shape="rect" id="node39" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="3076,30075,3410,30691">
-<area shape="rect" id="node58" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="3072,19397,3414,19984">
-<area shape="rect" id="node68" href="R_LIC_COND_TYPE_MAIN_CAT.html" target="_top" title="R_LIC_COND_TYPE_MAIN_CAT" alt="" coords="2243,13491,2551,13755">
-<area shape="rect" id="node99" href="R_NSI_STATUS.html" target="_top" title="R_NSI_STATUS" alt="" coords="2690,24664,2944,24899">
-<area shape="rect" id="node100" href="R_NSI_TYPE.html" target="_top" title="R_NSI_TYPE" alt="" coords="2234,31585,2560,31996">
-<area shape="rect" id="node65" href="R_AD_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_AD_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="2210,13209,2584,13473">
-<area shape="rect" id="node70" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="2225,12928,2569,13192">
-<area shape="rect" id="node47" href="CONTACT_ALERT_CLEAR.html" target="_top" title="CONTACT_ALERT_CLEAR" alt="" coords="4676,19971,4942,20293">
-<area shape="rect" id="node48" href="CONTACT_UPLOAD_DOCUMENT.html" target="_top" title="CONTACT_UPLOAD_DOCUMENT" alt="" coords="4645,26587,4973,26792">
-<area shape="rect" id="node51" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="3072,3753,3414,4311">
-<area shape="rect" id="node52" href="COURT_REPORT.html" target="_top" title="COURT_REPORT" alt="" coords="3488,7372,3821,8017">
-<area shape="rect" id="node53" href="R_COURT_REPORT_TYPE.html" target="_top" title="R_COURT_REPORT_TYPE" alt="" coords="2264,9152,2530,9416">
-<area shape="rect" id="node54" href="COURT_REPORT_TRANSFER.html" target="_top" title="COURT_REPORT_TRANSFER" alt="" coords="3895,7313,4186,7871">
-<area shape="rect" id="node55" href="MASTER_TRANSFER.html" target="_top" title="MASTER_TRANSFER" alt="" coords="2690,15637,2944,15931">
-<area shape="rect" id="node56" href="CRC_INACTIVE_OFFENDER.html" target="_top" title="CRC_INACTIVE_OFFENDER" alt="" coords="2677,21893,2957,22128">
-<area shape="rect" id="node57" href="CUSTODY.html" target="_top" title="CUSTODY" alt="" coords="3527,14393,3782,14833">
-<area shape="rect" id="node63" href="R_DISPOSAL_TYPE.html" target="_top" title="R_DISPOSAL_TYPE" alt="" coords="2231,11305,2563,11628">
-<area shape="rect" id="node59" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="5024,27024,5279,27464">
-<area shape="rect" id="node60" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="4681,26809,4937,27337">
-<area shape="rect" id="node135" href="R_REGISTER_TYPE.html" target="_top" title="R_REGISTER_TYPE" alt="" coords="2648,20477,2986,20888">
-<area shape="rect" id="node61" href="DISABILITY.html" target="_top" title="DISABILITY" alt="" coords="2688,23948,2946,24359">
-<area shape="rect" id="node62" href="DISABILITY_CFO_12321484.html" target="_top" title="DISABILITY$CFO" alt="" coords="3116,5747,3370,5981">
-<area shape="rect" id="node64" href="DISPOSAL_TYPE_AD_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_AD_RQMNT_TYPE" alt="" coords="2642,11184,2992,11419">
-<area shape="rect" id="node66" href="DISPOSAL_TYPE_AD_SENT_TYPE.html" target="_top" title="DISPOSAL_TYPE_AD_SENT_TYPE" alt="" coords="2656,11436,2978,11671">
-<area shape="rect" id="node67" href="DISPOSAL_TYPE_LIC_COND_TYPE.html" target="_top" title="DISPOSAL_TYPE_LIC_COND_TYPE" alt="" coords="2651,11760,2983,11995">
-<area shape="rect" id="node69" href="DISPOSAL_TYPE_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_RQMNT_TYPE" alt="" coords="2657,12012,2977,12247">
-<area shape="rect" id="node71" href="DOCUMENT.html" target="_top" title="DOCUMENT" alt="" coords="2655,7135,2979,7692">
-<area shape="rect" id="node72" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="3116,6728,3370,7139">
-<area shape="rect" id="node73" href="DRUG_TEST_RESULT.html" target="_top" title="DRUG_TEST_RESULT" alt="" coords="3527,16492,3782,16932">
-<area shape="rect" id="node74" href="R_DRUG_TYPE.html" target="_top" title="R_DRUG_TYPE" alt="" coords="2270,16687,2524,16951">
-<area shape="rect" id="node75" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="3103,16420,3383,17095">
-<area shape="rect" id="node76" href="DRUGS_TEST_PROFILE_DRUG_TYPE.html" target="_top" title="DRUGS_TEST_PROFILE_DRUG_TYPE" alt="" coords="3481,6947,3828,7211">
-<area shape="rect" id="node77" href="DSS_SEARCH_REQUEST.html" target="_top" title="DSS_SEARCH_REQUEST" alt="" coords="2690,22145,2944,22351">
-<area shape="rect" id="node78" href="DYNAMIC_RSR_HISTORY.html" target="_top" title="DYNAMIC_RSR_HISTORY" alt="" coords="2683,6205,2951,6440">
-<area shape="rect" id="node79" href="ENFORCEMENT.html" target="_top" title="ENFORCEMENT" alt="" coords="5022,10448,5282,10771">
-<area shape="rect" id="node80" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="4669,5,4949,885">
-<area shape="rect" id="node161" href="UPW_DETAILS.html" target="_top" title="UPW_DETAILS" alt="" coords="3527,3861,3782,4419">
-<area shape="rect" id="node162" href="UPW_ALLOCATION.html" target="_top" title="UPW_ALLOCATION" alt="" coords="3891,733,4190,1203">
-<area shape="rect" id="node164" href="UPW_PROJECT.html" target="_top" title="UPW_PROJECT" alt="" coords="2649,296,2985,1059">
-<area shape="rect" id="node81" href="EQUALITY.html" target="_top" title="EQUALITY" alt="" coords="2690,6457,2944,6663">
-<area shape="rect" id="node82" href="EXCLUSION.html" target="_top" title="EXCLUSION" alt="" coords="2681,3560,2953,4059">
-<area shape="rect" id="node84" href="GDPR_OFFENDER_FREE_TEXT.html" target="_top" title="GDPR_OFFENDER_FREE_TEXT" alt="" coords="2666,6680,2968,6973">
-<area shape="rect" id="node85" href="HOST_AT_RELEASE.html" target="_top" title="HOST_AT_RELEASE" alt="" coords="4297,26564,4552,26799">
-<area shape="rect" id="node86" href="RELEASE.html" target="_top" title="RELEASE" alt="" coords="3878,26232,4203,26672">
-<area shape="rect" id="node87" href="INSTITUTIONAL_REPORT.html" target="_top" title="INSTITUTIONAL_REPORT" alt="" coords="3896,6176,4185,6675">
-<area shape="rect" id="node88" href="KEY_DATE.html" target="_top" title="KEY_DATE" alt="" coords="3913,23148,4168,23500">
-<area shape="rect" id="node89" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="4278,16860,4570,17593">
-<area shape="rect" id="node90" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="3874,18539,4207,19272">
-<area shape="rect" id="node92" href="LOST_BEDS.html" target="_top" title="LOST_BEDS" alt="" coords="2690,9260,2944,9553">
-<area shape="rect" id="node93" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="3116,15740,3370,16151">
-<area shape="rect" id="node94" href="MANAGEMENT_TIER.html" target="_top" title="MANAGEMENT_TIER" alt="" coords="2691,23291,2943,23643">
-<area shape="rect" id="node95" href="MANAGEMENT_TIER_EVENT.html" target="_top" title="MANAGEMENT_TIER_EVENT" alt="" coords="2670,22368,2964,22661">
-<area shape="rect" id="node96" href="MIGRATED_DATA_HISTORY.html" target="_top" title="MIGRATED_DATA_HISTORY" alt="" coords="2253,5084,2541,5348">
-<area shape="rect" id="node97" href="MOST_RECENTLY_VIEWED_OFFENDERS.html" target="_top" title="MOST_RECENTLY_VIEWED_OFFENDERS" alt="" coords="2628,17868,3006,18049">
-<area shape="rect" id="node98" href="NOMIS_CASE_NOTE_ERROR.html" target="_top" title="NOMIS_CASE_NOTE_ERROR" alt="" coords="2252,25744,2542,25949">
-<area shape="rect" id="node101" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="4682,1217,4936,1657">
-<area shape="rect" id="node102" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="4296,1364,4552,1980">
-<area shape="rect" id="node103" href="NSI_STATUS_HISTORY.html" target="_top" title="NSI_STATUS_HISTORY" alt="" coords="4297,23301,4552,23536">
-<area shape="rect" id="node104" href="OASYS_ASSESSMENT.html" target="_top" title="OASYS_ASSESSMENT" alt="" coords="4648,27391,4970,27977">
-<area shape="rect" id="node105" href="OASYS_ASSESSMENT_CFO_92e1288e.html" target="_top" title="OASYS_ASSESSMENT$CFO" alt="" coords="2656,10867,2978,11131">
-<area shape="rect" id="node106" href="OFFENDER_ADDRESS_CFO_1dceaaf6.html" target="_top" title="OFFENDER_ADDRESS$CFO" alt="" coords="2256,10867,2538,11072">
-<area shape="rect" id="node107" href="OFFENDER_CRC_EXPORT.html" target="_top" title="OFFENDER_CRC_EXPORT" alt="" coords="2682,7991,2952,8255">
-<area shape="rect" id="node108" href="OFFENDER_DRUG_PROFILE.html" target="_top" title="OFFENDER_DRUG_PROFILE" alt="" coords="2673,21373,2961,21696">
-<area shape="rect" id="node109" href="OFFENDER_DRUG_PROFILE_DRUG.html" target="_top" title="OFFENDER_DRUG_PROFILE_DRUG" alt="" coords="3073,20797,3413,21032">
-<area shape="rect" id="node110" href="OFFENDER_DRUG_PROFILE_MEDS.html" target="_top" title="OFFENDER_DRUG_PROFILE_MEDS" alt="" coords="3074,21533,3412,21768">
-<area shape="rect" id="node111" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="3076,23039,3410,23801">
-<area shape="rect" id="node112" href="OGRS_ASSESSMENT.html" target="_top" title="OGRS_ASSESSMENT" alt="" coords="3116,6035,3370,6357">
-<area shape="rect" id="node113" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="3524,10435,3784,11139">
-<area shape="rect" id="node114" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="3076,10840,3410,11573">
-<area shape="rect" id="node116" href="PERSONAL_CIRCUMSTANCE.html" target="_top" title="PERSONAL_CIRCUMSTANCE" alt="" coords="4277,20620,4572,21089">
-<area shape="rect" id="node117" href="R_CIRCUMSTANCE_SUB_TYPE.html" target="_top" title="R_CIRCUMSTANCE_SUB_TYPE" alt="" coords="3888,21157,4192,21392">
-<area shape="rect" id="node118" href="R_CIRCUMSTANCE_TYPE.html" target="_top" title="R_CIRCUMSTANCE_TYPE" alt="" coords="3907,20869,4174,21104">
-<area shape="rect" id="node119" href="PERSONAL_CIRCUMSTANCE_CFO_2982dc26.html" target="_top" title="PERSONAL_CIRCUMSTANCE$CFO" alt="" coords="4641,20971,4977,21264">
-<area shape="rect" id="node120" href="PERSONAL_CONTACT.html" target="_top" title="PERSONAL_CONTACT" alt="" coords="2664,33093,2970,33592">
-<area shape="rect" id="node121" href="PRECON_HISTORY.html" target="_top" title="PRECON_HISTORY" alt="" coords="2228,4832,2566,5067">
-<area shape="rect" id="node122" href="PRISON_OFFENDER_MANAGER.html" target="_top" title="PRISON_OFFENDER_MANAGER" alt="" coords="3084,10471,3402,10823">
-<area shape="rect" id="node123" href="PROBATION_AREA_USER.html" target="_top" title="PROBATION_AREA_USER" alt="" coords="2262,5365,2532,5600">
-<area shape="rect" id="node124" href="PROPOSAL_TYPE_COURTREPORT_TYPE.html" target="_top" title="PROPOSAL_TYPE_COURTREPORT_TYPE" alt="" coords="2628,12264,3006,12499">
-<area shape="rect" id="node125" href="PROPOSED_RQMNT.html" target="_top" title="PROPOSED_RQMNT" alt="" coords="2642,13884,2992,14265">
-<area shape="rect" id="node126" href="PROVIDER_LAO.html" target="_top" title="PROVIDER_LAO" alt="" coords="2657,8272,2977,8565">
-<area shape="rect" id="node127" href="PROVIDER_TEAM_EMPLOYEE.html" target="_top" title="PROVIDER_TEAM_EMPLOYEE" alt="" coords="2666,9607,2968,9841">
-<area shape="rect" id="node128" href="PROVIDER_TEAM_LOCATION.html" target="_top" title="PROVIDER_TEAM_LOCATION" alt="" coords="2667,9895,2967,10129">
-<area shape="rect" id="node129" href="PROVISION.html" target="_top" title="PROVISION" alt="" coords="3116,24548,3370,24929">
-<area shape="rect" id="node130" href="PROVISION_CFO_996fa7dd.html" target="_top" title="PROVISION$CFO" alt="" coords="3527,24548,3782,24812">
-<area shape="rect" id="node131" href="R_CVL_LIC_COND_MAPPING.html" target="_top" title="R_CVL_LIC_COND_MAPPING" alt="" coords="2670,14283,2964,14576">
-<area shape="rect" id="node132" href="R_HOST.html" target="_top" title="R_HOST" alt="" coords="2270,24488,2524,24752">
-<area shape="rect" id="node133" href="R_RECALL_REASON.html" target="_top" title="R_RECALL_REASON" alt="" coords="2245,26039,2549,26303">
-<area shape="rect" id="node136" href="R_TIER_ALLOC_QUESTION_TIER.html" target="_top" title="R_TIER_ALLOC_QUESTION_TIER" alt="" coords="2237,27128,2557,27363">
-<area shape="rect" id="node137" href="RECALL.html" target="_top" title="RECALL" alt="" coords="4262,26852,4587,27263">
-<area shape="rect" id="node138" href="REGISTRATION_CFO_15fb2de1.html" target="_top" title="REGISTRATION$CFO" alt="" coords="5024,19997,5280,20320">
-<area shape="rect" id="node139" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="5021,28261,5282,28643">
-<area shape="rect" id="node140" href="RELEASE_CFO_8d03ca0f.html" target="_top" title="RELEASE$CFO" alt="" coords="4297,13056,4552,13320">
-<area shape="rect" id="node141" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="4252,6349,4597,7171">
-<area shape="rect" id="node142" href="RESPONSIBLE_OFFICER.html" target="_top" title="RESPONSIBLE_OFFICER" alt="" coords="3499,11472,3810,11736">
-<area shape="rect" id="node143" href="RESTRICTION.html" target="_top" title="RESTRICTION" alt="" coords="2674,18377,2960,18876">
-<area shape="rect" id="node144" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="4294,22087,4554,22791">
-<area shape="rect" id="node145" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="3874,24553,4207,25287">
-<area shape="rect" id="node147" href="SPG_DOCUMENT_REQUEST.html" target="_top" title="SPG_DOCUMENT_REQUEST" alt="" coords="3099,6375,3387,6639">
-<area shape="rect" id="node148" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="2270,26572,2524,26895">
-<area shape="rect" id="node149" href="SPG_ERROR_CLEAR_REQUEST.html" target="_top" title="SPG_ERROR_CLEAR_REQUEST" alt="" coords="2245,13916,2549,14121">
-<area shape="rect" id="node150" href="SPG_ERROR_ELEMENT.html" target="_top" title="SPG_ERROR_ELEMENT" alt="" coords="2690,23039,2944,23273">
-<area shape="rect" id="node151" href="SPG_EXCEPTION.html" target="_top" title="SPG_EXCEPTION" alt="" coords="2690,28669,2944,29021">
-<area shape="rect" id="node152" href="SPG_SEARCH_REQUEST.html" target="_top" title="SPG_SEARCH_REQUEST" alt="" coords="2269,27416,2525,27592">
-<area shape="rect" id="node153" href="SPG_VERSION_ENTRY.html" target="_top" title="SPG_VERSION_ENTRY" alt="" coords="2685,18067,2949,18360">
-<area shape="rect" id="node154" href="SPG_XSD.html" target="_top" title="SPG_XSD" alt="" coords="2270,14211,2524,14387">
-<area shape="rect" id="node155" href="STAFF_TEAM.html" target="_top" title="STAFF_TEAM" alt="" coords="2270,12532,2524,12767">
-<area shape="rect" id="node156" href="SUBJECT_ACCESS_REPORT.html" target="_top" title="SUBJECT_ACCESS_REPORT" alt="" coords="2678,7709,2956,7973">
-<area shape="rect" id="node157" href="SUBJECT_ACCESS_REPORT_DOCUMENT.html" target="_top" title="SUBJECT_ACCESS_REPORT_DOCUMENT" alt="" coords="3054,7993,3432,8287">
-<area shape="rect" id="node158" href="TEAM_OFFICE_LOCATION.html" target="_top" title="TEAM_OFFICE_LOCATION" alt="" coords="2680,13632,2954,13867">
-<area shape="rect" id="node159" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="3076,30708,3410,31119">
-<area shape="rect" id="node160" href="UPW_ADJUSTMENT.html" target="_top" title="UPW_ADJUSTMENT" alt="" coords="3913,6849,4168,7260">
-<area shape="rect" id="node163" href="UPW_PROJECT_AVAILABILITY.html" target="_top" title="UPW_PROJECT_AVAILABILITY" alt="" coords="3091,844,3395,1167">
-<area shape="rect" id="node165" href="UPW_PROJECT_TIMESCALES_GROUP.html" target="_top" title="UPW_PROJECT_TIMESCALES_GROUP" alt="" coords="3065,25091,3421,25384">
-<area shape="rect" id="node166" href="UPW_STATUS_HISTORY.html" target="_top" title="UPW_STATUS_HISTORY" alt="" coords="3910,26977,4171,27241">
-<area shape="rect" id="node167" href="UPW_WORK_NATURE_QUALIFICATIONS.html" target="_top" title="UPW_WORK_NATURE_QUALIFICATIONS" alt="" coords="3050,32404,3436,32932">
-<area shape="rect" id="node168" href="USER_NOTE.html" target="_top" title="USER_NOTE" alt="" coords="2270,14728,2524,14904">
+<area shape="rect" id="node1" href="ADDITIONAL_IDENTIFIER.html" target="_top" title="ADDITIONAL_IDENTIFIER" alt="" coords="2680,6863,2954,7215">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="1712,19100,2166,19756">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="325,5990,644,6254">
+<area shape="rect" id="node4" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="2231,12623,2563,13826">
+<area shape="rect" id="node13" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="1413,17268,1668,17650">
+<area shape="rect" id="node15" href="STAFF.html" target="_top" title="STAFF" alt="" coords="1413,10070,1668,10510">
+<area shape="rect" id="node82" href="EXTERNAL_PROVIDER.html" target="_top" title="EXTERNAL_PROVIDER" alt="" coords="1080,28055,1335,28319">
+<area shape="rect" id="node114" href="ORGANISATION.html" target="_top" title="ORGANISATION" alt="" coords="718,21883,972,22118">
+<area shape="rect" id="node145" href="SC_PROVIDER.html" target="_top" title="SC_PROVIDER" alt="" coords="357,16874,612,17138">
+<area shape="rect" id="node24" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="688,15662,1002,15984">
+<area shape="rect" id="node5" href="ADDITIONAL_IDENTIFIER_CFO_82fb54e9.html" target="_top" title="ADDITIONAL_IDENTIFIER$CFO" alt="" coords="3086,15407,3400,15642">
+<area shape="rect" id="node6" href="ADDITIONAL_OFFENCE.html" target="_top" title="ADDITIONAL_OFFENCE" alt="" coords="3114,16244,3372,16596">
+<area shape="rect" id="node7" href="R_DETAILED_OFFENCE.html" target="_top" title="R_DETAILED_OFFENCE" alt="" coords="2246,16116,2548,16351">
+<area shape="rect" id="node8" href="EVENT.html" target="_top" title="EVENT" alt="" coords="2672,15643,2962,16142">
+<area shape="rect" id="node48" href="COURT.html" target="_top" title="COURT" alt="" coords="2270,6390,2524,6771">
+<area shape="rect" id="node9" href="ADDITIONAL_SENTENCE.html" target="_top" title="ADDITIONAL_SENTENCE" alt="" coords="3090,15659,3396,16011">
+<area shape="rect" id="node10" href="ADDRESS.html" target="_top" title="ADDRESS" alt="" coords="26,31251,281,31486">
+<area shape="rect" id="node11" href="ADDRESS_ASSESSMENT.html" target="_top" title="ADDRESS_ASSESSMENT" alt="" coords="4294,13042,4554,13482">
+<area shape="rect" id="node12" href="OFFENDER_ADDRESS.html" target="_top" title="OFFENDER_ADDRESS" alt="" coords="3873,12636,4208,13076">
+<area shape="rect" id="node14" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="2270,22071,2524,22364">
+<area shape="rect" id="node16" href="TEAM.html" target="_top" title="TEAM" alt="" coords="701,13726,989,14078">
+<area shape="rect" id="node27" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="3484,11638,3825,12166">
+<area shape="rect" id="node25" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="1046,15859,1369,16387">
+<area shape="rect" id="node49" href="DISTRICT.html" target="_top" title="DISTRICT" alt="" coords="357,30503,612,30767">
+<area shape="rect" id="node90" href="LOCAL_DELIVERY_UNIT.html" target="_top" title="LOCAL_DELIVERY_UNIT" alt="" coords="355,17155,614,17419">
+<area shape="rect" id="node17" href="ALIAS.html" target="_top" title="ALIAS" alt="" coords="2690,28900,2944,29399">
+<area shape="rect" id="node18" href="ALIAS_CFO_56e67d8.html" target="_top" title="ALIAS$CFO" alt="" coords="3116,29354,3370,29588">
+<area shape="rect" id="node19" href="AP_AUDIT_REGISTER.html" target="_top" title="AP_AUDIT_REGISTER" alt="" coords="2655,17520,2979,17784">
+<area shape="rect" id="node20" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="2244,7810,2550,8191">
+<area shape="rect" id="node21" href="AP_REFERRAL_DELTA_ERROR.html" target="_top" title="AP_REFERRAL_DELTA_ERROR" alt="" coords="2234,17016,2560,17251">
+<area shape="rect" id="node22" href="APPROVED_PREMISES_PREFERRED.html" target="_top" title="APPROVED_PREMISES_PREFERRED" alt="" coords="3482,1568,3826,1891">
+<area shape="rect" id="node23" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="3076,1598,3410,2888">
+<area shape="rect" id="node26" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="2690,9032,2944,9267">
+<area shape="rect" id="node28" href="R_MOVE_ON_CATEGORY.html" target="_top" title="R_MOVE_ON_CATEGORY" alt="" coords="2260,14491,2534,14726">
+<area shape="rect" id="node29" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="4650,22387,4968,23003">
+<area shape="rect" id="node30" href="R_ASSESSMENT_OUTCOME.html" target="_top" title="R_ASSESSMENT_OUTCOME" alt="" coords="2254,27348,2540,27583">
+<area shape="rect" id="node31" href="R_ASSESSMENT_TYPE.html" target="_top" title="R_ASSESSMENT_TYPE" alt="" coords="2671,27098,2963,27362">
+<area shape="rect" id="node32" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="2658,20384,2976,20619">
+<area shape="rect" id="node33" href="R_CONTACT_OUTCOME_TYPE.html" target="_top" title="R_CONTACT_OUTCOME_TYPE" alt="" coords="2648,20780,2986,20986">
+<area shape="rect" id="node34" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="4263,18023,4586,19167">
+<area shape="rect" id="node35" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="3086,21792,3400,22438">
+<area shape="rect" id="node39" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="2222,18375,2572,18639">
+<area shape="rect" id="node40" href="R_EXPLANATION.html" target="_top" title="R_EXPLANATION" alt="" coords="2270,18836,2524,19071">
+<area shape="rect" id="node41" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="3510,23702,3799,24318">
+<area shape="rect" id="node42" href="NSI.html" target="_top" title="NSI" alt="" coords="3898,4423,4182,5010">
+<area shape="rect" id="node43" href="OFFICE_LOCATION.html" target="_top" title="OFFICE_LOCATION" alt="" coords="2270,27996,2524,28290">
+<area shape="rect" id="node44" href="PROVIDER_LOCATION.html" target="_top" title="PROVIDER_LOCATION" alt="" coords="2270,24168,2524,24491">
+<area shape="rect" id="node45" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="3480,5315,3829,5931">
+<area shape="rect" id="node133" href="R_REFERRAL_TYPE.html" target="_top" title="R_REFERRAL_TYPE" alt="" coords="2690,19671,2944,19935">
+<area shape="rect" id="node36" href="AUDITED_INTERACTION.html" target="_top" title="AUDITED_INTERACTION" alt="" coords="2236,18175,2558,18322">
+<area shape="rect" id="node37" href="BOROUGH.html" target="_top" title="BOROUGH" alt="" coords="26,30562,281,30826">
+<area shape="rect" id="node38" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="3076,6816,3410,7432">
+<area shape="rect" id="node57" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="3072,26471,3414,27058">
+<area shape="rect" id="node67" href="R_LIC_COND_TYPE_MAIN_CAT.html" target="_top" title="R_LIC_COND_TYPE_MAIN_CAT" alt="" coords="2243,24832,2551,25096">
+<area shape="rect" id="node98" href="R_NSI_STATUS.html" target="_top" title="R_NSI_STATUS" alt="" coords="2690,14851,2944,15086">
+<area shape="rect" id="node99" href="R_NSI_TYPE.html" target="_top" title="R_NSI_TYPE" alt="" coords="2234,594,2560,1004">
+<area shape="rect" id="node64" href="R_AD_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_AD_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="2210,23066,2584,23330">
+<area shape="rect" id="node69" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="2225,23383,2569,23647">
+<area shape="rect" id="node46" href="CONTACT_ALERT_CLEAR.html" target="_top" title="CONTACT_ALERT_CLEAR" alt="" coords="4676,18903,4942,19226">
+<area shape="rect" id="node47" href="CONTACT_UPLOAD_DOCUMENT.html" target="_top" title="CONTACT_UPLOAD_DOCUMENT" alt="" coords="4645,23194,4973,23399">
+<area shape="rect" id="node50" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="3072,5706,3414,6263">
+<area shape="rect" id="node51" href="COURT_REPORT.html" target="_top" title="COURT_REPORT" alt="" coords="3488,7875,3821,8520">
+<area shape="rect" id="node52" href="R_COURT_REPORT_TYPE.html" target="_top" title="R_COURT_REPORT_TYPE" alt="" coords="2264,11406,2530,11670">
+<area shape="rect" id="node53" href="COURT_REPORT_TRANSFER.html" target="_top" title="COURT_REPORT_TRANSFER" alt="" coords="3895,8404,4186,8962">
+<area shape="rect" id="node54" href="MASTER_TRANSFER.html" target="_top" title="MASTER_TRANSFER" alt="" coords="2690,11306,2944,11599">
+<area shape="rect" id="node55" href="CRC_INACTIVE_OFFENDER.html" target="_top" title="CRC_INACTIVE_OFFENDER" alt="" coords="2677,14167,2957,14402">
+<area shape="rect" id="node56" href="CUSTODY.html" target="_top" title="CUSTODY" alt="" coords="3527,27066,3782,27506">
+<area shape="rect" id="node62" href="R_DISPOSAL_TYPE.html" target="_top" title="R_DISPOSAL_TYPE" alt="" coords="2231,25402,2563,25724">
+<area shape="rect" id="node58" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="5024,4854,5279,5294">
+<area shape="rect" id="node59" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="4681,4554,4937,5082">
+<area shape="rect" id="node134" href="R_REGISTER_TYPE.html" target="_top" title="R_REGISTER_TYPE" alt="" coords="2648,10734,2986,11144">
+<area shape="rect" id="node60" href="DISABILITY.html" target="_top" title="DISABILITY" alt="" coords="2688,13523,2946,13934">
+<area shape="rect" id="node61" href="DISABILITY_CFO_12321484.html" target="_top" title="DISABILITY$CFO" alt="" coords="3116,15155,3370,15390">
+<area shape="rect" id="node63" href="DISPOSAL_TYPE_AD_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_AD_RQMNT_TYPE" alt="" coords="2642,24726,2992,24960">
+<area shape="rect" id="node65" href="DISPOSAL_TYPE_AD_SENT_TYPE.html" target="_top" title="DISPOSAL_TYPE_AD_SENT_TYPE" alt="" coords="2656,25664,2978,25899">
+<area shape="rect" id="node66" href="DISPOSAL_TYPE_LIC_COND_TYPE.html" target="_top" title="DISPOSAL_TYPE_LIC_COND_TYPE" alt="" coords="2651,25952,2983,26187">
+<area shape="rect" id="node68" href="DISPOSAL_TYPE_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_RQMNT_TYPE" alt="" coords="2657,25376,2977,25611">
+<area shape="rect" id="node70" href="DOCUMENT.html" target="_top" title="DOCUMENT" alt="" coords="2655,18916,2979,19474">
+<area shape="rect" id="node71" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="3116,25611,3370,26022">
+<area shape="rect" id="node72" href="DRUG_TEST_RESULT.html" target="_top" title="DRUG_TEST_RESULT" alt="" coords="3527,10911,3782,11351">
+<area shape="rect" id="node73" href="R_DRUG_TYPE.html" target="_top" title="R_DRUG_TYPE" alt="" coords="2270,26635,2524,26899">
+<area shape="rect" id="node74" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="3103,10604,3383,11279">
+<area shape="rect" id="node75" href="DRUGS_TEST_PROFILE_DRUG_TYPE.html" target="_top" title="DRUGS_TEST_PROFILE_DRUG_TYPE" alt="" coords="3481,25932,3828,26196">
+<area shape="rect" id="node76" href="DSS_SEARCH_REQUEST.html" target="_top" title="DSS_SEARCH_REQUEST" alt="" coords="2690,21219,2944,21424">
+<area shape="rect" id="node77" href="DYNAMIC_RSR_HISTORY.html" target="_top" title="DYNAMIC_RSR_HISTORY" alt="" coords="2683,20024,2951,20259">
+<area shape="rect" id="node78" href="ENFORCEMENT.html" target="_top" title="ENFORCEMENT" alt="" coords="5022,30979,5282,31302">
+<area shape="rect" id="node79" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="4669,31008,4949,31888">
+<area shape="rect" id="node160" href="UPW_DETAILS.html" target="_top" title="UPW_DETAILS" alt="" coords="3527,29784,3782,30342">
+<area shape="rect" id="node161" href="UPW_ALLOCATION.html" target="_top" title="UPW_ALLOCATION" alt="" coords="3891,30899,4190,31368">
+<area shape="rect" id="node163" href="UPW_PROJECT.html" target="_top" title="UPW_PROJECT" alt="" coords="2649,31612,2985,32375">
+<area shape="rect" id="node80" href="EQUALITY.html" target="_top" title="EQUALITY" alt="" coords="2690,21550,2944,21755">
+<area shape="rect" id="node81" href="EXCLUSION.html" target="_top" title="EXCLUSION" alt="" coords="2681,22083,2953,22582">
+<area shape="rect" id="node83" href="GDPR_OFFENDER_FREE_TEXT.html" target="_top" title="GDPR_OFFENDER_FREE_TEXT" alt="" coords="2666,21772,2968,22066">
+<area shape="rect" id="node84" href="HOST_AT_RELEASE.html" target="_top" title="HOST_AT_RELEASE" alt="" coords="4297,29316,4552,29551">
+<area shape="rect" id="node85" href="RELEASE.html" target="_top" title="RELEASE" alt="" coords="3878,28908,4203,29348">
+<area shape="rect" id="node86" href="INSTITUTIONAL_REPORT.html" target="_top" title="INSTITUTIONAL_REPORT" alt="" coords="3896,7535,4185,8034">
+<area shape="rect" id="node87" href="KEY_DATE.html" target="_top" title="KEY_DATE" alt="" coords="3913,14415,4168,14767">
+<area shape="rect" id="node88" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="4278,25114,4570,25847">
+<area shape="rect" id="node89" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="3874,28158,4207,28891">
+<area shape="rect" id="node91" href="LOST_BEDS.html" target="_top" title="LOST_BEDS" alt="" coords="2690,27739,2944,28032">
+<area shape="rect" id="node92" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="3116,16614,3370,17024">
+<area shape="rect" id="node93" href="MANAGEMENT_TIER.html" target="_top" title="MANAGEMENT_TIER" alt="" coords="2691,10364,2943,10716">
+<area shape="rect" id="node94" href="MANAGEMENT_TIER_EVENT.html" target="_top" title="MANAGEMENT_TIER_EVENT" alt="" coords="2670,18036,2964,18330">
+<area shape="rect" id="node95" href="MIGRATED_DATA_HISTORY.html" target="_top" title="MIGRATED_DATA_HISTORY" alt="" coords="2253,26354,2541,26618">
+<area shape="rect" id="node96" href="MOST_RECENTLY_VIEWED_OFFENDERS.html" target="_top" title="MOST_RECENTLY_VIEWED_OFFENDERS" alt="" coords="2628,17802,3006,17983">
+<area shape="rect" id="node97" href="NOMIS_CASE_NOTE_ERROR.html" target="_top" title="NOMIS_CASE_NOTE_ERROR" alt="" coords="2252,17304,2542,17510">
+<area shape="rect" id="node100" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="4682,1383,4936,1823">
+<area shape="rect" id="node101" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="4296,1530,4552,2146">
+<area shape="rect" id="node102" href="NSI_STATUS_HISTORY.html" target="_top" title="NSI_STATUS_HISTORY" alt="" coords="4297,22783,4552,23018">
+<area shape="rect" id="node103" href="OASYS_ASSESSMENT.html" target="_top" title="OASYS_ASSESSMENT" alt="" coords="4648,5279,4970,5866">
+<area shape="rect" id="node104" href="OASYS_ASSESSMENT_CFO_92e1288e.html" target="_top" title="OASYS_ASSESSMENT$CFO" alt="" coords="2656,17203,2978,17467">
+<area shape="rect" id="node105" href="OFFENDER_ADDRESS_CFO_1dceaaf6.html" target="_top" title="OFFENDER_ADDRESS$CFO" alt="" coords="2256,19340,2538,19546">
+<area shape="rect" id="node106" href="OFFENDER_CRC_EXPORT.html" target="_top" title="OFFENDER_CRC_EXPORT" alt="" coords="2682,26348,2952,26612">
+<area shape="rect" id="node107" href="OFFENDER_DRUG_PROFILE.html" target="_top" title="OFFENDER_DRUG_PROFILE" alt="" coords="2673,24386,2961,24708">
+<area shape="rect" id="node108" href="OFFENDER_DRUG_PROFILE_DRUG.html" target="_top" title="OFFENDER_DRUG_PROFILE_DRUG" alt="" coords="3073,26147,3413,26382">
+<area shape="rect" id="node109" href="OFFENDER_DRUG_PROFILE_MEDS.html" target="_top" title="OFFENDER_DRUG_PROFILE_MEDS" alt="" coords="3074,24371,3412,24606">
+<area shape="rect" id="node110" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="3076,9608,3410,10371">
+<area shape="rect" id="node111" href="OGRS_ASSESSMENT.html" target="_top" title="OGRS_ASSESSMENT" alt="" coords="3116,27147,3370,27470">
+<area shape="rect" id="node112" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="3524,16755,3784,17459">
+<area shape="rect" id="node113" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="3076,17359,3410,18092">
+<area shape="rect" id="node115" href="PERSONAL_CIRCUMSTANCE.html" target="_top" title="PERSONAL_CIRCUMSTANCE" alt="" coords="4277,12335,4572,12804">
+<area shape="rect" id="node116" href="R_CIRCUMSTANCE_SUB_TYPE.html" target="_top" title="R_CIRCUMSTANCE_SUB_TYPE" alt="" coords="3502,14651,3806,14886">
+<area shape="rect" id="node117" href="R_CIRCUMSTANCE_TYPE.html" target="_top" title="R_CIRCUMSTANCE_TYPE" alt="" coords="3907,15000,4174,15235">
+<area shape="rect" id="node118" href="PERSONAL_CIRCUMSTANCE_CFO_2982dc26.html" target="_top" title="PERSONAL_CIRCUMSTANCE$CFO" alt="" coords="4641,13407,4977,13700">
+<area shape="rect" id="node119" href="PERSONAL_CONTACT.html" target="_top" title="PERSONAL_CONTACT" alt="" coords="2664,146,2970,644">
+<area shape="rect" id="node120" href="PRECON_HISTORY.html" target="_top" title="PRECON_HISTORY" alt="" coords="2228,16764,2566,16999">
+<area shape="rect" id="node121" href="PRISON_OFFENDER_MANAGER.html" target="_top" title="PRISON_OFFENDER_MANAGER" alt="" coords="3084,22959,3402,23311">
+<area shape="rect" id="node122" href="PROBATION_AREA_USER.html" target="_top" title="PROBATION_AREA_USER" alt="" coords="2262,26102,2532,26336">
+<area shape="rect" id="node123" href="PROPOSAL_TYPE_COURTREPORT_TYPE.html" target="_top" title="PROPOSAL_TYPE_COURTREPORT_TYPE" alt="" coords="2628,26774,3006,27008">
+<area shape="rect" id="node124" href="PROPOSED_RQMNT.html" target="_top" title="PROPOSED_RQMNT" alt="" coords="2642,24978,2992,25359">
+<area shape="rect" id="node125" href="PROVIDER_LAO.html" target="_top" title="PROVIDER_LAO" alt="" coords="2657,28338,2977,28631">
+<area shape="rect" id="node126" href="PROVIDER_TEAM_EMPLOYEE.html" target="_top" title="PROVIDER_TEAM_EMPLOYEE" alt="" coords="2666,23355,2968,23590">
+<area shape="rect" id="node127" href="PROVIDER_TEAM_LOCATION.html" target="_top" title="PROVIDER_TEAM_LOCATION" alt="" coords="2667,22887,2967,23122">
+<area shape="rect" id="node128" href="PROVISION.html" target="_top" title="PROVISION" alt="" coords="3116,13559,3370,13940">
+<area shape="rect" id="node129" href="PROVISION_CFO_996fa7dd.html" target="_top" title="PROVISION$CFO" alt="" coords="3527,14118,3782,14382">
+<area shape="rect" id="node130" href="R_CVL_LIC_COND_MAPPING.html" target="_top" title="R_CVL_LIC_COND_MAPPING" alt="" coords="2670,23679,2964,23972">
+<area shape="rect" id="node131" href="R_HOST.html" target="_top" title="R_HOST" alt="" coords="2270,8460,2524,8724">
+<area shape="rect" id="node132" href="R_RECALL_REASON.html" target="_top" title="R_RECALL_REASON" alt="" coords="2245,28919,2549,29183">
+<area shape="rect" id="node135" href="R_TIER_ALLOC_QUESTION_TIER.html" target="_top" title="R_TIER_ALLOC_QUESTION_TIER" alt="" coords="2237,17527,2557,17762">
+<area shape="rect" id="node136" href="RECALL.html" target="_top" title="RECALL" alt="" coords="4262,28888,4587,29299">
+<area shape="rect" id="node137" href="REGISTRATION_CFO_15fb2de1.html" target="_top" title="REGISTRATION$CFO" alt="" coords="5024,10582,5280,10904">
+<area shape="rect" id="node138" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="5021,3847,5282,4228">
+<area shape="rect" id="node139" href="RELEASE_CFO_8d03ca0f.html" target="_top" title="RELEASE$CFO" alt="" coords="4297,27680,4552,27944">
+<area shape="rect" id="node140" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="4252,7766,4597,8587">
+<area shape="rect" id="node141" href="RESPONSIBLE_OFFICER.html" target="_top" title="RESPONSIBLE_OFFICER" alt="" coords="3499,22990,3810,23254">
+<area shape="rect" id="node142" href="RESTRICTION.html" target="_top" title="RESTRICTION" alt="" coords="2674,11832,2960,12331">
+<area shape="rect" id="node143" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="4294,5315,4554,6019">
+<area shape="rect" id="node144" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="3874,5872,4207,6606">
+<area shape="rect" id="node146" href="SPG_DOCUMENT_REQUEST.html" target="_top" title="SPG_DOCUMENT_REQUEST" alt="" coords="3099,17042,3387,17306">
+<area shape="rect" id="node147" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="2270,5294,2524,5616">
+<area shape="rect" id="node148" href="SPG_ERROR_CLEAR_REQUEST.html" target="_top" title="SPG_ERROR_CLEAR_REQUEST" alt="" coords="2245,19671,2549,19876">
+<area shape="rect" id="node149" href="SPG_ERROR_ELEMENT.html" target="_top" title="SPG_ERROR_ELEMENT" alt="" coords="2690,5486,2944,5720">
+<area shape="rect" id="node150" href="SPG_EXCEPTION.html" target="_top" title="SPG_EXCEPTION" alt="" coords="2690,5774,2944,6126">
+<area shape="rect" id="node151" href="SPG_SEARCH_REQUEST.html" target="_top" title="SPG_SEARCH_REQUEST" alt="" coords="2269,7220,2525,7396">
+<area shape="rect" id="node152" href="SPG_VERSION_ENTRY.html" target="_top" title="SPG_VERSION_ENTRY" alt="" coords="2685,12636,2949,12930">
+<area shape="rect" id="node153" href="SPG_XSD.html" target="_top" title="SPG_XSD" alt="" coords="2270,20002,2524,20178">
+<area shape="rect" id="node154" href="STAFF_TEAM.html" target="_top" title="STAFF_TEAM" alt="" coords="2270,23916,2524,24151">
+<area shape="rect" id="node155" href="SUBJECT_ACCESS_REPORT.html" target="_top" title="SUBJECT_ACCESS_REPORT" alt="" coords="2678,18635,2956,18899">
+<area shape="rect" id="node156" href="SUBJECT_ACCESS_REPORT_DOCUMENT.html" target="_top" title="SUBJECT_ACCESS_REPORT_DOCUMENT" alt="" coords="3054,18964,3432,19258">
+<area shape="rect" id="node157" href="TEAM_OFFICE_LOCATION.html" target="_top" title="TEAM_OFFICE_LOCATION" alt="" coords="2680,23990,2954,24224">
+<area shape="rect" id="node158" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="3076,6388,3410,6799">
+<area shape="rect" id="node159" href="UPW_ADJUSTMENT.html" target="_top" title="UPW_ADJUSTMENT" alt="" coords="3913,30222,4168,30632">
+<area shape="rect" id="node162" href="UPW_PROJECT_AVAILABILITY.html" target="_top" title="UPW_PROJECT_AVAILABILITY" alt="" coords="3091,31072,3395,31395">
+<area shape="rect" id="node164" href="UPW_PROJECT_TIMESCALES_GROUP.html" target="_top" title="UPW_PROJECT_TIMESCALES_GROUP" alt="" coords="3065,5395,3421,5688">
+<area shape="rect" id="node165" href="UPW_STATUS_HISTORY.html" target="_top" title="UPW_STATUS_HISTORY" alt="" coords="3910,8051,4171,8315">
+<area shape="rect" id="node166" href="UPW_WORK_NATURE_QUALIFICATIONS.html" target="_top" title="UPW_WORK_NATURE_QUALIFICATIONS" alt="" coords="3050,2942,3436,3470">
+<area shape="rect" id="node167" href="USER_NOTE.html" target="_top" title="USER_NOTE" alt="" coords="2270,20519,2524,20695">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/USER_.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
