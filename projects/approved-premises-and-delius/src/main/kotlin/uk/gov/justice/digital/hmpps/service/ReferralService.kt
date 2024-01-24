@@ -2,24 +2,10 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingCancelled
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingChanged
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralWithAp
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Residence
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByEventNumber
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
@@ -28,14 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.acceptedDeferredAdmission
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.apReferralSource
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.referralCategory
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.unknownRisk
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ynUnknown
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.*
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
@@ -102,25 +81,15 @@ class ReferralService(
 
     fun bookingChanged(crn: String, details: BookingChanged, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
-        referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-            person.id,
-            ServiceContext.servicePrincipal()!!.userId,
-            Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-        )?.apply {
+        getReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId).apply {
             expectedArrivalDate = details.arrivalOn
             expectedDepartureDate = details.departureOn
-        } ?: throw IllegalStateException("Unable to find referral for ${person.crn} => ${details.bookingId}")
+        }
     }
 
     fun bookingCancelled(crn: String, details: BookingCancelled, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
-        val referral = checkNotNull(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-                person.id,
-                ServiceContext.servicePrincipal()!!.userId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-            )
-        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }.apply { softDeleted = true }
+        val referral = getReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId).apply { softDeleted = true }
         contactService.createContact(
             ContactDetails(
                 date = details.cancelledAt,
@@ -140,13 +109,7 @@ class ReferralService(
     }
 
     fun personNotArrived(person: Person, ap: ApprovedPremises, dateTime: ZonedDateTime, details: PersonNotArrived) {
-        val referral = checkNotNull(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-                person.id,
-                ServiceContext.servicePrincipal()!!.userId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-            )
-        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
+        val referral = getReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
         referral.nonArrivalDate = dateTime.toLocalDate()
         referral.nonArrivalNotes = details.notes
         referral.nonArrivalReasonId =
@@ -171,13 +134,7 @@ class ReferralService(
     }
 
     fun personArrived(person: Person, ap: ApprovedPremises, details: PersonArrived) {
-        val referral = checkNotNull(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-                person.id,
-                ServiceContext.servicePrincipal()!!.userId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-            )
-        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
+        val referral = getReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
         referral.admissionDate = details.arrivedAt.toLocalDate()
         val kw = staffRepository.getByCode(details.keyWorker.staffCode)
         residenceRepository.save(details.residence(person, ap, referral, kw))
@@ -185,18 +142,13 @@ class ReferralService(
 
     fun personDeparted(person: Person, details: PersonDeparted) {
         val serviceUserId = ServiceContext.servicePrincipal()!!.userId
-        val referral = checkNotNull(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-                person.id,
-                serviceUserId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
+        val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
+        val referral = getReferral(person, externalReference)
+        val residence = residenceRepository.findByReferralIdAndCreatedByUserId(referral.id, serviceUserId)
+            ?: throw IgnorableMessageException(
+                "ResidenceNotFound",
+                mapOf("crn" to person.crn, "externalReference" to externalReference)
             )
-        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
-        val residence = checkNotNull(
-            residenceRepository.findByReferralIdAndCreatedByUserId(referral.id, serviceUserId)
-        ) {
-            "Unable to find residence for ${person.crn} => ${details.bookingId}"
-        }
         residence.departureDate = details.departedAt
         residence.departureReasonId = referenceDataRepository.findByCodeAndDatasetCode(
             details.legacyReasonCode,
@@ -211,6 +163,16 @@ class ReferralService(
         val referrals = referralRepository.findAllByPersonId(person.id).map { it.apReferral() }
         return ExistingReferrals(person.crn, referrals)
     }
+
+    fun getReferral(person: Person, externalReference: String) =
+        referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+            person.id,
+            ServiceContext.servicePrincipal()!!.userId,
+            externalReference
+        ) ?: throw IgnorableMessageException(
+            "ReferralNotFound",
+            mapOf("crn" to person.crn, "externalReference" to externalReference)
+        )
 
     private fun BookingMade.referral(
         person: Person,
