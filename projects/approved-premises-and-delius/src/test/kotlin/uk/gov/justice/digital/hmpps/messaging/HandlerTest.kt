@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -10,8 +11,11 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.message.PersonIdentifier
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.prepEvent
 import uk.gov.justice.digital.hmpps.service.ApprovedPremisesService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -48,9 +52,10 @@ internal class HandlerTest {
 
     @Test
     fun `rejects unknown event types`() {
-        val event = HmppsDomainEvent(eventType = "test", version = 1, occurredAt = ZonedDateTime.now())
-        val exception = assertThrows<IllegalArgumentException> { handler.handle(Notification(event)) }
-        assertThat(exception.message, equalTo("Unexpected event type test"))
+        val event = HmppsDomainEvent(eventType = "test", version = 1, occurredAt = ZonedDateTime.now(), personReference = PersonReference(
+            listOf(PersonIdentifier("CRN", "X123456"))
+        ))
+        assertDoesNotThrow { handler.handle(Notification(event)) }
     }
 
     @Test
@@ -62,7 +67,6 @@ internal class HandlerTest {
         handler.handle(message)
 
         // Then it is updated in Delius and logged to Telemetry
-        verify(telemetryService).notificationReceived(message)
         verify(approvedPremisesService).applicationSubmitted(message.message)
         verify(telemetryService).trackEvent("ApplicationSubmitted", message.message.telemetryProperties())
     }
@@ -76,7 +80,6 @@ internal class HandlerTest {
         handler.handle(message)
 
         // Then it is updated in Delius and logged to Telemetry
-        verify(telemetryService).notificationReceived(message)
         verify(approvedPremisesService).applicationAssessed(message.message)
         verify(telemetryService).trackEvent("ApplicationAssessed", message.message.telemetryProperties())
     }
@@ -90,7 +93,6 @@ internal class HandlerTest {
         handler.handle(message)
 
         // Then it is updated in Delius and logged to Telemetry
-        verify(telemetryService).notificationReceived(message)
         verify(approvedPremisesService).bookingMade(message.message)
         verify(telemetryService).trackEvent("BookingMade", message.message.telemetryProperties())
     }
@@ -104,7 +106,6 @@ internal class HandlerTest {
         handler.handle(message)
 
         // Then it is updated in Delius and logged to Telemetry
-        verify(telemetryService).notificationReceived(message)
         verify(approvedPremisesService).personNotArrived(message.message)
         verify(telemetryService).trackEvent("PersonNotArrived", message.message.telemetryProperties())
     }
@@ -118,7 +119,6 @@ internal class HandlerTest {
         handler.handle(message)
 
         // Then it is updated in Delius and logged to Telemetry
-        verify(telemetryService).notificationReceived(message)
         verify(approvedPremisesService).personArrived(message.message)
         verify(telemetryService).trackEvent("PersonArrived", message.message.telemetryProperties())
     }
