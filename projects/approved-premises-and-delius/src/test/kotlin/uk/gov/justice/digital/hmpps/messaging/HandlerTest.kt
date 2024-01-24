@@ -52,9 +52,11 @@ internal class HandlerTest {
 
     @Test
     fun `rejects unknown event types`() {
-        val event = HmppsDomainEvent(eventType = "test", version = 1, occurredAt = ZonedDateTime.now(), personReference = PersonReference(
-            listOf(PersonIdentifier("CRN", "X123456"))
-        ))
+        val event = HmppsDomainEvent(
+            eventType = "test", version = 1, occurredAt = ZonedDateTime.now(), personReference = PersonReference(
+                listOf(PersonIdentifier("CRN", "X123456"))
+            )
+        )
         assertDoesNotThrow { handler.handle(Notification(event)) }
     }
 
