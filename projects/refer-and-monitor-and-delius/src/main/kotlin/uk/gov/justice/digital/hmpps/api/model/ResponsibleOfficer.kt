@@ -1,10 +1,13 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
+
 data class ResponsibleOfficer(
     val communityManager: Manager,
     val prisonManager: Manager?
 )
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class Manager(
     val code: String,
     val name: Name,
