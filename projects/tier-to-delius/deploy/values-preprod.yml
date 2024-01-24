@@ -2,8 +2,8 @@ generic-service:
   ingress:
     host: tier-to-delius-preprod.hmpps.service.justice.gov.uk
 
-  scheduledDowntime:
-    enabled: true
+#  scheduledDowntime:
+#    enabled: true
 
   env:
     SENTRY_ENVIRONMENT: preprod
