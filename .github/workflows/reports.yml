@@ -140,15 +140,15 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "*Reason*"
-                    },
+                    }
                   ]
                 }
-              ] + 
+              ] +
               (. | [_nwise(5)] | map({
                 "type": "section",
                 "fields": (. | map([
-                  { 
-                    type: "plain_text", 
+                  {
+                    type: "plain_text",
                     text: .[0]
                   },
                   {
@@ -156,7 +156,7 @@ jobs:
                     text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
                   }
                 ]) | flatten)
-              })) + 
+              })) +
               [
                 {
                   "type": "context",
