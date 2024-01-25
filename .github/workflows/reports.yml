@@ -107,7 +107,7 @@ jobs:
             | where timestamp > ago(7d) and timestamp < now()
             | where cloud_RoleName in ("workforce-allocations-to-delius")
             | where name in ("ApprovedPremisesFailureReport")
-            | project customDimensions.crn, customDimensions.reason, customDimensions.externalReference, timestamp
+            | project customDimensions.crn, customDimensions.reason, customDimensions.externalReference
             | order by tostring(customDimensions_crn) asc
 
       - name: Transform results into Slack message
