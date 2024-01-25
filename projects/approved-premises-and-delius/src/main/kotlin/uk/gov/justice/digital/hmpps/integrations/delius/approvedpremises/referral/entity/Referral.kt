@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -202,5 +203,5 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun findForUpdate(id: Long): Long
 }
 
-fun EventRepository.getByEventNumber(personId: Long, number: String) =
-    findByPersonIdAndNumber(personId, number) ?: throw NotFoundException("Event Not Found")
+fun EventRepository.getByEventNumber(personId: Long, number: String) = findByPersonIdAndNumber(personId, number)
+    ?: throw IgnorableMessageException("Event Not Found", mapOf("eventNumber" to number))
