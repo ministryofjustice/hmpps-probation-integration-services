@@ -64,10 +64,13 @@ class Handler(
                     telemetryService.trackEvent("PersonDeparted", event.telemetryProperties())
                 }
 
-                else -> throw IgnorableMessageException("UnexpectedEventType", mapOf("eventType" to event.eventType))
+                else -> throw IgnorableMessageException("Unexpected Event Type", mapOf("eventType" to event.eventType))
             }
         } catch (ime: IgnorableMessageException) {
-            telemetryService.trackEvent(ime.message, event.telemetryProperties() + ime.additionalProperties)
+            telemetryService.trackEvent(
+                "ApprovedPremisesFailureReport",
+                event.telemetryProperties() + ime.additionalProperties + ("reason" to ime.message)
+            )
         }
     }
 }

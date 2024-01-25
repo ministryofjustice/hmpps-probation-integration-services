@@ -91,3 +91,78 @@ jobs:
           payload: ${{ steps.transform.outputs.result }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  approved-premises-failures:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Search app insights
+        id: search
+        run: |
+          echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
+        env:
+          url: https://api.applicationinsights.io/v1/apps/${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}/query
+          key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          query: |
+            customEvents
+            | where timestamp > ago(7d) and timestamp < now()
+            | where cloud_RoleName in ("workforce-allocations-to-delius")
+            | where name in ("ApprovedPremisesFailureReport")
+            | project customDimensions.crn, customDimensions.reason, customDimensions.externalReference, timestamp
+            | order by tostring(customDimensions_crn) asc
+
+      - name: Transform results into Slack message
+        id: transform
+        run: |
+          echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
+            {
+              "blocks": ([
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": ":information_source: Event Processing Failures"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required."
+                  },
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*CRN*"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Reason*"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Reference*"
+                    }
+                  ]
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": ">This report was generated automatically. For more information, contact the probation integration team."
+                    }
+                  ]
+                }
+              ])
+            }')" | tee -a "$GITHUB_OUTPUT"
+        env:
+          search_result: ${{ steps.search.outputs.result }}
+
+      - name: Send message to Slack
+        id: send
+        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
+        with:
+          channel-id: topic-pi-approved-premises
+          payload: ${{ steps.transform.outputs.result }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

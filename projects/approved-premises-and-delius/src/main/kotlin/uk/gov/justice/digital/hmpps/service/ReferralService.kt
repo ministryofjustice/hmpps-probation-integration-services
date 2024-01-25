@@ -146,7 +146,7 @@ class ReferralService(
         val referral = getReferral(person, externalReference)
         val residence = residenceRepository.findByReferralIdAndCreatedByUserId(referral.id, serviceUserId)
             ?: throw IgnorableMessageException(
-                "ResidenceNotFound",
+                "Residence not found",
                 mapOf("crn" to person.crn, "externalReference" to externalReference)
             )
         residence.departureDate = details.departedAt
@@ -170,7 +170,7 @@ class ReferralService(
             ServiceContext.servicePrincipal()!!.userId,
             externalReference
         ) ?: throw IgnorableMessageException(
-            "ReferralNotFound",
+            "Referral Not Found",
             mapOf("crn" to person.crn, "externalReference" to externalReference)
         )
 
