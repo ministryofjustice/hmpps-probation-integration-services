@@ -139,9 +139,6 @@ class Referral(
 
     @Column
     val partitionAreaId: Long = 0
-
-    fun isForBooking(bookingId: String): Boolean =
-        referralNotes?.contains(Nsi.EXT_REF_BOOKING_PREFIX + bookingId) == true
 }
 
 @Entity

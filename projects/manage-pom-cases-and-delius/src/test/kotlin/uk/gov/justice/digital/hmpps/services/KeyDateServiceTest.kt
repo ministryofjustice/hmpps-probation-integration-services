@@ -11,13 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.findHandoverDates
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataSet
-import uk.gov.justice.digital.hmpps.messaging.IgnorableMessageException
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)

@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
-import com.nimbusds.openid.connect.sdk.assurance.claims.ISO3166_1Alpha2CountryCode.OM
-import io.sentry.clientreport.DiscardedEvent.JsonKeys.REASON
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -14,10 +12,9 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.INITIAL_OM_ALLOCATION
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff

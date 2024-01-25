@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.services
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.Handover
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.ManagePomCasesClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.messaging.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
@@ -30,7 +30,7 @@ class HandoverDatesChanged(
     } catch (ime: IgnorableMessageException) {
         telemetryService.trackEvent(
             ime.message,
-            mapOf("nomsId" to event.personReference.findNomsNumber().orNotProvided()) + ime.additionalInformation
+            mapOf("nomsId" to event.personReference.findNomsNumber().orNotProvided()) + ime.additionalProperties
         )
     }
 

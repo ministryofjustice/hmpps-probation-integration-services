@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.*
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
