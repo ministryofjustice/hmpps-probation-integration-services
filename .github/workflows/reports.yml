@@ -109,7 +109,7 @@ jobs:
             | where timestamp > ago(7d) and timestamp < now()
             | where cloud_RoleName in ("approved-premises-and-delius")
             | where name in ("ApprovedPremisesFailureReport")
-            | project customDimensions.crn, customDimensions.reason, customDimensions.externalReference, itemId, timestamp
+            | project customDimensions.crn, customDimensions.reason, itemId, timestamp
             | order by tostring(customDimensions_crn) asc
 
       - name: Transform results into Slack message
@@ -141,10 +141,6 @@ jobs:
                       "type": "mrkdwn",
                       "text": "*Reason*"
                     },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Reference*"
-                    }
                   ]
                 }
               ] + 
@@ -157,7 +153,7 @@ jobs:
                   },
                   {
                     type: "mrkdwn",
-                    text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[3] + "%22,%22timestamp%22:%22" + .[4] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
+                    text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
                   }
                 ]) | flatten)
               })) + 
