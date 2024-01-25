@@ -1,17 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Lob
-import jakarta.persistence.LockModeType
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
@@ -24,7 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -139,9 +127,6 @@ class Referral(
 
     @Column
     val partitionAreaId: Long = 0
-
-    fun isForBooking(bookingId: String): Boolean =
-        referralNotes?.contains(Nsi.EXT_REF_BOOKING_PREFIX + bookingId) == true
 }
 
 @Entity
