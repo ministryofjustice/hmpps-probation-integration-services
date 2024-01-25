@@ -26,6 +26,7 @@ jobs:
 
       - name: Transform results into Slack message
         id: transform
+        if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
         run: |
           echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
             {
@@ -54,20 +55,20 @@ jobs:
                     }
                   ]
                 }
-              ] + 
+              ] +
               (. | [_nwise(5)] | map({
                 "type": "section",
                 "fields": (. | map([
-                  { 
-                    type: "plain_text", 
-                    text: .[0]
-                  }, 
                   {
-                    type: "mrkdwn", 
-                    text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[3] + "%22,%22timestamp%22:%22" + .[4] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
+                    type: "plain_text",
+                    text: .[0]
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
                   }
                 ]) | flatten)
-              })) + 
+              })) +
               [
                 {
                   "type": "context",
@@ -85,6 +86,7 @@ jobs:
 
       - name: Send message to Slack
         id: send
+        if: steps.transform.outputs.result != null
         uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
         with:
           channel-id: topic-pi-workforce-allocation
@@ -105,13 +107,14 @@ jobs:
           query: |
             customEvents
             | where timestamp > ago(7d) and timestamp < now()
-            | where cloud_RoleName in ("workforce-allocations-to-delius")
+            | where cloud_RoleName in ("approved-premises-and-delius")
             | where name in ("ApprovedPremisesFailureReport")
             | project customDimensions.crn, customDimensions.reason, customDimensions.externalReference
             | order by tostring(customDimensions_crn) asc
 
       - name: Transform results into Slack message
         id: transform
+        if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
         run: |
           echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
             {
@@ -120,7 +123,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": ":information_source: Event Processing Failures"
+                    "text": ":information_source: Approved Premises Processing Failures"
                   }
                 },
                 {
@@ -143,7 +146,18 @@ jobs:
                       "text": "*Reference*"
                     }
                   ]
-                },
+                }
+              ] + 
+              (. | [_nwise(5)] | map({
+                "type": "section",
+                "fields": (. | map([
+                  { 
+                    type: "plain_text", 
+                    text: .[0]
+                  }
+                ]) | flatten)
+              })) + 
+              [
                 {
                   "type": "context",
                   "elements": [
@@ -160,6 +174,7 @@ jobs:
 
       - name: Send message to Slack
         id: send
+        if: steps.transform.outputs.result != null
         uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
         with:
           channel-id: topic-pi-approved-premises
