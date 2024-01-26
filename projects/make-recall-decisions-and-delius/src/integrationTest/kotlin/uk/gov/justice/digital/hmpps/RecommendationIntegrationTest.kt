@@ -37,7 +37,7 @@ internal class RecommendationIntegrationTest {
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `management overview decision to recall`() {
+    fun `management oversight decision to recall`() {
         val notification = prepEvent("management-oversight-recall", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -56,7 +56,7 @@ internal class RecommendationIntegrationTest {
     }
 
     @Test
-    fun `management overview decision not to recall`() {
+    fun `management oversight decision not to recall`() {
         val notification = prepEvent("management-oversight-not-recall", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -70,6 +70,22 @@ internal class RecommendationIntegrationTest {
             contact.notes,
             equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview")
         )
+        assertThat(contact.isSensitive, equalTo(true))
+        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+    }
+
+    @Test
+    fun `recommendation deleted`() {
+        val notification = prepEvent("recommendation-deleted", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val person = PersonGenerator.RECOMMENDATION_DELETED
+        val contact = getContact(person.id)
+        assertNotNull(contact!!)
+        assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
+        assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
+        assertThat(contact.staffId, equalTo(UserGenerator.WITH_STAFF.staff!!.id))
+        assertThat(contact.notes, equalTo("my rationale for deleting the case"))
         assertThat(contact.isSensitive, equalTo(true))
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }

@@ -5,7 +5,7 @@ import java.net.URI
 
 interface MakeRecallDecisionsClient {
     @GetExchange
-    fun getDetails(url: URI): DecisionDetails
+    fun getDetails(url: URI): RecommendationDetails
 
-    data class DecisionDetails(val notes: String, val sensitive: Boolean)
+    data class RecommendationDetails(val notes: String, val sensitive: Boolean)
 }
