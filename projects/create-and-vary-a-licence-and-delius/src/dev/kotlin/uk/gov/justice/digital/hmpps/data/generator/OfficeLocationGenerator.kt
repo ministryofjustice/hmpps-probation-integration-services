@@ -33,6 +33,18 @@ object OfficeLocationGenerator {
         postcode = "RG1 3EH",
         ldu = DISTRICT_BRK
     )
+    val LOCATION_ENDED = generateLocation(
+        code = "TVP_RCC",
+        description = "Reading Office",
+        buildingNumber = "23",
+        buildingName = "The old hall",
+        streetName = "Another Place",
+        district = "District 2",
+        town = "Reading",
+        postcode = "RG1 3EH",
+        endDate = LocalDate.now().minusDays(1),
+        ldu = DISTRICT_BRK
+    )
 
     fun generateDistrict(
         code: String,

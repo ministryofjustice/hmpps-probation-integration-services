@@ -7,15 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -54,6 +46,8 @@ class DataLoader(
         entityManager.persist(StaffGenerator.DEFAULT_STAFF_USER)
         entityManager.flush()
 
+        createOfficeLocationsAndDistricts()
+
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
         entityManager.persist(PersonGenerator.DEFAULT_CM)
 
@@ -70,7 +64,7 @@ class DataLoader(
         )
 
         createForAddingLicenceConditions()
-        createOfficeLocationsAndDistricts()
+
         createCaseloadData()
     }
 
@@ -97,7 +91,8 @@ class DataLoader(
             OfficeLocationGenerator.DISTRICT_MKY,
             OfficeLocationGenerator.DISTRICT_OXF,
             OfficeLocationGenerator.LOCATION_BRK_1,
-            OfficeLocationGenerator.LOCATION_BRK_2
+            OfficeLocationGenerator.LOCATION_BRK_2,
+            OfficeLocationGenerator.LOCATION_ENDED
         )
     }
 

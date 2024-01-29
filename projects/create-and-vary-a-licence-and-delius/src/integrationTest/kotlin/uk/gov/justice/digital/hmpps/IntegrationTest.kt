@@ -48,6 +48,20 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `returns only active team office locations`() {
+        val crn = PersonGenerator.DEFAULT_PERSON.crn
+
+        val manager = mockMvc
+            .perform(get("/probation-case/$crn/responsible-community-manager").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<Manager>()
+        assertThat(
+            manager.team.addresses?.size,
+            equalTo(2)
+        )
+    }
+
+    @Test
     fun `returns 404 if no crn or community officer`() {
         mockMvc.perform(
             get("/probation-case/Z123456/responsible-community-manager")
