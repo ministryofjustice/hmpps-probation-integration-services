@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonReference
-import uk.gov.justice.digital.hmpps.service.ManagementOversightRecall
+import uk.gov.justice.digital.hmpps.service.RecommendationService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
@@ -30,7 +30,7 @@ internal class HandlerTest {
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
     @Mock
-    lateinit var managementOversightRecall: ManagementOversightRecall
+    lateinit var recommendationService: RecommendationService
 
     @Mock
     lateinit var makeRecallDecisionsClient: MakeRecallDecisionsClient

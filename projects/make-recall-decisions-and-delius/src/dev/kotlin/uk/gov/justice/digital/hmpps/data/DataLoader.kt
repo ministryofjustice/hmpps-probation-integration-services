@@ -7,15 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactOutcomeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -34,11 +26,13 @@ class DataLoader(
     override fun onApplicationEvent(ape: ApplicationReadyEvent) {
         entityManager.run {
             persist(ContactTypeGenerator.MANAGEMENT_OVERSIGHT_RECALL)
+            persist(ContactTypeGenerator.RECOMMENDATION_DELETED)
             persist(ContactOutcomeGenerator.DECISION_TO_RECALL)
             persist(ContactOutcomeGenerator.DECISION_NOT_TO_RECALL)
             persist(PersonGenerator.RECOMMENDATION_STARTED)
             persist(PersonGenerator.DECISION_TO_RECALL)
             persist(PersonGenerator.DECISION_NOT_TO_RECALL)
+            persist(PersonGenerator.RECOMMENDATION_DELETED)
 
             persist(PersonGenerator.DEFAULT_PROVIDER)
             persist(PersonGenerator.DEFAULT_LAU)
@@ -47,6 +41,7 @@ class DataLoader(
             persist(PersonGenerator.RECOMMENDATION_STARTED.manager!!)
             persist(PersonGenerator.DECISION_TO_RECALL.manager!!)
             persist(PersonGenerator.DECISION_NOT_TO_RECALL.manager!!)
+            persist(PersonGenerator.RECOMMENDATION_DELETED.manager!!)
 
             persist(PersonGenerator.CASE_SUMMARY.gender)
             persist(PersonGenerator.CASE_SUMMARY.ethnicity)

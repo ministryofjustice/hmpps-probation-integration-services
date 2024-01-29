@@ -1,13 +1,30 @@
 {
-  "request": {
-    "method": "GET",
-    "urlPath": "/mrd/management-oversight/1"
-  },
-  "response": {
-    "headers": {
-      "Content-Type": "application/json"
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/mrd/management-oversight/1"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "management-oversight-detail.json"
+      }
     },
-    "status": 200,
-    "bodyFileName": "management-oversight-detail.json"
-  }
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/mrd/delete-recommendation-rationale/1"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "deletion.json"
+      }
+    }
+  ]
 }
