@@ -37,7 +37,7 @@ class PersonManager(
         inverseJoinColumns = [JoinColumn(name = "office_location_id")]
     )
     @SQLRestriction("end_date is null or end_date > current_date")
-    val teamOfficeLocations: List<OfficeLocation>?,
+    val teamOfficeLocations: List<OfficeLocation>,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
