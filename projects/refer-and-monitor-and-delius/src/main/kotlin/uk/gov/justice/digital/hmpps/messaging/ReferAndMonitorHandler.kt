@@ -5,9 +5,7 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.UnprocessableException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Failure
-import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Rejected
-import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Success
+import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
@@ -38,8 +36,8 @@ class ReferAndMonitorHandler(
 
             is Rejected -> {
                 telemetryService.trackEvent(
-                    res.exception.message!!,
-                    notification.message.commonFields() + res.properties
+                    "ReferAndMonitorFailureReport",
+                    notification.message.commonFields() + res.properties + ("message" to res.exception.message!!)
                 )
             }
 

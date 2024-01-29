@@ -10,7 +10,7 @@ class ReferralNotFoundException(
     date: LocalDate,
     reason: String
 ) : UnprocessableException(
-    "ReferralNotFound",
+    "Referral Not Found",
     listOfNotNull(
         "referralUrn" to referralUrn,
         "crn" to crn,
