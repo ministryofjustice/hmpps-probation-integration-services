@@ -27,7 +27,7 @@ runs:
         distribution: 'temurin'
 
     - name: Get build info
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@v3
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
       with:
         arguments: '${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo'
