@@ -12,13 +12,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.service.asManager
-import uk.gov.justice.digital.hmpps.service.asPDUHead
-import uk.gov.justice.digital.hmpps.service.asStaff
-import uk.gov.justice.digital.hmpps.service.asStaffName
+import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -39,11 +37,33 @@ internal class IntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Manager>()
 
+        val expectedAddresses: List<OfficeAddress> = listOf(
+            OfficeLocationGenerator.LOCATION_BRK_1.asAddress(),
+            OfficeLocationGenerator.LOCATION_BRK_2.asAddress()
+        )
+
         assertThat(
             manager,
             equalTo(
-                PersonGenerator.DEFAULT_CM.asManager().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
+                PersonGenerator.DEFAULT_CM.asManager().copy(
+                    username = "john-smith", email = "john.smith@moj.gov.uk",
+                    team = ProviderGenerator.DEFAULT_TEAM.asTeam(teamAddresses = expectedAddresses)
+                )
             )
+        )
+    }
+
+    @Test
+    fun `returns only active team office locations`() {
+        val crn = PersonGenerator.DEFAULT_PERSON.crn
+
+        val manager = mockMvc
+            .perform(get("/probation-case/$crn/responsible-community-manager").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<Manager>()
+        assertThat(
+            manager.team.addresses?.size,
+            equalTo(2)
         )
     }
 

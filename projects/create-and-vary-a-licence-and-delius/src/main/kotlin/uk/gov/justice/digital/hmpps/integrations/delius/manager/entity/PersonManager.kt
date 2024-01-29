@@ -1,17 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.manager.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.OfficeLocation
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
@@ -33,6 +29,15 @@ class PersonManager(
     @ManyToOne
     @JoinColumn(name = "team_id")
     val team: Team,
+
+    @ManyToMany
+    @JoinTable(
+        name = "team_office_location",
+        joinColumns = [JoinColumn(name = "team_id")],
+        inverseJoinColumns = [JoinColumn(name = "office_location_id")]
+    )
+    @SQLRestriction("end_date is null or end_date > current_date")
+    val teamOfficeLocations: List<OfficeLocation>,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")

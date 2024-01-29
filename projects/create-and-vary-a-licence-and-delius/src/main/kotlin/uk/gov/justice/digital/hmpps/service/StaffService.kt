@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 
 @Service
@@ -20,7 +19,6 @@ class StaffService(
     private val staffRepository: StaffRepository,
     private val boroughRepository: BoroughRepository,
     private val caseloadRepository: CaseloadRepository,
-    private val teamRepository: TeamRepository
 ) {
     fun findStaff(username: String): Staff =
         staffRepository.findByUserUsername(username)?.let { staff ->
