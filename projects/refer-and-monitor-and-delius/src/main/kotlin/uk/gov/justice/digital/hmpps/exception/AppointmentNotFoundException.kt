@@ -11,7 +11,7 @@ class AppointmentNotFoundException(
     val outcome: Outcome,
     val reason: AppointmentNotFoundReason
 ) : UnprocessableException(
-    "AppointmentNotFound",
+    "Appointment Not Found",
     mapOf(
         "appointmentId" to appointmentId.toString(),
         "deliusId" to deliusId.toString(),

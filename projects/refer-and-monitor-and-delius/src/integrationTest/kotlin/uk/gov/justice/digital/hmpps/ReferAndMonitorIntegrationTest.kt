@@ -374,7 +374,7 @@ internal class ReferAndMonitorIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
-            "AppointmentNotFound",
+            "ReferAndMonitorFailureReport",
             mapOf(
                 "crn" to "T140223",
                 "referralId" to "cb293dcb-c201-4743-aa9d-acb14c8a1ddd",
@@ -384,7 +384,8 @@ internal class ReferAndMonitorIntegrationTest {
                 "outcomeAttended" to "NO",
                 "outcomeNotify" to "true",
                 "reason" to "NSI terminated, likely a future appointment deleted",
-                "reasonDetail" to "NSI last updated by ReferAndMonitorAndDelius"
+                "reasonDetail" to "NSI last updated by ReferAndMonitorAndDelius",
+                "message" to "Appointment Not Found"
             )
         )
     }
