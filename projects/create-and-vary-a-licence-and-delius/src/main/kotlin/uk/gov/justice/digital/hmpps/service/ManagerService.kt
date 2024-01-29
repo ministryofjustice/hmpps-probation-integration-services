@@ -30,7 +30,7 @@ fun PersonManager.asManager() = Manager(
     staff.code,
     staff.name(),
     provider.asProvider(),
-    team.asTeam(teamOfficeLocations?.map { ol -> ol.asAddress() }),
+    team.asTeam(teamOfficeLocations.map { ol -> ol.asAddress() }),
     staff.user?.username,
     staff.user?.email,
     staff.isUnallocated()
