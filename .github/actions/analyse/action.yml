@@ -42,7 +42,7 @@ runs:
         distribution: 'temurin'
 
     - name: Sonar analysis
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@v3
       if: github.actor != 'dependabot[bot]'
       with:
         arguments: sonar
