@@ -102,15 +102,15 @@ fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
 fun PrisonerMovement?.telemetryProperties(): Map<String, String> = if (this == null) {
     mapOf()
 } else {
-    mapOf(
+    listOfNotNull(
         "occurredAt" to occurredAt.toString(),
         "nomsNumber" to nomsId,
-        "previousInstitution" to fromPrisonId,
+        fromPrisonId?.let { "previousInstitution" to it },
         "institution" to toPrisonId,
         "reason" to type.name,
         "movementReason" to reason,
         "movementType" to this::class.java.simpleName
-    )
+    ).toMap()
 }
 
 fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
@@ -142,7 +142,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
 
         Booking.InOutStatus.OUT -> PrisonerMovement.Released(
             personReference,
-            movement.fromAgency,
+            movement.fromAgency!!,
             movement.toAgency,
             PrisonerMovement.Type.valueOf(reason),
             movementReason,
