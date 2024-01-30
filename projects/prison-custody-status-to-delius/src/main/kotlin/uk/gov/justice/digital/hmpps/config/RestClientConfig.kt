@@ -14,7 +14,7 @@ class RestClientConfig(private val oauth2Client: RestClient) {
     fun prisonApiClient(@Value("\${integrations.prison-api.url}") prisonApiBaseUrl: String) =
         createClient<PrisonApiClient>(
             oauth2Client.mutate()
-                .baseUrl("$prisonApiBaseUrl/api/bookings")
+                .baseUrl("$prisonApiBaseUrl/api")
                 .build()
         )
 }

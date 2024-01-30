@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.mockito.kotlin.verify
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactAlertRepository
@@ -31,8 +32,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
+import uk.gov.justice.digital.hmpps.integrations.prison.Movement
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -87,16 +91,34 @@ open class PcstdIntegrationTestBase {
     @MockBean
     internal lateinit var featureFlags: FeatureFlags
 
-    internal fun withBooking(booking: Booking) {
+    internal fun withBooking(booking: Booking, lastMovement: Movement = booking.lastMovement()) {
         wireMockServer.stubFor(
-            get(WireMock.urlPathEqualTo("/api/bookings/offenderNo/${booking.personReference}"))
+            WireMock.get(WireMock.urlPathEqualTo("/api/bookings/offenderNo/${booking.personReference}"))
                 .willReturn(
                     aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(objectMapper.writeValueAsString(booking))
                 )
         )
+        wireMockServer.stubFor(
+            WireMock.post(WireMock.urlPathEqualTo("/api/movements/offenders"))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(listOf(booking.personReference))))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(listOf(lastMovement)))
+                )
+        )
     }
+
+    internal fun Booking.lastMovement(dateTime: ZonedDateTime = ZonedDateTime.now()) = Movement(
+        InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+        agencyId,
+        movementType,
+        movementReason,
+        dateTime.toLocalDate(),
+        dateTime.toLocalTime()
+    )
 
     internal fun getPersonId(nomsNumber: String) =
         personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber).single().id

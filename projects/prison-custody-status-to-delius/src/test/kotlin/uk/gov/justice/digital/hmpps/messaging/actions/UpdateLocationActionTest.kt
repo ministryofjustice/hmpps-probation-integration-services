@@ -88,7 +88,7 @@ internal class UpdateLocationActionTest {
             )
         ).thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[CustodyEventTypeCode.LOCATION_CHANGE])
 
-        val res = action.accept(PrisonerMovementContext(received.copy(prisonId = "SWI"), custody))
+        val res = action.accept(PrisonerMovementContext(received.copy(toPrisonId = "SWI"), custody))
         assertThat(res, instanceOf(ActionResult.Success::class.java))
         val success = res as ActionResult.Success
         assertThat(success.type, equalTo(ActionResult.Type.LocationUpdated))
@@ -98,6 +98,7 @@ internal class UpdateLocationActionTest {
         private val custody = custody()
         private val received = PrisonerMovement.Received(
             custody.disposal.event.person.nomsNumber,
+            "OUT",
             "WSI",
             TRANSFERRED,
             "INT",
@@ -106,6 +107,7 @@ internal class UpdateLocationActionTest {
         private val released = PrisonerMovement.Released(
             custody.disposal.event.person.nomsNumber,
             "WSI",
+            "OUT",
             RELEASED,
             "",
             ZonedDateTime.now()

@@ -60,6 +60,7 @@ internal class RecallActionTest {
     fun `ignored when recall not possible`(custody: Custody) {
         val prisonerMovement = PrisonerMovement.Received(
             custody.disposal.event.person.nomsNumber,
+            "OUT",
             InstitutionGenerator.DEFAULT.nomisCdeCode!!,
             PrisonerMovement.Type.ADMISSION,
             "",
@@ -76,6 +77,7 @@ internal class RecallActionTest {
     fun `ignored when recall date not valid`(date: ZonedDateTime) {
         val prisonerMovement = PrisonerMovement.Received(
             nomsId,
+            "OUT",
             InstitutionGenerator.DEFAULT.nomisCdeCode!!,
             PrisonerMovement.Type.ADMISSION,
             "",
@@ -156,6 +158,7 @@ internal class RecallActionTest {
         fun transferredCases(): List<Arguments> {
             val movement = PrisonerMovement.Received(
                 nomsId,
+                InstitutionGenerator.MOVED_TO.nomisCdeCode!!,
                 InstitutionGenerator.DEFAULT.nomisCdeCode!!,
                 PrisonerMovement.Type.TRANSFERRED,
                 "INT",

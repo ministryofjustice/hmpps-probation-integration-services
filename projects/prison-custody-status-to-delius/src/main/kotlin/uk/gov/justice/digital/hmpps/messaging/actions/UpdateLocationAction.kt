@@ -38,12 +38,12 @@ class UpdateLocationAction(
 
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        if (prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.prisonId) {
+        if (prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.toPrisonId) {
             return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
         }
 
         val institution = when (prisonerMovement) {
-            is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.prisonId)
+            is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.toPrisonId)
             is PrisonerMovement.Released -> prisonerMovement.releaseLocation(custody)
         }
 

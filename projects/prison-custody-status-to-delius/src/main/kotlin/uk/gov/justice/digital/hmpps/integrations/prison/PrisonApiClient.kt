@@ -2,17 +2,27 @@ package uk.gov.justice.digital.hmpps.integrations.prison
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.GetExchange
+import org.springframework.web.service.annotation.PostExchange
+import java.time.LocalDate
+import java.time.LocalTime
 
 interface PrisonApiClient {
 
-    @GetExchange(value = "/offenderNo/{nomsId}")
+    @GetExchange(value = "/bookings/offenderNo/{nomsId}")
     fun getBookingByNomsId(
         @PathVariable("nomsId") id: String,
         @RequestParam basicInfo: Boolean = false,
         @RequestParam extraInfo: Boolean = true
     ): Booking
+
+    @PostExchange(value = "/movements/offenders")
+    fun getLatestMovement(
+        @RequestBody offenderIds: List<String>,
+        @RequestParam latestOnly: Boolean = true,
+    ): List<Movement>
 }
 
 data class Booking(
@@ -72,3 +82,13 @@ data class Booking(
         }
     }
 }
+
+data class Movement(
+    val fromAgency: String,
+    val toAgency: String,
+    val movementType: String,
+    @JsonAlias("movementReasonCode")
+    val movementReason: String,
+    val movementDate: LocalDate,
+    val movementTime: LocalTime
+)
