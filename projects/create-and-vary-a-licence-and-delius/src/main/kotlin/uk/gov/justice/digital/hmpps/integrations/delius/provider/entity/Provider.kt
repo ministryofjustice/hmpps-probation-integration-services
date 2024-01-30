@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -40,6 +41,15 @@ class Team(
     @ManyToOne
     @JoinColumn(name = "district_id")
     val district: District,
+
+    @ManyToMany
+    @JoinTable(
+        name = "team_office_location",
+        joinColumns = [JoinColumn(name = "team_id")],
+        inverseJoinColumns = [JoinColumn(name = "office_location_id")]
+    )
+    @SQLRestriction("end_date is null or end_date > current_date")
+    val addresses: List<OfficeLocation>,
 
     val startDate: LocalDate,
     val endDate: LocalDate?,

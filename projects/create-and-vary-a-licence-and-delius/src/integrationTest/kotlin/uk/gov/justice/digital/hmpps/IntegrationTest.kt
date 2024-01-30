@@ -37,17 +37,12 @@ internal class IntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Manager>()
 
-        val expectedAddresses: List<OfficeAddress> = listOf(
-            OfficeLocationGenerator.LOCATION_BRK_1.asAddress(),
-            OfficeLocationGenerator.LOCATION_BRK_2.asAddress()
-        )
 
         assertThat(
             manager,
             equalTo(
                 PersonGenerator.DEFAULT_CM.asManager().copy(
-                    username = "john-smith", email = "john.smith@moj.gov.uk",
-                    team = ProviderGenerator.DEFAULT_TEAM.asTeam(teamAddresses = expectedAddresses)
+                    username = "john-smith", email = "john.smith@moj.gov.uk"
                 )
             )
         )
@@ -55,15 +50,23 @@ internal class IntegrationTest {
 
     @Test
     fun `returns only active team office locations`() {
-        val crn = PersonGenerator.DEFAULT_PERSON.crn
-
+        val crn = PersonGenerator.PERSON_ENDED_TEAM_LOCATION.crn
+        val expectedAddresses: List<OfficeAddress> = listOf(
+            OfficeLocationGenerator.LOCATION_BRK_1.asAddress(),
+            OfficeLocationGenerator.LOCATION_BRK_2.asAddress()
+        )
         val manager = mockMvc
             .perform(get("/probation-case/$crn/responsible-community-manager").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Manager>()
         assertThat(
-            manager.team.addresses?.size,
-            equalTo(2)
+            manager,
+            equalTo(
+                PersonGenerator.CM_ENDED_TEAM_LOCATION.asManager().copy(
+                    username = "john-smith", email = "john.smith@moj.gov.uk",
+                    team = ProviderGenerator.TEAM_ENDED_LOCATIONS.asTeam().copy(addresses = expectedAddresses)
+                )
+            )
         )
     }
 
