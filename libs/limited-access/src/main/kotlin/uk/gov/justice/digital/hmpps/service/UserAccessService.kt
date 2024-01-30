@@ -8,6 +8,9 @@ import uk.gov.justice.digital.hmpps.entity.isRestricted
 
 @Service
 class UserAccessService(private val uar: UserAccessRepository) {
+    fun caseAccessFor(username: String, crn: String) =
+        userAccessFor(username, listOf(crn)).access.first { it.crn == crn }
+
     fun userAccessFor(username: String, crns: List<String>): UserAccess {
         val user = uar.findByUsername(username)
 
