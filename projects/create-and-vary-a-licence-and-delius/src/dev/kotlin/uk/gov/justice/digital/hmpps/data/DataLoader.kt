@@ -91,12 +91,12 @@ class DataLoader(
 
     private fun createOfficeLocationsAndDistricts() {
         entityManager.persistAll(
-            OfficeLocationGenerator.DISTRICT_BRK,
-            OfficeLocationGenerator.DISTRICT_MKY,
-            OfficeLocationGenerator.DISTRICT_OXF,
-            OfficeLocationGenerator.LOCATION_BRK_1,
-            OfficeLocationGenerator.LOCATION_BRK_2,
-            OfficeLocationGenerator.LOCATION_ENDED
+            ProviderGenerator.DISTRICT_BRK,
+            ProviderGenerator.DISTRICT_MKY,
+            ProviderGenerator.DISTRICT_OXF,
+            ProviderGenerator.LOCATION_BRK_1,
+            ProviderGenerator.LOCATION_BRK_2,
+            ProviderGenerator.LOCATION_ENDED
         )
     }
 

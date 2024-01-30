@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
@@ -52,8 +51,8 @@ internal class IntegrationTest {
     fun `returns only active team office locations`() {
         val crn = PersonGenerator.PERSON_ENDED_TEAM_LOCATION.crn
         val expectedAddresses: List<OfficeAddress> = listOf(
-            OfficeLocationGenerator.LOCATION_BRK_1.asAddress(),
-            OfficeLocationGenerator.LOCATION_BRK_2.asAddress()
+            ProviderGenerator.LOCATION_BRK_1.asAddress(),
+            ProviderGenerator.LOCATION_BRK_2.asAddress()
         )
         val manager = mockMvc
             .perform(get("/probation-case/$crn/responsible-community-manager").withToken())
