@@ -2,7 +2,7 @@
 server.shutdown: graceful
 spring:
   jackson:
-    default-property-inclusion: non_empty
+    default-property-inclusion: non_null
   jpa:
     hibernate.ddl-auto: validate
     database-platform: org.hibernate.dialect.OracleDialect

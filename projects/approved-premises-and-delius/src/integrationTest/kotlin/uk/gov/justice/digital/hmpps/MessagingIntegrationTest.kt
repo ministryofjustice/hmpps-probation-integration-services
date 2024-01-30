@@ -93,7 +93,6 @@ internal class MessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
-        verify(telemetryService).notificationReceived(event)
         verify(telemetryService).trackEvent("ApplicationSubmitted", event.message.telemetryProperties())
 
         // And a contact alert is created
@@ -112,7 +111,6 @@ internal class MessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
-        verify(telemetryService).notificationReceived(event)
         verify(telemetryService).trackEvent("ApplicationAssessed", event.message.telemetryProperties())
 
         // And a contact alert is created
@@ -146,7 +144,6 @@ internal class MessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
-        verify(telemetryService, times(2)).notificationReceived(event)
         verify(telemetryService, times(2)).trackEvent("BookingMade", event.message.telemetryProperties())
 
         // And a contact alert is created
@@ -195,7 +192,6 @@ internal class MessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
-        verify(telemetryService).notificationReceived(event)
         verify(telemetryService).trackEvent("PersonNotArrived", event.message.telemetryProperties())
 
         // And a contact alert is created
@@ -236,7 +232,6 @@ internal class MessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
-        verify(telemetryService).notificationReceived(event)
         verify(telemetryService).trackEvent("PersonArrived", event.message.telemetryProperties())
 
         // And a contact alert is created
@@ -314,7 +309,6 @@ internal class MessagingIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
-        verify(telemetryService).notificationReceived(event)
         verify(telemetryService).trackEvent("PersonDeparted", event.message.telemetryProperties())
 
         val contact = contactRepository.findAll()
@@ -361,7 +355,6 @@ internal class MessagingIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
-        verify(telemetryService).notificationReceived(event)
         verify(telemetryService).trackEvent("BookingChanged", event.message.telemetryProperties())
 
         val referral = referralRepository.findAll().first {
@@ -378,7 +371,6 @@ internal class MessagingIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
-        verify(telemetryService).notificationReceived(event)
         verify(telemetryService).trackEvent("BookingCancelled", event.message.telemetryProperties())
 
         val contact = contactRepository.findAll()
@@ -412,7 +404,6 @@ internal class MessagingIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
-        verify(telemetryService).notificationReceived(event)
         verify(telemetryService).trackEvent("ApplicationWithdrawn", event.message.telemetryProperties())
 
         val contact = contactRepository.findAll()

@@ -1,14 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -56,8 +48,6 @@ class Team(
     @Column(name = "team_id")
     val id: Long
 )
-
-interface TeamRepository : JpaRepository<Team, Long>
 
 @Immutable
 @Entity

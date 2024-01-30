@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.services
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDate.TypeCode.HANDOVER_DATE
@@ -10,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.findHandoverDates
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.keyDateType
-import uk.gov.justice.digital.hmpps.messaging.IgnorableMessageException
 import java.time.LocalDate
 
 @Transactional

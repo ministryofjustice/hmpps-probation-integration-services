@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.ManagePomCasesClient
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.PomAllocation
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.PomDeallocated
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.PomNotAllocated
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.messaging.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 import java.time.ZonedDateTime
@@ -65,7 +65,7 @@ class PomAllocated(
     } catch (ime: IgnorableMessageException) {
         telemetryService.trackEvent(
             ime.message,
-            mapOf("nomsId" to event.personReference.findNomsNumber().orNotProvided()) + ime.additionalInformation
+            mapOf("nomsId" to event.personReference.findNomsNumber().orNotProvided()) + ime.additionalProperties
         )
     }
 

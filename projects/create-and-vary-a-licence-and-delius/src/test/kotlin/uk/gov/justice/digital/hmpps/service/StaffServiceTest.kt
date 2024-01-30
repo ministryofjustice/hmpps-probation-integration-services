@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class StaffServiceTest {
@@ -29,9 +28,6 @@ internal class StaffServiceTest {
 
     @Mock
     lateinit var caseloadRepository: CaseloadRepository
-
-    @Mock
-    lateinit var teamRepository: TeamRepository
 
     @InjectMocks
     lateinit var service: StaffService

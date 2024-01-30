@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.empty
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasSize
-import org.hamcrest.Matchers.nullValue
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -13,26 +10,12 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.ContactTypeSummary
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.nonCustodialEvent
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.release
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryAddressRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryEventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryRegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryReleaseRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.RegisterType
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Registration
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Release
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -112,20 +95,25 @@ internal class CaseSummaryServiceTest {
     }
 
     @Test
-    fun `get overview ignores multiple custodial events`() {
+    fun `get overview returns most recent release date from any active custodial event`() {
+        val events = listOf(custodialEvent(person.id), custodialEvent(person.id), nonCustodialEvent(person.id))
+        val release1 = events[0].disposal!!.custody!!.release(LocalDate.of(2020, 1, 1))
+        val release2 = events[1].disposal!!.custody!!.release(LocalDate.of(2020, 1, 2))
+
         givenPersonalDetails()
-        givenCustodialEvents(List(3) { EventGenerator.custodialEvent(person.id) })
+        givenEvents(events)
+        givenReleases(listOf(release1, release2))
 
         val overview = caseSummaryService.getOverview(person.crn)
 
         assertThat(overview.activeConvictions, hasSize(3))
-        assertThat(overview.lastRelease, nullValue())
+        assertThat(overview.lastRelease?.releaseDate, equalTo(LocalDate.of(2020, 1, 2)))
     }
 
     @Test
-    fun `get overview throws when no custodial events`() {
+    fun `get overview handles no custodial events`() {
         givenPersonalDetails()
-        givenCustodialEvents(emptyList())
+        givenEvents(emptyList())
 
         val overview = caseSummaryService.getOverview(person.crn)
 
@@ -257,21 +245,21 @@ internal class CaseSummaryServiceTest {
             .thenReturn(rosh)
     }
 
-    private fun givenCustodialEvents(events: List<Event>): List<Event> {
+    private fun givenEvents(events: List<Event>): List<Event> {
         whenever(eventRepository.findByPersonId(person.id)).thenReturn(events)
         return events
     }
 
     private fun givenACustodialEvent(event: Event = EventGenerator.CASE_SUMMARY) =
-        givenCustodialEvents(listOf(event))[0]
+        givenEvents(listOf(event))[0]
 
-    private fun givenARelease(): Release {
-        val event = givenACustodialEvent()
-        val release = event.disposal!!.custody!!.release()
-        whenever(releaseRepository.findFirstByCustodyIdOrderByDateDesc(event.disposal!!.custody!!.id)).thenReturn(
-            release
-        )
-        return release
+    private fun givenARelease(release: Release = givenACustodialEvent().disposal!!.custody!!.release()) =
+        givenReleases(listOf(release))[0]
+
+    private fun givenReleases(releases: List<Release> = listOf(givenACustodialEvent().disposal!!.custody!!.release())): List<Release> {
+        whenever(releaseRepository.findFirstByCustodyIdInOrderByDateDesc(releases.map { it.custodyId }))
+            .thenReturn(releases.maxBy { it.date })
+        return releases
     }
 
     private fun givenContacts() {
