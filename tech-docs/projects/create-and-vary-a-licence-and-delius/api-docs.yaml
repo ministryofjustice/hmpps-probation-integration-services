@@ -281,6 +281,39 @@ components:
           $ref: '#/components/schemas/Staff'
         team:
           $ref: '#/components/schemas/Team'
+    OfficeAddress:
+      required:
+      - from
+      - ldu
+      - officeName
+      type: object
+      properties:
+        officeName:
+          type: string
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        ldu:
+          type: string
+        telephoneNumber:
+          type: string
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
     Staff:
       required:
       - code
@@ -320,6 +353,10 @@ components:
           type: string
         emailAddress:
           type: string
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfficeAddress'
         district:
           $ref: '#/components/schemas/District'
         borough:
@@ -390,39 +427,6 @@ components:
         county:
           type: string
         postcode:
-          type: string
-        from:
-          type: string
-          format: date
-        to:
-          type: string
-          format: date
-    OfficeAddress:
-      required:
-      - from
-      - ldu
-      - officeName
-      type: object
-      properties:
-        officeName:
-          type: string
-        buildingName:
-          type: string
-        buildingNumber:
-          type: string
-        streetName:
-          type: string
-        district:
-          type: string
-        town:
-          type: string
-        county:
-          type: string
-        postcode:
-          type: string
-        ldu:
-          type: string
-        telephoneNumber:
           type: string
         from:
           type: string
