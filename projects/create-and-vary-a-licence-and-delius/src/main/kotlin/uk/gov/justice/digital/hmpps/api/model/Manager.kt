@@ -18,7 +18,7 @@ data class Team(
     val code: String, val description: String,
     val telephone: String?,
     val emailAddress: String?,
-    val addresses: List<OfficeAddress>?,
+    val addresses: List<OfficeAddress>,
     val district: District,
     val borough: Borough,
     val startDate: LocalDate,

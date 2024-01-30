@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.OfficeLocation
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
@@ -29,15 +28,6 @@ class PersonManager(
     @ManyToOne
     @JoinColumn(name = "team_id")
     val team: Team,
-
-    @ManyToMany
-    @JoinTable(
-        name = "team_office_location",
-        joinColumns = [JoinColumn(name = "team_id")],
-        inverseJoinColumns = [JoinColumn(name = "office_location_id")]
-    )
-    @SQLRestriction("end_date is null or end_date > current_date")
-    val teamOfficeLocations: List<OfficeLocation>,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
