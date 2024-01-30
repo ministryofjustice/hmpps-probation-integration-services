@@ -49,7 +49,7 @@ class UpdateLocationAction(
 
         // do this before updating location so that we have access to previous institution
         val pomInstitutionOverride: Institution? = when (prisonerMovement) {
-            is PrisonerMovement.Released -> custody.institution
+            is PrisonerMovement.Released -> institutionRepository.getByNomisCdeCode(prisonerMovement.fromPrisonId)
             else -> null
         }
 
