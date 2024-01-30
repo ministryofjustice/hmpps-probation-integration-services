@@ -11,7 +11,8 @@ object PersonGenerator {
     val PERSON_ENDED_TEAM_LOCATION = generatePerson("T123457")
     val DEFAULT_CM = generateManager(DEFAULT_PERSON)
     val PERSON_CREATE_LC = generatePerson("L453621")
-    val CM_ENDED_TEAM_LOCATION = generateManager(person = PERSON_ENDED_TEAM_LOCATION, team = ProviderGenerator.TEAM_ENDED_LOCATIONS)
+    val CM_ENDED_TEAM_LOCATION =
+        generateManager(person = PERSON_ENDED_TEAM_LOCATION, team = ProviderGenerator.TEAM_ENDED_LOCATIONS)
 
     fun generatePerson(
         crn: String,

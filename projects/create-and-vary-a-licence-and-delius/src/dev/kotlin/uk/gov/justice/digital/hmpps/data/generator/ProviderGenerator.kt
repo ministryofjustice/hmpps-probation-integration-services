@@ -8,11 +8,13 @@ object ProviderGenerator {
     val DEFAULT_BOROUGH = generateBorough("N01B")
     val DEFAULT_DISTRICT = generateDistrict("N01D")
     val DEFAULT_TEAM = generateTeam("N01BDT")
-    val TEAM_ENDED_LOCATIONS = generateTeam(addresses = listOf(
-        OfficeLocationGenerator.LOCATION_BRK_1,
-        OfficeLocationGenerator.LOCATION_BRK_2,
-        OfficeLocationGenerator.LOCATION_ENDED
-    ), code = "N01BDT")
+    val TEAM_ENDED_LOCATIONS = generateTeam(
+        addresses = listOf(
+            OfficeLocationGenerator.LOCATION_BRK_1,
+            OfficeLocationGenerator.LOCATION_BRK_2,
+            OfficeLocationGenerator.LOCATION_ENDED
+        ), code = "N01BDT"
+    )
 
     fun generateProvider(
         code: String,
