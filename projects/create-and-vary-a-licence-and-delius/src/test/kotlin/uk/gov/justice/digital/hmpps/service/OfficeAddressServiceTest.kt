@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.OfficeLocationRepository
 
 @ExtendWith(MockitoExtension::class)
@@ -24,9 +24,9 @@ internal class OfficeAddressServiceTest {
 
     @Test
     fun `calls office location repository`() {
-        val location = OfficeLocationGenerator.generateLocation(
-            OfficeLocationGenerator.LOCATION_BRK_1,
-            OfficeLocationGenerator.DISTRICT_BRK
+        val location = ProviderGenerator.generateLocation(
+            ProviderGenerator.LOCATION_BRK_1,
+            ProviderGenerator.DISTRICT_BRK
         )
         whenever(officeLocationRepository.findByLduAndOfficeName("berk", "Brack", Pageable.ofSize(1))).thenReturn(
             PageImpl(listOf(location))

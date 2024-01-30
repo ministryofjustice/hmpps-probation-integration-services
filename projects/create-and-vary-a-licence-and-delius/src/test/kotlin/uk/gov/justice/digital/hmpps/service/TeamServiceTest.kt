@@ -23,9 +23,9 @@ internal class TeamServiceTest {
     @Test
     fun `calls caseload repository`() {
         whenever(caseloadRepository.findByTeamCodeAndRoleCodeOrderByAllocationDateDesc("N01BDT", "OM")).thenReturn(
-            listOf(CaseloadGenerator.CASELOAD_ROLE_OM_1)
+            listOf(CaseloadGenerator.CASELOAD_ROLE_OM_2)
         )
         val res = service.getManagedOffendersByTeam("N01BDT")
-        assertThat(res[0].crn, equalTo("crn0001"))
+        assertThat(res[0].crn, equalTo("crn0022"))
     }
 }

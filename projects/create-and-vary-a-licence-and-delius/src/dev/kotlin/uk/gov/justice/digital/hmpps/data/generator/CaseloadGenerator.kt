@@ -27,6 +27,7 @@ object CaseloadGenerator {
         allocationDate = LocalDate.of(2024, 1, 8),
         roleCode = Caseload.CaseloadRole.OFFENDER_MANAGER.value
     )
+
     val CASELOAD_ROLE_OM_2 = generateCaseload(
         staff = STAFF1,
         team = DEFAULT_TEAM,
@@ -69,6 +70,8 @@ object CaseloadGenerator {
         surname = "Brown",
         roleCode = Caseload.CaseloadRole.ORDER_SUPERVISOR.value
     )
+
+    val MANAGED_OFFENDER = generateManagedOffender(CASELOAD_ROLE_OM_1, STAFF1, ProviderGenerator.DEFAULT_TEAM)
 
     fun generateCaseload(
         staff: Staff,

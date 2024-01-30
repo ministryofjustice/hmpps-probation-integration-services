@@ -8,9 +8,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.generateManagedOffender
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator.MANAGED_OFFENDER
 import uk.gov.justice.digital.hmpps.service.StaffService
 
 @ExtendWith(MockitoExtension::class)
@@ -25,14 +23,7 @@ internal class StaffResourceTest {
     @Test
     fun `calls managed offenders endpoint`() {
         whenever(staffService.getManagedOffenders("STCDE01")).thenReturn(
-            listOf(
-                generateManagedOffender(
-                    CaseloadGenerator.CASELOAD_ROLE_OM_1,
-                    CaseloadGenerator.STAFF1,
-                    ProviderGenerator.DEFAULT_TEAM
-                )
-            )
-
+            listOf(MANAGED_OFFENDER)
         )
         val res = resource.getManagedOffenders("STCDE01")
         assertThat(res[0].crn, equalTo("crn0001"))

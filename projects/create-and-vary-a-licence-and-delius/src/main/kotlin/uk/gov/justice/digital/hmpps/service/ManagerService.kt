@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.OfficeAddress
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
@@ -30,7 +29,7 @@ fun PersonManager.asManager() = Manager(
     staff.code,
     staff.name(),
     provider.asProvider(),
-    team.asTeam(teamOfficeLocations.map(OfficeLocation::asAddress)),
+    team.asTeam(),
     staff.user?.username,
     staff.user?.email,
     staff.isUnallocated()
@@ -38,12 +37,12 @@ fun PersonManager.asManager() = Manager(
 
 fun Staff.name() = Name(forename, middleName, surname)
 fun Provider.asProvider() = uk.gov.justice.digital.hmpps.api.model.Provider(code, description)
-fun Team.asTeam(teamAddresses: List<OfficeAddress>? = null) = uk.gov.justice.digital.hmpps.api.model.Team(
+fun Team.asTeam() = uk.gov.justice.digital.hmpps.api.model.Team(
     code,
     description,
     telephone,
     emailAddress,
-    teamAddresses,
+    addresses.map(OfficeLocation::asAddress),
     district.asDistrict(),
     district.borough.asBorough(),
     startDate,

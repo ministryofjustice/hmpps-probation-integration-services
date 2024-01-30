@@ -15,10 +15,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.OfficeAddress
 import uk.gov.justice.digital.hmpps.api.resource.ResultSet
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.DISTRICT_BRK
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.LOCATION_BRK_1
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.LOCATION_BRK_2
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.generateOfficeAddress
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DISTRICT_BRK
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.LOCATION_BRK_1
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.LOCATION_BRK_2
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.generateOfficeAddress
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 

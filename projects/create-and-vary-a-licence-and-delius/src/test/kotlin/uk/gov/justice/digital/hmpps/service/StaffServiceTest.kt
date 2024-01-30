@@ -37,7 +37,7 @@ internal class StaffServiceTest {
         whenever(caseloadRepository.findByStaffCodeAndRoleCode("STCDE01", "OM")).thenReturn(
             listOf(CaseloadGenerator.CASELOAD_ROLE_OM_1)
         )
-        val res = service.getManagedOffenders("STCDE01")
+        val res = service.getManagedOffenders(staffCode = "STCDE01")
         assertThat(res[0].crn, equalTo("crn0001"))
     }
 }

@@ -30,7 +30,11 @@ class DataLoader(
         entityManager.persist(StaffGenerator.DEFAULT_PDUSTAFF_USER)
         entityManager.persist(ProviderGenerator.DEFAULT_BOROUGH)
         entityManager.persist(ProviderGenerator.DEFAULT_DISTRICT)
+
+        createOfficeLocationsAndDistricts()
+
         entityManager.persist(ProviderGenerator.DEFAULT_TEAM)
+        entityManager.persist(ProviderGenerator.TEAM_ENDED_LOCATIONS)
 
         StaffGenerator.DEFAULT = StaffGenerator.generateStaff(
             StaffGenerator.DEFAULT.code,
@@ -46,10 +50,10 @@ class DataLoader(
         entityManager.persist(StaffGenerator.DEFAULT_STAFF_USER)
         entityManager.flush()
 
-        createOfficeLocationsAndDistricts()
-
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
+        entityManager.persist(PersonGenerator.PERSON_ENDED_TEAM_LOCATION)
         entityManager.persist(PersonGenerator.DEFAULT_CM)
+        entityManager.persist(PersonGenerator.CM_ENDED_TEAM_LOCATION)
 
         val person = PersonGenerator.generatePerson("N123456").also(entityManager::persist)
         PersonGenerator.generateManager(person).also(entityManager::persist)
@@ -87,12 +91,12 @@ class DataLoader(
 
     private fun createOfficeLocationsAndDistricts() {
         entityManager.persistAll(
-            OfficeLocationGenerator.DISTRICT_BRK,
-            OfficeLocationGenerator.DISTRICT_MKY,
-            OfficeLocationGenerator.DISTRICT_OXF,
-            OfficeLocationGenerator.LOCATION_BRK_1,
-            OfficeLocationGenerator.LOCATION_BRK_2,
-            OfficeLocationGenerator.LOCATION_ENDED
+            ProviderGenerator.DISTRICT_BRK,
+            ProviderGenerator.DISTRICT_MKY,
+            ProviderGenerator.DISTRICT_OXF,
+            ProviderGenerator.LOCATION_BRK_1,
+            ProviderGenerator.LOCATION_BRK_2,
+            ProviderGenerator.LOCATION_ENDED
         )
     }
 
