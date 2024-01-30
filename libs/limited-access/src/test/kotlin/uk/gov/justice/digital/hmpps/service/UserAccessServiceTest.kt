@@ -57,6 +57,17 @@ internal class UserAccessServiceTest {
         assertThat(res, equalTo(userAccess()))
     }
 
+    @Test
+    fun `single case access is correctly returned`() {
+        val pas = givenLimitedAccessResults()
+        whenever(uar.findByUsername("john-smith")).thenReturn(LimitedAccessUser("john-smith", 1))
+        whenever(uar.getAccessFor("john-smith", listOf("E123456"))).thenReturn(pas)
+
+        val res = userAccessService.caseAccessFor("john-smith", "E123456")
+
+        assertThat(res, equalTo(userAccess().access[0]))
+    }
+
     private fun givenLimitedAccessResults() =
         listOf(
             object : PersonAccess {
