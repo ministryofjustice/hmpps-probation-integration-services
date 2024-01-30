@@ -1,11 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
@@ -60,6 +56,7 @@ class PrisonManagerService(
 
         // end-date the previous prison manager
         val activePrisonManager = prisonManagerRepository.findActiveManagerAtDate(person.id, allocationDate)
+        if (activePrisonManager?.probationArea?.id == probationArea.id) return
         val activePrisonManagerEndDate = activePrisonManager?.endDate
             ?: prisonManagerRepository.findFirstManagerAfterDate(person.id, allocationDate).singleOrNull()?.date
         if (activePrisonManager != null) {

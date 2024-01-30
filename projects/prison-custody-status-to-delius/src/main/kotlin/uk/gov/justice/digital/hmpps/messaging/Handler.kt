@@ -2,9 +2,11 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
+import uk.gov.justice.digital.hmpps.integrations.prison.Movement
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -29,9 +31,12 @@ class Handler(
         val eventType = DomainEventType.of(message.eventType)
         try {
             val movement = when (eventType) {
-                IdentifierAdded, IdentifierUpdated, PrisonerReceived, PrisonerReleased ->
-                    prisonApiClient.bookingFromNomsId(message.personReference.findNomsNumber()!!)
-                        .prisonerMovement(message.occurredAt)
+                IdentifierAdded, IdentifierUpdated, PrisonerReceived, PrisonerReleased -> {
+                    val nomsId = message.personReference.findNomsNumber()!!
+                    val booking = prisonApiClient.bookingFromNomsId(nomsId)
+                    val movement = prisonApiClient.getLatestMovement(listOf(nomsId)).first()
+                    booking.prisonerMovement(movement)
+                }
 
                 else -> {
                     throw IllegalArgumentException("Unknown event type ${message.eventType}")
@@ -94,20 +99,25 @@ fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     additionalInformation.details()?.let { "details" to it }
 ).toMap()
 
-fun PrisonerMovement?.telemetryProperties() = if (this == null) {
+fun PrisonerMovement?.telemetryProperties(): Map<String, String> = if (this == null) {
     mapOf()
 } else {
-    listOfNotNull(
+    mapOf(
         "occurredAt" to occurredAt.toString(),
         "nomsNumber" to nomsId,
-        prisonId?.let { "institution" to it },
+        "previousInstitution" to fromPrisonId,
+        "institution" to toPrisonId,
         "reason" to type.name,
         "movementReason" to reason,
         "movementType" to this::class.java.simpleName
-    ).toMap()
+    )
 }
 
-fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
+fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
+    val dateTime = ZonedDateTime.of(movement.movementDate, movement.movementTime, EuropeLondon)
+    check(movement.movementType == movementType && movement.movementReason == movementReason) {
+        "Booking and Last Movement out of sync"
+    }
     if (reason == null) {
         throw IgnorableMessageException(
             "UnableToCalculateMovementType",
@@ -123,7 +133,8 @@ fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
     return when (inOutStatus) {
         Booking.InOutStatus.IN -> PrisonerMovement.Received(
             personReference,
-            agencyId,
+            movement.fromAgency,
+            movement.toAgency,
             PrisonerMovement.Type.valueOf(reason),
             movementReason,
             dateTime
@@ -131,7 +142,8 @@ fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
 
         Booking.InOutStatus.OUT -> PrisonerMovement.Released(
             personReference,
-            null,
+            movement.fromAgency,
+            movement.toAgency,
             PrisonerMovement.Type.valueOf(reason),
             movementReason,
             dateTime

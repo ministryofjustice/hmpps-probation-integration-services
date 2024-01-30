@@ -2,11 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -15,24 +11,9 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.check
-import org.mockito.kotlin.doAnswer
-import org.mockito.kotlin.never
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PrisonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -159,7 +140,12 @@ internal class PrisonManagerServiceTest {
         val allocationDate = ZonedDateTime.now()
         val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate))
-            .thenReturn(PrisonManagerGenerator.generate(PersonGenerator.RECALLABLE))
+            .thenReturn(
+                PrisonManagerGenerator.generate(
+                    PersonGenerator.RECALLABLE,
+                    probationArea = ProbationAreaGenerator.generate("ANO", "Another Provider")
+                )
+            )
 
         prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
 
@@ -193,7 +179,8 @@ internal class PrisonManagerServiceTest {
             PrisonManagerGenerator.generate(
                 PersonGenerator.RECALLABLE,
                 startDate = ZonedDateTime.now().minusDays(2),
-                endDate = ZonedDateTime.now()
+                endDate = ZonedDateTime.now(),
+                probationArea = ProbationAreaGenerator.generate("Prev", "Previous Provider")
             )
         )
 

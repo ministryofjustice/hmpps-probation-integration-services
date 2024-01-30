@@ -12,6 +12,9 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
@@ -66,7 +69,11 @@ internal class UpdateLocationActionTest {
         if (prisonerMovement.type == RELEASED && prisonerMovement.reason.isBlank()) {
             whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
                 .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
+            whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
+                .thenReturn(InstitutionGenerator.DEFAULT)
         } else if (prisonerMovement.isAbsconded()) {
+            whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
+                .thenReturn(InstitutionGenerator.DEFAULT)
             whenever(institutionRepository.findByCode(InstitutionCode.UNLAWFULLY_AT_LARGE.code))
                 .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE])
         }
@@ -88,24 +95,49 @@ internal class UpdateLocationActionTest {
             )
         ).thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[CustodyEventTypeCode.LOCATION_CHANGE])
 
-        val res = action.accept(PrisonerMovementContext(received.copy(prisonId = "SWI"), custody))
+        val res = action.accept(PrisonerMovementContext(received.copy(toPrisonId = "SWI"), custody()))
         assertThat(res, instanceOf(ActionResult.Success::class.java))
         val success = res as ActionResult.Success
         assertThat(success.type, equalTo(ActionResult.Type.LocationUpdated))
     }
 
+    @Test
+    fun `updates pom when being released if different from existing pom`() {
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
+            .thenReturn(InstitutionGenerator.DEFAULT)
+        val community = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!
+        whenever(institutionRepository.findByCode(community.code)).thenReturn(community)
+        whenever(
+            referenceDataRepository.findByCodeAndSetName(
+                CustodyEventTypeCode.LOCATION_CHANGE.code,
+                "CUSTODY EVENT TYPE"
+            )
+        ).thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[CustodyEventTypeCode.LOCATION_CHANGE])
+
+        val res = action.accept(PrisonerMovementContext(released, custody()))
+        assertThat(res, instanceOf(ActionResult.Success::class.java))
+        val success = res as ActionResult.Success
+        assertThat(success.type, equalTo(ActionResult.Type.LocationUpdated))
+        verify(prisonManagerService).allocateToProbationArea(
+            any(),
+            eq(InstitutionGenerator.DEFAULT.probationArea!!),
+            eq(released.occurredAt)
+        )
+    }
+
     companion object {
-        private val custody = custody()
         private val received = PrisonerMovement.Received(
-            custody.disposal.event.person.nomsNumber,
-            "WSI",
+            custody().disposal.event.person.nomsNumber,
+            "OUT",
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
             TRANSFERRED,
             "INT",
             ZonedDateTime.now()
         )
         private val released = PrisonerMovement.Released(
-            custody.disposal.event.person.nomsNumber,
-            "WSI",
+            custody().disposal.event.person.nomsNumber,
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            "OUT",
             RELEASED,
             "",
             ZonedDateTime.now()
@@ -113,7 +145,7 @@ internal class UpdateLocationActionTest {
 
         @JvmStatic
         fun noChangeMovements() = listOf(
-            Arguments.of(custody, received),
+            Arguments.of(custody(), received),
             Arguments.of(released(), released),
             Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
             Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"))

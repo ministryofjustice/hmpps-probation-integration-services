@@ -40,7 +40,7 @@ class ReleaseAction(
         val (prisonerMovement, custody) = context
         checkPreConditions(prisonerMovement, custody)
         val releaseType = referenceDataRepository.getReleaseType(prisonerMovement.releaseType().code)
-        val releasedFrom = prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
+        val releasedFrom = prisonerMovement.fromPrisonId?.let { institutionRepository.findByNomisCdeCode(it) }
             ?: custody.institution ?: institutionRepository.getByCode(InstitutionCode.UNKNOWN.code)
         return release(prisonerMovement, releaseType, custody, releasedFrom)
     }

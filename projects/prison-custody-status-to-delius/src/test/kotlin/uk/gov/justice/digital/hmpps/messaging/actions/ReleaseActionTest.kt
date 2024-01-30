@@ -61,6 +61,7 @@ internal class ReleaseActionTest {
         val prisonerMovement = PrisonerMovement.Released(
             custody.disposal.event.person.nomsNumber,
             InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            "OUT",
             PrisonerMovement.Type.RELEASED,
             "",
             ZonedDateTime.now().minusDays(1)
@@ -78,7 +79,8 @@ internal class ReleaseActionTest {
         val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT, statusCode)
         val prisonerMovement = PrisonerMovement.Released(
             event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode,
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            "OUT",
             PrisonerMovement.Type.RELEASED,
             "",
             ZonedDateTime.now().minusDays(1)
@@ -103,7 +105,8 @@ internal class ReleaseActionTest {
         ).withManager()
         val prisonerMovement = PrisonerMovement.Released(
             event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode,
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            "OUT",
             PrisonerMovement.Type.RELEASED,
             "",
             ZonedDateTime.now().minusDays(1)
@@ -126,6 +129,7 @@ internal class ReleaseActionTest {
         val prisonerMovement = PrisonerMovement.Released(
             event.person.nomsNumber,
             "NonExistent",
+            "OUT",
             PrisonerMovement.Type.RELEASED,
             "",
             ZonedDateTime.now().minusDays(1)
@@ -152,7 +156,8 @@ internal class ReleaseActionTest {
         )
         val prisonerMovement = PrisonerMovement.Released(
             custody.disposal.event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode,
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            "OUT",
             type,
             "",
             ZonedDateTime.now().minusDays(1)
@@ -175,7 +180,8 @@ internal class ReleaseActionTest {
             EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, null).withManager()
         val prisonerMovement = PrisonerMovement.Released(
             event.person.nomsNumber,
-            null,
+            "UNK",
+            "OUT",
             PrisonerMovement.Type.RELEASED,
             "",
             ZonedDateTime.now().minusDays(1)

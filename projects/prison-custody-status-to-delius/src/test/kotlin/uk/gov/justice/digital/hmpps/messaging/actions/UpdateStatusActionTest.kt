@@ -68,6 +68,7 @@ internal class UpdateStatusActionTest {
         val prisonerMovement = PrisonerMovement.Released(
             custody.disposal.event.person.nomsNumber,
             "UNK",
+            "OUT",
             PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
             "",
             ZonedDateTime.now()
@@ -88,7 +89,8 @@ internal class UpdateStatusActionTest {
         ).disposal!!.custody!!
         val prisonerMovement = PrisonerMovement.Released(
             custody.disposal.event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode,
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            "OUT",
             PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
             "HP",
             ZonedDateTime.now()
@@ -117,6 +119,7 @@ internal class UpdateStatusActionTest {
 
         private fun prisonerReceived(type: PrisonerMovement.Type) = PrisonerMovement.Received(
             NOMS_ID,
+            InstitutionGenerator.MOVED_TO.nomisCdeCode!!,
             InstitutionGenerator.DEFAULT.nomisCdeCode!!,
             type,
             "",

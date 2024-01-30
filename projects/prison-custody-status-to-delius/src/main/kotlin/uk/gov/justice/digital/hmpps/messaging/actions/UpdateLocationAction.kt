@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.getByNomisCdeCode
@@ -16,11 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodyEventType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
-import uk.gov.justice.digital.hmpps.messaging.ActionResult
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementAction
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
-import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
+import uk.gov.justice.digital.hmpps.messaging.*
 
 @Component
 class UpdateLocationAction(
@@ -41,13 +38,19 @@ class UpdateLocationAction(
 
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        if (prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.prisonId) {
+        if (prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.toPrisonId) {
             return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
         }
 
         val institution = when (prisonerMovement) {
-            is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.prisonId)
+            is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.toPrisonId)
             is PrisonerMovement.Released -> prisonerMovement.releaseLocation(custody)
+        }
+
+        // do this before updating location so that we have access to previous institution
+        val pomInstitutionOverride: Institution? = when (prisonerMovement) {
+            is PrisonerMovement.Released -> institutionRepository.getByNomisCdeCode(prisonerMovement.fromPrisonId)
+            else -> null
         }
 
         return custody.updateLocationAt(institution, prisonerMovement.occurredAt) {
@@ -55,7 +58,7 @@ class UpdateLocationAction(
         }?.let { history ->
             custodyRepository.save(custody)
             custodyHistoryRepository.save(history)
-            institution.probationArea?.let {
+            (pomInstitutionOverride ?: institution).probationArea?.let {
                 prisonManagerService.allocateToProbationArea(
                     custody.disposal,
                     it,
