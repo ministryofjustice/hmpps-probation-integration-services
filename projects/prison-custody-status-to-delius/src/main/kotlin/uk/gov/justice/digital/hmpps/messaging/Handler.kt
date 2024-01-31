@@ -106,7 +106,7 @@ fun PrisonerMovement?.telemetryProperties(): Map<String, String> = if (this == n
         "occurredAt" to occurredAt.toString(),
         "nomsNumber" to nomsId,
         fromPrisonId?.let { "previousInstitution" to it },
-        "institution" to toPrisonId,
+        toPrisonId?.let { "institution" to it },
         "reason" to type.name,
         "movementReason" to reason,
         "movementType" to this::class.java.simpleName
@@ -134,7 +134,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
         Booking.InOutStatus.IN -> PrisonerMovement.Received(
             personReference,
             movement.fromAgency,
-            movement.toAgency,
+            movement.toAgency!!,
             PrisonerMovement.Type.valueOf(reason),
             movementReason,
             dateTime
