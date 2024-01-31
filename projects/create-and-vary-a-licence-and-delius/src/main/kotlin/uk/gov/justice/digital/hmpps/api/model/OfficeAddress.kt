@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.api.model
 
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.OfficeLocation
 import java.time.LocalDate
 
 data class OfficeAddress(
@@ -19,27 +18,38 @@ data class OfficeAddress(
 ) {
     companion object {
         fun from(
-            officeLocation: OfficeLocation
+            officeName: String,
+            buildingName: String?,
+            buildingNumber: String?,
+            streetName: String?,
+            district: String?,
+            town: String?,
+            county: String?,
+            postcode: String?,
+            ldu: String,
+            telephoneNumber: String?,
+            from: LocalDate,
+            to: LocalDate?
         ): OfficeAddress? =
             if (
-                officeLocation.buildingName == null && officeLocation.buildingNumber == null && officeLocation.streetName == null &&
-                officeLocation.district == null && officeLocation.townCity == null && officeLocation.county == null && officeLocation.postcode == null
+                buildingName == null && buildingNumber == null && streetName == null &&
+                district == null && town == null && county == null && postcode == null
             ) {
                 null
             } else {
                 OfficeAddress(
-                    officeLocation.description,
-                    officeLocation.buildingName,
-                    officeLocation.buildingNumber,
-                    officeLocation.streetName,
-                    officeLocation.district,
-                    officeLocation.townCity,
-                    officeLocation.county,
-                    officeLocation.postcode,
-                    officeLocation.ldu.description,
-                    officeLocation.telephoneNumber,
-                    officeLocation.startDate,
-                    officeLocation.endDate
+                    officeName,
+                    buildingName,
+                    buildingNumber,
+                    streetName,
+                    district,
+                    town,
+                    county,
+                    postcode,
+                    ldu,
+                    telephoneNumber,
+                    from,
+                    to
                 )
             }
     }
