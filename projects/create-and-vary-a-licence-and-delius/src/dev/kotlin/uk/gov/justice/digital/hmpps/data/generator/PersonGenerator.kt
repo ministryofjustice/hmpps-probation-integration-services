@@ -12,7 +12,7 @@ object PersonGenerator {
     val DEFAULT_CM = generateManager(DEFAULT_PERSON)
     val PERSON_CREATE_LC = generatePerson("L453621")
     val CM_ENDED_TEAM_LOCATION =
-        generateManager(person = PERSON_ENDED_TEAM_LOCATION, team = ProviderGenerator.TEAM_ENDED_LOCATIONS)
+        generateManager(person = PERSON_ENDED_TEAM_LOCATION, team = ProviderGenerator.TEAM_ENDED_OR_NULL_LOCATIONS)
 
     fun generatePerson(
         crn: String,

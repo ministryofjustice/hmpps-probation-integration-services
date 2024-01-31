@@ -47,13 +47,20 @@ object ProviderGenerator {
         ldu = DISTRICT_BRK
     )
 
+    val LOCATION_NULL = generateLocation(
+        code = "TVP_RCC",
+        description = "Null office",
+        ldu = DEFAULT_DISTRICT
+    )
+
     val DEFAULT_TEAM = generateTeam("N01BDT")
 
-    val TEAM_ENDED_LOCATIONS = generateTeam(
+    val TEAM_ENDED_OR_NULL_LOCATIONS = generateTeam(
         addresses = listOf(
             LOCATION_BRK_1,
             LOCATION_BRK_2,
-            LOCATION_ENDED
+            LOCATION_ENDED,
+            LOCATION_NULL
         ), code = "N01BDT"
     )
 
@@ -133,7 +140,7 @@ object ProviderGenerator {
         code: String,
         description: String,
         buildingName: String? = null,
-        buildingNumber: String,
+        buildingNumber: String? = null,
         streetName: String? = null,
         district: String? = null,
         town: String? = null,

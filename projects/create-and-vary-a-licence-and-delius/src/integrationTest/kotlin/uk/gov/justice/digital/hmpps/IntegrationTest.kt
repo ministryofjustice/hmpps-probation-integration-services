@@ -48,7 +48,7 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `returns only active team office locations`() {
+    fun `returns only active and non null team office locations`() {
         val crn = PersonGenerator.PERSON_ENDED_TEAM_LOCATION.crn
         val expectedAddresses: List<OfficeAddress> = listOf(
             ProviderGenerator.LOCATION_BRK_1.asAddress(),
@@ -63,7 +63,7 @@ internal class IntegrationTest {
             equalTo(
                 PersonGenerator.CM_ENDED_TEAM_LOCATION.asManager().copy(
                     username = "john-smith", email = "john.smith@moj.gov.uk",
-                    team = ProviderGenerator.TEAM_ENDED_LOCATIONS.asTeam().copy(addresses = expectedAddresses)
+                    team = ProviderGenerator.TEAM_ENDED_OR_NULL_LOCATIONS.asTeam().copy(addresses = expectedAddresses)
                 )
             )
         )
