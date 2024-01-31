@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 sealed interface PrisonerMovement {
     val nomsId: String
     val fromPrisonId: String?
-    val toPrisonId: String
+    val toPrisonId: String?
     val type: Type
     val reason: String
     val occurredAt: ZonedDateTime
@@ -24,7 +24,7 @@ sealed interface PrisonerMovement {
     data class Released(
         override val nomsId: String,
         override val fromPrisonId: String,
-        override val toPrisonId: String,
+        override val toPrisonId: String?,
         override val type: Type,
         override val reason: String,
         override val occurredAt: ZonedDateTime,

@@ -85,7 +85,7 @@ data class Booking(
 
 data class Movement(
     val fromAgency: String?,
-    val toAgency: String,
+    val toAgency: String?,
     val movementType: String,
     @JsonAlias("movementReasonCode")
     val movementReason: String,
