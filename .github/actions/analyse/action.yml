@@ -9,7 +9,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -18,7 +18,7 @@ runs:
         name: test-results
 
     - name: Publish test reports
-      uses: mikepenz/action-junit-report@4fa23552acda20a6a1d44f16224a90efbeb6c5f1 # v3.7.5
+      uses: mikepenz/action-junit-report@5f47764eec0e1c1f19f40c8e60a5ba47e47015c5 # v4.1.0
       if: always() && github.actor != 'dependabot[bot]'
       with:
         check_name: |-
@@ -36,7 +36,7 @@ runs:
         echo "ORG_GRADLE_PROJECT_version=$version" | tee -a "$GITHUB_ENV"
         echo "version=$version" | tee -a "$GITHUB_OUTPUT"
 
-    - uses: actions/setup-java@v3
+    - uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'

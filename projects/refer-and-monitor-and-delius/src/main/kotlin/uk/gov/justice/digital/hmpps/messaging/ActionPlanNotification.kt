@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.UnprocessableException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
@@ -34,7 +34,7 @@ class ActionPlanNotification(
 
     fun notify(notification: ActionPlanNotification): EventProcessingResult {
         val nsi = nsiRepository.findByPersonCrnAndExternalReference(notification.crn, notification.referral.urn)
-            ?: throw IgnorableMessageException(
+            ?: throw UnprocessableException(
                 "Unable to find referral for action plan notification",
                 mapOf("crn" to notification.crn, "referralId" to notification.referral.id)
             )
