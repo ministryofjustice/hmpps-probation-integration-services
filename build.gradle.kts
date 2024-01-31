@@ -12,7 +12,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.22" apply false
     kotlin("plugin.jpa") version "1.9.22" apply false
     kotlin("kapt") version "1.9.22" apply false
-    id("org.springframework.boot") version "3.2.1" apply false
+    id("org.springframework.boot") version "3.2.2" apply false
     id("io.spring.dependency-management") version "1.1.4" apply false
     id("com.gorylenko.gradle-git-properties") version "2.4.1" apply false
     id("com.google.cloud.tools.jib") apply false
