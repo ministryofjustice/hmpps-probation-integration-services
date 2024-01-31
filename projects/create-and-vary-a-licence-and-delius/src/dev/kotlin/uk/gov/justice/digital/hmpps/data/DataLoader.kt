@@ -34,7 +34,7 @@ class DataLoader(
         createOfficeLocationsAndDistricts()
 
         entityManager.persist(ProviderGenerator.DEFAULT_TEAM)
-        entityManager.persist(ProviderGenerator.TEAM_ENDED_LOCATIONS)
+        entityManager.persist(ProviderGenerator.TEAM_ENDED_OR_NULL_LOCATIONS)
 
         StaffGenerator.DEFAULT = StaffGenerator.generateStaff(
             StaffGenerator.DEFAULT.code,
@@ -96,7 +96,8 @@ class DataLoader(
             ProviderGenerator.DISTRICT_OXF,
             ProviderGenerator.LOCATION_BRK_1,
             ProviderGenerator.LOCATION_BRK_2,
-            ProviderGenerator.LOCATION_ENDED
+            ProviderGenerator.LOCATION_ENDED,
+            ProviderGenerator.LOCATION_NULL
         )
     }
 
