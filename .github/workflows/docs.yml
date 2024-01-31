@@ -122,10 +122,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - uses: gradle/gradle-build-action@v2 # enables caching
+      - uses: gradle/actions/setup-gradle@v3
         if: startsWith(steps.check_config.outputs.api_path, 'http')
         with:
-          arguments: ${{ matrix.project }}:assemble
+          cache-read-only: true
       - name: Host OpenAPI spec
         if: startsWith(steps.check_config.outputs.api_path, 'http')
         run: |

@@ -26,10 +26,14 @@ runs:
         java-version: '21'
         distribution: 'temurin'
 
-    - name: Get build info
-      uses: gradle/gradle-build-action@v2
+    - uses: gradle/actions/setup-gradle@v3
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
       with:
-        arguments: '${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo'
+        cache-read-only: true
+
+    - name: Get build info
+      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
+      run: ./gradlew ${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo
+      shell: bash
       env:
         ORG_GRADLE_PROJECT_version: ${{ inputs.version }}
