@@ -2,7 +2,7 @@
 # Reason: LDAP authentication not used + no untrusted username input
 # Package: org.apache.derby:derby:10.14.1.0
 # Reference: https://github.com/logstash-plugins/logstash-integration-jdbc/issues/147
-CVE-2022-46337 exp:2024-01-12
+CVE-2022-46337
 
 # Reason: we don't use Maven
 # Package: org.apache.maven:maven-compat:3.3.9
