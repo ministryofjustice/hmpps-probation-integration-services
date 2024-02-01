@@ -59,28 +59,43 @@ runs:
     - name: Deploy
       shell: bash
       run: |
+        yq -i ".appVersion = \"${{ inputs.version }}\"" "projects/${{ inputs.project }}/deploy/Chart.yaml"
+
+        echo '::group::Install Helm dependencies'
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
-        yq -i ".appVersion = \"${{ inputs.version }}\"" "projects/${{ inputs.project }}/deploy/Chart.yaml"
         helm dependency update "projects/${{ inputs.project }}/deploy"
-        exec helm upgrade '${{ inputs.project }}' 'projects/${{ inputs.project }}/deploy' \
-          --atomic \
-          --history-max 10 \
-          --force \
-          --install \
-          --reset-values \
-          --set 'version=${{ inputs.version }}' \
-          --set 'generic-service.image.tag=${{ inputs.version }}' \
-          --set 'generic-service.env.VERSION=${{ inputs.version }}' \
-          --set "generic-service.env.BUILD_INFO=$([ -r "$BUILD_INFO" ] && cat "$BUILD_INFO" | base64 -w0 || echo)" \
-          --set "generic-service.env.GIT_INFO=$([ -r "$GIT_INFO" ] && cat "$GIT_INFO" | base64 -w0 || echo)" \
-          --timeout 10m \
-          --values <(curl "$(gh api '/repos/ministryofjustice/hmpps-ip-allowlists/contents/ip-allowlist-groups.yaml' | jq -r '.download_url')") \
-          --values templates/helm-defaults.yml \
-          --values 'projects/${{ inputs.project }}/deploy/values.yaml' \
-          --values 'projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }}' \
-          --wait
+        echo '::endgroup::'
+
+        set +o pipefail
+        for attempt in $(seq 1 $MAX_ATTEMPTS); do
+          echo "::group::Helm upgrade (attempt $attempt)"
+          exec helm upgrade '${{ inputs.project }}' 'projects/${{ inputs.project }}/deploy' \
+            --atomic \
+            --history-max 10 \
+            --force \
+            --install \
+            --reset-values \
+            --set 'version=${{ inputs.version }}' \
+            --set 'generic-service.image.tag=${{ inputs.version }}' \
+            --set 'generic-service.env.VERSION=${{ inputs.version }}' \
+            --set "generic-service.env.BUILD_INFO=$([ -r "$BUILD_INFO" ] && cat "$BUILD_INFO" | base64 -w0 || echo)" \
+            --set "generic-service.env.GIT_INFO=$([ -r "$GIT_INFO" ] && cat "$GIT_INFO" | base64 -w0 || echo)" \
+            --timeout 10m \
+            --values <(curl -fsSL "$(gh api '/repos/ministryofjustice/hmpps-ip-allowlists/contents/ip-allowlist-groups.yaml' | jq -r '.download_url')") \
+            --values templates/helm-defaults.yml \
+            --values 'projects/${{ inputs.project }}/deploy/values.yaml' \
+            --values 'projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }}' \
+            --wait 2>&1 | tee "helm-$attempt.log"
+          exit_code=${PIPESTATUS[0]}
+          echo "Exit code: $exit_code" 
+          echo '::endgroup::'
+        
+          # Retry Helm upgrade if we get a timeout error from MOJ Cloud Platform
+          if [ $exit_code -eq 1 ] && grep -q 'context deadline exceeded' "helm-$attempt.log"; then continue; else exit $exit_code; fi
+        done
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
         BUILD_INFO: projects/${{ inputs.project }}/build-info.properties
         GIT_INFO: projects/${{ inputs.project }}/git.properties
+        MAX_ATTEMPTS: '3'

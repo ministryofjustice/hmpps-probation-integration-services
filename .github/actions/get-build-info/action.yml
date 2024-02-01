@@ -33,7 +33,10 @@ runs:
 
     - name: Get build info
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
-      run: ./gradlew ${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo
+      run: |
+        echo '::group::Generate build info'
+        ./gradlew ${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo
+        echo '::endgroup::'
       shell: bash
       env:
         ORG_GRADLE_PROJECT_version: ${{ inputs.version }}
