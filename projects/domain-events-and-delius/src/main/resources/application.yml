@@ -42,6 +42,7 @@ seed.database: true
 
 jwt.authorities:
   - ROLE_VIEW_PROBATION_CASE_ENGAGEMENT_CREATED
+  - ROLE_PROBATION_API__DOMAIN_EVENTS__CASE_DETAIL
 
 poller.fixed-delay: 2000
 

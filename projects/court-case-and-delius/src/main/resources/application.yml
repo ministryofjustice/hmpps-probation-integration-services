@@ -52,6 +52,7 @@ context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockIniti
 
 jwt.authorities:
   - ROLE_COURT_CASE_PROBATION_STATUS
+  - ROLE_PROBATION_API__COURT_CASE__CASE_DETAIL
 
 messaging.consumer.queue: events
 

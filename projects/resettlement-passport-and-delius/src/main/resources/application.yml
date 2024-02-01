@@ -47,6 +47,7 @@ context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockIniti
 
 jwt.authorities:
   - ROLE_RESETTLEMENT_PASSPORT_SUPERVISION_ACCESS
+  - ROLE_PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
