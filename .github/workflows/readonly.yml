@@ -106,7 +106,7 @@ jobs:
 
       - name: ${{ inputs.action == 'enable' && 'Block' || 'Unblock' }} ingresses
         if: matrix.project != 'hmpps-auth-and-delius'
-        uses: nick-fields/retry@14672906e672a08bd6eeb15720e9ed3ce869cdd4 # v2.9.0
+        uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
         with:
           max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           timeout_minutes: 15
@@ -135,7 +135,7 @@ jobs:
 
       - name: Block updates
         if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius'
-        uses: nick-fields/retry@14672906e672a08bd6eeb15720e9ed3ce869cdd4 # v2.9.0
+        uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
         with:
           max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           timeout_minutes: 15
@@ -157,7 +157,7 @@ jobs:
 
       - name: Unblock updates
         if: inputs.action == 'disable' && matrix.project != 'hmpps-auth-and-delius'
-        uses: nick-fields/retry@14672906e672a08bd6eeb15720e9ed3ce869cdd4 # v2.9.0
+        uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
         with:
           max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
           timeout_minutes: 15
