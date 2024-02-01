@@ -31,6 +31,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: true
+
       - name: Render project template
         uses: ./.github/actions/render-project-template
         with:
@@ -38,6 +42,4 @@ jobs:
           project_template: ${{ matrix.project_template }}
 
       - name: Compile and test
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: 'test-project:check'
+        run: ./gradlew test-project:check

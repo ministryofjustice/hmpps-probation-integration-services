@@ -142,10 +142,12 @@ jobs:
           java-version: 21
           distribution: temurin
 
-      - name: Build jars
-        uses: gradle/gradle-build-action@v2
+      - uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: jar
+          cache-read-only: true
+
+      - name: Build jars
+        run: ./gradlew jar
 
       - name: Package jars
         run: find . -name '*.jar' | zip -r package.zip -@

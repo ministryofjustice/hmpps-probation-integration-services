@@ -122,15 +122,15 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - uses: gradle/gradle-build-action@v2 # enables caching
+      - uses: gradle/actions/setup-gradle@v3
         if: startsWith(steps.check_config.outputs.api_path, 'http')
         with:
-          arguments: ${{ matrix.project }}:assemble
+          cache-read-only: true
       - name: Host OpenAPI spec
         if: startsWith(steps.check_config.outputs.api_path, 'http')
         run: |
           ./gradlew '${{ matrix.project }}:bootRun' &
-          timeout 120 sh -c 'until curl -s localhost:8080/v3/api-docs.yaml; do sleep 5; done'
+          timeout 300 sh -c 'until curl -s localhost:8080/v3/api-docs.yaml; do sleep 5; done'
           yq -i '.api_path = "http://localhost:8080/v3/api-docs.yaml"' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml'
         env:
           SPRING_PROFILES_ACTIVE: dev
