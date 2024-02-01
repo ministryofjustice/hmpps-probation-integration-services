@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.services.ProbationRecordService
 
 @RestController
 class ProbationRecordResource(val prService: ProbationRecordService) {
-    @PreAuthorize("hasRole('ROLE_MANAGE_POM_CASES')")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGE_POM_CASES','PROBATION_API__MANAGE_POM_CASES__CASE_DETAIL')")
     @GetMapping(value = ["/case-records/{identifier}"])
     @Operation(
         summary = "Background information on the probation case",

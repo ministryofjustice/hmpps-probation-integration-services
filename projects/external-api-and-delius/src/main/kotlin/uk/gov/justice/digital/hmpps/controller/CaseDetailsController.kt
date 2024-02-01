@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.service.CaseDetailsService
 
 @RestController
 @RequestMapping("/case/{crn}")
-@PreAuthorize("hasRole('ROLE_INTEGRATIONS_API')")
+@PreAuthorize("hasAnyRole('ROLE_INTEGRATIONS_API','PROBATION_API__HMPPS_API__CASE_DETAIL')")
 @Tag(name = "Case Details", description = "Requires ROLE_INTEGRATIONS_API")
 class CaseDetailsController(
     private val caseDetailsService: CaseDetailsService

@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.service.PersonService
 @RequestMapping("/person")
 class PersonResource(private val personService: PersonService) {
 
-    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Basic information on the person on probation",
         description = """Basic information on the person on probation as held in Delius,

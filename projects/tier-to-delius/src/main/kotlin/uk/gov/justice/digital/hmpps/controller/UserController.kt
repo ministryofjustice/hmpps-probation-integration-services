@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.service.UserAccessService
 
 @RestController
 @RequestMapping("users")
-@PreAuthorize("hasRole('TIER_DETAILS')")
+@PreAuthorize("hasAnyRole('TIER_DETAILS','PROBATION_API__TIER__CASE_DETAIL')")
 class UserController(private val userAccessService: UserAccessService) {
 
     @GetMapping("/{username}/access/{crn}")

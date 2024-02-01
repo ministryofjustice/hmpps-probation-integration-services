@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.service.ProviderService
 @RestController
 @RequestMapping("/probation-delivery-units")
 class PduResource(private val providerService: ProviderService) {
-    @PreAuthorize("hasRole('CRS_REFERRAL')")
+    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL')")
     @GetMapping
     fun findAllDeliveryUnits(): List<DeliveryUnit> = providerService.findSelectableDeliveryUnits()
 }

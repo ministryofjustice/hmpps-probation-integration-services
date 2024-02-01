@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class PersonController(val service: PersonalDetailsService) {
 
-    @PreAuthorize("hasRole('UPW_DETAILS')")
+    @PreAuthorize("hasAnyRole('UPW_DETAILS','PROBATION_API__UPW__CASE_DETAIL')")
     @Operation(
         summary = """Details of all active personal contacts and personal
             circumstances for a person on probation""",

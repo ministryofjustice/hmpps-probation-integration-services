@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.service.AllocationDemandService
 @RestController
 @RequestMapping("/allocation")
 class AllocationDetailResource(private val allocationDemand: AllocationDemandService) {
-    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Summary information on the person on probation and probation practitioner",
         description = """Summary information on the person on probation and probation practitioner

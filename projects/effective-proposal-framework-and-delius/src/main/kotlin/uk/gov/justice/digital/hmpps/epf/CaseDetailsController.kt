@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CaseDetailsController(private val caseDetailsService: CaseDetailsService) {
-    @PreAuthorize("hasRole('EPF_CONTEXT')")
+    @PreAuthorize("hasAnyRole('EPF_CONTEXT','PROBATION_API__EPF__CASE_DETAIL')")
     @GetMapping(value = ["/case-details/{crn}/{eventNumber}"])
     @Operation(
         summary = "Probation case information for the Effective Proposals Framework service",

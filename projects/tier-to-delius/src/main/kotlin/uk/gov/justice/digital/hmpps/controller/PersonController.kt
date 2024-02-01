@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 @RestController
 class PersonController(private val personRepository: PersonRepository) {
     @GetMapping(value = ["/person/{crn}"])
-    @PreAuthorize("hasRole('TIER_DETAILS')")
+    @PreAuthorize("hasAnyRole('TIER_DETAILS','PROBATION_API__TIER__CASE_DETAIL')")
     fun personDetails(@PathVariable crn: String) = personRepository.findByCrnAndSoftDeletedIsFalse(crn)?.let {
         PersonDetails(
             crn = it.crn,

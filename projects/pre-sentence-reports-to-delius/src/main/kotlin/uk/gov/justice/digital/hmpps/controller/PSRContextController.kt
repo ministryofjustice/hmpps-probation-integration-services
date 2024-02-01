@@ -17,7 +17,7 @@ class PSRContextController(
     private val service: PreSentenceReportService
 ) {
 
-    @PreAuthorize("hasRole('ROLE_PSR_CONTEXT')")
+    @PreAuthorize("hasAnyRole('ROLE_PSR_CONTEXT','PROBATION_API__PSR__CONTEXT')")
     @Operation(
         summary = "Probation case information related to the pre-sentence report",
         description = """Creating a pre-sentence report requires details of the relevant

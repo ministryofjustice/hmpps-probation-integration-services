@@ -12,11 +12,11 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
 @RestController
 @RequestMapping("assessments")
 class AssessmentController(private val ordsClient: OrdsClient) {
-    @PreAuthorize("hasRole('ROLE_PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
+    @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
     @GetMapping("/timeline/{nomsId}")
     fun getTimeline(@PathVariable nomsId: String): Timeline = ordsClient.getTimeline(nomsId)
 
-    @PreAuthorize("hasRole('ROLE_PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
+    @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
     @GetMapping("/{id}/section/{name}")
     fun getSection(@PathVariable id: Long, @PathVariable name: String): JsonNode =
         ordsClient.getSection(id, name.lowercase()).asResponse()

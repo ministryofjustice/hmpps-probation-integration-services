@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CaseDetailsController(val service: CaseDetailsService) {
 
-    @PreAuthorize("hasRole('UPW_DETAILS')")
+    @PreAuthorize("hasAnyRole('UPW_DETAILS','PROBATION_API__UPW__CASE_DETAIL')")
     @Operation(
         summary = "Detailed information on the probation case",
         description = """Full details of the probation case for the purposes

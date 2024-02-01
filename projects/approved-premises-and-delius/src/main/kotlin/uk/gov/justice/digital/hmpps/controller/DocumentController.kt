@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.service.DocumentService
 @RestController
 @Tag(name = "Documents")
 @RequestMapping("/documents/{crn}")
-@PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
+@PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_STAFF','PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
 class DocumentController(private val documentService: DocumentService) {
 
     @GetMapping(value = ["/{id}"])
@@ -23,7 +23,7 @@ class DocumentController(private val documentService: DocumentService) {
         @PathVariable id: String
     ) = documentService.downloadDocument(crn, id)
 
-    @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
+    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_STAFF','PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
     @Operation(
         summary = "List of documents held in Delius for the probation case",
         description = """List of documents available in Delius for the probation

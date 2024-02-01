@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.DocumentService
 
 @RestController
-@PreAuthorize("hasRole('ROLE_PROBATION_API__DPS__DOCUMENTS')")
+@PreAuthorize("hasRole('PROBATION_API__DPS__DOCUMENTS')")
 class DocumentController(private val documentService: DocumentService) {
 
     @GetMapping(value = ["/case/{nomisId}/documents"])

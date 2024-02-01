@@ -21,25 +21,25 @@ class ProbationCaseResource(
     private val personService: PersonService,
     private val convictionService: ConvictionService
 ) {
-    @PreAuthorize("hasRole('CRS_REFERRAL')")
+    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL')")
     @GetMapping("responsible-officer")
     fun findResponsibleOfficer(@PathVariable crn: String): ResponsibleOfficer =
         managerService.findResponsibleCommunityManager(crn)
 
-    @PreAuthorize("hasRole('CRS_REFERRAL')")
+    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL')")
     @GetMapping("identifiers")
     fun findIdentifiers(@PathVariable crn: String): CaseIdentifier = personService.findIdentifiers(crn)
 
-    @PreAuthorize("hasRole('CRS_REFERRAL')")
+    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL')")
     @GetMapping("details")
     fun findDetails(@PathVariable crn: String): ResponseEntity<CaseDetail> =
         personService.findDetailsFor(crn)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
 
-    @PreAuthorize("hasRole('CRS_REFERRAL')")
+    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL')")
     @GetMapping("convictions")
     fun findConvictions(@PathVariable crn: String): CaseConvictions = convictionService.findConvictions(crn)
 
-    @PreAuthorize("hasRole('CRS_REFERRAL')")
+    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL')")
     @GetMapping("convictions/{id}")
     fun findConviction(@PathVariable crn: String, @PathVariable id: Long) = convictionService.findConviction(crn, id)
 }
