@@ -50,6 +50,7 @@ context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockIniti
 jwt.authorities:
   - ROLE_PROBATION_API__HDC__STAFF
   - ROLE_PROBATION_API__HDC__USER_ROLES
+  - ROLE_PROBATION_API__HDC__USER_ROLES__RW
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
