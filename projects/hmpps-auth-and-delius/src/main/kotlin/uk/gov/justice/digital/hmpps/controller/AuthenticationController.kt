@@ -27,7 +27,7 @@ class AuthenticationController(private val ldapTemplate: LdapTemplate) {
     }
 
     @PostMapping("/authenticate")
-    @PreAuthorize("hasRole('ROLE_DELIUS_USER_AUTH')")
+    @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH','PROBATION_API__HMPPS_AUTH__AUTHENTICATE')")
     @Operation(description = "Authenticate a Delius username and password. Requires `ROLE_DELIUS_USER_AUTH`.")
     @ApiResponses(
         value = [

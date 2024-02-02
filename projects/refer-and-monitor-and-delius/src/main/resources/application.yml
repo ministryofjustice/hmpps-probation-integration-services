@@ -57,6 +57,7 @@ context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockIniti
 
 jwt.authorities:
   - ROLE_CRS_REFERRAL
+  - ROLE_PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL
 
 messaging.consumer.queue: message-queue
 

@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.service.DetailService
 @RestController
 class DetailController(private val detailService: DetailService) {
 
-    @PreAuthorize("hasRole('ROLE_PATHFINDER_PROBATION_CASE')")
+    @PreAuthorize("hasAnyRole('ROLE_PATHFINDER_PROBATION_CASE','PROBATION_API__PATHFINDER__CASE_DETAIL')")
     @PostMapping(value = ["/detail"])
     fun batchDetails(
         @Valid @RequestBody

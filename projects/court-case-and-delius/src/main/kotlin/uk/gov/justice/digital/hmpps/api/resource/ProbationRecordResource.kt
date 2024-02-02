@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.service.OffenderService
 @RequestMapping("probation-case/{crn}")
 class ProbationRecordResource(private val offenderService: OffenderService) {
 
-    @PreAuthorize("hasRole('COURT_CASE_PROBATION_STATUS')")
+    @PreAuthorize("hasAnyRole('COURT_CASE_PROBATION_STATUS','PROBATION_API__COURT_CASE__CASE_DETAIL')")
     @GetMapping
     fun probationRecord(
         @PathVariable crn: String

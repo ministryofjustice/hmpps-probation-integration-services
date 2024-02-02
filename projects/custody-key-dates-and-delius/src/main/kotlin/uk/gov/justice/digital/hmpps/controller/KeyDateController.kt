@@ -14,7 +14,7 @@ class KeyDateController(
     private val telemetryService: TelemetryService
 ) {
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_PROBATION_API__CUSTODY_DATES__UPDATE')")
+    @PreAuthorize("hasRole('PROBATION_API__CUSTODY_DATES__UPDATE')")
     fun updateKeyDates(
         @RequestBody
         @Size(min = 1, max = 1000, message = "Please provide between 1 and 1000 noms numbers")

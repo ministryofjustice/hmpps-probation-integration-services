@@ -47,6 +47,7 @@ context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockIniti
 
 jwt.authorities:
   - ROLE_PRISON_EDUCATION_AND_DELIUS
+  - ROLE_PROBATION_API__PRISON_EDUCATION__CASE_DETAIL
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

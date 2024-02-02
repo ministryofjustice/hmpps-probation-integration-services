@@ -18,22 +18,22 @@ import uk.gov.justice.digital.hmpps.service.StaffService
 class StaffResource(
     private val staffService: StaffService
 ) {
-    @PreAuthorize("hasRole('CVL_CONTEXT')")
+    @PreAuthorize("hasAnyRole('CVL_CONTEXT','PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{username}")
     fun findStaff(@PathVariable username: String): Staff = staffService.findStaff(username)
 
-    @PreAuthorize("hasRole('CVL_CONTEXT')")
+    @PreAuthorize("hasAnyRole('CVL_CONTEXT','PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{boroughCode}/pdu-head")
     fun findPDUHead(@PathVariable boroughCode: String): List<PDUHead> = staffService.findPDUHeads(boroughCode)
 
-    @PreAuthorize("hasRole('CVL_CONTEXT')")
+    @PreAuthorize("hasAnyRole('CVL_CONTEXT','PROBATION_API__CVL__CASE_DETAIL')")
     @PostMapping
     fun findStaffForUsernames(@RequestBody usernames: List<String>): List<StaffName> =
         staffService.findStaffForUsernames(
             usernames
         )
 
-    @PreAuthorize("hasRole('CVL_CONTEXT')")
+    @PreAuthorize("hasAnyRole('CVL_CONTEXT','PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{staffCode}/caseload/managed-offenders")
     fun getManagedOffenders(@PathVariable staffCode: String): List<ManagedOffender> =
         staffService.getManagedOffenders(staffCode)

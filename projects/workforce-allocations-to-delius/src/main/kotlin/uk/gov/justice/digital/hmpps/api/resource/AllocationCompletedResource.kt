@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.service.AllocationCompletedService
 @RestController
 @RequestMapping("/allocation-completed")
 class AllocationCompletedResource(private val service: AllocationCompletedService) {
-    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Summary case allocation information as currently held in Delius",
         description = """Summary case allocation information for the probation case
@@ -30,7 +30,7 @@ class AllocationCompletedResource(private val service: AllocationCompletedServic
         @RequestParam staffCode: String
     ) = service.getDetails(crn, eventNumber, staffCode)
 
-    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Team allocation code for Persons PO",
         description = """

@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.service.ProbationStatusService
 @RestController
 @RequestMapping("probation-case/{crn}/status")
 class ProbationStatusResource(private val probationStatusService: ProbationStatusService) {
-    @PreAuthorize("hasRole('COURT_CASE_PROBATION_STATUS')")
+    @PreAuthorize("hasAnyRole('COURT_CASE_PROBATION_STATUS','PROBATION_API__COURT_CASE__CASE_DETAIL')")
     @GetMapping
     fun getProbationStatus(@PathVariable crn: String) = probationStatusService.getProbationStatus(crn)
 }

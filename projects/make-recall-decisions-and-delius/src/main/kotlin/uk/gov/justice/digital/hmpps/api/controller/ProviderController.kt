@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.service.ProviderService
 
 @RestController
 @Tag(name = "Providers")
-@PreAuthorize("hasRole('ROLE_MAKE_RECALL_DECISIONS_API')")
+@PreAuthorize("hasAnyRole('ROLE_MAKE_RECALL_DECISIONS_API','PROBATION_API__CONSIDER_A_RECALL__CASE_DETAIL')")
 class ProviderController(private val providerService: ProviderService) {
     @GetMapping("/provider/{code}")
     @Operation(summary = "Provider details by code")

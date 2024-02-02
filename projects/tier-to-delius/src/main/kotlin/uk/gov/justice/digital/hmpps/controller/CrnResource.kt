@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 
 @RestController
 class CrnResource(private val personRepository: PersonRepository) {
-    @PreAuthorize("hasRole('TIER_DETAILS')")
+    @PreAuthorize("hasAnyRole('TIER_DETAILS','PROBATION_API__TIER__CASE_DETAIL')")
     @GetMapping("/probation-cases")
     fun findAllActiveCrns() = personRepository.findAllCrns()
 }

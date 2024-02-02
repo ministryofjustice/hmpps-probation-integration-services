@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.service.ProbationAreaService
 
 @RestController
 class ProbationAreasController(private val probationAreaService: ProbationAreaService) {
-    @PreAuthorize("hasRole('ROLE_SOC_PROBATION_CASE')")
+    @PreAuthorize("hasAnyRole('ROLE_SOC_PROBATION_CASE','PROBATION_API__SOC__CASE_DETAIL')")
     @GetMapping(value = ["/probation-areas"])
     fun probationAreas(
         @Parameter(description = "Include (true) or exclude (false) any probation areas that are not selectable")

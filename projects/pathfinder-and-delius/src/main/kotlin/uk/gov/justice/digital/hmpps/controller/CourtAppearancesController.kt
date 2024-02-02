@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.service.CourtAppearanceService
 @Validated
 @RestController
 class CourtAppearancesController(private val courtAppearanceService: CourtAppearanceService) {
-    @PreAuthorize("hasRole('ROLE_PATHFINDER_PROBATION_CASE')")
+    @PreAuthorize("hasAnyRole('ROLE_PATHFINDER_PROBATION_CASE','PROBATION_API__PATHFINDER__CASE_DETAIL')")
     @PostMapping(value = ["/court-appearances"])
     fun courtAppearances(
         @Valid @RequestBody
