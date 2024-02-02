@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.service.ProviderService
 @RequestMapping("/office-locations")
 class OfficeLocationResource(private val providerService: ProviderService) {
 
-    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL')")
+    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
     @GetMapping
     fun findAllActiveLocations(): List<OfficeLocation> = providerService.findActiveOfficeLocations()
 }

@@ -40,7 +40,7 @@ class UserController(private val userService: UserService) {
     fun getUsersByEmail(@RequestParam email: String) = userService.getUsersByEmail(email)
 
     @PostMapping("/user/{username}/password")
-    @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH','PROBATION_API__HMPPS_AUTH__UPDATE_PASSWORD')")
+    @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH','PROBATION_API__HMPPS_AUTH__PASSWORD__RW')")
     @Operation(description = "Change a Delius user's password. Requires `ROLE_DELIUS_USER_AUTH`.")
     @ApiResponses(
         value = [
