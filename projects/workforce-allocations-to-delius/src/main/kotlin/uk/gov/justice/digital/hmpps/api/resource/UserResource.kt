@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.service.UserAccessService
 @RequestMapping("/users")
 class UserResource(private val userAccessService: UserAccessService) {
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT', 'ROLE_WORKFORCE_DOCUMENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT', 'ROLE_WORKFORCE_DOCUMENT', 'ROLE_PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = """Data access restriction information for the combination of the Delius
             user and the supplied list of CRNs""",

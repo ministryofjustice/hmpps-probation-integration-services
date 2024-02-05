@@ -8,20 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
-import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
 import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProbationAreaRepository
@@ -206,7 +193,8 @@ class DataLoader(
         createEvent(
             EventGenerator.previouslyReleasedEvent(
                 PersonGenerator.HOSPITAL_RELEASED,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
+                releaseDate = NotificationGenerator.PRISONER_HOSPITAL_RELEASED.message.occurredAt.minusDays(7)
             )
         )
     }
@@ -226,7 +214,8 @@ class DataLoader(
         createEvent(
             EventGenerator.previouslyReleasedEvent(
                 PersonGenerator.ROTL,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
+                releaseDate = NotificationGenerator.PRISONER_ROTL_RETURN.message.occurredAt.minusDays(7)
             )
         )
     }
@@ -236,7 +225,8 @@ class DataLoader(
         createEvent(
             EventGenerator.previouslyReleasedEvent(
                 PersonGenerator.IRC_RELEASED,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
+                releaseDate = NotificationGenerator.PRISONER_IRC_RELEASED.message.occurredAt.minusDays(7)
             )
         )
     }
