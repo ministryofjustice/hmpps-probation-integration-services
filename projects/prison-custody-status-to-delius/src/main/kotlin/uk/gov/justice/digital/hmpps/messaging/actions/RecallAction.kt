@@ -8,19 +8,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeRecalled
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.isEotl
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.Companion.withCode
-import uk.gov.justice.digital.hmpps.messaging.ActionResult
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementAction
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
-import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
+import uk.gov.justice.digital.hmpps.messaging.*
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -91,7 +82,7 @@ class RecallAction(
         }
 
         if (prisonerMovement.occurredAt.isAfter(ZonedDateTime.now()) ||
-            (prisonerMovement.occurredAt.isBefore(latestRelease?.date))
+            prisonerMovement.occurredAt.isBefore(latestRelease?.date)
         ) {
             throw IgnorableMessageException("InvalidRecallDate")
         }
