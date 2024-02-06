@@ -101,11 +101,9 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: ${{ inputs.action == 'enable' && 'Stop' || 'Start' }} deployments
-        if: matrix.project != 'hmpps-auth-and-delius'
         run: kubectl scale deploy '${{ matrix.project }}' --replicas "${{ inputs.action == 'enable' && '0' || '2' }}"
 
       - name: ${{ inputs.action == 'enable' && 'Block' || 'Unblock' }} ingresses
-        if: matrix.project != 'hmpps-auth-and-delius'
         uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
         with:
           max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
