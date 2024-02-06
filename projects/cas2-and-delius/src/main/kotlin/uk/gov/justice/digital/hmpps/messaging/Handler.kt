@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
+import software.amazon.awssdk.http.HttpStatusCode
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -29,7 +29,7 @@ class Handler(
                 else -> throw IllegalArgumentException("Unexpected event type ('${event.eventType}')")
             }
         } catch (ex: HttpClientErrorException) {
-            if (!(ex.statusCode.value() == HttpStatus.NOT_FOUND.value() && !throwNotFound)) {
+            if ((ex.statusCode.value() != HttpStatusCode.NOT_FOUND) || throwNotFound) {
                 throw ex
             }
         }
