@@ -29,7 +29,7 @@ class Handler(
                 else -> throw IllegalArgumentException("Unexpected event type ('${event.eventType}')")
             }
         } catch (ex: HttpClientErrorException) {
-            if ((ex.statusCode.value() != HttpStatusCode.NOT_FOUND) || throwNotFound) {
+            if (ex.statusCode.value() != HttpStatusCode.NOT_FOUND || throwNotFound) {
                 throw ex
             }
         }
