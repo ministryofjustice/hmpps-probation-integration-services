@@ -4,11 +4,16 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mockito
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.system.CapturedOutput
+import org.springframework.boot.test.system.OutputCaptureExtension
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.REFERRAL_SUBMITTED
@@ -20,6 +25,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @SpringBootTest
+@ExtendWith(OutputCaptureExtension::class)
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
@@ -119,5 +125,27 @@ internal class IntegrationTest {
             mapOf("urn" to "urn:hmpps:cas2:application-status-updated:1"),
             mapOf()
         )
+    }
+
+    @Test
+    fun `application submitted not found enabled`(output: CapturedOutput) {
+        // Given a message
+        val event = prepEvent("application-submitted-not-found", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(event)
+        //Assert that expected exception exists in output
+        assertThat(output.all, containsString("No DomainEvent with an ID of 3333 could be found"))
+        //Assert that only 1 trackEvent for Notification Received has occurred
+        verify(telemetryService, Mockito.times(1)).trackEvent(any(), any(), any())
+    }
+
+    @Test
+    fun `application status not found enabled`(output: CapturedOutput) {
+        // Given a message
+        val event = prepEvent("application-status-updated-not-found", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(event)
+        //Assert that expected exception exists in output
+        assertThat(output.all, containsString("No DomainEvent with an ID of 4444 could be found"))
+        //Assert that only 1 trackEvent for Notification Received has occurred
+        verify(telemetryService, Mockito.times(1)).trackEvent(any(), any(), any())
     }
 }

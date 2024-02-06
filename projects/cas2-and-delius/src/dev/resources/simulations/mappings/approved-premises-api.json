@@ -16,6 +16,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/approved-premises-api/events/cas2/application-submitted/4444"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "application-status-updated.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPath": "/approved-premises-api/events/cas2/application-status-updated/1"
       },
       "response": {
@@ -24,6 +37,54 @@
         },
         "status": 200,
         "bodyFileName": "application-status-updated.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/cas2/application-submitted/3333"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "status": 404,
+          "detail": "No DomainEvent with an ID of 3333 could be found"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/cas2/application-submitted/5555"
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "status": 400,
+          "detail": "Bad Request"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/cas2/application-status-updated/4444"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "status": 404,
+          "detail": "No DomainEvent with an ID of 4444 could be found"
+        }
       }
     }
   ]
