@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.config.AlertsProcessing
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
@@ -256,7 +255,6 @@ class DeliusServiceTest {
     @Test
     fun `sets description for new case note with default type`() {
         givenNewCaseNote()
-        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -278,7 +276,6 @@ class DeliusServiceTest {
             )
         )
         givenNewCaseNote()
-        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -295,7 +292,6 @@ class DeliusServiceTest {
             )
         )
         givenNewCaseNote()
-        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -318,17 +314,6 @@ class DeliusServiceTest {
     @Test
     fun `does not set description for new case note of mapped type`() {
         givenNewCaseNote(type = CaseNoteNomisTypeGenerator.NEG)
-        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
-
-        deliusService.mergeCaseNote(deliusCaseNote)
-
-        verify(caseNoteRepository).save(check { assertThat(it.description, equalTo(null)) })
-    }
-
-    @Test
-    fun `does not set description when feature flag is disabled`() {
-        givenNewCaseNote()
-        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(false)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 

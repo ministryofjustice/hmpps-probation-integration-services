@@ -58,7 +58,6 @@ prisoner.movement.configs:
       - Recall
       - UpdateStatus
       - UpdateLocation
-    featureFlag: messages_released_absconded
   - types:
       - RELEASED
     actionNames:
