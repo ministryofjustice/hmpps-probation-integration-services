@@ -9,14 +9,9 @@ generic-service:
     tlsSecretName: manage-supervision-and-oasys-cert
 
   namespace_secrets:
-    common:
-      SPRING_DATASOURCE_URL: DB_URL
     manage-supervision-and-oasys-client-credentials:
-      OAUTH2_CLIENT-ID: CLIENT_ID
-      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
-    manage-supervision-and-oasys-database:
-      SPRING_DATASOURCE_USERNAME: DB_USERNAME
-      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+      INTEGRATIONS_ORDS_CLIENT-ID: ORDS_CLIENT_ID
+      INTEGRATIONS_ORDS_CLIENT-SECRET: ORDS_CLIENT_SECRET
     manage-supervision-and-oasys-sentry:
       SENTRY_DSN: SENTRY_DSN
 
