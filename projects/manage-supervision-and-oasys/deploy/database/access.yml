@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /manage-supervision-and-oasys/db-username
+    password_key: /manage-supervision-and-oasys/db-password
+
+  audit:
+    username: ManageSupervisionAndOasys
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service

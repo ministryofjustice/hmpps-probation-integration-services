@@ -1,0 +1,25 @@
+# Common values
+generic-service:
+  nameOverride: manage-supervision-and-oasys
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-supervision-and-oasys
+
+  ingress:
+    tlsSecretName: manage-supervision-and-oasys-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    manage-supervision-and-oasys-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    manage-supervision-and-oasys-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    manage-supervision-and-oasys-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: manage-supervision-and-oasys
+
