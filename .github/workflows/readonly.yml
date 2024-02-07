@@ -132,7 +132,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: Block updates
-        if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius'
+        if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius' # Note: hmpps-auth is excluded here to continue allowing 'POST /authenticate' requests, which are read-only
         uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
         with:
           max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
