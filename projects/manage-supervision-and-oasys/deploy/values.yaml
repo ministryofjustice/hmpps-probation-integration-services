@@ -1,0 +1,20 @@
+# Common values
+generic-service:
+  nameOverride: manage-supervision-and-oasys
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-supervision-and-oasys
+
+  ingress:
+    tlsSecretName: manage-supervision-and-oasys-cert
+
+  namespace_secrets:
+    manage-supervision-and-oasys-client-credentials:
+      INTEGRATIONS_ORDS_CLIENT-ID: ORDS_CLIENT_ID
+      INTEGRATIONS_ORDS_CLIENT-SECRET: ORDS_CLIENT_SECRET
+    manage-supervision-and-oasys-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: manage-supervision-and-oasys
+
