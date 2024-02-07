@@ -8,7 +8,7 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: dev
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/oauth/token
-    INTEGRATIONS_TIER_URL: https://hmpps-tier-dev.hmpps.service.justice.gov.uk
+    INTEGRATIONS_TIER_URL: http://hmpps-tier.hmpps-tier-dev.svc.cluster.local
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
 
