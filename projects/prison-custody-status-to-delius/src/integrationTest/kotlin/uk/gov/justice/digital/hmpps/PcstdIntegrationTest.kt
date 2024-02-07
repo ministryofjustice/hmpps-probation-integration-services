@@ -523,7 +523,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `prisoner absconded - unlawfully at large`() {
-        whenever(featureFlags.enabled("messages_released_absconded")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_ABSCONDED
         withBooking(
             BookingGenerator.ABSCONDED,

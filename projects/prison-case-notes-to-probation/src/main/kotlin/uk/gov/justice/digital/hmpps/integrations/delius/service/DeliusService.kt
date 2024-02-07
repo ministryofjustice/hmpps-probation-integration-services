@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.config.setDescription
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
@@ -26,8 +24,7 @@ class DeliusService(
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val offenderRepository: OffenderRepository,
     private val assignmentService: AssignmentService,
-    private val relatedService: CaseNoteRelatedService,
-    private val featureFlags: FeatureFlags
+    private val relatedService: CaseNoteRelatedService
 ) : AuditableService(auditedInteractionService) {
     @Transactional
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) = audit(CASE_NOTES_MERGE) {
@@ -67,7 +64,7 @@ class DeliusService(
         val caseNoteType = nomisTypeRepository.findByIdOrNull(body.typeLookup())?.type
             ?: caseNoteTypeRepository.getByCode(CaseNoteType.DEFAULT_CODE)
 
-        val description = if (featureFlags.setDescription()) body.description(caseNoteType) else null
+        val description = body.description(caseNoteType)
 
         val assignment = assignmentService.findAssignment(body.establishmentCode, body.staffName)
 
