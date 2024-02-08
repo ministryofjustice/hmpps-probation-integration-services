@@ -1,6 +1,7 @@
 # Common values
 generic-service:
   nameOverride: create-and-vary-a-licence-and-delius
+  serviceAccountName: create-and-vary-a-licence-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/create-and-vary-a-licence-and-delius
