@@ -1,9 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.cvl
 
 import com.fasterxml.jackson.annotation.JsonAlias
+import org.hibernate.sql.Restriction
 import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
-import java.time.LocalDate
+import java.time.ZonedDateTime
 
 interface CvlClient {
     @GetExchange
@@ -12,9 +13,6 @@ interface CvlClient {
 
 data class ActivatedLicence(
     val crn: String,
-    val releaseDate: LocalDate,
-    val startDate: LocalDate?,
-    val endDate: LocalDate?,
     val conditions: Conditions
 )
 
@@ -29,11 +27,28 @@ data class StandardLicenceCondition(
 ) : Describable
 
 data class AdditionalLicenceCondition(
+    val type: Type,
     val code: String,
+    @JsonAlias("text")
     override val description: String,
-) : Describable
+    val restrictions: List<Restriction>?
+) : Describable {
+    enum class Type {
+        ELECTRONIC_MONITORING, MULTIPLE_EXCLUSION_ZONE, STANDARD
+    }
+
+    enum class Restriction(val modifier: String) {
+        ALCOHOL_ABSTINENCE("alcohol abstinence"),
+        ALCOHOL_MONITORING("alcohol monitoring"),
+        ATTENDANCE_AT_APPOINTMENTS("attendance at appointments"),
+        CURFEW("curfew"),
+        EXCLUSION_ZONE("exclusion zone"),
+        LOCATION_MONITORING("location monitoring")
+    }
+}
 
 data class BespokeLicenceCondition(
+    @JsonAlias("text")
     override val description: String
 ) : Describable
 
@@ -48,10 +63,10 @@ data class ApConditions(
     val bespoke: List<BespokeLicenceCondition>
 )
 
-fun ActivatedLicence.telemetryProperties(eventNumber: String): Map<String, String> = mapOf(
+fun ActivatedLicence.telemetryProperties(eventNumber: String, occurredAt: ZonedDateTime): Map<String, String> = mapOf(
     "crn" to crn,
     "eventNumber" to eventNumber,
-    "releaseDate" to releaseDate.toString(),
+    "occurredAt" to occurredAt.toString(),
     "standardConditions" to conditions.ap.standard.size.toString(),
     "additionalConditions" to conditions.ap.additional.size.toString(),
     "bespokeConditions" to conditions.ap.bespoke.size.toString()

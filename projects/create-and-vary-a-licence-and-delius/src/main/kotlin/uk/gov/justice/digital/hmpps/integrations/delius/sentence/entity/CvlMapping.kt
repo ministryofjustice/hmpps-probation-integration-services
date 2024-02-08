@@ -1,13 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Entity
@@ -24,6 +20,8 @@ class CvlMapping(
     @JoinColumn(name = "lic_cond_type_sub_cat_id")
     val subCategory: ReferenceData,
 
+    val cvlModifier: String?,
+
     @Id
     @Column(name = "cvl_lic_cond_mapping_id")
     val id: Long
@@ -38,7 +36,13 @@ class CvlMapping(
 
 interface CvlMappingRepository : JpaRepository<CvlMapping, Long> {
     fun findByCvlCode(code: String): CvlMapping?
+
+    fun findByCvlCodeAndCvlModifier(code: String, modifier: String?): CvlMapping?
 }
 
 fun CvlMappingRepository.getByCvlCode(code: String) =
-    findByCvlCode(code) ?: throw uk.gov.justice.digital.hmpps.exception.NotFoundException("CvlMapping", "cvlCode", code)
+    findByCvlCode(code) ?: throw NotFoundException("CvlMapping", "cvlCode", code)
+
+fun CvlMappingRepository.getByCvlCodeAndModifier(code: String, modifier: String?) =
+    findByCvlCodeAndCvlModifier(code, modifier)
+        ?: throw NotFoundException("CvlMapping with code $code and modifier $modifier not found")

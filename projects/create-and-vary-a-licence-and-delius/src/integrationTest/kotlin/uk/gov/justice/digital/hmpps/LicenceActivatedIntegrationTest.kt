@@ -66,9 +66,9 @@ class LicenceActivatedIntegrationTest {
         val telemetryProperties = mapOf(
             "crn" to "L453621",
             "eventNumber" to "1",
-            "releaseDate" to "2023-10-13",
+            "occurredAt" to "2022-12-04T10:42:43Z[Europe/London]",
             "standardConditions" to "2",
-            "additionalConditions" to "2",
+            "additionalConditions" to "3",
             "bespokeConditions" to "2"
         )
 
@@ -80,7 +80,7 @@ class LicenceActivatedIntegrationTest {
         verify(telemetryService).trackEvent(ActionResult.Type.BespokeLicenceConditionAdded.name, telemetryProperties)
 
         val conditions = lcr.findByDisposalId(sentence.id)
-        assertThat(conditions.size, equalTo(4))
+        assertThat(conditions.size, equalTo(5))
 
         val com = pmr.findByPersonCrn(person.crn)!!
         conditions.forEach {
@@ -116,7 +116,11 @@ class LicenceActivatedIntegrationTest {
             conditions.filter { it.mainCategory.code !in listOf(STANDARD_CATEGORY_CODE, BESPOKE_CATEGORY_CODE) }
         assertThat(
             additional.map { it.notes },
-            containsInAnyOrder("Additional Licence Condition One", "Additional Licence Condition Two")
+            containsInAnyOrder(
+                "Additional Licence Condition One",
+                "Additional Licence Condition Two",
+                "Additional Licence Condition Electronic Monitoring"
+            )
         )
 
         val lpop = contactRepository.findAll().filter { it.personId == person.id && it.type.code == ContactType.LPOP }
