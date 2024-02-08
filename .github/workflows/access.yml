@@ -10,10 +10,12 @@ on:
         required: true
         options:
           - 'All'
+          - '["accredited-programmes-and-oasys"]'
           - '["approved-premises-and-delius"]'
           - '["approved-premises-and-oasys"]'
           - '["arns-and-delius"]'
           - '["assessment-summary-and-delius"]'
+          - '["cas2-and-delius"]'
           - '["cas3-and-delius"]'
           - '["court-case-and-delius"]'
           - '["create-and-vary-a-licence-and-delius"]'
@@ -27,6 +29,8 @@ on:
           - '["make-recall-decisions-and-delius"]'
           - '["manage-offences-and-delius"]'
           - '["manage-pom-cases-and-delius"]'
+          - '["manage-supervision-and-delius"]'
+          - '["manage-supervision-and-oasys"]'
           - '["offender-events-and-delius"]'
           - '["opd-and-delius"]'
           - '["pathfinder-and-delius"]'
@@ -46,10 +50,6 @@ on:
           - '["tier-to-delius"]'
           - '["unpaid-work-and-delius"]'
           - '["workforce-allocations-to-delius"]'
-          - '["cas2-and-delius"]'
-          - '["accredited-programmes-and-oasys"]'
-          - '["manage-supervision-and-oasys"]'
-          - '["manage-supervision-and-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
