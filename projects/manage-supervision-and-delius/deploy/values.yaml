@@ -1,0 +1,22 @@
+# Common values
+generic-service:
+  nameOverride: manage-supervision-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-supervision-and-delius
+
+  ingress:
+    tlsSecretName: manage-supervision-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    manage-supervision-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    manage-supervision-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: manage-supervision-and-delius
+

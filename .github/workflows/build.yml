@@ -72,6 +72,7 @@ jobs:
           - cas2-and-delius
           - accredited-programmes-and-oasys
           - manage-supervision-and-oasys
+          - manage-supervision-and-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
