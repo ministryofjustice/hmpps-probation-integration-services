@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
-@ConditionalOnProperty("cvl.handler.active")
 class CvlHandler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
