@@ -9,7 +9,8 @@ class FeatureFlags(
     private val client: FliptClient?
 ) {
     fun enabled(key: String) = try {
-        client == null || client.evaluation().evaluateBoolean(EvaluationRequest.builder().flagKey(key).build()).isEnabled
+        client == null || client.evaluation()
+            .evaluateBoolean(EvaluationRequest.builder().flagKey(key).build()).isEnabled
     } catch (e: Exception) {
         throw FeatureFlagException(key, e)
     }
