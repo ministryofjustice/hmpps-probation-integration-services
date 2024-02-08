@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="manage-supervision-and-delius" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
-    <module name="probation-integration-services.offender-events-and-delius.main" />
+    <module name="probation-integration-services.manage-supervision-and-delius.dev" />
     <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/projects/manage-supervision-and-delius" />
