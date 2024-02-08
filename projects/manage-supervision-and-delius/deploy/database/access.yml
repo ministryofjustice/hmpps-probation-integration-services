@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /manage-supervision-and-delius/db-username
+    password_key: /manage-supervision-and-delius/db-password
+
+  audit:
+    username: ManageSupervisionAndDelius
+    forename: Manage Supervisions
+    surname: Service
