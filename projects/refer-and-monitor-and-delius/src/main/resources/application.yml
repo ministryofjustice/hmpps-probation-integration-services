@@ -56,7 +56,6 @@ seed.database: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
-  - ROLE_CRS_REFERRAL
   - ROLE_PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW
 
 messaging.consumer.queue: message-queue

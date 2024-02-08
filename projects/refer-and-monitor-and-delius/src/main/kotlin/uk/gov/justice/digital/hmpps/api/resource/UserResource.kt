@@ -26,19 +26,19 @@ class UserResource(
     private val userService: UserService,
     private val auditUserRepository: AuditUserRepository
 ) {
-    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
+    @PreAuthorize("hasRole('PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
     @GetMapping("managed-cases")
     fun managedCases(@PathVariable username: String): ManagedCases =
         managerService.findCasesManagedBy(userNameFrom(username))
 
-    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
+    @PreAuthorize("hasRole('PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
     @RequestMapping("access", method = [RequestMethod.GET, RequestMethod.POST])
     fun userAccessCheck(
         @PathVariable username: String,
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
     ): UserAccess = userService.userAccessFor(userNameFrom(username), crns)
 
-    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
+    @PreAuthorize("hasRole('PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
     @GetMapping("details")
     fun userDetails(@PathVariable username: String): ResponseEntity<UserDetail> =
         userService.userDetails(userNameFrom(username))?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound()
