@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
+import uk.gov.justice.digital.hmpps.integrations.cvl.ApConditions
+import uk.gov.justice.digital.hmpps.integrations.cvl.Conditions
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMappingRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.DisposalRepository
@@ -54,7 +56,10 @@ internal class LicenceConditionApplierTest {
         val ex = assertThrows<IllegalStateException> {
             licenceConditionApplier.applyLicenceConditions(
                 crn,
-                ActivatedLicence(crn, LocalDate.now(), null, null, listOf(), listOf(), listOf()),
+                ActivatedLicence(
+                    crn,
+                    Conditions(ApConditions(listOf(), listOf(), listOf()))
+                ),
                 ZonedDateTime.now()
             )
         }
