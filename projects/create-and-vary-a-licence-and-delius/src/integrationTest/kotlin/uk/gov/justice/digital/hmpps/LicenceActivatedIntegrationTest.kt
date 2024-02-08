@@ -66,7 +66,7 @@ class LicenceActivatedIntegrationTest {
         val telemetryProperties = mapOf(
             "crn" to "L453621",
             "eventNumber" to "1",
-            "occurredAt" to "2022-12-04T10:42:43Z[Europe/London]",
+            "startDate" to "2024-02-05",
             "standardConditions" to "2",
             "additionalConditions" to "3",
             "bespokeConditions" to "2"

@@ -58,6 +58,7 @@ internal class LicenceConditionApplierTest {
                 crn,
                 ActivatedLicence(
                     crn,
+                    LocalDate.now(),
                     Conditions(ApConditions(listOf(), listOf(), listOf()))
                 ),
                 ZonedDateTime.now()
