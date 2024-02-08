@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.cvl
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 import java.time.LocalDate
@@ -14,9 +15,7 @@ data class ActivatedLicence(
     val releaseDate: LocalDate,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
-    val standardLicenceConditions: List<StandardLicenceCondition>,
-    val additionalLicenceConditions: List<AdditionalLicenceCondition>,
-    val bespokeLicenceConditions: List<BespokeLicenceCondition>
+    val conditions: Conditions
 )
 
 interface Describable {
@@ -25,25 +24,35 @@ interface Describable {
 
 data class StandardLicenceCondition(
     val code: String,
+    @JsonAlias("text")
     override val description: String,
-    val pssCondition: Boolean
 ) : Describable
 
 data class AdditionalLicenceCondition(
     val code: String,
     override val description: String,
-    val pssCondition: Boolean
 ) : Describable
 
 data class BespokeLicenceCondition(
     override val description: String
 ) : Describable
 
+data class Conditions(
+    @JsonAlias("AP")
+    val ap: ApConditions
+)
+
+data class ApConditions(
+    val standard: List<StandardLicenceCondition>,
+    val additional: List<AdditionalLicenceCondition>,
+    val bespoke: List<BespokeLicenceCondition>
+)
+
 fun ActivatedLicence.telemetryProperties(eventNumber: String): Map<String, String> = mapOf(
     "crn" to crn,
     "eventNumber" to eventNumber,
     "releaseDate" to releaseDate.toString(),
-    "standardConditions" to standardLicenceConditions.size.toString(),
-    "additionalConditions" to additionalLicenceConditions.size.toString(),
-    "bespokeConditions" to bespokeLicenceConditions.size.toString()
+    "standardConditions" to conditions.ap.standard.size.toString(),
+    "additionalConditions" to conditions.ap.additional.size.toString(),
+    "bespokeConditions" to conditions.ap.bespoke.size.toString()
 )

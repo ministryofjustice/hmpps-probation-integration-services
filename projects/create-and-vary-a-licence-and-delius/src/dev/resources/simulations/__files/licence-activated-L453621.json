@@ -3,37 +3,36 @@
   "releaseDate": "2023-10-13",
   "startDate": "2023-10-14",
   "expiryDate": "2023-12-14",
-  "standardLicenceConditions": [
-    {
-      "code": "2891a984-b8a3-4584-8ae0-a1d327226a5f",
-      "description": "A Standard Condition",
-      "pssCondition": false
-    },
-    {
-      "code": "18a098f3-a4d5-4490-b623-287bab511542f",
-      "description": "Another Standard Condition",
-      "pssCondition": false
+  "conditions": {
+    "AP": {
+      "standard": [
+        {
+          "code": "2891a984-b8a3-4584-8ae0-a1d327226a5f",
+          "description": "A Standard Condition"
+        },
+        {
+          "code": "18a098f3-a4d5-4490-b623-287bab511542f",
+          "description": "Another Standard Condition"
+        }
+      ],
+      "additional": [
+        {
+          "code": "AdditionalLcOne",
+          "description": "Additional Licence Condition One"
+        },
+        {
+          "code": "AdditionalLcTwo",
+          "description": "Additional Licence Condition Two"
+        }
+      ],
+      "bespoke": [
+        {
+          "description": "First Bespoke Condition"
+        },
+        {
+          "description": "Second Bespoke Condition"
+        }
+      ]
     }
-  ],
-  "additionalLicenceConditions": [
-    {
-      "code": "AdditionalLcOne",
-      "description": "Additional Licence Condition One",
-      "pssCondition": false
-    },
-    {
-      "code": "AdditionalLcTwo",
-      "description": "Additional Licence Condition Two",
-      "pssCondition": true
-    }
-  ],
-  "bespokeLicenceConditions": [
-    {
-      "description": "First Bespoke Condition"
-    },
-    {
-      "description": "Second Bespoke Condition"
-    }
-  ],
-  "prisonCode": "SWI"
+  }
 }

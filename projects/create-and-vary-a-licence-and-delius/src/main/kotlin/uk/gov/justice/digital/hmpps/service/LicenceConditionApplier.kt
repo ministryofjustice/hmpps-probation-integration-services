@@ -62,7 +62,7 @@ class LicenceConditionApplier(
             sentencedCase,
             licenceConditionCategoryRepository.getByCode(STANDARD_CATEGORY_CODE),
             referenceDataRepository.getLicenceConditionSubCategory(STANDARD_SUB_CATEGORY_CODE),
-            activatedLicence.standardLicenceConditions,
+            activatedLicence.conditions.ap.standard,
             ActionResult.Type.StandardLicenceConditionAdded
         )
         val additionalResult = activatedLicence.additionalConditions(sentencedCase)
@@ -70,7 +70,7 @@ class LicenceConditionApplier(
             sentencedCase,
             licenceConditionCategoryRepository.getByCode(BESPOKE_CATEGORY_CODE),
             referenceDataRepository.getLicenceConditionSubCategory(BESPOKE_SUB_CATEGORY_CODE),
-            activatedLicence.bespokeLicenceConditions,
+            activatedLicence.conditions.ap.bespoke,
             ActionResult.Type.BespokeLicenceConditionAdded
         )
         val results = listOfNotNull(standardResult, additionalResult, bespokeResult)
@@ -119,7 +119,7 @@ class LicenceConditionApplier(
     private fun ActivatedLicence.additionalConditions(
         sentencedCase: SentencedCase
     ): ActionResult? {
-        val additions = additionalLicenceConditions.mapNotNull { condition ->
+        val additions = conditions.ap.additional.mapNotNull { condition ->
             val cvlMapping = cvlMappingRepository.getByCvlCode(condition.code)
             if (
                 sentencedCase.licenceConditions.none {
