@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.service.OasysAssessmentService
 
 @RestController
 class AssessmentController(private var oasysAssessmentService: OasysAssessmentService) {
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/latest-assessment/{crn}"])
     fun getAssessmentTimeline(
         @PathVariable("crn") crn: String
@@ -25,7 +25,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         return oasysAssessmentService.getLatestAssessment(crn)
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/offence-details/{crn}"])
     fun getOffenceDetails(
         @PathVariable("crn") crn: String
@@ -33,7 +33,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         return oasysAssessmentService.getOffenceDetails(crn)
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/needs-details/{crn}"])
     fun getNeeds(
         @PathVariable("crn") crn: String
@@ -41,7 +41,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         return oasysAssessmentService.getNeedsDetails(crn)
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/risk-management-plan/{crn}"])
     fun getRiskManagementPlan(
         @PathVariable("crn") crn: String
@@ -49,7 +49,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         return oasysAssessmentService.getRiskManagementPlanDetails(crn)
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/rosh-summary/{crn}"])
     fun getRoshSummary(
         @PathVariable("crn") crn: String
@@ -57,7 +57,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         return oasysAssessmentService.getRoshSummary(crn)
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/risk-to-the-individual/{crn}"])
     fun getRiskToTheIndividual(
         @PathVariable("crn") crn: String
@@ -65,7 +65,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         return oasysAssessmentService.getRiskToIndividual(crn)
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/risk-assessment/{crn}"])
     fun getRiskAssessment(
         @PathVariable("crn") crn: String
@@ -73,7 +73,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         return oasysAssessmentService.getRiskAssessment(crn)
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/rosh/{crn}"])
     fun getRosh(
         @PathVariable("crn") crn: String
@@ -81,7 +81,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         return oasysAssessmentService.getRosh(crn)
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_ASSESSMENTS','PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__ASSESSMENTS')")
     @GetMapping(value = ["/health-details/{crn}"])
     fun getHealthDetails(
         @PathVariable("crn") crn: String
