@@ -19,7 +19,7 @@ class ReferralResource(
     private val nsiService: NsiService,
     private val appointmentService: AppointmentService
 ) {
-    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
+    @PreAuthorize("hasRole('PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun referralStarted(@PathVariable crn: String, @RequestBody referralStarted: ReferralStarted) {
@@ -30,7 +30,7 @@ class ReferralResource(
         )
     }
 
-    @PreAuthorize("hasAnyRole('CRS_REFERRAL','PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
+    @PreAuthorize("hasRole('PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW')")
     @PutMapping("/{referralId}/appointments")
     @ResponseStatus(HttpStatus.OK)
     fun mergeAppointment(

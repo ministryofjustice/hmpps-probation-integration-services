@@ -58,8 +58,6 @@ wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
-  - ROLE_CVL_CONTEXT
-  - ROLE_PROBATION_API__CVL__USER_ROLES
   - ROLE_PROBATION_API__CVL__USER_ROLES__RW
   - ROLE_PROBATION_API__CVL__CASE_DETAIL
 

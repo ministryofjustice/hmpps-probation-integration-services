@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.service.StaffService
 class StaffController(
     private val staffService: StaffService
 ) {
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_STAFF','PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
     @Operation(
         summary = "List all members of staff that are keyworkers in the Approved Premises",
         description = """An Approved Premises is defined in Delius as part of reference data.
@@ -32,7 +32,7 @@ class StaffController(
         @PageableDefault(value = 100) pageable: Pageable = Pageable.ofSize(100)
     ) = staffService.getStaffInApprovedPremises(code, keyWorker, pageable)
 
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_STAFF','PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
     @Operation(
         summary = "Get the staff name by username",
         description = """Returns the Staff name associated with the given username.

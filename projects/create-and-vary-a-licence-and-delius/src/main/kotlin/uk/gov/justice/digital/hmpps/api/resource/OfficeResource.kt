@@ -15,7 +15,7 @@ class OfficeResource(
     private val officeAddressService: OfficeAddressService
 ) {
 
-    @PreAuthorize("hasAnyRole('CVL_CONTEXT','PROBATION_API__CVL__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("addresses")
     fun findAddresses(
         @RequestParam(required = true) ldu: String,

@@ -16,11 +16,11 @@ class ProbationCaseResource(
     private val responsibleManagerService: ManagerService,
     private val addressService: AddressService
 ) {
-    @PreAuthorize("hasAnyRole('CVL_CONTEXT','PROBATION_API__CVL__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("responsible-community-manager")
     fun findCommunityManager(@PathVariable crn: String): Manager = responsibleManagerService.findCommunityManager(crn)
 
-    @PreAuthorize("hasAnyRole('CVL_CONTEXT','PROBATION_API__CVL__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("addresses")
     fun findAddresses(@PathVariable crn: String): List<Address> = addressService.findAddresses(crn)
 }

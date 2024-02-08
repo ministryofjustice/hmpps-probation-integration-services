@@ -33,7 +33,6 @@ spring.config.activate.on-profile: [ "dev", "integration-test" ]
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 jwt.authorities:
-  - ROLE_APPROVED_PREMISES_ASSESSMENTS
   - ROLE_PROBATION_API__APPROVED_PREMISES__ASSESSMENTS
 
 ords:
