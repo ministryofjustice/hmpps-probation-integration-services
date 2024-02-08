@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.service.TeamService
 class TeamController(
     private val teamService: TeamService
 ) {
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_STAFF','PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
+    @PreAuthorize("hasAnyRole('PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
     @Operation(
         summary = "List all teams involved in managing the probation case",
         description = """A probation case may be managed by staff members who

@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.service.ReferralService
 
 @RestController
 class ReferralController(private val referralService: ReferralService) {
-    @PreAuthorize("hasAnyRole('ROLE_APPROVED_PREMISES_STAFF','PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
     @GetMapping("probation-case/{crn}/referrals")
     fun findReferralsForCrn(@PathVariable crn: String) = referralService.findExistingReferrals(crn)
 }
