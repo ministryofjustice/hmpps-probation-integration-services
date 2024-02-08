@@ -14,7 +14,7 @@ class TeamResource(
     private val teamService: TeamService
 ) {
 
-    @PreAuthorize("hasAnyRole('CVL_CONTEXT','PROBATION_API__CVL__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{teamCode}/caseload/managed-offenders")
     fun getManagedOffendersByTeam(@PathVariable teamCode: String): List<ManagedOffender> =
         teamService.getManagedOffendersByTeam(teamCode)
