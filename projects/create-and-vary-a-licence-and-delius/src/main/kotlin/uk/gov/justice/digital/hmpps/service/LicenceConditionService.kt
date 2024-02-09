@@ -20,7 +20,7 @@ class LicenceConditionService(
     fun findByDisposalId(id: Long) = licenceConditionRepository.findByDisposalId(id)
     fun createLicenceCondition(
         disposal: Disposal,
-        releaseDate: LocalDate,
+        startDate: LocalDate,
         category: LicenceConditionCategory,
         subCategory: ReferenceData,
         notes: String,
@@ -29,7 +29,7 @@ class LicenceConditionService(
         val lc = licenceConditionRepository.save(
             LicenceCondition(
                 disposal.id,
-                releaseDate,
+                startDate,
                 category,
                 subCategory,
                 notes

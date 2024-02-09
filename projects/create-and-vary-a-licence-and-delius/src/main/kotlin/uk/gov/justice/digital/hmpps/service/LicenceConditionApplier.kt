@@ -54,8 +54,7 @@ class LicenceConditionApplier(
             licenceConditionCategoryRepository.getByCode(STANDARD_CATEGORY_CODE),
             referenceDataRepository.getLicenceConditionSubCategory(STANDARD_SUB_CATEGORY_CODE),
             activatedLicence.conditions.ap.standard,
-            ActionResult.Type.StandardLicenceConditionAdded,
-            occurredAt
+            ActionResult.Type.StandardLicenceConditionAdded
         )
         val additionalResult = activatedLicence.additionalConditions(sentencedCase, occurredAt)
         val bespokeResult = activatedLicence.groupedConditions(
@@ -63,8 +62,7 @@ class LicenceConditionApplier(
             licenceConditionCategoryRepository.getByCode(BESPOKE_CATEGORY_CODE),
             referenceDataRepository.getLicenceConditionSubCategory(BESPOKE_SUB_CATEGORY_CODE),
             activatedLicence.conditions.ap.bespoke,
-            ActionResult.Type.BespokeLicenceConditionAdded,
-            occurredAt
+            ActionResult.Type.BespokeLicenceConditionAdded
         )
         val results = listOfNotNull(standardResult, additionalResult, bespokeResult)
         if (results.isNotEmpty()) {
@@ -74,7 +72,7 @@ class LicenceConditionApplier(
             listOf(
                 ActionResult.Success(
                     ActionResult.Type.NoChangeToLicenceConditions,
-                    activatedLicence.telemetryProperties(sentencedCase.sentence.event.number, occurredAt)
+                    activatedLicence.telemetryProperties(sentencedCase.sentence.event.number)
                 )
             )
         }
@@ -85,8 +83,7 @@ class LicenceConditionApplier(
         category: LicenceConditionCategory,
         subCategory: ReferenceData,
         described: List<Describable>,
-        successType: ActionResult.Type,
-        occurredAt: ZonedDateTime
+        successType: ActionResult.Type
     ): ActionResult? {
         return if (
             sentencedCase.licenceConditions.none {
@@ -95,7 +92,7 @@ class LicenceConditionApplier(
         ) {
             licenceConditionService.createLicenceCondition(
                 sentencedCase.sentence,
-                occurredAt.toLocalDate(),
+                startDate,
                 category,
                 subCategory,
                 described.joinToString(System.lineSeparator()) { it.description },
@@ -103,7 +100,7 @@ class LicenceConditionApplier(
             )
             ActionResult.Success(
                 successType,
-                telemetryProperties(sentencedCase.sentence.event.number, occurredAt)
+                telemetryProperties(sentencedCase.sentence.event.number)
             )
         } else {
             null
@@ -143,7 +140,7 @@ class LicenceConditionApplier(
         return if (additions.isNotEmpty()) {
             ActionResult.Success(
                 ActionResult.Type.AdditionalLicenceConditionsAdded,
-                telemetryProperties(sentencedCase.sentence.event.number, occurredAt)
+                telemetryProperties(sentencedCase.sentence.event.number)
             )
         } else {
             null

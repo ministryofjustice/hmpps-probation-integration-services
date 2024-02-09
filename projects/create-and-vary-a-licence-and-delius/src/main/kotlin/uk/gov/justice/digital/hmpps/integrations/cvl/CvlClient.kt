@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import org.hibernate.sql.Restriction
 import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
-import java.time.ZonedDateTime
+import java.time.LocalDate
 
 interface CvlClient {
     @GetExchange
@@ -13,6 +13,8 @@ interface CvlClient {
 
 data class ActivatedLicence(
     val crn: String,
+    @JsonAlias("licenceStartDate")
+    val startDate: LocalDate,
     val conditions: Conditions
 )
 
@@ -63,10 +65,10 @@ data class ApConditions(
     val bespoke: List<BespokeLicenceCondition>
 )
 
-fun ActivatedLicence.telemetryProperties(eventNumber: String, occurredAt: ZonedDateTime): Map<String, String> = mapOf(
+fun ActivatedLicence.telemetryProperties(eventNumber: String): Map<String, String> = mapOf(
     "crn" to crn,
     "eventNumber" to eventNumber,
-    "occurredAt" to occurredAt.toString(),
+    "startDate" to startDate.toString(),
     "standardConditions" to conditions.ap.standard.size.toString(),
     "additionalConditions" to conditions.ap.additional.size.toString(),
     "bespokeConditions" to conditions.ap.bespoke.size.toString()
