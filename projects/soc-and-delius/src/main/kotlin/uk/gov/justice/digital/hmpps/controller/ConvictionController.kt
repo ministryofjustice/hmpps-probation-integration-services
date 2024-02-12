@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.service.ConvictionService
 @RestController
 class ConvictionController(private val convictionService: ConvictionService) {
 
-    @PreAuthorize("hasAnyRole('ROLE_SOC_PROBATION_CASE','PROBATION_API__SOC__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__SOC__CASE_DETAIL')")
     @GetMapping(value = ["/convictions/{value}"])
     fun convictions(
         @PathVariable value: String,

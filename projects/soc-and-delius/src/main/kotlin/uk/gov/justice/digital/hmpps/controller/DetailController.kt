@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.service.DetailService
 
 @RestController
 class DetailController(private val detailService: DetailService) {
-    @PreAuthorize("hasAnyRole('ROLE_SOC_PROBATION_CASE','PROBATION_API__SOC__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__SOC__CASE_DETAIL')")
     @GetMapping(value = ["/detail/{value}"])
     fun convictions(
         @PathVariable value: String,

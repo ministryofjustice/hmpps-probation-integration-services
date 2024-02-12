@@ -57,8 +57,6 @@ wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
-  - ROLE_ALLOCATION_CONTEXT
-  - ROLE_WORKFORCE_DOCUMENT
   - ROLE_PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL
 
 messaging.consumer.queue: workforce-allocations-events

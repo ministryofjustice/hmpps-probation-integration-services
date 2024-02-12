@@ -24,7 +24,7 @@ class AllocationDemandResource(
     private val allocationRisk: AllocationRiskService
 ) {
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "List of summary probation case details for cases that require allocation",
         description = """Summary information on the probation case list provided in the request.
@@ -61,7 +61,7 @@ class AllocationDemandResource(
         @RequestParam("teamCode", defaultValue = "") teamCodes: List<String> = listOf()
     ) = allocationDemand.getChoosePractitionerResponse(crn, teamCodes)
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Detailed information on the probation supervision history",
         description = """Detailed information on all current and previous cases, offences, sentences
@@ -74,7 +74,7 @@ class AllocationDemandResource(
     fun getProbationRecord(@PathVariable crn: String, @PathVariable eventNumber: String) =
         allocationDemand.getProbationRecord(crn, eventNumber)
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Summary information on the person on probation and probation practitioner",
         description = """Summary information on the person on probation and probation practitioner
@@ -85,7 +85,7 @@ class AllocationDemandResource(
     @GetMapping("/impact")
     fun getImpact(@RequestParam crn: String, @RequestParam staff: String) = allocationDemand.getImpact(crn, staff)
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Detailed information on the risk information held in Delius",
         description = """Detailed information on the risk factors held and managed in Delius for the
@@ -97,7 +97,7 @@ class AllocationDemandResource(
     @GetMapping("/{crn}/risk")
     fun getRisk(@PathVariable crn: String) = allocationRisk.getRiskRecord(crn)
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = """Summary information on all Delius events without a case allocation for a person
             on probation""",
@@ -110,7 +110,7 @@ class AllocationDemandResource(
     @GetMapping("/{crn}/unallocated-events")
     fun getUnallocatedEvents(@PathVariable crn: String) = allocationDemand.getUnallocatedEvents(crn)
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Detailed information on the case allocation",
         description = """Detailed information on the probation case, event and probation practitioners

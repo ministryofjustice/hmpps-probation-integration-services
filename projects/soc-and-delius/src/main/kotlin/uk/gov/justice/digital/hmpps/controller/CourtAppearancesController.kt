@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 @RestController
 class CourtAppearancesController(private val courtAppearanceService: CourtAppearanceService) {
-    @PreAuthorize("hasAnyRole('ROLE_SOC_PROBATION_CASE','PROBATION_API__SOC__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__SOC__CASE_DETAIL')")
     @GetMapping(value = ["/court-appearances/{value}"])
     fun courtAppearances(
         @PathVariable value: String,

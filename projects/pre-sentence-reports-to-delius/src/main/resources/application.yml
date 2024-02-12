@@ -54,8 +54,7 @@ wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
-  - ROLE_PSR_CONTEXT
-  - ROLE_PROBATION_API__PSR__CASE_DETAILS'
+  - ROLE_PROBATION_API__PSR__CASE_DETAILS
 
 messaging.consumer.queue: pre-sentence-report-events
 

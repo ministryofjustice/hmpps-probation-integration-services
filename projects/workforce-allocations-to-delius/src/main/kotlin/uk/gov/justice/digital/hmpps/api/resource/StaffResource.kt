@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.service.StaffService
 @RequestMapping("/staff")
 class StaffResource(private val service: StaffService) {
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = """Personal and and summary caseload information for
             the identified probation officer""",
@@ -32,7 +32,7 @@ class StaffResource(private val service: StaffService) {
         @PathVariable code: String
     ) = service.getOfficerView(code)
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = """Personal information along with a list of active
             cases for the identified probation practitioner""",

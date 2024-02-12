@@ -10,13 +10,13 @@ import uk.gov.justice.digital.hmpps.service.PersonDetailsService
 class CaseDetailsController(
     private val personDetailsService: PersonDetailsService
 ) {
-    @PreAuthorize("hasAnyRole('ROLE_SENTENCE_PLAN_RW','PROBATION_API__SENTENCE_PLAN__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__SENTENCE_PLAN__CASE_DETAIL')")
     @GetMapping(value = ["case-details/{crn}"])
     fun getCaseDetails(
         @PathVariable("crn") crn: String
     ) = personDetailsService.getPersonalDetails(crn)
 
-    @PreAuthorize("hasAnyRole('ROLE_SENTENCE_PLAN_RW','PROBATION_API__SENTENCE_PLAN__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__SENTENCE_PLAN__CASE_DETAIL')")
     @GetMapping(value = ["case-details/{crn}/first-appointment-date"])
     fun getFirstAppointmentDate(
         @PathVariable("crn") crn: String
