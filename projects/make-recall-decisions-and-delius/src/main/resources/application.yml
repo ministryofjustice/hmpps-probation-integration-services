@@ -60,7 +60,6 @@ wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
-  - ROLE_MAKE_RECALL_DECISIONS_API
   - PROBATION_API__CONSIDER_A_RECALL__CASE_DETAIL
 
 messaging.consumer.queue: message-queue
