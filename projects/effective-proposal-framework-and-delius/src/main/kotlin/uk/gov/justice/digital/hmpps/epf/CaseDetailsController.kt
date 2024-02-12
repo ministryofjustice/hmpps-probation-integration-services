@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CaseDetailsController(private val caseDetailsService: CaseDetailsService) {
-    @PreAuthorize("hasAnyRole('EPF_CONTEXT','PROBATION_API__EPF__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__EPF__CASE_DETAIL')")
     @GetMapping(value = ["/case-details/{crn}/{eventNumber}"])
     @Operation(
         summary = "Probation case information for the Effective Proposals Framework service",
@@ -17,7 +17,7 @@ class CaseDetailsController(private val caseDetailsService: CaseDetailsService) 
             and returns a data structure giving background information on the probation case
             for use in the Effective Proposals Framework system. The information is used to
             reduce the need for the EPF user to re-key information already held in Delius.</p>
-            <p>Requires `ROLE_EPF_CONTEXT`.</p>
+            <p>Requires `PROBATION_API__EPF__CASE_DETAIL`.</p>
         """,
         responses = [
             ApiResponse(responseCode = "200", description = "OK"),

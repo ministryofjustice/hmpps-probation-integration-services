@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.services.ProbationRecordService
 
 @RestController
 class ProbationRecordResource(val prService: ProbationRecordService) {
-    @PreAuthorize("hasAnyRole('ROLE_MANAGE_POM_CASES','PROBATION_API__MANAGE_POM_CASES__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__MANAGE_POM_CASES__CASE_DETAIL')")
     @GetMapping(value = ["/case-records/{identifier}"])
     @Operation(
         summary = "Background information on the probation case",
@@ -22,7 +22,7 @@ class ProbationRecordResource(val prService: ProbationRecordService) {
             of allocating a new Prison Offender Manager. The service will return
             case information for either the CRN or NOMS number supplied in the
             request.</p>
-            <p>Requires `ROLE_MANAGE_POM_CASES`.</p>
+            <p>Requires `PROBATION_API__MANAGE_POM_CASES__CASE_DETAIL`.</p>
         """,
         responses = [
             ApiResponse(responseCode = "200", description = "OK"),

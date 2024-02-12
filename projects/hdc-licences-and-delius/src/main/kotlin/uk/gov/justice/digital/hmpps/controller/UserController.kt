@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping(value = ["/users/{username}"])
-@PreAuthorize("hasAnyRole('PROBATION_API__HDC__USER_ROLES','PROBATION_API__HDC__USER_ROLES__RW')")
+@PreAuthorize("hasRole('PROBATION_API__HDC__USER_ROLES__RW')")
 class UserController(private val ldapTemplate: LdapTemplate) {
     @GetMapping("/details")
     fun getUserDetails(@PathVariable username: String) = UserDetails(

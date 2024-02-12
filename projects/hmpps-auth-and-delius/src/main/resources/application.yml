@@ -48,8 +48,6 @@ wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
-  - ROLE_DELIUS_USER_AUTH
-  - ROLE_DELIUS_USER_DETAILS
   - ROLE_PROBATION_API__HMPPS_AUTH__AUTHENTICATE
   - ROLE_PROBATION_API__HMPPS_AUTH__PASSWORD__RW
   - ROLE_PROBATION_API__HMPPS_AUTH__USER_DETAILS

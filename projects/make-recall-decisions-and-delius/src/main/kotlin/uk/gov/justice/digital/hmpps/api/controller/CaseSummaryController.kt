@@ -19,7 +19,7 @@ import java.time.LocalDate
 @RestController
 @Tag(name = "Case Summary")
 @RequestMapping("/case-summary/{crn}")
-@PreAuthorize("hasAnyRole('ROLE_MAKE_RECALL_DECISIONS_API','PROBATION_API__CONSIDER_A_RECALL__CASE_DETAIL')")
+@PreAuthorize("hasRole('PROBATION_API__CONSIDER_A_RECALL__CASE_DETAIL')")
 class CaseSummaryController(private val caseSummaryService: CaseSummaryService) {
 
     @GetMapping(value = ["/personal-details"])

@@ -56,7 +56,6 @@ wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
-  - ROLE_MANAGE_POM_CASES
   - ROLE_PROBATION_API__MANAGE_POM_CASES__CASE_DETAIL
 
 messaging.consumer.queue: message-queue
