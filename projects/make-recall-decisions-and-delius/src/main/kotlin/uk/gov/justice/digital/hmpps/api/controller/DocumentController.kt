@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.service.DocumentService
 @RestController
 @Tag(name = "Documents")
 @RequestMapping("/document/{crn}")
-@PreAuthorize("hasAnyRole('ROLE_MAKE_RECALL_DECISIONS_API','PROBATION_API__CONSIDER_A_RECALL__CASE_DETAIL')")
+@PreAuthorize("hasRole('PROBATION_API__CONSIDER_A_RECALL__CASE_DETAIL')")
 class DocumentController(private val documentService: DocumentService) {
 
     @GetMapping(value = ["/{id}"])

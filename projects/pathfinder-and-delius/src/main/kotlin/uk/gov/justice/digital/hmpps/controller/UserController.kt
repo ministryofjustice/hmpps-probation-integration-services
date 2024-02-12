@@ -14,12 +14,12 @@ import uk.gov.justice.digital.hmpps.service.UserService
 @RestController
 @RequestMapping("users")
 class UserController(private val userService: UserService) {
-    @PreAuthorize("hasAnyRole('PROBATION_API__PATHFINDER__USER_ROLES','PROBATION_API__PATHFINDER__USER_ROLES__RW')")
+    @PreAuthorize("hasRole('PROBATION_API__PATHFINDER__USER_ROLES__RW')")
     @PutMapping(value = ["/{username}/roles/{roleName}"])
     fun addRole(@PathVariable username: String, @PathVariable roleName: String) =
         userService.addRole(username, roleName.deliusRole())
 
-    @PreAuthorize("hasAnyRole('PROBATION_API__PATHFINDER__USER_ROLES','PROBATION_API__PATHFINDER__USER_ROLES__RW')")
+    @PreAuthorize("hasRole('PROBATION_API__PATHFINDER__USER_ROLES__RW')")
     @DeleteMapping(value = ["/{username}/roles/{roleName}"])
     fun removeRole(@PathVariable username: String, @PathVariable roleName: String) =
         userService.removeRole(username, roleName.deliusRole())

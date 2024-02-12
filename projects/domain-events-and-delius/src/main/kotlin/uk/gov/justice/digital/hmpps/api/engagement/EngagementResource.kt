@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.service.PersonService
 @RestController
 @RequestMapping
 class EngagementResource(private val personService: PersonService) {
-    @PreAuthorize("hasAnyRole('VIEW_PROBATION_CASE_ENGAGEMENT_CREATED','PROBATION_API__DOMAIN_EVENTS__ENGAGEMENT')")
+    @PreAuthorize("hasRole('PROBATION_API__DOMAIN_EVENTS__ENGAGEMENT')")
     @GetMapping("probation-case.engagement.created/{crn}")
     fun getEngagement(@PathVariable crn: String): Engagement = personService.findEngagement(crn)
 }
