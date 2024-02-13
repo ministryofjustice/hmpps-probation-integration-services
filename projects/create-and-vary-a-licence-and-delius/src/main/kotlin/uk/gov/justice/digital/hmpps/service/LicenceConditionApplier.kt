@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.BESPOKE_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.STANDARD_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData.Companion.BESPOKE_SUB_CATEGORY_CODE
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData.Companion.INITIAL_ALLOCATION_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData.Companion.STANDARD_SUB_CATEGORY_CODE
 import java.time.ZonedDateTime
 
@@ -97,8 +96,7 @@ class LicenceConditionApplier(
                 category,
                 subCategory,
                 described.joinToString(System.lineSeparator()) { it.description },
-                sentencedCase.com,
-                initialAllocation()
+                sentencedCase.com
             )
             ActionResult.Success(
                 successType,
@@ -133,8 +131,7 @@ class LicenceConditionApplier(
                     cvlMapping.mainCategory,
                     cvlMapping.subCategory,
                     condition.description,
-                    sentencedCase.com,
-                    initialAllocation()
+                    sentencedCase.com
                 )
             } else {
                 null
@@ -149,8 +146,6 @@ class LicenceConditionApplier(
             null
         }
     }
-
-    private fun initialAllocation() = referenceDataRepository.getLicenceTransferReason(INITIAL_ALLOCATION_CODE)
 }
 
 class SentencedCase(

@@ -63,8 +63,22 @@ class Dataset(
     val id: Long
 ) {
     companion object {
-        val TRANSFER_REASON_CODE = "INTER AREA LICENCE TRANSFER REASON"
         val SUB_CATEGORY_CODE = "LICENCE CONDITION SUB CATEGORY"
+    }
+}
+
+@Immutable
+@Entity
+@Table(name = "r_transfer_reason")
+class TransferReason(
+    val code: String,
+
+    @Id
+    @Column(name = "transfer_reason_id")
+    val id: Long
+) {
+    companion object {
+        val DEFAULT_CODE = "COMPONENT"
     }
 }
 
@@ -93,5 +107,9 @@ fun ReferenceDataRepository.getByCodeAndDatasetCode(code: String, datasetCode: S
 fun ReferenceDataRepository.getLicenceConditionSubCategory(code: String) =
     getByCodeAndDatasetCode(code, Dataset.SUB_CATEGORY_CODE)
 
-fun ReferenceDataRepository.getLicenceTransferReason(code: String) =
-    getByCodeAndDatasetCode(code, Dataset.TRANSFER_REASON_CODE)
+interface TransferReasonRepository : JpaRepository<TransferReason, Long> {
+    fun findByCode(code: String): TransferReason?
+}
+
+fun TransferReasonRepository.getByCode(code: String) =
+    findByCode(code) ?: throw NotFoundException("TransferReason", "code", code)

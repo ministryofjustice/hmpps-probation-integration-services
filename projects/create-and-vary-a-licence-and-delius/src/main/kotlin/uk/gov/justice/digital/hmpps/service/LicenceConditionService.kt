@@ -9,7 +9,8 @@ import java.time.LocalDate
 @Service
 class LicenceConditionService(
     private val licenceConditionRepository: LicenceConditionRepository,
-    private val licenceConditionManagerRepository: LicenceConditionManagerRepository
+    private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
+    private val transferReasonRepository: TransferReasonRepository
 ) {
 
     fun findByDisposalId(id: Long) = licenceConditionRepository.findByDisposalId(id)
@@ -19,8 +20,7 @@ class LicenceConditionService(
         category: LicenceConditionCategory,
         subCategory: ReferenceData,
         notes: String,
-        com: PersonManager,
-        transferReason: ReferenceData
+        com: PersonManager
     ): LicenceCondition {
         val lc = licenceConditionRepository.save(
             LicenceCondition(
@@ -39,7 +39,7 @@ class LicenceConditionService(
                 com.provider.id,
                 com.team.id,
                 com.staff.id,
-                transferReason
+                transferReasonRepository.getByCode(TransferReason.DEFAULT_CODE)
             )
         )
         return lc
