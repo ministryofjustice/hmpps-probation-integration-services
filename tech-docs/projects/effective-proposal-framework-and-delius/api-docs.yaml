@@ -24,7 +24,7 @@ paths:
         \ the probation case\n            for use in the Effective Proposals Framework\
         \ system. The information is used to\n            reduce the need for the\
         \ EPF user to re-key information already held in Delius.</p>\n           \
-        \ <p>Requires `ROLE_EPF_CONTEXT`.</p>\n        "
+        \ <p>Requires `PROBATION_API__EPF__CASE_DETAIL`.</p>\n        "
       operationId: handle
       parameters:
       - name: crn

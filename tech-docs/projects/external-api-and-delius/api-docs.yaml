@@ -15,7 +15,7 @@ security:
 - hmpps-auth-token: []
 tags:
 - name: Case Details
-  description: Requires ROLE_INTEGRATIONS_API
+  description: Requires PROBATION_API__HMPPS_API__CASE_DETAIL
 paths:
   /case/{crn}/supervisions:
     get:

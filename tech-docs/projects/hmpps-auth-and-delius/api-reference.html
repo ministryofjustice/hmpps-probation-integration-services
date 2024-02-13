@@ -151,7 +151,7 @@
 <h3 id="user-username-password-post">post</h3>
 
 
-  <p>Change a Delius user&rsquo;s password. Requires <code>ROLE_DELIUS_USER_AUTH</code>.</p>
+  <p>Change a Delius user&rsquo;s password. Requires <code>PROBATION_API__HMPPS_AUTH__PASSWORD__RW</code>.</p>
 
 
 
@@ -223,7 +223,7 @@
 <h3 id="authenticate-post">post</h3>
 
 
-  <p>Authenticate a Delius username and password. Requires <code>ROLE_DELIUS_USER_AUTH</code>.</p>
+  <p>Authenticate a Delius username and password. Requires <code>PROBATION_API__HMPPS_AUTH__AUTHENTICATE</code>.</p>
 
 
 
@@ -237,19 +237,6 @@
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>User authenticated</p>
-
-
-
-</td>
-<td>
-
-</td>
-</tr>
 
 <tr>
 <td>401</td>
@@ -277,6 +264,19 @@
 </td>
 </tr>
 
+<tr>
+<td>200</td>
+<td>
+<p>User authenticated</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -288,7 +288,7 @@
 <h3 id="user-get">get</h3>
 
 
-  <p>Get users by email. Requires <code>ROLE_DELIUS_USER_AUTH</code>.</p>
+  <p>Get users by email. Requires <code>PROBATION_API__HMPPS_AUTH__USER_DETAILS</code>.</p>
 
 
 
@@ -350,7 +350,7 @@
 <h3 id="user-username-get">get</h3>
 
 
-  <p>Get user details. Requires <code>ROLE_DELIUS_USER_AUTH</code> or <code>ROLE_DELIUS_USER_DETAILS</code>.</p>
+  <p>Get user details. Requires <code>PROBATION_API__HMPPS_AUTH__USER_DETAILS</code>.</p>
 
 
 
@@ -422,7 +422,7 @@
 <h3 id="user-details-userid-get">get</h3>
 
 
-  <p>Get user details by Id. Requires <code>ROLE_DELIUS_USER_AUTH</code> or <code>ROLE_DELIUS_USER_DETAILS</code>.</p>
+  <p>Get user details by Id. Requires <code>PROBATION_API__HMPPS_AUTH__USER_DETAILS</code>.</p>
 
 
 

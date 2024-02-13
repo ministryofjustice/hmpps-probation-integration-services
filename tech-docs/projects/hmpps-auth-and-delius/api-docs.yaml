@@ -18,7 +18,7 @@ paths:
     post:
       tags:
       - User details
-      description: Change a Delius user's password. Requires `ROLE_DELIUS_USER_AUTH`.
+      description: Change a Delius user's password. Requires `PROBATION_API__HMPPS_AUTH__PASSWORD__RW`.
       operationId: changePassword
       parameters:
       - name: username
@@ -41,7 +41,7 @@ paths:
     post:
       tags:
       - Authentication
-      description: Authenticate a Delius username and password. Requires `ROLE_DELIUS_USER_AUTH`.
+      description: Authenticate a Delius username and password. Requires `PROBATION_API__HMPPS_AUTH__AUTHENTICATE`.
       operationId: authenticate
       requestBody:
         content:
@@ -50,10 +50,6 @@ paths:
               $ref: '#/components/schemas/AuthenticationRequest'
         required: true
       responses:
-        "200":
-          description: User authenticated
-          content:
-            text/plain: {}
         "401":
           description: Authentication failure
           content:
@@ -62,11 +58,15 @@ paths:
           description: "Client role required: `ROLE_DELIUS_USER_AUTH`"
           content:
             text/plain: {}
+        "200":
+          description: User authenticated
+          content:
+            text/plain: {}
   /user:
     get:
       tags:
       - User details
-      description: Get users by email. Requires `ROLE_DELIUS_USER_AUTH`.
+      description: Get users by email. Requires `PROBATION_API__HMPPS_AUTH__USER_DETAILS`.
       operationId: getUsersByEmail
       parameters:
       - name: email
@@ -87,7 +87,7 @@ paths:
     get:
       tags:
       - User details
-      description: Get user details. Requires `ROLE_DELIUS_USER_AUTH` or `ROLE_DELIUS_USER_DETAILS`.
+      description: Get user details. Requires `PROBATION_API__HMPPS_AUTH__USER_DETAILS`.
       operationId: getUserDetails
       parameters:
       - name: username
@@ -106,7 +106,7 @@ paths:
     get:
       tags:
       - User details
-      description: Get user details by Id. Requires `ROLE_DELIUS_USER_AUTH` or `ROLE_DELIUS_USER_DETAILS`.
+      description: Get user details by Id. Requires `PROBATION_API__HMPPS_AUTH__USER_DETAILS`.
       operationId: getUserDetailsById
       parameters:
       - name: userId
