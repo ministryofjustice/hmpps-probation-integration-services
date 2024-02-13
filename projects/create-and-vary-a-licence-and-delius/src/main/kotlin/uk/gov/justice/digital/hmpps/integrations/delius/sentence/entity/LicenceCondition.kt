@@ -29,6 +29,9 @@ import java.time.ZonedDateTime
 @SequenceGenerator(name = "lic_condition_id_seq", sequenceName = "lic_condition_id_seq", allocationSize = 1)
 class LicenceCondition(
 
+    @Column(name = "offender_id")
+    val personId: Long,
+
     @Column(name = "disposal_id")
     val disposalId: Long,
 

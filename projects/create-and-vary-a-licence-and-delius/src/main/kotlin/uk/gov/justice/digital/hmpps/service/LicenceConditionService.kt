@@ -28,6 +28,7 @@ class LicenceConditionService(
     ): LicenceCondition {
         val lc = licenceConditionRepository.save(
             LicenceCondition(
+                disposal.event.person.id,
                 disposal.id,
                 startDate,
                 category,
