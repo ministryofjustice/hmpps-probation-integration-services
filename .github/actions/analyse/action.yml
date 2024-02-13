@@ -13,9 +13,10 @@ runs:
       with:
         fetch-depth: 0
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
-        name: test-results
+        pattern: test-results-*
+        merge-multiple: true
 
     - name: Publish test reports
       uses: mikepenz/action-junit-report@5f47764eec0e1c1f19f40c8e60a5ba47e47015c5 # v4.1.0

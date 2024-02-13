@@ -10,55 +10,6 @@ on:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
     inputs:
-      projects:
-        description: Project
-        type: choice
-        required: true
-        options:
-          - 'All'
-          - '["approved-premises-and-delius"]'
-          - '["approved-premises-and-oasys"]'
-          - '["arns-and-delius"]'
-          - '["assessment-summary-and-delius"]'
-          - '["cas3-and-delius"]'
-          - '["court-case-and-delius"]'
-          - '["create-and-vary-a-licence-and-delius"]'
-          - '["custody-key-dates-and-delius"]'
-          - '["domain-events-and-delius"]'
-          - '["dps-and-delius"]'
-          - '["effective-proposal-framework-and-delius"]'
-          - '["external-api-and-delius"]'
-          - '["hdc-licences-and-delius"]'
-          - '["hmpps-auth-and-delius"]'
-          - '["make-recall-decisions-and-delius"]'
-          - '["manage-offences-and-delius"]'
-          - '["manage-pom-cases-and-delius"]'
-          - '["offender-events-and-delius"]'
-          - '["opd-and-delius"]'
-          - '["pathfinder-and-delius"]'
-          - '["person-search-index-from-delius"]'
-          - '["pre-sentence-reports-to-delius"]'
-          - '["prison-case-notes-to-probation"]'
-          - '["prison-custody-status-to-delius"]'
-          - '["prison-education-and-delius"]'
-          - '["prison-identifier-and-delius"]'
-          - '["prisoner-profile-and-delius"]'
-          - '["refer-and-monitor-and-delius"]'
-          - '["resettlement-passport-and-delius"]'
-          - '["risk-assessment-scores-to-delius"]'
-          - '["sentence-plan-and-delius"]'
-          - '["sentence-plan-and-oasys"]'
-          - '["soc-and-delius"]'
-          - '["tier-to-delius"]'
-          - '["unpaid-work-and-delius"]'
-          - '["workforce-allocations-to-delius"]'
-          - '["cas2-and-delius"]'
-          - '["accredited-programmes-and-oasys"]'
-          - '["manage-supervision-and-oasys"]'
-          - '["manage-supervision-and-delius"]'
-          # ^ add new projects here
-          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
-          # See https://github.com/community/community/discussions/11795
       deploy:
         description: Deploy?
         type: boolean
@@ -70,14 +21,8 @@ jobs:
       projects: ${{ steps.output.outputs.projects }}
     steps:
       - uses: actions/checkout@v4
-      - name: Get projects - all
-        if: github.event_name != 'workflow_dispatch' || inputs.projects == 'All'
-        run: echo "projects=$(cd projects && find . -name tech-docs -exec dirname {} \; | sed 's#^\./##' | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
-      - name: Get projects - selected
-        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
-        run: echo 'projects=${{ inputs.projects }}' | tee -a "$GITHUB_ENV"
       - id: output
-        run: echo 'projects=${{ env.projects }}' | tee -a "$GITHUB_OUTPUT"
+        run: echo "projects=$(cd projects && find . -name tech-docs -exec dirname {} \; | sed 's#^\./##' | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_OUTPUT"
 
   build-index:
     runs-on: ubuntu-latest
@@ -95,7 +40,7 @@ jobs:
           bundle exec middleman build --verbose
         working-directory: doc/tech-docs
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: index
           path: doc/tech-docs/build
@@ -158,28 +103,21 @@ jobs:
           curl -sf localhost:8080/v3/api-docs.yaml -o api-docs.yaml
         working-directory: projects/${{ matrix.project }}/tech-docs/build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.project }}
           path: projects/${{ matrix.project }}/tech-docs/build
 
-      - name: Branch deploy
-        if: github.ref_name != 'main' && github.event_name == 'workflow_dispatch' && inputs.deploy
-        uses: JamesIves/github-pages-deploy-action@65b5dfd4f5bcd3a7403bbc2959c144256167464e # v4.5.0
-        with:
-          folder: projects/${{ matrix.project }}/tech-docs/build
-          target-folder: tech-docs-drafts/${{ matrix.project }}
-
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: github.ref == 'refs/heads/main'
+    if: github.ref_name == 'main' || (github.event_name == 'workflow_dispatch' && inputs.deploy)
     needs:
       - build-index
       - build-projects
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           path: artifacts
 
@@ -189,8 +127,16 @@ jobs:
           mkdir -p tech-docs/projects
           find artifacts -mindepth 1 -maxdepth 1 -print0 | xargs -0 -L1 basename | xargs -I{} mv 'artifacts/{}' 'tech-docs/projects/{}/'
 
-      - name: Deploy
+      - name: Deploy main
+        if: github.ref_name == 'main'
         uses: JamesIves/github-pages-deploy-action@65b5dfd4f5bcd3a7403bbc2959c144256167464e # v4.5.0
         with:
           folder: tech-docs
           target-folder: tech-docs
+
+      - name: Deploy branch
+        if: github.ref_name != 'main'
+        uses: JamesIves/github-pages-deploy-action@65b5dfd4f5bcd3a7403bbc2959c144256167464e # v4.5.0
+        with:
+          folder: tech-docs
+          target-folder: tech-docs-drafts/${{ github.ref_name }}

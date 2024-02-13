@@ -118,9 +118,9 @@ jobs:
           matrix-key: ${{ matrix.project }}
           outputs: ${{ steps.check-changes.outputs.changes }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-results-${{ matrix.project }}
           path: |
             **/build/jacoco
             **/build/reports/jacoco/**/*.xml
