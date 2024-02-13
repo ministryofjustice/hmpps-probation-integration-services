@@ -67,7 +67,7 @@ class LicenceCondition(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lic_condition_id_seq")
     val id: Long = 0
 ) {
-    val partitionId: Long = 0
+    val partitionAreaId: Long = 0
 
     @Column
     @CreatedBy
