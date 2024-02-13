@@ -69,7 +69,7 @@ class DocumentService(
             )
         } ?: throw NotFoundException("Person", "nomisId", nomisId)
 
-    private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
-    private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
+    private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
+    private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
 }
