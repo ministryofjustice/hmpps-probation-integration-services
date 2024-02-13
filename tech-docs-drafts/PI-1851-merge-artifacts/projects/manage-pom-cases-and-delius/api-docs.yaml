@@ -1,0 +1,152 @@
+openapi: 3.0.1
+info:
+  title: API Reference
+  contact:
+    name: Probation Integration Team
+    url: https://mojdt.slack.com/archives/C02HQ4M2YQN
+    email: probation-integration-team@digital.justice.gov.uk
+  license:
+    name: MIT
+    url: https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE
+  version: "1.0"
+servers:
+- url: /
+security:
+- hmpps-auth-token: []
+paths:
+  /case-records/{identifier}:
+    get:
+      tags:
+      - probation-record-resource
+      summary: Background information on the probation case
+      description: "<p>Background details of the probation case for the purposes\n\
+        \            of allocating a new Prison Offender Manager. The service will\
+        \ return\n            case information for either the CRN or NOMS number supplied\
+        \ in the\n            request.</p>\n            <p>Requires `PROBATION_API__MANAGE_POM_CASES__CASE_DETAIL`.</p>\n\
+        \        "
+      operationId: handle
+      parameters:
+      - name: identifier
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProbationRecord'
+        "404":
+          description: |-
+            No probation case found with the given identifier.
+                                For a prison identifier this could mean the Prison and Probation cases
+                                have not been linked yet.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ErrorResponse:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        message:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+    FieldError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+        field:
+          type: string
+    LocalDeliveryUnit:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    Manager:
+      required:
+      - team
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/Team'
+        code:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          type: string
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+    ProbationRecord:
+      required:
+      - crn
+      - manager
+      - mappaLevel
+      - vloAssigned
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsId:
+          type: string
+        currentTier:
+          type: string
+        resourcing:
+          type: string
+          enum:
+          - ENHANCED
+          - NORMAL
+        manager:
+          $ref: '#/components/schemas/Manager'
+        mappaLevel:
+          type: integer
+          format: int32
+        vloAssigned:
+          type: boolean
+    Team:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        localDeliveryUnit:
+          $ref: '#/components/schemas/LocalDeliveryUnit'
+  securitySchemes:
+    hmpps-auth-token:
+      type: http
+      name: Authorization
+      in: header
+      scheme: bearer
+      bearerFormat: JWT

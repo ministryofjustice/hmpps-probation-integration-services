@@ -1,0 +1,387 @@
+openapi: 3.0.1
+info:
+  title: API Reference
+  contact:
+    name: Probation Integration Team
+    url: https://mojdt.slack.com/archives/C02HQ4M2YQN
+    email: probation-integration-team@digital.justice.gov.uk
+  license:
+    name: MIT
+    url: https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE
+  version: "1.0"
+servers:
+- url: /
+security:
+- hmpps-auth-token: []
+paths:
+  /probation-case/{crn}:
+    get:
+      tags:
+      - probation-record-resource
+      operationId: probationRecord
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProbationRecord'
+  /probation-case/{crn}/status:
+    get:
+      tags:
+      - probation-status-resource
+      operationId: getProbationStatus
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProbationStatusDetail'
+components:
+  schemas:
+    Breach:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        started:
+          type: string
+          format: date
+        statusDate:
+          type: string
+          format: date
+    Conviction:
+      required:
+      - active
+      - awaitingPsr
+      - breaches
+      - courtReports
+      - documents
+      - inBreach
+      - licenceConditions
+      - offences
+      - pssRequirements
+      - requirements
+      type: object
+      properties:
+        active:
+          type: boolean
+        inBreach:
+          type: boolean
+        awaitingPsr:
+          type: boolean
+        convictionDate:
+          type: string
+          format: date
+        offences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offence'
+        sentence:
+          $ref: '#/components/schemas/Sentence'
+        custodialType:
+          $ref: '#/components/schemas/KeyValue'
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/OffenderDocumentDetail'
+        breaches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Breach'
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Requirement'
+        pssRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/PssRequirement'
+        licenceConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenceCondition'
+        courtReports:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourtReport'
+    CourtReport:
+      required:
+      - requestedDate
+      - requiredDate
+      type: object
+      properties:
+        requestedDate:
+          type: string
+          format: date
+        requiredDate:
+          type: string
+          format: date
+        completedDate:
+          type: string
+          format: date
+        courtReportType:
+          $ref: '#/components/schemas/KeyValue'
+        deliveredCourtReportType:
+          $ref: '#/components/schemas/KeyValue'
+        author:
+          $ref: '#/components/schemas/ReportAuthor'
+    KeyValue:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    LicenceCondition:
+      required:
+      - active
+      type: object
+      properties:
+        description:
+          type: string
+        subTypeDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+        notes:
+          type: string
+        active:
+          type: boolean
+    Offence:
+      required:
+      - description
+      - main
+      type: object
+      properties:
+        description:
+          type: string
+        main:
+          type: boolean
+        offenceDate:
+          type: string
+          format: date
+    OffenderDocumentDetail:
+      required:
+      - documentName
+      - type
+      type: object
+      properties:
+        documentName:
+          type: string
+        author:
+          type: string
+        type:
+          type: string
+          enum:
+          - OFFENDER_DOCUMENT
+          - CONVICTION_DOCUMENT
+          - CPSPACK_DOCUMENT
+          - PRECONS_DOCUMENT
+          - COURT_REPORT_DOCUMENT
+          - INSTITUTION_REPORT_DOCUMENT
+          - ADDRESS_ASSESSMENT_DOCUMENT
+          - APPROVED_PREMISES_REFERRAL_DOCUMENT
+          - ASSESSMENT_DOCUMENT
+          - CASE_ALLOCATION_DOCUMENT
+          - PERSONAL_CONTACT_DOCUMENT
+          - REFERRAL_DOCUMENT
+          - NSI_DOCUMENT
+          - PERSONAL_CIRCUMSTANCE_DOCUMENT
+          - UPW_APPOINTMENT_DOCUMENT
+          - CONTACT_DOCUMENT
+        extendedDescription:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        subType:
+          $ref: '#/components/schemas/KeyValue'
+    OffenderManager:
+      required:
+      - active
+      - allocatedDate
+      - provider
+      - staff
+      - team
+      type: object
+      properties:
+        staff:
+          $ref: '#/components/schemas/Staff'
+        allocatedDate:
+          type: string
+          format: date
+        team:
+          $ref: '#/components/schemas/Team'
+        provider:
+          type: string
+        active:
+          type: boolean
+    ProbationRecord:
+      required:
+      - convictions
+      - crn
+      - offenderManagers
+      type: object
+      properties:
+        crn:
+          type: string
+        offenderManagers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OffenderManager'
+        convictions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conviction'
+    PssRequirement:
+      type: object
+      properties:
+        description:
+          type: string
+        subTypeDescription:
+          type: string
+    ReportAuthor:
+      required:
+      - unallocated
+      type: object
+      properties:
+        unallocated:
+          type: boolean
+        forenames:
+          type: string
+        surname:
+          type: string
+    Requirement:
+      required:
+      - active
+      type: object
+      properties:
+        commencementDate:
+          type: string
+          format: date
+        terminationDate:
+          type: string
+          format: date
+        expectedStartDate:
+          type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+        active:
+          type: boolean
+        requirementTypeMainCategory:
+          $ref: '#/components/schemas/KeyValue'
+        requirementTypeSubCategory:
+          $ref: '#/components/schemas/KeyValue'
+        adRequirementTypeMainCategory:
+          $ref: '#/components/schemas/KeyValue'
+        adRequirementTypeSubCategory:
+          $ref: '#/components/schemas/KeyValue'
+        terminationReason:
+          $ref: '#/components/schemas/KeyValue'
+        length:
+          type: integer
+          format: int64
+    Sentence:
+      required:
+      - description
+      type: object
+      properties:
+        description:
+          type: string
+        length:
+          type: integer
+          format: int64
+        lengthUnits:
+          type: string
+        lengthInDays:
+          type: integer
+          format: int64
+        terminationDate:
+          type: string
+          format: date
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        terminationReason:
+          type: string
+    Staff:
+      required:
+      - forenames
+      - surname
+      type: object
+      properties:
+        forenames:
+          type: string
+        surname:
+          type: string
+    Team:
+      required:
+      - description
+      - district
+      - localDeliveryUnit
+      type: object
+      properties:
+        description:
+          type: string
+        telephone:
+          type: string
+        localDeliveryUnit:
+          type: string
+        district:
+          type: string
+    ProbationStatusDetail:
+      required:
+      - awaitingPsr
+      - inBreach
+      - preSentenceActivity
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - NO_RECORD
+          - NOT_SENTENCED
+          - PREVIOUSLY_KNOWN
+          - CURRENT
+        terminationDate:
+          type: string
+          format: date
+        inBreach:
+          type: boolean
+        preSentenceActivity:
+          type: boolean
+        awaitingPsr:
+          type: boolean
+  securitySchemes:
+    hmpps-auth-token:
+      type: http
+      name: Authorization
+      in: header
+      scheme: bearer
+      bearerFormat: JWT
