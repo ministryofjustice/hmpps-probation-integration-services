@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.CommunityManager
-import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.ManagedPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.Team
@@ -41,10 +41,10 @@ object CommunityManagerGenerator {
         nomsId: String,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Person(crn, nomsId, softDeleted, id)
+    ) = ManagedPerson(crn, nomsId, softDeleted, id)
 
     fun generateCommunityManager(
-        person: Person,
+        person: ManagedPerson,
         staff: Staff,
         team: Team = TEAM,
         active: Boolean = true,
