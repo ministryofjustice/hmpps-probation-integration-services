@@ -107,6 +107,10 @@ class LicenceConditionManager(
     val teamId: Long,
     val staffId: Long,
 
+    @ManyToOne
+    @JoinColumn(name = "transfer_reason_id")
+    val transferReason: ReferenceData,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 

@@ -76,10 +76,12 @@ class DataLoader(
         entityManager.persistAll(
             SentenceGenerator.SENTENCE_TYPE_SC,
             ReferenceDataGenerator.DATASET_LC_SUB_CAT,
+            ReferenceDataGenerator.DATASET_TRANSFER_REASON,
             ReferenceDataGenerator.LC_STANDARD_CATEGORY,
             ReferenceDataGenerator.LC_STANDARD_SUB_CATEGORY,
             ReferenceDataGenerator.LC_BESPOKE_CATEGORY,
             ReferenceDataGenerator.LC_BESPOKE_SUB_CATEGORY,
+            ReferenceDataGenerator.TR_INITIAL_ALLOCATION,
             ReferenceDataGenerator.CONTACT_TYPE_LPOP,
             PersonGenerator.PERSON_CREATE_LC,
             SentenceGenerator.EVENT_CREATE_LC,
