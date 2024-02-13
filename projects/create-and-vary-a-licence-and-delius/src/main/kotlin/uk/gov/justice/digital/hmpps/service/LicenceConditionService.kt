@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
@@ -10,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceC
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Service
 class LicenceConditionService(
@@ -39,6 +41,7 @@ class LicenceConditionService(
         licenceConditionManagerRepository.save(
             LicenceConditionManager(
                 lc.id,
+                startDate.atStartOfDay(EuropeLondon),
                 com.provider.id,
                 com.team.id,
                 com.staff.id
