@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.service.CaseViewService
 @RestController
 @RequestMapping("/allocation-demand")
 class CaseViewResource(val service: CaseViewService) {
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Detailed information on the probation case",
         description = """Detailed information on the probation case identified

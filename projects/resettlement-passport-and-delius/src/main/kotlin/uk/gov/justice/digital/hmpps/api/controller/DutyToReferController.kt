@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.service.ResettlementPassportService
 @RequestMapping("/duty-to-refer-nsi")
 class DutyToReferController(private val service: ResettlementPassportService) {
 
-    @PreAuthorize("hasAnyRole('RESETTLEMENT_PASSPORT_SUPERVISION_ACCESS','PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL')")
     @GetMapping("/{value}")
     fun findPerson(
         @PathVariable value: String,

@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.PersonDocument
 @RequestMapping("/offenders/{crn}/documents")
 class DocumentResource(private val service: DocumentService) {
 
-    @PreAuthorize("hasAnyRole('ROLE_WORKFORCE_DOCUMENT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "List of documents held in Delius for the probation case",
         description = """List of documents available in Delius for the probation
@@ -28,7 +28,7 @@ class DocumentResource(private val service: DocumentService) {
     fun findDocuments(@PathVariable crn: String): List<PersonDocument> =
         service.getDocumentsByCrn(crn)
 
-    @PreAuthorize("hasAnyRole('ROLE_WORKFORCE_DOCUMENT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "Fetch a complete document from Delius/Alfresco",
         description = """Returns the full document identified by the CRN and

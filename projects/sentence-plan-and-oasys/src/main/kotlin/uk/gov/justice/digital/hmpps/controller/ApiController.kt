@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ApiController {
-    @PreAuthorize("hasAnyRole('ROLE_SENTENCE_PLAN_RW','PROBATION_API__SENTENCE_PLAN__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__SENTENCE_PLAN__CASE_DETAIL')")
     @GetMapping(value = ["/needs/{crn}"])
     fun getNeeds(
         @PathVariable("crn") crn: String

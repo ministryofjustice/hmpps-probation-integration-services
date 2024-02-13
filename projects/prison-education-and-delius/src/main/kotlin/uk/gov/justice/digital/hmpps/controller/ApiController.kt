@@ -24,13 +24,13 @@ class ApiController(
     private val communityManagerRepository: CommunityManagerRepository,
     private val ldapTemplate: LdapTemplate
 ) {
-    @PreAuthorize("hasAnyRole('ROLE_PRISON_EDUCATION_AND_DELIUS','PROBATION_API__PRISON_EDUCATION__CASE_DETAIL')")
+    @PreAuthorize("hasRole('PROBATION_API__PRISON_EDUCATION__CASE_DETAIL')")
     @GetMapping(value = ["/probation-case/{prisonerId}/community-manager"])
     @Operation(
         summary = "Get the current active community manager for a probation case",
         description = """Accepts the prisoner identifier (NOMS number) and returns the 
             currently active community manager of the probation case.
-            <p>Requires `ROLE_PRISON_EDUCATION_AND_DELIUS`.
+            <p>Requires `PROBATION_API__PRISON_EDUCATION__CASE_DETAIL`.
         """,
         responses = [
             ApiResponse(responseCode = "200", description = "OK"),
