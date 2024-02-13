@@ -26,6 +26,8 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: PrisonerProfileAndDelius # Should match value in [deploy/database/access.yml].
 
+integrations.alfresco.url: http://localhost:${wiremock.port}/alfresco
+
 management:
   endpoints.web:
     base-path: /
@@ -42,7 +44,6 @@ spring:
   ldap.embedded.base-dn: ${spring.ldap.base}
 
 seed.database: true
-wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:

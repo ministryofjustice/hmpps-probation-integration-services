@@ -6,6 +6,7 @@ dependencies {
     implementation(project(":libs:audit"))
     implementation(project(":libs:commons"))
     implementation(project(":libs:oauth-server"))
+    implementation(project(":libs:document-management"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -34,5 +35,10 @@ configure<ClassPathExtension> {
         "**/config/**",
         "**/entity/**",
         "**/AppKt.class"
+    )
+
+    sonarExclusions = listOf(
+        "**/entity/**",
+        "**/model/**"
     )
 }

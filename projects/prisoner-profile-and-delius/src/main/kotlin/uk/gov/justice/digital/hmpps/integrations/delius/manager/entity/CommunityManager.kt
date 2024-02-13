@@ -20,7 +20,7 @@ class CommunityManager(
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
-    val person: Person,
+    val person: ManagedPerson,
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -45,7 +45,7 @@ class CommunityManager(
 @Entity
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
-class Person(
+class ManagedPerson(
 
     @Column(columnDefinition = "char(7)")
     val crn: String,
