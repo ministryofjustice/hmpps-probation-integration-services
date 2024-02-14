@@ -101,6 +101,12 @@
         <a href="./api-reference.html#probation-cases-nomsid-community-manager"><span>/probation-cases/{nomsId}/community-manager</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-cases-nomisid-documents"><span>/probation-cases/{nomisId}/documents</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#document-id"><span>/document/{id}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -198,6 +204,167 @@
 </td>
 <td>
 <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-cases-nomisid-documents">/probation-cases/{nomisId}/documents</h2>
+
+<h3 id="probation-cases-nomisid-documents-get">get</h3>
+
+  <p><em>List documents for a case</em></p>
+
+
+  <p>Returns basic personal information for the case, along with a list of person-level documents 
+            and event-level documents. Documents are annotated with the type and description, based on what they relate 
+            to in the probation case (e.g. a court appearance, an event, etc).</p>
+
+
+
+
+<h4 id="probation-cases-nomisid-documents-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>nomisId</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-cases-nomisid-documents-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "surname": "string"
+  },
+  "documents": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "author": "string",
+      "createdAt": "string"
+    }
+  ],
+  "convictions": [
+    {
+      "title": "string",
+      "offence": "string",
+      "date": "string",
+      "active": "boolean",
+      "documents": [
+        {
+          "id": "string",
+          "name": "string",
+          "description": "string",
+          "type": "string",
+          "author": "string",
+          "createdAt": "string"
+        }
+      ],
+      "institutionName": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-probationdocumentsresponse'>ProbationDocumentsResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="document-id">/document/{id}</h2>
+
+<h3 id="document-id-get">get</h3>
+
+  <p><em>Download document content</em></p>
+
+
+
+
+<h4 id="document-id-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="document-id-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-streamingresponsebody'>StreamingResponseBody</a>
 </td>
 </tr>
 
@@ -364,6 +531,205 @@
 
 </tbody>
 </table>
+
+<h3 id="schema-conviction">Conviction</h3>
+
+
+<table class='schema-conviction'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>title</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offence</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-document'>Document</a>
+</td>
+</tr>
+
+<tr>
+<td>institutionName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-document">Document</h3>
+
+
+<table class='schema-document'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>author</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdAt</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationdocumentsresponse">ProbationDocumentsResponse</h3>
+
+
+<table class='schema-probationdocumentsresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-document'>Document</a>
+</td>
+</tr>
+
+<tr>
+<td>convictions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-streamingresponsebody">StreamingResponseBody</h3>
+
 
 
 
