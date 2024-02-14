@@ -3,14 +3,14 @@ prisoner.movement.configs:
       - ADMISSION
     actionNames:
       - Recall
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
   - types:
       - RELEASED_TO_HOSPITAL
     actionNames:
       - Recall
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
     featureFlag: messages_released_hospital
   - types:
       - RELEASED
@@ -26,8 +26,8 @@ prisoner.movement.configs:
       - HQ
     actionNames:
       - Recall
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
     featureFlag: messages_released_hospital
   - types:
       - RELEASED
@@ -38,8 +38,8 @@ prisoner.movement.configs:
       - ETR
     actionNames:
       - Recall
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
   - types:
       - RELEASED
     reasons:
@@ -47,8 +47,8 @@ prisoner.movement.configs:
     reasonOverride: RO
     actionNames:
       - Release
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
   - types:
       - RELEASED
     reasons:
@@ -56,25 +56,25 @@ prisoner.movement.configs:
       - UAL_ECL
     actionNames:
       - Recall
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
   - types:
       - RELEASED
     actionNames:
       - Release
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
   - types:
       - TEMPORARY_ABSENCE_RETURN
     actionNames:
       - Recall
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
   - types:
       - TRANSFERRED
     reasons:
       - INT
     actionNames:
       - Recall
-      - UpdateStatus
       - UpdateLocation
+      - UpdateStatus
