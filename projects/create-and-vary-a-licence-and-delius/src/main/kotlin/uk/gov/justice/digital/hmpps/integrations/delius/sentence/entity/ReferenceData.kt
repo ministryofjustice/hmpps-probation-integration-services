@@ -46,7 +46,7 @@ class ReferenceData(
     companion object {
         val STANDARD_SUB_CATEGORY_CODE = "SL1"
         val BESPOKE_SUB_CATEGORY_CODE = "NSTT9"
-        val INITIAL_ALLOCATION_CODE = "IN1"
+        val VICTIM_NOTES = listOf("NCL3", "NST6")
     }
 }
 

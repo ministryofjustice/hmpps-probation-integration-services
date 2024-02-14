@@ -29,7 +29,7 @@ class LicenceConditionService(
                 startDate,
                 category,
                 subCategory,
-                notes
+                if (subCategory.code in ReferenceData.VICTIM_NOTES) "Notes not provided as they may contain victim data" else notes
             )
         )
         licenceConditionManagerRepository.save(
