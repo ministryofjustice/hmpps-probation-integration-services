@@ -25,6 +25,11 @@
           "description": "Additional Licence Condition Two"
         },
         {
+          "type": "STANDARD",
+          "code": "VictimLcOne",
+          "text": "Some text containing victim information"
+        },
+        {
           "type": "ELECTRONIC_MONITORING",
           "code": "EmLcOne",
           "description": "Additional Licence Condition Electronic Monitoring",

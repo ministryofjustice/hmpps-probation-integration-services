@@ -28,6 +28,11 @@ object ReferenceDataGenerator {
             generateLcCategory("EM1"),
             generateLcSubCategory("EM1S"),
             "curfew"
+        ),
+        generateCvlMapping(
+            "VictimLcOne",
+            generateLcCategory("VIC1"),
+            generateLcSubCategory(ReferenceData.VICTIM_NOTES.first())
         )
     )
     val CONTACT_TYPE_LPOP = generateContactType(ContactType.LPOP)

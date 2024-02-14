@@ -68,7 +68,7 @@ class LicenceActivatedIntegrationTest {
             "eventNumber" to "1",
             "startDate" to "2024-02-05",
             "standardConditions" to "2",
-            "additionalConditions" to "3",
+            "additionalConditions" to "4",
             "bespokeConditions" to "2"
         )
 
@@ -80,7 +80,7 @@ class LicenceActivatedIntegrationTest {
         verify(telemetryService).trackEvent(ActionResult.Type.BespokeLicenceConditionAdded.name, telemetryProperties)
 
         val conditions = lcr.findByDisposalId(sentence.id)
-        assertThat(conditions.size, equalTo(5))
+        assertThat(conditions.size, equalTo(6))
 
         val com = pmr.findByPersonCrn(person.crn)!!
         conditions.forEach {
@@ -119,7 +119,8 @@ class LicenceActivatedIntegrationTest {
             containsInAnyOrder(
                 "Additional Licence Condition One",
                 "Additional Licence Condition Two",
-                "Additional Licence Condition Electronic Monitoring"
+                "Additional Licence Condition Electronic Monitoring",
+                "Notes not provided as they may contain victim data"
             )
         )
 
