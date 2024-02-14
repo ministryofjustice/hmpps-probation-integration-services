@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.oasys
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 import java.time.LocalDate
@@ -138,6 +139,7 @@ data class Action(
 )
 
 data class AssessmentSummaries(
+    @JsonAlias("probNumber")
     val crn: String,
     val assessments: List<AssessmentSummary>
 )
