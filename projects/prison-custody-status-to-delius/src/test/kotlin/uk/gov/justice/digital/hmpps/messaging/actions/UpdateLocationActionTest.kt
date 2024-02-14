@@ -67,8 +67,6 @@ internal class UpdateLocationActionTest {
     @MethodSource("noChangeMovements")
     fun `no changes made when location is correct`(custody: Custody, prisonerMovement: PrisonerMovement) {
         if (prisonerMovement.type == RELEASED && prisonerMovement.reason.isBlank()) {
-            whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
-                .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
             whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
                 .thenReturn(InstitutionGenerator.DEFAULT)
         } else if (prisonerMovement.isAbsconded()) {

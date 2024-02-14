@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
@@ -53,21 +54,23 @@ class UpdateLocationAction(
             else -> null
         }
 
-        return custody.updateLocationAt(institution, prisonerMovement.occurredAt) {
-            referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.LOCATION_CHANGE.code)
-        }?.let { history ->
-            custodyRepository.save(custody)
-            custodyHistoryRepository.save(history)
-            (pomInstitutionOverride ?: institution).probationArea?.let {
-                prisonManagerService.allocateToProbationArea(
-                    custody.disposal,
-                    it,
-                    prisonerMovement.occurredAt
-                )
-            }
-            createLocationChangeContact(prisonerMovement, custody)
+        return institution?.let { institution ->
+            custody.updateLocationAt(institution, prisonerMovement.occurredAt) {
+                referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.LOCATION_CHANGE.code)
+            }?.let { history ->
+                custodyRepository.save(custody)
+                custodyHistoryRepository.save(history)
+                (pomInstitutionOverride ?: institution).probationArea?.let {
+                    prisonManagerService.allocateToProbationArea(
+                        custody.disposal,
+                        it,
+                        prisonerMovement.occurredAt
+                    )
+                }
+                createLocationChangeContact(prisonerMovement, custody)
 
-            ActionResult.Success(ActionResult.Type.LocationUpdated, prisonerMovement.telemetryProperties())
+                ActionResult.Success(ActionResult.Type.LocationUpdated, prisonerMovement.telemetryProperties())
+            }
         } ?: ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
     }
 
@@ -87,7 +90,9 @@ class UpdateLocationAction(
 
             isAbsconded() -> institutionRepository.getByCode(InstitutionCode.UNLAWFULLY_AT_LARGE.code)
 
-            else -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
+            custody.canBeReleased() -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
+
+            else -> custody.institution
         }
 
     private fun createLocationChangeContact(prisonerMovement: PrisonerMovement, custody: Custody) {
