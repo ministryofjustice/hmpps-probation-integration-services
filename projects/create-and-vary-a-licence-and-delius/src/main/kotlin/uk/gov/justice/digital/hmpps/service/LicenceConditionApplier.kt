@@ -87,7 +87,7 @@ class LicenceConditionApplier(
     ): ActionResult? {
         return if (
             sentencedCase.licenceConditions.none {
-                it.mainCategory.code == category.code && it.subCategory.code == subCategory.code
+                it.mainCategory.code == category.code && it.subCategory.code == subCategory.code && described.isNotEmpty()
             }
         ) {
             licenceConditionService.createLicenceCondition(
