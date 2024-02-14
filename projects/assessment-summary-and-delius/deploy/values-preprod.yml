@@ -7,7 +7,7 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: preprod
-    INTEGRATIONS_ORDS_URL: https://pp.oasys.service.justice.gov.uk/eor/oasys
+    INTEGRATIONS_ORDS_URL: https://pp-int.oasys.service.justice.gov.uk/eor/oasys
 
 generic-prometheus-alerts:
   businessHoursOnly: true
