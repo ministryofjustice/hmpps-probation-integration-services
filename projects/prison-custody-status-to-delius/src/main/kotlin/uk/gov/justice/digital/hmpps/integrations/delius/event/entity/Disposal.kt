@@ -43,12 +43,7 @@ class Disposal(
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
-) {
-    fun isLongerThan20Months(): Boolean? {
-        val endDate = if (lengthInDays != null) date.plusDays(lengthInDays) else notionalEndDate ?: return null
-        return endDate > date.plusMonths(20)
-    }
-}
+)
 
 @Immutable
 @Entity
