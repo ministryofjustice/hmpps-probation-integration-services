@@ -16,7 +16,11 @@ runs:
     - uses: actions/download-artifact@v4
       with:
         pattern: test-results-*
-        merge-multiple: true
+        path: test-results
+
+    - name: Unpack test results
+      run: for dir in test-results/*; do cp -R "$dir"/* .; done
+      shell: bash
 
     - name: Publish test reports
       uses: mikepenz/action-junit-report@5f47764eec0e1c1f19f40c8e60a5ba47e47015c5 # v4.1.0
