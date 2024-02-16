@@ -84,6 +84,8 @@ internal class IntegrationTest {
         assertThat(assessment?.assessedBy, equalTo("John Smith"))
         assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-07")))
         assertThat(assessment?.totalScore, equalTo(76))
+        assertThat(assessment?.initialSentencePlanDate, equalTo(LocalDate.of(2024, 2, 12)))
+        assertThat(assessment?.sentencePlanReviewDate, equalTo(LocalDate.of(2024, 8, 12)))
     }
 
     @Test

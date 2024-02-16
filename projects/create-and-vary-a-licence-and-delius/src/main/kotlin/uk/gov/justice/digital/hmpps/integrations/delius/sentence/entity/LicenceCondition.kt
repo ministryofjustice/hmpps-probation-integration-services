@@ -100,10 +100,16 @@ class LicenceConditionManager(
     @Column(name = "lic_condition_id")
     val licenceConditionId: Long,
 
+    val allocationDate: ZonedDateTime,
+
     @Column(name = "probation_area_id")
     val providerId: Long,
     val teamId: Long,
     val staffId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "transfer_reason_id")
+    val transferReason: TransferReason,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
@@ -120,6 +126,8 @@ class LicenceConditionManager(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lic_condition_manager_id_seq")
     val id: Long = 0
 ) {
+    val partitionAreaId: Long = 0
+
     @Column
     @CreatedBy
     var createdByUserId: Long = 0

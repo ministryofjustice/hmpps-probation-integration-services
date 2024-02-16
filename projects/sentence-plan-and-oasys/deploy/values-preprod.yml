@@ -9,11 +9,11 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: preprod
-    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_ORDS-OASYS-AUTH_TOKEN-URI: https://bridge-pp-oasys.az.justice.gov.uk/eor/oasys/oauth/token
+    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_ORDS-OASYS-AUTH_TOKEN-URI: https://pp-int.oasys.service.justice.gov.uk/eor/oasys/oauth/token
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
 
-    INTEGRATIONS_ORDS_OASYS_URL: https://bridge-pp-oasys.az.justice.gov.uk/eor/oasys
+    INTEGRATIONS_ORDS_OASYS_URL: https://pp-int.oasys.service.justice.gov.uk/eor/oasys
 
 generic-prometheus-alerts:
   businessHoursOnly: true

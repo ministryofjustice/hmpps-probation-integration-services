@@ -34,6 +34,7 @@ class ContactService(
             Contact(
                 type = contactTypeRepository.getByCode(detail.typeCode.value),
                 date = detail.date,
+                startTime = detail.date,
                 person = person,
                 event = event,
                 licenceConditionId = licenceConditionId,

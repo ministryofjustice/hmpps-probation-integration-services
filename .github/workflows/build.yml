@@ -112,7 +112,7 @@ jobs:
         run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_OUTPUT"
 
       - name: Output changes
-        uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
+        uses: cloudposse/github-action-matrix-outputs-write@e90c7018e27e1c9466e0fa3cfe64720d9969ffca # v0.5.0
         with:
           matrix-step-name: output-changes
           matrix-key: ${{ matrix.project }}
@@ -153,7 +153,7 @@ jobs:
           force-deploy: ${{ inputs.force-deploy }}
 
       - name: Output changes
-        uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
+        uses: cloudposse/github-action-matrix-outputs-write@e90c7018e27e1c9466e0fa3cfe64720d9969ffca # v0.5.0
         with:
           matrix-step-name: output-changes
           matrix-key: ${{ matrix.project }}

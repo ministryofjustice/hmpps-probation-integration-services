@@ -18,7 +18,12 @@ class LicenceConditionCategory(
     @Id
     @Column(name = "lic_cond_type_main_cat_id")
     val id: Long
-)
+) {
+    companion object {
+        val STANDARD_CATEGORY_CODE = "SL1"
+        val BESPOKE_CATEGORY_CODE = "BESP"
+    }
+}
 
 @Immutable
 @Entity
@@ -37,7 +42,13 @@ class ReferenceData(
     @Id
     @Column(name = "standard_reference_list_id")
     val id: Long
-)
+) {
+    companion object {
+        val STANDARD_SUB_CATEGORY_CODE = "SL1"
+        val BESPOKE_SUB_CATEGORY_CODE = "NSTT9"
+        val VICTIM_NOTES = listOf("NCL3", "NST6")
+    }
+}
 
 @Immutable
 @Entity
@@ -50,7 +61,26 @@ class Dataset(
     @Id
     @Column(name = "reference_data_master_id")
     val id: Long
-)
+) {
+    companion object {
+        val SUB_CATEGORY_CODE = "LICENCE CONDITION SUB CATEGORY"
+    }
+}
+
+@Immutable
+@Entity
+@Table(name = "r_transfer_reason")
+class TransferReason(
+    val code: String,
+
+    @Id
+    @Column(name = "transfer_reason_id")
+    val id: Long
+) {
+    companion object {
+        val DEFAULT_CODE = "COMPONENT"
+    }
+}
 
 interface LicenceConditionCategoryRepository : JpaRepository<LicenceConditionCategory, Long> {
     fun findByCode(code: String): LicenceConditionCategory?
@@ -75,4 +105,11 @@ fun ReferenceDataRepository.getByCodeAndDatasetCode(code: String, datasetCode: S
         ?: throw NotFoundException("Reference Data Not Found: $datasetCode => $code")
 
 fun ReferenceDataRepository.getLicenceConditionSubCategory(code: String) =
-    getByCodeAndDatasetCode(code, "LICENCE CONDITION SUB CATEGORY")
+    getByCodeAndDatasetCode(code, Dataset.SUB_CATEGORY_CODE)
+
+interface TransferReasonRepository : JpaRepository<TransferReason, Long> {
+    fun findByCode(code: String): TransferReason?
+}
+
+fun TransferReasonRepository.getByCode(code: String) =
+    findByCode(code) ?: throw NotFoundException("TransferReason", "code", code)

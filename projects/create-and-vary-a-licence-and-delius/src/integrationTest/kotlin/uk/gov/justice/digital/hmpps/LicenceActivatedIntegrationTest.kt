@@ -14,8 +14,8 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping.Companion.BESPOKE_CATEGORY_CODE
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping.Companion.STANDARD_CATEGORY_CODE
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.BESPOKE_CATEGORY_CODE
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.STANDARD_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -68,7 +68,7 @@ class LicenceActivatedIntegrationTest {
             "eventNumber" to "1",
             "startDate" to "2024-02-05",
             "standardConditions" to "2",
-            "additionalConditions" to "3",
+            "additionalConditions" to "4",
             "bespokeConditions" to "2"
         )
 
@@ -80,7 +80,7 @@ class LicenceActivatedIntegrationTest {
         verify(telemetryService).trackEvent(ActionResult.Type.BespokeLicenceConditionAdded.name, telemetryProperties)
 
         val conditions = lcr.findByDisposalId(sentence.id)
-        assertThat(conditions.size, equalTo(5))
+        assertThat(conditions.size, equalTo(6))
 
         val com = pmr.findByPersonCrn(person.crn)!!
         conditions.forEach {
@@ -119,7 +119,8 @@ class LicenceActivatedIntegrationTest {
             containsInAnyOrder(
                 "Additional Licence Condition One",
                 "Additional Licence Condition Two",
-                "Additional Licence Condition Electronic Monitoring"
+                "Additional Licence Condition Electronic Monitoring",
+                "Notes not provided as they may contain victim data"
             )
         )
 

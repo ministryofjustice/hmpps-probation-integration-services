@@ -25,14 +25,7 @@ class CvlMapping(
     @Id
     @Column(name = "cvl_lic_cond_mapping_id")
     val id: Long
-) {
-    companion object {
-        val STANDARD_CATEGORY_CODE = "SL1"
-        val STANDARD_SUB_CATEGORY_CODE = "SL1"
-        val BESPOKE_CATEGORY_CODE = "BESP"
-        val BESPOKE_SUB_CATEGORY_CODE = "NSTT9"
-    }
-}
+)
 
 interface CvlMappingRepository : JpaRepository<CvlMapping, Long> {
     fun findByCvlCode(code: String): CvlMapping?

@@ -1,20 +1,16 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionManager
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.LocalDate
 
 @Service
 class LicenceConditionService(
     private val licenceConditionRepository: LicenceConditionRepository,
-    private val licenceConditionManagerRepository: LicenceConditionManagerRepository
+    private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
+    private val transferReasonRepository: TransferReasonRepository
 ) {
 
     fun findByDisposalId(id: Long) = licenceConditionRepository.findByDisposalId(id)
@@ -33,15 +29,17 @@ class LicenceConditionService(
                 startDate,
                 category,
                 subCategory,
-                notes
+                if (subCategory.code in ReferenceData.VICTIM_NOTES) "Notes not provided as they may contain victim data" else notes
             )
         )
         licenceConditionManagerRepository.save(
             LicenceConditionManager(
                 lc.id,
+                startDate.atStartOfDay(EuropeLondon),
                 com.provider.id,
                 com.team.id,
-                com.staff.id
+                com.staff.id,
+                transferReasonRepository.getByCode(TransferReason.DEFAULT_CODE)
             )
         )
         return lc

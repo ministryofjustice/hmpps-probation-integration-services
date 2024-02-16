@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Service
 @Transactional
@@ -17,25 +18,42 @@ class AssessmentSubmitted(
     private val personRepository: PersonRepository,
     private val assessmentService: AssessmentService,
     private val riskService: RiskService,
-    private val domainEventService: DomainEventService
+    private val domainEventService: DomainEventService,
+    private val telemetryService: TelemetryService
 ) : AuditableService(auditedInteractionService) {
     fun assessmentSubmitted(crn: String, summary: AssessmentSummary) {
-        val person = personRepository.getByCrn(crn)
+        val telemetryParams = mapOf(
+            "crn" to crn,
+            "dateCompleted" to summary.dateCompleted.toString(),
+            "assessmentType" to summary.assessmentType,
+            "assessmentId" to summary.assessmentPk.toString()
+        )
 
-        audit(SUBMIT_ASSESSMENT_SUMMARY) {
-            it["CRN"] = person.crn
-            it["OASysId"] = summary.assessmentPk
-            assessmentService.recordAssessment(person, summary)
-        }
+        try {
+            val person = personRepository.getByCrn(crn)
 
-        val regEvents = audit(UPDATE_RISK_DATA) {
-            it["CRN"] = person.crn
-            riskService.recordRisk(person, summary)
-        }
+            audit(SUBMIT_ASSESSMENT_SUMMARY) {
+                it["CRN"] = person.crn
+                it["OASysId"] = summary.assessmentPk
+                assessmentService.recordAssessment(person, summary)
+            }
 
-        if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
-            personRepository.updateIaps(person.id)
+            val regEvents = audit(UPDATE_RISK_DATA) {
+                it["CRN"] = person.crn
+                riskService.recordRisk(person, summary)
+            }
+
+            if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
+                personRepository.updateIaps(person.id)
+            }
+            domainEventService.publishEvents(regEvents)
+            telemetryService.trackEvent("AssessmentSummarySuccess", telemetryParams)
+        } catch (exception: Exception) {
+            telemetryService.trackEvent(
+                "AssessmentSummaryFailure",
+                telemetryParams + ("exception" to exception.message!!)
+            )
+            throw exception
         }
-        domainEventService.publishEvents(regEvents)
     }
 }

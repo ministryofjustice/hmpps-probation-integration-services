@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.oasys
 
+import com.fasterxml.jackson.annotation.JsonAlias
+import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 import java.time.LocalDate
@@ -15,7 +17,9 @@ data class AssessmentSummary(
     val dateCompleted: LocalDate,
     val initiationDate: LocalDate,
     val assessmentStatus: String,
+    @JsonFormat(pattern = "[yyyy-MM-dd][dd/MM/yyyy]") // temporary until oasys bug fixed, should not be used for responses
     val initialSpDate: LocalDate? = null,
+    @JsonFormat(pattern = "[yyyy-MM-dd][dd/MM/yyyy]") // temporary until oasys bug fixed, should not be used for responses
     val reviewSpDate: LocalDate? = null,
     val reviewNum: String? = null,
     val currentConcernsBreachOfTrust: String? = null,
@@ -138,6 +142,7 @@ data class Action(
 )
 
 data class AssessmentSummaries(
+    @JsonAlias("probNumber")
     val crn: String,
     val assessments: List<AssessmentSummary>
 )

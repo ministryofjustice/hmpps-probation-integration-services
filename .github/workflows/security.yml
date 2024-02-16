@@ -66,7 +66,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Merge outputs
-        uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
+        uses: cloudposse/github-action-matrix-outputs-write@e90c7018e27e1c9466e0fa3cfe64720d9969ffca # v0.5.0
         with:
           matrix-step-name: trivy
           matrix-key: ${{ matrix.project }}
