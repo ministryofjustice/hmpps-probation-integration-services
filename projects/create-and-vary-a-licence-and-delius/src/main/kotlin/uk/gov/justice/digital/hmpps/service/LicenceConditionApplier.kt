@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Referenc
 import java.time.ZonedDateTime
 
 val STANDARD_PREFIX = """
-    |Licence Condition created automatically from the Create and Vary a licence system of to reflect the Standard Licence Condition set as identified below:
+    |Licence Condition created automatically from the Create and Vary a licence system to reflect the Standard Licence Condition set as identified below:
 """.trimMargin()
 
 val LIMITED_PREFIX = """
