@@ -10,18 +10,20 @@ import java.time.LocalDate
 class LicenceConditionService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
-    private val transferReasonRepository: TransferReasonRepository
+    private val transferReasonRepository: TransferReasonRepository,
+    private val referenceDataRepository: ReferenceDataRepository
 ) {
-
     fun findByDisposalId(id: Long) = licenceConditionRepository.findByDisposalId(id)
     fun createLicenceCondition(
         disposal: Disposal,
         startDate: LocalDate,
         category: LicenceConditionCategory,
         subCategory: ReferenceData,
-        notes: String,
+        prefix: String,
+        cvlText: String?,
         com: PersonManager
     ): LicenceCondition {
+        val notes = cvlText?.let { prefix + System.lineSeparator() + it } ?: prefix
         val lc = licenceConditionRepository.save(
             LicenceCondition(
                 disposal.event.person.id,
@@ -29,7 +31,8 @@ class LicenceConditionService(
                 startDate,
                 category,
                 subCategory,
-                if (subCategory.code in ReferenceData.VICTIM_NOTES) "Notes not provided as they may contain victim data" else notes
+                notes,
+                cvlText
             )
         )
         licenceConditionManagerRepository.save(
@@ -39,7 +42,8 @@ class LicenceConditionService(
                 com.provider.id,
                 com.team.id,
                 com.staff.id,
-                transferReasonRepository.getByCode(TransferReason.DEFAULT_CODE)
+                transferReasonRepository.getByCode(TransferReason.DEFAULT_CODE),
+                referenceDataRepository.getLmAllocationReason(ReferenceData.INITIAL_ALLOCATION_CODE)
             )
         )
         return lc

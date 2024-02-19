@@ -14,13 +14,15 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.BESPOKE_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.STANDARD_CATEGORY_CODE
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.service.ActionResult
+import uk.gov.justice.digital.hmpps.service.CONDITION_PREFIX
+import uk.gov.justice.digital.hmpps.service.LIMITED_PREFIX
+import uk.gov.justice.digital.hmpps.service.STANDARD_PREFIX
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -77,10 +79,13 @@ class LicenceActivatedIntegrationTest {
             ActionResult.Type.AdditionalLicenceConditionsAdded.name,
             telemetryProperties
         )
-        verify(telemetryService).trackEvent(ActionResult.Type.BespokeLicenceConditionAdded.name, telemetryProperties)
+        verify(telemetryService).trackEvent(
+            ActionResult.Type.BespokeLicenceConditionAdded.name,
+            telemetryProperties
+        )
 
         val conditions = lcr.findByDisposalId(sentence.id)
-        assertThat(conditions.size, equalTo(6))
+        assertThat(conditions.size, equalTo(7))
 
         val com = pmr.findByPersonCrn(person.crn)!!
         conditions.forEach {
@@ -88,6 +93,8 @@ class LicenceActivatedIntegrationTest {
             assertThat(lcm?.providerId, equalTo(com.provider.id))
             assertThat(lcm?.teamId, equalTo(com.team.id))
             assertThat(lcm?.staffId, equalTo(com.staff.id))
+            assertThat(lcm?.transferReason?.code, equalTo(TransferReason.DEFAULT_CODE))
+            assertThat(lcm?.allocationReason?.code, equalTo(ReferenceData.INITIAL_ALLOCATION_CODE))
         }
 
         val standard = conditions.first { it.mainCategory.code == STANDARD_CATEGORY_CODE }
@@ -95,20 +102,26 @@ class LicenceActivatedIntegrationTest {
             standard.notes,
             equalTo(
                 """
+            |${STANDARD_PREFIX}
             |A Standard Condition
             |Another Standard Condition
                 """.trimMargin()
             )
         )
 
-        val bespoke = conditions.first { it.mainCategory.code == BESPOKE_CATEGORY_CODE }
+        val bespoke = conditions.filter { it.mainCategory.code == BESPOKE_CATEGORY_CODE }
         assertThat(
-            bespoke.notes,
-            equalTo(
-                """
-            |First Bespoke Condition
-            |Second Bespoke Condition
-                """.trimMargin()
+            bespoke.map { it.notes },
+            containsInAnyOrder(
+                "First Bespoke Condition".prefixed(),
+                "Second Bespoke Condition".prefixed()
+            )
+        )
+        assertThat(
+            bespoke.map { it.cvlText },
+            containsInAnyOrder(
+                "First Bespoke Condition",
+                "Second Bespoke Condition"
             )
         )
 
@@ -117,10 +130,18 @@ class LicenceActivatedIntegrationTest {
         assertThat(
             additional.map { it.notes },
             containsInAnyOrder(
+                "Additional Licence Condition One".prefixed(),
+                "Additional Licence Condition Two".prefixed(),
+                "Additional Licence Condition Electronic Monitoring".prefixed(),
+                LIMITED_PREFIX
+            )
+        )
+        assertThat(
+            additional.mapNotNull { it.cvlText },
+            containsInAnyOrder(
                 "Additional Licence Condition One",
                 "Additional Licence Condition Two",
-                "Additional Licence Condition Electronic Monitoring",
-                "Notes not provided as they may contain victim data"
+                "Additional Licence Condition Electronic Monitoring"
             )
         )
 
@@ -143,4 +164,6 @@ class LicenceActivatedIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
         verify(telemetryService).trackEvent(ActionResult.Type.NoChangeToLicenceConditions.name, telemetryProperties)
     }
+
+    private fun String.prefixed(prefix: String = CONDITION_PREFIX): String = prefix + System.lineSeparator() + this
 }

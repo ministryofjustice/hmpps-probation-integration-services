@@ -46,6 +46,7 @@ class ReferenceData(
     companion object {
         val STANDARD_SUB_CATEGORY_CODE = "SL1"
         val BESPOKE_SUB_CATEGORY_CODE = "NSTT9"
+        val INITIAL_ALLOCATION_CODE = "IN1"
         val VICTIM_NOTES = listOf("NCL3", "NST6")
     }
 }
@@ -64,6 +65,7 @@ class Dataset(
 ) {
     companion object {
         val SUB_CATEGORY_CODE = "LICENCE CONDITION SUB CATEGORY"
+        val LM_ALLOCATION_REASON = "LM ALLOCATION REASON"
     }
 }
 
@@ -106,6 +108,9 @@ fun ReferenceDataRepository.getByCodeAndDatasetCode(code: String, datasetCode: S
 
 fun ReferenceDataRepository.getLicenceConditionSubCategory(code: String) =
     getByCodeAndDatasetCode(code, Dataset.SUB_CATEGORY_CODE)
+
+fun ReferenceDataRepository.getLmAllocationReason(code: String) =
+    getByCodeAndDatasetCode(code, Dataset.LM_ALLOCATION_REASON)
 
 interface TransferReasonRepository : JpaRepository<TransferReason, Long> {
     fun findByCode(code: String): TransferReason?

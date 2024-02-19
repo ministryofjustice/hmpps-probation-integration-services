@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.service
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -48,22 +47,20 @@ internal class LicenceConditionApplierTest {
     internal lateinit var licenceConditionApplier: LicenceConditionApplier
 
     @Test
-    fun `when no active custodial sentence an error is thrown`() {
+    fun `when no active custodial sentence it is logged to telemetry`() {
         val crn = "N678461"
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
         whenever(disposalRepository.findCustodialSentences(crn)).thenReturn(listOf())
 
-        val ex = assertThrows<IllegalStateException> {
-            licenceConditionApplier.applyLicenceConditions(
+        val ex = licenceConditionApplier.applyLicenceConditions(
+            crn,
+            ActivatedLicence(
                 crn,
-                ActivatedLicence(
-                    crn,
-                    LocalDate.now(),
-                    Conditions(ApConditions(listOf(), listOf(), listOf()))
-                ),
-                ZonedDateTime.now()
-            )
-        }
-        assertThat(ex.message, equalTo("No Custodial Sentences to apply Licence Conditions"))
+                LocalDate.now(),
+                Conditions(ApConditions(listOf(), listOf(), listOf()))
+            ),
+            ZonedDateTime.now()
+        )
+        assertThat(ex.first(), equalTo(ActionResult.Ignored("No Custodial Sentences to apply Licence Conditions")))
     }
 }
