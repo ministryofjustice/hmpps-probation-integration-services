@@ -1,0 +1,21 @@
+{
+  "eventType": "probation-case.risk-scores.ogrs.manual-calculation",
+  "version": 1,
+  "description": "OGRS scores have been determined via a manual calculation",
+  "detailUrl": "https://example.com",
+  "occurredAt": "2023-06-20T13:48:03.569+01:00[Europe/London]",
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X688676"
+      }
+    ]
+  },
+  "additionalInformation": {
+    "OGRS3Yr1": "14",
+    "OGRS3Yr2": "25",
+    "EventNumber": "1",
+    "AssessmentDate": "2023-06-20T00:00:00+0100"
+  }
+}

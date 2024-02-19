@@ -1,0 +1,10 @@
+{
+  "access_token": "token",
+  "token_type": "bearer",
+  "expires_in": 9999999999,
+  "scope": "read write",
+  "sub": "probation-integration-dev",
+  "auth_source": "none",
+  "jti": "fN29JHJy1N7gcYvqe-8B_k5T0mA",
+  "iss": "https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer"
+}

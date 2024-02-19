@@ -1,0 +1,33 @@
+dn: dc=moj,dc=com
+dc: moj
+objectclass: top
+objectclass: domain
+
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=test.user,ou=Users,dc=moj,dc=com
+cn: test.user
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Test
+sn: User
+userHomeArea: N01
+userSector: public
+mail: test.user@example.com
+userPassword: secret
+
+dn: cn=ABC001,cn=test.user,ou=Users,dc=moj,dc=com
+cn: ABC001
+description: Test role 1
+objectclass: top
+objectClass: NDRoleAssociation
+
+dn: cn=ABC002,cn=test.user,ou=Users,dc=moj,dc=com
+cn: ABC002
+description: Test role 2
+objectclass: top
+objectClass: NDRoleAssociation

@@ -1,0 +1,97 @@
+info:
+  termsOfService: ""
+  version: "1"
+  description: ""
+  title: Workload Allocation Demand
+paths:
+  /allocation-demand:
+    post:
+      description: Case Information for a List of CRN/EventNumber pairs
+      parameters:
+        - name: cases
+          description: List of cases to return
+          required: true
+          in: body
+          schema:
+            $ref: "#/definitions/AllocationDemandRequest"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/AllocationDemandResponse"
+      tags:
+        - HMPPS Workload
+schemes:
+  - https
+tags:
+  - name: Pre-sentence report
+definitions:
+  AllocationDemandRequest:
+    required:
+      - crn
+      - eventNumber
+    type: object
+    properties:
+      cases:
+        type: array
+        items:
+          type: object
+          properties:
+            crn:
+              type: string
+            eventNumber:
+              type: string
+  AllocationDemandResponse:
+    type: object
+    properties:
+      cases:
+        type: array
+        items:
+          type: object
+          properties:
+            crn:
+              type: string
+            event:
+              type: object
+              properties:
+                number:
+                  type: string
+                manager:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                    name:
+                      type: object
+                      properties:
+                        forename:
+                          type: string
+                        surname:
+                          type: string
+                    teamCode:
+                      type: string
+            name:
+              type: object
+              properties:
+                forename:
+                  type: string
+                surname:
+                  type: string
+                middleName:
+                  type: string
+            sentence:
+              type: object
+              properties:
+                "type":
+                  type: string
+                date:
+                  type: string
+                length:
+                  type: string
+                  example: "3 Months"
+            initialAppointment:
+              type: object
+              properties:
+                date:
+                  type: string
+swagger: "2.0"

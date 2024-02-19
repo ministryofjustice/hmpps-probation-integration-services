@@ -1,0 +1,39 @@
+
+style {
+  fill: "#ffffff"
+}
+
+context-manage-offences: Manage Offences Context {
+  link: https://github.com/ministryofjustice/hmpps-manage-offences-api
+
+  entities: Entities {
+    grid-columns: 1
+    cjs-offence-code: CJS Offence Code
+    ho-offence-code: Home Office Offence Code
+  }
+
+  interface: Manage Offences API {
+    type: Open Host Service
+  }
+}
+
+context-delius: Delius Context {
+  link: https://github.com/ministryofjustice/delius
+  style.stroke-width: 8
+
+  entities: Entities {
+    grid-columns: 1
+    cjs-offence: Detailed Offence (CJS)
+    ho-offence: Offence (HO)
+  }
+  interface: Manage Offences and Delius {
+    link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/manage-offences-and-delius/
+    type: Anti-Corruption Layer
+  }
+}
+
+context-manage-offences.interface--context-delius.interface: Upstream\n\n\nDownstream
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2

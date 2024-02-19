@@ -1,0 +1,31 @@
+# Refer and Monitor Workflow: Set Appointment Feedback
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+refer_and_monitor: Refer and Monitor  {
+     style.font-size: 15
+     update_randm: Set Appointment\nFeedback {
+         shape: oval
+     }
+}
+
+# What happens in Delius?
+delius: Delius {
+    style {
+        font-size: 20
+    }
+
+    d_update_contact: Update\nAppointment Contact
+}
+
+refer_and_monitor -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
+*.*.style.font-size: 12

@@ -1,0 +1,54 @@
+# Prison Identifier Workflow: Prison Identifier Update - Batch
+
+direction: right
+
+integration_service: Prison Identifier and Delius {
+    style.font-size: 24
+
+    explanation: |md
+    ## Batch Request
+    List of CRNs to attempt NOMIS matching
+    |
+
+}
+
+integration_service -- nomis
+integration_service -- delius
+
+# What triggers the workflow?
+nomis: NOMIS  {
+     style.font-size: 24
+
+     explanation: |md
+     ## Prison API Query
+     Attempt to match person records across systems
+     |
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+
+    explanation: |md
+    ## Person Record Updates
+    When a match is found
+    |
+
+    noms: NOMS Number added
+    booking: NOMIS booking number\nadded as 'Prisoner Number'
+
+    noms->booking
+}
+
+# Styles
+
+style {
+  fill: "#ffffff"
+}
+
+** {
+  style {
+    border-radius: 10
+    stroke-width: 2
+  }
+}

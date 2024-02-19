@@ -1,0 +1,121 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/referral-submitted/1234"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-referral-submitted.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/booking-cancelled/1234"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-booking-cancelled.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/booking-confirmed/1234"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-booking-confirmed.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/booking-provisionally-made/1234"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-booking-provisionally-made.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/person-arrived/1234"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-person-arrived.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/person-departed/1234"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-person-departed.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/person-departed/12345"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-person-departed-update.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/booking-cancelled/12345"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-booking-cancelled-update.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/person-arrived/12345"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-person-arrived-update.json"
+      }
+    }
+  ]
+}

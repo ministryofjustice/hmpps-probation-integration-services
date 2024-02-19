@@ -1,0 +1,15 @@
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: $SERVICE_NAME-cert
+  namespace: hmpps-probation-integration-services-$ENV
+spec:
+  secretName: $SERVICE_NAME-cert
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - $SERVICE_SHORT_URL
+    - $SERVICE_URL

@@ -1,0 +1,11 @@
+{
+  "bookingId": 1200836,
+  "bookingNo": "38340A",
+  "offenderNo": "A0001DY",
+  "firstName": "Frank",
+  "lastName": "Jones",
+  "agencyId": "MDI",
+  "assignedLivingUnitId": 25638,
+  "activeFlag": true,
+  "dateOfBirth": "1970-01-01"
+}

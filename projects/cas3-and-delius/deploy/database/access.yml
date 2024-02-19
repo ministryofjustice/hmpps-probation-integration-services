@@ -1,0 +1,13 @@
+database:
+  access:
+    username_key: /cas3-and-delius/db-username
+    password_key: /cas3-and-delius/db-password
+    tables:
+      - audited_interaction
+      - contact
+      - offender_address
+
+  audit:
+    username: Cas3AndDelius
+    forename: Transitional Accommodation (CAS3)
+    surname: Service

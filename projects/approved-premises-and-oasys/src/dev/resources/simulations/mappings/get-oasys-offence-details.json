@@ -1,0 +1,22 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ap/offence/D006296/ALLOW/9641348/OPEN",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer (.*)$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "offence-details.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}

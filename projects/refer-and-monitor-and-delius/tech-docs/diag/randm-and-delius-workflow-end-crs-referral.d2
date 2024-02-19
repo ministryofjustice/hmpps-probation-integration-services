@@ -1,0 +1,36 @@
+# Refer and Monitor Workflow: End CRS Referral
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+refer_and_monitor: Refer and Monitor  {
+     style.font-size: 15
+     crs_referral: End CRS referral {
+         shape: oval
+     }
+}
+
+# What happens in Delius?
+delius: Delius {
+    style {
+        font-size: 20
+    }
+
+    d_end_nsi: End referral NSI
+    d_withdraw_appointments: Withdraw future\nDelius appointments
+    d_create_contact: Create CRS referral\ntermination contacts
+    d_add_eosr: Update\n'End of Service Report'\ncontact
+
+    d_end_nsi -> d_withdraw_appointments -> d_create_contact -> d_add_eosr
+}
+
+refer_and_monitor -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
+*.*.style.font-size: 12

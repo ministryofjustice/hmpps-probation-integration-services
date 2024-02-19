@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /hdc-licences-and-delius/db-username
+    password_key: /hdc-licences-and-delius/db-password
+
+  audit:
+    username: HdcLicencesAndDelius
+    forename: HDC Licences
+    surname: Service

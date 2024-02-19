@@ -1,0 +1,58 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ap/asslist/D006296/ALLOW",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer (.*)$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "timeline-assessments.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ap/asslist/D000001/ALLOW",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer (.*)$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "layer-3-assessment-not-found.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ap/asslist/D000000/ALLOW",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer (.*)$"
+          }
+        }
+      },
+      "response": {
+        "status": 404,
+        "bodyFileName": "not-found.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}

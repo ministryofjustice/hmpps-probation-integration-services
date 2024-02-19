@@ -1,0 +1,7 @@
+generic-service:
+  ingress:
+    host: hmpps-auth-and-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/.well-known/jwks.json

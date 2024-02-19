@@ -1,0 +1,80 @@
+prisoner.movement.configs:
+  - types:
+      - ADMISSION
+    actionNames:
+      - Recall
+      - UpdateLocation
+      - UpdateStatus
+  - types:
+      - RELEASED_TO_HOSPITAL
+    actionNames:
+      - Recall
+      - UpdateLocation
+      - UpdateStatus
+    featureFlag: messages_released_hospital
+  - types:
+      - RELEASED
+    reasons:
+      - DEC
+    actionNames:
+      - Died
+  - types:
+      - RELEASED
+    reasons:
+      - HO
+      - HP
+      - HQ
+    actionNames:
+      - Recall
+      - UpdateLocation
+      - UpdateStatus
+    featureFlag: messages_released_hospital
+  - types:
+      - RELEASED
+    reasons:
+      - DD
+      - DE
+      - DL
+      - ETR
+    actionNames:
+      - Recall
+      - UpdateLocation
+      - UpdateStatus
+  - types:
+      - RELEASED
+    reasons:
+      - ECSL
+    reasonOverride: RO
+    actionNames:
+      - Release
+      - UpdateLocation
+      - UpdateStatus
+  - types:
+      - RELEASED
+    reasons:
+      - UAL
+      - UAL_ECL
+    actionNames:
+      - Recall
+      - UpdateLocation
+      - UpdateStatus
+  - types:
+      - RELEASED
+    actionNames:
+      - Release
+      - UpdateLocation
+      - UpdateStatus
+  - types:
+      - TEMPORARY_ABSENCE_RETURN
+    actionNames:
+      - Recall
+      - UpdateLocation
+      - UpdateStatus
+  - types:
+      - TRANSFERRED
+    reasons:
+      - INT
+    actionNames:
+      - Recall
+      - UpdateLocation
+      - UpdateStatus

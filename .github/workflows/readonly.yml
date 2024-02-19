@@ -1,0 +1,264 @@
+name: Read-only
+# Prepare for Delius down-time by entering "read-only" mode.
+# Switches off message consumers, blocks any write APIs, and re-points everything else at the snapshot standby database.
+# Note: In the test environment, where there is no snapshot standby database, the services are stopped completely.
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: Environment
+        required: true
+        type: string
+      action:
+        description: Enable or disable read-only mode?
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment
+        default: prod
+        required: true
+        type: choice
+        options:
+          - test
+          - preprod
+          - prod
+      action:
+        description: Enable or disable read-only mode?
+        default: enable
+        required: true
+        type: choice
+        options:
+          - enable
+          - disable
+
+jobs:
+  get-projects:
+    name: Get projects
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    outputs:
+      projects: ${{ steps.kubectl.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+      - id: kubectl
+        run: |
+          json=$(
+            kubectl get deployments -o jsonpath='{.items[*].metadata.name}' | xargs -n1 \
+            | grep -v domain-events-and-delius \
+            | grep -v offender-events-and-delius \
+            | jq --raw-input . | jq --slurp --compact-output .
+          )
+          echo "projects=$json" | tee -a "$GITHUB_OUTPUT"
+
+  # Event publishers always require write access to the DB, so stop them while in read-only mode
+  event-publishers:
+    name: ${{ inputs.action == 'enable' && 'Stop' || 'Start' }} event publishers
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: get-projects
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+      - run: |
+          kubectl scale deploy domain-events-and-delius --replicas "$replicas"
+          kubectl scale deploy offender-events-and-delius --replicas "$replicas"
+        env:
+          replicas: ${{ inputs.action == 'enable' && '0' || '1' }}
+
+  # There is no standby database in the test environment, so stop all deployments (except auth)
+  stop-start:
+    if: inputs.environment == 'test'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: get-projects
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: ${{ inputs.action == 'enable' && 'Stop' || 'Start' }} deployments
+        run: kubectl scale deploy '${{ matrix.project }}' --replicas "${{ inputs.action == 'enable' && '0' || '2' }}"
+
+      - name: ${{ inputs.action == 'enable' && 'Block' || 'Unblock' }} ingresses
+        uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
+        with:
+          max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          timeout_minutes: 15
+          command: |
+            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
+            kubectl annotate ingress "$ingress" 'nginx.ingress.kubernetes.io/configuration-snippet=${{ inputs.action == 'enable' && 'limit_except GET { deny all; }' || '' }}' --overwrite 
+
+  # Block updates at the ingress and switch to the standby database for read operations
+  switch-database:
+    if: inputs.environment != 'test'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: get-projects
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Block updates
+        if: inputs.action == 'enable' && matrix.project != 'hmpps-auth-and-delius' # Note: hmpps-auth is excluded here to continue allowing 'POST /authenticate' requests, which are read-only
+        uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
+        with:
+          max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          timeout_minutes: 15
+          command: |
+            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
+            kubectl annotate ingress "$ingress" 'nginx.ingress.kubernetes.io/configuration-snippet=limit_except GET { deny all; }' --overwrite
+
+      - name: Switch to ${{ inputs.action == 'enable' && 'standby' || 'primary' }} database
+        env:
+          MESSAGING_CONSUMER_ENABLED: ${{ inputs.action == 'enable' && 'false' || 'true' }}
+          SPRING_DATASOURCE_URL: ${{ inputs.action == 'enable' && 'DB_STANDBY_URL' || 'DB_URL' }}
+        run: |
+          kubectl get deployment "${{ matrix.project }}" -o json \
+          | jq --arg name MESSAGING_CONSUMER_ENABLED --arg value "$MESSAGING_CONSUMER_ENABLED" \
+            '.spec.template.spec.containers[0].env |= if any(.[]; .name == $name) then map(if .name == $name then . + {"value":$value} else . end) else . + [{"name":$name,"value":$value}] end' \
+          | jq --arg name SPRING_DATASOURCE_URL --arg value "$SPRING_DATASOURCE_URL" \
+            '.spec.template.spec.containers[0].env |= map(if .name == $name then .valueFrom.secretKeyRef.key = $value else . end)' \
+          | kubectl apply -f -
+
+      - name: Unblock updates
+        if: inputs.action == 'disable' && matrix.project != 'hmpps-auth-and-delius'
+        uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
+        with:
+          max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          timeout_minutes: 15
+          command: |
+            ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
+            kubectl annotate ingress "$ingress" 'nginx.ingress.kubernetes.io/configuration-snippet=' --overwrite
+
+  notify:
+    if: always()
+    runs-on: ubuntu-latest
+    needs:
+      - event-publishers
+      - stop-start
+      - switch-database
+    steps:
+      - name: Send message to Slack
+        uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
+        if: ${{ !contains(needs.*.result, 'failure') }}
+        with:
+          channel-id: probation-integration-notifications
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ inputs.action == 'enable' && (inputs.environment == 'test' && '🔴 Offline' || '🚫 Read-only') || '🟢 Online' }}"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "The *${{ inputs.environment }}* integration services ${{ inputs.action == 'enable' && (inputs.environment == 'test' && 'have been switched off for a Delius deployment' || 'are in read-only mode') || 'are back online' }}."
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "↩️ Switch back"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/workflows/readonly.yml"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "📝 Logs"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Send failure message to Slack
+        uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
+        if: ${{ contains(needs.*.result, 'failure') }}
+        with:
+          channel-id: probation-integration-notifications
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "❌ Failed to ${{ inputs.action }} read-only mode"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "The *${{ inputs.environment }}* integration services may be in the wrong state. Please check the logs and re-run the workflow."
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "📝 Logs"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

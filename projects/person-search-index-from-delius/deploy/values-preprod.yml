@@ -1,0 +1,18 @@
+generic-service:
+  ingress:
+    host: person-search-index-from-delius-preprod.hmpps.service.justice.gov.uk
+
+  scheduledDowntime:
+    enabled: true
+
+  env:
+    SENTRY_ENVIRONMENT: preprod
+
+generic-prometheus-alerts:
+  businessHoursOnly: true
+
+reindexing:
+  person_schedule: 0 3 * * 1-5
+  contact_schedule: 0 7 * * 2
+  sentry_environment: preprod
+

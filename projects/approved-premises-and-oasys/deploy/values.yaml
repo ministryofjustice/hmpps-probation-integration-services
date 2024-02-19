@@ -1,0 +1,24 @@
+---
+# Values here are the same across all environments
+# An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
+generic-service:
+  nameOverride: approved-premises-and-oasys
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/approved-premises-and-oasys
+
+  ingress:
+    enabled: true
+    v1_2_enabled: true
+    v0_47_enabled: false
+    tlsSecretName: approved-premises-and-oasys-cert
+
+  namespace_secrets:
+    approved-premises-and-oasys-client-credentials:
+      ORDS_CLIENT_ID: ORDS_CLIENT_ID
+      ORDS_CLIENT_SECRET: ORDS_CLIENT_SECRET
+    approved-premises-and-oasys-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: approved-premises-and-oasys

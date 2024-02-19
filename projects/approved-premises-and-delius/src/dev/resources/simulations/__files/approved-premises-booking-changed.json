@@ -1,0 +1,30 @@
+{
+  "id": "364145f9-0af8-488e-9901-b4c46cd9ba37",
+  "timestamp": "2022-11-30T14:53:44",
+  "eventType": "approved-premises.booking.changed",
+  "eventDetails": {
+    "applicationId": "364145f9-0af8-488e-9901-b4c46cd9ba37",
+    "applicationUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/364145f9-0af8-488e-9901-b4c46cd9ba37",
+    "bookingId": "14c80733-4b6d-4f35-b724-66955aac320c",
+    "personReference": {
+      "crn": "A000001",
+      "noms": "A0001AA"
+    },
+    "premises": {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name": "Hope House",
+      "apCode": "NEHOPE1",
+      "legacyApCode": "Q001"
+    },
+    "deliusEventNumber": "7",
+    "changedAt": "2023-07-25T17:21:30",
+    "changedBy": {
+      "staffCode": "N54A001",
+      "forenames": "John",
+      "surname": "Smith",
+      "username": "JohnSmithNPS"
+    },
+    "arrivalOn": "2023-08-14",
+    "departureOn": "2023-08-30"
+  }
+}

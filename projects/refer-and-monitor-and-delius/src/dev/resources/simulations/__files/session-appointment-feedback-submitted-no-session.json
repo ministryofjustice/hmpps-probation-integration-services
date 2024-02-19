@@ -1,0 +1,43 @@
+{
+  "id": "52caa3e3-40b0-401a-babc-4d48cbd6e096",
+  "sessionNumber": 1,
+  "appointmentTime": "2023-11-14T11:00:00.000Z",
+  "durationInMinutes": 30,
+  "appointmentDeliveryType": "PHONE_CALL",
+  "oldAppointments": [],
+  "sessionType": "ONE_TO_ONE",
+  "npsOfficeCode": "string",
+  "appointmentDeliveryAddress": {
+    "firstAddressLine": "1 Mantle Place",
+    "secondAddressLine": "Fire Ville",
+    "townOrCity": "Heath",
+    "county": "Heath",
+    "postCode": "H3 4TH"
+  },
+  "appointmentFeedback": {
+    "attendanceFeedback": {
+      "attended": "yes",
+      "didSessionHappen": false,
+      "additionalAttendanceInformation": "some additional information",
+      "submittedAt": "2023-11-14T11:30:00.000Z",
+      "submittedBy": {
+        "username": "username",
+        "authSource": "authSource",
+        "userId": "userId"
+      }
+    },
+    "sessionFeedback": {
+      "behaviourDescription": "A description of the behaviour",
+      "noSessionReasonType": "LOGISTICS",
+      "notifyProbationPractitioner": false
+    },
+    "submitted": true,
+    "submittedBy": {
+      "username": "username",
+      "authSource": "authSource",
+      "userId": "userId"
+    }
+  },
+  "deliusAppointmentId": 1,
+  "appointmentId": "c8801fa4-4487-4b38-9169-efabd4be98c9"
+}

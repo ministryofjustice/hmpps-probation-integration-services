@@ -1,0 +1,2 @@
+dlq_redrive:
+  schedule: 30 5 * * 1 # Every Monday at 05:30 UTC

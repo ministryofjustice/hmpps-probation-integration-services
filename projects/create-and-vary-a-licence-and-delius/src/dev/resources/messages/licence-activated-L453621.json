@@ -1,0 +1,15 @@
+{
+  "eventType": "create-and-vary-a-licence.licence.activated",
+  "version": 1,
+  "description": "A licence has been activated",
+  "detailUrl": "http://localhost:{wiremock.port}/cvl/events/licence-condition-applied/df2d3748-2619-4e27-b864-946e125ffb3e",
+  "occurredAt": "2022-12-04T10:42:43+00:00",
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "L453621"
+      }
+    ]
+  }
+}

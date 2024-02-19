@@ -1,0 +1,153 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      projects:
+        description: A JSON array of projects to deploy
+        type: string
+        required: true
+      environment:
+        description: The environment name to deploy to (test/preprod/prod)
+        type: string
+        required: true
+      version:
+        description: The image version to deploy
+        type: string
+        required: true
+
+  workflow_dispatch:
+    inputs:
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - '["accredited-programmes-and-oasys"]'
+          - '["approved-premises-and-delius"]'
+          - '["approved-premises-and-oasys"]'
+          - '["arns-and-delius"]'
+          - '["assessment-summary-and-delius"]'
+          - '["cas2-and-delius"]'
+          - '["cas3-and-delius"]'
+          - '["court-case-and-delius"]'
+          - '["create-and-vary-a-licence-and-delius"]'
+          - '["custody-key-dates-and-delius"]'
+          - '["domain-events-and-delius"]'
+          - '["dps-and-delius"]'
+          - '["effective-proposal-framework-and-delius"]'
+          - '["external-api-and-delius"]'
+          - '["hdc-licences-and-delius"]'
+          - '["hmpps-auth-and-delius"]'
+          - '["make-recall-decisions-and-delius"]'
+          - '["manage-offences-and-delius"]'
+          - '["manage-pom-cases-and-delius"]'
+          - '["manage-supervision-and-delius"]'
+          - '["manage-supervision-and-oasys"]'
+          - '["offender-events-and-delius"]'
+          - '["opd-and-delius"]'
+          - '["pathfinder-and-delius"]'
+          - '["person-search-index-from-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["prison-education-and-delius"]'
+          - '["prison-identifier-and-delius"]'
+          - '["prisoner-profile-and-delius"]'
+          - '["redrive-dead-letter-queue"]'
+          - '["refer-and-monitor-and-delius"]'
+          - '["resettlement-passport-and-delius"]'
+          - '["risk-assessment-scores-to-delius"]'
+          - '["sentence-plan-and-delius"]'
+          - '["sentence-plan-and-oasys"]'
+          - '["soc-and-delius"]'
+          - '["tier-to-delius"]'
+          - '["unpaid-work-and-delius"]'
+          - '["workforce-allocations-to-delius"]'
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+      environment:
+        description: Environment
+        type: choice
+        required: true
+        options:
+          - test
+          - preprod
+          - prod
+      version:
+        description: Image version
+        type: string
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(inputs.projects) }}
+    concurrency: deploy-${{ matrix.project }}-${{ inputs.environment }}
+    environment:
+      name: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/get-env-details
+        id: env
+        with:
+          environment: ${{ inputs.environment }}
+
+      - name: Get enabled flag from values file
+        id: enabled
+        shell: bash
+        run: echo "enabled=$(yq '.enabled' "$VALUES_FILE" | sed 's/^null$/true/')" | tee -a "$GITHUB_OUTPUT"
+        working-directory: projects/${{ matrix.project }}/deploy
+        env:
+          VALUES_FILE: ${{ steps.env.outputs.values-file }}
+
+      - name: Check Chart.yaml file exists
+        id: check_files
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v2
+        with:
+          files: projects/${{ matrix.project }}/deploy/Chart.yaml
+
+      - name: Deploy to Cloud Platform
+        if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
+        uses: ./.github/actions/cloud-platform-deploy
+        with:
+          project: ${{ matrix.project }}
+          environment: ${{ inputs.environment }}
+          version: ${{ inputs.version }}
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+          github_token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+
+      - uses: docker/login-action@v3
+        if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Tag image with environment
+        if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
+        run: |
+          docker pull "$image:${{ inputs.version }}"
+          docker pull "$image:${{ inputs.environment }}" && docker image tag "$image:${{ inputs.environment }}" "$image:${{ inputs.environment }}-prev"
+          docker image tag "$image:${{ inputs.version }}" "$image:${{ inputs.environment }}"
+          docker push --all-tags "$image"
+        env:
+          image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}
+
+      - name: Create Sentry release
+        if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_ORG: ministryofjustice
+          SENTRY_PROJECT: ${{ matrix.project }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        with:
+          environment: ${{ inputs.environment }}

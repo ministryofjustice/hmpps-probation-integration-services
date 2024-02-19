@@ -1,0 +1,22 @@
+# Common values
+generic-service:
+  nameOverride: sentence-plan-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/sentence-plan-and-delius
+
+  ingress:
+    tlsSecretName: sentence-plan-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    sentence-plan-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    sentence-plan-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: sentence-plan-and-delius
+

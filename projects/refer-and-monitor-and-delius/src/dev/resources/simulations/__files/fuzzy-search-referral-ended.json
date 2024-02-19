@@ -1,0 +1,25 @@
+{
+  "id": "71df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+  "relevantSentenceId": 97,
+  "sentAt": "2023-02-14T11:31:49.503Z",
+  "sentBy": {
+    "username": "username",
+    "authSource": "authSource",
+    "userId": "userId"
+  },
+  "referenceNumber": "FS3423CN",
+  "interventionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "referral": {
+    "id": "f56c5f7c-632f-4cad-a1b3-693541cb5f22",
+    "createdAt": "2023-02-14T11:31:49.503Z",
+    "serviceProvider": {
+      "name": "Special Provider",
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    },
+    "contractTypeName": "string"
+  },
+  "endRequestedAt": "2023-02-22T14:47:12.213Z",
+  "endRequestedReason": "Reason for end",
+  "endRequestedComments": "Some comments on the end request",
+  "concludedAt": "2023-02-23T15:29:54.197Z"
+}

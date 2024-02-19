@@ -1,0 +1,41 @@
+
+style {
+  fill: "#ffffff"
+}
+
+context-nomis: NOMIS/DPS Context {
+  entities: Entities {
+    grid-columns: 3
+    prison-release: Prison Release
+    prison-receive: Prison Receive
+    location: Location
+  }
+}
+
+context-delius: Delius Context {
+  style.stroke-width: 8
+
+  interface: Prison Custody Status to Delius {
+    type: Anti-Corruption Layer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    pop: Person on Probation
+    event: Event
+    custody: Custody
+    release: Release
+    recall: Recall
+    staff: Staff
+    team: Team
+    transfer: Transfer
+    contact: Contact
+    institution: Institution
+  }
+}
+
+context-nomis--context-delius.interface: Upstream\n\n\nDownstream
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2

@@ -1,0 +1,31 @@
+name: Cloud Platform Auth
+description: Authenticate with MOJ Cloud Platform
+
+inputs:
+  api:
+    description: The KUBE_ENV_API
+    required: true
+  cert:
+    description: The KUBE_CERT
+    required: true
+  cluster:
+    description: The KUBE_CLUSTER
+    required: true
+  namespace:
+    description: The KUBE_NAMESPACE
+    required: true
+  token:
+    description: The KUBE_TOKEN
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Authenticate
+      shell: bash
+      run: |
+        echo "${{ inputs.cert }}" > ca.crt
+        kubectl config set-cluster ${{ inputs.cluster }} --certificate-authority=./ca.crt --server=${{ inputs.api }}
+        kubectl config set-credentials cd-serviceaccount --token=${{ inputs.token }}
+        kubectl config set-context ${{ inputs.cluster }} --cluster=${{ inputs.cluster }} --user=cd-serviceaccount --namespace=${{ inputs.namespace }}
+        kubectl config use-context ${{ inputs.cluster }}

@@ -1,0 +1,42 @@
+---
+# Values here are the same across all projects and all environments
+generic-service:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 128m
+      memory: 512Mi
+
+  startupProbe:
+    httpGet:
+      path: /health/liveness
+      port: http
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 30
+
+  image:
+    port: 8080
+
+  ingress:
+    enabled: true
+    v1_2_enabled: true
+    v0_47_enabled: false
+
+  env:
+    AWS_REGION: eu-west-2
+    JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar -XX:MaxRAMPercentage=75.0
+    SENTRY_TRACES_SAMPLE_RATE: '0.05'
+    SENTRY_IGNORED_EXCEPTIONS_FOR_TYPE: "org.apache.catalina.connector.ClientAbortException"
+
+  namespace_secrets:
+    common:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
+
+  allowlist:
+    groups:
+      - internal
+      - unilink_staff
+
+generic-prometheus-alerts:
+  alertSeverity: probation-integration-notifications

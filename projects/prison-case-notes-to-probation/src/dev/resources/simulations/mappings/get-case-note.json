@@ -1,0 +1,48 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/case-notes/AA0001A/1111"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-case-note-body-exists-in-delius.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/case-notes/AA0001A/2222"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-case-note-body-new-to-delius.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/case-notes/AA0001A/4444"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "status": 404,
+          "userMessage": "Resource with id [AA0001A] not found.",
+          "developerMessage": "Resource with id [AA0001A] not found."
+        }
+      }
+    }
+  ]
+}

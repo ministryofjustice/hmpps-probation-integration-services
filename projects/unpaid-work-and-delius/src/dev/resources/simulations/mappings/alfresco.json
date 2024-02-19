@@ -1,0 +1,186 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "/uploadnew",
+        "headers": {
+          "X-DocRepository-Remote-User": {
+            "equalTo": "N00"
+          },
+          "X-DocRepository-Real-Remote-User": {
+            "equalTo": "UnpaidWorkAndDelius"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
+          }
+        },
+        "multipartPatterns": [
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"CRN\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "D001022"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"author\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "Service,UPW"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "CONTACT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"docType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "DOCUMENT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityId\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "alfresco-upload-response.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/uploadnew",
+        "headers": {
+          "X-DocRepository-Remote-User": {
+            "equalTo": "N00"
+          },
+          "X-DocRepository-Real-Remote-User": {
+            "equalTo": "UnpaidWorkAndDelius"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
+          }
+        },
+        "multipartPatterns": [
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"CRN\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "D001022"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"author\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "Service,UPW"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "CONTACT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"docType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "DOCUMENT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityId\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "2"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "alfresco-upload-response.json"
+      }
+    }
+  ]
+}

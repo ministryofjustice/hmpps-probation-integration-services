@@ -1,0 +1,29 @@
+# Common values
+generic-service:
+  nameOverride: effective-proposal-framework-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/effective-proposal-framework-and-delius
+
+  ingress:
+    tlsSecretName: effective-proposal-framework-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    effective-proposal-framework-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    effective-proposal-framework-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+  allowlist:
+    groups:
+      - internal
+      - unilink_staff
+    ctrl-o: "5.2.17.96/27"
+    ctrl-o-dev: "81.187.7.168/32"
+
+generic-prometheus-alerts:
+  targetApplication: effective-proposal-framework-and-delius
+
