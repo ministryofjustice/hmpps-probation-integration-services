@@ -60,6 +60,16 @@ jobs:
           )
           echo "projects=$json" | tee -a "$GITHUB_OUTPUT"
 
+  approval:
+    name: Update environment approval
+    if: inputs.environment != 'prod'
+    runs-on: ubuntu-latest
+    steps:
+      - run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/${{ inputs.environment }}' --input -
+        env:
+          reviewers: ${{ inputs.action == 'enable' && '{"reviewers":[{"type":"Team","id":5521382}]}' || '{"reviewers":[]}' }}
+          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+
   # Event publishers always require write access to the DB, so stop them while in read-only mode
   event-publishers:
     name: ${{ inputs.action == 'enable' && 'Stop' || 'Start' }} event publishers
