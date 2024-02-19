@@ -18,6 +18,6 @@ runs:
     - name: Check changes
       id: check-changes
       shell: bash
-      run: echo "changes=$(echo $changes | jq '. | values[] | [.]' | jq --slurp --compact-output 'add')" | tee -a "$GITHUB_OUTPUT"
+      run: echo "changes=$(echo $changes | jq '. | values[] | [.]' | jq --slurp --compact-output 'add' | jq '. // []')" | tee -a "$GITHUB_OUTPUT"
       env:
         changes: ${{ steps.read-changes.outputs.result }}
