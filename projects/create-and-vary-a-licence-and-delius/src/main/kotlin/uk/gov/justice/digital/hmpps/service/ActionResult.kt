@@ -9,7 +9,7 @@ sealed interface ActionResult {
 
     enum class Type {
         StandardLicenceConditionAdded,
-        AdditionalLicenceConditionsAdded,
+        AdditionalLicenceConditionAdded,
         BespokeLicenceConditionAdded,
         NoChangeToLicenceConditions
     }

@@ -137,7 +137,7 @@ class LicenceConditionApplier(
         }
         return if (additions.isNotEmpty()) {
             ActionResult.Success(
-                ActionResult.Type.AdditionalLicenceConditionsAdded,
+                ActionResult.Type.AdditionalLicenceConditionAdded,
                 telemetryProperties(sentencedCase.sentence.event.number)
             )
         } else {

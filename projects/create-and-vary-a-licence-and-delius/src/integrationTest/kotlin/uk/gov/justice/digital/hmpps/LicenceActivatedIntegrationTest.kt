@@ -76,7 +76,7 @@ class LicenceActivatedIntegrationTest {
 
         verify(telemetryService).trackEvent(ActionResult.Type.StandardLicenceConditionAdded.name, telemetryProperties)
         verify(telemetryService).trackEvent(
-            ActionResult.Type.AdditionalLicenceConditionsAdded.name,
+            ActionResult.Type.AdditionalLicenceConditionAdded.name,
             telemetryProperties
         )
         verify(telemetryService).trackEvent(
