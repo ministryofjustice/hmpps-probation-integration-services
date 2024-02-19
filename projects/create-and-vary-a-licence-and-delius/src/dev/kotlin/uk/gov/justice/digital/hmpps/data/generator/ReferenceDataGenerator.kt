@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 
 object ReferenceDataGenerator {
     val DATASET_LC_SUB_CAT = generateDataset(Dataset.SUB_CATEGORY_CODE)
+    val DATASET_LM_ALLOCATION_REASON = generateDataset(Dataset.LM_ALLOCATION_REASON)
     val LC_STANDARD_CATEGORY = generateLcCategory(LicenceConditionCategory.STANDARD_CATEGORY_CODE)
     val LC_STANDARD_SUB_CATEGORY =
         generateReferenceData(ReferenceData.STANDARD_SUB_CATEGORY_CODE, dataset = DATASET_LC_SUB_CAT)
@@ -12,6 +13,8 @@ object ReferenceDataGenerator {
     val LC_BESPOKE_SUB_CATEGORY =
         generateReferenceData(ReferenceData.BESPOKE_SUB_CATEGORY_CODE, dataset = DATASET_LC_SUB_CAT)
     val DEFAULT_TRANSFER_REASON = generateTransferReason(TransferReason.DEFAULT_CODE)
+    val INITIAL_ALLOCATION_REASON =
+        generateReferenceData(ReferenceData.INITIAL_ALLOCATION_CODE, dataset = DATASET_LM_ALLOCATION_REASON)
     val CVL_MAPPINGS = listOf(
         generateCvlMapping(
             "AdditionalLcOne",

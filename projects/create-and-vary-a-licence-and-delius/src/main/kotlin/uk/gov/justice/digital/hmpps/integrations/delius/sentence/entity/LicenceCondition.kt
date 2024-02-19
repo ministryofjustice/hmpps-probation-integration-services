@@ -1,17 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -48,6 +37,9 @@ class LicenceCondition(
     @Lob
     @Column(name = "lic_condition_notes")
     val notes: String?,
+
+    @Column
+    val cvlText: String?,
 
     @Column(columnDefinition = "number")
     val pendingTransfer: Boolean = false,
@@ -110,6 +102,10 @@ class LicenceConditionManager(
     @ManyToOne
     @JoinColumn(name = "transfer_reason_id")
     val transferReason: TransferReason,
+
+    @ManyToOne
+    @JoinColumn(name = "allocation_reason_id")
+    val allocationReason: ReferenceData?,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
