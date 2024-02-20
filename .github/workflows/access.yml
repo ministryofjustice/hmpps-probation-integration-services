@@ -158,7 +158,7 @@ jobs:
       - name: Disable audit user creation in preprod # user_ table records are automatically copied from prod to preprod within 1 hour of creation
         if: ${{ matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true' }}
         shell: bash
-        run: yq -i 'del(.database.audit)' database/access.yml
+        run: yq -i '.database.audit.create_user = false' database/access.yml
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Configure database access and audit
