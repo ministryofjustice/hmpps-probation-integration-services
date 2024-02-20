@@ -2,14 +2,11 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.asPerson
-import uk.gov.justice.digital.hmpps.data.generator.asPersonManager
-import uk.gov.justice.digital.hmpps.data.generator.asTeam
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceSubType
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Ldu
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
@@ -34,7 +31,10 @@ class ProbationCaseDataLoader(
     private val eventRepository: EventRepository,
     private val offenceRepository: OffenceRepository,
     private val mainOffenceRepository: MainOffenceRepository,
-    private val additionalOffenceRepository: AdditionalOffenceRepository
+    private val additionalOffenceRepository: AdditionalOffenceRepository,
+    private val personalCircumstanceTypeRepository: PersonalCircumstanceTypeRepository,
+    private val personalCircumstanceSubTypeRepository: PersonalCircumstanceSubTypeRepository,
+    private val personalCircumstanceRepository: PersonalCircumstanceRepository
 ) {
     fun loadData() {
         offenceRepository.saveAll(listOf(OffenceGenerator.OFFENCE_ONE, OffenceGenerator.OFFENCE_TWO))
@@ -92,9 +92,20 @@ class ProbationCaseDataLoader(
                 LocalDate.now().minusDays(5)
             )
         )
+
+        personalCircumstanceTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_TYPES)
+        personalCircumstanceSubTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_SUB_TYPES)
+        personalCircumstanceRepository.save(PersonalCircumstanceGenerator.generate(
+            ProbationCaseGenerator.CASE_COMPLEX.id,
+            PersonalCircumstanceGenerator.PC_TYPES.first { it.code == PersonalCircumstanceType.Code.VETERAN.value },
+            PersonalCircumstanceGenerator.PC_SUB_TYPES.first { it.description == PersonalCircumstanceType.Code.VETERAN.value + "SUB" }
+        ))
     }
 }
 
 interface LduRepository : JpaRepository<Ldu, Long>
 interface OffenceRepository : JpaRepository<Offence, Long>
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>
+
+interface PersonalCircumstanceTypeRepository : JpaRepository<PersonalCircumstanceType, Long>
+interface PersonalCircumstanceSubTypeRepository : JpaRepository<PersonalCircumstanceSubType, Long>

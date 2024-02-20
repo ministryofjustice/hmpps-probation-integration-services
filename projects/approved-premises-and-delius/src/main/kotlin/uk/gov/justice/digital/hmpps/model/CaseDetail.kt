@@ -22,7 +22,9 @@ data class CaseDetail(
     val case: CaseSummary,
     val offences: List<Offence>,
     val registrations: List<Registration>,
-    val mappaDetail: MappaDetail?
+    val mappaDetail: MappaDetail?,
+    val careLeaver: Boolean,
+    val veteran: Boolean
 )
 
 data class Name(val forename: String, val surname: String, val middleNames: List<String>)
