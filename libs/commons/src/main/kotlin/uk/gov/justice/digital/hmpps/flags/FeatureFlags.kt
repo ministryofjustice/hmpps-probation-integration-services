@@ -1,15 +1,16 @@
 package uk.gov.justice.digital.hmpps.flags
 
-import com.flipt.api.FliptApiClient
-import com.flipt.api.client.flags.endpoints.Get
+import io.flipt.api.FliptClient
+import io.flipt.api.evaluation.models.EvaluationRequest
 import org.springframework.stereotype.Service
 
 @Service
 class FeatureFlags(
-    private val client: FliptApiClient?
+    private val client: FliptClient?
 ) {
     fun enabled(key: String) = try {
-        client == null || client.flags()[Get.Request.builder().key(key).build()].enabled
+        client == null || client.evaluation()
+            .evaluateBoolean(EvaluationRequest.builder().flagKey(key).build()).isEnabled
     } catch (e: Exception) {
         throw FeatureFlagException(key, e)
     }

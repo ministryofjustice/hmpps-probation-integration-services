@@ -6,7 +6,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation(libs.flipt)
+    implementation(libs.flipt) {
+        exclude("org.apache.httpcomponents", "httpclient")
+    }
 
     testImplementation("org.springframework.boot:spring-boot-starter-data-ldap")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
