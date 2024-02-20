@@ -1,32 +1,23 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.CaseOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.MainOffenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.Category
-import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.Level
-import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.Registration
-import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.model.CaseDetail
-import uk.gov.justice.digital.hmpps.model.CaseSummaries
-import uk.gov.justice.digital.hmpps.model.CaseSummary
-import uk.gov.justice.digital.hmpps.model.Ldu
-import uk.gov.justice.digital.hmpps.model.Manager
-import uk.gov.justice.digital.hmpps.model.MappaDetail
-import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.Offence
-import uk.gov.justice.digital.hmpps.model.Profile
-import uk.gov.justice.digital.hmpps.model.Team
+import uk.gov.justice.digital.hmpps.model.*
 
 @Service
 class CaseService(
     private val probationCaseRepository: ProbationCaseRepository,
     private val registrationRepository: RegistrationRepository,
-    private val offenceRepository: MainOffenceRepository
+    private val offenceRepository: MainOffenceRepository,
+    private val personalCircumstanceRepository: PersonalCircumstanceRepository
 ) {
     fun getCaseSummaries(crns: List<String>): CaseSummaries =
         CaseSummaries(probationCaseRepository.findByCrnIn(crns).map { it.summary() })
@@ -36,7 +27,8 @@ class CaseService(
             ?: throw uk.gov.justice.digital.hmpps.exception.NotFoundException("ProbationCase", "crn", crn)
         val registrations = registrationRepository.findByPersonId(person.id)
         val offences = offenceRepository.findOffencesFor(person.id)
-        return person.summary().withDetail(offences, registrations)
+        val circumstances = personalCircumstanceRepository.findByPersonId(person.id)
+        return person.summary().withDetail(offences, registrations, circumstances.map { it.type.code })
     }
 }
 
@@ -53,10 +45,24 @@ fun ProbationCase.summary() = CaseSummary(
     currentRestriction ?: false
 )
 
-fun CaseSummary.withDetail(offences: List<CaseOffence>, registrations: List<Registration>): CaseDetail {
+fun CaseSummary.withDetail(
+    offences: List<CaseOffence>,
+    registrations: List<Registration>,
+    circumstances: List<String>
+): CaseDetail {
     val regMap = registrations.groupBy { it.type.code == RegisterType.Code.MAPPA.value }
-    return CaseDetail(this, offences.map { it.asOffence() }, regMap.flags(), regMap.mappa())
+    return CaseDetail(
+        this,
+        offences.map { it.asOffence() },
+        regMap.flags(),
+        regMap.mappa(),
+        circumstances.isCareLeaver(),
+        circumstances.isVeteran()
+    )
 }
+
+fun List<String>.isCareLeaver() = contains(PersonalCircumstanceType.Code.CARE_LEAVER.value)
+fun List<String>.isVeteran() = contains(PersonalCircumstanceType.Code.VETERAN.value)
 
 fun ProbationCase.name() = Name(forename, surname, listOfNotNull(secondName, thirdName))
 fun ProbationCase.profile() =

@@ -67,5 +67,7 @@ class ProbationCaseIntegrationTest {
         assertThat(mainOffence.description, equalTo("Offence One"))
         val otherOffence = detail.offences.first { !it.main }
         assertThat(otherOffence.description, equalTo("Offence Two"))
+        assertThat(detail.careLeaver, equalTo(false))
+        assertThat(detail.veteran, equalTo(true))
     }
 }
