@@ -50,7 +50,7 @@ class LicenceConditionApplier(
             "sentenceCount" to sentences.size.toString()
         )
         return when (sentences.size) {
-            0 -> listOf(ActionResult.Ignored("No Custodial Sentences to apply Licence Conditions", properties))
+            0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
             1 -> sentences.flatMap {
                 applyLicenceConditions(
                     SentencedCase(com, it, licenceConditionService.findByDisposalId(it.id)),
@@ -61,7 +61,7 @@ class LicenceConditionApplier(
 
             else -> listOf(
                 ActionResult.Ignored(
-                    "Multiple Custodial Sentences - cannot apply Licence Conditions",
+                    "Multiple Custodial Sentences",
                     properties
                 )
             )
