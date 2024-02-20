@@ -39,7 +39,7 @@ spring:
 seed.database: true
 
 jwt.authorities:
-  - ROLE_EXAMPLE
+  - ROLE_PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
