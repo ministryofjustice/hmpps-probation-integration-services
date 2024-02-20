@@ -1,0 +1,75 @@
+{
+  "schedule": {
+    "nextAppointment": {
+      "description": "Planned office visit",
+      "date": "2024-02-08T13:00:00Z"
+    }
+  },
+  "personalDetails": {
+    "name": {
+      "forename": "Dylan",
+      "middleNames": "Adam",
+      "surname": "Armstrong"
+    },
+    "preferredName": "Dee",
+    "preferredGender": "Prefer to self-describe: Agender",
+    "telephoneNumber": "0123 456 789",
+    "mobileNumber": "07700 900 077",
+    "personalCircumstances": [
+      {
+        "type": "Employment",
+        "subType": "Full-time employed (30 or more hours per week)"
+      },
+      {
+        "type": "Accommodation",
+        "subType": "Friends/Family (settled)"
+      }
+    ],
+    "disabilities": [
+      { "description": "Mental Illness" },
+      { "description": "Visual Impairment" }
+    ],
+    "provisions": [
+      { "description": "Flex refreshment breaks" },
+      { "description": "Colour/visibility marking" }
+    ]
+  },
+  "sentences": [
+    {
+      "mainOffence": {
+        "code": "19563",
+        "description": "Using violence to secure entry (Criminal Law Act/CJ and Public Order Act)"
+      },
+      "additionalOffences": [
+        {
+          "code": "19563",
+          "description": "Using violence to secure entry (Criminal Law Act/CJ and Public Order Act)"
+        }
+      ],
+      "order": {
+        "description": "Community Order",
+        "startDate": "2021-01-01",
+        "endDate": "2022-01-01"
+      },
+      "rar": {
+        "totalDays": 15,
+        "scheduled": 6,
+        "completed": 5
+      }
+    }
+  ],
+  "previousOrders": {
+    "count": 5,
+    "breaches": 0
+  },
+  "compliance": {
+    "failureToComplyInLast12Months": 2,
+    "currentBreaches": 0
+  },
+  "activity": {
+    "nationalStandardsAppointments": 14,
+    "complied": 9,
+    "acceptableAbsences": 1,
+    "rescheduled": 2
+  }
+}
