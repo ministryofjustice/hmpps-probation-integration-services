@@ -8,8 +8,12 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query(
         """
-        select distinct p.crn from EventEntity e join e.person p 
+        select distinct p.crn 
+        from EventEntity e
+        join e.disposal d
+        join e.person p 
         where e.softDeleted = false and e.active = true
+        and d.softDeleted = false and d.active = true
         and p.softDeleted = false
         """
     )
