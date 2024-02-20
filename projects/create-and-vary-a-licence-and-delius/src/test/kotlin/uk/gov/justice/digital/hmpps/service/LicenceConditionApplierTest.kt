@@ -90,10 +90,12 @@ internal class LicenceConditionApplierTest {
         )
         val occurredAt = ZonedDateTime.now()
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
-        whenever(disposalRepository.findCustodialSentences(crn)).thenReturn(listOf(
-            SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person)),
-            SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person))
-        ))
+        whenever(disposalRepository.findCustodialSentences(crn)).thenReturn(
+            listOf(
+                SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person)),
+                SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person))
+            )
+        )
 
         val ex = licenceConditionApplier.applyLicenceConditions(
             crn,
