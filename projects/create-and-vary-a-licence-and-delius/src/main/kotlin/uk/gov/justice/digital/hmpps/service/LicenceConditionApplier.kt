@@ -42,16 +42,30 @@ class LicenceConditionApplier(
         occurredAt: ZonedDateTime
     ): List<ActionResult> {
         val com = personManagerRepository.getByCrn(crn)
-        return disposalRepository.findCustodialSentences(crn)
-            .flatMap {
+        val sentences = disposalRepository.findCustodialSentences(crn)
+        val properties = mapOf(
+            "crn" to crn,
+            "startDate" to activatedLicence.startDate.toString(),
+            "occurredAt" to occurredAt.toString(),
+            "sentenceCount" to sentences.size.toString()
+        )
+        return when (sentences.size) {
+            0 -> listOf(ActionResult.Ignored("No Custodial Sentences to apply Licence Conditions", properties))
+            1 -> sentences.flatMap {
                 applyLicenceConditions(
                     SentencedCase(com, it, licenceConditionService.findByDisposalId(it.id)),
                     activatedLicence,
                     occurredAt
                 )
-            }.ifEmpty {
-                listOf(ActionResult.Ignored("No Custodial Sentences to apply Licence Conditions"))
             }
+
+            else -> listOf(
+                ActionResult.Ignored(
+                    "Multiple Custodial Sentences - cannot apply Licence Conditions",
+                    properties
+                )
+            )
+        }
     }
 
     private fun applyLicenceConditions(

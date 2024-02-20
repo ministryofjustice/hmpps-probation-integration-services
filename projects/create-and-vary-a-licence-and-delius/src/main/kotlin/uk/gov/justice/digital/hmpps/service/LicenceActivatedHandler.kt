@@ -17,7 +17,12 @@ class LicenceActivatedHandler(
             ?: throw NotFoundException("Activated Licence", "detailUrl", url)
         lca.applyLicenceConditions(crn, activatedLicence, domainEvent.occurredAt)
     } catch (e: Exception) {
-        listOf(ActionResult.Failure(e))
+        listOf(
+            ActionResult.Failure(
+                e,
+                listOfNotNull(domainEvent.personReference.findCrn()?.let { "crn" to it }).toMap()
+            )
+        )
     }
 
     private fun validateEvent(domainEvent: HmppsDomainEvent): Pair<String, URI> {
