@@ -6,7 +6,7 @@ generic-service:
 
   image:
     repository: flipt/flipt
-    tag: v1.19.2
+    tag: v1.37.1
     port: 8080
 
   securityContext:
