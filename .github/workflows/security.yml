@@ -56,22 +56,19 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           format: 'json'
-          output: 'results.json'
+          output: 'trivy.json'
           trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
 
       - name: Output results
-        id: results
-        run: echo "vulnerabilities=$(jq -c '.Results[].Vulnerabilities | select(. != null) | flatten' results.json)" | tee -a "$GITHUB_OUTPUT"
+        run: |
+          jq -c '{"${{ matrix.project }}": .Results[].Vulnerabilities | select(. != null) | flatten}' trivy.json | tee results.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: Merge outputs
-        uses: cloudposse/github-action-matrix-outputs-write@e90c7018e27e1c9466e0fa3cfe64720d9969ffca # v0.5.0
+      - uses: actions/upload-artifact@v4
         with:
-          matrix-step-name: trivy
-          matrix-key: ${{ matrix.project }}
-          outputs: |
-            vulnerabilities: ${{ steps.results.outputs.vulnerabilities }}
+          name: trivy-results-${{ matrix.project }}
+          path: results.json
 
   trivy-merge:
     runs-on: ubuntu-latest
@@ -80,38 +77,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: cloudposse/github-action-matrix-outputs-read@e0de318159d7139fb9e5f1d59e7f43f91d1d0904 # v0.1.2
-        id: trivy
+      - uses: actions/download-artifact@v4
         with:
-          matrix-step-name: trivy
+          pattern: trivy-results-*
+          path: results
+
+      - name: Merge results
+        run: |
+          find results -maxdepth 2 -name results.json -exec cat {} \; | jq -c --slurp 'map(to_entries | map(.key as $matrix_key | .value | map_values({($matrix_key): .}))) | flatten | reduce .[] as $item ({}; . * $item)' | tee results.json
 
       - name: Create GitHub issues
         run: |
-          echo "$result" | jq -c '[.vulnerabilities | to_entries[] | .key as $project | .value // empty | map(. + {Projects: [$project]})] 
+          cat results.json | jq -c 'to_entries | map((.value // empty) + {Projects: [.key]})
             | flatten 
             | group_by(.VulnerabilityID) 
             | map(reduce .[] as $vuln (.[0] + {Locations:[]}; .Projects += $vuln.Projects | .Locations += [$vuln.PkgName + ":" + $vuln.InstalledVersion + " (" + $vuln.PkgPath + ")"]))
             | map_values({Title: .VulnerabilityID, Body: ("### " + .Title + "\n" + .PrimaryURL + "\n>" + .Description + "\n#### Projects:\n* " + (.Projects | sort | unique | join("\n* ")) + "\n#### Locations:\n* `" + (.Locations | sort | unique | join("`\n* `")) + "`\n#### References:\n* " + (.References | sort | unique | join("\n* ")))})
             | .[]' \
           | while read -r vulnerability; do
-            title=$(echo "$vulnerability" | jq -r '.Title')
-            body=$(echo "$vulnerability" | jq -r '.Body')
+            title=$(jq -r '.Title' <<< "$vulnerability")
+            jq -r '.Body' <<< "$vulnerability" | tee "${title}-body.json"
             existing=$(gh issue list --state open --label dependencies --label security --search "$title" --json 'number' --jq '.[].number' | head -n1)
             if [ -n "$existing" ]; then
               echo "Issue '$title' already exists, updating body..."
-              gh issue edit "$existing" --body "$body"
+              gh issue edit "$existing" --body-file "${title}-body.json"
             else
-              gh issue create --title "$title" --body "$body" --label 'dependencies,security'
+              gh issue create --title "$title" --body-file "${title}-body.json" --label 'dependencies,security'
             fi
           done
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          result: ${{ steps.trivy.outputs.result }}
 
       - name: Close GitHub issues
         run: |
           openissues="$(gh issue list --state open --label dependencies --label security | awk '{print $3}')"
-          scanresults="$(echo "$result" | jq -r -c '.vulnerabilities | with_entries(select(.value != null)) | .[][].VulnerabilityID' | sort -u)"
+          scanresults="$(cat results.json | jq -r -c 'with_entries(select(.value != null)) | .[].VulnerabilityID' | sort -u)"
           issuestoclose="$(comm -23 <(echo "$openissues" | sort -u) <(echo "$scanresults" | sort -u))" #print lines only present in first file
           echo "openissues=$openissues"
           echo "scanresults=$scanresults"
@@ -123,13 +123,10 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          result: ${{ steps.trivy.outputs.result }}
 
       - name: Fail job if any vulnerabilities are found
         if: steps.trivy.outputs.result != '{}'
-        run: if [ "$(echo "$result" | jq '.vulnerabilities | with_entries(select(.value != null)) | length')" != 0 ]; then exit 1; fi
-        env:
-          result: ${{ steps.trivy.outputs.result }}
+        run: if [ "$(cat results.json | jq '. | with_entries(select(.value != null)) | length')" != 0 ]; then exit 1; fi
 
   veracode-scan:
     runs-on: ubuntu-latest
