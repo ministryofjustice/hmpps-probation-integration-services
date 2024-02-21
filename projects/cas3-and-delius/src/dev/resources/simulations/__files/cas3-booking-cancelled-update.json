@@ -12,6 +12,10 @@
     "bookingId": "14c80733-4b6d-4f35-b724-66955aac320c",
     "bookingUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/someURLtoTheBooking",
     "cancellationReason": "Not appropriate",
-    "cancellationContext": "Suitability"
+    "cancellationContext": "Suitability",
+    "cancelledBy": {
+      "staffCode": "N03HPT1",
+      "probationRegionCode": "N03"
+    }
   }
 }

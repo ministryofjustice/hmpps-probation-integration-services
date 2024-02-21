@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.approvedpremesis
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType
 import java.time.ZonedDateTime
-import java.util.LinkedList
+import java.util.*
 
 data class EventDetails<out T : Cas3Event>(
     val id: String,
@@ -33,12 +33,14 @@ data class BookingCancelled(
     val bookingUrl: String,
     val cancellationReason: String,
     val cancellationContext: String?,
-    val notes: String?
-) : Cas3Event {
+    val notes: String?,
+    val cancelledBy: By?
+) : Cas3Event, Recordable {
     override val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
     override val noteText =
         listOfNotNull(cancellationReason, cancellationContext, notes).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.BOOKING_CANCELLED
+    override val recordedBy = cancelledBy
 }
 
 data class BookingProvisional(
@@ -47,8 +49,9 @@ data class BookingProvisional(
     val bookingId: String,
     val bookingUrl: String,
     val expectedArrivedAt: ZonedDateTime,
-    val notes: String
-) : Cas3Event {
+    val notes: String,
+    val bookedBy: By?
+) : Cas3Event, Recordable {
     override val urn = "urn:hmpps:cas3:booking-provisionally-made:$bookingId"
     override val noteText =
         listOfNotNull(
@@ -56,6 +59,7 @@ data class BookingProvisional(
             notes
         ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.BOOKING_PROVISIONAL
+    override val recordedBy = bookedBy
 }
 
 data class BookingConfirmed(
@@ -64,8 +68,9 @@ data class BookingConfirmed(
     val bookingId: String,
     val bookingUrl: String,
     val expectedArrivedAt: ZonedDateTime,
-    val notes: String
-) : Cas3Event {
+    val notes: String,
+    val confirmedBy: By?
+) : Cas3Event, Recordable {
     override val urn = "urn:hmpps:cas3:booking-confirmed:$bookingId"
     override val noteText =
         listOfNotNull(
@@ -73,6 +78,7 @@ data class BookingConfirmed(
             notes
         ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.BOOKING_CONFIRMED
+    override val recordedBy = confirmedBy
 }
 
 data class PersonArrived(
@@ -82,8 +88,9 @@ data class PersonArrived(
     val bookingUrl: String,
     val arrivedAt: ZonedDateTime,
     val notes: String,
-    val premises: Address
-) : Cas3Event {
+    val premises: Address,
+    override val recordedBy: By?
+) : Cas3Event, Recordable {
     override val urn = "urn:hmpps:cas3:person-arrived:$bookingId"
     override val noteText =
         listOfNotNull(
@@ -103,9 +110,9 @@ data class PersonDeparted(
     val notes: String,
     val reason: String,
     val reasonDetail: String?,
-    val moveOnCategory: Category
-
-) : Cas3Event {
+    val moveOnCategory: Category,
+    override val recordedBy: By?
+) : Cas3Event, Recordable {
     override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
     override val noteText = listOfNotNull(
         "Departure date: ${DeliusDateFormatter.format(departedAt)}",
@@ -148,3 +155,12 @@ data class AddressLines(
 data class Category(
     val description: String
 )
+
+data class By(
+    val staffCode: String,
+    val probationRegionCode: String
+)
+
+interface Recordable {
+    val recordedBy: By?
+}

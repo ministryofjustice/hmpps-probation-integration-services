@@ -51,7 +51,7 @@ class Handler(
                 contactService.createOrUpdateContact(event.crn()) {
                     cas3ApiClient.getBookingProvisionallyMade(event.url())
                 }
-                telemetryService.trackEvent("bookingProvisionallyMade", event.telemetryProperties())
+                telemetryService.trackEvent("BookingProvisionallyMade", event.telemetryProperties())
             }
 
             "accommodation.cas3.person.arrived" -> {

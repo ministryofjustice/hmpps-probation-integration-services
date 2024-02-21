@@ -19,6 +19,10 @@
       "region": "Bibbinghammcshireshire"
     },
     "arrivedAt": "2022-11-30T12:00:00",
-    "notes": "person arrived"
+    "notes": "person arrived",
+    "recordedBy": {
+      "staffCode": "N03HPT1",
+      "probationRegionCode": "N03"
+    }
   }
 }

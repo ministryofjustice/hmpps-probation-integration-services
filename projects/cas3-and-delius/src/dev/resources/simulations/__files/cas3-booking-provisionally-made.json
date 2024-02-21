@@ -12,6 +12,10 @@
     "bookingId": "14c80733-4b6d-4f35-b724-66955aac320e",
     "bookingUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/someURLtoTheBooking",
     "expectedArrivedAt": "2022-11-30T12:00:00",
-    "notes": "The actual time of arrival is unknown so has been defaulted to midday."
+    "notes": "The actual time of arrival is unknown so has been defaulted to midday.",
+    "bookedBy": {
+      "staffCode": "N03HPT1",
+      "probationRegionCode": "N03"
+    }
   }
 }

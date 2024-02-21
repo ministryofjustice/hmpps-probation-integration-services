@@ -7,12 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.AddressRDGenerator
-import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -44,6 +39,15 @@ class DataLoader(
             ContactTypeGenerator.EADP_CONTACT_TYPE,
             PersonGenerator.PERSON_CRN,
             PersonGenerator.generatePersonManager(PersonGenerator.PERSON_CRN)
+        )
+        saveProviderDetails()
+    }
+
+    private fun saveProviderDetails() {
+        em.saveAll(
+            ProviderGenerator.DEFAULT_PROVIDER,
+            ProviderGenerator.DEFAULT_TEAM,
+            ProviderGenerator.DEFAULT_STAFF,
         )
     }
 

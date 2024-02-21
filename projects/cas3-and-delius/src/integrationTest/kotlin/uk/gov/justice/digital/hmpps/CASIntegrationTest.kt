@@ -2,11 +2,9 @@ package uk.gov.justice.digital.hmpps
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import com.github.tomakehurst.wiremock.client.WireMock.get
-import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -19,13 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.ApplicationSubmitted
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.BookingCancelled
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.BookingConfirmed
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.BookingProvisional
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.EventDetails
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.PersonArrived
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.PersonDeparted
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
@@ -81,7 +74,7 @@ internal class CASIntegrationTest {
         val eventDetails = ResourceLoader.file<EventDetails<ApplicationSubmitted>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EARS"))
+        assertThat(contact!!.type.code, equalTo("EARS"))
     }
 
     @Test
@@ -108,7 +101,9 @@ internal class CASIntegrationTest {
 
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACA"))
+        assertThat(contact!!.type.code, equalTo("EACA"))
+        assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
+        assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
     }
 
     @Test
@@ -126,7 +121,9 @@ internal class CASIntegrationTest {
         val eventDetails = ResourceLoader.file<EventDetails<BookingConfirmed>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACO"))
+        assertThat(contact!!.type.code, equalTo("EACO"))
+        assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
+        assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
     }
 
     @Test
@@ -144,7 +141,9 @@ internal class CASIntegrationTest {
         val eventDetails = ResourceLoader.file<EventDetails<BookingProvisional>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EABP"))
+        assertThat(contact!!.type.code, equalTo("EABP"))
+        assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
+        assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
     }
 
     @Test
@@ -171,16 +170,18 @@ internal class CASIntegrationTest {
 
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EAAR"))
+        assertThat(contact!!.type.code, equalTo("EAAR"))
+        assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
+        assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
 
         val person = personRepository.findByCrn(event.message.crn())
         val address = addressRepository.findMainAddress(person!!.id)
 
-        MatcherAssert.assertThat(address!!.type.code, Matchers.equalTo("A17"))
-        MatcherAssert.assertThat(address.town, Matchers.equalTo(eventDetails.eventDetails.premises.town))
-        MatcherAssert.assertThat(address.streetName, Matchers.equalTo(eventDetails.eventDetails.premises.addressLine1))
-        MatcherAssert.assertThat(address.county, Matchers.equalTo(eventDetails.eventDetails.premises.region))
-        MatcherAssert.assertThat(address.postcode, Matchers.equalTo(eventDetails.eventDetails.premises.postcode))
+        assertThat(address!!.type.code, equalTo("A17"))
+        assertThat(address.town, equalTo(eventDetails.eventDetails.premises.town))
+        assertThat(address.streetName, equalTo(eventDetails.eventDetails.premises.addressLine1))
+        assertThat(address.county, equalTo(eventDetails.eventDetails.premises.region))
+        assertThat(address.postcode, equalTo(eventDetails.eventDetails.premises.postcode))
     }
 
     @Test
@@ -207,10 +208,12 @@ internal class CASIntegrationTest {
 
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EADP"))
+        assertThat(contact!!.type.code, equalTo("EADP"))
         val person = personRepository.findByCrn(event.message.crn())
         val address = addressRepository.findAll().filter { it.personId == person?.id }[0]
-        MatcherAssert.assertThat(address!!.status.code, Matchers.equalTo("P"))
+        assertThat(address!!.status.code, equalTo("P"))
+        assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
+        assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
     }
 
     @Test
@@ -239,9 +242,9 @@ internal class CASIntegrationTest {
         Mockito.verify(telemetryService).notificationReceived(event)
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(
+        assertThat(
             contact!!.notes,
-            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+            equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
         )
     }
 
@@ -272,9 +275,9 @@ internal class CASIntegrationTest {
 
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(
+        assertThat(
             contact!!.notes,
-            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+            equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
         )
     }
 
@@ -305,9 +308,9 @@ internal class CASIntegrationTest {
 
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(
+        assertThat(
             contact!!.notes,
-            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+            equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
         )
     }
 }
