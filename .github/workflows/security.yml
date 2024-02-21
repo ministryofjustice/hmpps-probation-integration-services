@@ -88,21 +88,21 @@ jobs:
 
       - name: Create GitHub issues
         run: |
-          cat results.json | jq -c 'to_entries | map((.value // empty) + {Projects: [.key]})
+          jq -c 'to_entries | map((.value // empty) + {Projects: [.key]})
             | flatten 
             | group_by(.VulnerabilityID) 
             | map(reduce .[] as $vuln (.[0] + {Locations:[]}; .Projects += $vuln.Projects | .Locations += [$vuln.PkgName + ":" + $vuln.InstalledVersion + " (" + $vuln.PkgPath + ")"]))
             | map_values({Title: .VulnerabilityID, Body: ("### " + .Title + "\n" + .PrimaryURL + "\n>" + .Description + "\n#### Projects:\n* " + (.Projects | sort | unique | join("\n* ")) + "\n#### Locations:\n* `" + (.Locations | sort | unique | join("`\n* `")) + "`\n#### References:\n* " + (.References | sort | unique | join("\n* ")))})
-            | .[]' \
+            | .[]' < results.json \
           | while read -r vulnerability; do
             title=$(jq -r '.Title' <<< "$vulnerability")
             jq -r '.Body' <<< "$vulnerability" | tee "${title}-body.json"
             existing=$(gh issue list --state open --label dependencies --label security --search "$title" --json 'number' --jq '.[].number' | head -n1)
             if [ -n "$existing" ]; then
               echo "Issue '$title' already exists, updating body..."
-              gh issue edit "$existing" --body-file "${title}-body.json"
+              echo gh issue edit "$existing" --body-file "${title}-body.json"
             else
-              gh issue create --title "$title" --body-file "${title}-body.json" --label 'dependencies,security'
+              echo gh issue create --title "$title" --body-file "${title}-body.json" --label 'dependencies,security'
             fi
           done
         env:
@@ -111,7 +111,7 @@ jobs:
       - name: Close GitHub issues
         run: |
           openissues="$(gh issue list --state open --label dependencies --label security | awk '{print $3}')"
-          scanresults="$(cat results.json | jq -r -c 'with_entries(select(.value != null)) | .[].VulnerabilityID' | sort -u)"
+          scanresults="$(jq -r -c 'with_entries(select(.value != null)) | .[].VulnerabilityID' < results.json | sort -u)"
           issuestoclose="$(comm -23 <(echo "$openissues" | sort -u) <(echo "$scanresults" | sort -u))" #print lines only present in first file
           echo "openissues=$openissues"
           echo "scanresults=$scanresults"
@@ -125,8 +125,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Fail job if any vulnerabilities are found
-        if: steps.trivy.outputs.result != '{}'
-        run: if [ "$(cat results.json | jq '. | with_entries(select(.value != null)) | length')" != 0 ]; then exit 1; fi
+        run: if [ "$(jq '. | with_entries(select(.value != null)) | length' < results.json)" != 0 ]; then exit 1; fi
 
   veracode-scan:
     runs-on: ubuntu-latest
