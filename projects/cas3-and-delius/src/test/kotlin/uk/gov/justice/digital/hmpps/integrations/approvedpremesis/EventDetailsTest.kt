@@ -18,7 +18,8 @@ class EventDetailsTest {
             notes = "Notes",
             reason = "Reason",
             reasonDetail = "ReasonDetail",
-            moveOnCategory = Category(description = "MoveOnCat")
+            moveOnCategory = Category(description = "MoveOnCat"),
+            recordedBy = By("N03HPT1", "N03")
         )
         assertThat(
             event.noteText,

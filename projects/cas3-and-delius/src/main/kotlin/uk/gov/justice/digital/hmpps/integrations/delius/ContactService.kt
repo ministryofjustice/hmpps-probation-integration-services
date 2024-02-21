@@ -1,19 +1,16 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Recordable
+import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.By
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3Event
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -24,9 +21,11 @@ class ContactService(
     private val personManagerRepository: PersonManagerRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
+    private val providerService: ProviderService,
     private val telemetryService: TelemetryService
 ) : AuditableService(auditedInteractionService) {
 
+    @Transactional
     fun <T : Cas3Event> createOrUpdateContact(
         crn: String,
         person: Person? = null,
@@ -59,7 +58,8 @@ class ContactService(
                     personId,
                     event.eventDetails.contactTypeCode,
                     event.eventDetails.urn,
-                    event.eventDetails.noteText
+                    event.eventDetails.noteText,
+                    if (event.eventDetails is Recordable) event.eventDetails.recordedBy else null,
                 )
             )
         }
@@ -70,18 +70,17 @@ class ContactService(
         personId: Long,
         typeCode: String,
         reference: String,
-        notes: String
+        notes: String,
+        by: By?
     ): Contact {
         val contactType = contactTypeRepository.findByCode(typeCode) ?: throw NotFoundException(
             "ContactType",
             "code",
             typeCode
         )
-        val comDetails = personManagerRepository.findActiveManager(personId) ?: throw NotFoundException(
-            "PersonManager",
-            "personId",
-            personId
-        )
+
+        val managerIds =
+            by?.let { providerService.findManagerIds(it) } ?: personManagerRepository.getActiveManager(personId)
 
         return Contact(
             offenderId = personId,
@@ -90,9 +89,9 @@ class ContactService(
             date = occurredAt.toLocalDate(),
             startTime = occurredAt,
             isSensitive = contactType.isSensitive,
-            probationAreaId = comDetails.probationAreaId,
-            teamId = comDetails.teamId,
-            staffId = comDetails.staffId,
+            probationAreaId = managerIds.probationAreaId,
+            teamId = managerIds.teamId,
+            staffId = managerIds.staffId,
             externalReference = reference
         )
     }
