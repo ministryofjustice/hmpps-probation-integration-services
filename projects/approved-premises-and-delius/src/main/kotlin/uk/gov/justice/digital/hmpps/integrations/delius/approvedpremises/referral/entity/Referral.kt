@@ -29,7 +29,7 @@ class Referral(
 
     @Column(name = "event_id")
     val eventId: Long,
-    val approvedPremisesId: Long,
+    val approvedPremisesId: Long?,
 
     val referralDate: LocalDate,
     var expectedArrivalDate: LocalDate?,

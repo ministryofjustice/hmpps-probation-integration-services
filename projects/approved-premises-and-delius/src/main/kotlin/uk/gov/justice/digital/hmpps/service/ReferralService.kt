@@ -164,8 +164,8 @@ class ReferralService(
         return ExistingReferrals(person.crn, referrals)
     }
 
-    fun getReferral(person: Person, externalReference: String) =
-        referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+    fun getReferral(person: Person, externalReference: String): Referral {
+        val referral: Referral = referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
             person.id,
             ServiceContext.servicePrincipal()!!.userId,
             externalReference
@@ -173,6 +173,14 @@ class ReferralService(
             "Referral Not Found",
             mapOf("crn" to person.crn, "externalReference" to externalReference)
         )
+        if (referral.approvedPremisesId == null) {
+            throw IgnorableMessageException(
+                "Approved Premises unlinked from Referral",
+                mapOf("crn" to person.crn, "externalReference" to externalReference)
+            )
+        }
+        return referral
+    }
 
     private fun BookingMade.referral(
         person: Person,
