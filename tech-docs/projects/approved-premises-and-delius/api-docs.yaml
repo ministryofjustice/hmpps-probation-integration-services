@@ -447,9 +447,11 @@ components:
           type: string
     CaseDetail:
       required:
+      - careLeaver
       - case
       - offences
       - registrations
+      - veteran
       type: object
       properties:
         case:
@@ -464,6 +466,10 @@ components:
             $ref: '#/components/schemas/Registration'
         mappaDetail:
           $ref: '#/components/schemas/MappaDetail'
+        careLeaver:
+          type: boolean
+        veteran:
+          type: boolean
     MappaDetail:
       required:
       - lastUpdated
