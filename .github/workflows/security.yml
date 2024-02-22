@@ -100,9 +100,9 @@ jobs:
             existing=$(gh issue list --state open --label dependencies --label security --search "$title" --json 'number' --jq '.[].number' | head -n1)
             if [ -n "$existing" ]; then
               echo "Issue '$title' already exists, updating body..."
-              echo gh issue edit "$existing" --body-file "${title}-body.json"
+              gh issue edit "$existing" --body-file "${title}-body.json"
             else
-              echo gh issue create --title "$title" --body-file "${title}-body.json" --label 'dependencies,security'
+              gh issue create --title "$title" --body-file "${title}-body.json" --label 'dependencies,security'
             fi
           done
         env:
