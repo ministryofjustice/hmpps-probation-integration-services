@@ -9,263 +9,66 @@ jobs:
   allocation-failures:
     runs-on: ubuntu-latest
     steps:
-      - name: Search app insights
-        id: search
-        run: |
-          echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
-        env:
-          url: https://api.applicationinsights.io/v1/apps/${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}/query
-          key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          query: |
-            customEvents
-            | where timestamp > ago(7d) and timestamp < now()
-            | where cloud_RoleName in ("workforce-allocations-to-delius")
-            | where name in ("AllocationFailed")
-            | project customDimensions.crn, customDimensions.reason, itemId, timestamp
-            | order by tostring(customDimensions_crn) asc
-
-      - name: Transform results into Slack message
-        id: transform
-        if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
-        run: |
-          echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
-            {
-              "blocks": ([
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": ":information_source: Allocation Failures"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "The following cases failed to allocate in Delius over the last 7 days. Please check and manually correct the cases if required."
-                  },
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*CRN*"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Reason*"
-                    }
-                  ]
-                }
-              ] +
-              (. | [_nwise(5)] | map({
-                "type": "section",
-                "fields": (. | map([
-                  {
-                    type: "plain_text",
-                    text: .[0]
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
-                  }
-                ]) | flatten)
-              })) +
-              [
-                {
-                  "type": "context",
-                  "elements": [
-                    {
-                      "type": "mrkdwn",
-                      "text": ">This report was generated automatically. For more information, contact the probation integration team."
-                    }
-                  ]
-                }
-              ])
-            }')" | tee -a "$GITHUB_OUTPUT"
-        env:
-          search_result: ${{ steps.search.outputs.result }}
-
-      - name: Send message to Slack
-        id: send
-        if: steps.transform.outputs.result != null
-        uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
         with:
-          channel-id: topic-pi-workforce-allocation
-          payload: ${{ steps.transform.outputs.result }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          title: Allocations Integration Report
+          summary: The following cases failed to allocate in Delius over the last 7 days. Please check and manually correct the cases if required.
+          event_name: AllocationFailed
+          project_name: workforce-allocations-to-delius
+          slack_channel: topic-pi-workforce-allocation
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
 
-  approved-premises-failures:
+  cas1-failures:
     runs-on: ubuntu-latest
     steps:
-      - name: Search app insights
-        id: search
-        run: |
-          echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
-        env:
-          url: https://api.applicationinsights.io/v1/apps/${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}/query
-          key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          query: |
-            customEvents
-            | where timestamp > ago(7d) and timestamp < now()
-            | where cloud_RoleName in ("approved-premises-and-delius")
-            | where name in ("ApprovedPremisesFailureReport")
-            | project customDimensions.crn, customDimensions.reason, itemId, timestamp
-            | order by tostring(customDimensions_crn) asc
-
-      - name: Transform results into Slack message
-        id: transform
-        if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
-        run: |
-          echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
-            {
-              "blocks": ([
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": ":information_source: Approved Premises Processing Failures"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required."
-                  },
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*CRN*"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Reason*"
-                    }
-                  ]
-                }
-              ] +
-              (. | [_nwise(5)] | map({
-                "type": "section",
-                "fields": (. | map([
-                  {
-                    type: "plain_text",
-                    text: .[0]
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
-                  }
-                ]) | flatten)
-              })) +
-              [
-                {
-                  "type": "context",
-                  "elements": [
-                    {
-                      "type": "mrkdwn",
-                      "text": ">This report was generated automatically. For more information, contact the probation integration team."
-                    }
-                  ]
-                }
-              ])
-            }')" | tee -a "$GITHUB_OUTPUT"
-        env:
-          search_result: ${{ steps.search.outputs.result }}
-
-      - name: Send message to Slack
-        id: send
-        if: steps.transform.outputs.result != null
-        uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
         with:
-          channel-id: topic-pi-approved-premises
-          payload: ${{ steps.transform.outputs.result }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          title: Approved Premises (CAS1) Integration Report
+          summary: The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required.
+          event_name: ApprovedPremisesFailureReport
+          project_name: approved-premises-and-delius
+          slack_channel: topic-pi-approved-premises
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+
+  cas3-warnings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
+        with:
+          title: Transitional Accommodation (CAS3) HPT Report
+          summary: The following messages were generated by the CAS3 and Delius integration service over the last 7 days. Please check and manually correct the cases if required.
+          event_name: StaffNotInTeam
+          column1_header: Staff Code
+          column1_value: staffCode
+          project_name: cas3-and-delius
+          slack_channel: topic-pi-approved-premises
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
 
   refer-and-monitor-failures:
     runs-on: ubuntu-latest
     steps:
-      - name: Search app insights
-        id: search
-        run: |
-          echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
-        env:
-          url: https://api.applicationinsights.io/v1/apps/${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}/query
-          key: ${{ secrets.APP_INSIGHTS_API_KEY }}
-          query: |
-            customEvents
-            | where timestamp > ago(7d) and timestamp < now()
-            | where cloud_RoleName in ("refer-and-monitor-and-delius")
-            | where name in ("ReferAndMonitorFailureReport")
-            | project customDimensions.crn, customDimensions.message, itemId, timestamp
-            | order by tostring(customDimensions_crn) asc
-
-      - name: Transform results into Slack message
-        id: transform
-        if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
-        run: |
-          echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
-            {
-              "blocks": ([
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": ":information_source: Refer and Monitor Processing Failures"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required."
-                  },
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*CRN*"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Reason*"
-                    }
-                  ]
-                }
-              ] +
-              (. | [_nwise(5)] | map({
-                "type": "section",
-                "fields": (. | map([
-                  {
-                    type: "plain_text",
-                    text: .[0]
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
-                  }
-                ]) | flatten)
-              })) +
-              [
-                {
-                  "type": "context",
-                  "elements": [
-                    {
-                      "type": "mrkdwn",
-                      "text": ">This report was generated automatically. For more information, contact the probation integration team."
-                    }
-                  ]
-                }
-              ])
-            }')" | tee -a "$GITHUB_OUTPUT"
-        env:
-          search_result: ${{ steps.search.outputs.result }}
-
-      - name: Send message to Slack
-        id: send
-        if: steps.transform.outputs.result != null
-        uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
         with:
-          channel-id: topic-pi-referandmonitor
-          payload: ${{ steps.transform.outputs.result }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          title: Refer and Monitor Integration Report
+          summary: The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required.
+          event_name: ReferAndMonitorFailureReport
+          column2_value: message
+          project_name: refer-and-monitor-and-delius
+          slack_channel: topic-pi-referandmonitor
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
