@@ -70,3 +70,10 @@ interface StaffRepository : JpaRepository<Staff, Long> {
 
 fun StaffRepository.getByCode(code: String) =
     findByCode(code) ?: throw NotFoundException("Staff", "code", code)
+
+interface TeamRepository : JpaRepository<Team, Long> {
+    fun findByCode(code: String): Team?
+}
+
+fun TeamRepository.getByCode(code: String) =
+    findByCode(code) ?: throw NotFoundException("Team", "code", code)
