@@ -10,10 +10,14 @@ import org.hibernate.annotations.Immutable
 @Immutable
 @Table(name = "r_standard_reference_list")
 data class ReferenceData(
+
+    @Column(name = "code_value")
+    val code: String,
+
+    @Column(name = "code_description")
+    val description: String,
+
     @Id
     @Column(name = "standard_reference_list_id")
     val id: Long,
-
-    @Column(name = "code_description")
-    val description: String
 )

@@ -9,8 +9,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -20,6 +22,8 @@ internal class IntegrationTest {
 
     @Test
     fun `returns supervisions`() {
+        val start = LocalDate.now()
+        val review = LocalDate.now().plusMonths(6)
         mockMvc
             .perform(get("/case/${PERSON.crn}/supervisions").withToken())
             .andExpect(status().is2xxSuccessful)
@@ -27,6 +31,15 @@ internal class IntegrationTest {
                 content().json(
                     """
                     {
+                        "mappaDetail": {
+                          "level": 1,                 
+                          "levelDescription": "Description of M1",   
+                          "category": 2,              
+                          "categoryDescription": "Description of M2",
+                          "startDate": "$start",        
+                          "reviewDate": "$review",      
+                          "notes": "Mappa Detail for ${PERSON.crn}"               
+                        },
                         "supervisions": [
                             {
                                 "number": 1,

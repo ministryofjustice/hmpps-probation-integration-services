@@ -8,8 +8,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.service.Category
+import uk.gov.justice.digital.hmpps.service.Level
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import java.time.LocalDate
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -38,6 +42,18 @@ class DataLoader(
             persist(DataGenerator.EVENT.mainOffence)
             DataGenerator.EVENT.additionalOffences.forEach { persist(it) }
             DataGenerator.EVENT.courtAppearances.forEach { persist(it) }
+            persist(RegistrationGenerator.MAPPA_TYPE)
+            RegistrationGenerator.CATEGORIES.values.forEach(::persist)
+            RegistrationGenerator.LEVELS.values.forEach(::persist)
+            persist(
+                RegistrationGenerator.generate(
+                    RegistrationGenerator.MAPPA_TYPE,
+                    RegistrationGenerator.CATEGORIES[Category.M2.name],
+                    RegistrationGenerator.LEVELS[Level.M1.name],
+                    reviewDate = LocalDate.now().plusMonths(6),
+                    notes = "Mappa Detail for ${DataGenerator.PERSON.crn}"
+                )
+            )
         }
     }
 }

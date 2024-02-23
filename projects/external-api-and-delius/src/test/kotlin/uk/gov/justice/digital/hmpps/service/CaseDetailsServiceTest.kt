@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
 import uk.gov.justice.digital.hmpps.integration.delius.PersonRepository
+import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.model.CourtAppearance
 import uk.gov.justice.digital.hmpps.model.LengthUnit
 import uk.gov.justice.digital.hmpps.model.Offence
@@ -30,6 +31,9 @@ import java.time.ZonedDateTime
 internal class CaseDetailsServiceTest {
     @Mock
     lateinit var personRepository: PersonRepository
+
+    @Mock
+    lateinit var registrationRepository: RegistrationRepository
 
     @Mock
     lateinit var eventRepository: EventRepository
@@ -47,7 +51,7 @@ internal class CaseDetailsServiceTest {
     fun `returns supervisions`() {
         whenever(personRepository.findByCrn(PERSON.crn)).thenReturn(PERSON)
         whenever(eventRepository.findByPersonIdOrderByConvictionDateDesc(PERSON.id)).thenReturn(listOf(EVENT))
-        val response = caseDetailsService.getSupervisions(PERSON.crn)
+        val response = caseDetailsService.getSupervisions(PERSON.crn).supervisions
         assertThat(response, hasSize(1))
         assertThat(
             response[0],

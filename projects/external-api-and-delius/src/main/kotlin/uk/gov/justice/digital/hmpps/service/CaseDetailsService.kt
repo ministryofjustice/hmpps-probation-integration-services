@@ -3,20 +3,19 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
 import uk.gov.justice.digital.hmpps.integration.delius.PersonRepository
+import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integration.delius.entity.findMappa
 import uk.gov.justice.digital.hmpps.integration.delius.getByCrn
-import uk.gov.justice.digital.hmpps.model.CourtAppearance
-import uk.gov.justice.digital.hmpps.model.LengthUnit
-import uk.gov.justice.digital.hmpps.model.Offence
-import uk.gov.justice.digital.hmpps.model.Sentence
-import uk.gov.justice.digital.hmpps.model.Supervision
+import uk.gov.justice.digital.hmpps.model.*
 
 @Service
 class CaseDetailsService(
     private val personRepository: PersonRepository,
-    private val eventRepository: EventRepository
+    private val registrationRepository: RegistrationRepository,
+    private val eventRepository: EventRepository,
 ) {
-    fun getSupervisions(crn: String) = with(personRepository.getByCrn(crn)) {
-        eventRepository.findByPersonIdOrderByConvictionDateDesc(id).map { event ->
+    fun getSupervisions(crn: String): SupervisionResponse = with(personRepository.getByCrn(crn)) {
+        val supervisions = eventRepository.findByPersonIdOrderByConvictionDateDesc(id).map { event ->
             Supervision(
                 number = event.number.toInt(),
                 active = event.active,
@@ -42,5 +41,26 @@ class CaseDetailsService(
                 }
             )
         }
+        val mappaDetail = registrationRepository.findMappa(id)?.let {
+            MappaDetail(
+                it.level?.code?.toMappaLevel(),
+                it.level?.description,
+                it.category?.code?.toMappaCategory(),
+                it.category?.description,
+                it.date,
+                it.reviewDate,
+                it.notes
+            )
+        }
+        return SupervisionResponse(mappaDetail, supervisions)
     }
 }
+
+enum class Category(val number: Int) { X9(0), M1(1), M2(2), M3(3), M4(4) }
+enum class Level(val number: Int) { M0(0), M1(1), M2(2), M3(3) }
+
+private fun String.toMappaLevel() = Level.entries.find { it.name == this }?.number
+    ?: throw IllegalStateException("Unexpected MAPPA level: $this")
+
+private fun String.toMappaCategory() = Category.entries.find { it.name == this }?.number
+    ?: throw IllegalStateException("Unexpected MAPPA category: $this")
