@@ -35,10 +35,21 @@ on:
           - disable
 
 jobs:
+  unblock-pipeline:
+    name: Unblock deployment pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - if: inputs.environment != 'prod' && inputs.action == 'disable'
+        run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/${{ inputs.environment }}' --input -
+        env:
+          reviewers: '{"reviewers":[]}'
+          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+
   get-projects:
     name: Get projects
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    needs: unblock-pipeline
     outputs:
       projects: ${{ steps.kubectl.outputs.projects }}
     steps:
@@ -59,16 +70,6 @@ jobs:
             | jq --raw-input . | jq --slurp --compact-output .
           )
           echo "projects=$json" | tee -a "$GITHUB_OUTPUT"
-
-  approval:
-    name: Update environment approval
-    if: inputs.environment != 'prod'
-    runs-on: ubuntu-latest
-    steps:
-      - run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/${{ inputs.environment }}' --input -
-        env:
-          reviewers: ${{ inputs.action == 'enable' && '{"reviewers":[{"type":"Team","id":5521382}]}' || '{"reviewers":[]}' }}
-          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
 
   # Event publishers always require write access to the DB, so stop them while in read-only mode
   event-publishers:
@@ -173,13 +174,29 @@ jobs:
             ingress=$(kubectl get ingress -o jsonpath='{.items[*].metadata.name}' -l 'app=${{ matrix.project }}')
             kubectl annotate ingress "$ingress" 'nginx.ingress.kubernetes.io/configuration-snippet=' --overwrite
 
+  block-pipeline:
+    name: Block deployment pipeline
+    needs:
+      - event-publishers
+      - stop-start
+      - switch-database
+    if: always() && !failure() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - if: inputs.environment != 'prod' && inputs.action == 'enable'
+        run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/${{ inputs.environment }}' --input -
+        env:
+          reviewers: '{"reviewers":[{"type":"Team","id":5521382}]}'
+          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+
   notify:
-    if: always()
+    if: always() && !cancelled()
     runs-on: ubuntu-latest
     needs:
       - event-publishers
       - stop-start
       - switch-database
+      - block-pipeline
     steps:
       - name: Send message to Slack
         uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
