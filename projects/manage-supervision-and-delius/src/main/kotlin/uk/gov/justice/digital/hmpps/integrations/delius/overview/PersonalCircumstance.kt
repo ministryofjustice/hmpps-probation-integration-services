@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.casesummary
+package uk.gov.justice.digital.hmpps.integrations.delius.overview
 
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
@@ -35,9 +35,33 @@ class PersonalCircumstance(
     @JoinColumn(name = "circumstance_sub_type_id")
     val subType: ReferenceData,
 
+    val startDate: LocalDate,
+
+    val endDate: LocalDate? = null,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
 
-    val endDate: LocalDate? = null
-)
+
+) : Comparable<PersonalCircumstance> {
+    override fun compareTo(other: PersonalCircumstance): Int {
+        val startDate = -startDate.compareTo(other.startDate)
+        if(startDate == 0){
+            return -id.compareTo(other.id)
+        }
+        return startDate
+    }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Provision
+
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}
 

@@ -12,13 +12,12 @@ import uk.gov.justice.digital.hmpps.service.OverviewService
 
 @Validated
 @RestController
-@Tag(name = "Case Summary")
-@RequestMapping("/case-summary/{crn}")
+@Tag(name = "Overview")
+@RequestMapping("/overview/{crn}")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
-class CaseSummaryController(private val overviewService: OverviewService) {
+class OverviewController(private val overviewService: OverviewService) {
 
-    @GetMapping(value = ["/personal-details"])
-    @Operation(summary = "Personal details including name, date of birth, address")
+    @GetMapping
+    @Operation(summary = "MAS Overview containing Personal Details, Activity, Compliance, Schedule, Orders and Sentences ")
     fun getPersonalDetails(@PathVariable crn: String) = overviewService.getOverview(crn)
-
 }
