@@ -75,16 +75,13 @@ class Person(
     val primaryLanguage: ReferenceData? = null,
 
     @OneToMany(mappedBy = "personId")
-    val personalCircumstances: SortedSet<PersonalCircumstance>,
+    val personalCircumstances: List<PersonalCircumstance>,
 
     @OneToMany(mappedBy = "personId")
-    val disabilities: SortedSet<Disability>,
+    val disabilities: List<Disability>,
 
     @OneToMany(mappedBy = "personId")
-    val provisions: SortedSet<Provision>,
-
-    @OneToMany(mappedBy = "personId")
-    val events: SortedSet<Event> = emptySortedSet(),
+    val provisions: List<Provision>,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -93,9 +90,7 @@ class Person(
 
 interface PersonOverviewRepository : JpaRepository<Person, Long> {
 
-    @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage",
-        "personalCircumstances.type", "personalCircumstances.subType", "disabilities.type", "provisions.type",
-        "events.disposal.type","events.additionalOffences.offence","events.mainOffence.offence"])
+    @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage"])
     fun findByCrn(crn: String): Person?
 }
 fun PersonOverviewRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

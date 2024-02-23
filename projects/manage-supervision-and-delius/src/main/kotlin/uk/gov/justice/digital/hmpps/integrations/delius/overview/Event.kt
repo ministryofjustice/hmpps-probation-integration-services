@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
@@ -19,7 +21,6 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.util.*
-import java.util.Collections.emptySortedSet
 
 @Immutable
 @Entity
@@ -49,48 +50,22 @@ class Event(
     val mainOffence: MainOffence? = null,
 
     @OneToMany(mappedBy = "event")
-    val additionalOffences: SortedSet<AdditionalOffence> = emptySortedSet(),
+    val additionalOffences: List<AdditionalOffence> = emptyList(),
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
-) : Comparable<Event> {
-    override fun compareTo(other: Event): Int {
-        val eventNum = -eventNumber.compareTo(other.eventNumber)
-        if(eventNum == 0){
-            return -id.compareTo(other.id)
-        }
-        return eventNum
-    }
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Provision
-
-        return id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
-
+)
 interface EventRepository : JpaRepository<Event, Long> {
 
-    @EntityGraph(attributePaths = ["mainOffence","additionalOffences","additionalOffences.offence","mainOffence.offence"])
     @Query("SELECT e FROM Event e " +
         "LEFT JOIN FETCH e.disposal d " +
         "LEFT JOIN FETCH d.type t  " +
+        "LEFT JOIN FETCH e.mainOffence m " +
+        "LEFT JOIN FETCH e.additionalOffences ao " +
+        "LEFT JOIN FETCH m.offence mo " +
+        "LEFT JOIN FETCH ao.offence aoo " +
         "WHERE e.personId = :personId and e.active = true")
     fun findByPersonId(personId: Long): List<Event>
-
-    @Query("SELECT count(*) FROM Event e INNER JOIN Disposal d ON d.event.id = e.id " +
-           "WHERE e.personId = :personId and e.active = false")
-    fun getInactiveEventsWithDisposals(personId: Long): Int
-
-    @Query("SELECT count(*) FROM Event e INNER JOIN Disposal d ON d.event.id = e.id " +
-        "WHERE e.personId = :personId and e.active = false and e.inBreach = true")
-    fun getInactiveEventsWithDisposalsBreached(personId: Long): Int
 
 }
 
@@ -201,28 +176,7 @@ class AdditionalOffence(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 
-) : Comparable<AdditionalOffence> {
-    override fun compareTo(other: AdditionalOffence): Int {
-        val eventNum = date.zeroed().compareTo(other.date.zeroed())
-        if(eventNum == 0){
-            return -id.compareTo(other.id)
-        }
-        return eventNum
-    }
-    private fun LocalDate?.zeroed() = this ?: LocalDate.MIN
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Provision
-
-        return id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
+)
 
 @Immutable
 @Table(name = "r_offence")

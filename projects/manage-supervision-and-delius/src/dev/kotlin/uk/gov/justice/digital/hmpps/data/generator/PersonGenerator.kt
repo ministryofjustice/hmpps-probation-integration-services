@@ -31,7 +31,7 @@ object PersonGenerator {
         ethnicity: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "A1", "Asian or Asian British: Indian"),
         primaryLanguage: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "001", "English"),
         id: Long = IdGenerator.getAndIncrement(),
-        disabilities: SortedSet<Disability> = sortedSetOf(
+        disabilities: List<Disability> = listOf(
             Disability(
                 IdGenerator.getAndIncrement(),
                 id,
@@ -45,7 +45,7 @@ object PersonGenerator {
                 LocalDate.now()
             )
         ),
-        personalCircumstances: SortedSet<PersonalCircumstance> = sortedSetOf(
+        personalCircumstances: List<PersonalCircumstance> = listOf(
             PersonalCircumstance(
                 IdGenerator.getAndIncrement(),
                 id,
@@ -61,7 +61,7 @@ object PersonGenerator {
                 LocalDate.now()
             )
         ),
-        provisions: SortedSet<Provision> = sortedSetOf(
+        provisions: List<Provision> = listOf(
             Provision(
                 IdGenerator.getAndIncrement(),
                 id,
@@ -91,11 +91,11 @@ object PersonGenerator {
         gender = gender,
         ethnicity = ethnicity,
         primaryLanguage = primaryLanguage,
-        disabilities = disabilities.toSortedSet(Comparator.comparing<Disability?, Long?> { it.id }.reversed()),
+        disabilities = disabilities,
         emailAddress = emailAddress,
         mobileNumber = mobileNumber,
-        personalCircumstances = personalCircumstances.toSortedSet(Comparator.comparing<PersonalCircumstance?, Long?> { it.id }.reversed()),
-        provisions = provisions.toSortedSet(Comparator.comparing<Provision?, Long?> { it.id }.reversed()),
+        personalCircumstances = personalCircumstances,
+        provisions = provisions,
         telephoneNumber = telephoneNumber,
         preferredName = preferredName
     )

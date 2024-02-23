@@ -7,6 +7,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
@@ -28,6 +30,7 @@ class Disability(
     val personId: Long,
 
     @ManyToOne
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "disability_type_id")
     val type: ReferenceData,
 
@@ -39,26 +42,5 @@ class Disability(
     val softDeleted: Boolean = false,
 
 
-) : Comparable<Disability> {
-    override fun compareTo(other: Disability): Int {
-        val startDate = -startDate.compareTo(other.startDate)
-        if(startDate == 0){
-            return -id.compareTo(other.id)
-        }
-        return startDate
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Provision
-
-        return id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
+)
 
