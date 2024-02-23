@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.casesummary
+package uk.gov.justice.digital.hmpps.integrations.delius.overview
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
+import java.util.*
+import java.util.Collections.emptySortedSet
 
 @Immutable
 @Entity
@@ -73,26 +75,29 @@ class Person(
     val primaryLanguage: ReferenceData? = null,
 
     @OneToMany(mappedBy = "personId")
-    val personalCircumstances: List<PersonalCircumstance>,
+    val personalCircumstances: SortedSet<PersonalCircumstance>,
 
     @OneToMany(mappedBy = "personId")
-    val disabilities: List<Disability>,
+    val disabilities: SortedSet<Disability>,
 
     @OneToMany(mappedBy = "personId")
-    val provisions: List<Provision>,
+    val provisions: SortedSet<Provision>,
 
     @OneToMany(mappedBy = "personId")
-    @SQLRestriction("(contact_end_time is null or contact_end_time > current_date) and contact_date >= current_date")
-    val nextAppointment: List<Contact>,
+    val events: SortedSet<Event> = emptySortedSet(),
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 
 )
 
-interface CaseSummaryPersonRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage"])
+interface PersonOverviewRepository : JpaRepository<Person, Long> {
+
+    @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage",
+        "personalCircumstances.type", "personalCircumstances.subType", "disabilities.type", "provisions.type",
+        "events.disposal.type","events.additionalOffences.offence","events.mainOffence.offence"])
     fun findByCrn(crn: String): Person?
 }
+fun PersonOverviewRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
 
-fun CaseSummaryPersonRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+

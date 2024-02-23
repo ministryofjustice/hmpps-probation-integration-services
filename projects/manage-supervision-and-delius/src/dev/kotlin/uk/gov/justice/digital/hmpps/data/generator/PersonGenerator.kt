@@ -1,21 +1,21 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Disability
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.PersonalCircumstance
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Provision
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Exclusion
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Restriction
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.User
-import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
+import java.time.ZonedDateTime
+import java.util.*
+import kotlin.Comparator
 
 object PersonGenerator {
 
     val OVERVIEW = generateOverview("X000004")
-
+    val EVENT_1 = generateEvent(OVERVIEW)
+    val EVENT_2 = generateEvent(OVERVIEW, inBreach = true)
+    val INACTIVE_EVENT_1 = generateEvent(OVERVIEW, inBreach = true, active = false)
+    val INACTIVE_EVENT_2 = generateEvent(OVERVIEW, inBreach = true, active = false)
+    fun generateEvent(person: Person, id: Long = IdGenerator.getAndIncrement(), active: Boolean = true, inBreach: Boolean = false) =
+        Event(id, person.id, "1", inBreach, active = active)
     fun generateOverview(
         crn: String,
         forename: String = "Forename",
@@ -31,17 +31,52 @@ object PersonGenerator {
         ethnicity: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "A1", "Asian or Asian British: Indian"),
         primaryLanguage: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "001", "English"),
         id: Long = IdGenerator.getAndIncrement(),
-        disabilities: List<Disability> = listOf(
-            Disability(IdGenerator.getAndIncrement(), id, ReferenceData(IdGenerator.getAndIncrement(), "D01", "Mental Illness")),
-            Disability(IdGenerator.getAndIncrement(), id, ReferenceData(IdGenerator.getAndIncrement(), "D02", "Visual Impairment"))),
-        personalCircumstances:  List<PersonalCircumstance> = listOf(
-            PersonalCircumstance(IdGenerator.getAndIncrement(), id, ReferenceData(IdGenerator.getAndIncrement(), "E01", "Employment"), ReferenceData(IdGenerator.getAndIncrement(), "FT01", "Full-time employed (30 or more hours per week)")),
-            PersonalCircumstance(IdGenerator.getAndIncrement(), id, ReferenceData(IdGenerator.getAndIncrement(), "A02", "Accommodation"), ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Friends/Family (settled)"))),
-        provisions:  List<Provision> = listOf(
-            Provision(IdGenerator.getAndIncrement(), id, ReferenceData(IdGenerator.getAndIncrement(), "FF01", "Flex refreshment breaks")),
-            Provision(IdGenerator.getAndIncrement(), id, ReferenceData(IdGenerator.getAndIncrement(), "CC02", "Colour/visibility marking"))),
+        disabilities: SortedSet<Disability> = sortedSetOf(
+            Disability(
+                IdGenerator.getAndIncrement(),
+                id,
+                ReferenceData(IdGenerator.getAndIncrement(), "D01", "Mental Illness"),
+                LocalDate.now().minusDays(1)
+            ),
+            Disability(
+                IdGenerator.getAndIncrement(),
+                id,
+                ReferenceData(IdGenerator.getAndIncrement(), "D02", "Visual Impairment"),
+                LocalDate.now()
+            )
+        ),
+        personalCircumstances: SortedSet<PersonalCircumstance> = sortedSetOf(
+            PersonalCircumstance(
+                IdGenerator.getAndIncrement(),
+                id,
+                ReferenceData(IdGenerator.getAndIncrement(), "E01", "Employment"),
+                ReferenceData(IdGenerator.getAndIncrement(), "FT01", "Full-time employed (30 or more hours per week)"),
+                LocalDate.now()
+            ),
+            PersonalCircumstance(
+                IdGenerator.getAndIncrement(),
+                id,
+                ReferenceData(IdGenerator.getAndIncrement(), "A02", "Accommodation"),
+                ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Friends/Family (settled)"),
+                LocalDate.now()
+            )
+        ),
+        provisions: SortedSet<Provision> = sortedSetOf(
+            Provision(
+                IdGenerator.getAndIncrement(),
+                id,
+                ReferenceData(IdGenerator.getAndIncrement(), "FF01", "Flex refreshment breaks"),
+                LocalDate.now()
+            ),
+            Provision(
+                IdGenerator.getAndIncrement(),
+                id,
+                ReferenceData(IdGenerator.getAndIncrement(), "CC02", "Colour/visibility marking"),
+                LocalDate.now()
+            )
+        ),
 
-        ) = uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person(
+        ) = Person(
         id = id,
         crn = crn,
         forename = forename,
@@ -56,32 +91,84 @@ object PersonGenerator {
         gender = gender,
         ethnicity = ethnicity,
         primaryLanguage = primaryLanguage,
-        disabilities = disabilities,
+        disabilities = disabilities.toSortedSet(Comparator.comparing<Disability?, Long?> { it.id }.reversed()),
         emailAddress = emailAddress,
         mobileNumber = mobileNumber,
-        nextAppointment = emptyList(),
-        personalCircumstances = personalCircumstances,
-        provisions = provisions,
+        personalCircumstances = personalCircumstances.toSortedSet(Comparator.comparing<PersonalCircumstance?, Long?> { it.id }.reversed()),
+        provisions = provisions.toSortedSet(Comparator.comparing<Provision?, Long?> { it.id }.reversed()),
         telephoneNumber = telephoneNumber,
         preferredName = preferredName
     )
 
-    fun generateUserAccess(
-        crn: String = "X000000",
-        restrictions: List<User> = emptyList(),
-        exclusions: List<User> = emptyList(),
+
+    val OFFENCE_MAIN = generateOffence("Murder", "MAIN")
+
+    val MAIN_OFFENCE = generateMainOffence(
+        EVENT_1,
+        OFFENCE_MAIN,
+        LocalDate.now())
+
+    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
+    val FULL_DETAIL_ORDER = generateSentence(EVENT_1)
+
+    val INACTIVE_ORDER_1 = generateSentence(INACTIVE_EVENT_1)
+    val INACTIVE_ORDER_2 = generateSentence(INACTIVE_EVENT_2)
+
+    val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
+    val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(
+        EVENT_1,
+        ADD_OFF_1,
+        LocalDate.now()
+    )
+
+    val ADD_OFF_2 = generateOffence("Assault", "ADD2")
+    val ADDITIONAL_OFFENCE_2 = generateAdditionalOffence(
+        EVENT_1,
+        ADD_OFF_2,
+        LocalDate.now()
+    )
+
+
+
+    fun generateDisposalType(
+        code: String,
+        description: String,
+        sentenceType: String? = null,
+        ftcLimit: Long? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ): uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Person {
-        val person = uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Person(
-            id = id,
-            crn = crn,
-            restrictions = emptyList(),
-            exclusions = emptyList(),
-            restrictionMessage = "Restriction message",
-            exclusionMessage = "Exclusion message"
-        )
-        person.set(person::restrictions, restrictions.map { Restriction(IdGenerator.getAndIncrement(), person, it) })
-        person.set(person::exclusions, exclusions.map { Exclusion(IdGenerator.getAndIncrement(), person, it) })
-        return person
-    }
+    ) = DisposalType(code, description, sentenceType, ftcLimit, id)
+
+    fun generateSentence(
+        event: Event,
+        date: LocalDate = LocalDate.now().minusDays(14),
+        type: DisposalType = DEFAULT_DISPOSAL_TYPE,
+        enteredEndDate: LocalDate? = null,
+        notionalEndDate: LocalDate? = null,
+        active: Boolean = true,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Disposal(event, date, type, enteredEndDate, notionalEndDate, active, softDeleted, id)
+
+    fun generateOffence(
+        description: String,
+        code: String,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Offence(id, code, description)
+
+    fun generateMainOffence(
+        event: Event,
+        offence: Offence,
+        date: LocalDate,
+        id: Long = IdGenerator.getAndIncrement(),
+        softDeleted: Boolean = false
+    ) = MainOffence(id, event, date, offence, softDeleted)
+
+    fun generateAdditionalOffence(
+        event: Event,
+        offence: Offence,
+        date: LocalDate,
+        id: Long = IdGenerator.getAndIncrement(),
+        softDeleted: Boolean = false
+    ) = AdditionalOffence(id, event, date, offence, softDeleted)
 }
+

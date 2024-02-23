@@ -4,7 +4,7 @@ data class Overview(
     val activity: Activity?,
     val compliance: Compliance?,
     val personalDetails: PersonalDetails,
-    val previousOrders: PreviousOrders?,
+    val previousOrders: PreviousOrders,
     val schedule: Schedule,
-    val sentences: List<Sentence>?
+    val sentences: List<Sentence>
 )
