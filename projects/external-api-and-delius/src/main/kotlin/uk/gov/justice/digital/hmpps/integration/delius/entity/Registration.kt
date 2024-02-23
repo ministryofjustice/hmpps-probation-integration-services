@@ -12,6 +12,7 @@ import java.time.LocalDate
 @SQLRestriction("soft_deleted = 0 and deregistered = 0")
 @Table(name = "registration")
 class Registration(
+    @Column(name = "offender_id")
     val personId: Long,
 
     @ManyToOne
