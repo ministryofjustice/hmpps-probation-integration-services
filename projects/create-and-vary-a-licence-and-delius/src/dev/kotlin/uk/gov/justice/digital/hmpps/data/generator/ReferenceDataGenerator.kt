@@ -4,10 +4,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 
 object ReferenceDataGenerator {
+    val CUSTODY_STATUS = "THROUGHCARE STATUS"
+    val KEY_DATE_TYPE = "THROUGHCARE DATE TYPE"
+
     val DATASET_LC_SUB_CAT = generateDataset(Dataset.SUB_CATEGORY_CODE)
     val DATASET_LM_ALLOCATION_REASON = generateDataset(Dataset.LM_ALLOCATION_REASON)
-    val DATASET_CUSTODY_STATUS = generateDataset(Dataset.CUSTODY_STATUS)
-    val DATASET_KEY_DATE_TYPE = generateDataset(Dataset.KEY_DATE_TYPE)
+    val DATASET_CUSTODY_STATUS = generateDataset(CUSTODY_STATUS)
+    val DATASET_KEY_DATE_TYPE = generateDataset(KEY_DATE_TYPE)
     val LC_STANDARD_CATEGORY = generateLcCategory(LicenceConditionCategory.STANDARD_CATEGORY_CODE)
     val LC_STANDARD_SUB_CATEGORY =
         generateReferenceData(ReferenceData.STANDARD_SUB_CATEGORY_CODE, dataset = DATASET_LC_SUB_CAT)

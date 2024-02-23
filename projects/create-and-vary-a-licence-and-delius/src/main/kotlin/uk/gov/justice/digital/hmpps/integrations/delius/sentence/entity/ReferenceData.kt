@@ -67,8 +67,6 @@ class Dataset(
     companion object {
         val SUB_CATEGORY_CODE = "LICENCE CONDITION SUB CATEGORY"
         val LM_ALLOCATION_REASON = "LM ALLOCATION REASON"
-        val CUSTODY_STATUS = "THROUGHCARE STATUS"
-        val KEY_DATE_TYPE = "THROUGHCARE DATE TYPE"
     }
 }
 
