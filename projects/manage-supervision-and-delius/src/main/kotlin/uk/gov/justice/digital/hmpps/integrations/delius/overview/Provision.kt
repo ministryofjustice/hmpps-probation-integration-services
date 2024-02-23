@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.overview
 
 import jakarta.persistence.*
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -19,7 +21,8 @@ class Provision(
     val personId: Long,
 
     @ManyToOne
-    @JoinColumn(name = "disability_type_id")
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "provision_type_id")
     val type: ReferenceData,
 
     val startDate: LocalDate,
@@ -29,27 +32,4 @@ class Provision(
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
 
-
-) : Comparable<Provision> {
-    override fun compareTo(other: Provision): Int {
-        val startDate = -startDate.compareTo(other.startDate)
-
-        if(startDate == 0){
-            return -id.compareTo(other.id)
-        }
-        return startDate
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Provision
-
-        return id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
+)

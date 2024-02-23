@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.overview.*
 import uk.gov.justice.digital.hmpps.api.model.overview.Disability
@@ -13,17 +14,21 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.*
 class OverviewService(
     private val personRepository: PersonOverviewRepository,
     private val contactRepository: ContactRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
+    private val eventRepository: EventRepository
 ) {
+
+    @Transactional
     fun getOverview(crn: String): Overview {
         val person = personRepository.getPerson(crn)
         val personalDetails = person.toPersonalDetails()
         val schedule = Schedule(contactRepository.findFirstAppointment(person.id).firstOrNull()?.toNextAppointment())
-        val activeEvents = person.events.filter { it.active }
+        val events = eventRepository.findByPersonId(person.id)
+        val activeEvents = events.filter { it.active }
         val sentences = activeEvents.map { it.toSentence() }
         val activeEventsBreached = activeEvents.count { it.inBreach }
-        val previousOrders = person.events.count { !it.active && it.disposal != null }
-        val previousOrdersBreached = person.events.count { !it.active && it.disposal != null && it.inBreach }
+        val previousOrders = events.count { !it.active && it.disposal != null }
+        val previousOrdersBreached = events.count { !it.active && it.disposal != null && it.inBreach }
 
         return Overview(
             personalDetails = personalDetails,
