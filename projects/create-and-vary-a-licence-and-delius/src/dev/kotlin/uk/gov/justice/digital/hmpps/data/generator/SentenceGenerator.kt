@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.set
+import java.time.LocalDate
 
 object SentenceGenerator {
     val EVENT_CREATE_LC = generateEvent("1", PersonGenerator.PERSON_CREATE_LC)
@@ -25,4 +27,12 @@ object SentenceGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         disposalId: Long = IdGenerator.getAndIncrement()
     ) = Custody(Disposal(event, active, softDeleted, disposalId), status, keyDates, softDeleted, id)
+
+    fun generateKeyDate(
+        custody: Custody,
+        type: ReferenceData,
+        date: LocalDate,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = KeyDate(custody, type, date, softDeleted, id)
 }

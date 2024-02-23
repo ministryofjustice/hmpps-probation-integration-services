@@ -9,12 +9,17 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
 import uk.gov.justice.digital.hmpps.integrations.cvl.ApConditions
 import uk.gov.justice.digital.hmpps.integrations.cvl.Conditions
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMappingRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -55,6 +60,49 @@ internal class LicenceConditionApplierTest {
         val occurredAt = ZonedDateTime.now()
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
         whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(listOf())
+
+        val ex = licenceConditionApplier.applyLicenceConditions(
+            crn,
+            activatedLicence,
+            occurredAt
+        )
+        assertThat(
+            ex.first(), equalTo(
+                ActionResult.Ignored(
+                    "No Custodial Sentences",
+                    mapOf(
+                        "crn" to crn,
+                        "startDate" to activatedLicence.startDate.toString(),
+                        "occurredAt" to occurredAt.toString(),
+                        "sentenceCount" to "0"
+                    )
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `when SED date is in the past, no custodial sentences are found and logged to telemetry`() {
+        val crn = "K918361"
+        val person = PersonGenerator.generatePerson(crn)
+        val activatedLicence = ActivatedLicence(
+            crn,
+            LocalDate.now(),
+            Conditions(ApConditions(listOf(), listOf(), listOf()))
+        )
+        val occurredAt = ZonedDateTime.now()
+        val sentence = SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person))
+        val keyDates = listOf(
+            SentenceGenerator.generateKeyDate(
+                sentence,
+                ReferenceDataGenerator.SENTENCE_EXPIRY_DATE_TYPE,
+                LocalDate.now().minusDays(1)
+            )
+        )
+        sentence.set("keyDates", keyDates)
+
+        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
+        whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(listOf(sentence))
 
         val ex = licenceConditionApplier.applyLicenceConditions(
             crn,
