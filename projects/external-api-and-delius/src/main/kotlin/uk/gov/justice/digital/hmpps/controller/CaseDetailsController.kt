@@ -19,5 +19,5 @@ class CaseDetailsController(
 ) {
     @GetMapping(value = ["/supervisions"])
     @Operation(summary = "Get a list of supervisions (called “events” in Delius) for a probation case, by CRN")
-    fun supervisions(@PathVariable("crn") crn: String) = SupervisionResponse(caseDetailsService.getSupervisions(crn))
+    fun supervisions(@PathVariable("crn") crn: String) = caseDetailsService.getSupervisions(crn)
 }
