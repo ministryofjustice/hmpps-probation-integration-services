@@ -1,17 +1,13 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.DisposalType
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.set
+import java.time.LocalDate
 
 object SentenceGenerator {
-    val SENTENCE_TYPE_SC = generateSentenceType("SC")
     val EVENT_CREATE_LC = generateEvent("1", PersonGenerator.PERSON_CREATE_LC)
-    val SENTENCE_CREATE_LC = generate(EVENT_CREATE_LC)
-
-    fun generateSentenceType(sentenceType: String, id: Long = IdGenerator.getAndIncrement()) =
-        DisposalType(sentenceType, id)
+    val SENTENCE_CREATE_LC = generate(EVENT_CREATE_LC, ReferenceDataGenerator.RELEASED_STATUS)
 
     fun generateEvent(
         number: String,
@@ -24,9 +20,19 @@ object SentenceGenerator {
 
     fun generate(
         event: Event,
-        type: DisposalType = SENTENCE_TYPE_SC,
+        status: ReferenceData = ReferenceDataGenerator.RELEASED_STATUS,
+        keyDates: List<KeyDate> = listOf(),
         active: Boolean = true,
         softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement(),
+        disposalId: Long = IdGenerator.getAndIncrement()
+    ) = Custody(Disposal(event, active, softDeleted, disposalId), status, keyDates, softDeleted, id)
+
+    fun generateKeyDate(
+        custody: Custody,
+        type: ReferenceData,
+        date: LocalDate,
+        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Disposal(event, type, active, softDeleted, id)
+    ) = KeyDate(custody, type, date, softDeleted, id)
 }

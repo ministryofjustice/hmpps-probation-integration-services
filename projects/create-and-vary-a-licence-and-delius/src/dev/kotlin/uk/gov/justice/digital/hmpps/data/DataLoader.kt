@@ -74,9 +74,10 @@ class DataLoader(
 
     private fun createForAddingLicenceConditions() {
         entityManager.persistAll(
-            SentenceGenerator.SENTENCE_TYPE_SC,
             ReferenceDataGenerator.DATASET_LC_SUB_CAT,
             ReferenceDataGenerator.DATASET_LM_ALLOCATION_REASON,
+            ReferenceDataGenerator.DATASET_CUSTODY_STATUS,
+            ReferenceDataGenerator.DATASET_KEY_DATE_TYPE,
             ReferenceDataGenerator.LC_STANDARD_CATEGORY,
             ReferenceDataGenerator.LC_STANDARD_SUB_CATEGORY,
             ReferenceDataGenerator.LC_BESPOKE_CATEGORY,
@@ -84,8 +85,12 @@ class DataLoader(
             ReferenceDataGenerator.CONTACT_TYPE_LPOP,
             ReferenceDataGenerator.DEFAULT_TRANSFER_REASON,
             ReferenceDataGenerator.INITIAL_ALLOCATION_REASON,
+            ReferenceDataGenerator.PSS_COMMENCED_STATUS,
+            ReferenceDataGenerator.RELEASED_STATUS,
+            ReferenceDataGenerator.SENTENCE_EXPIRY_DATE_TYPE,
             PersonGenerator.PERSON_CREATE_LC,
             SentenceGenerator.EVENT_CREATE_LC,
+            SentenceGenerator.SENTENCE_CREATE_LC.disposal,
             SentenceGenerator.SENTENCE_CREATE_LC,
             PersonGenerator.generateManager(PersonGenerator.PERSON_CREATE_LC)
         )

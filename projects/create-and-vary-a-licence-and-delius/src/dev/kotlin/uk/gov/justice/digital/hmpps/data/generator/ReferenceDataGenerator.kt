@@ -4,8 +4,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 
 object ReferenceDataGenerator {
+    val CUSTODY_STATUS = "THROUGHCARE STATUS"
+    val KEY_DATE_TYPE = "THROUGHCARE DATE TYPE"
+
     val DATASET_LC_SUB_CAT = generateDataset(Dataset.SUB_CATEGORY_CODE)
     val DATASET_LM_ALLOCATION_REASON = generateDataset(Dataset.LM_ALLOCATION_REASON)
+    val DATASET_CUSTODY_STATUS = generateDataset(CUSTODY_STATUS)
+    val DATASET_KEY_DATE_TYPE = generateDataset(KEY_DATE_TYPE)
     val LC_STANDARD_CATEGORY = generateLcCategory(LicenceConditionCategory.STANDARD_CATEGORY_CODE)
     val LC_STANDARD_SUB_CATEGORY =
         generateReferenceData(ReferenceData.STANDARD_SUB_CATEGORY_CODE, dataset = DATASET_LC_SUB_CAT)
@@ -15,6 +20,10 @@ object ReferenceDataGenerator {
     val DEFAULT_TRANSFER_REASON = generateTransferReason(TransferReason.DEFAULT_CODE)
     val INITIAL_ALLOCATION_REASON =
         generateReferenceData(ReferenceData.INITIAL_ALLOCATION_CODE, dataset = DATASET_LM_ALLOCATION_REASON)
+    val PSS_COMMENCED_STATUS = generateReferenceData("P", dataset = DATASET_CUSTODY_STATUS)
+    val RELEASED_STATUS = generateReferenceData("B", dataset = DATASET_CUSTODY_STATUS)
+    val SENTENCE_EXPIRY_DATE_TYPE =
+        generateReferenceData(ReferenceData.SENTENCE_EXPIRY_CODE, dataset = DATASET_KEY_DATE_TYPE)
     val CVL_MAPPINGS = listOf(
         generateCvlMapping(
             "AdditionalLcOne",
@@ -35,7 +44,7 @@ object ReferenceDataGenerator {
         generateCvlMapping(
             "VictimLcOne",
             generateLcCategory("VIC1"),
-            generateLcSubCategory(ReferenceData.VICTIM_NOTES.first())
+            generateLcSubCategory(ReferenceData.VICTIM_NOTES_CODES.first())
         )
     )
     val CONTACT_TYPE_LPOP = generateContactType(ContactType.LPOP)
