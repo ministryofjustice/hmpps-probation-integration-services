@@ -14,17 +14,14 @@ import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
 import uk.gov.justice.digital.hmpps.integrations.cvl.ApConditions
 import uk.gov.justice.digital.hmpps.integrations.cvl.Conditions
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMappingRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.DisposalRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class LicenceConditionApplierTest {
     @Mock
-    internal lateinit var disposalRepository: DisposalRepository
+    internal lateinit var custodyRepository: CustodyRepository
 
     @Mock
     internal lateinit var personManagerRepository: PersonManagerRepository
@@ -57,7 +54,7 @@ internal class LicenceConditionApplierTest {
         )
         val occurredAt = ZonedDateTime.now()
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
-        whenever(disposalRepository.findCustodialSentences(crn)).thenReturn(listOf())
+        whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(listOf())
 
         val ex = licenceConditionApplier.applyLicenceConditions(
             crn,
@@ -90,7 +87,7 @@ internal class LicenceConditionApplierTest {
         )
         val occurredAt = ZonedDateTime.now()
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
-        whenever(disposalRepository.findCustodialSentences(crn)).thenReturn(
+        whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(
             listOf(
                 SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person)),
                 SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person))

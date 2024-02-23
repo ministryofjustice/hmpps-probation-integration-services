@@ -1,17 +1,36 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import java.time.LocalDate
+
+@Entity
+@Immutable
+@SQLRestriction("soft_deleted = 0")
+class Custody(
+
+    @OneToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
+
+    @ManyToOne
+    @JoinColumn(name = "custodial_status_id")
+    val status: ReferenceData,
+
+    @OneToMany(mappedBy = "custody")
+    val keyDates: List<KeyDate>,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean,
+
+    @Id
+    @Column(name = "custody_id")
+    val id: Long
+)
 
 @Immutable
 @Entity
@@ -21,10 +40,6 @@ class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
-    @ManyToOne
-    @JoinColumn(name = "disposal_type_id")
-    val type: DisposalType,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,
@@ -65,24 +80,38 @@ class Event(
 
 @Immutable
 @Entity
-@Table(name = "r_disposal_type")
-class DisposalType(
+@SQLRestriction("soft_deleted = 0")
+class KeyDate(
 
-    @Column(name = "sentence_type")
-    val sentenceType: String,
+    @ManyToOne
+    @JoinColumn(name = "custody_id")
+    val custody: Custody,
+
+    @ManyToOne
+    @JoinColumn(name = "key_date_type_id")
+    val type: ReferenceData,
+
+    @Column(name = "key_date")
+    val date: LocalDate,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean,
 
     @Id
-    @Column(name = "disposal_type_id")
-    val id: Long
+    @Column(name = "key_date_id")
+    val id: Long,
 )
 
-interface DisposalRepository : JpaRepository<Disposal, Long> {
+interface CustodyRepository : JpaRepository<Custody, Long> {
     @Query(
         """
-        select d from Disposal d
+        select c from Custody c
+        join fetch c.status cs
+        left join fetch c.keyDates kd
+        join fetch c.disposal d
         where d.event.person.crn = :crn
-        and d.type.sentenceType in ('NC', 'SC')
+        and cs.code not in ('P', 'T', 'AT')
     """
     )
-    fun findCustodialSentences(crn: String): List<Disposal>
+    fun findCustodialSentences(crn: String): List<Custody>
 }

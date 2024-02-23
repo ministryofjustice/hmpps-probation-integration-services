@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.service.LIMITED_PREFIX
 import uk.gov.justice.digital.hmpps.service.STANDARD_PREFIX
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
+import java.time.Duration
 import java.time.ZonedDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -56,14 +57,14 @@ class LicenceActivatedIntegrationTest {
     @Test
     fun `add licence conditions`() {
         val sentence = SentenceGenerator.SENTENCE_CREATE_LC
-        val person = sentence.event.person
+        val person = sentence.disposal.event.person
 
         val notification = prepMessage(
             ResourceLoader.event("licence-activated-L453621"),
             wireMockServer.port()
         )
 
-        channelManager.getChannel(queueName).publishAndWait(notification)
+        channelManager.getChannel(queueName).publishAndWait(notification, timeout = Duration.ofMinutes(2))
 
         val telemetryProperties = mapOf(
             "crn" to "L453621",
@@ -84,7 +85,7 @@ class LicenceActivatedIntegrationTest {
             telemetryProperties
         )
 
-        val conditions = lcr.findByDisposalId(sentence.id)
+        val conditions = lcr.findByDisposalId(sentence.disposal.id)
         assertThat(conditions.size, equalTo(7))
 
         val com = pmr.findByPersonCrn(person.crn)!!

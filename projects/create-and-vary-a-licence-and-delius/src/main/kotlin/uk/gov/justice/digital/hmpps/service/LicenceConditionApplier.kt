@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceC
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.STANDARD_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData.Companion.BESPOKE_SUB_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData.Companion.STANDARD_SUB_CATEGORY_CODE
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 val STANDARD_PREFIX = """
@@ -27,7 +28,7 @@ val CONDITION_PREFIX = "$LIMITED_PREFIX of"
 
 @Service
 class LicenceConditionApplier(
-    private val disposalRepository: DisposalRepository,
+    private val custodyRepository: CustodyRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val cvlMappingRepository: CvlMappingRepository,
     private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository,
@@ -42,7 +43,9 @@ class LicenceConditionApplier(
         occurredAt: ZonedDateTime
     ): List<ActionResult> {
         val com = personManagerRepository.getByCrn(crn)
-        val sentences = disposalRepository.findCustodialSentences(crn)
+        val sentences = custodyRepository.findCustodialSentences(crn).filter { custody ->
+            custody.keyDates.none { it.type.code == ReferenceData.SENTENCE_EXPIRY_CODE && it.date < LocalDate.now() }
+        }
         val properties = mapOf(
             "crn" to crn,
             "startDate" to activatedLicence.startDate.toString(),
@@ -53,7 +56,7 @@ class LicenceConditionApplier(
             0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
             1 -> sentences.flatMap {
                 applyLicenceConditions(
-                    SentencedCase(com, it, licenceConditionService.findByDisposalId(it.id)),
+                    SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
                     activatedLicence,
                     occurredAt
                 )
@@ -159,7 +162,7 @@ class LicenceConditionApplier(
         }
     }
 
-    private fun ReferenceData.isVictimNotes(): Boolean = code in ReferenceData.VICTIM_NOTES
+    private fun ReferenceData.isVictimNotes(): Boolean = code in ReferenceData.VICTIM_NOTES_CODES
 
     private fun ActivatedLicence.bespokeConditions(
         sentencedCase: SentencedCase
