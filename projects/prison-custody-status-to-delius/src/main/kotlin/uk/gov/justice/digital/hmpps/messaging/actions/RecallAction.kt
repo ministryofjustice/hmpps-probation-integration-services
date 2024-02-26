@@ -68,7 +68,7 @@ class RecallAction(
             licenceConditionService.terminateLicenceConditionsForDisposal(
                 disposalId = custody.disposal.id,
                 terminationReason = recallReason.licenceConditionTerminationReason,
-                terminationDate = recall.date,
+                terminationDate = prisonerMovement.occurredAt,
                 endOfTemporaryLicence = recallReason.isEotl()
             )
         }
