@@ -22,6 +22,7 @@ include(
     "manage-pom-cases-and-delius",
     "manage-supervision-and-delius",
     "manage-supervision-and-oasys",
+    "oasys-and-delius",
     "offender-events-and-delius",
     "opd-and-delius",
     "pathfinder-and-delius",
