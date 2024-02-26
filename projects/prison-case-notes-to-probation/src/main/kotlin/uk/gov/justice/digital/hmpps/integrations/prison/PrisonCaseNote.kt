@@ -38,7 +38,7 @@ data class CaseNoteAmendment(
     val additionalNoteText: String
 )
 
-fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
+fun PrisonCaseNote.toDeliusCaseNote(occuredAt: ZonedDateTime): DeliusCaseNote {
     fun amendments(): (CaseNoteAmendment) -> String = { a ->
         "${System.lineSeparator()}[${a.authorName} updated the case notes on ${DeliusDateTimeFormatter.format(a.creationDateTime)}]${System.lineSeparator()}${a.additionalNoteText}"
     }
@@ -49,7 +49,7 @@ fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
             type = type,
             subType = subType,
             content = text + amendments.joinToString(separator = "", transform = amendments()),
-            contactTimeStamp = occurrenceDateTime,
+            contactTimeStamp = occuredAt,
             systemTimestamp = amendments.mapNotNull { it.creationDateTime }.maxOrNull() ?: creationDateTime,
             staffName = getStaffName(),
             establishmentCode = locationId
