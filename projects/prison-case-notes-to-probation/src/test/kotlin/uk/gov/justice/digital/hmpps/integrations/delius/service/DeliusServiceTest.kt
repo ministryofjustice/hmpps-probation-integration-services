@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
+import java.time.ZonedDateTime
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -64,7 +65,7 @@ class DeliusServiceTest {
     private val caseNote = CaseNoteGenerator.EXISTING
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.NEG
     private val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
-    private var deliusCaseNote = nomisCaseNote.toDeliusCaseNote()
+    private var deliusCaseNote = nomisCaseNote.toDeliusCaseNote(nomisCaseNote.occurrenceDateTime)
     private val probationArea = ProbationAreaGenerator.DEFAULT
     private val team = TeamGenerator.DEFAULT
     private val staff = StaffGenerator.DEFAULT
@@ -234,9 +235,10 @@ class DeliusServiceTest {
     fun `successfully merges shorter case notes by padding`() {
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(caseNote)
 
+        val occurredAt = ZonedDateTime.now()
         val newContent = "Shorter case note text"
         deliusService.mergeCaseNote(
-            nomisCaseNote.copy(text = newContent).toDeliusCaseNote()
+            nomisCaseNote.copy(text = newContent).toDeliusCaseNote(occurredAt)
         )
 
         val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)

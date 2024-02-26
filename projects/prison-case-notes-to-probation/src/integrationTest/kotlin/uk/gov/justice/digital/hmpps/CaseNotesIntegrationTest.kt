@@ -32,6 +32,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
+import java.time.ZonedDateTime
 
 const val CASE_NOTE_MERGED = "CaseNoteMerged"
 
@@ -127,6 +129,7 @@ class CaseNotesIntegrationTest {
 
         assertThat(saved.createdByUserId, equalTo(UserGenerator.AUDIT_USER.id))
         assertThat(saved.lastModifiedUserId, equalTo(UserGenerator.AUDIT_USER.id))
+        assertThat(saved.date, isCloseTo(ZonedDateTime.parse("2022-10-18T08:19:19.451579+01:00")))
 
         verify(air, atLeastOnce()).save(any())
         val savedAudits = air.findAll()
