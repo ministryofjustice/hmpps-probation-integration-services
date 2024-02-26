@@ -55,6 +55,29 @@ components:
           type: string
         plea:
           type: string
+    MappaDetail:
+      required:
+      - startDate
+      type: object
+      properties:
+        level:
+          type: integer
+          format: int32
+        levelDescription:
+          type: string
+        category:
+          type: integer
+          format: int32
+        categoryDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+        reviewDate:
+          type: string
+          format: date
+        notes:
+          type: string
     Offence:
       required:
       - code
@@ -145,6 +168,8 @@ components:
       - supervisions
       type: object
       properties:
+        mappaDetail:
+          $ref: '#/components/schemas/MappaDetail'
         supervisions:
           type: array
           items:
