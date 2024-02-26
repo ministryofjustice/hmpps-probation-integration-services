@@ -37,7 +37,6 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 
 seed.database: true
-wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:

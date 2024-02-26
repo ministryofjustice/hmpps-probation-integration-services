@@ -31,6 +31,7 @@ on:
           - '["manage-pom-cases-and-delius"]'
           - '["manage-supervision-and-delius"]'
           - '["manage-supervision-and-oasys"]'
+          - '["oasys-and-delius"]'
           - '["offender-events-and-delius"]'
           - '["opd-and-delius"]'
           - '["pathfinder-and-delius"]'
@@ -50,7 +51,6 @@ on:
           - '["tier-to-delius"]'
           - '["unpaid-work-and-delius"]'
           - '["workforce-allocations-to-delius"]'
-          - '["oasys-and-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
