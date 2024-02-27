@@ -33,6 +33,8 @@ fun uk.gov.justice.digital.hmpps.integration.delius.registration.entity.Registra
         team.provider.codeDescription(),
         level?.codeDescription(),
         category?.codeDescription(),
+        type.alertMessage,
+        !deRegistered && !softDeleted,
         reviews.map { it.toModel() }
     )
 

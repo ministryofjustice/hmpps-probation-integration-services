@@ -14,17 +14,18 @@ object RegistrationGenerator {
     val FLAG = ReferenceDataGenerator.generate("FLAG1")
     val CATEGORY = ReferenceDataGenerator.generate("CAT1")
     val LEVEL = ReferenceDataGenerator.generate("LEV1")
-    val DEFAULT_TYPE = generateType("RT1", FLAG, reviewPeriod = 6, colour = "GREEN")
+    val DEFAULT_TYPE = generateType("RT1", FLAG, alertMessage = true, reviewPeriod = 6, colour = "GREEN")
     val ANOTHER_TYPE = generateType("AN1", null)
 
     fun generateType(
         code: String,
         flag: ReferenceData?,
+        alertMessage: Boolean = false,
         description: String = "Description of $code",
         reviewPeriod: Long? = null,
         colour: String? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = RegisterType(code, description, flag, reviewPeriod, colour, id)
+    ) = RegisterType(code, description, flag, alertMessage, reviewPeriod, colour, id)
 
     fun generate(
         person: Person,

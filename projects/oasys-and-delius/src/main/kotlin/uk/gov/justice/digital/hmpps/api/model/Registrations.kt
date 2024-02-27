@@ -21,6 +21,8 @@ data class Registration(
     val registeringProbationArea: CodeDescription,
     val registerLevel: CodeDescription?,
     val registerCategory: CodeDescription?,
+    val warnUser: Boolean,
+    val active: Boolean,
     val registrationReviews: List<Review> = listOf(),
 )
 

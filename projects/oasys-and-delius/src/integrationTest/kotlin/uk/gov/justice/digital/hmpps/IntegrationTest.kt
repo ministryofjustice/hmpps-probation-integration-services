@@ -52,6 +52,8 @@ internal class IntegrationTest {
         assertThat(reg1.registeringProbationArea, equalTo(CodeDescription("N01", "Description of N01")))
         assertThat(reg1.registerLevel, equalTo(CodeDescription("LEV1", "Description of LEV1")))
         assertThat(reg1.registerCategory, equalTo(CodeDescription("CAT1", "Description of CAT1")))
+        assertTrue(reg1.warnUser)
+        assertTrue(reg1.active)
         assertThat(reg1.registrationReviews, hasSize(1))
 
         val reg2 = res.registrations[1]
@@ -62,5 +64,7 @@ internal class IntegrationTest {
         assertFalse(reg2.registeringOfficer.isUnallocated)
         assertNull(reg2.registerLevel)
         assertNull(reg2.registerCategory)
+        assertFalse(reg2.warnUser)
+        assertTrue(reg2.active)
     }
 }
