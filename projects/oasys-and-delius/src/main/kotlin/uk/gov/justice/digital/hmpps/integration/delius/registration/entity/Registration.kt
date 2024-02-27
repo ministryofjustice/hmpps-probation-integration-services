@@ -135,6 +135,6 @@ class RegistrationReview(
 )
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
-    @EntityGraph(attributePaths = ["type.flag", "category", "level", "team", "staff", "reviews.team", "reviews.staff"])
+    @EntityGraph(attributePaths = ["type.flag", "category", "level", "team.provider", "staff", "reviews.team.provider", "reviews.staff"])
     fun findAllByPersonCrnOrderByDateDescCreatedDateTimeDesc(crn: String): List<Registration>
 }
