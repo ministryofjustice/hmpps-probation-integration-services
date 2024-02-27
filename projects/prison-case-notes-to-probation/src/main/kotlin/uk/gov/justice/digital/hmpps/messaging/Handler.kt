@@ -87,7 +87,7 @@ class Handler(
         )
 
         try {
-            deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
+            deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote(event.occurredAt))
             telemetryService.trackEvent("CaseNoteMerged", prisonCaseNote.properties())
         } catch (e: Exception) {
             telemetryService.trackEvent(
