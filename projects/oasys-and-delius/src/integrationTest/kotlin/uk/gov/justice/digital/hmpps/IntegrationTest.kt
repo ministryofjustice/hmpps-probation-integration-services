@@ -5,6 +5,9 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,9 +16,10 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.CodeDescription
-import uk.gov.justice.digital.hmpps.api.model.Registrations
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.integration.delius.person.Person
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -66,5 +70,55 @@ internal class IntegrationTest {
         assertNull(reg2.registerCategory)
         assertFalse(reg2.warnUser)
         assertTrue(reg2.active)
+    }
+
+    @ParameterizedTest
+    @MethodSource("custodialSentences")
+    fun `releases are correctly returned`(person: Person, releaseRecall: ReleaseRecall) {
+        val res = mockMvc
+            .perform(get("/probation-cases/${person.crn}/release").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<ReleaseRecall>()
+
+        assertThat(res, equalTo(releaseRecall))
+    }
+
+    companion object {
+        private val institution = SentenceGenerator.DEFAULT_INSTITUTION
+
+        @JvmStatic
+        fun custodialSentences() = listOf(
+            Arguments.of(PersonGenerator.CUSTODY_PERSON, ReleaseRecall(null, null)),
+            Arguments.of(
+                PersonGenerator.RELEASED_PERSON,
+                ReleaseRecall(
+                    Release(
+                        SentenceGenerator.RELEASE.date.toLocalDate(),
+                        null,
+                        Institution(
+                            institution.id,
+                            institution.establishment,
+                            institution.code,
+                            institution.description,
+                            institution.name,
+                            CodeDescription(
+                                institution.type!!.code, institution.type!!.description
+                            ),
+                            false,
+                            institution.nomisCdeCode,
+                        ),
+                        CodeDescription(SentenceGenerator.RELEASE_TYPE.code, SentenceGenerator.RELEASE_TYPE.description)
+                    ),
+                    Recall(
+                        SentenceGenerator.RECALL.date.toLocalDate(),
+                        CodeDescription(
+                            SentenceGenerator.RECALL_REASON.code,
+                            SentenceGenerator.RECALL_REASON.description
+                        ),
+                        null
+                    )
+                )
+            )
+        )
     }
 }

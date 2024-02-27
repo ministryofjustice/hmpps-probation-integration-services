@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.provider.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 
 @Entity
 @Immutable
