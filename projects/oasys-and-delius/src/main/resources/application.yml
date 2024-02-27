@@ -40,7 +40,7 @@ seed.database: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
-  - ROLE_EXAMPLE
+  - ROLE_PROBATION_API__OASYS__CASE_DETAIL
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
