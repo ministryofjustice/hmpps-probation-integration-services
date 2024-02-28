@@ -172,7 +172,7 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
             "disposal.type"
         ]
     )
-    fun getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
+    fun getAllByConvictionEventPersonIdAndActiveIsTrueOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
 
     @EntityGraph(
         attributePaths = [
@@ -212,4 +212,4 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
 }
 
 fun ConvictionEventRepository.getLatestConviction(personId: Long) =
-    getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId).firstOrNull()
+    getAllByConvictionEventPersonIdAndActiveIsTrueOrderByConvictionDateDesc(personId).firstOrNull()
