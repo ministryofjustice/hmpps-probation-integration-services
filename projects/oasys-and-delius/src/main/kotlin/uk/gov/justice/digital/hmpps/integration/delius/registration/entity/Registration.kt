@@ -6,7 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.integration.delius.person.Person
+import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integration.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integration.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integration.delius.reference.entity.ReferenceData
