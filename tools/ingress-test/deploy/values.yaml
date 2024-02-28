@@ -1,0 +1,32 @@
+---
+generic-service:
+  nameOverride: ingress-test
+
+  replicaCount: 2
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/ingress-test
+    tag: "1.0"
+    port: 5000
+
+  securityContext:
+    runAsUser: 100 # app
+
+  ingress:
+    enabled: true
+    host: ingress-test.probation-integration.service.justice.gov.uk
+    tlsSecretName: ingress-test-cert
+
+  allowlist:
+    groups:
+      - internal
+      - unilink_staff
+
+  readinessProbe:
+    httpGet:
+      path: /test/0
+    initialDelaySeconds: 5
+  livenessProbe:
+    httpGet:
+      path: /test/0
+    initialDelaySeconds: 5
