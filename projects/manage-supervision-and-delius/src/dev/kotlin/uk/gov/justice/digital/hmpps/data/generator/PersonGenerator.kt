@@ -84,8 +84,6 @@ object PersonGenerator {
         preferredName: String? = "Dee",
         dateOfBirth: LocalDate = LocalDate.now().minusYears(50),
         gender: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "M", "Male"),
-        ethnicity: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "A1", "Asian or Asian British: Indian"),
-        primaryLanguage: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "001", "English"),
         id: Long = IdGenerator.getAndIncrement(),
         disabilities: List<Disability> = listOf(
             Disability(
