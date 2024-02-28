@@ -1,33 +1,31 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.entity.Nsi
-import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.NsiType
 import java.time.LocalDate
 
 object NSIGenerator {
 
-    val BREACH_RD = ReferenceData(
+    val BREACH_TYPE = NsiType(
+        "BRE",
         IdGenerator.getAndIncrement(),
-        "BRE01",
-        "Breach"
     )
 
-    val RECALL_RD = ReferenceData(
-        IdGenerator.getAndIncrement(),
-        "REC01",
-        "Recall"
+    val RECALL_TYPE = NsiType(
+        "REC",
+        IdGenerator.getAndIncrement()
     )
 
     val BREACH_NSI = Nsi(
         DetailsGenerator.PERSON.id,
-        BREACH_RD,
+        BREACH_TYPE,
         LocalDate.now(),
         IdGenerator.getAndIncrement()
     )
 
     val RECALL_NSI = Nsi(
         DetailsGenerator.PERSON.id,
-        RECALL_RD,
+        RECALL_TYPE,
         LocalDate.now(),
         IdGenerator.getAndIncrement()
     )
