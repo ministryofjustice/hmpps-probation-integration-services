@@ -27,11 +27,24 @@ internal class OverviewControllerTest {
     @Test
     fun `calls overview service`() {
         val crn = "X000004"
-        val personalDetails = PersonalDetails(name = Name(forename = "Joseph", middleName = "Harry", surname = "Bloggs"),
-            personalCircumstances = emptyList(), disabilities = emptyList(), mobileNumber = "1234", preferredGender = "Prefer not to say",
-            preferredName = "Joe", telephoneNumber = "1234", provisions = emptyList()
+        val personalDetails = PersonalDetails(
+            name = Name(forename = "Joseph", middleName = "Harry", surname = "Bloggs"),
+            personalCircumstances = emptyList(),
+            disabilities = emptyList(),
+            mobileNumber = "1234",
+            preferredGender = "Prefer not to say",
+            preferredName = "Joe",
+            telephoneNumber = "1234",
+            provisions = emptyList()
         )
-        val overview = Overview(compliance = null, personalDetails = personalDetails, activity = null, previousOrders = PreviousOrders(0,1), sentences = emptyList(), schedule = Schedule(null), )
+        val overview = Overview(
+            compliance = null,
+            personalDetails = personalDetails,
+            activity = null,
+            previousOrders = PreviousOrders(0, 1),
+            sentences = emptyList(),
+            schedule = Schedule(null),
+        )
         whenever(overviewService.getOverview(crn)).thenReturn(overview)
         val res = controller.getOverview("X000004")
         MatcherAssert.assertThat(res.personalDetails.preferredName, Matchers.equalTo("Joe"))
