@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.OfficeAddress
 import java.time.LocalDate
 
 @Immutable
@@ -145,15 +146,17 @@ class OfficeLocation(
     val id: Long
 )
 
-interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
-    @Query(
-        """
-        select ol from OfficeLocation ol
-        where lower(ol.description) like lower(concat('%',:officeName,'%')) 
-        and lower(ol.ldu.description) like lower(concat('%',:ldu,'%'))
-        and (ol.endDate is null or ol.endDate > current_date)
-        order by ol.description
-    """
-    )
-    fun findByLduAndOfficeName(ldu: String, officeName: String, pageable: Pageable): Page<OfficeLocation>
-}
+fun OfficeLocation.asAddress() = OfficeAddress(
+    description,
+    buildingName,
+    buildingNumber,
+    streetName,
+    district,
+    townCity,
+    county,
+    postcode,
+    ldu.description,
+    telephoneNumber,
+    startDate,
+    endDate
+)
