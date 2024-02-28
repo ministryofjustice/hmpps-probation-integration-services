@@ -16,6 +16,7 @@ jobs:
   format-code:
     runs-on: ubuntu-latest
     steps:
+      - run: sudo apt update
       - name: Checkout repository
         uses: actions/checkout@v4
 
