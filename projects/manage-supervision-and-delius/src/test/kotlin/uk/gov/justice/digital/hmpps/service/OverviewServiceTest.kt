@@ -12,10 +12,10 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateEvent
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.PersonOverviewRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.RequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonOverviewRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class OverviewServiceTest {
@@ -50,9 +50,16 @@ internal class OverviewServiceTest {
                     person = PersonGenerator.OVERVIEW,
                     active = true,
                     inBreach = false,
-                    disposal = PersonGenerator.ACTIVE_ORDER
+                    disposal = PersonGenerator.ACTIVE_ORDER,
+                    mainOffence = PersonGenerator.MAIN_OFFENCE_1
                 ),
-                PersonGenerator.EVENT_2,
+                generateEvent(
+                    person = PersonGenerator.OVERVIEW,
+                    active = true,
+                    inBreach = false,
+                    disposal = PersonGenerator.ACTIVE_ORDER,
+                    mainOffence = PersonGenerator.MAIN_OFFENCE_2
+                ),
                 PersonGenerator.INACTIVE_EVENT_1,
                 PersonGenerator.INACTIVE_EVENT_2
             )
@@ -73,7 +80,7 @@ internal class OverviewServiceTest {
     }
 
     data class RarDays(val _days: Int, val _type: String) :
-        uk.gov.justice.digital.hmpps.integrations.delius.overview.RarDays {
+        uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RarDays {
         override val days: Int
             get() = _days
         override val type: String

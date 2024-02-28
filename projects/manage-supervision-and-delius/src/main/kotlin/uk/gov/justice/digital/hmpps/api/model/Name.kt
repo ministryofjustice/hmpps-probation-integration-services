@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model
 
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 
 data class Name(
     val forename: String,

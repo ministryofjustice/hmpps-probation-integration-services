@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.overview
+package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Fetch

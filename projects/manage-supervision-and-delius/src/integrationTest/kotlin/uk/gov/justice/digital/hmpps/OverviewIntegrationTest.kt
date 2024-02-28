@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Overview
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDITIONAL_OFFENCE_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDITIONAL_OFFENCE_2
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAIN_OFFENCE
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAIN_OFFENCE_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -62,7 +62,7 @@ internal class OverviewIntegrationTest {
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.type.description)
         )
         assertThat(res.sentences.size, equalTo(2))
-        assertThat(res.sentences[0].mainOffence?.description, equalTo(MAIN_OFFENCE.offence.description))
+        assertThat(res.sentences[0].mainOffence.description, equalTo(MAIN_OFFENCE_1.offence.description))
         assertThat(
             res.sentences[0].additionalOffences[0].description,
             equalTo(ADDITIONAL_OFFENCE_1.offence.description)

@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Disability
 import uk.gov.justice.digital.hmpps.api.model.overview.Offence
 import uk.gov.justice.digital.hmpps.api.model.overview.PersonalCircumstance
 import uk.gov.justice.digital.hmpps.api.model.overview.Provision
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.*
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 
 @Service
 class OverviewService(
@@ -34,7 +34,7 @@ class OverviewService(
             personalDetails = personalDetails,
             schedule = schedule,
             previousOrders = PreviousOrders(previousOrdersBreached, previousOrders),
-            sentences = sentences,
+            sentences = sentences.mapNotNull { it },
             activity = null, //ToDo
             compliance = Compliance(currentBreaches = activeEventsBreached, failureToComplyInLast12Months = 0), //ToDo
         )
@@ -48,11 +48,13 @@ class OverviewService(
     }
 
     fun Disposal.toOrder() = Order(description = type.description, startDate = date, endDate = expectedEndDate())
-    fun Event.toSentence() = Sentence(
-        mainOffence = mainOffence?.offence?.toOffence(),
-        additionalOffences = additionalOffences.map { it.offence.toOffence() },
-        order = disposal?.toOrder(),
-        rar = disposal?.let { getRar(it.id) })
+    fun Event.toSentence() = mainOffence?.offence?.let { offence ->
+        Sentence(
+            mainOffence = offence.toOffence(),
+            additionalOffences = additionalOffences.map { it.offence.toOffence() },
+            order = disposal?.toOrder(),
+            rar = disposal?.let { getRar(it.id) })
+    }
 
     fun Person.toPersonalDetails() = PersonalDetails(
         name = name(),
@@ -65,16 +67,16 @@ class OverviewService(
         provisions = provisions.map { it.toProvision() },
     )
 
-    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.Offence.toOffence() =
+    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Offence.toOffence() =
         Offence(code = code, description = description)
 
-    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.PersonalCircumstance.toPersonalCircumstance() =
+    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance.toPersonalCircumstance() =
         PersonalCircumstance(type = type.description, subType = subType.description)
 
-    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.Disability.toDisability() =
+    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability() =
         Disability(description = type.description)
 
-    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.Provision.toProvision() =
+    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision() =
         Provision(description = type.description)
 
     fun Contact.toNextAppointment() = NextAppointment(description = type.description, date = date.toLocalDateTime())

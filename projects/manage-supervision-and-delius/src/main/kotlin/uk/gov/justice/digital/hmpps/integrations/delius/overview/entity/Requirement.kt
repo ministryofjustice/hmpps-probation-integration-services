@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.overview
+package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -26,7 +26,7 @@ class Requirement(
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
 )
 

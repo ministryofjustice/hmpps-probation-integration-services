@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.overview
+package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -16,14 +16,14 @@ import java.time.ZonedDateTime
 @SQLRestriction("soft_deleted = 0")
 class Contact(
     @Id
-    @Column(name = "contact_id", updatable = false)
+    @Column(name = "contact_id")
     val id: Long = 0,
 
     @Column(name = "offender_id")
     val personId: Long,
 
     @ManyToOne
-    @JoinColumn(name = "contact_type_id", updatable = false)
+    @JoinColumn(name = "contact_type_id")
     val type: ContactType,
 
     @Column(name = "contact_date")
@@ -44,7 +44,7 @@ class Contact(
     @Convert(converter = YesNoConverter::class)
     var complied: Boolean? = null,
 
-    @Column(name = "rqmnt_id", updatable = false)
+    @Column(name = "rqmnt_id")
     val requirementId: Long? = null,
 
     @Column(name = "contact_end_time")

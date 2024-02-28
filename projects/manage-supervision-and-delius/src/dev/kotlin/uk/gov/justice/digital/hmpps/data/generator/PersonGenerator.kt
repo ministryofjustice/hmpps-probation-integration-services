@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.*
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -14,11 +14,18 @@ object PersonGenerator {
     val EVENT_2 = generateEvent(OVERVIEW, inBreach = true)
     val INACTIVE_EVENT_1 = generateEvent(OVERVIEW, inBreach = true, active = false)
     val INACTIVE_EVENT_2 = generateEvent(OVERVIEW, inBreach = true, active = false)
-    val OFFENCE_MAIN = generateOffence("Murder", "MAIN")
+    val OFFENCE_1 = generateOffence("Murder", "MAIN")
+    val OFFENCE_2 = generateOffence("Another Murder", "MAINA")
 
-    val MAIN_OFFENCE = generateMainOffence(
+    val MAIN_OFFENCE_1 = generateMainOffence(
         EVENT_1,
-        OFFENCE_MAIN,
+        OFFENCE_1,
+        LocalDate.now()
+    )
+
+    val MAIN_OFFENCE_2 = generateMainOffence(
+        EVENT_2,
+        OFFENCE_2,
         LocalDate.now()
     )
 
@@ -68,9 +75,10 @@ object PersonGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         active: Boolean = true,
         inBreach: Boolean = false,
-        disposal: Disposal? = null
+        disposal: Disposal? = null,
+        mainOffence: MainOffence? = null
     ) =
-        Event(id, person.id, "1", disposal = disposal, inBreach = inBreach, active = active)
+        Event(id, person.id, "1", disposal = disposal, inBreach = inBreach, active = active, mainOffence = mainOffence)
 
     fun generateOverview(
         crn: String,
@@ -137,10 +145,6 @@ object PersonGenerator {
         secondName = secondName,
         thirdName = thirdName,
         surname = surname,
-        nomsNumber = "TEST123",
-        croNumber = "TEST",
-        pncNumber = "TEST123456789",
-        mostRecentPrisonerNumber = "TEST",
         dateOfBirth = dateOfBirth,
         gender = gender,
         disabilities = disabilities,

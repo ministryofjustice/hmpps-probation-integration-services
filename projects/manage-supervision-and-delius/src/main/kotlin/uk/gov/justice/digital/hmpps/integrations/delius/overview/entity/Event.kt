@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.overview
+package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -123,13 +123,13 @@ class MainOffence(
 
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
-    val event: Event?,
+    val event: Event,
 
     @Column(name = "offence_date")
     val date: LocalDate,
 
+    @OneToOne
     @JoinColumn(name = "offence_id")
-    @ManyToOne(cascade = [CascadeType.PERSIST])
     val offence: Offence,
 
     @Column(columnDefinition = "number")

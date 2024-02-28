@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.overview
+package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -20,18 +20,6 @@ class Person(
 
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
-    @Column(columnDefinition = "char(7)")
-    val nomsNumber: String? = null,
-
-    @Column
-    val croNumber: String? = null,
-
-    @Column(columnDefinition = "char(13)")
-    val pncNumber: String? = null,
-
-    @Column
-    val mostRecentPrisonerNumber: String? = null,
 
     @Column(name = "first_name", length = 35)
     val forename: String,
