@@ -82,6 +82,7 @@ interface PersonOverviewRepository : JpaRepository<Person, Long> {
     @EntityGraph(attributePaths = ["gender"])
     fun findByCrn(crn: String): Person?
 }
+
 fun PersonOverviewRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
 
 
