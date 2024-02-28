@@ -62,7 +62,12 @@ class DataLoader(
 
     private fun Person.withAssessment(oasysId: String): Person {
         val contact =
-            ContactGenerator.generateContact(this, ContactGenerator.TYPES[ContactType.Code.OASYS_ASSESSMENT.value]!!)
+            entityManager.merge(
+                ContactGenerator.generateContact(
+                    this,
+                    ContactGenerator.TYPES[ContactType.Code.OASYS_ASSESSMENT.value]!!
+                )
+            )
         val assessment = AssessmentGenerator.generate(this, contact, LocalDate.parse("2013-06-07"), oasysId = oasysId)
         entityManager.merge(assessment)
         return this
@@ -71,11 +76,11 @@ class DataLoader(
     private fun Person.withRisk(vararg risks: Risk): Person {
         risks.forEach {
             val type = RegistrationGenerator.TYPES[it.code]
-            val contact = ContactGenerator.generateContact(this, type!!.registrationContactType!!)
+            val contact = entityManager.merge(ContactGenerator.generateContact(this, type!!.registrationContactType!!))
             val registration = RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), type, contact)
-            val reviewContact = ContactGenerator.generateContact(this, type.reviewContactType!!)
+            val reviewContact = entityManager.merge(ContactGenerator.generateContact(this, type.reviewContactType!!))
             highestRiskColour = type.colour
-            saveAll(this, contact, registration.withReview(reviewContact))
+            saveAll(this, registration.withReview(reviewContact))
         }
         return this
     }
