@@ -2286,12 +2286,19 @@
             <column ascending="true" name="VISOR_EXPORTED"/>
             <column ascending="true" name="CONTACT_DATE"/>
          </index>
+         <index name="XIE25CONTACT" unique="false">
+            <column ascending="true" name="TABLE_NAME"/>
+            <column ascending="true" name="PRIMARY_KEY_ID"/>
+         </index>
          <index name="XIF23CONTACT" unique="false">
             <column ascending="true" name="LINKED_CONTACT_ID"/>
          </index>
          <index name="XIF29CONTACT" unique="false">
             <column ascending="true" name="NSI_ID"/>
             <column ascending="true" name="CONTACT_START_TIME"/>
+         </index>
+         <index name="XIF30CONTACT" unique="false">
+            <column ascending="true" name="PSS_RQMNT_ID"/>
          </index>
          <index name="XIF31CONTACT" unique="false">
             <column ascending="true" name="LINKED_DOCUMENT_CONTACT_ID"/>
