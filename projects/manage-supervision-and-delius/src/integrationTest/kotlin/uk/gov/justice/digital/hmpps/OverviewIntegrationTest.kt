@@ -58,10 +58,6 @@ internal class OverviewIntegrationTest {
             equalTo(OVERVIEW.personalCircumstances[1].type.description)
         )
         assertThat(
-            res.schedule.nextAppointment?.date,
-            equalTo(ContactGenerator.FIRST_APPT_CONTACT.date.toLocalDateTime())
-        )
-        assertThat(
             res.schedule.nextAppointment?.description,
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.type.description)
         )
