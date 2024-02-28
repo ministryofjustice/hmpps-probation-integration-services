@@ -19,5 +19,5 @@ class OverviewController(private val overviewService: OverviewService) {
 
     @GetMapping
     @Operation(summary = "MAS Overview containing Personal Details, Activity, Compliance, Schedule, Orders and Sentences ")
-    fun getPersonalDetails(@PathVariable crn: String) = overviewService.getOverview(crn)
+    fun getOverview(@PathVariable crn: String) = overviewService.getOverview(crn)
 }

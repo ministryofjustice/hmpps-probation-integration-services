@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.overview
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
-import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
@@ -38,7 +37,8 @@ interface RarDays {
 
 interface RequirementRepository : JpaRepository<Requirement, Long> {
 
-    @Query("""
+    @Query(
+        """
         select count(r.rqmnt_id) as days, 'SCHEDULED' as type from contact c
         join rqmnt r on r.rqmnt_id = c.rqmnt_id
         join r_rqmnt_type_main_category mc on r.rqmnt_type_main_category_id = mc.rqmnt_type_main_category_id
@@ -69,10 +69,5 @@ class RequirementMainCategory(
     @Column(name = "rqmnt_type_main_category_id", nullable = false)
     val id: Long,
     val code: String,
-    val description: String,
-    @Column(name = "restrictive")
-    @Convert(converter = YesNoConverter::class)
-    val restrictive: Boolean
-
 )
 

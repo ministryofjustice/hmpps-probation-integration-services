@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
-import java.time.LocalDate
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -25,22 +24,13 @@ class DataLoader(
         auditUserRepository.save(UserGenerator.AUDIT_USER)
     }
 
-
-
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
 
-
-
         entityManager.persist(PersonGenerator.OVERVIEW.gender)
-        entityManager.persist(PersonGenerator.OVERVIEW.ethnicity)
-        entityManager.persist(PersonGenerator.OVERVIEW.primaryLanguage)
-
-
-
-        PersonGenerator.OVERVIEW.disabilities.forEach{entityManager.persist(it.type)}
-        PersonGenerator.OVERVIEW.provisions.forEach{entityManager.persist(it.type)}
-        PersonGenerator.OVERVIEW.personalCircumstances.forEach{
+        PersonGenerator.OVERVIEW.disabilities.forEach { entityManager.persist(it.type) }
+        PersonGenerator.OVERVIEW.provisions.forEach { entityManager.persist(it.type) }
+        PersonGenerator.OVERVIEW.personalCircumstances.forEach {
             entityManager.persist(it.type)
             entityManager.persist(it.subType)
         }
@@ -57,7 +47,7 @@ class DataLoader(
 
         entityManager.persistAll(
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
-            PersonGenerator.FULL_DETAIL_ORDER,
+            PersonGenerator.ACTIVE_ORDER,
             PersonGenerator.INACTIVE_ORDER_1,
             PersonGenerator.INACTIVE_ORDER_2,
             ContactGenerator.APPT_CT_1,
@@ -70,11 +60,14 @@ class DataLoader(
             ContactGenerator.FIRST_APPT_CONTACT,
             PersonGenerator.OFFENCE_MAIN,
             PersonGenerator.MAIN_OFFENCE,
-            PersonGenerator.FULL_DETAIL_ORDER,
             PersonGenerator.ADD_OFF_1,
             PersonGenerator.ADDITIONAL_OFFENCE_1,
             PersonGenerator.ADD_OFF_2,
-            PersonGenerator.ADDITIONAL_OFFENCE_2
+            PersonGenerator.ADDITIONAL_OFFENCE_2,
+            PersonGenerator.MAIN_CAT_F,
+            PersonGenerator.REQUIREMENT,
+            PersonGenerator.REQUIREMENT_CONTACT_1,
+            PersonGenerator.REQUIREMENT_CONTACT_2,
         )
     }
 
