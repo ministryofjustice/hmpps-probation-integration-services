@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /probation-cases/{crn}/registrations:
     get:
       tags:
-      - api-controller
+      - registration-resource
       operationId: handle
       parameters:
-      - name: inputId
+      - name: crn
         in: path
         required: true
         schema:
@@ -28,7 +28,124 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registrations'
 components:
+  schemas:
+    CodeDescription:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    Officer:
+      required:
+      - code
+      - forename
+      - isUnallocated
+      - surname
+      type: object
+      properties:
+        code:
+          type: string
+        forename:
+          type: string
+        surname:
+          type: string
+        isUnallocated:
+          type: boolean
+    Registration:
+      required:
+      - active
+      - offenderId
+      - registeringOfficer
+      - registeringProbationArea
+      - registeringTeam
+      - registrationId
+      - registrationReviews
+      - startDate
+      - type
+      - warnUser
+      type: object
+      properties:
+        registrationId:
+          type: integer
+          format: int64
+        offenderId:
+          type: integer
+          format: int64
+        register:
+          $ref: '#/components/schemas/CodeDescription'
+        type:
+          $ref: '#/components/schemas/CodeDescription'
+        riskColour:
+          type: string
+        startDate:
+          type: string
+          format: date
+        nextReviewDate:
+          type: string
+          format: date
+        reviewPeriodMonths:
+          type: integer
+          format: int64
+        notes:
+          type: string
+        registeringTeam:
+          $ref: '#/components/schemas/CodeDescription'
+        registeringOfficer:
+          $ref: '#/components/schemas/Officer'
+        registeringProbationArea:
+          $ref: '#/components/schemas/CodeDescription'
+        registerLevel:
+          $ref: '#/components/schemas/CodeDescription'
+        registerCategory:
+          $ref: '#/components/schemas/CodeDescription'
+        warnUser:
+          type: boolean
+        active:
+          type: boolean
+        registrationReviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+    Registrations:
+      required:
+      - registrations
+      type: object
+      properties:
+        registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registration'
+    Review:
+      required:
+      - completed
+      - reviewDate
+      - reviewingOfficer
+      - reviewingTeam
+      type: object
+      properties:
+        reviewDate:
+          type: string
+          format: date
+        reviewDateDue:
+          type: string
+          format: date
+        notes:
+          type: string
+        reviewingTeam:
+          $ref: '#/components/schemas/CodeDescription'
+        reviewingOfficer:
+          $ref: '#/components/schemas/Officer'
+        completed:
+          type: boolean
   securitySchemes:
     hmpps-auth-token:
       type: http

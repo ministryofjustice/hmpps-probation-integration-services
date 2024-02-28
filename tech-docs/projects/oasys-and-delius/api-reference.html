@@ -98,7 +98,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#probation-cases-crn-registrations"><span>/probation-cases/{crn}/registrations</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +134,14 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="probation-cases-crn-registrations">/probation-cases/{crn}/registrations</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
+<h3 id="probation-cases-crn-registrations-get">get</h3>
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+
+
+<h4 id="probation-cases-crn-registrations-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,7 +149,7 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>crn</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
@@ -164,7 +164,7 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="probation-cases-crn-registrations-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -178,9 +178,73 @@
 
 
 
+<pre><code>{
+  "registrations": [
+    {
+      "registrationId": "integer",
+      "offenderId": "integer",
+      "register": {
+        "code": "string",
+        "description": "string"
+      },
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "riskColour": "string",
+      "startDate": "string",
+      "nextReviewDate": "string",
+      "reviewPeriodMonths": "integer",
+      "notes": "string",
+      "registeringTeam": {
+        "code": "string",
+        "description": "string"
+      },
+      "registeringOfficer": {
+        "code": "string",
+        "forename": "string",
+        "surname": "string",
+        "isUnallocated": "boolean"
+      },
+      "registeringProbationArea": {
+        "code": "string",
+        "description": "string"
+      },
+      "registerLevel": {
+        "code": "string",
+        "description": "string"
+      },
+      "registerCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "warnUser": "boolean",
+      "active": "boolean",
+      "registrationReviews": [
+        {
+          "reviewDate": "string",
+          "reviewDateDue": "string",
+          "notes": "string",
+          "reviewingTeam": {
+            "code": "string",
+            "description": "string"
+          },
+          "reviewingOfficer": {
+            "code": "string",
+            "forename": "string",
+            "surname": "string",
+            "isUnallocated": "boolean"
+          },
+          "completed": "boolean"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-registrations'>Registrations</a>
 </td>
 </tr>
 
@@ -192,6 +256,366 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-codedescription">CodeDescription</h3>
+
+
+<table class='schema-codedescription'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-officer">Officer</h3>
+
+
+<table class='schema-officer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isUnallocated</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-registration">Registration</h3>
+
+
+<table class='schema-registration'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>registrationId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>register</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>riskColour</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nextReviewDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>reviewPeriodMonths</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>registeringTeam</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>registeringOfficer</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-officer'>Officer</a>
+</td>
+</tr>
+
+<tr>
+<td>registeringProbationArea</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>registerLevel</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>registerCategory</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>warnUser</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>registrationReviews</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-review'>Review</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-registrations">Registrations</h3>
+
+
+<table class='schema-registrations'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>registrations</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-registration'>Registration</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-review">Review</h3>
+
+
+<table class='schema-review'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>reviewDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>reviewDateDue</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>reviewingTeam</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>reviewingOfficer</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-officer'>Officer</a>
+</td>
+</tr>
+
+<tr>
+<td>completed</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             
