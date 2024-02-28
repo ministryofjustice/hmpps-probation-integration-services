@@ -72,8 +72,10 @@ class ContactType(
     @Column
     val description: String,
 )
+
 interface ContactRepository : JpaRepository<Contact, Long> {
-    @Query("""
+    @Query(
+        """
             select c from Contact c
             join fetch c.type t
             where c.personId = :personId
@@ -81,6 +83,6 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and c.date > CURRENT_TIMESTAMP 
             order by c.date asc
         """
-        )
+    )
     fun findFirstAppointment(personId: Long, pageable: Pageable = PageRequest.of(0, 1)): List<Contact>
 }

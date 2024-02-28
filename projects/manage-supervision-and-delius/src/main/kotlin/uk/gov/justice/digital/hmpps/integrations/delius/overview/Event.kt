@@ -1,26 +1,11 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.overview
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
-import org.hibernate.annotations.Fetch
-import org.hibernate.annotations.FetchMode
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
-import java.util.*
 
 @Immutable
 @Entity
@@ -55,18 +40,20 @@ class Event(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )
+
 interface EventRepository : JpaRepository<Event, Long> {
 
-    @Query("SELECT e FROM Event e " +
-        "LEFT JOIN FETCH e.disposal d " +
-        "LEFT JOIN FETCH d.type t  " +
-        "LEFT JOIN FETCH e.mainOffence m " +
-        "LEFT JOIN FETCH e.additionalOffences ao " +
-        "LEFT JOIN FETCH m.offence mo " +
-        "LEFT JOIN FETCH ao.offence aoo " +
-        "WHERE e.personId = :personId and e.active = true")
+    @Query(
+        "SELECT e FROM Event e " +
+            "LEFT JOIN FETCH e.disposal d " +
+            "LEFT JOIN FETCH d.type t  " +
+            "LEFT JOIN FETCH e.mainOffence m " +
+            "LEFT JOIN FETCH e.additionalOffences ao " +
+            "LEFT JOIN FETCH m.offence mo " +
+            "LEFT JOIN FETCH ao.offence aoo " +
+            "WHERE e.personId = :personId"
+    )
     fun findByPersonId(personId: Long): List<Event>
-
 }
 
 @Entity
@@ -148,10 +135,6 @@ class MainOffence(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )
-interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
-    @EntityGraph(attributePaths = ["offence"])
-    fun findByEvent(event: Event): MainOffence?
-}
 
 @Immutable
 @Table(name = "additional_offence")

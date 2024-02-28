@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
-import java.util.*
-import java.util.Collections.emptySortedSet
 
 @Immutable
 @Entity
@@ -66,14 +64,6 @@ class Person(
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData,
 
-    @ManyToOne
-    @JoinColumn(name = "ethnicity_id")
-    val ethnicity: ReferenceData? = null,
-
-    @ManyToOne
-    @JoinColumn(name = "language_id")
-    val primaryLanguage: ReferenceData? = null,
-
     @OneToMany(mappedBy = "personId")
     val personalCircumstances: List<PersonalCircumstance>,
 
@@ -89,8 +79,7 @@ class Person(
 )
 
 interface PersonOverviewRepository : JpaRepository<Person, Long> {
-
-    @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage"])
+    @EntityGraph(attributePaths = ["gender"])
     fun findByCrn(crn: String): Person?
 }
 fun PersonOverviewRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

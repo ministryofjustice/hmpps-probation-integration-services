@@ -3,9 +3,9 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
-import kotlin.Comparator
 
 object PersonGenerator {
 
@@ -14,8 +14,64 @@ object PersonGenerator {
     val EVENT_2 = generateEvent(OVERVIEW, inBreach = true)
     val INACTIVE_EVENT_1 = generateEvent(OVERVIEW, inBreach = true, active = false)
     val INACTIVE_EVENT_2 = generateEvent(OVERVIEW, inBreach = true, active = false)
-    fun generateEvent(person: Person, id: Long = IdGenerator.getAndIncrement(), active: Boolean = true, inBreach: Boolean = false) =
-        Event(id, person.id, "1", inBreach, active = active)
+    val OFFENCE_MAIN = generateOffence("Murder", "MAIN")
+
+    val MAIN_OFFENCE = generateMainOffence(
+        EVENT_1,
+        OFFENCE_MAIN,
+        LocalDate.now()
+    )
+
+    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
+    val ACTIVE_ORDER = generateDisposal(EVENT_1)
+
+    val INACTIVE_ORDER_1 = generateDisposal(INACTIVE_EVENT_1)
+    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2)
+
+    val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
+    val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(
+        EVENT_1,
+        ADD_OFF_1,
+        LocalDate.now()
+    )
+
+    val ADD_OFF_2 = generateOffence("Assault", "ADD2")
+    val ADDITIONAL_OFFENCE_2 = generateAdditionalOffence(
+        EVENT_1,
+        ADD_OFF_2,
+        LocalDate.now()
+    )
+
+    val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F")
+    val REQUIREMENT = generateRequirement(ACTIVE_ORDER)
+    val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
+        OVERVIEW,
+        ContactGenerator.APPT_CT_1,
+        ZonedDateTime.of(LocalDateTime.now().minusHours(1), ZoneId.of("Europe/London")),
+        rarActivity = true,
+        attended = true,
+        complied = true,
+        requirementId = REQUIREMENT.id
+    )
+    val REQUIREMENT_CONTACT_2 = ContactGenerator.generateContact(
+        OVERVIEW,
+        ContactGenerator.APPT_CT_1,
+        ZonedDateTime.of(LocalDateTime.now().minusHours(1), ZoneId.of("Europe/London")),
+        rarActivity = true,
+        attended = null,
+        complied = true,
+        requirementId = REQUIREMENT.id
+    )
+
+    fun generateEvent(
+        person: Person,
+        id: Long = IdGenerator.getAndIncrement(),
+        active: Boolean = true,
+        inBreach: Boolean = false,
+        disposal: Disposal? = null
+    ) =
+        Event(id, person.id, "1", disposal = disposal, inBreach = inBreach, active = active)
+
     fun generateOverview(
         crn: String,
         forename: String = "Forename",
@@ -89,8 +145,6 @@ object PersonGenerator {
         mostRecentPrisonerNumber = "TEST",
         dateOfBirth = dateOfBirth,
         gender = gender,
-        ethnicity = ethnicity,
-        primaryLanguage = primaryLanguage,
         disabilities = disabilities,
         emailAddress = emailAddress,
         mobileNumber = mobileNumber,
@@ -100,35 +154,13 @@ object PersonGenerator {
         preferredName = preferredName
     )
 
-
-    val OFFENCE_MAIN = generateOffence("Murder", "MAIN")
-
-    val MAIN_OFFENCE = generateMainOffence(
-        EVENT_1,
-        OFFENCE_MAIN,
-        LocalDate.now())
-
-    val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
-    val FULL_DETAIL_ORDER = generateSentence(EVENT_1)
-
-    val INACTIVE_ORDER_1 = generateSentence(INACTIVE_EVENT_1)
-    val INACTIVE_ORDER_2 = generateSentence(INACTIVE_EVENT_2)
-
-    val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
-    val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(
-        EVENT_1,
-        ADD_OFF_1,
-        LocalDate.now()
-    )
-
-    val ADD_OFF_2 = generateOffence("Assault", "ADD2")
-    val ADDITIONAL_OFFENCE_2 = generateAdditionalOffence(
-        EVENT_1,
-        ADD_OFF_2,
-        LocalDate.now()
-    )
-
-
+    fun generateRequirement(
+        disposal: Disposal,
+        mainCategory: RequirementMainCategory = MAIN_CAT_F,
+        active: Boolean = true,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Requirement(id, disposal, mainCategory, active, softDeleted)
 
     fun generateDisposalType(
         code: String,
@@ -138,7 +170,7 @@ object PersonGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = DisposalType(code, description, sentenceType, ftcLimit, id)
 
-    fun generateSentence(
+    fun generateDisposal(
         event: Event,
         date: LocalDate = LocalDate.now().minusDays(14),
         type: DisposalType = DEFAULT_DISPOSAL_TYPE,

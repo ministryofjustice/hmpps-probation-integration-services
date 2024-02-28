@@ -40,7 +40,7 @@ class OverviewService(
         )
     }
 
-    fun getRar(disposalId: Long): Rar {
+    private fun getRar(disposalId: Long): Rar {
         val rarDays = requirementRepository.getRarDays(disposalId)
         val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
         val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
