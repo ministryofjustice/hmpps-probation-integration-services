@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v4
-    - uses: cloudposse/github-action-matrix-outputs-read@e0de318159d7139fb9e5f1d59e7f43f91d1d0904 # v0.1.2
+    - uses: cloudposse/github-action-matrix-outputs-read@33cac12fa9282a7230a418d859b93fdbc4f27b5a # v1
       id: read-changes
       with:
         matrix-step-name: output-changes
