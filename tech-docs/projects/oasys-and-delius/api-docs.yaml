@@ -14,11 +14,29 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /probation-cases/{crn}/release:
+    get:
+      tags:
+      - sentence-resource
+      operationId: getReleaseRecall
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseRecall'
   /probation-cases/{crn}/registrations:
     get:
       tags:
       - registration-resource
-      operationId: handle
+      operationId: getActiveRegistrations
       parameters:
       - name: crn
         in: path
@@ -44,6 +62,66 @@ components:
           type: string
         description:
           type: string
+    Institution:
+      required:
+      - code
+      - description
+      - institutionId
+      - isEstablishment
+      type: object
+      properties:
+        institutionId:
+          type: integer
+          format: int64
+        isEstablishment:
+          type: boolean
+        code:
+          type: string
+        description:
+          type: string
+        institutionName:
+          type: string
+        establishmentType:
+          $ref: '#/components/schemas/CodeDescription'
+        isPrivate:
+          type: boolean
+        nomsPrisonInstitutionCode:
+          type: string
+    Recall:
+      required:
+      - date
+      - reason
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        reason:
+          $ref: '#/components/schemas/CodeDescription'
+        notes:
+          type: string
+    Release:
+      required:
+      - date
+      - reason
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        notes:
+          type: string
+        institution:
+          $ref: '#/components/schemas/Institution'
+        reason:
+          $ref: '#/components/schemas/CodeDescription'
+    ReleaseRecall:
+      type: object
+      properties:
+        lastRelease:
+          $ref: '#/components/schemas/Release'
+        lastRecall:
+          $ref: '#/components/schemas/Recall'
     Officer:
       required:
       - code

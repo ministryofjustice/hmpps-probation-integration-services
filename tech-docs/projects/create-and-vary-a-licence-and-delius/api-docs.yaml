@@ -179,43 +179,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Address'
-  /office/addresses:
-    get:
-      tags:
-      - office-resource
-      operationId: findAddresses_1
-      parameters:
-      - name: ldu
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: officeName
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResultSetOfficeAddress'
 components:
   schemas:
     Name:
@@ -434,31 +397,6 @@ components:
         to:
           type: string
           format: date
-    ResultSetOfficeAddress:
-      required:
-      - page
-      - results
-      - size
-      - totalElements
-      - totalPages
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/OfficeAddress'
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-          format: int32
-        page:
-          type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
   securitySchemes:
     hmpps-auth-token:
       type: http

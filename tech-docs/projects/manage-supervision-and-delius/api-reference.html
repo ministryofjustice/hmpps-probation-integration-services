@@ -98,7 +98,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#overview-crn"><span>/overview/{crn}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +134,16 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="overview-crn">/overview/{crn}</h2>
 
-<h3 id="example-inputid-get">get</h3>
+<h3 id="overview-crn-get">get</h3>
+
+  <p><em>MAS Overview containing Personal Details, Activity, Compliance, Schedule, Orders and Sentences </em></p>
 
 
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+<h4 id="overview-crn-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,7 +151,7 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>crn</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
@@ -164,7 +166,7 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="overview-crn-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -178,9 +180,83 @@
 
 
 
+<pre><code>{
+  "activity": {
+    "acceptableAbsences": "integer",
+    "complied": "integer",
+    "nationalStandardsAppointments": "integer",
+    "rescheduled": "integer"
+  },
+  "compliance": {
+    "currentBreaches": "integer",
+    "failureToComplyInLast12Months": "integer"
+  },
+  "personalDetails": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "preferredGender": "string",
+    "preferredName": "string",
+    "telephoneNumber": "string",
+    "mobileNumber": "string",
+    "disabilities": [
+      {
+        "description": "string"
+      }
+    ],
+    "provisions": [
+      {
+        "description": "string"
+      }
+    ],
+    "personalCircumstances": [
+      {
+        "subType": "string",
+        "type": "string"
+      }
+    ]
+  },
+  "previousOrders": {
+    "breaches": "integer",
+    "count": "integer"
+  },
+  "schedule": {
+    "nextAppointment": {
+      "date": "string",
+      "description": "string"
+    }
+  },
+  "sentences": [
+    {
+      "additionalOffences": [
+        {
+          "code": "string",
+          "description": "string"
+        }
+      ],
+      "mainOffence": {
+        "code": "string",
+        "description": "string"
+      },
+      "order": {
+        "description": "string",
+        "endDate": "string",
+        "startDate": "string"
+      },
+      "rar": {
+        "completed": "integer",
+        "scheduled": "integer",
+        "totalDays": "integer"
+      }
+    }
+  ]
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-overview'>Overview</a>
 </td>
 </tr>
 
@@ -192,6 +268,626 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-activity">Activity</h3>
+
+
+<table class='schema-activity'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>acceptableAbsences</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>complied</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nationalStandardsAppointments</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduled</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-compliance">Compliance</h3>
+
+
+<table class='schema-compliance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>currentBreaches</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>failureToComplyInLast12Months</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-disability">Disability</h3>
+
+
+<table class='schema-disability'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-nextappointment">NextAppointment</h3>
+
+
+<table class='schema-nextappointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offence">Offence</h3>
+
+
+<table class='schema-offence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-order">Order</h3>
+
+
+<table class='schema-order'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-overview">Overview</h3>
+
+
+<table class='schema-overview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>activity</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-activity'>Activity</a>
+</td>
+</tr>
+
+<tr>
+<td>compliance</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-compliance'>Compliance</a>
+</td>
+</tr>
+
+<tr>
+<td>personalDetails</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personaldetails'>PersonalDetails</a>
+</td>
+</tr>
+
+<tr>
+<td>previousOrders</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-previousorders'>PreviousOrders</a>
+</td>
+</tr>
+
+<tr>
+<td>schedule</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-schedule'>Schedule</a>
+</td>
+</tr>
+
+<tr>
+<td>sentences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personalcircumstance">PersonalCircumstance</h3>
+
+
+<table class='schema-personalcircumstance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>subType</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personaldetails">PersonalDetails</h3>
+
+
+<table class='schema-personaldetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>preferredGender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>preferredName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mobileNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>disabilities</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-disability'>Disability</a>
+</td>
+</tr>
+
+<tr>
+<td>provisions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provision'>Provision</a>
+</td>
+</tr>
+
+<tr>
+<td>personalCircumstances</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personalcircumstance'>PersonalCircumstance</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-previousorders">PreviousOrders</h3>
+
+
+<table class='schema-previousorders'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>breaches</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>count</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provision">Provision</h3>
+
+
+<table class='schema-provision'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-rar">Rar</h3>
+
+
+<table class='schema-rar'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>completed</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>scheduled</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalDays</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-schedule">Schedule</h3>
+
+
+<table class='schema-schedule'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>nextAppointment</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-nextappointment'>NextAppointment</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentence">Sentence</h3>
+
+
+<table class='schema-sentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>additionalOffences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>order</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-order'>Order</a>
+</td>
+</tr>
+
+<tr>
+<td>rar</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-rar'>Rar</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             

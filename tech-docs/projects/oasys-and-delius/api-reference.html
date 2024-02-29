@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#probation-cases-crn-release"><span>/probation-cases/{crn}/release</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-cases-crn-registrations"><span>/probation-cases/{crn}/registrations</span></a>
       </li>
       <li>
@@ -130,6 +133,94 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="probation-cases-crn-release">/probation-cases/{crn}/release</h2>
+
+<h3 id="probation-cases-crn-release-get">get</h3>
+
+
+
+
+<h4 id="probation-cases-crn-release-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-cases-crn-release-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "lastRelease": {
+    "date": "string",
+    "notes": "string",
+    "institution": {
+      "institutionId": "integer",
+      "isEstablishment": "boolean",
+      "code": "string",
+      "description": "string",
+      "institutionName": "string",
+      "establishmentType": {
+        "code": "string",
+        "description": "string"
+      },
+      "isPrivate": "boolean",
+      "nomsPrisonInstitutionCode": "string"
+    },
+    "reason": {
+      "code": "string",
+      "description": "string"
+    }
+  },
+  "lastRecall": {
+    "date": "string",
+    "reason": {
+      "code": "string",
+      "description": "string"
+    },
+    "notes": "string"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-releaserecall'>ReleaseRecall</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -282,6 +373,224 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-institution">Institution</h3>
+
+
+<table class='schema-institution'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>institutionId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isEstablishment</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>institutionName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>establishmentType</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>isPrivate</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsPrisonInstitutionCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-recall">Recall</h3>
+
+
+<table class='schema-recall'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>reason</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-release">Release</h3>
+
+
+<table class='schema-release'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>institution</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-institution'>Institution</a>
+</td>
+</tr>
+
+<tr>
+<td>reason</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-releaserecall">ReleaseRecall</h3>
+
+
+<table class='schema-releaserecall'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>lastRelease</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-release'>Release</a>
+</td>
+</tr>
+
+<tr>
+<td>lastRecall</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-recall'>Recall</a>
 </td>
 </tr>
 
