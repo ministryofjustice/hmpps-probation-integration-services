@@ -174,6 +174,7 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         join fetch mo.offence
         left join fetch c.additionalOffences ao
         left join fetch ao.offence
+        where c.convictionEventPerson.id = :personId and c.active = true
         order by c.convictionDate desc
     """)
     fun getActiveSentencedConvictions(personId: Long): List<ConvictionEventEntity>
