@@ -12,6 +12,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
@@ -165,14 +166,20 @@ class Offence(
 )
 
 interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long> {
-    @EntityGraph(
-        attributePaths = [
-            "mainOffence.offence",
-            "additionalOffences.offence",
-            "disposal.type"
-        ]
+    @Query(
+        """
+        select c from ConvictionEventEntity c
+        join fetch c.disposal d 
+        join fetch d.type dt
+        join fetch c.mainOffence mo
+        join fetch mo.offence
+        left join fetch c.additionalOffences ao
+        left join fetch ao.offence
+        where c.convictionEventPerson.id = :personId and c.active = true
+        order by c.convictionDate desc
+    """
     )
-    fun getAllByConvictionEventPersonIdAndActiveIsTrueOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
+    fun getActiveSentencedConvictions(personId: Long): List<ConvictionEventEntity>
 
     @EntityGraph(
         attributePaths = [
@@ -212,4 +219,4 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
 }
 
 fun ConvictionEventRepository.getLatestConviction(personId: Long) =
-    getAllByConvictionEventPersonIdAndActiveIsTrueOrderByConvictionDateDesc(personId).firstOrNull()
+    getActiveSentencedConvictions(personId).firstOrNull()
