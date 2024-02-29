@@ -25,7 +25,7 @@ class Institution(
     @Convert(converter = YesNoConverter::class)
     val establishment: Boolean,
 
-    @Convert(converter = YesNoConverter::class)
+    @Column(columnDefinition = "number")
     val private: Boolean?,
 
     @Id
