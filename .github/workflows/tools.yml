@@ -17,6 +17,7 @@ jobs:
       matrix:
         project:
           - feature-flags
+          - ingress-test
     steps:
       - uses: actions/checkout@v4
 
