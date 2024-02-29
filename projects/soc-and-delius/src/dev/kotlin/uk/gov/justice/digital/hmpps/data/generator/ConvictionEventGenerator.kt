@@ -27,7 +27,7 @@ object ConvictionEventGenerator {
     )
     val DEFAULT_EVENT = ConvictionEventEntity(
         IdGenerator.getAndIncrement(),
-        LocalDate.now(),
+        LocalDate.now().minusDays(1),
         PERSON
     )
     val INACTIVE_EVENT = ConvictionEventEntity(
