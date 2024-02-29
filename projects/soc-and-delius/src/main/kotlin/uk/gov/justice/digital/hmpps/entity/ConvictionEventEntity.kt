@@ -166,7 +166,8 @@ class Offence(
 )
 
 interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long> {
-    @Query("""
+    @Query(
+        """
         select c from ConvictionEventEntity c
         join fetch c.disposal d 
         join fetch d.type dt
@@ -176,7 +177,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         left join fetch ao.offence
         where c.convictionEventPerson.id = :personId and c.active = true
         order by c.convictionDate desc
-    """)
+    """
+    )
     fun getActiveSentencedConvictions(personId: Long): List<ConvictionEventEntity>
 
     @EntityGraph(
