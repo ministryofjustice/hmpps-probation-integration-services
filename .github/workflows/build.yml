@@ -135,6 +135,7 @@ jobs:
         project:
           - person-search-index-from-delius
           - redrive-dead-letter-queues
+          - feature-flags
     steps:
       - uses: actions/checkout@v4
 

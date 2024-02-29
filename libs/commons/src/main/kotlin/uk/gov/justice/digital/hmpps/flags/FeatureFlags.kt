@@ -10,7 +10,8 @@ class FeatureFlags(
 ) {
     fun enabled(key: String) = try {
         client == null || client.evaluation()
-            .evaluateBoolean(EvaluationRequest.builder().flagKey(key).build()).isEnabled
+            .evaluateBoolean(EvaluationRequest.builder().namespaceKey("probation-integration").flagKey(key).build())
+            .isEnabled
     } catch (e: Exception) {
         throw FeatureFlagException(key, e)
     }

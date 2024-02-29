@@ -85,3 +85,8 @@ updates:
     directory: "/projects/redrive-dead-letter-queues/container"
     schedule:
       interval: "monthly" # to reduce frequency of AWS CLI updates
+
+  - package-ecosystem: "docker"
+    directory: "/projects/feature-flags/container"
+    schedule:
+      interval: "daily"

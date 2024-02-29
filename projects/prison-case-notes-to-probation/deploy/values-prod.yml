@@ -5,8 +5,3 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/oauth/token
-    FLIPT_URL: http://feature-flags.hmpps-probation-integration.svc.cluster.local
-
-  namespace_secrets:
-    flipt-client:
-      FLIPT_TOKEN: TOKEN
