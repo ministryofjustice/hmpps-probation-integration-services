@@ -76,6 +76,7 @@ internal class OverviewIntegrationTest {
         assertThat(res.sentences[0].rar?.completed, equalTo(1))
         assertThat(res.sentences[0].rar?.scheduled, equalTo(1))
         assertThat(res.sentences[0].rar?.totalDays, equalTo(2))
+        assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
     }
 
     @Test

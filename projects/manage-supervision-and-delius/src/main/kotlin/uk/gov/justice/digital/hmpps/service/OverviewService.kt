@@ -64,6 +64,7 @@ class OverviewService(
         preferredName = preferredName,
         personalCircumstances = personalCircumstances.map { it.toPersonalCircumstance() },
         disabilities = disabilities.map { it.toDisability() },
+        dateOfBirth = dateOfBirth,
         provisions = provisions.map { it.toProvision() },
     )
 
