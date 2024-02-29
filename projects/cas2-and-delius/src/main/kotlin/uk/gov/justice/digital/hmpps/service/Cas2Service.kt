@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.client.approvedpremises.EventDetailsClient
@@ -32,13 +33,14 @@ class Cas2Service(
 
     fun applicationStatusUpdated(event: HmppsDomainEvent) {
         val details = eventDetailsClient.getApplicationStatusUpdatedDetails(event.url)
+        val statusDetailJson = jacksonObjectMapper().writeValueAsString(details.eventDetails.newStatus.statusDetails)
         val success = contactService.createContact(
             crn = event.crn,
             type = ContactType.REFERRAL_UPDATED,
             date = details.eventDetails.updatedAt,
             description = "CAS2 Referral Updated - ${details.eventDetails.newStatus.label}",
             notes = """
-                Application status was updated to: ${details.eventDetails.newStatus.label} - ${details.eventDetails.newStatus.description}
+                Application status was updated to: ${details.eventDetails.newStatus.label} - ${details.eventDetails.newStatus.description} - $statusDetailJson
                 
                 Details of the application can be found here: ${details.eventDetails.applicationUrl}
                 """.trimIndent(),
