@@ -1,5 +1,5 @@
 name: Tools
-# Deploy shared tools - currently just flipt and auth0
+# Deploy shared tools - currently just the dummy ingress-test service
 
 on:
   push:
@@ -16,7 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - feature-flags
           - ingress-test
     steps:
       - uses: actions/checkout@v4
@@ -49,16 +48,3 @@ jobs:
         env:
           PROJECT: ${{ matrix.project }}
           GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
-
-  deploy-auth:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - run: npm install -g auth0-deploy-cli
-      - name: Import Auth0 configuration
-        working-directory: tools/feature-flags/deploy/auth0
-        env:
-          AUTH0_CLIENT_ID: ${{ secrets.FLIPT_AUTH0_CLIENT_ID }}
-          AUTH0_CLIENT_SECRET: ${{ secrets.FLIPT_AUTH0_CLIENT_SECRET }}
-        run: a0deploy import --input_file tenant.yaml --config_file config.json

@@ -1,0 +1,54 @@
+generic-service:
+  nameOverride: feature-flags
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/feature-flags
+    port: 8080
+
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 0.1
+    limits:
+      memory: 1Gi
+      cpu: 1
+
+  securityContext:
+    runAsUser: 100 # flipt
+
+  readinessProbe:
+    httpGet:
+      path: /health
+  livenessProbe:
+    httpGet:
+      path: /health
+  startupProbe:
+    httpGet:
+      path: /health
+
+  ingress:
+    tlsSecretName: feature-flags-cert
+
+  env:
+    FLIPT_AUTHENTICATION_REQUIRED: 'true'
+    FLIPT_AUTHENTICATION_SESSION_SECURE: 'true'
+    FLIPT_AUTHENTICATION_METHODS_TOKEN_ENABLED: 'true'
+    FLIPT_AUTHENTICATION_METHODS_GITHUB_ENABLED: 'true'
+    FLIPT_AUTHENTICATION_METHODS_GITHUB_ALLOWED_ORGANISATIONS: ministryofjustice
+    FLIPT_META_TELEMETRY_ENABLED: 'false'
+
+  namespace_secrets:
+    flipt-bootstrap-token:
+      FLIPT_AUTHENTICATION_METHODS_TOKEN_BOOTSTRAP_TOKEN: TOKEN
+    flipt-github-app:
+      FLIPT_AUTHENTICATION_METHODS_GITHUB_CLIENT_ID: CLIENT_ID
+      FLIPT_AUTHENTICATION_METHODS_GITHUB_CLIENT_SECRET: CLIENT_SECRET
+    flipt-db:
+      FLIPT_DB_URL: URL
+
+  custommetrics:
+    enabled: true
+    metricsPath: /metrics
+
+generic-prometheus-alerts:
+  targetApplication: feature-flags

@@ -1,7 +1,0 @@
-{
-  "AUTH0_DOMAIN": "hmpps-probation-integration.uk.auth0.com",
-  "EXCLUDED_PROPS": {
-    "clients": ["client_secret"],
-    "connections": ["options.client_secret"]
-  }
-}

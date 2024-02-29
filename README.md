@@ -199,20 +199,18 @@ For more information on how this is implemented, see [PI-340](https://dsdmoj.atl
 
 # Feature flags
 
-This project uses feature flags to control the availability of certain features.
-Feature flags allow you to easily turn on or off parts of a service in production.
-This helps us to decouple "releases" from "deployments".
+This project uses [Flipt](https://www.flipt.io/) to control the availability of certain features.
+Feature flags allow us to turn on or off parts of a service in production, decoupling "releases" from "deployments".
 
-Feature flags are managed in the [Flipt dashboard](https://feature-flags.probation-integration.service.justice.gov.uk).
-You'll need to be in an appropriate GitHub team to access it.
-The list of allowed teams is defined here: [code.js](tools/feature-flags/deploy/auth0/actions/Check%20GitHub%20teams/code.js).
+Feature flags are managed in the [Flipt dashboard](https://feature-flags.hmpps.service.justice.gov.uk).
+You'll need to be in the `ministryofjustice` organisation to access it.
 
 To add a feature flag to your code:
 
-1. Create a new flag in the dashboard
-2. Add the FLIPT_URL and FLIPT_TOKEN to your values-prod.yml file.
-   Example: [values-prod.yml](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/bd9a93c86112cd8a3717c9cc8631644d27cf34a7/projects/risk-assessment-scores-to-delius/deploy/values-prod.yml#L7-L11).
-3. Update your code to inject the `FeatureFlags` service, and call `enabled("<key>")`. Example:
+1. Create a new boolean flag in
+   the [dev](https://feature-flags-dev.hmpps.service.justice.gov.uk), [preprod](https://feature-flags-preprod.hmpps.service.justice.gov.uk),
+   and [prod](https://feature-flags.hmpps.service.justice.gov.uk) dashboards.
+2. Update your code to inject the `FeatureFlags` service, and call `enabled("<key>")`. Example:
 
 ```kotlin
 @Service
@@ -227,7 +225,7 @@ class MyService(private val featureFlags: FeatureFlags) {
 }
 ```
 
-For more information about Flipt, check out the [Flipt documentation](https://www.flipt.io/docs).
+For more information about Flipt, check out the [documentation](https://www.flipt.io/docs).
 
 # Deployment
 Once the code is built and tested, GitHub Actions deploys the updated images for each service
