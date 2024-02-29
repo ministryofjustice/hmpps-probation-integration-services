@@ -38,10 +38,10 @@ internal class NotFoundIntegrationTest {
         // Given a message
         val event = prepEvent("application-submitted-not-found", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(event)
-        //Assert that expected exception exists in output
-        assertThat(output.all, not(containsString("No DomainEvent with an ID of 3333 could be found")))
         //Assert that only 1 trackEvent for Notification Received has occurred
         verify(telemetryService, Mockito.times(1)).trackEvent(any(), any(), any())
+        //Assert that expected exception exists in output
+        assertThat(output.all, not(containsString("No DomainEvent with an ID of 3333 could be found")))
     }
 
     @Test
@@ -49,10 +49,10 @@ internal class NotFoundIntegrationTest {
         // Given a message
         val event = prepEvent("application-status-updated-not-found", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(event)
-        //Assert that expected exception exists in output
-        assertThat(output.all, not(containsString("No DomainEvent with an ID of 4444 could be found")))
         //Assert that only 1 trackEvent for Notification Received has occurred
         verify(telemetryService, Mockito.times(1)).trackEvent(any(), any(), any())
+        //Assert that expected exception exists in output
+        assertThat(output.all, not(containsString("No DomainEvent with an ID of 4444 could be found")))
     }
 
     @Test
@@ -60,9 +60,9 @@ internal class NotFoundIntegrationTest {
         // Given a message
         val event = prepEvent("application-submitted-bad-request", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(event)
-        //Assert that expected exception exists in output
-        assertThat(output.all, containsString("Bad Request"))
         //Assert that only 1 trackEvent for Notification Received has occurred
         verify(telemetryService, Mockito.times(1)).trackEvent(any(), any(), any())
+        //Assert that expected exception exists in output
+        assertThat(output.all, containsString("Bad Request"))
     }
 }
