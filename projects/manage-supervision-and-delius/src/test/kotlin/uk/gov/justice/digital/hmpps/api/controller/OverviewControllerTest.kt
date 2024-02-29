@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.overview.PersonalDetails
 import uk.gov.justice.digital.hmpps.api.model.overview.PreviousOrders
 import uk.gov.justice.digital.hmpps.api.model.overview.Schedule
 import uk.gov.justice.digital.hmpps.service.OverviewService
+import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 internal class OverviewControllerTest {
@@ -35,6 +36,7 @@ internal class OverviewControllerTest {
             preferredGender = "Prefer not to say",
             preferredName = "Joe",
             telephoneNumber = "1234",
+            dateOfBirth = LocalDate.now().minusYears(50),
             provisions = emptyList()
         )
         val overview = Overview(
