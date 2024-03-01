@@ -3,6 +3,9 @@ generic-service:
     host: feature-flags-preprod.hmpps.service.justice.gov.uk
 
   scheduledDowntime:
+    # Startup slightly earlier and shutdown slightly later than other services
+    startup: '0 6 * * 1-5'    # 6:00am UTC Monday-Friday
+    shutdown: '30 22 * * 1-5' # 10:30pm UTC Monday-Friday
     enabled: true
 
   env:
