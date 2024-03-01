@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Overview
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDITIONAL_OFFENCE_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDITIONAL_OFFENCE_2
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EVENT_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAIN_OFFENCE_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -76,6 +77,8 @@ internal class OverviewIntegrationTest {
         assertThat(res.sentences[0].rar?.completed, equalTo(1))
         assertThat(res.sentences[0].rar?.scheduled, equalTo(1))
         assertThat(res.sentences[0].rar?.totalDays, equalTo(2))
+        assertThat(res.sentences[0].eventNumber, equalTo(EVENT_1.eventNumber))
+        assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
     }
 
