@@ -51,6 +51,7 @@ internal class OverviewServiceTest {
                     active = true,
                     inBreach = false,
                     disposal = PersonGenerator.ACTIVE_ORDER,
+                    eventNumber = "654321",
                     mainOffence = PersonGenerator.MAIN_OFFENCE_1
                 ),
                 generateEvent(
@@ -58,6 +59,7 @@ internal class OverviewServiceTest {
                     active = true,
                     inBreach = false,
                     disposal = PersonGenerator.ACTIVE_ORDER,
+                    eventNumber = "654321",
                     mainOffence = PersonGenerator.MAIN_OFFENCE_2
                 ),
                 PersonGenerator.INACTIVE_EVENT_1,
