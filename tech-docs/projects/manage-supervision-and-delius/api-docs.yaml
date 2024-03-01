@@ -156,6 +156,7 @@ components:
           type: string
     PersonalDetails:
       required:
+      - dateOfBirth
       - disabilities
       - name
       - personalCircumstances
@@ -167,6 +168,9 @@ components:
           $ref: '#/components/schemas/Name'
         preferredGender:
           type: string
+        dateOfBirth:
+          type: string
+          format: date
         preferredName:
           type: string
         telephoneNumber:
