@@ -34,8 +34,8 @@ class Cas2Service(
     fun applicationStatusUpdated(event: HmppsDomainEvent) {
         val details = eventDetailsClient.getApplicationStatusUpdatedDetails(event.url)
         val statusDetailList = details.eventDetails.newStatus.statusDetails
-                                .map { statusDetails -> statusDetails.name }
-                                .toList()
+            .map { statusDetails -> statusDetails.name }
+            .toList()
         val statusDetailsBuilder = StringBuilder()
         statusDetailList.forEach { name -> statusDetailsBuilder.append("* $name\n") }
         val notesBuilder = StringBuilder()
