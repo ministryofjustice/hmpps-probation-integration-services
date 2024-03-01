@@ -21,7 +21,8 @@
     },
     "sessionFeedback": {
       "behaviourDescription": null,
-      "notifyProbationPractitioner": null
+      "notifyProbationPractitionerOfBehaviour": true,
+      "notifyProbationPractitionerOfConcerns": false
     },
     "submitted": true,
     "submittedBy": {

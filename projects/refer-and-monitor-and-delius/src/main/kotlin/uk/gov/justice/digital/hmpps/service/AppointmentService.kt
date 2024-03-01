@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -14,18 +15,12 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.asReason
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.appointmentClashes
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome.Code
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Enforcement
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.EnforcementAction
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
@@ -35,7 +30,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime.now
-import java.util.UUID
+import java.util.*
 
 @Service
 class AppointmentService(
@@ -269,13 +264,11 @@ class AppointmentService(
     companion object {
         private fun attendanceOutcome(outcome: Outcome): Code =
             when (outcome.sessionHappened) {
-                true -> Code.COMPLIED
+                true -> if (outcome.notify) Code.FAILED_TO_COMPLY else Code.COMPLIED
                 false -> when (outcome.attended) {
                     Attended.NO -> Code.FAILED_TO_ATTEND
                     else -> noSession(outcome)
                 }
-
-                null -> legacyOutcome(outcome)
             }
 
         private fun noSession(outcome: Outcome) = when (outcome.noSessionReasonType) {
@@ -283,11 +276,6 @@ class AppointmentService(
             NoSessionReasonType.POP_ACCEPTABLE -> Code.APPOINTMENT_KEPT
             NoSessionReasonType.LOGISTICS -> Code.SENT_HOME
             else -> throw IllegalArgumentException("Outcome Scenario Not Mapped: $outcome")
-        }
-
-        private fun legacyOutcome(outcome: Outcome) = when (outcome.attended) {
-            Attended.YES, Attended.LATE -> if (outcome.notify) Code.FAILED_TO_COMPLY else Code.COMPLIED
-            Attended.NO -> Code.FAILED_TO_ATTEND
         }
     }
 }
@@ -321,7 +309,7 @@ data class Outcome(
     val noSessionReasonType: NoSessionReasonType? = null,
     val notify: Boolean = false
 ) {
-    val sessionHappened = didSessionHappen
+    val sessionHappened = didSessionHappen ?: false
 }
 
 enum class NoSessionReasonType {
