@@ -51,6 +51,7 @@ class OverviewService(
     fun Event.toSentence() = mainOffence?.offence?.let { offence ->
         Sentence(
             mainOffence = offence.toOffence(),
+            eventNumber = eventNumber,
             additionalOffences = additionalOffences.map { it.offence.toOffence() },
             order = disposal?.toOrder(),
             rar = disposal?.let { getRar(it.id) })
