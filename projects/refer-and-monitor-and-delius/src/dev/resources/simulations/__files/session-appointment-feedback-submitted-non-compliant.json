@@ -67,7 +67,8 @@
     "sessionFeedback": {
       "noSessionReasonType": "POP_UNACCEPTABLE",
       "behaviourDescription": "a description of the behaviour",
-      "notifyProbationPractitioner": true
+      "notifyProbationPractitionerOfBehaviour": true,
+      "notifyProbationPractitionerOfConcerns": false
     },
     "submitted": true,
     "submittedBy": {

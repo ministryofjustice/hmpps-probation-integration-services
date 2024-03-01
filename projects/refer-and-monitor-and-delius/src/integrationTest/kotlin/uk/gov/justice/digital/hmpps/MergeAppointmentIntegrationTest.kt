@@ -180,7 +180,7 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
-            Outcome(Attended.YES, null, null, false),
+            Outcome(Attended.YES, true, null, false),
             null,
             appointmentId,
             null

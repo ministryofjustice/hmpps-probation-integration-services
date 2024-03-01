@@ -12,6 +12,7 @@
       "appointmentFeedback": {
         "attendanceFeedback": {
           "attended": "yes",
+          "didSessionHappen": true,
           "additionalAttendanceInformation": "some additional information",
           "submittedAt": "2023-02-14T16:07:03.774Z",
           "submittedBy": {
@@ -22,7 +23,8 @@
         },
         "sessionFeedback": {
           "behaviourDescription": "A description of the behaviour",
-          "notifyProbationPractitioner": true
+          "notifyProbationPractitionerOfBehaviour": true,
+          "notifyProbationPractitionerOfConcerns": false
         },
         "submitted": true,
         "submittedBy": {
@@ -55,6 +57,7 @@
   "appointmentFeedback": {
     "attendanceFeedback": {
       "attended": "yes",
+      "didSessionHappen": true,
       "additionalAttendanceInformation": "additional information about the attendance",
       "submittedAt": "2023-02-14T15:07:03.774Z",
       "submittedBy": {
@@ -65,7 +68,8 @@
     },
     "sessionFeedback": {
       "behaviourDescription": "a description of the behaviour",
-      "notifyProbationPractitioner": false
+      "notifyProbationPractitionerOfBehaviour": false,
+      "notifyProbationPractitionerOfConcerns": false
     },
     "submitted": true,
     "submittedBy": {
