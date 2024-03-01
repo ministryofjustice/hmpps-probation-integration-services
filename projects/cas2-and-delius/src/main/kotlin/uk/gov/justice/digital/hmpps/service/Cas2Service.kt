@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.client.approvedpremises.EventDetailsClient
@@ -32,16 +33,23 @@ class Cas2Service(
 
     fun applicationStatusUpdated(event: HmppsDomainEvent) {
         val details = eventDetailsClient.getApplicationStatusUpdatedDetails(event.url)
+        val statusDetailList = details.eventDetails.newStatus.statusDetails
+                                .map { statusDetails -> statusDetails.name }
+                                .toList()
+        val statusDetailsBuilder = StringBuilder()
+        statusDetailList.forEach { name -> statusDetailsBuilder.append("* $name\n") }
+        val notesBuilder = StringBuilder()
+        notesBuilder.append("Application status was updated to: ${details.eventDetails.newStatus.label} - ${details.eventDetails.newStatus.description}\n\n")
+        notesBuilder.append("Details: More information about the application has been requested from the POM (Prison Offender Manager).\n")
+        notesBuilder.append(statusDetailsBuilder).append("\n")
+        notesBuilder.append("Details of the application can be found here: ${details.eventDetails.applicationUrl}")
+
         val success = contactService.createContact(
             crn = event.crn,
             type = ContactType.REFERRAL_UPDATED,
             date = details.eventDetails.updatedAt,
             description = "CAS2 Referral Updated - ${details.eventDetails.newStatus.label}",
-            notes = """
-                Application status was updated to: ${details.eventDetails.newStatus.label} - ${details.eventDetails.newStatus.description}
-                
-                Details of the application can be found here: ${details.eventDetails.applicationUrl}
-                """.trimIndent(),
+            notes = notesBuilder.toString(),
             urn = "urn:hmpps:cas2:application-status-updated:${details.id}",
         )
         if (success) telemetryService.trackEvent(
