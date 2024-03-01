@@ -79,7 +79,15 @@ object PersonGenerator {
         disposal: Disposal? = null,
         mainOffence: MainOffence? = null
     ) =
-        Event(id, person.id, eventNumber, disposal = disposal, inBreach = inBreach, active = active, mainOffence = mainOffence)
+        Event(
+            id,
+            person.id,
+            eventNumber,
+            disposal = disposal,
+            inBreach = inBreach,
+            active = active,
+            mainOffence = mainOffence
+        )
 
     fun generateOverview(
         crn: String,
