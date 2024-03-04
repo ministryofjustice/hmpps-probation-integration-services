@@ -26,7 +26,9 @@ data class Manager(
     val name: Name,
     val teamCode: String,
     val grade: String? = null
-)
+) {
+    val allocated = !code.endsWith("U", true)
+}
 
 data class InitialAppointment(val date: LocalDate, val staff: StaffMember)
 
