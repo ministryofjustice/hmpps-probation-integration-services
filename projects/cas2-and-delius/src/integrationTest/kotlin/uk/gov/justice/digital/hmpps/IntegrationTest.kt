@@ -98,7 +98,7 @@ internal class IntegrationTest {
         assertThat(
             contact.notes, equalTo(
                 """
-                Application status was updated to: More information requested - More information about the application has been requested from the POM (Prison Offender Manager).
+                Application status was updated to: More information requested
                 
                 Details: More information about the application has been requested from the POM (Prison Offender Manager).
                 * Personal Information

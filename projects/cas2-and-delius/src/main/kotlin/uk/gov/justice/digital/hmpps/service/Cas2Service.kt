@@ -39,9 +39,9 @@ class Cas2Service(
             date = details.eventDetails.updatedAt,
             description = "CAS2 Referral Updated - ${details.eventDetails.newStatus.label}",
             notes = """
-                |Application status was updated to: ${details.eventDetails.newStatus.label} - ${details.eventDetails.newStatus.description}
+                |Application status was updated to: ${details.eventDetails.newStatus.label}
                 |
-                |Details: More information about the application has been requested from the POM (Prison Offender Manager).
+                |Details: ${details.eventDetails.newStatus.description}
                 |* ${details.eventDetails.newStatus.statusDetails.joinToString(separator = System.lineSeparator() + "|* ") { it.name }}
                 |
                 |Details of the application can be found here: ${details.eventDetails.applicationUrl}
