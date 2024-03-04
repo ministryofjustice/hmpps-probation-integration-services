@@ -65,13 +65,15 @@ internal class HandlerTest {
         handler.handle(message)
 
         // Then it is processed
-        verify(riskScoreService).updateRsrScores(
+        verify(riskScoreService).updateRsrAndOspScores(
             message.message.personReference.findCrn()!!,
             message.message.additionalInformation["EventNumber"] as Int,
             message.message.assessmentDate(),
             message.message.rsr(),
             message.message.ospIndecent(),
-            message.message.ospContact()
+            message.message.ospIndirectIndecent(),
+            message.message.ospContact(),
+            message.message.ospDirectContact()
         )
         verify(telemetryService).trackEvent("RsrScoresUpdated", message.message.telemetryProperties())
     }
@@ -105,13 +107,15 @@ internal class HandlerTest {
             attributes = MessageAttributes("risk-assessment.scores.determined")
         )
         whenever(
-            riskScoreService.updateRsrScores(
+            riskScoreService.updateRsrAndOspScores(
                 message.message.personReference.findCrn()!!,
                 message.message.additionalInformation["EventNumber"] as Int,
                 message.message.assessmentDate(),
                 message.message.rsr(),
                 message.message.ospIndecent(),
-                message.message.ospContact()
+                message.message.ospIndirectIndecent(),
+                message.message.ospContact(),
+                message.message.ospDirectContact()
             )
         ).thenThrow(DeliusValidationError("No Event number provided"))
 

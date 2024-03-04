@@ -24,14 +24,16 @@ class Handler(
         when (message.eventType) {
             "risk-assessment.scores.rsr.determined" -> {
                 try {
-                    riskScoreService.updateRsrScores(
+                    riskScoreService.updateRsrAndOspScores(
                         message.personReference.findCrn()
                             ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
                         message.additionalInformation["EventNumber"] as Int?,
                         message.assessmentDate(),
                         message.rsr(),
                         message.ospIndecent(),
-                        message.ospContact()
+                        message.ospIndirectIndecent(),
+                        message.ospContact(),
+                        message.ospDirectContact(),
                     )
                     telemetryService.trackEvent("RsrScoresUpdated", message.telemetryProperties())
                 } catch (e: DeliusValidationError) {
@@ -95,13 +97,27 @@ fun HmppsDomainEvent.rsr() = RiskAssessment(
 
 fun HmppsDomainEvent.ospIndecent() = RiskAssessment(
     additionalInformation["OSPIndecentScore"] as Double,
-    additionalInformation["OSPIndecentBand"] as String
+    additionalInformation["OSPIndecentBand"] as String,
 )
+
+fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndecentIndirectBand"]?.let {
+    RiskAssessment(
+        additionalInformation["OSPIndirectIndecentScore"] as Double,
+        additionalInformation["OSPIndirectIndecentBand"] as String,
+    )
+}
 
 fun HmppsDomainEvent.ospContact() = RiskAssessment(
     additionalInformation["OSPContactScore"] as Double,
-    additionalInformation["OSPContactBand"] as String
+    additionalInformation["OSPContactBand"] as String,
 )
+
+fun HmppsDomainEvent.ospDirectContact() = additionalInformation["OSPDirectContactBand"]?.let {
+    RiskAssessment(
+        additionalInformation["OSPDirectContactScore"] as Double,
+        additionalInformation["OSPDirectContactBand"] as String,
+    )
+}
 
 fun HmppsDomainEvent.ogrsScore() = OgrsScore(
     additionalInformation["OGRS3Yr1"] as Int,

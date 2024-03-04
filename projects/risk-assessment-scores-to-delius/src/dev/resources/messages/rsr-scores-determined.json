@@ -2,7 +2,7 @@
   "Type": "Notification",
   "MessageId": "b04098df-3d67-416f-87eb-f63782f713fb",
   "TopicArn": "",
-  "Message": "{\"eventType\":\"risk-assessment.scores.rsr.determined\",\"version\":1,\"description\":\"Risk assessment scores have been determined\",\"detailUrl\":\"https://some-url-where-we-can-get-more-info-this-might-not-exist\",\"occurredAt\":\"2022-09-22T12:16:04+01:00\",\"additionalInformation\":{\"RSRScore\":45.33,\"RSRBand\":\"H\",\"RSRStaticOrDynamic\":\"STATIC\",\"OSPIndecentScore\":5.79,\"OSPIndecentBand\":\"H\",\"OSPContactScore\":38.7,\"OSPContactBand\":\"V\",\"EventNumber\":1,\"AssessmentDate\":\"2022-09-22T12:16:04+01:00\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X552020\"}]}}",
+  "Message": "{\"eventType\":\"risk-assessment.scores.rsr.determined\",\"version\":1,\"description\":\"Risk assessment scores have been determined\",\"detailUrl\":\"https://some-url-where-we-can-get-more-info-this-might-not-exist\",\"occurredAt\":\"2022-09-22T12:16:04+01:00\",\"additionalInformation\":{\"RSRScore\":45.33,\"RSRBand\":\"H\",\"RSRStaticOrDynamic\":\"STATIC\",\"OSPIndecentScore\":5.79,\"OSPIndecentBand\":\"H\",\"OSPIndirectIndecentScore\":15.32,\"OSPIndirectIndecentBand\":\"V\",\"OSPContactScore\":38.7,\"OSPContactBand\":\"V\",\"OSPDirectContactScore\":21.2,\"OSPDirectContactBand\":\"H\",\"EventNumber\":1,\"AssessmentDate\":\"2022-09-22T12:16:04+01:00\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X552020\"}]}}",
   "Timestamp": "2022-05-04T08:06:46.704Z",
   "SignatureVersion": "1",
   "Signature": "",
@@ -11,7 +11,7 @@
   "MessageAttributes": {
     "eventType": {
       "Type": "String",
-      "Value": "risk-assessment.scores.rsr.determined"
+      "Value": "risk-assessment.scores.determined"
     }
   }
 }
