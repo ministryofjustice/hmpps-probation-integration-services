@@ -405,6 +405,7 @@ components:
       required:
       - attended
       - notify
+      - sessionHappened
       type: object
       properties:
         attended:

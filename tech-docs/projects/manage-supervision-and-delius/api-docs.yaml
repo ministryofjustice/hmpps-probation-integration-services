@@ -232,6 +232,7 @@ components:
     Sentence:
       required:
       - additionalOffences
+      - eventNumber
       - mainOffence
       type: object
       properties:
@@ -239,6 +240,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offence'
+        eventNumber:
+          type: string
         mainOffence:
           $ref: '#/components/schemas/Offence'
         order:
