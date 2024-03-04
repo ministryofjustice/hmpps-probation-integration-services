@@ -20,7 +20,8 @@ data class Requirement(
     val mainCategory: String,
     val subCategory: String?,
     val length: String,
-    val id: Long
+    val id: Long,
+    val manager: Manager
 )
 
 interface Court {

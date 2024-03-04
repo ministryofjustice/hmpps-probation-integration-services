@@ -2,18 +2,7 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.repository.CaseViewDisposalRepository
 import uk.gov.justice.digital.hmpps.data.repository.CaseViewEventRepository
 import uk.gov.justice.digital.hmpps.data.repository.CaseViewMainOffenceRepository
@@ -29,6 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtApp
 import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalType
 import uk.gov.justice.digital.hmpps.set
@@ -49,6 +39,7 @@ class CaseViewDataLoader(
     val additionalOffenceRepository: CaseViewAdditionalOffenceRepository,
     val requirementMainCategoryRepository: CaseViewRequirementMainCategoryRepository,
     val requirementRepository: CaseViewRequirementRepository,
+    val requirementManagerRepository: RequirementManagerRepository,
     val documentRepository: DocumentRepository,
     val courtRepository: CourtRepository,
     val courtAppearanceRepository: CourtAppearanceRepository,
@@ -92,6 +83,7 @@ class CaseViewDataLoader(
         RequirementGenerator.CASE_VIEW.set("disposal", DisposalGenerator.CASE_VIEW)
         requirementMainCategoryRepository.save(RequirementGenerator.CASE_VIEW.mainCategory)
         requirementRepository.save(RequirementGenerator.CASE_VIEW)
+        requirementManagerRepository.save(RequirementManagerGenerator.generate(requirementId = RequirementGenerator.CASE_VIEW.id))
         courtRepository.save(CourtGenerator.DEFAULT)
         CourtAppearanceGenerator.DEFAULT = courtAppearanceRepository.save(CourtAppearanceGenerator.generate(event))
         documentRepository.saveAll(
