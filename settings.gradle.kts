@@ -15,6 +15,7 @@ include(
     "dps-and-delius",
     "effective-proposal-framework-and-delius",
     "external-api-and-delius",
+    "feature-flags",
     "hdc-licences-and-delius",
     "hmpps-auth-and-delius",
     "make-recall-decisions-and-delius",
