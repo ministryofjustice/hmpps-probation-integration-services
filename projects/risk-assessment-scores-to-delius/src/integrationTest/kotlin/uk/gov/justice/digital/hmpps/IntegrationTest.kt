@@ -3,11 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -62,6 +58,16 @@ internal class IntegrationTest {
     fun `successfully update RSR scores`() {
         val notification = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent("RsrScoresUpdated", notification.message.telemetryProperties())
+    }
+
+    @Test
+    fun `handles null OSP-IIC and OSP-DC bands`() {
+        val notification = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED_WITHOUT_OSPIIC_OSPDC,
             attributes = MessageAttributes("risk-assessment.scores.determined")
         )
         channelManager.getChannel(queueName).publishAndWait(notification)

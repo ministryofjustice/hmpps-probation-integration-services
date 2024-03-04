@@ -3,15 +3,14 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedConstruction
-import org.mockito.Mockito.any
-import org.mockito.Mockito.mockConstructionWithAnswer
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.check
 import org.mockito.kotlin.whenever
@@ -21,6 +20,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.messaging.RiskAssessment
 import java.sql.SQLException
 import java.time.ZonedDateTime
@@ -31,14 +31,33 @@ internal class RiskScoreServiceTest {
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @Mock
+    private lateinit var featureFlags: FeatureFlags
+
+    @Mock
     private lateinit var simpleJdbcCall: SimpleJdbcCall
+
+    @BeforeEach
+    fun featureFlag() {
+        givenTheOspFlagIs(true)
+    }
 
     @Test
     fun `scores are passed to the database procedure`() {
         givenTheDatabaseProcedureSucceeds().use {
             assertDoesNotThrow {
-                whenUpdatingRsrScores()
+                whenUpdatingRsrAndOspScores()
                 thenProcedureIsCalled()
+            }
+        }
+    }
+
+    @Test
+    fun `scores are passed to the old database procedure when flag is disabled`() {
+        givenTheOspFlagIs(false)
+        givenTheDatabaseProcedureSucceeds().use {
+            assertDoesNotThrow {
+                whenUpdatingRsrAndOspScores()
+                thenTheOldProcedureIsCalled()
             }
         }
     }
@@ -46,7 +65,7 @@ internal class RiskScoreServiceTest {
     @Test
     fun `known validation errors are logged to telemetry and wrapped`() {
         givenTheDatabaseProcedureThrows(sqlException("CRN/Offender does not exist", 20000)).use {
-            val exception = assertThrows<DeliusValidationError> { whenUpdatingRsrScores() }
+            val exception = assertThrows<DeliusValidationError> { whenUpdatingRsrAndOspScores() }
             assertThat(exception.message, equalTo("CRN/Offender does not exist"))
         }
     }
@@ -54,7 +73,7 @@ internal class RiskScoreServiceTest {
     @Test
     fun `unknown errors are not wrapped`() {
         givenTheDatabaseProcedureThrows(RuntimeException("unknown error")).use {
-            val exception = assertThrows<RuntimeException> { whenUpdatingRsrScores() }
+            val exception = assertThrows<RuntimeException> { whenUpdatingRsrAndOspScores() }
             assertThat(exception.message, equalTo("unknown error"))
         }
     }
@@ -62,7 +81,7 @@ internal class RiskScoreServiceTest {
     @Test
     fun `unknown SQL errors are not wrapped`() {
         givenTheDatabaseProcedureThrows(sqlException()).use {
-            val exception = assertThrows<UncategorizedSQLException> { whenUpdatingRsrScores() }
+            val exception = assertThrows<UncategorizedSQLException> { whenUpdatingRsrAndOspScores() }
             assertThat(exception.message, containsString("uncategorized SQLException"))
         }
     }
@@ -70,19 +89,21 @@ internal class RiskScoreServiceTest {
     @Test
     fun `unknown validation errors are not wrapped`() {
         givenTheDatabaseProcedureThrows(sqlException("A validation error we haven't seen before", 20000)).use {
-            val exception = assertThrows<UncategorizedSQLException> { whenUpdatingRsrScores() }
+            val exception = assertThrows<UncategorizedSQLException> { whenUpdatingRsrAndOspScores() }
             assertThat(exception.message, containsString("A validation error we haven't seen before"))
         }
     }
 
-    private fun whenUpdatingRsrScores() {
-        RiskScoreService(jdbcTemplate).updateRsrScores(
-            "A000001",
-            123,
-            ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
-            RiskAssessment(1.00, "A"),
-            RiskAssessment(2.00, "B"),
-            RiskAssessment(3.00, "C")
+    private fun whenUpdatingRsrAndOspScores() {
+        RiskScoreService(jdbcTemplate, featureFlags).updateRsrAndOspScores(
+            crn = "A000001",
+            eventNumber = 123,
+            assessmentDate = ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
+            rsr = RiskAssessment(1.00, "A"),
+            ospIndecent = RiskAssessment(2.00, "B"),
+            ospIndirectIndecent = RiskAssessment(3.00, "C"),
+            ospContact = RiskAssessment(4.00, "D"),
+            ospDirectContact = RiskAssessment(5.00, "E"),
         )
     }
 
@@ -94,9 +115,30 @@ internal class RiskScoreServiceTest {
             "p_rsr_score" to 1.00,
             "p_rsr_level_code" to "A",
             "p_osp_score_i" to 2.00,
-            "p_osp_score_c" to 3.00,
+            "p_osp_score_c" to 4.00,
             "p_osp_level_i_code" to "B",
-            "p_osp_level_c_code" to "C"
+            "p_osp_level_c_code" to "D",
+            "p_osp_level_iic_code" to "C",
+            "p_osp_level_dc_code" to "E",
+        )
+        verify(simpleJdbcCall).execute(
+            check<MapSqlParameterSource> { params ->
+                assertThat(params.values, equalTo(expectedValues))
+            }
+        )
+    }
+
+    private fun thenTheOldProcedureIsCalled() {
+        val expectedValues = mapOf(
+            "p_crn" to "A000001",
+            "p_event_number" to 123,
+            "p_rsr_assessor_date" to ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
+            "p_rsr_score" to 1.00,
+            "p_rsr_level_code" to "A",
+            "p_osp_score_i" to 2.00,
+            "p_osp_score_c" to 4.00,
+            "p_osp_level_i_code" to "B",
+            "p_osp_level_c_code" to "D"
         )
         verify(simpleJdbcCall).execute(
             check<MapSqlParameterSource> { params ->
@@ -109,6 +151,9 @@ internal class RiskScoreServiceTest {
         whenever(simpleJdbcCall.withProcedureName("procUpdateCAS")).thenReturn(simpleJdbcCall)
         whenever(simpleJdbcCall.withoutProcedureColumnMetaDataAccess()).thenReturn(simpleJdbcCall)
         whenever(simpleJdbcCall.declareParameters(*Array(9) { any() })).thenReturn(simpleJdbcCall)
+        if (featureFlags.enabled("osp-indirect-indecent-and-direct-contact")) {
+            whenever(simpleJdbcCall.declareParameters(*Array(2) { any() })).thenReturn(simpleJdbcCall)
+        }
         return mockConstructionWithAnswer(SimpleJdbcCall::class.java, { simpleJdbcCall })
     }
 
@@ -116,6 +161,10 @@ internal class RiskScoreServiceTest {
         val mockedConstruction = givenTheDatabaseProcedureSucceeds()
         whenever(simpleJdbcCall.execute(any(SqlParameterSource::class.java))).thenThrow(e)
         return mockedConstruction
+    }
+
+    private fun givenTheOspFlagIs(value: Boolean) {
+        whenever(featureFlags.enabled("osp-indirect-indecent-and-direct-contact")).thenReturn(value)
     }
 
     private fun sqlException(message: String? = null, code: Int = 20000) =
