@@ -37,7 +37,7 @@ class PersonalCircumstance(
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
 
-)
+    )
 
 @Immutable
 @Entity
