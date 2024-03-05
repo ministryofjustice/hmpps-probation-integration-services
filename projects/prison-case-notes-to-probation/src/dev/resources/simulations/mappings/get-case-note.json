@@ -30,6 +30,20 @@
     {
       "request": {
         "method": "GET",
+        "url": "/case-notes/AA0001A/5767"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-case-note-body-resettlement-passport-new.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/case-notes/AA0001A/4444"
       },
       "response": {
