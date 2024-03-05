@@ -54,13 +54,13 @@ class UpdateLocationAction(
             else -> null
         }
 
-        return institution?.let { institution ->
-            custody.updateLocationAt(institution, prisonerMovement.occurredAt) {
+        return institution?.let { inst ->
+            custody.updateLocationAt(inst, prisonerMovement.occurredAt) {
                 referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.LOCATION_CHANGE.code)
             }?.let { history ->
                 custodyRepository.save(custody)
                 custodyHistoryRepository.save(history)
-                (pomInstitutionOverride ?: institution).probationArea?.let {
+                (pomInstitutionOverride ?: inst).probationArea?.let {
                     prisonManagerService.allocateToProbationArea(
                         custody.disposal,
                         it,

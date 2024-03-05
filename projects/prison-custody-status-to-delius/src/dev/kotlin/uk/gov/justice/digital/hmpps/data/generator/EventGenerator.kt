@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import uk.gov.justice.digital.hmpps.set
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object EventGenerator {
@@ -53,7 +54,7 @@ object EventGenerator {
             status = ReferenceDataGenerator.CUSTODIAL_STATUS[custodialStatusCode]!!,
             institution = institution,
             disposal = disposal,
-            statusChangeDate = ZonedDateTime.now().minusDays(1),
+            statusChangeDate = LocalDate.now().minusDays(1),
             locationChangeDate = ZonedDateTime.now().minusDays(1)
         )
         disposal.custody = custody

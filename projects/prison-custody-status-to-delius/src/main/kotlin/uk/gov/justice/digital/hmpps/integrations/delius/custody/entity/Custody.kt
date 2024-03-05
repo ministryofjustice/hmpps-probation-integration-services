@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CAN_RELEASE_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -46,7 +47,7 @@ class Custody(
     val disposal: Disposal,
 
     @Column(nullable = false)
-    var statusChangeDate: ZonedDateTime,
+    var statusChangeDate: LocalDate,
 
     @Column
     var locationChangeDate: ZonedDateTime?,
@@ -108,7 +109,7 @@ class Custody(
         null
     } else {
         this.status = status
-        this.statusChangeDate = dateTime
+        this.statusChangeDate = dateTime.toLocalDate()
         CustodyHistory(
             date = dateTime,
             type = historyType(),
