@@ -7,9 +7,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.registration.entity.Regi
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-class RegistrationsRisksGenerator {
+object RegistrationsRisksGenerator {
 
-    fun generate() : Registration =
+    fun generate() :List<Registration> = listOf(
         Registration(person = PersonGenerator.DEFAULT,
                      type = RegisterTypeGenerator.RED_ROSH,
                      date = LocalDate.now(),
@@ -17,7 +17,7 @@ class RegistrationsRisksGenerator {
                      softDeleted = false,
                      deRegistered = false,
                      createdDateTime = ZonedDateTime.now(),
-                     )
+                     ))
 
     object RegisterTypeGenerator {
         val RED_ROSH = generate("Rosh",
@@ -39,7 +39,6 @@ class RegistrationsRisksGenerator {
             id: Long = IdGenerator.getAndIncrement(),
             risk: Dataset = DatasetGenerator.REGISTER_TYPE_FLAG)
         = ReferenceData(id, code, description, risk)
-                                                                                )
     }
 
 }

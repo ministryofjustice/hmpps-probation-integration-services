@@ -6,9 +6,9 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.RegistrationRepository
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationsRisksGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.entity.RegistrationRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class RegistrationServiceTest {
@@ -21,8 +21,8 @@ internal class RegistrationServiceTest {
 
     @Test
     fun `get ROSH red cases`() {
-
-        whenever(registrationRepository.findAllByPersonCrn(Mockito.anyString()))
+        val flags = RegistrationsRisksGenerator.generate()
+        whenever(registrationRepository.findAllByPersonCrn(Mockito.anyString())).thenReturn(flags)
 
     }
 
