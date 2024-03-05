@@ -1,0 +1,13 @@
+{
+  "caseNoteId": 5767,
+  "eventId": 576777,
+  "offenderIdentifier": "AA0001A",
+  "type": "RESET",
+  "subType": "BCST",
+  "creationDateTime": "2021-04-16T11:22:33+01:00",
+  "occurrenceDateTime": "2021-03-23T11:22:00+01:00",
+  "authorName": "Some Name",
+  "text": "note content",
+  "locationId": "LEI",
+  "amendments": []
+}

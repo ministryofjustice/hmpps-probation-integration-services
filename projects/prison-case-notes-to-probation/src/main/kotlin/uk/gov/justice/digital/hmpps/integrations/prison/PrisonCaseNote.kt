@@ -30,6 +30,8 @@ data class PrisonCaseNote(
         } else {
             StaffName(authorName.substringBeforeLast(" ").trim(), authorName.substringAfterLast(" ").trim())
         }
+
+    fun isResettlementPassport() = type == "RESET" && subType == "BCST"
 }
 
 data class CaseNoteAmendment(

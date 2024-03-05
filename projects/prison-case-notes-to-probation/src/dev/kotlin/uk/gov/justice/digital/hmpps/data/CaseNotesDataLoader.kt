@@ -66,6 +66,8 @@ class CaseNotesDataLoader(
         caseNoteTypeRepository.save(CaseNoteTypeGenerator.DEFAULT)
         caseNoteTypeRepository.save(CaseNoteNomisTypeGenerator.NEG.type)
         caseNoteNomisTypeRepository.save(CaseNoteNomisTypeGenerator.NEG)
+        caseNoteTypeRepository.save(CaseNoteNomisTypeGenerator.RESETTLEMENT.type)
+        caseNoteNomisTypeRepository.save(CaseNoteNomisTypeGenerator.RESETTLEMENT)
 
         institutionRepository.save(ProbationAreaGenerator.DEFAULT.institution!!)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
