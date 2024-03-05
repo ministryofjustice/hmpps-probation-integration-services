@@ -18,6 +18,7 @@ object DatasetGenerator {
     val ADDRESS_TYPE = generate(DatasetCode.ADDRESS_TYPE)
     val ADDRESS_STATUS = generate(DatasetCode.ADDRESS_STATUS)
     val COURT_APPEARANCE_TYPE = generate(DatasetCode.COURT_APPEARANCE_TYPE)
+    val REGISTER_TYPE_FLAG = generate(DatasetCode.REGISTER_TYPE_FLAG)
 
     fun generate(code: DatasetCode, id: Long = IdGenerator.getAndIncrement()) = Dataset(id, code)
 }
