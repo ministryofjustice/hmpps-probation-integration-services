@@ -766,6 +766,7 @@ components:
           $ref: '#/components/schemas/StaffMember'
     Manager:
       required:
+      - allocated
       - code
       - name
       - teamCode
@@ -779,6 +780,8 @@ components:
           type: string
         grade:
           type: string
+        allocated:
+          type: boolean
     NamedCourt:
       required:
       - name
@@ -1214,6 +1217,7 @@ components:
       - id
       - length
       - mainCategory
+      - manager
       type: object
       properties:
         mainCategory:
@@ -1225,6 +1229,8 @@ components:
         id:
           type: integer
           format: int64
+        manager:
+          $ref: '#/components/schemas/Manager'
     RiskOGRS:
       required:
       - lastUpdatedDate

@@ -573,7 +573,8 @@
             "surname": "string"
           },
           "teamCode": "string",
-          "grade": "string"
+          "grade": "string",
+          "allocated": "boolean"
         }
       },
       "sentence": {
@@ -610,7 +611,8 @@
           "surname": "string"
         },
         "teamCode": "string",
-        "grade": "string"
+        "grade": "string",
+        "allocated": "boolean"
       },
       "handoverDate": "string"
     }
@@ -1026,7 +1028,8 @@
         "surname": "string"
       },
       "teamCode": "string",
-      "grade": "string"
+      "grade": "string",
+      "allocated": "boolean"
     }
   },
   "activeEvents": [
@@ -1381,7 +1384,18 @@
       "mainCategory": "string",
       "subCategory": "string",
       "length": "string",
-      "id": "integer"
+      "id": "integer",
+      "manager": {
+        "code": "string",
+        "name": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "teamCode": "string",
+        "grade": "string",
+        "allocated": "boolean"
+      }
     }
   ]
 }</code></pre>
@@ -1745,7 +1759,8 @@
       "surname": "string"
     },
     "teamCode": "string",
-    "grade": "string"
+    "grade": "string",
+    "allocated": "boolean"
   },
   "teams": {
   }
@@ -1827,7 +1842,8 @@
     "surname": "string"
   },
   "teamCode": "string",
-  "grade": "string"
+  "grade": "string",
+  "allocated": "boolean"
 }</code></pre>
 
 </td>
@@ -1932,7 +1948,8 @@
         "surname": "string"
       },
       "teamCode": "string",
-      "grade": "string"
+      "grade": "string",
+      "allocated": "boolean"
     }
   },
   "type": "string",
@@ -2670,6 +2687,16 @@
 <td>grade</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>allocated</td>
+<td>boolean</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -3985,6 +4012,16 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>manager</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-manager'>Manager</a>
 </td>
 </tr>
 
