@@ -2,8 +2,11 @@ database:
   access:
     username_key: /resettlement-passport-and-delius/db-username
     password_key: /resettlement-passport-and-delius/db-password
+    tables:
+      - audited_interaction
+      - contact
 
   audit:
     username: ResettlementPassportAndDelius
-    forename: Probation Integration # TODO change this to something meaningful for your service
+    forename: Resettlement Passport
     surname: Service

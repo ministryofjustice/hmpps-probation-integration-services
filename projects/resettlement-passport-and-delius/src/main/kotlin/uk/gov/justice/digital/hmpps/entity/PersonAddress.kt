@@ -1,17 +1,12 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Entity
@@ -77,4 +72,9 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
 interface PersonRepository : JpaRepository<Person, Long> {
     @Query("select p.crn from Person p where p.noms = :nomsId")
     fun findCrnByNomsId(nomsId: String): String?
+
+    fun findByCrn(crn: String): Person?
 }
+
+fun PersonRepository.getByCrn(crn: String): Person =
+    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

@@ -7,17 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NSIGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NSIManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NSIStatusGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NSITypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.Category
 import uk.gov.justice.digital.hmpps.entity.Level
@@ -75,6 +65,29 @@ class DataLoader(
         )
 
         createAppointments(PersonGenerator.DEFAULT)
+
+        createAppointmentData()
+    }
+
+    fun createAppointmentData() {
+        val conflictPerson = PersonGenerator.CREATE_APPOINTMENT
+        val conflictManager = PersonGenerator.generateManager(PersonGenerator.CREATE_APPOINTMENT)
+        em.saveAll(
+            AppointmentGenerator.APPOINTMENT_TYPE,
+            conflictPerson,
+            conflictManager,
+            AppointmentGenerator.generate(
+                conflictPerson,
+                AppointmentGenerator.ATTENDANCE_TYPE,
+                LocalDate.now().plusDays(7),
+                ZonedDateTime.now().plusDays(7),
+                ZonedDateTime.now().plusDays(7).plusHours(1),
+                location = null,
+                probationAreaId = conflictManager.probationAreaId,
+                team = conflictManager.team,
+                staff = conflictManager.staff
+            )
+        )
     }
 
     fun EntityManager.saveAll(vararg any: Any) = any.forEach { persist(it) }
@@ -89,17 +102,19 @@ class DataLoader(
                     date,
                     start,
                     start.plusMinutes(30),
-                    if (start.minute == 30) AppointmentGenerator.DEFAULT_LOCATION else null,
-                    ProviderGenerator.DEFAULT_STAFF,
-                    if (start.isAfter(ZonedDateTime.now())) {
-                        null
-                    } else {
-                        AppointmentGenerator.ATTENDED_OUTCOME
-                    },
-                    if (start.minute == 0) {
+                    probationAreaId = ProviderGenerator.DEFAULT_AREA.id,
+                    team = ProviderGenerator.DEFAULT_TEAM,
+                    staff = ProviderGenerator.DEFAULT_STAFF,
+                    location = if (start.minute == 30) AppointmentGenerator.DEFAULT_LOCATION else null,
+                    description = if (start.minute == 0) {
                         "On the hour"
                     } else {
                         null
+                    },
+                    outcome = if (start.isAfter(ZonedDateTime.now())) {
+                        null
+                    } else {
+                        AppointmentGenerator.ATTENDED_OUTCOME
                     }
                 )
             }

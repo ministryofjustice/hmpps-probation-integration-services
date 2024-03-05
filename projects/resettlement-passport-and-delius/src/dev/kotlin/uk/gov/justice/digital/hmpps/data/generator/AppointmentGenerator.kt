@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.Appointment
-import uk.gov.justice.digital.hmpps.entity.AppointmentOutcome
-import uk.gov.justice.digital.hmpps.entity.AppointmentType
-import uk.gov.justice.digital.hmpps.entity.Location
-import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.Staff
+import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -14,6 +9,7 @@ object AppointmentGenerator {
     val NON_ATTENDANCE_TYPE = generateType("NAT", attendanceType = false)
     val ATTENDED_OUTCOME = generateOutcome("AO")
     val NON_ATTENDED_OUTCOME = generateOutcome("NAO")
+    val APPOINTMENT_TYPE = generateType(AppointmentType.Code.EXTERNAL_AGENCY.value, attendanceType = true)
     val DEFAULT_LOCATION = generateLocation(
         "DEFAULT",
         buildingNumber = "1",
@@ -68,10 +64,30 @@ object AppointmentGenerator {
         startTime: ZonedDateTime,
         endTime: ZonedDateTime?,
         location: Location?,
+        notes: String? = null,
+        probationAreaId: Long,
+        team: Team,
         staff: Staff,
         outcome: AppointmentOutcome? = null,
         description: String? = null,
         softDeleted: Boolean = false,
+        version: Long = 0,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Appointment(person, type, date, startTime, endTime, location, staff, description, outcome, softDeleted, id)
+    ) = Appointment(
+        person,
+        type,
+        date,
+        startTime,
+        endTime,
+        notes,
+        probationAreaId,
+        team,
+        staff,
+        description,
+        location,
+        outcome,
+        softDeleted,
+        version,
+        id
+    )
 }

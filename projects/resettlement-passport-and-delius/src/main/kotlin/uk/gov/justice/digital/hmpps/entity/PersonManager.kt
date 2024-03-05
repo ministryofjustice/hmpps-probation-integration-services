@@ -1,14 +1,10 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Table(name = "offender_manager")
@@ -21,8 +17,14 @@ class PersonManager(
     val person: Person,
 
     @ManyToOne
+    @JoinColumn(name = "team_id")
+    val team: Team,
+
+    @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
+
+    val probationAreaId: Long,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
@@ -38,3 +40,6 @@ class PersonManager(
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByPersonCrn(crn: String): PersonManager?
 }
+
+fun PersonManagerRepository.getByCrn(crn: String) =
+    findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
