@@ -28,7 +28,7 @@ class PersonalCircumstance(
     @ManyToOne
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "circumstance_sub_type_id")
-    val subType: ReferenceData,
+    val subType: PersonalCircumstanceSubType,
 
     val startDate: LocalDate,
 
@@ -37,5 +37,16 @@ class PersonalCircumstance(
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
 
-    )
+)
 
+@Immutable
+@Entity
+@Table(name = "r_circumstance_sub_type")
+class PersonalCircumstanceSubType(
+    @Id
+    @Column(name = "circumstance_sub_type_id")
+    val id: Long,
+
+    @Column(name = "code_description")
+    val description: String,
+)
