@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.entity.AppointmentRepository
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
@@ -83,7 +84,7 @@ internal class CreateAppointmentIntTests {
         ).first()
 
         assertThat(appointment.date, equalTo(start.toLocalDate()))
-        assertThat(appointment.startTime, equalTo(start))
+        assertThat(appointment.startTime, isCloseTo(start))
         assertThat(appointment.notes, equalTo("Resettlement Passport Notes"))
         assertThat(appointment.description, equalTo("Some Description for RP"))
     }
