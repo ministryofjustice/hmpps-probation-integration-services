@@ -81,5 +81,6 @@ class OverviewService(
     fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision() =
         Provision(description = type.description)
 
-    fun Contact.toNextAppointment() = NextAppointment(description = type.description, date = date.toLocalDateTime())
+    fun Contact.toNextAppointment() =
+        NextAppointment(description = type.description, date = startDateTime().toLocalDateTime())
 }
