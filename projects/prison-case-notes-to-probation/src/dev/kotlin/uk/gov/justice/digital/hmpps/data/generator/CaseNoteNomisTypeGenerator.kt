@@ -20,4 +20,12 @@ object CaseNoteNomisTypeGenerator {
             false
         )
     )
+    val RESETTLEMENT = CaseNoteNomisType(
+        "RESET BCST",
+        CaseNoteType(
+            IdGenerator.getAndIncrement(),
+            "BCSP2",
+            false
+        )
+    )
 }

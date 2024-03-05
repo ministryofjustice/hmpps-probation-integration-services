@@ -61,6 +61,8 @@ class DeliusService(
 
         val relatedIds = relatedService.findRelatedCaseNoteIds(offender.id, body.typeLookup())
 
+        println(body.typeLookup())
+
         val caseNoteType = nomisTypeRepository.findByIdOrNull(body.typeLookup())?.type
             ?: caseNoteTypeRepository.getByCode(CaseNoteType.DEFAULT_CODE)
 

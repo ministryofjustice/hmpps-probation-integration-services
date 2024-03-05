@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -143,5 +144,36 @@ class CaseNotesIntegrationTest {
         )
 
         verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
+    }
+
+    @Test
+    fun `create a new case note for resettlement passport`() {
+        val nomisCaseNote = PrisonCaseNoteGenerator.RESETTLEMENT_PASSPORT
+
+        channelManager.getChannel(queueName).publishAndWait(
+            prepMessage(CaseNoteMessageGenerator.RESETTLEMENT_PASSPORT, wireMockserver.port())
+        )
+
+        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
+        val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
+        assertNotNull(saved)
+
+        assertThat(
+            saved!!.notes,
+            stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
+        )
+
+        assertThat(
+            saved.type.code,
+            equalTo(CaseNoteNomisTypeGenerator.RESETTLEMENT.type.code)
+        )
+
+        assertThat(
+            saved.eventId,
+            equalTo(EventGenerator.CUSTODIAL_EVENT.id)
+        )
+
+        val staff = staffRepository.findById(saved.staffId).orElseThrow()
+        assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
     }
 }

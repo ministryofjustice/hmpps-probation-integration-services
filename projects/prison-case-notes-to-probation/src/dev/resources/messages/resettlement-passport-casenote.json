@@ -1,0 +1,17 @@
+{
+  "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
+  "Type": "Notification",
+  "Timestamp": "2019-10-21T14:01:18.500Z",
+  "Message": "{\"eventType\":\"prison.case-note.published\",\"version\":1,\"description\":\"A prison case note has been created or amended\",\"occurredAt\":\"2022-10-18T08:19:19.451579+01:00\",\"detailUrl\":\"http://localhost:{wiremock.port}/case-notes/AA0001A/5767\",\"additionalInformation\":{\"caseNoteId\":\"5767\",\"caseNoteType\":\"RESET-BCST\"},\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"AA0001A\"}]}}",
+  "TopicArn": "arn:aws:sns:eu-west-1:000000000000:offender_events",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "prison.case-note.published"
+    },
+    "caseNoteType": {
+      "Type": "String",
+      "Value": "RESET-BCST"
+    }
+  }
+}
