@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "eventType": "prison-offender-events.prisoner.merged",
+  "description": "A prisoner has been merged from A0001AA to B0001BB",
+  "occurredAt": "2024-03-14T16:14:47Z",
+  "publishedAt": "2024-03-14T16:14:48.060048501Z",
+  "additionalInformation": {
+    "nomsNumber": "B0007BB",
+    "removedNomsNumber": "A0007AA",
+    "reason": "MERGE"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "NOMS",
+        "value": "A0007AA"
+      }
+    ]
+  }
+}

@@ -1,14 +1,6 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
@@ -72,13 +64,18 @@ class Disposal(
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
+@SQLRestriction("soft_deleted = 0 and (select cs.code_value from r_standard_reference_list cs where cs.standard_reference_list_id = custodial_status_id) <> 'P'")
 class Custody(
     @Id
     @Column(name = "custody_id")
     val id: Long,
 
-    @Column(name = "prisoner_number")
-    var bookingRef: String?,
+    @Column
+    var prisonerNumber: String?,
+
+    @ManyToOne
+    @JoinColumn(name = "custodial_status_id")
+    val status: ReferenceData,
 
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)

@@ -1,9 +1,8 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -13,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.service.withinDays
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -46,6 +46,9 @@ class Person(
 
     @Column(columnDefinition = "char(7)")
     var nomsNumber: String? = null,
+
+    @Column
+    var mostRecentPrisonerNumber: String? = null,
 
     @Column
     val croNumber: String? = null,
@@ -87,25 +90,11 @@ class Person(
     fun isSentenced() = events.any { it.disposal != null }
 
     fun sentenceDates() = events.mapNotNull { it.disposal?.startDate }
-}
 
-@Immutable
-@Entity
-@Table(name = "r_standard_reference_list")
-class ReferenceData(
-    @Id
-    @Column(name = "standard_reference_list_id", nullable = false)
-    val id: Long,
+    fun custodies() = events.mapNotNull { it.disposal?.custody }
 
-    @Column(name = "code_value")
-    val code: String
-
-) {
-    fun prisonGenderCode() = when (code) {
-        "M", "F" -> code
-        "N" -> "NK"
-        else -> "ALL"
-    }
+    fun custodiesWithSentenceDateCloseTo(sentenceDate: LocalDate) =
+        custodies().filter { sentenceDate.withinDays(it.disposal.startDate) }
 }
 
 interface PersonRepository : JpaRepository<Person, Long> {
@@ -124,18 +113,19 @@ interface PersonRepository : JpaRepository<Person, Long> {
         and e.softDeleted = false
         and e.active = true
         and c.softDeleted = false
-        and c.bookingRef is null
+        and c.prisonerNumber is null
     """
     )
     fun findSentencedByCrn(crn: String): List<SentencedPerson>
 
     fun findByCrn(crn: String): Person?
 
-    @Query("select count(p) from Person p where p.nomsNumber = :nomsNumber and p.id <> :personId")
-    fun checkForDuplicateNoms(nomsNumber: String, personId: Long): Int
-
     @Query("select p.crn from Person p where p.softDeleted = false")
     fun findAllCrns(): List<String>
+
+    fun findAllByNomsNumberAndIdNot(nomsNumber: String, id: Long): List<Person>
+
+    fun findAllByNomsNumber(nomsNumber: String): List<Person>
 }
 
 fun PersonRepository.getByCrn(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

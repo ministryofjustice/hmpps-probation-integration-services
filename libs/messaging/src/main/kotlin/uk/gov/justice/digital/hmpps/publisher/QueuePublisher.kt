@@ -15,7 +15,7 @@ import java.util.concurrent.Semaphore
 @Component
 @Conditional(AwsCondition::class)
 @ConditionalOnProperty("messaging.producer.queue")
-class AwsQueuePublisher(
+class QueuePublisher(
     private val sqsTemplate: SqsTemplate,
     private val objectMapper: ObjectMapper,
     @Value("\${messaging.producer.queue}") private val queue: String,

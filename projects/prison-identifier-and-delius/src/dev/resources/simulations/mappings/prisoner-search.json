@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "POST",
-        "url": "/global-search",
+        "url": "/prisoner-search/global-search",
         "bodyPatterns" : [ {
           "contains" : "\"prisonerIdentifier\":\"07/220000004Q\""
         } ]
@@ -13,13 +13,13 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "search-results-body.json"
+        "bodyFileName": "prisoner-search-results-body.json"
       }
     },
     {
       "request": {
         "method": "POST",
-        "url": "/global-search",
+        "url": "/prisoner-search/global-search",
         "bodyPatterns" : [ {
           "contains" : "\"firstName\":\"Jack\""
         } ]
@@ -29,13 +29,13 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "search-results-body2.json"
+        "bodyFileName": "prisoner-search-results-body2.json"
       }
     },
     {
       "request": {
         "method": "POST",
-        "url": "/global-search",
+        "url": "/prisoner-search/global-search",
         "bodyPatterns" : [ {
           "contains" : "\"firstName\":\"Fred\""
         } ]
@@ -45,13 +45,13 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "search-results-body3.json"
+        "bodyFileName": "prisoner-search-results-body3.json"
       }
     },
     {
       "request": {
         "method": "POST",
-        "url": "/global-search",
+        "url": "/prisoner-search/global-search",
         "bodyPatterns" : [ {
           "contains" : "\"prisonerIdentifier\":\"E1234XS\""
         } ]
@@ -61,7 +61,7 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "search-results-body4.json"
+        "bodyFileName": "prisoner-search-results-body4.json"
       }
     }
   ]
