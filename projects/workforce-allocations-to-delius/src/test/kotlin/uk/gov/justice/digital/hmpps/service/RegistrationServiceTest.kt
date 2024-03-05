@@ -24,6 +24,8 @@ internal class RegistrationServiceTest {
         val flags = RegistrationsRisksGenerator.generate()
         whenever(registrationRepository.findAllByPersonCrn(Mockito.anyString())).thenReturn(flags)
 
+        registrationService.findActiveRegistrations("123")
+
     }
 
 }
