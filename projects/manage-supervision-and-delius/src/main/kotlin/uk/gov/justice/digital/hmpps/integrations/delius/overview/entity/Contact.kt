@@ -8,6 +8,9 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Immutable
@@ -52,7 +55,9 @@ class Contact(
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     var softDeleted: Boolean = false
-)
+) {
+    fun startDateTime(): ZonedDateTime = ZonedDateTime.of(date.toLocalDate(), startTime.toLocalTime(), date.zone)
+}
 
 @Immutable
 @Entity
@@ -74,15 +79,20 @@ class ContactType(
 )
 
 interface ContactRepository : JpaRepository<Contact, Long> {
+
     @Query(
         """
             select c from Contact c
             join fetch c.type t
             where c.personId = :personId
             and c.type.attendanceContact = true
-            and c.date > CURRENT_TIMESTAMP 
-            order by c.date asc
+            and (c.date > CURRENT_TIMESTAMP OR (c.date = CURRENT_DATE AND c.startTime > :timeNow))
+            order by c.date, c.startTime asc
         """
     )
-    fun findFirstAppointment(personId: Long, pageable: Pageable = PageRequest.of(0, 1)): List<Contact>
+    fun findFirstAppointment(
+        personId: Long,
+        timeNow: ZonedDateTime = ZonedDateTime.of(LocalDate.EPOCH, LocalTime.now(), ZoneId.systemDefault()),
+        pageable: Pageable = PageRequest.of(0, 1)
+    ): List<Contact>
 }
