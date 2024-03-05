@@ -7,8 +7,11 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.CreateAppointment
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.entity.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.entity.Category
 import uk.gov.justice.digital.hmpps.entity.Level
 import uk.gov.justice.digital.hmpps.entity.Person
@@ -16,6 +19,7 @@ import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
+import java.util.*
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -31,6 +35,9 @@ class DataLoader(
 
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
+        BusinessInteractionCode.entries.forEach {
+            em.persist(BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()))
+        }
         em.saveAll(
             NSITypeGenerator.DTR,
             NSIStatusGenerator.INITIATED,
@@ -73,7 +80,7 @@ class DataLoader(
         val conflictPerson = PersonGenerator.CREATE_APPOINTMENT
         val conflictManager = PersonGenerator.generateManager(PersonGenerator.CREATE_APPOINTMENT)
         em.saveAll(
-            AppointmentGenerator.APPOINTMENT_TYPE,
+            *AppointmentGenerator.APPOINTMENT_TYPES.toTypedArray(),
             conflictPerson,
             conflictManager,
             AppointmentGenerator.generate(

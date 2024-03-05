@@ -9,6 +9,8 @@ import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.api.model.Appointment
 import uk.gov.justice.digital.hmpps.api.model.Location
 import uk.gov.justice.digital.hmpps.api.model.Staff
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.exception.ConflictException
@@ -18,11 +20,13 @@ import java.time.ZonedDateTime
 
 @Service
 class AppointmentService(
+    auditedInteractionService: AuditedInteractionService,
     private val appointmentRepository: AppointmentRepository,
     private val appointmentTypeRepository: AppointmentTypeRepository,
     private val personManagerRepository: PersonManagerRepository,
+    private val alertRepository: AlertRepository,
     private val ldap: LdapTemplate
-) {
+) : AuditableService(auditedInteractionService) {
     fun findAppointmentsFor(
         crn: String,
         startDate: LocalDate,
@@ -33,10 +37,11 @@ class AppointmentService(
     fun createAppointment(
         crn: String,
         createAppointment: CreateAppointment
-    ) {
+    ) = audit(BusinessInteractionCode.ADD_CONTACT) {
         val pm = personManagerRepository.getByCrn(crn)
         checkForConflicts(pm.person.id, createAppointment)
-        appointmentRepository.save(createAppointment.withManager(pm))
+        val appointment = appointmentRepository.save(createAppointment.withManager(pm))
+        alertRepository.save(appointment.alert(pm))
     }
 
     private fun uk.gov.justice.digital.hmpps.entity.Appointment.asAppointment(): Appointment =
@@ -83,7 +88,7 @@ class AppointmentService(
 
     private fun CreateAppointment.withManager(pm: PersonManager) = uk.gov.justice.digital.hmpps.entity.Appointment(
         pm.person,
-        appointmentTypeRepository.getByCode(AppointmentType.Code.EXTERNAL_AGENCY.value),
+        appointmentTypeRepository.getByCode(type.code),
         start.toLocalDate(),
         start,
         end,
@@ -91,6 +96,10 @@ class AppointmentService(
         pm.probationAreaId,
         pm.team,
         pm.staff,
-        description
+        urn
+    )
+
+    private fun uk.gov.justice.digital.hmpps.entity.Appointment.alert(personManager: PersonManager) = Alert(
+        id, type.id, person.id, personManager.team.id, personManager.staff.id, personManager.id
     )
 }

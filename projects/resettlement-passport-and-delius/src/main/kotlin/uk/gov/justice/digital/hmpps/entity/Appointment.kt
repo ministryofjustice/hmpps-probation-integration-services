@@ -59,8 +59,10 @@ class Appointment(
     @JoinColumn(name = "staff_id")
     val staff: Staff,
 
+    val externalReference: String? = null,
+
     @Column(name = "description")
-    val description: String?,
+    val description: String? = null,
 
     @ManyToOne
     @JoinColumn(name = "office_location_id")
@@ -126,11 +128,7 @@ class AppointmentType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long
-) {
-    enum class Code(val value: String) {
-        EXTERNAL_AGENCY("C101")
-    }
-}
+)
 
 @Immutable
 @Entity

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.entity.AlertRepository
 import uk.gov.justice.digital.hmpps.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
@@ -27,6 +29,9 @@ internal class CreateAppointmentIntTests {
     @Autowired
     internal lateinit var appointmentRepository: AppointmentRepository
 
+    @Autowired
+    internal lateinit var alertRepository: AlertRepository
+
     @Test
     fun `create appointment when offender does not exist retuns a 404 response`() {
         mockMvc.perform(
@@ -34,7 +39,9 @@ internal class CreateAppointmentIntTests {
                 .withToken()
                 .withJson(
                     CreateAppointment(
-                        ZonedDateTime.now().plusDays(1), ZonedDateTime.now().plusDays(1)
+                        CreateAppointment.Type.Accommodation,
+                        ZonedDateTime.now().plusDays(1),
+                        ZonedDateTime.now().plusDays(1)
                     )
                 )
         ).andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -47,7 +54,7 @@ internal class CreateAppointmentIntTests {
             post("/appointments/${PersonGenerator.CREATE_APPOINTMENT.crn}")
                 .withToken()
                 .withJson(
-                    CreateAppointment(start, start.plusMinutes(30))
+                    CreateAppointment(CreateAppointment.Type.Health, start, start.plusMinutes(30))
                 )
         ).andExpect(MockMvcResultMatchers.status().isConflict)
     }
@@ -59,7 +66,7 @@ internal class CreateAppointmentIntTests {
             post("/appointments/${PersonGenerator.CREATE_APPOINTMENT.crn}")
                 .withToken()
                 .withJson(
-                    CreateAppointment(start, start.minusSeconds(1))
+                    CreateAppointment(CreateAppointment.Type.Finance, start, start.minusSeconds(1))
                 )
         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
@@ -68,12 +75,13 @@ internal class CreateAppointmentIntTests {
     fun `create a new appointment`() {
         val person = PersonGenerator.CREATE_APPOINTMENT
         val start = ZonedDateTime.now().plusDays(1)
+        val notes = "Resettlement Passport Notes"
+        val create = CreateAppointment(CreateAppointment.Type.SkillsAndWork, start, start.plusHours(1), notes)
+
         mockMvc.perform(
             post("/appointments/${person.crn}")
                 .withToken()
-                .withJson(
-                    CreateAppointment(start, start.plusHours(1))
-                )
+                .withJson(create)
         ).andExpect(MockMvcResultMatchers.status().isCreated)
 
         val appointment = appointmentRepository.findAppointmentsFor(
@@ -83,9 +91,13 @@ internal class CreateAppointmentIntTests {
             PageRequest.of(0, 1)
         ).first()
 
+        assertThat(appointment.type.code, equalTo(create.type.code))
         assertThat(appointment.date, equalTo(start.toLocalDate()))
         assertThat(appointment.startTime, isCloseTo(start))
-        assertThat(appointment.notes, equalTo("Resettlement Passport Notes"))
-        assertThat(appointment.description, equalTo("Some Description for RP"))
+        assertThat(appointment.notes, equalTo(notes))
+        assertThat(appointment.externalReference, equalTo(create.urn))
+
+        val alert = alertRepository.findAll().firstOrNull { it.contactId == appointment.id }
+        assertNotNull(alert)
     }
 }

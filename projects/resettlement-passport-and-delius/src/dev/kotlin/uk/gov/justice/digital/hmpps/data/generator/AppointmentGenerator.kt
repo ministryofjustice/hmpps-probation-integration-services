@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.api.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -9,7 +10,6 @@ object AppointmentGenerator {
     val NON_ATTENDANCE_TYPE = generateType("NAT", attendanceType = false)
     val ATTENDED_OUTCOME = generateOutcome("AO")
     val NON_ATTENDED_OUTCOME = generateOutcome("NAO")
-    val APPOINTMENT_TYPE = generateType(AppointmentType.Code.EXTERNAL_AGENCY.value, attendanceType = true)
     val DEFAULT_LOCATION = generateLocation(
         "DEFAULT",
         buildingNumber = "1",
@@ -17,6 +17,7 @@ object AppointmentGenerator {
         townCity = "Heath",
         postcode = "H34 7TH"
     )
+    val APPOINTMENT_TYPES = CreateAppointment.Type.entries.map { generateType(it.code, attendanceType = true) }
 
     fun generateType(
         code: String,
@@ -63,6 +64,7 @@ object AppointmentGenerator {
         date: LocalDate,
         startTime: ZonedDateTime,
         endTime: ZonedDateTime?,
+        externalReference: String? = null,
         location: Location?,
         notes: String? = null,
         probationAreaId: Long,
@@ -83,6 +85,7 @@ object AppointmentGenerator {
         probationAreaId,
         team,
         staff,
+        externalReference,
         description,
         location,
         outcome,
