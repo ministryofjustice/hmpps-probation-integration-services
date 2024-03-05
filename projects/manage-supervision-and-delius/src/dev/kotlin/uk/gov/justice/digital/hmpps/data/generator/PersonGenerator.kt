@@ -121,14 +121,14 @@ object PersonGenerator {
                 IdGenerator.getAndIncrement(),
                 id,
                 ReferenceData(IdGenerator.getAndIncrement(), "E01", "Employment"),
-                ReferenceData(IdGenerator.getAndIncrement(), "FT01", "Full-time employed (30 or more hours per week)"),
+                PersonalCircumstanceSubType(IdGenerator.getAndIncrement(),"Full-time employed (30 or more hours per week"),
                 LocalDate.now()
             ),
             PersonalCircumstance(
                 IdGenerator.getAndIncrement(),
                 id,
                 ReferenceData(IdGenerator.getAndIncrement(), "A02", "Accommodation"),
-                ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Friends/Family (settled)"),
+                PersonalCircumstanceSubType(IdGenerator.getAndIncrement(),"Friends/Family (settled)"),
                 LocalDate.now()
             )
         ),
