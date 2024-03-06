@@ -1,11 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.Appointment
-import uk.gov.justice.digital.hmpps.entity.AppointmentOutcome
-import uk.gov.justice.digital.hmpps.entity.AppointmentType
-import uk.gov.justice.digital.hmpps.entity.Location
-import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.Staff
+import uk.gov.justice.digital.hmpps.api.model.CreateAppointment
+import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -21,6 +17,7 @@ object AppointmentGenerator {
         townCity = "Heath",
         postcode = "H34 7TH"
     )
+    val APPOINTMENT_TYPES = CreateAppointment.Type.entries.map { generateType(it.code, attendanceType = true) }
 
     fun generateType(
         code: String,
@@ -67,11 +64,33 @@ object AppointmentGenerator {
         date: LocalDate,
         startTime: ZonedDateTime,
         endTime: ZonedDateTime?,
+        externalReference: String? = null,
         location: Location?,
+        notes: String? = null,
+        probationAreaId: Long,
+        team: Team,
         staff: Staff,
         outcome: AppointmentOutcome? = null,
         description: String? = null,
         softDeleted: Boolean = false,
+        version: Long = 0,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Appointment(person, type, date, startTime, endTime, location, staff, description, outcome, softDeleted, id)
+    ) = Appointment(
+        person,
+        type,
+        date,
+        startTime,
+        endTime,
+        notes,
+        probationAreaId,
+        team,
+        staff,
+        externalReference,
+        description,
+        location,
+        outcome,
+        softDeleted,
+        version,
+        id
+    )
 }

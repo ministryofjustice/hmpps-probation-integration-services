@@ -1,27 +1,30 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
-@Immutable
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 @Table(name = "contact")
+@SequenceGenerator(name = "contact_id_generator", sequenceName = "contact_id_seq", allocationSize = 1)
 @SQLRestriction("soft_deleted = 0")
 class Appointment(
 
@@ -42,28 +45,60 @@ class Appointment(
     @Column(name = "contact_end_time")
     val endTime: ZonedDateTime?,
 
+    @Lob
+    @Column
+    val notes: String?,
+
+    val probationAreaId: Long,
+
     @ManyToOne
-    @JoinColumn(name = "office_location_id")
-    val location: Location?,
+    @JoinColumn(name = "team_id")
+    val team: Team,
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff,
 
+    val externalReference: String? = null,
+
     @Column(name = "description")
-    val description: String?,
+    val description: String? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "office_location_id")
+    val location: Location? = null,
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
-    val outcome: AppointmentOutcome?,
+    val outcome: AppointmentOutcome? = null,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
 
     @Id
     @Column(name = "contact_id")
-    val id: Long
+    val id: Long = 0
 ) {
+    val partitionAreaId: Long = 0
+
+    @CreatedDate
+    @Column(name = "created_datetime")
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now()
+
+    @CreatedBy
+    var createdByUserId: Long = 0
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now()
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0
+
     val duration: Duration
         get() =
             if (endTime != null) {
@@ -144,4 +179,43 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
     """
     )
     fun findAppointmentsFor(crn: String, start: LocalDate, end: LocalDate, pageable: Pageable): Page<Appointment>
+
+    @Query(
+        """
+            select count(c.contact_id)
+            from contact c
+            join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            where c.offender_id = :personId and ct.attendance_contact = 'Y'
+            and to_char(c.contact_date, 'YYYY-MM-DD') = :date
+            and to_char(c.contact_start_time, 'HH24:MI') < :endTime 
+            and to_char(c.contact_end_time, 'HH24:MI') > :startTime
+            and c.soft_deleted = 0 and c.contact_outcome_type_id is null
+        """,
+        nativeQuery = true
+    )
+    fun getClashCount(
+        personId: Long,
+        date: String,
+        startTime: String,
+        endTime: String
+    ): Int
 }
+
+fun AppointmentRepository.appointmentClashes(
+    personId: Long,
+    date: LocalDate,
+    startTime: ZonedDateTime,
+    endTime: ZonedDateTime,
+): Boolean = getClashCount(
+    personId,
+    date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+    startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+    endTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon))
+) > 0
+
+interface AppointmentTypeRepository : JpaRepository<AppointmentType, Long> {
+    fun findByCode(code: String): AppointmentType?
+}
+
+fun AppointmentTypeRepository.getByCode(code: String) =
+    findByCode(code) ?: throw NotFoundException("AppointmentType", "code", code)
