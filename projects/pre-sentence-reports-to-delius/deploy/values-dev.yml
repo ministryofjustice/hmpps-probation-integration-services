@@ -16,6 +16,8 @@ generic-service:
     INTEGRATIONS_NEW-TECH_BASE-URL: https://ndelius.test.probation.service.justice.gov.uk/newTech
 
     LOGGING_LEVEL_COM_AMAZON_SQS: DEBUG
+    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
+
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 generic-prometheus-alerts:

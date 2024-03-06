@@ -9,6 +9,8 @@ generic-service:
     SENTRY_ENVIRONMENT: dev
     INTEGRATIONS_ORDS_URL: https://t2.oasys.service.justice.gov.uk/eor/oasys
 
+    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
+
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 generic-prometheus-alerts:

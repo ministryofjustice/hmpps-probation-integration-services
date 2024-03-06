@@ -12,6 +12,8 @@ generic-service:
 
     INTEGRATIONS_ALFRESCO_URL: https://alfresco.test.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg
 
+    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
+
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 generic-prometheus-alerts:
