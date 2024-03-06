@@ -13,6 +13,7 @@ generic-service:
     INTEGRATIONS_APPROVED-PREMISES-API_URL: https://approved-premises-api-dev.hmpps.service.justice.gov.uk
     INTEGRATIONS_ALFRESCO_URL: https://alfresco.test.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg/
     SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
+    SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 0
 
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
