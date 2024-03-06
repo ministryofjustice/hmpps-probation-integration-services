@@ -39,9 +39,17 @@ internal class OverviewServiceTest {
     @Test
     fun `calls overview function`() {
         val crn = "X000004"
-        val expectedAppointmentDateTime = ZonedDateTime.of(FIRST_APPT_CONTACT.date.toLocalDate(), FIRST_APPT_CONTACT.startTime.toLocalTime(), FIRST_APPT_CONTACT.date.zone)
+        val expectedAppointmentDateTime = ZonedDateTime.of(
+            FIRST_APPT_CONTACT.date.toLocalDate(),
+            FIRST_APPT_CONTACT.startTime.toLocalTime(),
+            FIRST_APPT_CONTACT.date.zone
+        )
         whenever(personRepository.findByCrn(crn)).thenReturn(PersonGenerator.OVERVIEW)
-        whenever(contactRepository.findFirstAppointment(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(FIRST_APPT_CONTACT))
+        whenever(contactRepository.findFirstAppointment(PersonGenerator.OVERVIEW.id)).thenReturn(
+            listOf(
+                FIRST_APPT_CONTACT
+            )
+        )
         whenever(requirementRepository.getRarDays(any())).thenReturn(
             listOf(RarDays(1, "COMPLETED"), RarDays(2, "SCHEDULED"))
         )
