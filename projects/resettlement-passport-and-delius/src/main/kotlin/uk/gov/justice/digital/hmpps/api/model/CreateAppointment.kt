@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -10,6 +11,7 @@ data class CreateAppointment(
     val notes: String? = null,
     val uuid: UUID = UUID.randomUUID()
 ) {
+    @JsonIgnore
     val urn = URN_PREFIX + uuid
 
     enum class Type(val code: String) {

@@ -28,8 +28,9 @@ class AppointmentController(private val appointmentService: AppointmentService) 
     @PreAuthorize("hasRole('PROBATION_API__RESETTLEMENT_PASSPORT__APPOINTMENT_RW')")
     @PostMapping("/{crn}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createAppointment(@PathVariable crn: String, @RequestBody createAppointment: CreateAppointment) =
+    fun createAppointment(@PathVariable crn: String, @RequestBody createAppointment: CreateAppointment) {
         appointmentService.createAppointment(crn, createAppointment)
+    }
 }
 
 data class ResultSet<T>(
