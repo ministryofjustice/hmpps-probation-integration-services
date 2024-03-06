@@ -18,7 +18,11 @@ class RegistrationService(private val registrationRepository: RegistrationReposi
 
 
         return RiskSummary(rosh = regMap.getItem(RegisterFlag.ROSH.code),
-            alerts = regMap.getItem(RegisterFlag.ALERTS.code) )
+                            alerts = regMap.getItem(RegisterFlag.ALERTS.code),
+                            safeguarding = regMap.getItem(RegisterFlag.SAFEGUARDING.code),
+                            information = regMap.getItem(RegisterFlag.INFORMATION.code),
+                            publicProtection = regMap.getItem(RegisterFlag.PUBLIC_PROTECTION.code)
+            )
     }
 
     fun Map<String, List<Registration>>.getItem(code: String): RiskItem? =

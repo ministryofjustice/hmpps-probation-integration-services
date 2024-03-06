@@ -22,19 +22,50 @@ internal class RegistrationServiceTest {
     @InjectMocks
     lateinit var registrationService: RegistrationService
 
+    val CRN = "123"
     @Test
     fun `get all high priority cases`() {
-        val flags = RegistrationsRisksGenerator.generateReferenceData()
+        val flags = RegistrationsRisksGenerator.generateRegistrations()
         whenever(registrationRepository.findAllByPersonCrn(Mockito.anyString())).thenReturn(flags)
 
-        val response = registrationService.findActiveRegistrations("123")
+        val response = registrationService.findActiveRegistrations(CRN)
 
-        assertThat(response.rosh?.description , equalTo("RoSH"))
+        assertThat(response.rosh?.description , equalTo("Rosh"))
         assertThat(response.rosh?.colour?.name, equalTo(Colour.RED.name))
 
         assertThat(response.alerts?.description, equalTo("Alerts"))
         assertThat(response.alerts?.colour?.name, equalTo(Colour.RED.name))
 
+        assertThat(response.safeguarding?.description, equalTo("Safeguarding"))
+        assertThat(response.safeguarding?.colour?.name, equalTo(Colour.RED.name))
+
+        assertThat(response.information?.description, equalTo("Information"))
+        assertThat(response.information?.colour?.name, equalTo(Colour.RED.name))
+
+        assertThat(response.publicProtection?.description, equalTo("Public Protection"))
+        assertThat(response.publicProtection?.colour?.name, equalTo(Colour.RED.name))
     }
 
+    @Test
+    fun `no case data available`() {
+        whenever(registrationRepository.findAllByPersonCrn(Mockito.anyString()))
+            .thenReturn(listOf(RegistrationsRisksGenerator.REGISTRATION_NO_REFERENCE_DATA))
+
+        val response = registrationService.findActiveRegistrations(CRN)
+
+        assertThat(response.rosh?.description , equalTo(null))
+        assertThat(response.rosh?.colour?.name, equalTo(null))
+
+        assertThat(response.alerts?.description, equalTo(null))
+        assertThat(response.alerts?.colour?.name, equalTo(null))
+
+        assertThat(response.safeguarding?.description, equalTo(null))
+        assertThat(response.safeguarding?.colour?.name, equalTo(null))
+
+        assertThat(response.information?.description, equalTo(null))
+        assertThat(response.information?.colour?.name, equalTo(null))
+
+        assertThat(response.publicProtection?.description, equalTo(null))
+        assertThat(response.publicProtection?.colour?.name, equalTo(null))
+    }
 }
