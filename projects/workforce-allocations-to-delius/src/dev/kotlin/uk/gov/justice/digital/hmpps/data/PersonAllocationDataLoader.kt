@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.event.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository

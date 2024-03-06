@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
-import java.awt.Color
-import java.time.LocalDate
-
 data class RiskSummary(
-    val rosh: RiskItem? = null,
+    val selfHarm: RiskItem? = null,
     val alerts: RiskItem? = null,
     val safeguarding: RiskItem? = null,
     val information: RiskItem? = null,
@@ -21,8 +18,9 @@ enum class Colour(val priority: Int) {
     AMBER(2),
     GREEN(3),
     WHITE(4);
-    companion object{
-        fun of(colour: String) = checkNotNull( entries.firstOrNull{it.name.equals(colour, true)})
+
+    companion object {
+        fun of(colour: String) = checkNotNull(entries.firstOrNull { it.name.equals(colour, true) })
     }
 }
 

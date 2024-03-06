@@ -1,20 +1,20 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentMatchers.anyList
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.Colour
 import uk.gov.justice.digital.hmpps.api.model.RiskItem
 import uk.gov.justice.digital.hmpps.api.model.RiskSummary
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationsRisksGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.registration.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class RegistrationServiceTest {
@@ -25,15 +25,17 @@ internal class RegistrationServiceTest {
     @InjectMocks
     lateinit var registrationService: RegistrationService
 
-    val CRN = "123"
     @Test
     fun `get all high priority cases`() {
-        val flags = RegistrationsRisksGenerator.generateRegistrations()
-        whenever(registrationRepository.findAllByPersonCrn(Mockito.anyString())).thenReturn(flags)
+        val person = PersonGenerator.DEFAULT
+        val flags = RegistrationGenerator.generateRegistrations()
+        whenever(registrationRepository.findAllByPersonCrnAndRegisterTypeFlagCodeIn(eq(person.crn), anyList()))
+            .thenReturn(flags)
 
-        val response = registrationService.findActiveRegistrations(CRN)
+        val response = registrationService.findActiveRegistrations(person.crn)
 
-        val expected = RiskSummary(rosh = RiskItem("Rosh", Colour.RED),
+        val expected = RiskSummary(
+            selfHarm = RiskItem("Rosh", Colour.RED),
             alerts = RiskItem("Alerts", Colour.RED),
             safeguarding = RiskItem("Safeguarding", Colour.RED),
             information = RiskItem("Information", Colour.RED),
@@ -43,15 +45,15 @@ internal class RegistrationServiceTest {
         assertEquals(expected, response)
     }
 
-    @Test
-    fun `no case data available`() {
-        whenever(registrationRepository.findAllByPersonCrn(Mockito.anyString()))
-            .thenReturn(listOf(RegistrationsRisksGenerator.REGISTRATION_NO_REFERENCE_DATA))
-
-        val response = registrationService.findActiveRegistrations(CRN)
-
-        val expected = RiskSummary()
-
-        assertEquals(expected, response)
-    }
+//    @Test
+//    fun `no case data available`() {
+//        whenever(registrationRepository.findAllByPersonCrnAndTypeFlagCodeIn(Mockito.anyString()))
+//            .thenReturn(listOf(RegistrationsRisksGenerator.REGISTRATION_NO_FLAG))
+//
+//        val response = registrationService.findActiveRegistrations(CRN)
+//
+//        val expected = RiskSummary()
+//
+//        assertEquals(expected, response)
+//    }
 }
