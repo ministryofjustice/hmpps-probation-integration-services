@@ -92,7 +92,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     )
     fun findFirstAppointment(
         personId: Long,
-        timeNow: ZonedDateTime = ZonedDateTime.of(LocalDate.EPOCH, LocalTime.now(), ZoneId.systemDefault()),
+        timeNow: ZonedDateTime = getTime(),
         pageable: Pageable = PageRequest.of(0, 1)
     ): List<Contact>
+
+    fun getTime(): ZonedDateTime = ZonedDateTime.of(LocalDate.EPOCH, LocalTime.now(), ZoneId.systemDefault())
 }
