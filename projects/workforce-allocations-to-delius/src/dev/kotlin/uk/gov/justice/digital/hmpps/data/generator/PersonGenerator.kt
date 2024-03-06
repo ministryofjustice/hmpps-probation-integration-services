@@ -17,6 +17,8 @@ object PersonGenerator {
         restrictionMessage = "You are restricted from viewing this case"
     )
 
+    val NO_REGISTRATIONS = generate("N123456")
+
     fun generate(
         crn: String,
         nomsId: String? = null,

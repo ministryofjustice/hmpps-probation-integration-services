@@ -44,16 +44,4 @@ internal class RegistrationServiceTest {
 
         assertEquals(expected, response)
     }
-
-//    @Test
-//    fun `no case data available`() {
-//        whenever(registrationRepository.findAllByPersonCrnAndTypeFlagCodeIn(Mockito.anyString()))
-//            .thenReturn(listOf(RegistrationsRisksGenerator.REGISTRATION_NO_FLAG))
-//
-//        val response = registrationService.findActiveRegistrations(CRN)
-//
-//        val expected = RiskSummary()
-//
-//        assertEquals(expected, response)
-//    }
 }

@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.registration.entity.Regi
 interface RegistrationRepository : JpaRepository<Registration, Long> {
     fun findAllByPersonCrn(crn: String): List<Registration>
 
-    @EntityGraph(attributePaths = ["person", "type.flag"])
+    @EntityGraph(attributePaths = ["person", "registerType.flag"])
     fun findAllByPersonCrnAndRegisterTypeFlagCodeIn(crn: String, flags: List<String>): List<Registration>
 }
 
