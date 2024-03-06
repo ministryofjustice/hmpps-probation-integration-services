@@ -31,6 +31,7 @@ internal class RegistrationServiceTest {
 
         assertThat(response.rosh?.description , equalTo("RoSH"))
         assertThat(response.rosh?.colour?.name, equalTo(Colour.RED.name))
+
     }
 
 }

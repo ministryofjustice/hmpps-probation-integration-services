@@ -9,6 +9,8 @@ import java.time.ZonedDateTime
 
 object RegistrationsRisksGenerator {
 
+    val ROSH = generate("1", "RoSH")
+
     fun generate() :List<Registration> = listOf(
         Registration(person = PersonGenerator.DEFAULT,
                      type = RegisterTypeGenerator.RED_ROSH,
@@ -27,18 +29,14 @@ object RegistrationsRisksGenerator {
         fun generate(code: String,
                     description: String,
                     colour: String,
-                    flag: ReferenceData = ReferenceDataGenerator.ROSH,
+                    flag: ReferenceData = ROSH,
                     id: Long = IdGenerator.getAndIncrement(),) = RegisterType(code, flag, description, colour, id)
     }
 
-    object ReferenceDataGenerator {
-        val ROSH = generate("1", "RoSH" )
-
-        fun generate(code: String,
-            description: String,
-            id: Long = IdGenerator.getAndIncrement(),
-            risk: Dataset = DatasetGenerator.REGISTER_TYPE_FLAG)
+    fun generate(code: String,
+        description: String,
+        id: Long = IdGenerator.getAndIncrement(),
+        risk: Dataset = DatasetGenerator.REGISTER_TYPE_FLAG)
         = ReferenceData(id, code, description, risk)
-    }
 
 }

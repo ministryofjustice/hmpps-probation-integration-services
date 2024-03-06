@@ -16,6 +16,7 @@ class RegistrationService(private val registrationRepository: RegistrationReposi
             .filter { it.type.flag != null }
             .groupBy { it.type.flag!!.code  }
 
+
         return RiskSummary(regMap.getItem(RegisterFlag.ROSH.code))
     }
 
