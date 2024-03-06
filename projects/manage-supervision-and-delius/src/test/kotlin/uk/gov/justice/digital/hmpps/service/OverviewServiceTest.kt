@@ -9,13 +9,15 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.FIRST_APPT_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateEvent
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonOverviewRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class OverviewServiceTest {
@@ -38,9 +40,15 @@ internal class OverviewServiceTest {
     @Test
     fun `calls overview function`() {
         val crn = "X000004"
-
+        val expectedAppointmentDateTime = ZonedDateTime.of(
+            FIRST_APPT_CONTACT.date,
+            FIRST_APPT_CONTACT.startTime.toLocalTime(),
+            EuropeLondon
+        )
         whenever(personRepository.findByCrn(crn)).thenReturn(PersonGenerator.OVERVIEW)
-        whenever(contactRepository.findFirstAppointment(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(ContactGenerator.FIRST_APPT_CONTACT))
+        whenever(contactRepository.findFirstAppointment(any(), any(), any(), any())).thenReturn(
+            listOf(FIRST_APPT_CONTACT)
+        )
         whenever(requirementRepository.getRarDays(any())).thenReturn(
             listOf(RarDays(1, "COMPLETED"), RarDays(2, "SCHEDULED"))
         )
@@ -79,6 +87,7 @@ internal class OverviewServiceTest {
         assertThat(res.sentences[0].rar?.scheduled, equalTo(2))
         assertThat(res.sentences[0].rar?.completed, equalTo(1))
         assertThat(res.sentences[0].rar?.totalDays, equalTo(3))
+        assertThat(res.schedule.nextAppointment?.date, equalTo(expectedAppointmentDateTime))
     }
 
     data class RarDays(val _days: Int, val _type: String) :

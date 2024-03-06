@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -39,7 +40,7 @@ object ContactGenerator {
     fun generateContact(
         person: Person,
         contactType: ContactType,
-        startTime: ZonedDateTime,
+        startDateTime: ZonedDateTime,
         rarActivity: Boolean? = null,
         attended: Boolean? = null,
         complied: Boolean? = null,
@@ -48,8 +49,8 @@ object ContactGenerator {
         IdGenerator.getAndIncrement(),
         person.id,
         contactType,
-        startTime,
-        startTime,
+        startDateTime.toLocalDate(),
+        ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone),
         rarActivity,
         attended,
         complied,
