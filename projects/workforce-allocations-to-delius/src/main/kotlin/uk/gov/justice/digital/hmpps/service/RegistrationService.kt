@@ -17,7 +17,8 @@ class RegistrationService(private val registrationRepository: RegistrationReposi
             .groupBy { it.type.flag!!.code  }
 
 
-        return RiskSummary(regMap.getItem(RegisterFlag.ROSH.code))
+        return RiskSummary(rosh = regMap.getItem(RegisterFlag.ROSH.code),
+            alerts = regMap.getItem(RegisterFlag.ALERTS.code) )
     }
 
     fun Map<String, List<Registration>>.getItem(code: String): RiskItem? =

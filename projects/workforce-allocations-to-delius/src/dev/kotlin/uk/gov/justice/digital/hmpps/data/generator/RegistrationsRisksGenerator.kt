@@ -9,31 +9,31 @@ import java.time.ZonedDateTime
 
 object RegistrationsRisksGenerator {
 
-    val ROSH = generate("1", "RoSH")
+    val ROSH = "Rosh"
+    val ALERTS = "Alerts"
+    val RED = "red"
+    val ROSH_REF_DATA = generateReferenceData("1", "RoSH")
+    val ALERTS_REF_DATA = generateReferenceData("2", "Alerts")
 
-    fun generate() :List<Registration> = listOf(
-        Registration(person = PersonGenerator.DEFAULT,
-                     type = RegisterTypeGenerator.RED_ROSH,
-                     date = LocalDate.now(),
-                     id = IdGenerator.getAndIncrement(),
-                     softDeleted = false,
-                     deRegistered = false,
-                     createdDateTime = ZonedDateTime.now(),
-                     ))
+    fun generateReferenceData() :List<Registration> = listOf(
+        generateRegistration(generateRegisterType(ROSH, RED, ROSH_REF_DATA)),
+        generateRegistration(generateRegisterType(ALERTS, RED, ALERTS_REF_DATA))
+    )
 
-    object RegisterTypeGenerator {
-        val RED_ROSH = generate("Rosh",
-                            "Rosh description",
-                                 "Red")
+    private fun generateRegisterType(code: String,
+        colour: String,
+        flag: ReferenceData,
+        id: Long = IdGenerator.getAndIncrement(),) = RegisterType(code, flag, "$code description", colour, id)
 
-        fun generate(code: String,
-                    description: String,
-                    colour: String,
-                    flag: ReferenceData = ROSH,
-                    id: Long = IdGenerator.getAndIncrement(),) = RegisterType(code, flag, description, colour, id)
-    }
+    fun generateRegistration(type: RegisterType) = Registration(person = PersonGenerator.DEFAULT,
+        type = type,
+        date = LocalDate.now(),
+        id = IdGenerator.getAndIncrement(),
+        softDeleted = false,
+        deRegistered = false,
+        createdDateTime = ZonedDateTime.now())
 
-    fun generate(code: String,
+    fun generateReferenceData(code: String,
         description: String,
         id: Long = IdGenerator.getAndIncrement(),
         risk: Dataset = DatasetGenerator.REGISTER_TYPE_FLAG)

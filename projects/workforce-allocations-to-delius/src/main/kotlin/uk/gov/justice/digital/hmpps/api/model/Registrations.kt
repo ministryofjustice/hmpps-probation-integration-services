@@ -28,4 +28,5 @@ enum class Colour(val priority: Int) {
 
 enum class RegisterFlag(val code: String) {
     ROSH("1"),
+    ALERTS("2")
 }

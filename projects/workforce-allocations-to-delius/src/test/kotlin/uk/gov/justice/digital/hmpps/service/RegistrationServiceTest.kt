@@ -24,13 +24,16 @@ internal class RegistrationServiceTest {
 
     @Test
     fun `get all high priority cases`() {
-        val flags = RegistrationsRisksGenerator.generate()
+        val flags = RegistrationsRisksGenerator.generateReferenceData()
         whenever(registrationRepository.findAllByPersonCrn(Mockito.anyString())).thenReturn(flags)
 
         val response = registrationService.findActiveRegistrations("123")
 
         assertThat(response.rosh?.description , equalTo("RoSH"))
         assertThat(response.rosh?.colour?.name, equalTo(Colour.RED.name))
+
+        assertThat(response.alerts?.description, equalTo("Alerts"))
+        assertThat(response.alerts?.colour?.name, equalTo(Colour.RED.name))
 
     }
 
