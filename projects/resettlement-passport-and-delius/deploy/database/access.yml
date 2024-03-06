@@ -5,6 +5,7 @@ database:
     tables:
       - audited_interaction
       - contact
+      - contact_alert
 
   audit:
     username: ResettlementPassportAndDelius
