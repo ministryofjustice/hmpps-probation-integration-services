@@ -22,7 +22,7 @@ class OverviewService(
     fun getOverview(crn: String): Overview {
         val person = personRepository.getPerson(crn)
         val personalDetails = person.toPersonalDetails()
-        val schedule = Schedule(contactRepository.findFirstAppointment(person.id).firstOrNull()?.toNextAppointment())
+        val schedule = Schedule(contactRepository.firstAppointment(person.id)?.toNextAppointment())
         val events = eventRepository.findByPersonId(person.id)
         val activeEvents = events.filter { it.active }
         val sentences = activeEvents.map { it.toSentence() }
@@ -82,5 +82,5 @@ class OverviewService(
         Provision(description = type.description)
 
     fun Contact.toNextAppointment() =
-        NextAppointment(description = type.description, date = startDateTime().toLocalDateTime())
+        NextAppointment(description = type.description, date = startDateTime())
 }
