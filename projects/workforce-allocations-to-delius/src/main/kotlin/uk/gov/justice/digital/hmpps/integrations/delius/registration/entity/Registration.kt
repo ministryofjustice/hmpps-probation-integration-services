@@ -1,15 +1,11 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.event.registration
+package uk.gov.justice.digital.hmpps.integrations.delius.registration.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
 
@@ -36,11 +32,15 @@ class Registration(
     @JoinColumn(name = "register_type_id")
     val registerType: RegisterType,
 
+    @Fetch(FetchMode.JOIN)
     @OneToMany(mappedBy = "registration")
     val deRegistrations: List<DeRegistration>,
 
+    @Column(name = "deregistered", columnDefinition = "number")
+    val deRegistered: Boolean,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 ) {
     val endDate: LocalDate?
         get() = if (deRegistrations.isEmpty()) null else deRegistrations.maxOf { it.deRegistrationDate }
@@ -53,7 +53,13 @@ class RegisterType(
     @Id
     @Column(name = "register_type_id")
     val id: Long,
-    val description: String
+    val description: String,
+
+    @ManyToOne
+    @JoinColumn(name = "register_type_flag_id")
+    val flag: ReferenceData?,
+
+    val colour: String?,
 )
 
 @Immutable

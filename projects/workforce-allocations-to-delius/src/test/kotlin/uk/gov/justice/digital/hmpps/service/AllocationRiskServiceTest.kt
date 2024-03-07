@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 
 @ExtendWith(MockitoExtension::class)

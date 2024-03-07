@@ -21,14 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.RequirementMainCategoryGenera
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.data.repository.CourtReportTypeRepository
-import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
-import uk.gov.justice.digital.hmpps.data.repository.OffenceRepository
-import uk.gov.justice.digital.hmpps.data.repository.ProviderRepository
-import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
-import uk.gov.justice.digital.hmpps.data.repository.RequirementAdditionalMainCategoryRepository
-import uk.gov.justice.digital.hmpps.data.repository.RequirementMainCategoryRepository
-import uk.gov.justice.digital.hmpps.data.repository.StaffUserRepository
+import uk.gov.justice.digital.hmpps.data.repository.*
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
@@ -54,8 +47,8 @@ class AllocationsDataLoader(
     private val personAllocationDataLoader: PersonAllocationDataLoader,
     private val caseViewDataLoader: CaseViewDataLoader,
     private val registerTypeRepository: RegisterTypeRepository,
-    private val limitedAccessDataLoader: LimitedAccessDataLoader
-
+    private val limitedAccessDataLoader: LimitedAccessDataLoader,
+    private val registrationDataLoader: RegistrationDataLoader
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -83,7 +76,8 @@ class AllocationsDataLoader(
                 DatasetGenerator.REQUIREMENT_SUB_CATEGORY,
                 DatasetGenerator.ADDRESS_TYPE,
                 DatasetGenerator.ADDRESS_STATUS,
-                DatasetGenerator.COURT_APPEARANCE_TYPE
+                DatasetGenerator.COURT_APPEARANCE_TYPE,
+                DatasetGenerator.REGISTER_TYPE_FLAG
             )
         )
 
@@ -147,5 +141,6 @@ class AllocationsDataLoader(
         personAllocationDataLoader.loadData()
         caseViewDataLoader.loadData()
         limitedAccessDataLoader.loadData()
+        registrationDataLoader.loadData()
     }
 }
