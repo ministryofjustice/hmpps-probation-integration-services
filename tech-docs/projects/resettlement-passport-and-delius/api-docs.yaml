@@ -14,6 +14,67 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /appointments/{crn}:
+    get:
+      tags:
+      - appointment-controller
+      operationId: findPerson_1
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: endDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultSetAppointment'
+    post:
+      tags:
+      - appointment-controller
+      operationId: createAppointment
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppointment'
+        required: true
+      responses:
+        "201":
+          description: Created
   /probation-cases/{nomsId}/crn:
     get:
       tags:
@@ -95,50 +156,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DutyToReferNSI'
-  /appointments/{crn}:
-    get:
-      tags:
-      - appointment-controller
-      operationId: findPerson_1
-      parameters:
-      - name: crn
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: startDate
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: endDate
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: page
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int32
-      - name: size
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int32
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResultSetAppointment'
 components:
   schemas:
+    CreateAppointment:
+      required:
+      - end
+      - start
+      - type
+      - uuid
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Accommodation
+          - ThinkingAndBehaviour
+          - FamilyAndCommunity
+          - DrugsAndAlcohol
+          - SkillsAndWork
+          - Finance
+          - Health
+          - Benefits
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        notes:
+          type: string
+        uuid:
+          type: string
+          format: uuid
     CaseIdentifiers:
       required:
       - crn

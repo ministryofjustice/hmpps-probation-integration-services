@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#appointments-crn"><span>/appointments/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-cases-nomsid-crn"><span>/probation-cases/{nomsId}/crn</span></a>
       </li>
       <li>
@@ -108,9 +111,6 @@
       </li>
       <li>
         <a href="./api-reference.html#duty-to-refer-nsi-value"><span>/duty-to-refer-nsi/{value}</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#appointments-crn"><span>/appointments/{crn}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -142,6 +142,212 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="appointments-crn">/appointments/{crn}</h2>
+
+<h3 id="appointments-crn-get">get</h3>
+
+
+
+
+<h4 id="appointments-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>query</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>query</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="appointments-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "results": [
+    {
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "dateTime": "string",
+      "duration": {
+        "seconds": "integer",
+        "zero": "boolean",
+        "nano": "integer",
+        "negative": "boolean",
+        "positive": "boolean",
+        "units": [
+          {
+            "durationEstimated": "boolean",
+            "timeBased": "boolean",
+            "dateBased": "boolean"
+          }
+        ]
+      },
+      "staff": {
+        "code": "string",
+        "name": {
+          "forename": "string",
+          "surname": "string"
+        },
+        "email": "string",
+        "telephone": "string"
+      },
+      "location": {
+        "code": "string",
+        "description": "string",
+        "address": {
+          "buildingName": "string",
+          "buildingNumber": "string",
+          "streetName": "string",
+          "district": "string",
+          "town": "string",
+          "county": "string",
+          "postcode": "string"
+        },
+        "telephoneNumber": "string"
+      },
+      "description": "string",
+      "outcome": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  ],
+  "totalElements": "integer",
+  "totalPages": "integer",
+  "page": "integer",
+  "size": "integer"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-resultsetappointment'>ResultSetAppointment</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="appointments-crn-post">post</h3>
+
+
+
+
+<h4 id="appointments-crn-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="appointments-crn-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>201</td>
+<td>
+<p>Created</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -435,162 +641,70 @@
 
 
 
-<h2 id="appointments-crn">/appointments/{crn}</h2>
-
-<h3 id="appointments-crn-get">get</h3>
-
-
-
-
-<h4 id="appointments-crn-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>startDate</td>
-<td>query</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>endDate</td>
-<td>query</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>page</td>
-<td>query</td>
-<td>integer</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>size</td>
-<td>query</td>
-<td>integer</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="appointments-crn-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "results": [
-    {
-      "type": {
-        "code": "string",
-        "description": "string"
-      },
-      "dateTime": "string",
-      "duration": {
-        "seconds": "integer",
-        "zero": "boolean",
-        "nano": "integer",
-        "negative": "boolean",
-        "positive": "boolean",
-        "units": [
-          {
-            "durationEstimated": "boolean",
-            "timeBased": "boolean",
-            "dateBased": "boolean"
-          }
-        ]
-      },
-      "staff": {
-        "code": "string",
-        "name": {
-          "forename": "string",
-          "surname": "string"
-        },
-        "email": "string",
-        "telephone": "string"
-      },
-      "location": {
-        "code": "string",
-        "description": "string",
-        "address": {
-          "buildingName": "string",
-          "buildingNumber": "string",
-          "streetName": "string",
-          "district": "string",
-          "town": "string",
-          "county": "string",
-          "postcode": "string"
-        },
-        "telephoneNumber": "string"
-      },
-      "description": "string",
-      "outcome": {
-        "code": "string",
-        "description": "string"
-      }
-    }
-  ],
-  "totalElements": "integer",
-  "totalPages": "integer",
-  "page": "integer",
-  "size": "integer"
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-resultsetappointment'>ResultSetAppointment</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-createappointment">CreateAppointment</h3>
+
+
+<table class='schema-createappointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>start</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>end</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>uuid</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-caseidentifiers">CaseIdentifiers</h3>
 
 
