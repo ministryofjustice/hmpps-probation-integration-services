@@ -25,13 +25,14 @@ class SentenceService(
         return SentenceOverview(event?.toOffence())
     }
 
-    fun SentenceEvent.toOffence() = mainOffence?.let {
+    fun SentenceEvent.toOffence() = mainOffence?.let { mainOffence ->
         MainOffence(offence = Offence(
-            it.offence.description,it.offenceCount.toString()),
-            dateOfOffence = it.date,
+            mainOffence.offence.description, mainOffence.offenceCount
+        ),
+            dateOfOffence = mainOffence.date,
             notes = notes,
             additionalOffences = additionalOffences.map {
-                Offence(description = it.offence.description, count = it.offenceCount.toString()
+                Offence(description = it.offence.description, count = it.offenceCount
                 )
             }
         )
