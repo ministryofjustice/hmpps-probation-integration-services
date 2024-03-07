@@ -26,8 +26,9 @@ class PersonService(
 ) {
     @Transactional
     fun populateNomsNumber(crns: List<String>, trialOnly: Boolean): NomsUpdates {
+        val data = if (crns.isEmpty()) personRepository.findAllCrns() else crns
         return NomsUpdates(
-            crns.map { crn ->
+            data.map { crn ->
                 val sentences = personRepository.findByCrn(crn)
                 val person = sentences.firstOrNull()?.person
                 val personMatch = getPersonMatch(crn, person, sentences.map { it.sentenceDate })

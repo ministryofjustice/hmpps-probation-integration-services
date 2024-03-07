@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-noms-numbers
+spec:
+  schedule: {{ .Values.noms.update.schedule }}
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: update-noms-numbers
+              image: ghcr.io/ministryofjustice/hmpps-devops-tools
+              args:
+                - /bin/sh
+                - -c
+                - 'curl -fsSL -X POST "https://$BASE_URL/person/populate-noms-number?trialOnly=$TRIAL_ONLY" --header "Authorization: Bearer $(curl -fsSL --request POST "$AUTH_URL?grant_type=client_credentials" --user "$CLIENT_ID:$CLIENT_SECRET"  | jq -r .access_token)" --header "Content-Type: application/json"'
+              env:
+                - name: AUTH_URL
+                  value: {{ index .Values "generic-service" "env" "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI" }}
+                - name: BASE_URL
+                  value: {{ index .Values "generic-service" "ingress" "host" }}
+                - name: TRIAL_ONLY
+                  value: '{{ index .Values "generic-service" "env" "NOMS_DRY_RUN" }}'
+                - name: CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: prison-identifier-and-delius-client-credentials
+                      key: CLIENT_ID
+                - name: CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: prison-identifier-and-delius-client-credentials
+                      key: CLIENT_SECRET
+          restartPolicy: Never

@@ -123,6 +123,9 @@ interface PersonRepository : JpaRepository<Person, Long> {
     )
     fun findByCrn(crn: String): List<SentencedPerson>
     fun findByNomsNumberAndSoftDeletedIsFalse(nomsNumber: String): Person?
+
+    @Query("select p.crn from Person p where p.softDeleted = false")
+    fun findAllCrns(): List<String>
 }
 
 interface SentencedPerson {

@@ -17,6 +17,6 @@ class PersonUpdateController(private val personService: PersonService) {
     @RequestMapping(value = ["/populate-noms-number"], method = [RequestMethod.GET, RequestMethod.POST])
     fun populateNomsNumbers(
         @RequestParam(defaultValue = "true") trialOnly: Boolean,
-        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
+        @Size(min = 0, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
     ) = personService.populateNomsNumber(crns, trialOnly)
 }
