@@ -19,3 +19,7 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+
+noms:
+  update:
+    schedule: 0 7 * * 1
