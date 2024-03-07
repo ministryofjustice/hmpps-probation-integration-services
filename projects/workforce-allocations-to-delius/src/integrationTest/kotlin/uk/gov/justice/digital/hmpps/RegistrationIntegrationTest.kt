@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Colour
 import uk.gov.justice.digital.hmpps.api.model.RiskItem
@@ -25,7 +24,6 @@ class RegistrationIntegrationTest {
     fun `test crn with risk flags`() {
         val result = mockMvc.perform(MockMvcRequestBuilders
             .get("/registrations/X123456/flags").withToken())
-            .andDo(print())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<RiskSummary>()
 
@@ -44,7 +42,6 @@ class RegistrationIntegrationTest {
     fun `test no registrations`() {
         val result = mockMvc.perform(MockMvcRequestBuilders
             .get("/registrations/N123456/flags").withToken())
-            .andDo(print())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<RiskSummary>()
 
