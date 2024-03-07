@@ -24,7 +24,7 @@ spec:
                 - name: BASE_URL
                   value: {{ index .Values "generic-service" "ingress" "host" }}
                 - name: TRIAL_ONLY
-                  value: "{{ index .Values "generic-service" "env" "NOMS_DRY_RUN" }}"
+                  value: '{{ index .Values "generic-service" "env" "NOMS_DRY_RUN" }}'
                 - name: CLIENT_ID
                   valueFrom:
                     secretKeyRef:
