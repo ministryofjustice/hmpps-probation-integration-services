@@ -8,7 +8,10 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Immutable
 @Entity
@@ -27,7 +30,7 @@ class Contact(
     val type: ContactType,
 
     @Column(name = "contact_date")
-    val date: ZonedDateTime = ZonedDateTime.now(),
+    val date: LocalDate = LocalDate.now(),
 
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime = ZonedDateTime.now(),
@@ -52,7 +55,9 @@ class Contact(
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     var softDeleted: Boolean = false
-)
+) {
+    fun startDateTime(): ZonedDateTime = ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon)
+}
 
 @Immutable
 @Entity
@@ -76,13 +81,31 @@ class ContactType(
 interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
-            select c from Contact c
-            join fetch c.type t
-            where c.personId = :personId
-            and c.type.attendanceContact = true
-            and c.date > CURRENT_TIMESTAMP 
-            order by c.date asc
-        """
+            select c.*
+            from contact c
+            join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            where c.offender_id = :personId and ct.attendance_contact = 'Y'
+            and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
+            or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))
+            and c.soft_deleted = 0
+            order by c.contact_date, c.contact_start_time asc
+        """,
+        nativeQuery = true
     )
-    fun findFirstAppointment(personId: Long, pageable: Pageable = PageRequest.of(0, 1)): List<Contact>
+    fun findFirstAppointment(
+        personId: Long,
+        dateNow: String,
+        timeNow: String,
+        pageable: Pageable = PageRequest.of(0, 1)
+    ): List<Contact>
 }
+
+fun ContactRepository.firstAppointment(
+    personId: Long,
+    date: LocalDate = LocalDate.now(),
+    startTime: ZonedDateTime = ZonedDateTime.now()
+): Contact? = findFirstAppointment(
+    personId,
+    date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+    startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon))
+).firstOrNull()

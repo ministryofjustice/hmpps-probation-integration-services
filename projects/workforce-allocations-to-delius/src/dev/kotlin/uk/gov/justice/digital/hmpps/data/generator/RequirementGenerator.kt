@@ -61,6 +61,7 @@ object RequirementGenerator {
         RequirementMainCategoryGenerator.CASE_VIEW,
         ReferenceDataGenerator.REQUIREMENT_SUB_CATEGORY,
         12,
+        listOf(),
         active
     )
 }

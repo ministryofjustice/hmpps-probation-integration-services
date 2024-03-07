@@ -1,16 +1,12 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.caseview
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 
 @Immutable
 @Entity
@@ -38,12 +34,19 @@ class CaseViewRequirement(
 
     val length: Long?,
 
+    @OneToMany
+    @JoinColumn(name = "rqmnt_id")
+    @SQLRestriction("active_flag = 1")
+    val managers: List<RequirementManager>,
+
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
-)
+) {
+    fun currentManager() = managers.first()
+}
 
 @Immutable
 @Entity

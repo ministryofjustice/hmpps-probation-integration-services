@@ -22,8 +22,10 @@ class RegistrationIntegrationTest {
 
     @Test
     fun `test crn with risk flags`() {
-        val result = mockMvc.perform(MockMvcRequestBuilders
-            .get("/registrations/X123456/flags").withToken())
+        val result = mockMvc.perform(
+            MockMvcRequestBuilders
+                .get("/registrations/X123456/flags").withToken()
+        )
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<RiskSummary>()
 
@@ -40,13 +42,14 @@ class RegistrationIntegrationTest {
 
     @Test
     fun `test no registrations`() {
-        val result = mockMvc.perform(MockMvcRequestBuilders
-            .get("/registrations/N123456/flags").withToken())
+        val result = mockMvc.perform(
+            MockMvcRequestBuilders
+                .get("/registrations/N123456/flags").withToken()
+        )
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<RiskSummary>()
 
         val expected = RiskSummary()
         assertEquals(expected, result)
-
     }
 }

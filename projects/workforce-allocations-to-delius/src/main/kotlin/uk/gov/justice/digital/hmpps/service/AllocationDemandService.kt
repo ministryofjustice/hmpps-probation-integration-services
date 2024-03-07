@@ -148,7 +148,6 @@ class AllocationDemandService(
         val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)!!
         val eventId = eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(crn, eventNumber)!!.id
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
-            .filter { it.mainCategory.code !in listOf("W", "W2") }
             .map { it.toRequirement() }
         val initialAppointment = contactRepository.getInitialAppointmentData(person.id, eventId)
         val emails = ldapService.findEmailsForStaffIn(listOfNotNull(staff, allocatingStaff, initialAppointment?.staff))
@@ -175,6 +174,7 @@ class AllocationDemandService(
         mainCategory.description,
         subCategory?.description,
         length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: "",
-        id
+        id,
+        currentManager().toManager()
     )
 }

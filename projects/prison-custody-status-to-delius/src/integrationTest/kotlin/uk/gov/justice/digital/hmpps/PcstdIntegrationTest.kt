@@ -73,7 +73,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertTrue(custody.isInCustody())
         assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
-        assertThat(custody.statusChangeDate, isCloseTo(notification.message.occurredAt))
+        assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
         assertThat(custody.locationChangeDate!!, isCloseTo(notification.message.occurredAt))
 
@@ -237,7 +237,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         val custody = getCustody(nomsNumber)
         assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
-        assertThat(custody.statusChangeDate, isCloseTo(notification.message.occurredAt))
+        assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
         assertThat(custody.locationChangeDate!!, isCloseTo(notification.message.occurredAt))
 
@@ -284,7 +284,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_SECURE_UNIT.code))
         assertThat(custody.locationChangeDate!!, isCloseTo(notification.message.occurredAt))
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
-        assertThat(custody.statusChangeDate, isCloseTo(notification.message.occurredAt))
+        assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
 
         verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL)
 
@@ -538,7 +538,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertTrue(custody.isInCustody())
         assertThat(custody.institution?.code, equalTo(ual.code))
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
-        assertThat(custody.statusChangeDate, isCloseTo(notification.message.occurredAt))
+        assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
 
         verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT)
 
