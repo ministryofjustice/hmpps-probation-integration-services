@@ -32,7 +32,7 @@ class Event(
     val active: Boolean = true,
 
     @OneToOne(mappedBy = "event")
-    val mainOffence: SentenceMainOffence? = null,
+    val mainOffence: MainOffence? = null,
 
     @OneToMany(mappedBy = "event")
     val additionalOffences: List<SentenceAdditionalOffence> = emptyList(),
@@ -117,9 +117,9 @@ class DisposalType(
 
 @Immutable
 @Table(name = "main_offence")
-@Entity
+@Entity(name = "SentenceMainOffence")
 @SQLRestriction("soft_deleted = 0")
-class SentenceMainOffence(
+class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
@@ -136,7 +136,7 @@ class SentenceMainOffence(
 
     @OneToOne
     @JoinColumn(name = "offence_id")
-    val offence: SentenceOffence,
+    val offence: Offence,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -163,7 +163,7 @@ class SentenceAdditionalOffence(
 
     @ManyToOne
     @JoinColumn(name = "offence_id")
-    val offence: SentenceOffence,
+    val offence: Offence,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -172,8 +172,8 @@ class SentenceAdditionalOffence(
 
 @Immutable
 @Table(name = "r_offence")
-@Entity
-class SentenceOffence(
+@Entity(name = "SentenceOffence")
+class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
