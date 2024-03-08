@@ -150,10 +150,6 @@ class AllocationDemandService(
         val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)!!
         val eventId = eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(crn, eventNumber)!!.id
 
-        println("********************************")
-        println("Ignoring $requirementTypesToIgnore")
-        println("********************************")
-
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .filter { it.mainCategory.code !in requirementTypesToIgnore }
             .map { it.toRequirement() }
