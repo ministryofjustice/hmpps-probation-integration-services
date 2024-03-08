@@ -23,7 +23,7 @@ class MatchingService(
         crns.ifEmpty { personRepository.findAllCrns() }.asSequence()
             .mapNotNull(::match)
             .forEach { match ->
-                logToTelemetry(match)
+                logToTelemetry(match, trialOnly)
                 if (!trialOnly && match is CompletedMatch.Successful) {
                     matchWriter.update(match.personMatch, match.custody) {
                         telemetryService.trackEvent(
@@ -58,12 +58,16 @@ class MatchingService(
         null
     }
 
-    private fun logToTelemetry(completedMatch: CompletedMatch) {
+    private fun logToTelemetry(completedMatch: CompletedMatch, trialOnly: Boolean) {
         when (completedMatch) {
-            is CompletedMatch.Successful -> telemetryService.trackEvent("SuccessfulMatch", completedMatch.telemetry())
+            is CompletedMatch.Successful -> telemetryService.trackEvent(
+                "SuccessfulMatch",
+                completedMatch.telemetry() + ("dryRun" to trialOnly.toString())
+            )
+
             is CompletedMatch.Unsuccessful -> telemetryService.trackEvent(
                 "UnsuccessfulMatch",
-                completedMatch.telemetry()
+                completedMatch.telemetry() + ("dryRun" to trialOnly.toString())
             )
         }
     }
