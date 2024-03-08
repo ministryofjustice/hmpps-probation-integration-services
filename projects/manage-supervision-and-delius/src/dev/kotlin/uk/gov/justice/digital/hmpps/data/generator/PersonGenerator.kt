@@ -70,6 +70,11 @@ object PersonGenerator {
         requirementId = REQUIREMENT.id
     )
 
+    val REGISTER_TYPE_1 = generateRegisterType("CODE1", "Restraining Order")
+    val REGISTER_TYPE_2 = generateRegisterType("CODE2", "Domestic Abuse Perpetrator")
+    val REGISRATION_1 = generateRegistration(REGISTER_TYPE_1, OVERVIEW.id)
+    val REGISRATION_2 = generateRegistration(REGISTER_TYPE_2, OVERVIEW.id)
+
     fun generateEvent(
         person: Person,
         id: Long = IdGenerator.getAndIncrement(),
@@ -165,7 +170,8 @@ object PersonGenerator {
         personalCircumstances = personalCircumstances,
         provisions = provisions,
         telephoneNumber = telephoneNumber,
-        preferredName = preferredName
+        preferredName = preferredName,
+        registrations = emptyList()
     )
 
     fun generateRequirement(
@@ -216,5 +222,17 @@ object PersonGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false
     ) = AdditionalOffence(id, event, date, offence, softDeleted)
+
+    fun generateRegisterType(
+        code: String,
+        description: String,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = RegisterType(code, description, id)
+
+    fun generateRegistration(
+        type: RegisterType,
+        personId: Long,
+        id: Long = IdGenerator.getAndIncrement(),
+    ) = Registration(personId, type, false, false, id)
 }
 
