@@ -197,6 +197,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OfficerView'
+  /registrations/{crn}/flags:
+    get:
+      tags:
+      - registration-resource
+      operationId: getRiskFlagsByCrn
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiskSummary'
   /person/{value}:
     get:
       tags:
@@ -851,6 +869,34 @@ components:
           description: The number of parole reports required in the next four weeks
             on cases managed by the officer.
           format: int64
+    RiskItem:
+      required:
+      - colour
+      - description
+      type: object
+      properties:
+        description:
+          type: string
+        colour:
+          type: string
+          enum:
+          - RED
+          - AMBER
+          - GREEN
+          - WHITE
+    RiskSummary:
+      type: object
+      properties:
+        selfHarm:
+          $ref: '#/components/schemas/RiskItem'
+        alerts:
+          $ref: '#/components/schemas/RiskItem'
+        safeguarding:
+          $ref: '#/components/schemas/RiskItem'
+        information:
+          $ref: '#/components/schemas/RiskItem'
+        publicProtection:
+          $ref: '#/components/schemas/RiskItem'
     Person:
       required:
       - crn

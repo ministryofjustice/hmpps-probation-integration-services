@@ -130,6 +130,9 @@
         <a href="./api-reference.html#staff-code-officer-view"><span>/staff/{code}/officer-view</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#registrations-crn-flags"><span>/registrations/{crn}/flags</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#person-value"><span>/person/{value}</span></a>
       </li>
       <li>
@@ -702,6 +705,85 @@
 </td>
 <td>
 <a href='#schema-officerview'>OfficerView</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="registrations-crn-flags">/registrations/{crn}/flags</h2>
+
+<h3 id="registrations-crn-flags-get">get</h3>
+
+
+
+
+<h4 id="registrations-crn-flags-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="registrations-crn-flags-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "selfHarm": {
+    "description": "string",
+    "colour": "string"
+  },
+  "alerts": {
+    "description": "string",
+    "colour": "string"
+  },
+  "safeguarding": {
+    "description": "string",
+    "colour": "string"
+  },
+  "information": {
+    "description": "string",
+    "colour": "string"
+  },
+  "publicProtection": {
+    "description": "string",
+    "colour": "string"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-risksummary'>RiskSummary</a>
 </td>
 </tr>
 
@@ -2881,6 +2963,100 @@
 </td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-riskitem">RiskItem</h3>
+
+
+<table class='schema-riskitem'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>colour</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-risksummary">RiskSummary</h3>
+
+
+<table class='schema-risksummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>selfHarm</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-riskitem'>RiskItem</a>
+</td>
+</tr>
+
+<tr>
+<td>alerts</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-riskitem'>RiskItem</a>
+</td>
+</tr>
+
+<tr>
+<td>safeguarding</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-riskitem'>RiskItem</a>
+</td>
+</tr>
+
+<tr>
+<td>information</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-riskitem'>RiskItem</a>
+</td>
+</tr>
+
+<tr>
+<td>publicProtection</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-riskitem'>RiskItem</a>
 </td>
 </tr>
 

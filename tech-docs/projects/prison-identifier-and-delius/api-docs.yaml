@@ -31,7 +31,7 @@ paths:
         required: true
         schema:
           maxItems: 500
-          minItems: 1
+          minItems: 0
           type: array
           items:
             type: string
@@ -58,7 +58,7 @@ paths:
           application/json:
             schema:
               maxItems: 500
-              minItems: 1
+              minItems: 0
               type: array
               items:
                 type: string
