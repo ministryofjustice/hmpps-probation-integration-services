@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.MainOffence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceEvent
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonOverviewRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
@@ -25,7 +25,7 @@ class SentenceService(
         return SentenceOverview(event?.toOffence())
     }
 
-    fun SentenceEvent.toOffence() = mainOffence?.let { mainOffence ->
+    fun Event.toOffence() = mainOffence?.let { mainOffence ->
         MainOffence(offence = Offence(
             mainOffence.offence.description, mainOffence.offenceCount
         ),

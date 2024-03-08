@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
-@Entity
+@Entity(name = "SentenceEvent")
 @Table(name = "event")
 @SQLRestriction("soft_deleted = 0")
-class SentenceEvent(
+class Event(
     @Id
     @Column(name = "event_id")
     val id: Long,
@@ -26,7 +26,7 @@ class SentenceEvent(
     val inBreach: Boolean,
 
     @OneToOne(mappedBy = "event")
-    val disposal: SentenceDisposal? = null,
+    val disposal: Disposal? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
@@ -44,7 +44,7 @@ class SentenceEvent(
     val softDeleted: Boolean = false
 )
 
-interface EventSentenceRepository : JpaRepository<SentenceEvent, Long> {
+interface EventSentenceRepository : JpaRepository<Event, Long> {
 
     @Query(
         "SELECT e FROM SentenceEvent e " +
@@ -56,24 +56,24 @@ interface EventSentenceRepository : JpaRepository<SentenceEvent, Long> {
             "LEFT JOIN FETCH ao.offence aoo " +
             "WHERE e.personId = :personId"
     )
-    fun findPersonById(personId: Long): List<SentenceEvent>
+    fun findPersonById(personId: Long): List<Event>
 }
 
-@Entity
+@Entity(name = "SentenceDisposal")
 @Immutable
 @Table(name = "disposal")
-class SentenceDisposal(
+class Disposal(
 
     @OneToOne
     @JoinColumn(name = "event_id")
-    val event: SentenceEvent,
+    val event: Event,
 
     @Column(name = "disposal_date")
     val date: LocalDate,
 
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
-    val type: SentenceDisposalType,
+    val type: DisposalType,
 
     @Column(name = "entered_notional_end_date")
     val enteredEndDate: LocalDate? = null,
@@ -94,10 +94,10 @@ class SentenceDisposal(
     fun expectedEndDate() = enteredEndDate ?: notionalEndDate
 }
 
-@Entity
+@Entity(name = "SentenceDisposalType")
 @Immutable
 @Table(name = "r_disposal_type")
-class SentenceDisposalType(
+class DisposalType(
 
     @Column(name = "disposal_type_code")
     val code: String,
@@ -129,7 +129,7 @@ class SentenceMainOffence(
 
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
-    val event: SentenceEvent,
+    val event: Event,
 
     @Column(name = "offence_date")
     val date: LocalDate,
@@ -156,7 +156,7 @@ class SentenceAdditionalOffence(
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
-    val event: SentenceEvent?,
+    val event: Event?,
 
     @Column(name = "offence_date")
     val date: LocalDate?,
