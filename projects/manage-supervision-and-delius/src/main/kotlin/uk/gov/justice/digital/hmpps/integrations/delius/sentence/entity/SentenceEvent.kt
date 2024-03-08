@@ -125,7 +125,7 @@ class SentenceMainOffence(
     val id: Long,
 
     @Column(name = "offence_count")
-    val offenceCount: String,
+    val offenceCount: Long,
 
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
@@ -152,7 +152,7 @@ class SentenceAdditionalOffence(
     val id: Long,
 
     @Column(name = "offence_count")
-    val offenceCount: String,
+    val offenceCount: Long,
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
