@@ -61,6 +61,9 @@ class Person(
     @OneToMany(mappedBy = "personId")
     val provisions: List<Provision>,
 
+    @OneToMany(mappedBy = "personId")
+    val registrations: List<Registration>,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 

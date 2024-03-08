@@ -46,6 +46,7 @@ internal class OverviewControllerTest {
             previousOrders = PreviousOrders(0, 1),
             sentences = emptyList(),
             schedule = Schedule(null),
+            registrations = emptyList()
         )
         whenever(overviewService.getOverview(crn)).thenReturn(overview)
         val res = controller.getOverview("X000004")
