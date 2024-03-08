@@ -14,5 +14,7 @@ class MatchingController(private val matchingService: MatchingService) {
     fun populateNomsNumbers(
         @RequestParam(defaultValue = "true") trialOnly: Boolean,
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>?
-    ) = matchingService.matchWithPrisonData(crns ?: listOf(), trialOnly)
+    ) {
+        Thread.ofVirtual().start { matchingService.matchWithPrisonData(crns ?: listOf(), trialOnly) }
+    }
 }

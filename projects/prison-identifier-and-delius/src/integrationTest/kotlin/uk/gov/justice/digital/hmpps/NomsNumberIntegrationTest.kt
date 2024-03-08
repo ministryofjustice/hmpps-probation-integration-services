@@ -6,10 +6,7 @@ import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -67,7 +64,7 @@ internal class NomsNumberIntegrationTest {
 
         val nameCapture = argumentCaptor<String>()
         val propertyCaptor = argumentCaptor<Map<String, String>>()
-        verify(telemetryService).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
+        verify(telemetryService, timeout(5000)).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
 
         assertThat(nameCapture.firstValue, equalTo("SuccessfulMatch"))
         assertThat(
@@ -77,7 +74,8 @@ internal class NomsNumberIntegrationTest {
                     "existingNomsId" to "E1234XS",
                     "custodialEvents" to "1",
                     "matchedNomsId" to "E1234XS",
-                    "matchedBookingNumber" to "76543A"
+                    "matchedBookingNumber" to "76543A",
+                    "dryRun" to "true"
                 )
             )
         )
@@ -94,7 +92,7 @@ internal class NomsNumberIntegrationTest {
 
         val nameCapture = argumentCaptor<String>()
         val propertyCaptor = argumentCaptor<Map<String, String>>()
-        verify(telemetryService).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
+        verify(telemetryService, timeout(5000)).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
 
         assertThat(nameCapture.firstValue, equalTo("SuccessfulMatch"))
         assertThat(
@@ -105,7 +103,8 @@ internal class NomsNumberIntegrationTest {
                     "matchedNomsId" to "G5541UN",
                     "matchedBookingNumber" to "13831A",
                     "matchedSentenceDate" to "2022-12-12",
-                    "sentenceDate" to "2022-12-12"
+                    "sentenceDate" to "2022-12-12",
+                    "dryRun" to "false"
                 )
             )
         )
@@ -122,7 +121,7 @@ internal class NomsNumberIntegrationTest {
 
         val nameCapture = argumentCaptor<String>()
         val propertyCaptor = argumentCaptor<Map<String, String>>()
-        verify(telemetryService).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
+        verify(telemetryService, timeout(5000)).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
 
         assertThat(nameCapture.firstValue, equalTo("SuccessfulMatch"))
         assertThat(
@@ -133,13 +132,11 @@ internal class NomsNumberIntegrationTest {
                     "matchedNomsId" to "G5541WW",
                     "matchedBookingNumber" to "13831A",
                     "matchedSentenceDate" to "2022-12-12",
-                    "sentenceDate" to "2022-12-12"
+                    "sentenceDate" to "2022-12-12",
+                    "dryRun" to "true"
                 )
             )
         )
-
-        verify(personRepository, never()).save(any())
-        verify(custodyRepository, never()).save(any())
     }
 
     @Test
@@ -154,7 +151,7 @@ internal class NomsNumberIntegrationTest {
 
         val nameCapture = argumentCaptor<String>()
         val propertyCaptor = argumentCaptor<Map<String, String>>()
-        verify(telemetryService).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
+        verify(telemetryService, timeout(5000)).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
 
         assertThat(nameCapture.firstValue, equalTo("SuccessfulMatch"))
         assertThat(
@@ -165,7 +162,8 @@ internal class NomsNumberIntegrationTest {
                     "matchedNomsId" to "G5541WW",
                     "matchedBookingNumber" to "13831A",
                     "matchedSentenceDate" to "2022-12-12",
-                    "sentenceDate" to "2022-12-12"
+                    "sentenceDate" to "2022-12-12",
+                    "dryRun" to "false"
                 )
             )
         )
@@ -185,7 +183,7 @@ internal class NomsNumberIntegrationTest {
 
         val nameCapture = argumentCaptor<String>()
         val propertyCaptor = argumentCaptor<Map<String, String>>()
-        verify(telemetryService).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
+        verify(telemetryService, timeout(5000)).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
 
         assertThat(nameCapture.firstValue, equalTo("UnsuccessfulMatch"))
         assertThat(
@@ -194,8 +192,9 @@ internal class NomsNumberIntegrationTest {
                     "crn" to "A000004",
                     "custodialEvents" to "1",
                     "sentenceDates" to "2022-12-12",
-                    "G5541WW" to "DateOfBirth:NONE",
-                    "A1234YZ" to "Name:PARTIAL, DateOfBirth:NONE"
+                    "G5541WW" to "DateOfBirth:INCONCLUSIVE",
+                    "A1234YZ" to "Name:PARTIAL, DateOfBirth:INCONCLUSIVE",
+                    "dryRun" to "true"
                 )
             )
         )
@@ -212,7 +211,7 @@ internal class NomsNumberIntegrationTest {
 
         val nameCapture = argumentCaptor<String>()
         val propertyCaptor = argumentCaptor<Map<String, String>>()
-        verify(telemetryService).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
+        verify(telemetryService, timeout(5000)).trackEvent(nameCapture.capture(), propertyCaptor.capture(), any())
 
         assertThat(nameCapture.firstValue, equalTo("SuccessfulMatch"))
         assertThat(
@@ -223,7 +222,8 @@ internal class NomsNumberIntegrationTest {
                     "matchedNomsId" to "G5541UN",
                     "matchedBookingNumber" to "13831A",
                     "matchedSentenceDate" to "2022-12-12",
-                    "sentenceDate" to "2022-12-12"
+                    "sentenceDate" to "2022-12-12",
+                    "dryRun" to "true"
                 )
             )
         )

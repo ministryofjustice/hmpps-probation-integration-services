@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.sevice
 
+import jakarta.persistence.EntityManager
+import jakarta.persistence.EntityManagerFactory
+import org.hibernate.SessionFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
@@ -16,7 +19,8 @@ class MatchingService(
     private val personRepository: PersonRepository,
     private val matcher: Matcher,
     private val matchWriter: MatchWriter,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    private val entityManager: EntityManager
 ) {
 
     fun matchWithPrisonData(crns: List<String>, trialOnly: Boolean) {
@@ -41,6 +45,8 @@ class MatchingService(
             val matchingSentence = personMatch.person.events.filter {
                 it.disposal?.custody != null && matchedPrisoner?.sentenceStartDate?.withinDays(it.disposal.startDate) == true
             }
+            // temporary for testing memory issue
+            entityManager.clear()
             return when {
                 matchedPrisoner != null -> CompletedMatch.Successful(
                     personMatch,
