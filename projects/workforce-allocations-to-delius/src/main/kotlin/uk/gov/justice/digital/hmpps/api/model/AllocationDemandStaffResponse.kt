@@ -21,7 +21,8 @@ data class Requirement(
     val subCategory: String?,
     val length: String,
     val id: Long,
-    val manager: Manager
+    val manager: Manager,
+    val isUnpaidWork: Boolean
 )
 
 interface Court {

@@ -84,6 +84,9 @@ class AllocationDemandServiceTest {
     @Mock
     lateinit var courtAppearanceRepository: CourtAppearanceRepository
 
+    @Mock
+    lateinit var requirementTypesToIgnore: List<String>
+
     @InjectMocks
     lateinit var allocationDemandService: AllocationDemandService
 
