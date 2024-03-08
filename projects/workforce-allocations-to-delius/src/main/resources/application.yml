@@ -36,6 +36,8 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: HMPPSAllocations
 
+requirement.types.ignored:
+
 management:
   endpoints.web:
     base-path: /
@@ -53,7 +55,6 @@ spring:
   ldap.embedded.base-dn: ${spring.ldap.base}
 
 seed.database: true
-wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
