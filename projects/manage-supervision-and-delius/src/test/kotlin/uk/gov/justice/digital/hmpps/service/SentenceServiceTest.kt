@@ -14,17 +14,12 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.MainOffence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.AdditionalOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonOverviewRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class SentenceServiceTest {
-
-    @Mock
-    lateinit var personRepository: PersonOverviewRepository
 
     @Mock
     lateinit var eventRepository: EventSentenceRepository
@@ -35,32 +30,22 @@ class SentenceServiceTest {
     @Test
     fun `no active events`() {
 
-        val person = PersonGenerator.OVERVIEW
-
-        whenever(personRepository.findByCrn(person.crn)).thenReturn(PersonGenerator.OVERVIEW)
-
-        whenever(eventRepository.findPersonById(person.id)).thenReturn(
+        whenever(eventRepository.findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(
             listOf(PersonGenerator.INACTIVE_EVENT_1)
         )
 
-        val response = service.getMostRecentActiveEvent(person.crn)
+        val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(SentenceOverview(), response)
-        verify(personRepository, times(1)).findByCrn(person.crn)
-        verify(eventRepository, times(1)).findPersonById(person.id)
+        verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
 
-        verifyNoMoreInteractions(personRepository)
         verifyNoMoreInteractions(eventRepository)
     }
 
     @Test
     fun `recent active event`() {
 
-        val person = PersonGenerator.OVERVIEW
-
-        whenever(personRepository.findByCrn(person.crn)).thenReturn(PersonGenerator.OVERVIEW)
-
-        whenever(eventRepository.findPersonById(person.id)).thenReturn(
+        whenever(eventRepository.findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(
             listOf(
                 PersonGenerator.generateEvent(
                     person = PersonGenerator.OVERVIEW,
@@ -81,13 +66,11 @@ class SentenceServiceTest {
                     mainOffence = PersonGenerator.MAIN_OFFENCE_1,
                     notes = "overview",
                     additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
-                ),
-                PersonGenerator.INACTIVE_EVENT_1,
-                PersonGenerator.INACTIVE_EVENT_2
+                )
             )
         )
 
-        val response = service.getMostRecentActiveEvent(person.crn)
+        val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
             MainOffence(
@@ -98,10 +81,8 @@ class SentenceServiceTest {
             )
         )
         assertEquals(expected, response)
-        verify(personRepository, times(1)).findByCrn(person.crn)
-        verify(eventRepository, times(1)).findPersonById(person.id)
+        verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
 
-        verifyNoMoreInteractions(personRepository)
         verifyNoMoreInteractions(eventRepository)
     }
 }

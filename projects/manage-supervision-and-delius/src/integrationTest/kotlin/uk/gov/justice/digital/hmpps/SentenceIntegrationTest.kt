@@ -18,24 +18,26 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class SenetenceIntegrationTest {
+class SentenceIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
     @Test
     fun `get most recent active event`() {
-        val person = PersonGenerator.OVERVIEW
         val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${person.crn}").withToken())
+            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
             MainOffence(
-                Offence("Another Murder", 1),
+                Offence("Murder", 1),
                 LocalDate.of(2024, 3, 11),
                 "overview",
-                emptyList()
+                listOf(
+                    Offence("Burglary", 1),
+                    Offence("Assault", 1)
+                )
             )
         )
 
