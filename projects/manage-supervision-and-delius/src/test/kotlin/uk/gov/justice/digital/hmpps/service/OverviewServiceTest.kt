@@ -61,7 +61,8 @@ internal class OverviewServiceTest {
                     disposal = PersonGenerator.ACTIVE_ORDER,
                     eventNumber = "654321",
                     mainOffence = PersonGenerator.MAIN_OFFENCE_1,
-                    notes = "overview"
+                    notes = "overview",
+                    additionalOffences = emptyList()
                 ),
                 generateEvent(
                     person = PersonGenerator.OVERVIEW,
@@ -70,7 +71,8 @@ internal class OverviewServiceTest {
                     disposal = PersonGenerator.ACTIVE_ORDER,
                     eventNumber = "654321",
                     mainOffence = PersonGenerator.MAIN_OFFENCE_2,
-                    notes = "overview"
+                    notes = "overview",
+                    additionalOffences = emptyList()
                 ),
                 PersonGenerator.INACTIVE_EVENT_1,
                 PersonGenerator.INACTIVE_EVENT_2

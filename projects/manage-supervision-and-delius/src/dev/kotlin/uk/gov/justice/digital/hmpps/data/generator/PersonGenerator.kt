@@ -10,10 +10,10 @@ import java.time.ZonedDateTime
 object PersonGenerator {
 
     val OVERVIEW = generateOverview("X000004")
-    val EVENT_1 = generateEvent(OVERVIEW, eventNumber = "7654321", notes = "overview")
-    val EVENT_2 = generateEvent(OVERVIEW, eventNumber = "1234567", inBreach = true, notes = "overview")
-    val INACTIVE_EVENT_1 = generateEvent(OVERVIEW, eventNumber = "654321", inBreach = true, active = false, notes = "inactive")
-    val INACTIVE_EVENT_2 = generateEvent(OVERVIEW, eventNumber = "854321", inBreach = true, active = false, notes = "inactive")
+    val EVENT_1 = generateEvent(OVERVIEW, eventNumber = "7654321", notes = "overview", additionalOffences = emptyList())
+    val EVENT_2 = generateEvent(OVERVIEW, eventNumber = "1234567", inBreach = true, notes = "overview", additionalOffences = emptyList())
+    val INACTIVE_EVENT_1 = generateEvent(OVERVIEW, eventNumber = "654321", inBreach = true, active = false, notes = "inactive", additionalOffences = emptyList())
+    val INACTIVE_EVENT_2 = generateEvent(OVERVIEW, eventNumber = "854321", inBreach = true, active = false, notes = "inactive", additionalOffences = emptyList())
     val OFFENCE_1 = generateOffence("Murder", "MAIN")
     val OFFENCE_2 = generateOffence("Another Murder", "MAINA")
 
@@ -83,6 +83,7 @@ object PersonGenerator {
         disposal: Disposal? = null,
         mainOffence: MainOffence? = null,
         notes: String,
+        additionalOffences: List<AdditionalOffence>
     ) =
         Event(
             id,
@@ -92,7 +93,8 @@ object PersonGenerator {
             inBreach = inBreach,
             active = active,
             mainOffence = mainOffence,
-            notes = notes
+            notes = notes,
+            additionalOffences = additionalOffences
         )
 
     fun generateOverview(
