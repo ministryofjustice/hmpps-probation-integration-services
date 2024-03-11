@@ -15,6 +15,6 @@ class MatchingController(private val matchingNotifier: MatchingNotifier) {
         @RequestParam(defaultValue = "true") dryRun: Boolean,
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>?
     ) {
-       matchingNotifier.sendForMatch(crns ?: listOf(), dryRun)
+        matchingNotifier.sendForMatch(crns ?: listOf(), dryRun)
     }
 }
