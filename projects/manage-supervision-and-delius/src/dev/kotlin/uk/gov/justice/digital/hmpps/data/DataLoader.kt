@@ -70,6 +70,10 @@ class DataLoader(
             PersonGenerator.REQUIREMENT,
             PersonGenerator.REQUIREMENT_CONTACT_1,
             PersonGenerator.REQUIREMENT_CONTACT_2,
+            PersonGenerator.REGISTER_TYPE_1,
+            PersonGenerator.REGISTER_TYPE_2,
+            PersonGenerator.REGISRATION_1,
+            PersonGenerator.REGISRATION_2
         )
     }
 

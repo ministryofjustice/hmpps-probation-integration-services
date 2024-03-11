@@ -60,6 +60,9 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: Event,
 
+    @OneToOne(mappedBy = "disposal")
+    val custody: Custody? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -79,7 +82,7 @@ class Custody(
 
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)
-    val disposal: Disposal? = null,
+    val disposal: Disposal,
 
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,

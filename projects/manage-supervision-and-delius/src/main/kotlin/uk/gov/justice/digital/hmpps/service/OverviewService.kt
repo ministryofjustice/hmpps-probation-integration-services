@@ -37,6 +37,7 @@ class OverviewService(
             sentences = sentences.mapNotNull { it },
             activity = null, //ToDo
             compliance = Compliance(currentBreaches = activeEventsBreached, failureToComplyInLast12Months = 0), //ToDo
+            registrations = person.registrations.map { it.type.description }
         )
     }
 

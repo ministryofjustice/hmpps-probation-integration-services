@@ -80,6 +80,7 @@ internal class OverviewIntegrationTest {
         assertThat(res.sentences[0].eventNumber, equalTo(EVENT_1.eventNumber))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
+        assertThat(res.registrations, equalTo(listOf("Restraining Order", "Domestic Abuse Perpetrator")))
     }
 
     @Test

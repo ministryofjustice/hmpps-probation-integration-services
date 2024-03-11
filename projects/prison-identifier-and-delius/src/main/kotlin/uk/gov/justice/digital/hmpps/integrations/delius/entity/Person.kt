@@ -1,14 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -16,12 +12,14 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "offender")
 @EntityListeners(AuditingEntityListener::class)
+@SQLRestriction("soft_deleted = 0")
 class Person(
 
     @Id
@@ -59,6 +57,10 @@ class Person(
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData?,
 
+    @Fetch(FetchMode.JOIN)
+    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
+    val events: List<Event>,
+
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
@@ -81,7 +83,11 @@ class Person(
     @Column(nullable = false)
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
-)
+) {
+    fun isSentenced() = events.any { it.disposal != null }
+
+    fun sentenceDates() = events.mapNotNull { it.disposal?.startDate }
+}
 
 @Immutable
 @Entity
@@ -121,15 +127,21 @@ interface PersonRepository : JpaRepository<Person, Long> {
         and c.bookingRef is null
     """
     )
-    fun findByCrn(crn: String): List<SentencedPerson>
-    fun findByNomsNumberAndSoftDeletedIsFalse(nomsNumber: String): Person?
+    fun findSentencedByCrn(crn: String): List<SentencedPerson>
+
+    fun findByCrn(crn: String): Person?
+
+    @Query("select count(p) from Person p where p.nomsNumber = :nomsNumber and p.id <> :personId")
+    fun checkForDuplicateNoms(nomsNumber: String, personId: Long): Int
 
     @Query("select p.crn from Person p where p.softDeleted = false")
     fun findAllCrns(): List<String>
 }
 
+fun PersonRepository.getByCrn(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+
 interface SentencedPerson {
     val person: Person
-    val sentenceDate: LocalDate
-    val custody: Custody
+    val sentenceDate: LocalDate?
+    val custody: Custody?
 }

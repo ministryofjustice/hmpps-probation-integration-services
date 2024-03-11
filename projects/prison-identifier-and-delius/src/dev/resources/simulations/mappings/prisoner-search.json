@@ -47,6 +47,22 @@
         "status": 200,
         "bodyFileName": "search-results-body3.json"
       }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"prisonerIdentifier\":\"E1234XS\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "search-results-body4.json"
+      }
     }
   ]
 }
