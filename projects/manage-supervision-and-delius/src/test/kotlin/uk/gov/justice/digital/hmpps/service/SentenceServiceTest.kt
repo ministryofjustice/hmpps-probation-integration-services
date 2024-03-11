@@ -84,7 +84,7 @@ class SentenceServiceTest {
                 ),
                 PersonGenerator.INACTIVE_EVENT_1,
                 PersonGenerator.INACTIVE_EVENT_2
-                )
+            )
         )
 
         val response = service.getMostRecentActiveEvent(person.crn)
@@ -92,9 +92,9 @@ class SentenceServiceTest {
         val expected = SentenceOverview(
             MainOffence(
                 Offence("Murder", 1),
-            LocalDate.of(2024, 3, 11),
-            "overview",
-            listOf(Offence("Burglary", 1))
+                LocalDate.of(2024, 3, 11),
+                "overview",
+                listOf(Offence("Burglary", 1))
             )
         )
         assertEquals(expected, response)
