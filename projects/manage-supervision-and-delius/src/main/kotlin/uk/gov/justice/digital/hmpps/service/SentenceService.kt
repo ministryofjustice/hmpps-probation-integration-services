@@ -14,7 +14,7 @@ class SentenceService(
     private val personRepository: PersonOverviewRepository,
     private val eventRepository: EventSentenceRepository
 ) {
-    fun getMostRecentActiveEvent(crn: String): SentenceOverview  {
+    fun getMostRecentActiveEvent(crn: String): SentenceOverview {
         val person = personRepository.getPerson(crn)
         val event = eventRepository.findPersonById(person.id)
             .filter { it.inBreach }
@@ -31,7 +31,8 @@ class SentenceService(
             dateOfOffence = mainOffence.date,
             notes = notes,
             additionalOffences = additionalOffences.map {
-                Offence(description = it.offence.description, count = it.offenceCount
+                Offence(
+                    description = it.offence.description, count = it.offenceCount
                 )
             }
         )

@@ -30,18 +30,22 @@ class SenetenceIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 
-        val expected = SentenceOverview(MainOffence(Offence("Another Murder", 1),
-                                                    LocalDate.of(2024, 3, 11),
-                                                "overview",
-                                                    emptyList()))
+        val expected = SentenceOverview(
+            MainOffence(
+                Offence("Another Murder", 1),
+                LocalDate.of(2024, 3, 11),
+                "overview",
+                emptyList()
+            )
+        )
 
         assertEquals(expected, response)
     }
+
     @Test
     fun `unauthorized status returned`() {
         mockMvc
             .perform(MockMvcRequestBuilders.get("/sentence/X123456"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
-
 }

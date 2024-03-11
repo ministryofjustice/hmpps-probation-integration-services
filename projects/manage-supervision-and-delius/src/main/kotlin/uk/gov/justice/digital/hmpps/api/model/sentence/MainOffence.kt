@@ -7,4 +7,4 @@ data class MainOffence(
     val dateOfOffence: LocalDate,
     val notes: String,
     val additionalOffences: List<Offence>
-    )
+)
