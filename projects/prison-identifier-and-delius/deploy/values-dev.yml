@@ -9,7 +9,7 @@ generic-service:
     SENTRY_ENVIRONMENT: dev
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/oauth/token
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/.well-known/jwks.json
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
+
     INTEGRATIONS_PRISONER-SEARCH_URL: https://prisoner-search-dev.prison.service.justice.gov.uk
 
     SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
@@ -23,3 +23,6 @@ generic-prometheus-alerts:
 noms:
   update:
     schedule: 0 7 * * 1
+
+namespace:
+  label: hmpps-probation-integration-services-dev
