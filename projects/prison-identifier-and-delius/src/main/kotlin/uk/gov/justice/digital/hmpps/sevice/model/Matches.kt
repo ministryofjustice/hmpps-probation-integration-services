@@ -15,7 +15,7 @@ data class PersonMatch(
     private fun nameMatchType(prisoner: PrisonSearchResult): ComponentMatch.MatchType =
         when {
             prisoner.firstName.equals(person.forename, true) &&
-                prisoner.lastName.equals(person.surname, true) -> ComponentMatch.MatchType.FULL
+                prisoner.lastName.equals(person.surname, true) -> ComponentMatch.MatchType.MATCH
 
             !prisoner.firstName.equals(person.forename, true) &&
                 !prisoner.lastName.equals(person.surname, true) -> ComponentMatch.MatchType.INCONCLUSIVE
@@ -27,7 +27,7 @@ data class PersonMatch(
 
     private fun dobMatch(prisoner: PrisonSearchResult) = ComponentMatch.DateOfBirth(
         when {
-            prisoner.dateOfBirth == person.dateOfBirth -> ComponentMatch.MatchType.FULL
+            prisoner.dateOfBirth == person.dateOfBirth -> ComponentMatch.MatchType.MATCH
             // TODO add logic from p2p update around date matching
             else -> ComponentMatch.MatchType.INCONCLUSIVE
         }
@@ -40,7 +40,7 @@ data class PersonMatch(
     ).filter { !exclusiveField(it.first, it.second) }
         .take(1)
         .map {
-            ComponentMatch.Identifier(if (it.first == it.second) ComponentMatch.MatchType.FULL else ComponentMatch.MatchType.INCONCLUSIVE)
+            ComponentMatch.Identifier(if (it.first == it.second) ComponentMatch.MatchType.MATCH else ComponentMatch.MatchType.INCONCLUSIVE)
         }.firstOrNull()
 
     private fun exclusiveField(first: String?, second: String?): Boolean =
@@ -49,7 +49,7 @@ data class PersonMatch(
     fun sentenceDateMatch(prisoner: PrisonSearchResult) = ComponentMatch.SentenceDate(
         when {
             person.isSentenced() && (prisoner.sentenceStartDate != null && person.sentenceDates()
-                .any { it.withinDays(prisoner.sentenceStartDate) }) -> ComponentMatch.MatchType.FULL
+                .any { it.withinDays(prisoner.sentenceStartDate) }) -> ComponentMatch.MatchType.MATCH
 
             !person.isSentenced() && prisoner.sentenceStartDate == null -> ComponentMatch.MatchType.PARTIAL
             else -> ComponentMatch.MatchType.INCONCLUSIVE
@@ -69,7 +69,7 @@ data class PersonMatch(
     val potentialMatches = responses.map { PotentialMatch(it, componentMatches(it)) }
 
     val matches =
-        potentialMatches.filter { potential -> potential.matches.all { it.type == ComponentMatch.MatchType.FULL } }
+        potentialMatches.filter { potential -> potential.matches.all { it.type == ComponentMatch.MatchType.MATCH } }
 
     val match: PrisonSearchResult? = if (matches.size == 1) matches.first().prisoner else null
 }
@@ -86,7 +86,7 @@ sealed interface ComponentMatch {
 
     data class SentenceDate(override val type: MatchType) : ComponentMatch
     enum class MatchType {
-        FULL, PARTIAL, INCONCLUSIVE
+        MATCH, PARTIAL, INCONCLUSIVE
     }
 }
 

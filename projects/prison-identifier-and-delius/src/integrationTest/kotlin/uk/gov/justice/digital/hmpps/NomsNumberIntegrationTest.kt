@@ -87,7 +87,7 @@ internal class NomsNumberIntegrationTest {
         val crn = PersonGenerator.PERSON_WITH_NO_NOMS.crn
 
         mockMvc
-            .perform(post("/person/populate-noms-number?trialOnly=false").withToken().withJson(listOf(crn)))
+            .perform(post("/person/populate-noms-number?dryRun=false").withToken().withJson(listOf(crn)))
             .andExpect(status().is2xxSuccessful)
 
         val nameCapture = argumentCaptor<String>()
@@ -146,7 +146,7 @@ internal class NomsNumberIntegrationTest {
         val custodyId = personRepository.findSentencedByCrn(crn).first().custody!!.id
 
         mockMvc
-            .perform(post("/person/populate-noms-number?trialOnly=false").withToken().withJson(listOf(crn)))
+            .perform(post("/person/populate-noms-number?dryRun=false").withToken().withJson(listOf(crn)))
             .andExpect(status().is2xxSuccessful)
 
         val nameCapture = argumentCaptor<String>()

@@ -1,11 +1,12 @@
 package uk.gov.justice.digital.hmpps.sevice
 
-import jakarta.persistence.EntityManager
-import jakarta.persistence.EntityManagerFactory
-import org.hibernate.SessionFactory
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.sevice.model.ComponentMatch
 import uk.gov.justice.digital.hmpps.sevice.model.PersonMatch
 import uk.gov.justice.digital.hmpps.sevice.model.PotentialMatch
@@ -14,30 +15,37 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@Component
+class MatchingHandler(
+    override val converter: NotificationConverter<HmppsDomainEvent>,
+    private val matchingService: MatchingService
+) : NotificationHandler<HmppsDomainEvent> {
+    override fun handle(notification: Notification<HmppsDomainEvent>) {
+        notification.message.personReference.findCrn()?.let {
+            matchingService.matchWithPrisonData(it, notification.message.additionalInformation["dryRun"] == true)
+        }
+    }
+}
+
 @Service
 class MatchingService(
-    private val personRepository: PersonRepository,
     private val matcher: Matcher,
     private val matchWriter: MatchWriter,
-    private val telemetryService: TelemetryService,
-    private val entityManager: EntityManager
+    private val telemetryService: TelemetryService
 ) {
 
-    fun matchWithPrisonData(crns: List<String>, trialOnly: Boolean) {
-        crns.ifEmpty { personRepository.findAllCrns() }.asSequence()
-            .mapNotNull(::match)
-            .forEach { match ->
-                logToTelemetry(match, trialOnly)
-                if (!trialOnly && match is CompletedMatch.Successful) {
-                    matchWriter.update(match.personMatch, match.custody) {
-                        telemetryService.trackEvent(
-                            "PersistingException",
-                            mapOf("crn" to match.personMatch.person.crn, "exception" to it.message!!)
-                        )
-                    }
+    fun matchWithPrisonData(crn: String, trialOnly: Boolean) =
+        match(crn)?.let { match ->
+            logToTelemetry(match, trialOnly)
+            if (!trialOnly && match is CompletedMatch.Successful) {
+                matchWriter.update(match.personMatch, match.custody) {
+                    telemetryService.trackEvent(
+                        "PersistingException",
+                        mapOf("crn" to match.personMatch.person.crn, "exception" to it.message!!)
+                    )
                 }
             }
-    }
+        }
 
     private fun match(crn: String): CompletedMatch? = try {
         matcher.matchCrn(crn)?.let { personMatch ->
@@ -45,8 +53,6 @@ class MatchingService(
             val matchingSentence = personMatch.person.events.filter {
                 it.disposal?.custody != null && matchedPrisoner?.sentenceStartDate?.withinDays(it.disposal.startDate) == true
             }
-            // temporary for testing memory issue
-            entityManager.clear()
             return when {
                 matchedPrisoner != null -> CompletedMatch.Successful(
                     personMatch,
@@ -98,14 +104,14 @@ fun CompletedMatch.sharedTelemetry(): Map<String, String> = listOfNotNull(
 ).toMap()
 
 fun CompletedMatch.Successful.telemetry(): Map<String, String> =
-    sharedTelemetry() + listOfNotNull(custody?.disposal?.startDate?.let { "sentenceDate" to it.format(DateTimeFormatter.ISO_DATE) }).toMap()
+    sharedTelemetry() +
+        listOfNotNull(custody?.disposal?.startDate?.let { "sentenceDate" to it.format(DateTimeFormatter.ISO_DATE) }).toMap()
 
 fun CompletedMatch.Unsuccessful.telemetry(): Map<String, String> =
     sharedTelemetry() + ("sentenceDates" to sentenceDates.joinToString { it.format(DateTimeFormatter.ISO_DATE) }) +
-        personMatch.potentialMatches.telemetry()
+        personMatch.matches.telemetry() + personMatch.potentialMatches.telemetry()
 
 fun List<PotentialMatch>.telemetry(): Map<String, String> = associate { potential ->
-    potential.prisoner.prisonerNumber to potential.matches
-        .filter { it.type != ComponentMatch.MatchType.FULL }
-        .joinToString(separator = ", ") { "${it.name()}:${it.type}" }
+    val potentials = potential.matches.filter { it.type != ComponentMatch.MatchType.MATCH }
+    potential.prisoner.prisonerNumber to potentials.joinToString(separator = ", ") { "${it.name()}:${it.type}" }
 }
