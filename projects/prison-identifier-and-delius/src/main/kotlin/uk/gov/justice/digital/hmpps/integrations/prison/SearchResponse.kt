@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.sevice.model
+package uk.gov.justice.digital.hmpps.integrations.prison
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import java.time.LocalDate

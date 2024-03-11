@@ -148,6 +148,17 @@ class HmppsNotificationPublisher(
     }
 }
 
+@Component
+@ConditionalOnProperty("messaging.producer.queue")
+class HmppsQueuePublisher(
+    @Value("\${messaging.producer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager
+) : NotificationPublisher {
+    override fun publish(notification: Notification<*>) {
+        channelManager.getChannel(queueName).publish(notification)
+    }
+}
+
 @Configuration
 @EnableScheduling
 class PollEnableConfig
