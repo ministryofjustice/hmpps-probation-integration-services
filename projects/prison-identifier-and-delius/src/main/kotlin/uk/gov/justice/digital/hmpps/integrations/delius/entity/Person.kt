@@ -130,6 +130,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findSentencedByCrn(crn: String): List<SentencedPerson>
 
     fun findByCrn(crn: String): Person?
+
     @Query("select count(p) from Person p where p.nomsNumber = :nomsNumber and p.id <> :personId")
     fun checkForDuplicateNoms(nomsNumber: String, personId: Long): Int
 
