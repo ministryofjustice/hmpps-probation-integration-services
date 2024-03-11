@@ -11,7 +11,7 @@ class MatchingNotifier(
     private val notificationPublisher: NotificationPublisher
 ) {
     fun sendForMatch(crns: List<String>, dryRun: Boolean) {
-        crns.ifEmpty { personRepository.findAllCrns() }.asSequence()
+        crns.ifEmpty { personRepository.findAllCrns() }
             .map { notification(it, dryRun) }
             .forEach { notificationPublisher.publish(it) }
     }

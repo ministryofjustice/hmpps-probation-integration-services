@@ -67,7 +67,7 @@ class MatchingService(
         }
     } catch (e: Exception) {
         telemetryService.trackEvent("MatchingException", mapOf("crn" to crn, "exception" to (e.message ?: "Unknown")))
-        null
+        throw e
     }
 
     private fun logToTelemetry(completedMatch: CompletedMatch, trialOnly: Boolean) {
