@@ -2,6 +2,8 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: update-noms-numbers
+  labels:
+    cloud-platform.justice.gov.uk/namespace: {{ .Values.namespace.label }}
 spec:
   schedule: {{ .Values.noms.update.schedule }}
   concurrencyPolicy: Forbid

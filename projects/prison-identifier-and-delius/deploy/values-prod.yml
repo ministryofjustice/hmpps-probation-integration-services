@@ -12,3 +12,6 @@ generic-service:
 noms:
   update:
     schedule: 0 7 * * 1
+
+namespace:
+  label: probation-integration-services-prod
