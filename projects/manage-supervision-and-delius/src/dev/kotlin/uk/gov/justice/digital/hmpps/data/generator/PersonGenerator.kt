@@ -10,20 +10,22 @@ import java.time.ZonedDateTime
 object PersonGenerator {
 
     val OVERVIEW = generateOverview("X000004")
-    val EVENT_1 = generateEvent(OVERVIEW, eventNumber = "7654321")
-    val EVENT_2 = generateEvent(OVERVIEW, eventNumber = "1234567", inBreach = true)
-    val INACTIVE_EVENT_1 = generateEvent(OVERVIEW, eventNumber = "654321", inBreach = true, active = false)
-    val INACTIVE_EVENT_2 = generateEvent(OVERVIEW, eventNumber = "854321", inBreach = true, active = false)
+    val EVENT_1 = generateEvent(OVERVIEW, eventNumber = "7654321", notes = "overview")
+    val EVENT_2 = generateEvent(OVERVIEW, eventNumber = "1234567", inBreach = true, notes = "overview")
+    val INACTIVE_EVENT_1 = generateEvent(OVERVIEW, eventNumber = "654321", inBreach = true, active = false, notes = "inactive")
+    val INACTIVE_EVENT_2 = generateEvent(OVERVIEW, eventNumber = "854321", inBreach = true, active = false, notes = "inactive")
     val OFFENCE_1 = generateOffence("Murder", "MAIN")
     val OFFENCE_2 = generateOffence("Another Murder", "MAINA")
 
     val MAIN_OFFENCE_1 = generateMainOffence(
+        1,
         EVENT_1,
         OFFENCE_1,
         LocalDate.now()
     )
 
     val MAIN_OFFENCE_2 = generateMainOffence(
+        1,
         EVENT_2,
         OFFENCE_2,
         LocalDate.now()
@@ -37,6 +39,7 @@ object PersonGenerator {
 
     val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
     val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(
+        1,
         EVENT_1,
         ADD_OFF_1,
         LocalDate.now()
@@ -44,6 +47,7 @@ object PersonGenerator {
 
     val ADD_OFF_2 = generateOffence("Assault", "ADD2")
     val ADDITIONAL_OFFENCE_2 = generateAdditionalOffence(
+        1,
         EVENT_1,
         ADD_OFF_2,
         LocalDate.now()
@@ -77,7 +81,8 @@ object PersonGenerator {
         active: Boolean = true,
         inBreach: Boolean = false,
         disposal: Disposal? = null,
-        mainOffence: MainOffence? = null
+        mainOffence: MainOffence? = null,
+        notes: String,
     ) =
         Event(
             id,
@@ -86,7 +91,8 @@ object PersonGenerator {
             disposal = disposal,
             inBreach = inBreach,
             active = active,
-            mainOffence = mainOffence
+            mainOffence = mainOffence,
+            notes = notes
         )
 
     fun generateOverview(
@@ -202,19 +208,21 @@ object PersonGenerator {
     ) = Offence(id, code, description)
 
     fun generateMainOffence(
+        offenceCount: Long,
         event: Event,
         offence: Offence,
         date: LocalDate,
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false
-    ) = MainOffence(id, event, date, offence, softDeleted)
+    ) = MainOffence(id, offenceCount, event, date, offence, softDeleted)
 
     fun generateAdditionalOffence(
+        offenceCount: Long,
         event: Event,
         offence: Offence,
         date: LocalDate,
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false
-    ) = AdditionalOffence(id, event, date, offence, softDeleted)
+    ) = AdditionalOffence(id, offenceCount, event, date, offence, softDeleted)
 }
 
