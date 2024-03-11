@@ -21,7 +21,7 @@ class AwsQueuePublisher(
 ) : NotificationPublisher {
     override fun publish(notification: Notification<*>) {
         notification.message?.let { message ->
-            sqsTemplate.send(
+            sqsTemplate.sendAsync(
                 queue, MessageBuilder.createMessage(
                     objectMapper.writeValueAsString(
                         Notification(

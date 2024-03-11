@@ -20,4 +20,4 @@ noms:
     schedule: 0 7 * * 1
 
 namespace:
-  label: probation-integration-services-preprod
+  label: hmpps-probation-integration-services-preprod
