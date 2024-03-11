@@ -126,6 +126,7 @@ components:
       required:
       - personalDetails
       - previousOrders
+      - registrations
       - schedule
       - sentences
       type: object
@@ -144,6 +145,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sentence'
+        registrations:
+          type: array
+          items:
+            type: string
     PersonalCircumstance:
       required:
       - subType

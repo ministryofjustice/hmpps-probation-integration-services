@@ -1261,6 +1261,7 @@ components:
     Requirement:
       required:
       - id
+      - isUnpaidWork
       - length
       - mainCategory
       - manager
@@ -1277,6 +1278,8 @@ components:
           format: int64
         manager:
           $ref: '#/components/schemas/Manager'
+        isUnpaidWork:
+          type: boolean
     RiskOGRS:
       required:
       - lastUpdatedDate
