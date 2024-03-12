@@ -37,6 +37,9 @@ class Event(
     @OneToMany(mappedBy = "event")
     val additionalOffences: List<AdditionalOffence> = emptyList(),
 
+    @Column(name = "notes")
+    val notes: String,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )
@@ -121,6 +124,9 @@ class MainOffence(
     @Column(name = "main_offence_id")
     val id: Long,
 
+    @Column(name = "offence_count")
+    val offenceCount: Long,
+
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
     val event: Event,
@@ -144,6 +150,9 @@ class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
     val id: Long,
+
+    @Column(name = "offence_count")
+    val offenceCount: Long,
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
