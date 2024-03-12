@@ -45,7 +45,11 @@ internal class PersonalDetailsServiceTest {
         whenever(personRepository.findByCrn(crn)).thenReturn(PersonDetailsGenerator.PERSONAL_DETAILS)
 
         whenever(addressRepository.findByPersonId(any())).thenReturn(
-            listOf(PersonDetailsGenerator.PERSON_ADDRESS_1, PersonDetailsGenerator.PERSON_ADDRESS_2, PersonDetailsGenerator.NULL_ADDRESS)
+            listOf(
+                PersonDetailsGenerator.PERSON_ADDRESS_1,
+                PersonDetailsGenerator.PERSON_ADDRESS_2,
+                PersonDetailsGenerator.NULL_ADDRESS
+            )
         )
         whenever(documentRepository.findByPersonId(any())).thenReturn(
             listOf(PersonDetailsGenerator.DOCUMENT_1, PersonDetailsGenerator.DOCUMENT_2)
@@ -62,10 +66,16 @@ internal class PersonalDetailsServiceTest {
         val crn = "X000005"
         val alfrescoId = "A001"
         val expectedResponse = ResponseEntity<StreamingResponseBody>(HttpStatus.OK)
-        whenever(documentRepository.findNameByPersonCrnAndAlfrescoId(crn, alfrescoId)).thenReturn(PersonDetailsGenerator.DOCUMENT_1.name)
-        whenever(alfrescoClient.streamDocument(alfrescoId, PersonDetailsGenerator.DOCUMENT_1.name)).thenReturn(expectedResponse)
+        whenever(
+            documentRepository.findNameByPersonCrnAndAlfrescoId(
+                crn,
+                alfrescoId
+            )
+        ).thenReturn(PersonDetailsGenerator.DOCUMENT_1.name)
+        whenever(alfrescoClient.streamDocument(alfrescoId, PersonDetailsGenerator.DOCUMENT_1.name)).thenReturn(
+            expectedResponse
+        )
         val res = service.downloadDocument(crn, alfrescoId)
         Assertions.assertEquals(expectedResponse.statusCode, res.statusCode)
-
     }
 }
