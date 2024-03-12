@@ -169,7 +169,7 @@
 <tbody>
 
 <tr>
-<td>trialOnly</td>
+<td>dryRun</td>
 <td>query</td>
 <td>boolean</td>
 <td>false</td>
@@ -182,7 +182,7 @@
 <td>crns</td>
 <td>query</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td>
 
 </td>
@@ -208,32 +208,9 @@
 
 
 
-<pre><code>{
-  "personMatches": [
-    {
-      "crn": "string",
-      "matchDetail": {
-        "nomsNumber": "string",
-        "bookingRef": "string",
-        "sentenceDate": "string"
-      },
-      "matchReason": {
-        "message": "string",
-        "potentialMatches": [
-          {
-            "nomsNumber": "string",
-            "bookingRef": "string",
-            "sentenceDate": "string"
-          }
-        ]
-      }
-    }
-  ]
-}</code></pre>
-
 </td>
 <td>
-<a href='#schema-nomsupdates'>NomsUpdates</a>
+
 </td>
 </tr>
 
@@ -254,7 +231,7 @@
 <tbody>
 
 <tr>
-<td>trialOnly</td>
+<td>dryRun</td>
 <td>query</td>
 <td>boolean</td>
 <td>false</td>
@@ -283,32 +260,9 @@
 
 
 
-<pre><code>{
-  "personMatches": [
-    {
-      "crn": "string",
-      "matchDetail": {
-        "nomsNumber": "string",
-        "bookingRef": "string",
-        "sentenceDate": "string"
-      },
-      "matchReason": {
-        "message": "string",
-        "potentialMatches": [
-          {
-            "nomsNumber": "string",
-            "bookingRef": "string",
-            "sentenceDate": "string"
-          }
-        ]
-      }
-    }
-  ]
-}</code></pre>
-
 </td>
 <td>
-<a href='#schema-nomsupdates'>NomsUpdates</a>
+
 </td>
 </tr>
 
@@ -320,144 +274,6 @@
 
 
 <h2 id="schemas">Schemas</h2>
-<h3 id="schema-matchdetail">MatchDetail</h3>
-
-
-<table class='schema-matchdetail'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>nomsNumber</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>bookingRef</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>sentenceDate</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-matchreason">MatchReason</h3>
-
-
-<table class='schema-matchreason'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>message</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>potentialMatches</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-matchdetail'>MatchDetail</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-nomsupdates">NomsUpdates</h3>
-
-
-<table class='schema-nomsupdates'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>personMatches</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-personmatch'>PersonMatch</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personmatch">PersonMatch</h3>
-
-
-<table class='schema-personmatch'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>matchDetail</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-matchdetail'>MatchDetail</a>
-</td>
-</tr>
-
-<tr>
-<td>matchReason</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-matchreason'>MatchReason</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
 
 
             

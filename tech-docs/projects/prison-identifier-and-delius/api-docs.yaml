@@ -17,10 +17,10 @@ paths:
   /person/populate-noms-number:
     get:
       tags:
-      - person-update-controller
+      - matching-controller
       operationId: populateNomsNumbers
       parameters:
-      - name: trialOnly
+      - name: dryRun
         in: query
         required: false
         schema:
@@ -28,26 +28,22 @@ paths:
           default: true
       - name: crns
         in: query
-        required: true
+        required: false
         schema:
           maxItems: 500
-          minItems: 0
+          minItems: 1
           type: array
           items:
             type: string
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NomsUpdates'
     post:
       tags:
-      - person-update-controller
+      - matching-controller
       operationId: populateNomsNumbers_1
       parameters:
-      - name: trialOnly
+      - name: dryRun
         in: query
         required: false
         schema:
@@ -58,66 +54,14 @@ paths:
           application/json:
             schema:
               maxItems: 500
-              minItems: 0
+              minItems: 1
               type: array
               items:
                 type: string
-        required: true
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NomsUpdates'
 components:
-  schemas:
-    MatchDetail:
-      required:
-      - nomsNumber
-      - sentenceDate
-      type: object
-      properties:
-        nomsNumber:
-          type: string
-        bookingRef:
-          type: string
-        sentenceDate:
-          type: string
-          format: date
-    MatchReason:
-      required:
-      - message
-      - potentialMatches
-      type: object
-      properties:
-        message:
-          type: string
-        potentialMatches:
-          type: array
-          items:
-            $ref: '#/components/schemas/MatchDetail'
-    NomsUpdates:
-      required:
-      - personMatches
-      type: object
-      properties:
-        personMatches:
-          type: array
-          items:
-            $ref: '#/components/schemas/PersonMatch'
-    PersonMatch:
-      required:
-      - crn
-      - matchReason
-      type: object
-      properties:
-        crn:
-          type: string
-        matchDetail:
-          $ref: '#/components/schemas/MatchDetail'
-        matchReason:
-          $ref: '#/components/schemas/MatchReason'
   securitySchemes:
     hmpps-auth-token:
       type: http
