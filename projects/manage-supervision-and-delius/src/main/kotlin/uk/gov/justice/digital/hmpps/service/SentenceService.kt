@@ -25,7 +25,7 @@ class SentenceService(
             notes = notes,
             additionalOffences = additionalOffences.map {
                 Offence(
-                    description = it.offence.description, count = it.offenceCount
+                    description = it.offence.description, count = it.offenceCount?:0
                 )
             }
         )
