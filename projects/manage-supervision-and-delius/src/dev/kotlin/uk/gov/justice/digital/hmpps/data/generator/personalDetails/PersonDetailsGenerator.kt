@@ -1,7 +1,11 @@
 package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContact
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -181,7 +185,7 @@ object PersonDetailsGenerator {
     fun generatePersonDetails(
         crn: String, forename: String, secondName: String, surname: String, preferredName: String,
         gender: ReferenceData, religion: ReferenceData, sexualOrientation: ReferenceData
-    ) = PersonDetails(
+    ) = Person(
         id = IdGenerator.getAndIncrement(),
         crn = crn,
         pnc = "1964/6108598D",

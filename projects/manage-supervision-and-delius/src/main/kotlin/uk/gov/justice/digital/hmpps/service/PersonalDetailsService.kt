@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.PersonalCircumstance
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContact
@@ -75,7 +76,7 @@ fun PersonalContact.toContact() = uk.gov.justice.digital.hmpps.api.model.persona
     relationshipType = relationshipType.description
 )
 
-fun PersonDetails.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
+fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
 fun PersonAddress.toAddress() = Address.from(
     buildingName = buildingName,
     buildingNumber = buildingNumber,

@@ -27,6 +27,9 @@ class Provision(
 
     val startDate: LocalDate,
 
+    @Column(name = "last_updated_datetime")
+    val lastUpdated: LocalDate,
+
     val finishDate: LocalDate? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
