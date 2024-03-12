@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -74,6 +75,43 @@ class DataLoader(
             PersonGenerator.REGISTER_TYPE_2,
             PersonGenerator.REGISRATION_1,
             PersonGenerator.REGISRATION_2
+        )
+
+        personalDetailsData()
+    }
+
+    fun personalDetailsData() {
+        entityManager.persistAll(
+            PersonDetailsGenerator.GENDER_FEMALE,
+            PersonDetailsGenerator.RELIGION_DEFAULT,
+            PersonDetailsGenerator.SEXUAL_ORIENTATION,
+            PersonDetailsGenerator.PERSONAL_DETAILS,
+            PersonDetailsGenerator.DISABILITY_1_RD,
+            PersonDetailsGenerator.DISABILITY_2_RD,
+            PersonDetailsGenerator.PERSONAL_CIRCUMSTANCE_1_RD,
+            PersonDetailsGenerator.PERSONAL_CIRCUMSTANCE_SUBTYPE_1,
+            PersonDetailsGenerator.PERSONAL_CIRCUMSTANCE_2_RD,
+            PersonDetailsGenerator.PERSONAL_CIRCUMSTANCE_SUBTYPE_2,
+            PersonDetailsGenerator.PROVISION_1_RD,
+            PersonDetailsGenerator.PROVISION_2_RD,
+            PersonDetailsGenerator.DISABILITY_1,
+            PersonDetailsGenerator.DISABILITY_2,
+            PersonDetailsGenerator.PROVISION_1,
+            PersonDetailsGenerator.PROVISION_2,
+            PersonDetailsGenerator.PERSONAL_CIRC_1,
+            PersonDetailsGenerator.PERSONAL_CIRC_2,
+            PersonDetailsGenerator.RELATIONSHIP_TYPE,
+            PersonDetailsGenerator.CONTACT_ADDRESS,
+            PersonDetailsGenerator.PERSONAL_CONTACT_1,
+            PersonDetailsGenerator.PERSON_ADDRESS_STATUS_1,
+            PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1,
+            PersonDetailsGenerator.PERSON_ADDRESS_1,
+            PersonDetailsGenerator.PERSON_ADDRESS_STATUS_2,
+            PersonDetailsGenerator.PERSON_ADDRESS_TYPE_2,
+            PersonDetailsGenerator.PERSON_ADDRESS_2,
+            PersonDetailsGenerator.NULL_ADDRESS,
+            PersonDetailsGenerator.DOCUMENT_1,
+            PersonDetailsGenerator.DOCUMENT_2
         )
     }
 

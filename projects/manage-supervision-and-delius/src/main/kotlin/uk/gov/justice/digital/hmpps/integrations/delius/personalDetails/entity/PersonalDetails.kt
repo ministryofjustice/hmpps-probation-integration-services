@@ -5,24 +5,14 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
-import org.hibernate.type.YesNoConverter
-import org.springframework.data.annotation.CreatedBy
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedBy
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalDetails
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import java.awt.ComponentOrientation
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 @Immutable
-@Entity(name = "PersonalDetails")
+@Entity(name = "PersonDetails")
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
 class PersonDetails(
@@ -93,7 +83,7 @@ class PersonDetails(
 )
 
 interface PersonalDetailsRepository : JpaRepository<PersonDetails, Long> {
-    @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "personalContacts"])
+    @EntityGraph(attributePaths = ["gender", "religion", "personalContacts"])
     fun findByCrn(crn: String): PersonDetails?
 }
 
@@ -173,8 +163,8 @@ class Disability(
     )
 
 @Immutable
-@Entity
-@Table(name = "PersonalDetailsProvision")
+@Entity(name = "PersonalDetailsProvision")
+@Table(name = "provision")
 @SQLRestriction("soft_deleted = 0 and (finish_date is null or finish_date > current_date)")
 class Provision(
     @Id
@@ -249,113 +239,7 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
     fun findByPersonId(personId: Long): List<PersonAddress>
 }
 
-fun PersonalDetailsRepository.getPersonDetails(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+fun PersonalDetailsRepository.getPersonDetails(crn: String) =
+    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
 
-@Entity
-@Immutable
-@Table(name = "document")
-@SQLRestriction("soft_deleted = 0")
-class PersonDocument(
-    @Id
-    @Column(name = "document_id")
-    val id: Long,
-
-    @Column(name = "offender_id")
-    val personId: Long,
-
-    @Column(name = "alfresco_document_id")
-    val alfrescoId: String,
-
-    @Column
-    val primaryKeyId: Long,
-
-    @Column(name = "document_name")
-    val name: String,
-
-    @Column(name = "document_type")
-    val type: String,
-
-    @Column
-    val tableName: String,
-
-    @Column(name = "last_saved")
-    val lastUpdated: ZonedDateTime,
-
-    @Column(name = "created_datetime")
-    val createdAt: ZonedDateTime,
-
-    @Column
-    val createdByUserId: Long = 0,
-
-    @Column
-    val lastUpdatedUserId: Long = 0,
-
-    @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
-)
-
-interface DocumentRepository : JpaRepository<PersonDocument, Long> {
-    fun findByPersonId(personId: Long): List<PersonDocument>
-
-    @Query("select d.name from PersonDocument d join Person p on p.id = d.personId and p.crn = :crn and d.alfrescoId = :alfrescoId")
-    fun findNameByPersonCrnAndAlfrescoId(crn: String, id: String)  : String?
-}
-
-@Entity
-@Immutable
-@Table(name = "personal_contact")
-class PersonalContact(
-    @Id
-    @Column(name = "personal_contact_id")
-    val id: Long,
-
-    @Column(name = "first_name")
-    val forename: String,
-
-    @Column(name = "other_names")
-    val middleNames: String?,
-
-    @Column(name = "surname")
-    val surname: String,
-
-    @Column(name = "relationship")
-    val relationship: String,
-
-    @ManyToOne
-    @JoinColumn(name = "relationship_type_id")
-    val relationshipType: ReferenceData,
-
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    val address: ContactAddress,
-
-    @Column(name = "notes")
-    val notes: String? = null,
-)
-
-
-@Immutable
-@Entity
-@Table(name = "address")
-@SQLRestriction("soft_deleted = 0")
-class ContactAddress(
-    @Id
-    @Column(name = "address_id")
-    val id: Long,
-    val buildingName: String?,
-    val addressNumber: String?,
-    val streetName: String?,
-    val district: String?,
-    @Column(name = "town_city")
-    val town: String?,
-    val county: String?,
-    val postcode: String?,
-    val telephoneNumber: String?,
-
-    @Column(name = "last_updated_datetime")
-    val lastUpdated: LocalDate,
-
-    @Column(columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
-)
 

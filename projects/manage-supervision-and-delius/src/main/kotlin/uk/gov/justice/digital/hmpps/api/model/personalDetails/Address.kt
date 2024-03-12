@@ -37,7 +37,20 @@ data class Address(
             ) {
                 null
             } else {
-                Address(buildingName, buildingNumber, streetName, district, town, county, postcode, from, to, lastUpdated, type, status)
+                Address(
+                    buildingName,
+                    buildingNumber,
+                    streetName,
+                    district,
+                    town,
+                    county,
+                    postcode,
+                    from,
+                    to,
+                    lastUpdated,
+                    type,
+                    status
+                )
             }
     }
 }

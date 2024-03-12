@@ -22,6 +22,8 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: ManageSupervisionAndDelius # Should match value in [deploy/database/access.yml].
 
+integrations.alfresco.url: http://localhost:${wiremock.port}/alfresco
+
 management:
   endpoints.web:
     base-path: /
@@ -37,6 +39,9 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 
 seed.database: true
+
+wiremock.enabled: true
+context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
   - ROLE_PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL
