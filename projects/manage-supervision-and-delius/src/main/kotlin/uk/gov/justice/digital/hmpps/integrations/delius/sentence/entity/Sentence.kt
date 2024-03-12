@@ -28,8 +28,6 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
     @Query(
         "SELECT e FROM Event e " +
             "JOIN Person p ON p.id = e.personId " +
-            "LEFT JOIN FETCH e.disposal d " +
-            "LEFT JOIN FETCH d.type t  " +
             "LEFT JOIN FETCH e.mainOffence m " +
             "LEFT JOIN FETCH e.additionalOffences ao " +
             "LEFT JOIN FETCH m.offence mo " +
