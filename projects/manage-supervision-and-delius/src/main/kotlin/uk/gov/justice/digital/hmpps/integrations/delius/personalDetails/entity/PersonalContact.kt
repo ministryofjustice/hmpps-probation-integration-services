@@ -38,7 +38,7 @@ class PersonalContact(
     @JoinColumn(name = "address_id")
     val address: ContactAddress,
 
-    @Column(name = "notes")
+    @Column(name = "notes", columnDefinition = "clob")
     val notes: String? = null,
 )
 
