@@ -12,10 +12,9 @@ class SentenceService(
     private val eventRepository: EventSentenceRepository
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
-        val event = eventRepository.findActiveSentencesByCrn(crn)
-            .sortedByDescending { it.eventNumber }.elementAtOrNull(0)
+        val events = eventRepository.findActiveSentencesByCrn(crn)
 
-        return SentenceOverview(event?.toOffence())
+        return SentenceOverview(events.map { it.toOffence() })
     }
 
     fun Event.toOffence() = mainOffence?.let { mainOffence ->

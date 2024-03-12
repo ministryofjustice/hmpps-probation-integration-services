@@ -28,7 +28,7 @@ class SentenceServiceTest {
     lateinit var service: SentenceService
 
     @Test
-    fun `no active events`() {
+    fun `no active sentences`() {
 
         whenever(eventRepository.findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(
             listOf(PersonGenerator.INACTIVE_EVENT_1)
@@ -36,27 +36,17 @@ class SentenceServiceTest {
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
-        assertEquals(SentenceOverview(), response)
+        assertEquals(SentenceOverview(listOf(null)), response)
         verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
 
         verifyNoMoreInteractions(eventRepository)
     }
 
     @Test
-    fun `recent active event`() {
+    fun `recent active sentences`() {
 
         whenever(eventRepository.findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(
             listOf(
-                PersonGenerator.generateEvent(
-                    person = PersonGenerator.OVERVIEW,
-                    active = true,
-                    inBreach = true,
-                    disposal = PersonGenerator.ACTIVE_ORDER,
-                    eventNumber = "123456",
-                    mainOffence = PersonGenerator.MAIN_OFFENCE_2,
-                    notes = "overview",
-                    additionalOffences = emptyList()
-                ),
                 PersonGenerator.generateEvent(
                     person = PersonGenerator.OVERVIEW,
                     active = true,
@@ -66,6 +56,16 @@ class SentenceServiceTest {
                     mainOffence = PersonGenerator.MAIN_OFFENCE_1,
                     notes = "overview",
                     additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
+                ),
+                PersonGenerator.generateEvent(
+                    person = PersonGenerator.OVERVIEW,
+                    active = true,
+                    inBreach = true,
+                    disposal = PersonGenerator.ACTIVE_ORDER,
+                    eventNumber = "123456",
+                    mainOffence = PersonGenerator.MAIN_OFFENCE_2,
+                    notes = "overview",
+                    additionalOffences = emptyList()
                 )
             )
         )
@@ -73,13 +73,21 @@ class SentenceServiceTest {
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
-            MainOffence(
+            listOf( MainOffence(
                 Offence("Murder", 1),
                 LocalDate.of(2024, 3, 12),
                 "overview",
                 listOf(Offence("Burglary", 1))
+                ),
+                MainOffence(
+                    Offence("Another Murder", 1),
+                    LocalDate.of(2024, 3, 12),
+                    "overview",
+                    emptyList()
+                )
             )
         )
+
         assertEquals(expected, response)
         verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
 

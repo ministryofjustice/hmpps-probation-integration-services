@@ -23,20 +23,27 @@ class SentenceIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
-    fun `get most recent active event`() {
+    fun `get active sentences`() {
         val response = mockMvc
             .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            MainOffence(
-                Offence("Murder", 1),
-                LocalDate.of(2024, 3, 12),
-                "overview",
-                listOf(
-                    Offence("Burglary", 1),
-                    Offence("Assault", 1)
+            listOf( MainOffence(
+                    Offence("Murder", 1),
+                    LocalDate.of(2024, 3, 12),
+                    "overview",
+                    listOf(
+                        Offence("Burglary", 1),
+                        Offence("Assault", 1)
+                    )
+                ),
+                MainOffence(
+                    Offence("Another Murder", 1),
+                    LocalDate.of(2024, 3, 12),
+                    "overview",
+                    emptyList()
                 )
             )
         )
