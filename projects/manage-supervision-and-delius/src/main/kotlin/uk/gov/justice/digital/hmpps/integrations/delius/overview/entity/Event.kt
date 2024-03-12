@@ -152,7 +152,7 @@ class AdditionalOffence(
     val id: Long,
 
     @Column(name = "offence_count")
-    val offenceCount: Long,
+    val offenceCount: Long?,
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
