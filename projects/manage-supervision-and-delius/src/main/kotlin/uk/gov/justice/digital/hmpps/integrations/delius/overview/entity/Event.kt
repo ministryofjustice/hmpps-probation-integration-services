@@ -37,7 +37,7 @@ class Event(
     @OneToMany(mappedBy = "event")
     val additionalOffences: List<AdditionalOffence> = emptyList(),
 
-    @Column(name = "notes")
+    @Column(name = "notes", columnDefinition = "clob")
     val notes: String,
 
     @Column(columnDefinition = "number")
