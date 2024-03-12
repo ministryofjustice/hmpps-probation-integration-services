@@ -73,11 +73,12 @@ class SentenceServiceTest {
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
-            listOf( MainOffence(
-                Offence("Murder", 1),
-                LocalDate.of(2024, 3, 12),
-                "overview",
-                listOf(Offence("Burglary", 1))
+            listOf(
+                MainOffence(
+                    Offence("Murder", 1),
+                    LocalDate.of(2024, 3, 12),
+                    "overview",
+                    listOf(Offence("Burglary", 1))
                 ),
                 MainOffence(
                     Offence("Another Murder", 1),

@@ -30,7 +30,8 @@ class SentenceIntegrationTest {
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            listOf( MainOffence(
+            listOf(
+                MainOffence(
                     Offence("Murder", 1),
                     LocalDate.of(2024, 3, 12),
                     "overview",
