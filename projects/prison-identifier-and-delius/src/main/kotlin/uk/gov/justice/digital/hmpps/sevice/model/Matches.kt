@@ -2,9 +2,6 @@ package uk.gov.justice.digital.hmpps.sevice.model
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonSearchResult
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-import kotlin.math.abs
 
 data class PersonMatch(
     val person: Person,
@@ -26,9 +23,9 @@ data class PersonMatch(
     private fun nameMatch(prisoner: PrisonSearchResult) = ComponentMatch.Name(nameMatchType(prisoner))
 
     private fun dobMatch(prisoner: PrisonSearchResult) = ComponentMatch.DateOfBirth(
-        when {
-            prisoner.dateOfBirth == person.dateOfBirth -> ComponentMatch.MatchType.MATCH
-            // TODO add logic from p2p update around date matching
+        when (prisoner.dateOfBirth) {
+            person.dateOfBirth -> ComponentMatch.MatchType.MATCH
+            in DateMatcher.variations(person.dateOfBirth) -> ComponentMatch.MatchType.PARTIAL
             else -> ComponentMatch.MatchType.INCONCLUSIVE
         }
     )
@@ -46,7 +43,7 @@ data class PersonMatch(
     private fun exclusiveField(first: String?, second: String?): Boolean =
         (first == null && second != null) || (first != null && second == null)
 
-    fun sentenceDateMatch(prisoner: PrisonSearchResult) = ComponentMatch.SentenceDate(
+    private fun sentenceDateMatch(prisoner: PrisonSearchResult) = ComponentMatch.SentenceDate(
         when {
             person.isSentenced() && (prisoner.sentenceStartDate != null && person.sentenceDates()
                 .any { it.withinDays(prisoner.sentenceStartDate) }) -> ComponentMatch.MatchType.MATCH
@@ -91,5 +88,3 @@ sealed interface ComponentMatch {
 }
 
 data class PotentialMatch(val prisoner: PrisonSearchResult, val matches: List<ComponentMatch>)
-
-fun LocalDate.withinDays(date: LocalDate, days: Int = 7): Boolean = abs(ChronoUnit.DAYS.between(this, date)) <= days

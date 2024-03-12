@@ -14,8 +14,11 @@ data class RiskRegistration(
     val description: String,
     val startDate: LocalDate,
     val endDate: LocalDate? = null,
-    val notes: String? = null
+    val notes: String? = null,
+    val flag: RegistrationFlag? = null
 )
+
+data class RegistrationFlag(val description: String)
 
 data class RiskOGRS(
     val lastUpdatedDate: LocalDate,
