@@ -38,7 +38,7 @@ class Event(
     val additionalOffences: List<AdditionalOffence> = emptyList(),
 
     @Column(name = "notes", columnDefinition = "clob")
-    val notes: String,
+    val notes: String?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
