@@ -32,8 +32,8 @@ class Referral(
     val approvedPremisesId: Long?,
 
     val referralDate: LocalDate,
-    var expectedArrivalDate: LocalDate?,
-    var expectedDepartureDate: LocalDate?,
+    expectedArrivalDate: LocalDate?,
+    expectedDepartureDate: LocalDate?,
     val decisionDate: ZonedDateTime?,
     @Lob
     val referralNotes: String?,
@@ -97,8 +97,25 @@ class Referral(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_referral_id_seq")
     val id: Long = 0
 
-    val reservationStartDate: LocalDate? = expectedArrivalDate
-    val reservationLength: Long? = if (expectedArrivalDate != null && expectedDepartureDate != null) {
+    var expectedArrivalDate: LocalDate? = expectedArrivalDate
+        set(value) {
+            field = value
+            reservationStartDate = value
+            reservationLength = calculateReservationLength()
+        }
+    var expectedDepartureDate: LocalDate? = expectedDepartureDate
+        set(value) {
+            field = value
+            reservationLength = calculateReservationLength()
+        }
+
+    var reservationStartDate: LocalDate? = expectedArrivalDate
+        private set
+
+    var reservationLength: Long? = calculateReservationLength()
+        private set
+
+    private fun calculateReservationLength() = if (expectedArrivalDate != null && expectedDepartureDate != null) {
         ChronoUnit.DAYS.between(expectedArrivalDate, expectedDepartureDate)
     } else {
         null

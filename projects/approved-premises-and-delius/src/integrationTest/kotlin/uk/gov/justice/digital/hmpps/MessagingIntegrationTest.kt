@@ -362,6 +362,8 @@ internal class MessagingIntegrationTest {
         }
         assertThat(referral.expectedArrivalDate, equalTo(LocalDate.parse("2023-08-14")))
         assertThat(referral.expectedDepartureDate, equalTo(LocalDate.parse("2023-08-30")))
+        assertThat(referral.reservationStartDate, equalTo(LocalDate.parse("2023-08-14")))
+        assertThat(referral.reservationLength, equalTo(16))
     }
 
     @Test
