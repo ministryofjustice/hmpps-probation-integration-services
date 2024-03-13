@@ -102,6 +102,7 @@ object PersonGenerator {
     fun generateEvent(
         person: Person,
         id: Long = IdGenerator.getAndIncrement(),
+        courtId: Long? = null,
         eventNumber: String,
         active: Boolean = true,
         inBreach: Boolean = false,
@@ -113,6 +114,7 @@ object PersonGenerator {
         Event(
             id,
             person.id,
+            courtId,
             eventNumber,
             disposal = disposal,
             inBreach = inBreach,

@@ -1,11 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
@@ -18,6 +12,8 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
             "LEFT JOIN FETCH e.additionalOffences ao " +
             "LEFT JOIN FETCH m.offence mo " +
             "LEFT JOIN FETCH ao.offence aoo " +
+            "LEFT JOIN Court c ON e.courtId = c.id " +
+            "LEFT JOIN CourtAppearance ca On e.id = ca.event.id " +
             "WHERE p.crn = :crn " +
             "AND e.active = true "
     )

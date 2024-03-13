@@ -19,6 +19,9 @@ class Event(
     @Column(name = "offender_id")
     val personId: Long,
 
+    @Column(name = "court_id")
+    val courtId: Long?,
+
     @Column(name = "event_number")
     val eventNumber: String,
 
