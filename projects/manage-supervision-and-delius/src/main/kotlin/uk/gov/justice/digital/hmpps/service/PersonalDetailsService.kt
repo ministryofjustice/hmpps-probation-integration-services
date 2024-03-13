@@ -40,7 +40,7 @@ class PersonalDetailsService(
             preferredName = person.preferredName,
             telephoneNumber = person.telephoneNumber,
             mobileNumber = person.mobileNumber,
-            circumstances = Circumstances(lastUpdated = person.personalCircumstances.maxByOrNull { it.lastUpdated }?.lastUpdated,
+            circumstances = Circumstances(lastUpdated = person.personalCircumstances.maxOfOrNull { it.lastUpdated },
                 circumstances = person.personalCircumstances.map {
                     PersonalCircumstance(
                         it.subType.description,
@@ -48,10 +48,10 @@ class PersonalDetailsService(
                     )
                 }),
             disabilities = Disabilities(
-                lastUpdated = person.disabilities.maxByOrNull { it.lastUpdated }?.lastUpdated,
+                lastUpdated = person.disabilities.maxOfOrNull { it.lastUpdated },
                 disabilities = person.disabilities.map { it.type.description }),
             provisions = Provisions(
-                lastUpdated = person.provisions.maxByOrNull { it.lastUpdated }?.lastUpdated,
+                lastUpdated = person.provisions.maxOfOrNull { it.lastUpdated },
                 provisions = person.provisions.map { it.type.description }),
             documents = documents.map(PersonDocument::toDocument),
             pnc = person.pnc,
