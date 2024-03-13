@@ -10,6 +10,7 @@ import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.message.Notification
+import java.util.concurrent.Semaphore
 
 @Component
 @Conditional(AwsCondition::class)
@@ -19,19 +20,24 @@ class AwsQueuePublisher(
     private val objectMapper: ObjectMapper,
     @Value("\${messaging.producer.queue}") private val queue: String
 ) : NotificationPublisher {
+
+    private val permit = Semaphore(100)
     override fun publish(notification: Notification<*>) {
-        notification.message?.let { message ->
-            sqsTemplate.send(
-                queue, MessageBuilder.createMessage(
-                    objectMapper.writeValueAsString(
-                        Notification(
-                            message = objectMapper.writeValueAsString(message),
-                            notification.attributes
-                        )
-                    ),
-                    MessageHeaders(notification.attributes.map { it.key to it.value.value }.toMap())
-                )
-            )
+        notification.message?.also { _ ->
+            permit.acquire()
+            sqsTemplate.sendAsync(
+                queue, notification.asMessage()
+            ).whenComplete { _, _ -> permit.release() }
         }
     }
+
+    private fun Notification<*>.asMessage() = MessageBuilder.createMessage(
+        objectMapper.writeValueAsString(
+            Notification(
+                message = objectMapper.writeValueAsString(message),
+                attributes
+            )
+        ),
+        MessageHeaders(attributes.map { it.key to it.value.value }.toMap())
+    )
 }
