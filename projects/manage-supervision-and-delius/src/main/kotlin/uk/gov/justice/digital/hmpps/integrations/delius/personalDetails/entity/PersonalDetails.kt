@@ -47,7 +47,7 @@ class PersonAddress(
     val startDate: LocalDate,
     val endDate: LocalDate? = null,
 
-    @Column(name = "last_updated_timestamp")
+    @Column(name = "last_updated_datetime")
     val lastUpdated: LocalDate?,
 
     @Column(columnDefinition = "number")
