@@ -140,13 +140,15 @@ object PersonGenerator {
                 IdGenerator.getAndIncrement(),
                 id,
                 ReferenceData(IdGenerator.getAndIncrement(), "D01", "Mental Illness"),
+                LocalDate.now().minusDays(1),
                 LocalDate.now().minusDays(1)
             ),
             Disability(
                 IdGenerator.getAndIncrement(),
                 id,
                 ReferenceData(IdGenerator.getAndIncrement(), "D02", "Visual Impairment"),
-                LocalDate.now()
+                LocalDate.now(),
+                LocalDate.now().minusDays(1)
             )
         ),
         personalCircumstances: List<PersonalCircumstance> = listOf(
@@ -158,14 +160,16 @@ object PersonGenerator {
                     IdGenerator.getAndIncrement(),
                     "Full-time employed (30 or more hours per week"
                 ),
-                LocalDate.now()
+                LocalDate.now(),
+                LocalDate.now().minusDays(1)
             ),
             PersonalCircumstance(
                 IdGenerator.getAndIncrement(),
                 id,
                 ReferenceData(IdGenerator.getAndIncrement(), "A02", "Accommodation"),
                 PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), "Friends/Family (settled)"),
-                LocalDate.now()
+                LocalDate.now(),
+                LocalDate.now().minusDays(1)
             )
         ),
         provisions: List<Provision> = listOf(
@@ -173,13 +177,15 @@ object PersonGenerator {
                 IdGenerator.getAndIncrement(),
                 id,
                 ReferenceData(IdGenerator.getAndIncrement(), "FF01", "Flex refreshment breaks"),
-                LocalDate.now()
+                LocalDate.now(),
+                LocalDate.now().minusDays(1)
             ),
             Provision(
                 IdGenerator.getAndIncrement(),
                 id,
                 ReferenceData(IdGenerator.getAndIncrement(), "CC02", "Colour/visibility marking"),
-                LocalDate.now()
+                LocalDate.now(),
+                LocalDate.now().minusDays(1)
             )
         ),
 
@@ -199,7 +205,10 @@ object PersonGenerator {
         provisions = provisions,
         telephoneNumber = telephoneNumber,
         preferredName = preferredName,
-        registrations = emptyList()
+        registrations = emptyList(),
+        pnc = "pnc",
+        religion = null,
+        sexualOrientation = null
     )
 
     fun generateRequirement(

@@ -30,6 +30,9 @@ class PersonalCircumstance(
     @JoinColumn(name = "circumstance_sub_type_id")
     val subType: PersonalCircumstanceSubType,
 
+    @Column(name = "last_updated_datetime")
+    val lastUpdated: LocalDate,
+
     val startDate: LocalDate,
 
     val endDate: LocalDate? = null,

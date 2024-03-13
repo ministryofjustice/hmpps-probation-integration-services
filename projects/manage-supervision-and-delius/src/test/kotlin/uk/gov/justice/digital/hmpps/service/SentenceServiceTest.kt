@@ -76,13 +76,13 @@ class SentenceServiceTest {
             listOf(
                 MainOffence(
                     Offence("Murder", 1),
-                    LocalDate.of(2024, 3, 12),
+                    LocalDate.now(),
                     "overview",
                     listOf(Offence("Burglary", 1))
                 ),
                 MainOffence(
                     Offence("Another Murder", 1),
-                    LocalDate.of(2024, 3, 12),
+                    LocalDate.now(),
                     "overview",
                     emptyList()
                 )

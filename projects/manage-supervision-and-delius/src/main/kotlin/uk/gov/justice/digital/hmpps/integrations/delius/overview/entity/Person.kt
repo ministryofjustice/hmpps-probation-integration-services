@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContact
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
@@ -20,6 +21,9 @@ class Person(
 
     @Column(columnDefinition = "char(7)")
     val crn: String,
+
+    @Column(name = "pnc_number", columnDefinition = "char(13)")
+    val pnc: String?,
 
     @Column(name = "first_name", length = 35)
     val forename: String,
@@ -52,6 +56,14 @@ class Person(
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData,
 
+    @ManyToOne
+    @JoinColumn(name = "religion_id")
+    val religion: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "sexual_orientation_id")
+    val sexualOrientation: ReferenceData?,
+
     @OneToMany(mappedBy = "personId")
     val personalCircumstances: List<PersonalCircumstance>,
 
@@ -62,7 +74,10 @@ class Person(
     val provisions: List<Provision>,
 
     @OneToMany(mappedBy = "personId")
-    val registrations: List<Registration>,
+    val registrations: List<Registration> = emptyList(),
+
+    @OneToMany(mappedBy = "personId")
+    val personalContacts: List<PersonalContact> = emptyList(),
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
