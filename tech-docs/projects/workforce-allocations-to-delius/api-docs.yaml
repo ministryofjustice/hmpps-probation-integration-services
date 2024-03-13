@@ -1320,6 +1320,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ActiveEvent'
+    RegistrationFlag:
+      required:
+      - description
+      type: object
+      properties:
+        description:
+          type: string
     RiskRecord:
       required:
       - activeRegistrations
@@ -1358,6 +1365,8 @@ components:
           format: date
         notes:
           type: string
+        flag:
+          $ref: '#/components/schemas/RegistrationFlag'
     ChoosePractitionerResponse:
       required:
       - crn

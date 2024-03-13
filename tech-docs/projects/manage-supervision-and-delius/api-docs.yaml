@@ -14,13 +14,32 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /sentence/{crn}:
+    get:
+      tags:
+      - Sentence
+      summary: 'Display the most recent ‘Active Event’ '
+      operationId: getOverview
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SentenceOverview'
   /overview/{crn}:
     get:
       tags:
       - Overview
       summary: "MAS Overview containing Personal Details, Activity, Compliance, Schedule,\
         \ Orders and Sentences "
-      operationId: getOverview
+      operationId: getOverview_1
       parameters:
       - name: crn
         in: path
@@ -36,6 +55,44 @@ paths:
                 $ref: '#/components/schemas/Overview'
 components:
   schemas:
+    MainOffence:
+      required:
+      - additionalOffences
+      - dateOfOffence
+      - offence
+      type: object
+      properties:
+        offence:
+          $ref: '#/components/schemas/Offence'
+        dateOfOffence:
+          type: string
+          format: date
+        notes:
+          type: string
+        additionalOffences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offence'
+    Offence:
+      required:
+      - count
+      - description
+      type: object
+      properties:
+        description:
+          type: string
+        count:
+          type: integer
+          format: int64
+    SentenceOverview:
+      required:
+      - offence
+      type: object
+      properties:
+        offence:
+          type: array
+          items:
+            $ref: '#/components/schemas/MainOffence'
     Activity:
       required:
       - acceptableAbsences
@@ -96,16 +153,6 @@ components:
         date:
           type: string
           format: date-time
-        description:
-          type: string
-    Offence:
-      required:
-      - code
-      - description
-      type: object
-      properties:
-        code:
-          type: string
         description:
           type: string
     Order:

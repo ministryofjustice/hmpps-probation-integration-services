@@ -1640,7 +1640,10 @@
       "description": "string",
       "startDate": "string",
       "endDate": "string",
-      "notes": "string"
+      "notes": "string",
+      "flag": {
+        "description": "string"
+      }
     }
   ],
   "inactiveRegistrations": [
@@ -1648,7 +1651,10 @@
       "description": "string",
       "startDate": "string",
       "endDate": "string",
-      "notes": "string"
+      "notes": "string",
+      "flag": {
+        "description": "string"
+      }
     }
   ],
   "ogrs": {
@@ -4331,6 +4337,28 @@
 </tbody>
 </table>
 
+<h3 id="schema-registrationflag">RegistrationFlag</h3>
+
+
+<table class='schema-registrationflag'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-riskrecord">RiskRecord</h3>
 
 
@@ -4439,6 +4467,16 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>flag</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-registrationflag'>RegistrationFlag</a>
 </td>
 </tr>
 
