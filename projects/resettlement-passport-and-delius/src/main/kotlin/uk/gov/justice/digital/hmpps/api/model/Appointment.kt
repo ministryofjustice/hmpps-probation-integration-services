@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import io.swagger.v3.oas.annotations.media.Schema
 import java.time.Duration
 import java.time.ZonedDateTime
 
 data class Appointment(
     val type: Type,
     val dateTime: ZonedDateTime,
+    @Schema(type = "string", format = "duration")
     val duration: Duration,
     val staff: Staff,
     val location: Location?,
