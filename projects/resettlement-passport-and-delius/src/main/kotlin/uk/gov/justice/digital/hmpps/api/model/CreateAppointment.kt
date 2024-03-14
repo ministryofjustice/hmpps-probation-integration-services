@@ -9,7 +9,12 @@ import java.util.*
 data class CreateAppointment(
     val type: Type,
     val start: ZonedDateTime,
-    @Schema(type = "string", format = "duration")
+    @Schema(
+        type = "string",
+        format = "duration",
+        example = "PT30M",
+        description = "ISO-8601 representation of the duration"
+    )
     val duration: Duration,
     val notes: String? = null,
     val uuid: UUID = UUID.randomUUID()
