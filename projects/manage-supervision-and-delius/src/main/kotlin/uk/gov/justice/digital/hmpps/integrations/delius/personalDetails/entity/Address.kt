@@ -81,9 +81,6 @@ class ContactAddress(
     @Column(name = "last_updated_datetime")
     val lastUpdated: LocalDate,
 
-    @Convert(converter = YesNoConverter::class)
-    val typeVerified: Boolean? = false,
-
     @Column(columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
 )
