@@ -53,7 +53,10 @@ internal class PersonalDetailsControllerTest {
             preferredName = "Steve",
             religionOrBelief = "Christian",
             sex = "Male",
-            sexualOrientation = "Heterosexual"
+            sexualOrientation = "Heterosexual",
+            previousSurname = "Smith",
+            preferredLanguage = "English",
+            aliases = emptyList()
         )
         whenever(personalDetailsService.getPersonalDetails(crn)).thenReturn(personalDetails)
         val res = controller.getPersonalDetails("X000005")

@@ -2,9 +2,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -14,7 +13,6 @@ class PersonalContact(
     @Column(name = "personal_contact_id")
     val id: Long,
 
-    @Id
     @Column(name = "offender_id")
     val personId: Long,
 
@@ -42,27 +40,6 @@ class PersonalContact(
     val notes: String? = null,
 )
 
-@Immutable
-@Entity
-@Table(name = "address")
-@SQLRestriction("soft_deleted = 0")
-class ContactAddress(
-    @Id
-    @Column(name = "address_id")
-    val id: Long,
-    val buildingName: String?,
-    val addressNumber: String?,
-    val streetName: String?,
-    val district: String?,
-    @Column(name = "town_city")
-    val town: String?,
-    val county: String?,
-    val postcode: String?,
-    val telephoneNumber: String?,
-
-    @Column(name = "last_updated_datetime")
-    val lastUpdated: LocalDate,
-
-    @Column(columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
-)
+interface PersonalContactRepository : JpaRepository<PersonalContact, Long> {
+    fun findByPersonId(personId: Long): List<PersonalContact>
+}

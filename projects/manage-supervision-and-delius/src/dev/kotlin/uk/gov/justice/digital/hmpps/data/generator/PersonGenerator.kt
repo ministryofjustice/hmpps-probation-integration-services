@@ -122,6 +122,62 @@ object PersonGenerator {
             additionalOffences = additionalOffences
         )
 
+    val DISABILITIES: List<Disability> = listOf(
+        Disability(
+            IdGenerator.getAndIncrement(),
+            OVERVIEW.id,
+            ReferenceData(IdGenerator.getAndIncrement(), "D01", "Mental Illness"),
+            LocalDate.now().minusDays(1),
+            LocalDate.now().minusDays(1)
+        ),
+        Disability(
+            IdGenerator.getAndIncrement(),
+            OVERVIEW.id,
+            ReferenceData(IdGenerator.getAndIncrement(), "D02", "Visual Impairment"),
+            LocalDate.now(),
+            LocalDate.now().minusDays(1)
+        )
+    )
+
+    val PERSONAL_CIRCUMSTANCES: List<PersonalCircumstance> = listOf(
+        PersonalCircumstance(
+            IdGenerator.getAndIncrement(),
+            OVERVIEW.id,
+            ReferenceData(IdGenerator.getAndIncrement(), "E01", "Employment"),
+            PersonalCircumstanceSubType(
+                IdGenerator.getAndIncrement(),
+                "Full-time employed (30 or more hours per week"
+            ),
+            LocalDate.now(),
+            LocalDate.now().minusDays(1)
+        ),
+        PersonalCircumstance(
+            IdGenerator.getAndIncrement(),
+            OVERVIEW.id,
+            ReferenceData(IdGenerator.getAndIncrement(), "A02", "Accommodation"),
+            PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), "Friends/Family (settled)"),
+            LocalDate.now(),
+            LocalDate.now().minusDays(1)
+        )
+    )
+
+    val PROVISIONS: List<Provision> = listOf(
+        Provision(
+            IdGenerator.getAndIncrement(),
+            OVERVIEW.id,
+            ReferenceData(IdGenerator.getAndIncrement(), "FF01", "Flex refreshment breaks"),
+            LocalDate.now(),
+            LocalDate.now().minusDays(1)
+        ),
+        Provision(
+            IdGenerator.getAndIncrement(),
+            OVERVIEW.id,
+            ReferenceData(IdGenerator.getAndIncrement(), "CC02", "Colour/visibility marking"),
+            LocalDate.now(),
+            LocalDate.now().minusDays(1)
+        )
+    )
+
     fun generateOverview(
         crn: String,
         forename: String = "Forename",
@@ -134,62 +190,8 @@ object PersonGenerator {
         preferredName: String? = "Dee",
         dateOfBirth: LocalDate = LocalDate.now().minusYears(50),
         gender: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "M", "Male"),
-        id: Long = IdGenerator.getAndIncrement(),
-        disabilities: List<Disability> = listOf(
-            Disability(
-                IdGenerator.getAndIncrement(),
-                id,
-                ReferenceData(IdGenerator.getAndIncrement(), "D01", "Mental Illness"),
-                LocalDate.now().minusDays(1),
-                LocalDate.now().minusDays(1)
-            ),
-            Disability(
-                IdGenerator.getAndIncrement(),
-                id,
-                ReferenceData(IdGenerator.getAndIncrement(), "D02", "Visual Impairment"),
-                LocalDate.now(),
-                LocalDate.now().minusDays(1)
-            )
-        ),
-        personalCircumstances: List<PersonalCircumstance> = listOf(
-            PersonalCircumstance(
-                IdGenerator.getAndIncrement(),
-                id,
-                ReferenceData(IdGenerator.getAndIncrement(), "E01", "Employment"),
-                PersonalCircumstanceSubType(
-                    IdGenerator.getAndIncrement(),
-                    "Full-time employed (30 or more hours per week"
-                ),
-                LocalDate.now(),
-                LocalDate.now().minusDays(1)
-            ),
-            PersonalCircumstance(
-                IdGenerator.getAndIncrement(),
-                id,
-                ReferenceData(IdGenerator.getAndIncrement(), "A02", "Accommodation"),
-                PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), "Friends/Family (settled)"),
-                LocalDate.now(),
-                LocalDate.now().minusDays(1)
-            )
-        ),
-        provisions: List<Provision> = listOf(
-            Provision(
-                IdGenerator.getAndIncrement(),
-                id,
-                ReferenceData(IdGenerator.getAndIncrement(), "FF01", "Flex refreshment breaks"),
-                LocalDate.now(),
-                LocalDate.now().minusDays(1)
-            ),
-            Provision(
-                IdGenerator.getAndIncrement(),
-                id,
-                ReferenceData(IdGenerator.getAndIncrement(), "CC02", "Colour/visibility marking"),
-                LocalDate.now(),
-                LocalDate.now().minusDays(1)
-            )
-        ),
-
-        ) = Person(
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Person(
         id = id,
         crn = crn,
         forename = forename,
@@ -198,14 +200,10 @@ object PersonGenerator {
         surname = surname,
         dateOfBirth = dateOfBirth,
         gender = gender,
-        disabilities = disabilities,
         emailAddress = emailAddress,
         mobileNumber = mobileNumber,
-        personalCircumstances = personalCircumstances,
-        provisions = provisions,
         telephoneNumber = telephoneNumber,
         preferredName = preferredName,
-        registrations = emptyList(),
         pnc = "pnc",
         religion = null,
         sexualOrientation = null

@@ -16,21 +16,33 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddressRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalDetailsRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class PersonalDetailsServiceTest {
 
     @Mock
-    lateinit var personRepository: PersonalDetailsRepository
+    lateinit var personRepository: PersonRepository
 
     @Mock
     lateinit var addressRepository: PersonAddressRepository
 
     @Mock
     lateinit var documentRepository: DocumentRepository
+
+    @Mock
+    lateinit var provisionRepository: ProvisionRepository
+
+    @Mock
+    lateinit var disabilityRepository: DisabilityRepository
+
+    @Mock
+    lateinit var personalCircumstanceRepository: PersonCircumstanceRepository
+
+    @Mock
+    lateinit var aliasRepository: AliasRepository
 
     @Mock
     lateinit var alfrescoClient: AlfrescoClient
@@ -43,6 +55,10 @@ internal class PersonalDetailsServiceTest {
         val crn = "X000005"
 
         whenever(personRepository.findByCrn(crn)).thenReturn(PersonDetailsGenerator.PERSONAL_DETAILS)
+        whenever(provisionRepository.findByPersonId(any())).thenReturn(emptyList())
+        whenever(disabilityRepository.findByPersonId(any())).thenReturn(emptyList())
+        whenever(personalCircumstanceRepository.findByPersonId(any())).thenReturn(PersonGenerator.PERSONAL_CIRCUMSTANCES)
+        whenever(aliasRepository.findByPersonId(any())).thenReturn(emptyList())
 
         whenever(addressRepository.findByPersonId(any())).thenReturn(
             listOf(

@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.MainOffence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonOverviewRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import java.time.LocalDate
 

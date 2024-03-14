@@ -3,17 +3,11 @@ package uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
-
-interface PersonalDetailsRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["gender", "religion", "personalContacts"])
-    fun findByCrn(crn: String): Person?
-}
 
 @Immutable
 @Entity(name = "PersonalDetailsAddress")
@@ -63,7 +57,30 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
     fun findByPersonId(personId: Long): List<PersonAddress>
 }
 
-fun PersonalDetailsRepository.getPersonDetails(crn: String) =
-    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+@Immutable
+@Entity
+@Table(name = "address")
+@SQLRestriction("soft_deleted = 0")
+class ContactAddress(
+    @Id
+    @Column(name = "address_id")
+    val id: Long,
+    val buildingName: String?,
+    val addressNumber: String?,
+    val streetName: String?,
+    val district: String?,
+    @Column(name = "town_city")
+    val town: String?,
+    val county: String?,
+    val postcode: String?,
+    val telephoneNumber: String?,
 
+    @Column(name = "last_updated_datetime")
+    val lastUpdated: LocalDate,
 
+    @Convert(converter = YesNoConverter::class)
+    val typeVerified: Boolean? = false,
+
+    @Column(columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false
+)

@@ -29,16 +29,16 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
 
         entityManager.persist(PersonGenerator.OVERVIEW.gender)
-        PersonGenerator.OVERVIEW.disabilities.forEach { entityManager.persist(it.type) }
-        PersonGenerator.OVERVIEW.provisions.forEach { entityManager.persist(it.type) }
-        PersonGenerator.OVERVIEW.personalCircumstances.forEach {
+        PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
+        PersonGenerator.PROVISIONS.forEach { entityManager.persist(it.type) }
+        PersonGenerator.PERSONAL_CIRCUMSTANCES.forEach {
             entityManager.persist(it.type)
             entityManager.persist(it.subType)
         }
 
-        entityManager.persistCollection(PersonGenerator.OVERVIEW.disabilities)
-        entityManager.persistCollection(PersonGenerator.OVERVIEW.provisions)
-        entityManager.persistCollection(PersonGenerator.OVERVIEW.personalCircumstances)
+        entityManager.persistCollection(PersonGenerator.DISABILITIES)
+        entityManager.persistCollection(PersonGenerator.PROVISIONS)
+        entityManager.persistCollection(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         entityManager.persist(PersonGenerator.OVERVIEW)
 
         entityManager.persist(PersonGenerator.EVENT_1)
@@ -111,7 +111,10 @@ class DataLoader(
             PersonDetailsGenerator.PERSON_ADDRESS_2,
             PersonDetailsGenerator.NULL_ADDRESS,
             PersonDetailsGenerator.DOCUMENT_1,
-            PersonDetailsGenerator.DOCUMENT_2
+            PersonDetailsGenerator.DOCUMENT_2,
+            PersonDetailsGenerator.LANGUAGE_RD,
+            PersonDetailsGenerator.ALIAS_1,
+            PersonDetailsGenerator.ALIAS_2
         )
     }
 

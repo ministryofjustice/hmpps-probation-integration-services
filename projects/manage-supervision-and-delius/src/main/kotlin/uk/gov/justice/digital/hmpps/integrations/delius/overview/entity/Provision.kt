@@ -5,6 +5,7 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
@@ -36,3 +37,7 @@ class Provision(
     val softDeleted: Boolean = false,
 
     )
+
+interface ProvisionRepository : JpaRepository<Provision, Long> {
+    fun findByPersonId(personId: Long): List<Provision>
+}

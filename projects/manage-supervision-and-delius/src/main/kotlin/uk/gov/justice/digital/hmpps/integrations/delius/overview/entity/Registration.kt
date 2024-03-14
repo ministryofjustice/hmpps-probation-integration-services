@@ -5,12 +5,14 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Immutable
 @Entity
 @SQLRestriction("soft_deleted = 0 and deregistered = 0")
 @Table(name = "registration")
 class Registration(
+
     @Column(name = "offender_id")
     val personId: Long,
 
@@ -29,6 +31,10 @@ class Registration(
     @Column(name = "registration_id")
     val id: Long
 )
+
+interface RegistrationRepository : JpaRepository<Registration, Long> {
+    fun findByPersonId(personId: Long): List<Registration>
+}
 
 @Entity
 @Immutable

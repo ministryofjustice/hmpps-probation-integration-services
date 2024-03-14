@@ -8,23 +8,34 @@ import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.PersonalCircumstance
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContact
 
 @Service
 class PersonalDetailsService(
-    private val personalDetailsRepository: PersonalDetailsRepository,
+    private val personRepository: PersonRepository,
     private val addressRepository: PersonAddressRepository,
     private val documentRepository: DocumentRepository,
+    private val provisionRepository: ProvisionRepository,
+    private val disabilityRepository: DisabilityRepository,
+    private val personalCircumstanceRepository: PersonCircumstanceRepository,
+    private val aliasRepository: AliasRepository,
+    private val personalContactRepository: PersonalContactRepository,
+
     private val alfrescoClient: AlfrescoClient
 ) {
 
     @Transactional
     fun getPersonalDetails(crn: String): PersonalDetails {
-        val person = personalDetailsRepository.getPersonDetails(crn)
+        val person = personRepository.getPerson(crn)
+        val provisions = provisionRepository.findByPersonId(person.id)
+        val personalCircumstances = personalCircumstanceRepository.findByPersonId(person.id)
+        val disabilities = disabilityRepository.findByPersonId(person.id)
         val addresses = addressRepository.findByPersonId(person.id)
+        val aliases = aliasRepository.findByPersonId(person.id)
+        val personalContacts = personalContactRepository.findByPersonId(person.id)
         val mainAddress = addresses.firstOrNull { it.status.code == "M" }?.toAddress()
         val otherAddresses = addresses.filter { it.status.code != "M" }.map(PersonAddress::toAddress).mapNotNull { it }
         val documents = documentRepository.findByPersonId(person.id)
@@ -34,31 +45,34 @@ class PersonalDetailsService(
             name = person.name(),
             mainAddress = mainAddress,
             otherAddresses = otherAddresses,
-            contacts = person.personalContacts.map(PersonalContact::toContact),
+            contacts = personalContacts.map(PersonalContact::toContact),
             preferredGender = person.gender.description,
             dateOfBirth = person.dateOfBirth,
             preferredName = person.preferredName,
             telephoneNumber = person.telephoneNumber,
             mobileNumber = person.mobileNumber,
-            circumstances = Circumstances(lastUpdated = person.personalCircumstances.maxOfOrNull { it.lastUpdated },
-                circumstances = person.personalCircumstances.map {
+            circumstances = Circumstances(lastUpdated = personalCircumstances.maxOfOrNull { it.lastUpdated },
+                circumstances = personalCircumstances.map {
                     PersonalCircumstance(
                         it.subType.description,
                         it.type.description
                     )
                 }),
             disabilities = Disabilities(
-                lastUpdated = person.disabilities.maxOfOrNull { it.lastUpdated },
-                disabilities = person.disabilities.map { it.type.description }),
+                lastUpdated = disabilities.maxOfOrNull { it.lastUpdated },
+                disabilities = disabilities.map { it.type.description }),
             provisions = Provisions(
-                lastUpdated = person.provisions.maxOfOrNull { it.lastUpdated },
-                provisions = person.provisions.map { it.type.description }),
+                lastUpdated = provisions.maxOfOrNull { it.lastUpdated },
+                provisions = provisions.map { it.type.description }),
             documents = documents.map(PersonDocument::toDocument),
             pnc = person.pnc,
             religionOrBelief = person.religion?.description,
             sex = person.gender.description,
             sexualOrientation = person.sexualOrientation?.description,
-            email = person.emailAddress
+            email = person.emailAddress,
+            preferredLanguage = person.language?.description,
+            previousSurname = person.previousSurname,
+            aliases = aliases.map { Name(forename = it.forename, middleName = it.secondName, it.surname) }
         )
     }
 

@@ -13,17 +13,14 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.FIRST_APPT_C
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonOverviewRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class OverviewServiceTest {
 
     @Mock
-    lateinit var personRepository: PersonOverviewRepository
+    lateinit var personRepository: PersonRepository
 
     @Mock
     lateinit var contactRepository: ContactRepository
@@ -33,6 +30,18 @@ internal class OverviewServiceTest {
 
     @Mock
     lateinit var eventRepository: EventRepository
+
+    @Mock
+    lateinit var registrationRepository: RegistrationRepository
+
+    @Mock
+    lateinit var provisionRepository: ProvisionRepository
+
+    @Mock
+    lateinit var disabilityRepository: DisabilityRepository
+
+    @Mock
+    lateinit var personalCircumstanceRepository: PersonCircumstanceRepository
 
     @InjectMocks
     lateinit var service: OverviewService
@@ -46,6 +55,12 @@ internal class OverviewServiceTest {
             EuropeLondon
         )
         whenever(personRepository.findByCrn(crn)).thenReturn(PersonGenerator.OVERVIEW)
+
+        whenever(registrationRepository.findByPersonId(any())).thenReturn(emptyList())
+        whenever(provisionRepository.findByPersonId(any())).thenReturn(emptyList())
+        whenever(disabilityRepository.findByPersonId(any())).thenReturn(emptyList())
+        whenever(personalCircumstanceRepository.findByPersonId(any())).thenReturn(PersonGenerator.PERSONAL_CIRCUMSTANCES)
+
         whenever(contactRepository.findFirstAppointment(any(), any(), any(), any())).thenReturn(
             listOf(FIRST_APPT_CONTACT)
         )
@@ -85,7 +100,7 @@ internal class OverviewServiceTest {
         )
         assertThat(
             res.personalDetails.personalCircumstances[0].type,
-            equalTo(PersonGenerator.OVERVIEW.personalCircumstances[0].type.description)
+            equalTo(PersonGenerator.PERSONAL_CIRCUMSTANCES[0].type.description)
         )
         assertThat(res.sentences.size, equalTo(2))
         assertThat(res.sentences[0].rar?.scheduled, equalTo(2))
