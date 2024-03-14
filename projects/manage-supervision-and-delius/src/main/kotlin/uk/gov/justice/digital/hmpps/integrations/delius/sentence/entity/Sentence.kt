@@ -12,8 +12,8 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
             "LEFT JOIN FETCH e.additionalOffences ao " +
             "LEFT JOIN FETCH m.offence mo " +
             "LEFT JOIN FETCH ao.offence aoo " +
-            "LEFT JOIN Court c ON e.courtId = c.id " +
             "LEFT JOIN CourtAppearance ca On e.id = ca.event.id " +
+            "LEFT JOIN Court c ON ca.court.id = c.id " +
             "WHERE p.crn = :crn " +
             "AND e.active = true "
     )

@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.sentence.MainOffence
+import uk.gov.justice.digital.hmpps.api.model.sentence.OffenceDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -31,7 +31,7 @@ class SentenceIntegrationTest {
 
         val expected = SentenceOverview(
             listOf(
-                MainOffence(
+                OffenceDetails(
                     Offence("Murder", 1),
                     LocalDate.now(),
                     "overview",
@@ -40,7 +40,7 @@ class SentenceIntegrationTest {
                         Offence("Assault", 1)
                     )
                 ),
-                MainOffence(
+                OffenceDetails(
                     Offence("Another Murder", 1),
                     LocalDate.now(),
                     "overview",

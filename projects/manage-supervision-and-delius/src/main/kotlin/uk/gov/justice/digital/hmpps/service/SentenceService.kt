@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.sentence.MainOffence
+import uk.gov.justice.digital.hmpps.api.model.sentence.OffenceDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
@@ -18,7 +18,7 @@ class SentenceService(
     }
 
     fun Event.toOffence() = mainOffence?.let { mainOffence ->
-        MainOffence(offence = Offence(
+        OffenceDetails(offence = Offence(
             mainOffence.offence.description, mainOffence.offenceCount
         ),
             dateOfOffence = mainOffence.date,
