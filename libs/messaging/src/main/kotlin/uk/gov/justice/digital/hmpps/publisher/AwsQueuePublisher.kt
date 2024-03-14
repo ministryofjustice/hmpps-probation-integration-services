@@ -18,10 +18,11 @@ import java.util.concurrent.Semaphore
 class AwsQueuePublisher(
     private val sqsTemplate: SqsTemplate,
     private val objectMapper: ObjectMapper,
-    @Value("\${messaging.producer.queue}") private val queue: String
+    @Value("\${messaging.producer.queue}") private val queue: String,
+    @Value("\${messaging.producer.concurrency:100}") private val limit: Int
 ) : NotificationPublisher {
 
-    private val permit = Semaphore(100)
+    private val permit = Semaphore(limit)
     override fun publish(notification: Notification<*>) {
         notification.message?.also { _ ->
             permit.acquire()
