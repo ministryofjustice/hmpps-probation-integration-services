@@ -75,27 +75,31 @@ class Person(
 
 )
 
-interface PersonRepository : JpaRepository<Person, Long> {
-
-    fun findByCrn(crn: String): Person?
-
-    @Query(
-        """
-        select p.forename, p.secondName, p.surname, p.crn, p.pnc from Person p where p.crn = :crn
-    """
-    )
-    fun findSummary(crn: String): PersonSummary?
-}
-
-interface PersonSummary {
+interface PersonSummaryEntity {
     val forename: String
     val secondName: String?
     val thirdName: String?
     val surname: String
     val crn: String
     val pnc: String?
+    val dateOfBirth: LocalDate
+}
+
+interface PersonRepository : JpaRepository<Person, Long> {
+
+    fun findByCrn(crn: String): Person?
+
+    @Query(
+        """
+        select p.first_name as forename, p.second_name as secondName, p.third_name as thirdName, 
+        p.surname, p.crn, p.pnc_number as pnc, p.date_of_birth_date as dateOfBirth
+        from offender p where p.crn = :crn and p.soft_deleted = 0  
+        """, nativeQuery = true
+    )
+    fun findSummary(crn: String): PersonSummaryEntity?
 }
 
 fun PersonRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
-fun PersonRepository.getSummary(crn: String) = findSummary(crn) ?: throw NotFoundException("Person", "crn", crn)
+fun PersonRepository.getSummary(crn: String): PersonSummaryEntity =
+    findSummary(crn) ?: throw NotFoundException("Person", "crn", crn)
 

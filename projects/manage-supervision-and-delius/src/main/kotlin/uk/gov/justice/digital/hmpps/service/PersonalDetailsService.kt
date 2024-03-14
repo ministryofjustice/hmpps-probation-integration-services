@@ -6,12 +6,12 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.overview.PersonalCircumstance
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContact
 
 @Service
 class PersonalDetailsService(
@@ -23,7 +23,6 @@ class PersonalDetailsService(
     private val personalCircumstanceRepository: PersonCircumstanceRepository,
     private val aliasRepository: AliasRepository,
     private val personalContactRepository: PersonalContactRepository,
-
     private val alfrescoClient: AlfrescoClient
 ) {
 
@@ -33,11 +32,15 @@ class PersonalDetailsService(
         val provisions = provisionRepository.findByPersonId(person.id)
         val personalCircumstances = personalCircumstanceRepository.findByPersonId(person.id)
         val disabilities = disabilityRepository.findByPersonId(person.id)
-        val addresses = addressRepository.findByPersonId(person.id)
+        val allAddresses = addressRepository.findByPersonId(person.id)
+        val currentAddresses = allAddresses.filter { it.endDate == null }
+        val previousAddresses =
+            allAddresses.filter { it.endDate != null }.map(PersonAddress::toAddress).mapNotNull { it }
         val aliases = aliasRepository.findByPersonId(person.id)
         val personalContacts = personalContactRepository.findByPersonId(person.id)
-        val mainAddress = addresses.firstOrNull { it.status.code == "M" }?.toAddress()
-        val otherAddresses = addresses.filter { it.status.code != "M" }.map(PersonAddress::toAddress).mapNotNull { it }
+        val mainAddress = currentAddresses.firstOrNull { it.status.code == "M" }?.toAddress()
+        val otherAddresses =
+            currentAddresses.filter { it.status.code != "M" }.map(PersonAddress::toAddress).mapNotNull { it }
         val documents = documentRepository.findByPersonId(person.id)
 
         return PersonalDetails(
@@ -45,7 +48,8 @@ class PersonalDetailsService(
             name = person.name(),
             mainAddress = mainAddress,
             otherAddresses = otherAddresses,
-            contacts = personalContacts.map(PersonalContact::toContact),
+            previousAddresses = previousAddresses,
+            contacts = personalContacts.map(PersonalContactEntity::toContact),
             preferredGender = person.gender.description,
             dateOfBirth = person.dateOfBirth,
             preferredName = person.preferredName,
@@ -80,9 +84,17 @@ class PersonalDetailsService(
         val filename = documentRepository.getDocument(crn, id)
         return alfrescoClient.streamDocument(id, filename)
     }
+
+    fun getPersonContact(crn: String, contactId: Long): PersonalContact {
+        return personalContactRepository.getContact(crn, contactId).toContact()
+    }
+
+    fun getPersonSummary(crn: String): PersonSummary {
+        return personRepository.getSummary(crn).toPersonSummary()
+    }
 }
 
-fun PersonalContact.toContact() = uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalContact(
+fun PersonalContactEntity.toContact() = PersonalContact(
     name = Name(forename = forename, middleName = middleNames, surname = surname),
     relationship = relationship,
     address = address.toAddress(),
@@ -101,6 +113,7 @@ fun PersonAddress.toAddress() = Address.from(
     postcode = postcode,
     from = startDate,
     to = endDate,
+    verified = typeVerified,
     lastUpdated = lastUpdated,
     status = status.description,
     type = type.description
@@ -118,3 +131,4 @@ fun ContactAddress.toAddress() = uk.gov.justice.digital.hmpps.api.model.personal
 )
 
 fun PersonDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)
+fun PersonSummaryEntity.toPersonSummary() = PersonSummary(Name(forename, secondName, surname), crn, pnc, dateOfBirth)

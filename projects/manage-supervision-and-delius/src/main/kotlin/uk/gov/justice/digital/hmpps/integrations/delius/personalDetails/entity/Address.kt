@@ -12,7 +12,7 @@ import java.time.LocalDate
 @Immutable
 @Entity(name = "PersonalDetailsAddress")
 @Table(name = "offender_address")
-@SQLRestriction("soft_deleted = 0 and end_date is null")
+@SQLRestriction("soft_deleted = 0")
 class PersonAddress(
 
     @Column(name = "offender_id")
@@ -40,6 +40,9 @@ class PersonAddress(
 
     val startDate: LocalDate,
     val endDate: LocalDate? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    val typeVerified: Boolean? = false,
 
     @Column(name = "last_updated_datetime")
     val lastUpdated: LocalDate?,

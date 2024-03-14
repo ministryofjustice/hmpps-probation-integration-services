@@ -19,6 +19,8 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactRepository
+import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 internal class PersonalDetailsServiceTest {
@@ -45,6 +47,9 @@ internal class PersonalDetailsServiceTest {
     lateinit var aliasRepository: AliasRepository
 
     @Mock
+    lateinit var personalContactRepository: PersonalContactRepository
+
+    @Mock
     lateinit var alfrescoClient: AlfrescoClient
 
     @InjectMocks
@@ -59,6 +64,7 @@ internal class PersonalDetailsServiceTest {
         whenever(disabilityRepository.findByPersonId(any())).thenReturn(emptyList())
         whenever(personalCircumstanceRepository.findByPersonId(any())).thenReturn(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         whenever(aliasRepository.findByPersonId(any())).thenReturn(emptyList())
+        whenever(personalContactRepository.findByPersonId(any())).thenReturn(emptyList())
 
         whenever(addressRepository.findByPersonId(any())).thenReturn(
             listOf(
@@ -93,5 +99,39 @@ internal class PersonalDetailsServiceTest {
         )
         val res = service.downloadDocument(crn, alfrescoId)
         Assertions.assertEquals(expectedResponse.statusCode, res.statusCode)
+    }
+
+    @Test
+    fun `calls get contact function`() {
+        val crn = "X000005"
+        val id = 1234L
+        whenever(personalContactRepository.findById(crn, id)).thenReturn(PersonDetailsGenerator.PERSONAL_CONTACT_1)
+        val res = service.getPersonContact(crn, id)
+        assertThat(res, equalTo(PersonDetailsGenerator.PERSONAL_CONTACT_1.toContact()))
+    }
+
+    @Test
+    fun `calls get summary function`() {
+        val crn = "X000005"
+
+        val expected = Summary(
+            forename = "TestName",
+            surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
+        )
+        whenever(personRepository.findSummary(crn)).thenReturn(expected)
+        val res = service.getPersonSummary(crn)
+        assertThat(res, equalTo(expected.toPersonSummary()))
+    }
+
+    data class Summary(
+        override val forename: String,
+        override val secondName: String? = null,
+        override val thirdName: String? = null,
+        override val surname: String,
+        override val crn: String,
+        override val pnc: String?,
+        override val dateOfBirth: LocalDate
+    ) : PersonSummaryEntity {
+
     }
 }

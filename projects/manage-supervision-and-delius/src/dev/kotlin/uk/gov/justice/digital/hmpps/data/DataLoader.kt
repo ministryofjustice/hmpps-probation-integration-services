@@ -85,6 +85,7 @@ class DataLoader(
             PersonDetailsGenerator.GENDER_FEMALE,
             PersonDetailsGenerator.RELIGION_DEFAULT,
             PersonDetailsGenerator.SEXUAL_ORIENTATION,
+            PersonDetailsGenerator.LANGUAGE_RD,
             PersonDetailsGenerator.PERSONAL_DETAILS,
             PersonDetailsGenerator.DISABILITY_1_RD,
             PersonDetailsGenerator.DISABILITY_2_RD,
@@ -110,9 +111,9 @@ class DataLoader(
             PersonDetailsGenerator.PERSON_ADDRESS_TYPE_2,
             PersonDetailsGenerator.PERSON_ADDRESS_2,
             PersonDetailsGenerator.NULL_ADDRESS,
+            PersonDetailsGenerator.PREVIOUS_ADDRESS,
             PersonDetailsGenerator.DOCUMENT_1,
             PersonDetailsGenerator.DOCUMENT_2,
-            PersonDetailsGenerator.LANGUAGE_RD,
             PersonDetailsGenerator.ALIAS_1,
             PersonDetailsGenerator.ALIAS_2
         )

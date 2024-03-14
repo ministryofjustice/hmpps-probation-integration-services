@@ -14,8 +14,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.PersonSummary
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalContact
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalDetails
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.ALIAS_1
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CONTACT_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
+import uk.gov.justice.digital.hmpps.service.toContact
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -39,15 +44,19 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.preferredName, equalTo("Caz"))
         assertThat(res.preferredGender, equalTo("Female"))
         assertThat(res.religionOrBelief, equalTo("Christian"))
+        assertThat(res.preferredLanguage, equalTo("Arabic"))
+        assertThat(res.previousSurname, equalTo("Smith"))
         assertThat(res.sexualOrientation, equalTo("Heterosexual"))
         assertThat(res.mainAddress?.status, equalTo("Main Address"))
-        assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
+        assertThat(res.mainAddress?.verified, equalTo(true))
         assertThat(res.mainAddress?.type, equalTo("Address type 1"))
         assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
         assertThat(res.otherAddresses.size, equalTo(1))
         assertThat(res.otherAddresses[0].type, equalTo("Address type 2"))
         assertThat(res.otherAddresses[0].status, equalTo("Another Address"))
+        assertThat(res.otherAddresses[0].verified, equalTo(true))
         assertThat(res.otherAddresses[0].postcode, equalTo("NE4 5AN"))
+        assertThat(res.previousAddresses[0].postcode, equalTo("NE4 END"))
         assertThat(res.contacts.size, equalTo(1))
         assertThat(res.contacts[0].name, equalTo(Name("Sam", "Steven", "Smith")))
         assertThat(res.contacts[0].address?.postcode, equalTo("NE1 56A"))
@@ -70,6 +79,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.documents[1].name, equalTo("other.doc"))
         assertThat(res.documents[0].id, equalTo("A001"))
         assertThat(res.documents[1].id, equalTo("A002"))
+        assertThat(res.aliases[0].forename, equalTo(ALIAS_1.forename))
     }
 
     @Test
@@ -109,6 +119,46 @@ internal class PersonalDetailsIntegrationTest {
     @Test
     fun `document can not be found`() {
         mockMvc.perform(get("/personal-details/X000005/document/A010").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `personal summary is returned`() {
+
+        val person = PERSONAL_DETAILS
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/summary").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonSummary>()
+        assertThat(res.crn, equalTo(person.crn))
+        assertThat(res.pnc, equalTo(person.pnc))
+        assertThat(res.dateOfBirth, equalTo(person.dateOfBirth))
+        assertThat(res.name, equalTo(Name(person.forename, person.secondName, person.surname)))
+    }
+
+    @Test
+    fun `personal contact is returned`() {
+
+        val person = PERSONAL_DETAILS
+        val contact = PERSONAL_CONTACT_1
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalContact>()
+        assertThat(res, equalTo(contact.toContact()))
+    }
+
+    @Test
+    fun `personal summary not found`() {
+        mockMvc
+            .perform(get("/personal-details/X999999/summary").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `personal contact not found`() {
+        mockMvc
+            .perform(get("/personal-details/X999999/personal-contact/999999999").withToken())
             .andExpect(status().isNotFound)
     }
 }

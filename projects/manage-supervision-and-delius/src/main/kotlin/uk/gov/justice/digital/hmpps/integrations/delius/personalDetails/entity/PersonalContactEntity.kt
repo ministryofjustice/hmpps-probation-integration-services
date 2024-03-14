@@ -3,12 +3,14 @@ package uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 @Entity
 @Immutable
 @Table(name = "personal_contact")
-class PersonalContact(
+class PersonalContactEntity(
     @Id
     @Column(name = "personal_contact_id")
     val id: Long,
@@ -40,6 +42,17 @@ class PersonalContact(
     val notes: String? = null,
 )
 
-interface PersonalContactRepository : JpaRepository<PersonalContact, Long> {
-    fun findByPersonId(personId: Long): List<PersonalContact>
+interface PersonalContactRepository : JpaRepository<PersonalContactEntity, Long> {
+    fun findByPersonId(personId: Long): List<PersonalContactEntity>
+
+    @Query(
+        """
+        select pc from PersonalContactEntity pc join Person p on p.id = pc.personId
+        where p.crn = :crn and pc.id = :contactId
+    """
+    )
+    fun findById(crn: String, contactId: Long): PersonalContactEntity?
 }
+
+fun PersonalContactRepository.getContact(crn: String, id: Long): PersonalContactEntity =
+    findById(crn, id) ?: throw NotFoundException("PersonalContact", "id", id)

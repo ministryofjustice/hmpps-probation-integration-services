@@ -3,8 +3,10 @@ package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContact
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -83,7 +85,7 @@ object PersonDetailsGenerator {
 
     val RELATIONSHIP_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Family Member")
     val CONTACT_ADDRESS = generateContactAddress("31", "Test Steet", "Test town", "Test County", "NE1 56A")
-    val PERSONAL_CONTACT_1 = PersonalContact(
+    val PERSONAL_CONTACT_1 = PersonalContactEntity(
         IdGenerator.getAndIncrement(),
         PERSONAL_DETAILS.id,
         "Sam",
@@ -106,7 +108,8 @@ object PersonDetailsGenerator {
         "NE2 56A",
         PERSONAL_DETAILS.id,
         PERSON_ADDRESS_STATUS_1,
-        PERSON_ADDRESS_TYPE_1
+        PERSON_ADDRESS_TYPE_1,
+        verified = true
     )
     val PERSON_ADDRESS_2 = generatePersonAddress(
         "43",
@@ -116,8 +119,22 @@ object PersonDetailsGenerator {
         "NE4 5AN",
         PERSONAL_DETAILS.id,
         PERSON_ADDRESS_STATUS_2,
-        PERSON_ADDRESS_TYPE_2
+        PERSON_ADDRESS_TYPE_2,
+        verified = true
     )
+
+    val PREVIOUS_ADDRESS = generatePersonAddress(
+        "43",
+        "Test Avenue",
+        "Test town",
+        "Test County",
+        "NE4 END",
+        PERSONAL_DETAILS.id,
+        PERSON_ADDRESS_STATUS_2,
+        PERSON_ADDRESS_TYPE_2,
+        endDate = LocalDate.now().minusYears(1)
+    )
+
     val NULL_ADDRESS = PersonAddress(
         PERSONAL_DETAILS.id,
         PERSON_ADDRESS_STATUS_2,
@@ -131,6 +148,7 @@ object PersonDetailsGenerator {
         null,
         LocalDate.now(),
         null,
+        true,
         LocalDate.now(),
         false,
         IdGenerator.getAndIncrement()
@@ -168,7 +186,9 @@ object PersonDetailsGenerator {
         postcode: String,
         personId: Long,
         status: ReferenceData,
-        type: ReferenceData
+        type: ReferenceData,
+        endDate: LocalDate? = null,
+        verified: Boolean? = null
     ) = PersonAddress(
         personId = personId,
         id = IdGenerator.getAndIncrement(),
@@ -182,8 +202,10 @@ object PersonDetailsGenerator {
         softDeleted = false,
         lastUpdated = LocalDate.now().minusDays(10),
         startDate = LocalDate.now().minusDays(10),
+        endDate = endDate,
         status = status,
-        type = type
+        type = type,
+        typeVerified = verified
     )
 
     fun generatePersonDetails(
@@ -221,6 +243,11 @@ object PersonDetailsGenerator {
     )
 
     fun generateAlias(forename: String, secondName: String, surname: String, personId: Long) = Alias(
-        id = IdGenerator.getAndIncrement(), forename = forename, secondName = secondName, surname = surname, personId = personId)
+        id = IdGenerator.getAndIncrement(),
+        forename = forename,
+        secondName = secondName,
+        surname = surname,
+        personId = personId
+    )
 }
 
