@@ -159,6 +159,6 @@ class RecallReason(
     val id: Long,
 )
 
-interface CustodyRepository : JpaRepository<Custody, Long> {
+        interface CustodyRepository : JpaRepository<Custody, Long> {
     fun findAllByDisposalEventPersonCrn(crn: String): List<Custody>
 }

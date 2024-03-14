@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
 
+
+
 interface EventSentenceRepository : JpaRepository<Event, Long> {
     @Query(
         "SELECT e FROM Event e " +
@@ -12,11 +14,13 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
             "LEFT JOIN FETCH e.additionalOffences ao " +
             "LEFT JOIN FETCH m.offence mo " +
             "LEFT JOIN FETCH ao.offence aoo " +
-            "LEFT JOIN CourtAppearance ca On e.id = ca.event.id " +
-            "LEFT JOIN Court c ON ca.court.id = c.id " +
             "WHERE p.crn = :crn " +
             "AND e.active = true "
     )
     fun findActiveSentencesByCrn(crn: String): List<Event>
 }
 
+
+interface CourtRepository: JpaRepository<CourtAppearance, Long> {
+    fun getCourtAppearanceByEventId(id: Long): List<CourtAppearance>
+}

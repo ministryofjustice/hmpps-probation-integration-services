@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.sentence.OffenceDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
+import uk.gov.justice.digital.hmpps.api.model.sentence.OffenceDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Sentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
@@ -14,7 +14,6 @@ class SentenceService(
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
         val events = eventRepository.findActiveSentencesByCrn(crn)
-
         return SentenceOverview(events.map { it.toSentence() })
     }
 
