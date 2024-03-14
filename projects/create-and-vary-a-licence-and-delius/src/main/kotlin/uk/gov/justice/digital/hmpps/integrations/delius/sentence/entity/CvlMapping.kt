@@ -23,6 +23,7 @@ class CvlMapping(
 
     val cvlModifier: String?,
 
+    @Column(name = "cvl_populate_lic_cond_text")
     @Convert(converter = YesNoConverter::class)
     val populateNotes: Boolean,
 
