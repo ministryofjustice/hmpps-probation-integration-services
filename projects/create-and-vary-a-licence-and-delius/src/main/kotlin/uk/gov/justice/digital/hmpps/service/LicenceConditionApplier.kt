@@ -144,8 +144,8 @@ class LicenceConditionApplier(
                     startDate,
                     cvlMapping.mainCategory,
                     cvlMapping.subCategory,
-                    if (cvlMapping.subCategory.isVictimNotes()) LIMITED_PREFIX else CONDITION_PREFIX,
-                    if (cvlMapping.subCategory.isVictimNotes()) null else condition.description,
+                    if (!cvlMapping.populateNotes) LIMITED_PREFIX else CONDITION_PREFIX,
+                    if (!cvlMapping.populateNotes) null else condition.description,
                     sentencedCase.com
                 )
             } else {
@@ -161,8 +161,6 @@ class LicenceConditionApplier(
             null
         }
     }
-
-    private fun ReferenceData.isVictimNotes(): Boolean = code in ReferenceData.VICTIM_NOTES_CODES
 
     private fun ActivatedLicence.bespokeConditions(
         sentencedCase: SentencedCase
