@@ -364,6 +364,25 @@ internal class MessagingIntegrationTest {
         assertThat(referral.expectedDepartureDate, equalTo(LocalDate.parse("2023-08-30")))
         assertThat(referral.reservationStartDate, equalTo(LocalDate.parse("2023-08-14")))
         assertThat(referral.reservationLength, equalTo(16))
+
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.BOOKING_CHANGED.code }
+        assertThat(
+            contact.notes,
+            equalTo(
+                """
+                |The expected arrival and/or departure for the booking has changed
+                |
+                |Previous: 30/01/2023 to 30/04/2023
+                |
+                |Current: 14/08/2023 to 30/08/2023
+                |
+                |For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/364145f9-0af8-488e-9901-b4c46cd9ba37
+                """.trimMargin()
+            )
+        )
+        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
+        assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
     }
 
     @Test
