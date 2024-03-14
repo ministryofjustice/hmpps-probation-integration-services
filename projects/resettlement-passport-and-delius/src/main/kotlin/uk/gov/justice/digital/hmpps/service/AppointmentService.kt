@@ -72,7 +72,8 @@ class AppointmentService(
         personId: Long,
         createAppointment: CreateAppointment
     ) {
-        if (!createAppointment.start.isBefore(createAppointment.end)) {
+
+        if (createAppointment.duration.isNegative) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment end time cannot be before start time.")
         }
         if (createAppointment.start.isAfter(ZonedDateTime.now()) && appointmentRepository.appointmentClashes(

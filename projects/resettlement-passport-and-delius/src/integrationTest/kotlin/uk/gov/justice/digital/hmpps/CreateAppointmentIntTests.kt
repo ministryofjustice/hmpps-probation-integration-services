@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.Duration
 import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
@@ -41,7 +42,7 @@ internal class CreateAppointmentIntTests {
                     CreateAppointment(
                         CreateAppointment.Type.Accommodation,
                         ZonedDateTime.now().plusDays(1),
-                        ZonedDateTime.now().plusDays(1)
+                        Duration.ofMinutes(30)
                     )
                 )
         ).andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -54,7 +55,7 @@ internal class CreateAppointmentIntTests {
             post("/appointments/${PersonGenerator.CREATE_APPOINTMENT.crn}")
                 .withToken()
                 .withJson(
-                    CreateAppointment(CreateAppointment.Type.Health, start, start.plusMinutes(30))
+                    CreateAppointment(CreateAppointment.Type.Health, start, Duration.ofMinutes(30))
                 )
         ).andExpect(MockMvcResultMatchers.status().isConflict)
     }
@@ -66,7 +67,7 @@ internal class CreateAppointmentIntTests {
             post("/appointments/${PersonGenerator.CREATE_APPOINTMENT.crn}")
                 .withToken()
                 .withJson(
-                    CreateAppointment(CreateAppointment.Type.Finance, start, start.minusSeconds(1))
+                    CreateAppointment(CreateAppointment.Type.Finance, start, Duration.ofMinutes(-1))
                 )
         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
@@ -76,7 +77,7 @@ internal class CreateAppointmentIntTests {
         val person = PersonGenerator.CREATE_APPOINTMENT
         val start = ZonedDateTime.now().plusDays(1)
         val notes = "Resettlement Passport Notes"
-        val create = CreateAppointment(CreateAppointment.Type.SkillsAndWork, start, start.plusHours(1), notes)
+        val create = CreateAppointment(CreateAppointment.Type.SkillsAndWork, start, Duration.ofHours(1), notes)
 
         mockMvc.perform(
             post("/appointments/${person.crn}")
