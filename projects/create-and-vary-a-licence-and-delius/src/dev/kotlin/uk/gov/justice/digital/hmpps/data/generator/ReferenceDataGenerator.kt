@@ -44,7 +44,8 @@ object ReferenceDataGenerator {
         generateCvlMapping(
             "VictimLcOne",
             generateLcCategory("VIC1"),
-            generateLcSubCategory(ReferenceData.VICTIM_NOTES_CODES.first())
+            generateLcSubCategory("NCL3"),
+            populateNotes = false
         )
     )
     val CONTACT_TYPE_LPOP = generateContactType(ContactType.LPOP)
@@ -66,8 +67,9 @@ object ReferenceDataGenerator {
         mainCategory: LicenceConditionCategory,
         subCategory: ReferenceData,
         cvlModifier: String? = null,
+        populateNotes: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
-    ) = CvlMapping(cvlCode, mainCategory, subCategory, cvlModifier, id)
+    ) = CvlMapping(cvlCode, mainCategory, subCategory, cvlModifier, populateNotes, id)
 
     fun generateContactType(code: String, id: Long = IdGenerator.getAndIncrement()) = ContactType(code, id)
 

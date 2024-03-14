@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
@@ -21,6 +22,9 @@ class CvlMapping(
     val subCategory: ReferenceData,
 
     val cvlModifier: String?,
+
+    @Convert(converter = YesNoConverter::class)
+    val populateNotes: Boolean,
 
     @Id
     @Column(name = "cvl_lic_cond_mapping_id")
