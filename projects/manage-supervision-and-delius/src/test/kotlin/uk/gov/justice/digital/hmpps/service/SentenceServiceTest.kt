@@ -12,6 +12,7 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.sentence.OffenceDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
+import uk.gov.justice.digital.hmpps.api.model.sentence.Sentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
@@ -73,20 +74,26 @@ class SentenceServiceTest {
 
         val expected = SentenceOverview(
             listOf(
-                OffenceDetails(
-                    Offence("Murder", 1),
-                    LocalDate.now(),
-                    "overview",
-                    listOf(Offence("Burglary", 1))
-                ),
-                OffenceDetails(
-                    Offence("Another Murder", 1),
-                    LocalDate.now(),
-                    "overview",
-                    emptyList()
+                Sentence(
+                        OffenceDetails(
+                            Offence("Murder", 1),
+                            LocalDate.now(),
+                            "overview",
+                            listOf(
+                                Offence("Burglary", 1)
+                            )
+                        )
+                    ),
+                Sentence(
+                        OffenceDetails(
+                            Offence("Another Murder", 1),
+                            LocalDate.now(),
+                            "overview",
+                            emptyList()
+                        )
+                    )
                 )
             )
-        )
 
         assertEquals(expected, response)
         verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)

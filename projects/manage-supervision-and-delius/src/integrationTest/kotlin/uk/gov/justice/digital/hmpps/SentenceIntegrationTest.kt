@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.sentence.OffenceDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
+import uk.gov.justice.digital.hmpps.api.model.sentence.Sentence
 import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -31,22 +32,26 @@ class SentenceIntegrationTest {
 
         val expected = SentenceOverview(
             listOf(
-                OffenceDetails(
-                    Offence("Murder", 1),
-                    LocalDate.now(),
-                    "overview",
-                    listOf(
-                        Offence("Burglary", 1),
-                        Offence("Assault", 1)
+                    Sentence(
+                        OffenceDetails(
+                            Offence("Murder", 1),
+                            LocalDate.now(),
+                            "overview",
+                            listOf(
+                                Offence("Burglary", 1),
+                                Offence("Assault", 1)
+                            )
+                        )
+                    ),
+                    Sentence(
+                        OffenceDetails(
+                            Offence("Another Murder", 1),
+                            LocalDate.now(),
+                            "overview",
+                            emptyList()
+                        )
                     )
-                ),
-                OffenceDetails(
-                    Offence("Another Murder", 1),
-                    LocalDate.now(),
-                    "overview",
-                    emptyList()
                 )
-            )
         )
 
         assertEquals(expected, response)
