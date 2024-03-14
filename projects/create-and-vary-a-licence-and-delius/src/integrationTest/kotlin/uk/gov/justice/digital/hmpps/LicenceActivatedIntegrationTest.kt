@@ -14,9 +14,12 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.BESPOKE_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.STANDARD_CATEGORY_CODE
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.TransferReason
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.service.ActionResult
@@ -151,10 +154,7 @@ class LicenceActivatedIntegrationTest {
         assertThat(
             lpop.first().notes,
             equalTo(
-                """
-            |Delius has been updated with licence conditions entered in the Create and Vary a licence service.
-            |Select the following link to navigate to Create and Vary a licence service and view the licence.
-                """.trimMargin()
+                "Delius has been updated with licence conditions entered in the Create and Vary a licence service."
             )
         )
         val occurredAt = ZonedDateTime.parse("2022-12-04T10:42:43+00:00")
