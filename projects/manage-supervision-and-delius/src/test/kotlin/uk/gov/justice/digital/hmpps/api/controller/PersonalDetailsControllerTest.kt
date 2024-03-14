@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Circumstances
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Disabilities
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalDetails
@@ -20,6 +21,7 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.Provisions
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.PersonalDetailsService
 import uk.gov.justice.digital.hmpps.service.toAddress
+import uk.gov.justice.digital.hmpps.service.toContact
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -53,7 +55,10 @@ internal class PersonalDetailsControllerTest {
             preferredName = "Steve",
             religionOrBelief = "Christian",
             sex = "Male",
-            sexualOrientation = "Heterosexual"
+            sexualOrientation = "Heterosexual",
+            previousSurname = "Smith",
+            preferredLanguage = "English",
+            aliases = emptyList()
         )
         whenever(personalDetailsService.getPersonalDetails(crn)).thenReturn(personalDetails)
         val res = controller.getPersonalDetails("X000005")
@@ -69,5 +74,29 @@ internal class PersonalDetailsControllerTest {
         whenever(personalDetailsService.downloadDocument(crn, alfrescoId)).thenReturn(expectedResponse)
         val res = controller.downloadDocument(crn, alfrescoId)
         Assertions.assertEquals(expectedResponse.statusCode, res.statusCode)
+    }
+
+    @Test
+    fun `calls get Person Contact function `() {
+        val crn = "X000005"
+        val id = 1234L
+        val expectedResponse = PersonDetailsGenerator.PERSONAL_CONTACT_1.toContact()
+        whenever(personalDetailsService.getPersonContact(crn, id)).thenReturn(expectedResponse)
+        val res = controller.getPersonContact(crn, id)
+        assertThat(res.relationship, equalTo(PersonDetailsGenerator.PERSONAL_CONTACT_1.relationship))
+    }
+
+    @Test
+    fun `calls get Person summary function `() {
+        val crn = "X000005"
+        val expectedResponse = PersonSummary(
+            Name(forename = "TestName", middleName = null, surname = "TestSurname"), pnc = "Test PNC",
+            crn = "CRN",
+            dateOfBirth = LocalDate.now(),
+        )
+
+        whenever(personalDetailsService.getPersonSummary(crn)).thenReturn(expectedResponse)
+        val res = controller.getPersonSummary(crn)
+        assertThat(res, equalTo(expectedResponse))
     }
 }

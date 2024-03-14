@@ -12,6 +12,7 @@ data class Address(
     val postcode: String?,
     val from: LocalDate,
     val to: LocalDate?,
+    val verified: Boolean?,
     val lastUpdated: LocalDate?,
     val type: String?,
     val status: String?
@@ -27,6 +28,7 @@ data class Address(
             postcode: String? = null,
             from: LocalDate,
             to: LocalDate? = null,
+            verified: Boolean? = null,
             lastUpdated: LocalDate? = null,
             type: String? = null,
             status: String? = null
@@ -47,6 +49,7 @@ data class Address(
                     postcode,
                     from,
                     to,
+                    verified,
                     lastUpdated,
                     type,
                     status

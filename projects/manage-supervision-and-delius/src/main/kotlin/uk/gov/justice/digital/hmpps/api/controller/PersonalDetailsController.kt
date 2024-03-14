@@ -25,4 +25,14 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     @Operation(summary = "Download document")
     fun downloadDocument(@PathVariable crn: String, @PathVariable documentId: String) =
         personalDetailsService.downloadDocument(crn, documentId)
+
+    @GetMapping("/summary")
+    @Operation(summary = "Person Summary")
+    fun getPersonSummary(@PathVariable crn: String) =
+        personalDetailsService.getPersonSummary(crn)
+
+    @GetMapping("/personal-contact/{id}")
+    @Operation(summary = "Person Contact")
+    fun getPersonContact(@PathVariable crn: String, @PathVariable id: Long) =
+        personalDetailsService.getPersonContact(crn, id)
 }

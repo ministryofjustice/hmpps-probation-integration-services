@@ -2,19 +2,19 @@ package uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import java.time.LocalDate
 
 @Entity
 @Immutable
 @Table(name = "personal_contact")
-class PersonalContact(
+class PersonalContactEntity(
     @Id
     @Column(name = "personal_contact_id")
     val id: Long,
 
-    @Id
     @Column(name = "offender_id")
     val personId: Long,
 
@@ -42,27 +42,17 @@ class PersonalContact(
     val notes: String? = null,
 )
 
-@Immutable
-@Entity
-@Table(name = "address")
-@SQLRestriction("soft_deleted = 0")
-class ContactAddress(
-    @Id
-    @Column(name = "address_id")
-    val id: Long,
-    val buildingName: String?,
-    val addressNumber: String?,
-    val streetName: String?,
-    val district: String?,
-    @Column(name = "town_city")
-    val town: String?,
-    val county: String?,
-    val postcode: String?,
-    val telephoneNumber: String?,
+interface PersonalContactRepository : JpaRepository<PersonalContactEntity, Long> {
+    fun findByPersonId(personId: Long): List<PersonalContactEntity>
 
-    @Column(name = "last_updated_datetime")
-    val lastUpdated: LocalDate,
+    @Query(
+        """
+        select pc from PersonalContactEntity pc join Person p on p.id = pc.personId
+        where p.crn = :crn and pc.id = :contactId
+    """
+    )
+    fun findById(crn: String, contactId: Long): PersonalContactEntity?
+}
 
-    @Column(columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
-)
+fun PersonalContactRepository.getContact(crn: String, id: Long): PersonalContactEntity =
+    findById(crn, id) ?: throw NotFoundException("PersonalContact", "id", id)
