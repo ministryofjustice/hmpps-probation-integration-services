@@ -10,6 +10,7 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
     @Query(
         "SELECT e FROM Event e " +
             "JOIN Person p ON p.id = e.personId " +
+            "LEFT JOIN FETCH e.court c " +
             "LEFT JOIN FETCH e.mainOffence m " +
             "LEFT JOIN FETCH e.additionalOffences ao " +
             "LEFT JOIN FETCH m.offence mo " +
@@ -22,5 +23,5 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
 
 
 interface CourtRepository: JpaRepository<CourtAppearance, Long> {
-    fun getCourtAppearanceByEventId(id: Long): List<CourtAppearance>
+    fun getFirstCourtAppearanceByEventIdOrderByDate(id: Long): CourtAppearance?
 }

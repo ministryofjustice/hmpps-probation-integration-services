@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -102,7 +104,8 @@ object PersonGenerator {
     fun generateEvent(
         person: Person,
         id: Long = IdGenerator.getAndIncrement(),
-        courtId: Long? = null,
+        court: Court? = null,
+        convictionDate: LocalDate? = null,
         eventNumber: String,
         active: Boolean = true,
         inBreach: Boolean = false,
@@ -114,7 +117,8 @@ object PersonGenerator {
         Event(
             id,
             person.id,
-            courtId,
+            court,
+            convictionDate,
             eventNumber,
             disposal = disposal,
             inBreach = inBreach,
@@ -275,5 +279,6 @@ object PersonGenerator {
         personId: Long,
         id: Long = IdGenerator.getAndIncrement(),
     ) = Registration(personId, type, false, false, id)
+
 }
 

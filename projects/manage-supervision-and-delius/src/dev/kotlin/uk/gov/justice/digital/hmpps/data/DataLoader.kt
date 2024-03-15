@@ -7,9 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -45,6 +43,8 @@ class DataLoader(
         entityManager.persist(PersonGenerator.EVENT_2)
         entityManager.persist(PersonGenerator.INACTIVE_EVENT_1)
         entityManager.persist(PersonGenerator.INACTIVE_EVENT_2)
+        entityManager.persist(CourtGenerator.DEFAULT)
+        entityManager.persist(CourtAppearanceGenerator.generate())
 
         entityManager.persistAll(
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,

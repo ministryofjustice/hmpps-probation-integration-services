@@ -6,15 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.api.model.sentence.OffenceDetails
-import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
-import uk.gov.justice.digital.hmpps.api.model.sentence.Sentence
-import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
+import org.mockito.kotlin.*
+import uk.gov.justice.digital.hmpps.api.model.sentence.*
+import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import java.time.LocalDate
 
@@ -24,6 +20,9 @@ class SentenceServiceTest {
     @Mock
     lateinit var eventRepository: EventSentenceRepository
 
+    @Mock
+    lateinit var courtRepository: CourtRepository
+
     @InjectMocks
     lateinit var service: SentenceService
 
@@ -31,44 +30,41 @@ class SentenceServiceTest {
     fun `no active sentences`() {
 
         whenever(eventRepository.findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(
-            listOf(PersonGenerator.INACTIVE_EVENT_1)
+            listOf()
         )
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
-        assertEquals(SentenceOverview(listOf(null)), response)
+        assertEquals(SentenceOverview(listOf()), response)
         verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
 
         verifyNoMoreInteractions(eventRepository)
+        verifyNoInteractions(courtRepository)
     }
 
     @Test
     fun `recent active sentences`() {
 
+        val event = PersonGenerator.generateEvent(
+            person = PersonGenerator.OVERVIEW,
+            active = true,
+            inBreach = true,
+            disposal = PersonGenerator.ACTIVE_ORDER,
+            eventNumber = "123457",
+            mainOffence = PersonGenerator.MAIN_OFFENCE_1,
+            notes = "overview",
+            additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
+        )
+
         whenever(eventRepository.findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(
             listOf(
-                PersonGenerator.generateEvent(
-                    person = PersonGenerator.OVERVIEW,
-                    active = true,
-                    inBreach = true,
-                    disposal = PersonGenerator.ACTIVE_ORDER,
-                    eventNumber = "123457",
-                    mainOffence = PersonGenerator.MAIN_OFFENCE_1,
-                    notes = "overview",
-                    additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
-                ),
-                PersonGenerator.generateEvent(
-                    person = PersonGenerator.OVERVIEW,
-                    active = true,
-                    inBreach = true,
-                    disposal = PersonGenerator.ACTIVE_ORDER,
-                    eventNumber = "123456",
-                    mainOffence = PersonGenerator.MAIN_OFFENCE_2,
-                    notes = "overview",
-                    additionalOffences = emptyList()
-                )
+                event
             )
         )
+
+        whenever(courtRepository
+            .getFirstCourtAppearanceByEventIdOrderByDate(event.id))
+            .thenReturn(CourtAppearanceGenerator.generate())
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
@@ -82,14 +78,10 @@ class SentenceServiceTest {
                             listOf(
                                 Offence("Burglary", 1)
                             )
-                        )
-                    ),
-                Sentence(
-                        OffenceDetails(
-                            Offence("Another Murder", 1),
-                            LocalDate.now(),
-                            "overview",
-                            emptyList()
+                        ),
+                        Conviction("Hull Court",
+                            null,
+                            null
                         )
                     )
                 )

@@ -8,18 +8,16 @@ import java.time.LocalDate
 object CourtAppearanceGenerator {
 
     fun generate(
-        event: Event,
         court: Court = CourtGenerator.DEFAULT,
         date: LocalDate = LocalDate.now().minusMonths(5),
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = IdGenerator.getAndIncrement(),
+        event: Event = PersonGenerator.EVENT_1
     ): CourtAppearance {
         return CourtAppearance(
             id,
             date,
-            event,
             court,
-            57L,
-            false
+            event
         )
     }
 }

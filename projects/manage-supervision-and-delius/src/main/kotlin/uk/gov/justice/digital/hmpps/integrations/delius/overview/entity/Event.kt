@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
 import java.time.LocalDate
 
 @Immutable
@@ -19,8 +20,12 @@ class Event(
     @Column(name = "offender_id")
     val personId: Long,
 
-    @Column(name = "court_id")
-    val courtId: Long?,
+    @ManyToOne
+    @JoinColumn(name = "court_id")
+    val court: Court? = null,
+
+    @Column(name = "conviction_date")
+    val convictionDate: LocalDate?,
 
     @Column(name = "event_number")
     val eventNumber: String,
