@@ -15,12 +15,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.AddressOverview
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalContact
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalDetails
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.ALIAS_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CONTACT_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PREVIOUS_ADDRESS
 import uk.gov.justice.digital.hmpps.service.toContact
+import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -51,12 +54,8 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.mainAddress?.verified, equalTo(true))
         assertThat(res.mainAddress?.type, equalTo("Address type 1"))
         assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
-        assertThat(res.otherAddresses.size, equalTo(1))
-        assertThat(res.otherAddresses[0].type, equalTo("Address type 2"))
-        assertThat(res.otherAddresses[0].status, equalTo("Another Address"))
-        assertThat(res.otherAddresses[0].verified, equalTo(true))
-        assertThat(res.otherAddresses[0].postcode, equalTo("NE4 5AN"))
-        assertThat(res.previousAddresses[0].postcode, equalTo("NE4 END"))
+        assertThat(res.otherAddressCount, equalTo(1))
+        assertThat(res.previousAddressCount, equalTo(1))
         assertThat(res.contacts.size, equalTo(1))
         assertThat(res.contacts[0].name, equalTo(Name("Sam", "Steven", "Smith")))
         assertThat(res.contacts[0].address?.postcode, equalTo("NE1 56A"))
@@ -159,6 +158,28 @@ internal class PersonalDetailsIntegrationTest {
     fun `personal contact not found`() {
         mockMvc
             .perform(get("/personal-details/X999999/personal-contact/999999999").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `addresses are returned`() {
+        val person = PERSONAL_DETAILS
+        val contact = PERSONAL_CONTACT_1
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/addresses").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<AddressOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
+        assertThat(res.previousAddresses[0].postcode, equalTo("NE4 END"))
+        assertThat(res.previousAddresses[0].to, equalTo(PREVIOUS_ADDRESS.endDate))
+        assertThat(res.otherAddresses[0].status, equalTo("Another Address"))
+    }
+
+    @Test
+    fun `addresses person not found`() {
+        mockMvc
+            .perform(get("/personal-details/X999999/addresses").withToken())
             .andExpect(status().isNotFound)
     }
 }

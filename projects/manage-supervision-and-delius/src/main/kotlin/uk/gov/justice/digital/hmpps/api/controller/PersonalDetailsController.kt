@@ -35,4 +35,9 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     @Operation(summary = "Person Contact")
     fun getPersonContact(@PathVariable crn: String, @PathVariable id: Long) =
         personalDetailsService.getPersonContact(crn, id)
+
+    @GetMapping("/addresses")
+    @Operation(summary = "Person Addresses")
+    fun getPersonAddresses(@PathVariable crn: String) =
+        personalDetailsService.getPersonAddresses(crn)
 }
