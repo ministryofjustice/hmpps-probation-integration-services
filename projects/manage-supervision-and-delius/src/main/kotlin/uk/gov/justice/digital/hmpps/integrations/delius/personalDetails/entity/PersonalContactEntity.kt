@@ -36,7 +36,7 @@ class PersonalContactEntity(
     @Column(name = "relationship")
     val relationship: String,
 
-    @Column(name = "email")
+    @Column(name = "email_address")
     val email: String,
 
     @Column(name = "mobile_number")
