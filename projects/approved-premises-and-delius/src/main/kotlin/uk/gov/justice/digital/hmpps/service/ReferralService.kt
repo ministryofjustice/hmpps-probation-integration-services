@@ -90,7 +90,7 @@ class ReferralService(
                 locationCode = ap.locationCode(),
                 description = "Booking changed for ${details.premises.name}",
                 notes = listOfNotNull(
-                    "The expected arrival and/or departure for the booking has changed",
+                    "The expected arrival and/or departure dates for the booking have changed.",
                     "Previous: ${DeliusDateFormatter.format(referral.expectedArrivalDate)} to ${
                         DeliusDateFormatter.format(
                             referral.expectedDepartureDate
