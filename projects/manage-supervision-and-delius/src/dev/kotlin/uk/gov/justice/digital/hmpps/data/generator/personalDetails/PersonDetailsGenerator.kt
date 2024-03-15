@@ -87,7 +87,7 @@ object PersonDetailsGenerator {
     val CONTACT_ADDRESS = generateContactAddress("31", "Test Steet", "Test town", "Test County", "NE1 56A")
     val PERSONAL_CONTACT_1 = PersonalContactEntity(
         IdGenerator.getAndIncrement(),
-        PERSONAL_DETAILS.id,
+        PERSONAL_DETAILS,
         "Sam",
         "Steven",
         "Smith",

@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.PersonSummary
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.AddressOverview
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -115,6 +118,7 @@ internal class PersonalDetailsServiceTest {
         val crn = "X000005"
 
         val expected = Summary(
+            id = 1,
             forename = "TestName",
             surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
         )
@@ -123,7 +127,42 @@ internal class PersonalDetailsServiceTest {
         assertThat(res, equalTo(expected.toPersonSummary()))
     }
 
+    @Test
+    fun `calls get addresses function`() {
+        val crn = "X000005"
+
+        val summary = Summary(
+            id = 1,
+            forename = "TestName",
+            surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
+        )
+
+        val addresses = listOf(
+            PersonDetailsGenerator.PERSON_ADDRESS_1,
+            PersonDetailsGenerator.PERSON_ADDRESS_2,
+            PersonDetailsGenerator.PREVIOUS_ADDRESS,
+        )
+
+        val expectedResponse = AddressOverview(
+            personSummary = PersonSummary(
+                Name(forename = summary.forename, middleName = null, surname = summary.surname),
+                pnc = summary.pnc,
+                crn = summary.crn,
+                dateOfBirth = summary.dateOfBirth
+            ),
+            previousAddresses = listOfNotNull(PersonDetailsGenerator.PREVIOUS_ADDRESS.toAddress()),
+            mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
+            otherAddresses = listOfNotNull(PersonDetailsGenerator.PERSON_ADDRESS_2.toAddress())
+        )
+
+        whenever(personRepository.findSummary(crn)).thenReturn(summary)
+        whenever(addressRepository.findByPersonId(1)).thenReturn(addresses)
+        val res = service.getPersonAddresses(crn)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
     data class Summary(
+        override val id: Long,
         override val forename: String,
         override val secondName: String? = null,
         override val thirdName: String? = null,
@@ -131,7 +170,5 @@ internal class PersonalDetailsServiceTest {
         override val crn: String,
         override val pnc: String?,
         override val dateOfBirth: LocalDate
-    ) : PersonSummaryEntity {
-
-    }
+    ) : PersonSummaryEntity
 }
