@@ -371,7 +371,7 @@ internal class MessagingIntegrationTest {
             contact.notes,
             equalTo(
                 """
-                |The expected arrival and/or departure for the booking has changed
+                |The expected arrival and/or departure dates for the booking have changed.
                 |
                 |Previous: 30/01/2023 to 30/04/2023
                 |
