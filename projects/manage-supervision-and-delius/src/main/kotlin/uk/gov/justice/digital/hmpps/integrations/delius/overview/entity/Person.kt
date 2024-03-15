@@ -70,6 +70,12 @@ class Person(
     @JoinColumn(name = "sexual_orientation_id")
     val sexualOrientation: ReferenceData?,
 
+    @ManyToOne
+    @JoinColumn(name = "gender_identity_id")
+    val genderIdentity: ReferenceData?,
+
+    val genderIdentityDescription: String?,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 

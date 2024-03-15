@@ -86,6 +86,7 @@ class DataLoader(
             PersonDetailsGenerator.RELIGION_DEFAULT,
             PersonDetailsGenerator.SEXUAL_ORIENTATION,
             PersonDetailsGenerator.LANGUAGE_RD,
+            PersonDetailsGenerator.GENDER_IDENTITY_RD,
             PersonDetailsGenerator.PERSONAL_DETAILS,
             PersonDetailsGenerator.DISABILITY_1_RD,
             PersonDetailsGenerator.DISABILITY_2_RD,

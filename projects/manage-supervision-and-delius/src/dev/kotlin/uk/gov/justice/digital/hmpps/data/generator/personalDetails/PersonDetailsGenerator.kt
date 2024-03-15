@@ -16,11 +16,12 @@ object PersonDetailsGenerator {
     val RELIGION_DEFAULT = ReferenceData(IdGenerator.getAndIncrement(), "C", "Christian")
     val SEXUAL_ORIENTATION = ReferenceData(IdGenerator.getAndIncrement(), "H", "Heterosexual")
     val LANGUAGE_RD = ReferenceData(IdGenerator.getAndIncrement(), "E", "Arabic")
+    val GENDER_IDENTITY_RD = ReferenceData(IdGenerator.getAndIncrement(), "GI", "Test Gender Identity")
 
     val PERSONAL_DETAILS = generatePersonDetails(
         "X000005", "Caroline",
         "Louise", "Bloggs", "Caz", GENDER_FEMALE, RELIGION_DEFAULT,
-        SEXUAL_ORIENTATION, LANGUAGE_RD, "Smith"
+        SEXUAL_ORIENTATION, LANGUAGE_RD, "Smith", GENDER_IDENTITY_RD, "Some gender description"
     )
 
     val ALIAS_1 = generateAlias("Sam", "Edward", "Smith", PERSONAL_DETAILS.id)
@@ -211,7 +212,7 @@ object PersonDetailsGenerator {
     fun generatePersonDetails(
         crn: String, forename: String, secondName: String, surname: String, preferredName: String,
         gender: ReferenceData, religion: ReferenceData, sexualOrientation: ReferenceData, language: ReferenceData,
-        previousSurname: String
+        previousSurname: String, genderIdentity: ReferenceData, genderIdentityDescription: String
     ) = Person(
         id = IdGenerator.getAndIncrement(),
         crn = crn,
@@ -228,7 +229,9 @@ object PersonDetailsGenerator {
         religion = religion,
         sexualOrientation = sexualOrientation,
         language = language,
-        previousSurname = previousSurname
+        previousSurname = previousSurname,
+        genderIdentity = genderIdentity,
+        genderIdentityDescription = genderIdentityDescription
     )
 
     fun generateDocument(personId: Long, alfrescoId: String, name: String, documentType: String) = PersonDocument(

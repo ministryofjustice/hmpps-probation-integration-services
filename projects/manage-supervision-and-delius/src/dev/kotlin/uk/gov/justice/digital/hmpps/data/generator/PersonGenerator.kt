@@ -206,7 +206,9 @@ object PersonGenerator {
         preferredName = preferredName,
         pnc = "pnc",
         religion = null,
-        sexualOrientation = null
+        sexualOrientation = null,
+        genderIdentity = null,
+        genderIdentityDescription = null
     )
 
     fun generateRequirement(

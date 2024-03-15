@@ -57,6 +57,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.otherAddressCount, equalTo(1))
         assertThat(res.previousAddressCount, equalTo(1))
         assertThat(res.contacts.size, equalTo(1))
+        assertThat(res.contacts[0].contactId, equalTo(PERSONAL_CONTACT_1.id))
         assertThat(res.contacts[0].name, equalTo(Name("Sam", "Steven", "Smith")))
         assertThat(res.contacts[0].address?.postcode, equalTo("NE1 56A"))
         assertThat(res.contacts[0].relationship, equalTo("Brother"))
@@ -79,6 +80,8 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.documents[0].id, equalTo("A001"))
         assertThat(res.documents[1].id, equalTo("A002"))
         assertThat(res.aliases[0].forename, equalTo(ALIAS_1.forename))
+        assertThat(res.genderIdentity, equalTo("Test Gender Identity"))
+        assertThat(res.selfDescribedGender, equalTo("Some gender description"))
     }
 
     @Test

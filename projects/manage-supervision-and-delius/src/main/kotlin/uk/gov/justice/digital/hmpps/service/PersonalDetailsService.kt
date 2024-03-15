@@ -76,7 +76,9 @@ class PersonalDetailsService(
             email = person.emailAddress,
             preferredLanguage = person.language?.description,
             previousSurname = person.previousSurname,
-            aliases = aliases.map { Name(forename = it.forename, middleName = it.secondName, it.surname) }
+            aliases = aliases.map { Name(forename = it.forename, middleName = it.secondName, it.surname) },
+            genderIdentity = person.genderIdentity?.description,
+            selfDescribedGender = person.genderIdentityDescription
         )
     }
 
@@ -114,7 +116,8 @@ fun PersonalContactEntity.toContact() = PersonalContact(
     relationship = relationship,
     address = address.toAddress(),
     notes = notes,
-    relationshipType = relationshipType.description
+    relationshipType = relationshipType.description,
+    contactId = id
 )
 
 fun Person.toSummary() =
