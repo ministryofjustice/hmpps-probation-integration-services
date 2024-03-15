@@ -15,6 +15,8 @@ data class PersonalDetails(
     val preferredName: String?,
     val previousSurname: String?,
     val preferredLanguage: String?,
+    val genderIdentity: String?,
+    val selfDescribedGender: String?,
     val aliases: List<Name>,
     val telephoneNumber: String?,
     val mobileNumber: String?,
