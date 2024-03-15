@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
+import uk.gov.justice.digital.hmpps.api.model.Name
 import java.time.LocalDate
 
 data class Address(
@@ -14,6 +15,7 @@ data class Address(
     val to: LocalDate?,
     val verified: Boolean?,
     val lastUpdated: LocalDate?,
+    val lastUpdatedBy: Name,
     val type: String?,
     val status: String?
 ) {
@@ -30,6 +32,7 @@ data class Address(
             to: LocalDate? = null,
             verified: Boolean? = null,
             lastUpdated: LocalDate? = null,
+            lastUpdatedBy: Name,
             type: String? = null,
             status: String? = null
         ): Address? =
@@ -51,6 +54,7 @@ data class Address(
                     to,
                     verified,
                     lastUpdated,
+                    lastUpdatedBy,
                     type,
                     status
                 )

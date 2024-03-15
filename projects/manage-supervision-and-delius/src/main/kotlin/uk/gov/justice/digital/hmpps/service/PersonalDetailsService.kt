@@ -117,7 +117,12 @@ fun PersonalContactEntity.toContact() = PersonalContact(
     address = address.toAddress(),
     notes = notes,
     relationshipType = relationshipType.description,
-    contactId = id
+    contactId = id,
+    lastUpdated = lastUpdated,
+    email = email,
+    phone = mobileNumber,
+    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
+    startDate = startDate
 )
 
 fun Person.toSummary() =
@@ -137,7 +142,9 @@ fun PersonAddress.toAddress() = Address.from(
     verified = typeVerified,
     lastUpdated = lastUpdated,
     status = status.description,
-    type = type.description
+    type = type.description,
+    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
+
 )
 
 fun ContactAddress.toAddress() = uk.gov.justice.digital.hmpps.api.model.personalDetails.ContactAddress.from(
@@ -148,7 +155,8 @@ fun ContactAddress.toAddress() = uk.gov.justice.digital.hmpps.api.model.personal
     town = town,
     county = county,
     postcode = postcode,
-    lastUpdated = lastUpdated
+    lastUpdated = lastUpdated,
+    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
 )
 
 fun PersonDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)

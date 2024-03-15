@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
@@ -93,8 +94,13 @@ object PersonDetailsGenerator {
         "Steven",
         "Smith",
         "Brother",
+        "email.test",
+        "0897676554",
+        LocalDate.now(),
+        LocalDate.now(),
         RELATIONSHIP_TYPE,
-        CONTACT_ADDRESS
+        CONTACT_ADDRESS,
+        USER
     )
 
     val PERSON_ADDRESS_STATUS_1 = ReferenceData(IdGenerator.getAndIncrement(), "M", "Main Address")
@@ -151,6 +157,7 @@ object PersonDetailsGenerator {
         null,
         true,
         LocalDate.now(),
+        USER,
         false,
         IdGenerator.getAndIncrement()
     )
@@ -176,8 +183,8 @@ object PersonDetailsGenerator {
         softDeleted = false,
         telephoneNumber = null,
         lastUpdated = LocalDate.now().minusDays(10),
-
-        )
+        lastUpdatedUser = USER
+    )
 
     fun generatePersonAddress(
         addressNumber: String,
@@ -206,7 +213,8 @@ object PersonDetailsGenerator {
         endDate = endDate,
         status = status,
         type = type,
-        typeVerified = verified
+        typeVerified = verified,
+        lastUpdatedUser = USER
     )
 
     fun generatePersonDetails(

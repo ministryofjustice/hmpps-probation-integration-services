@@ -7,6 +7,7 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 
 @Immutable
@@ -47,6 +48,10 @@ class PersonAddress(
     @Column(name = "last_updated_datetime")
     val lastUpdated: LocalDate?,
 
+    @ManyToOne
+    @JoinColumn(name = "last_updated_user_id")
+    val lastUpdatedUser: User,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
 
@@ -80,6 +85,10 @@ class ContactAddress(
 
     @Column(name = "last_updated_datetime")
     val lastUpdated: LocalDate,
+
+    @ManyToOne
+    @JoinColumn(name = "last_updated_user_id")
+    val lastUpdatedUser: User,
 
     @Column(columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
