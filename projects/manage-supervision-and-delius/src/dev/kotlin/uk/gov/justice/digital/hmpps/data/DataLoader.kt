@@ -29,6 +29,7 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
 
         entityManager.persist(PersonGenerator.OVERVIEW.gender)
+        entityManager.persist(UserGenerator.USER)
         PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
         PersonGenerator.PROVISIONS.forEach { entityManager.persist(it.type) }
         PersonGenerator.PERSONAL_CIRCUMSTANCES.forEach {
