@@ -17,7 +17,7 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = ["logging.level.org.hibernate.SQL=DEBUG"])
+@TestPropertySource(properties = ["logging.level.org.hibernate.SQL=DEBUG", "logging.level.org.hibernate.orm.jdbc.bind=TRACE"])
 class SentenceIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -41,7 +41,7 @@ class SentenceIntegrationTest {
                                 Offence("Assault", 1)
                             )
                         ),
-                        Conviction("Hull Court", null, null)
+                        Conviction("Hull Court", "Birmingham Court", LocalDate.now())
                     ),
                     Sentence(
                         OffenceDetails(

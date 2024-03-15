@@ -22,6 +22,6 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
 }
 
 
-interface CourtRepository: JpaRepository<CourtAppearance, Long> {
+interface CourtAppearanceRepository: JpaRepository<CourtAppearance, Long> {
     fun getFirstCourtAppearanceByEventIdOrderByDate(id: Long): CourtAppearance?
 }

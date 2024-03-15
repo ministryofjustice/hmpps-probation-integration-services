@@ -39,10 +39,12 @@ class DataLoader(
         entityManager.persistCollection(PersonGenerator.OVERVIEW.personalCircumstances)
         entityManager.persist(PersonGenerator.OVERVIEW)
 
+        entityManager.persist(CourtGenerator.BHAM)
         entityManager.persist(PersonGenerator.EVENT_1)
         entityManager.persist(PersonGenerator.EVENT_2)
         entityManager.persist(PersonGenerator.INACTIVE_EVENT_1)
         entityManager.persist(PersonGenerator.INACTIVE_EVENT_2)
+
         entityManager.persist(CourtGenerator.DEFAULT)
         entityManager.persist(CourtAppearanceGenerator.generate())
 

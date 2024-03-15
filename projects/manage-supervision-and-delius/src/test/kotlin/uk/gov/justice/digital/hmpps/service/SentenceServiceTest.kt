@@ -9,8 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import java.time.LocalDate
 
@@ -21,7 +22,7 @@ class SentenceServiceTest {
     lateinit var eventRepository: EventSentenceRepository
 
     @Mock
-    lateinit var courtRepository: CourtRepository
+    lateinit var courtAppearanceRepository: CourtAppearanceRepository
 
     @InjectMocks
     lateinit var service: SentenceService
@@ -39,7 +40,7 @@ class SentenceServiceTest {
         verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
 
         verifyNoMoreInteractions(eventRepository)
-        verifyNoInteractions(courtRepository)
+        verifyNoInteractions(courtAppearanceRepository)
     }
 
     @Test
@@ -62,9 +63,9 @@ class SentenceServiceTest {
             )
         )
 
-        whenever(courtRepository
+        whenever(courtAppearanceRepository
             .getFirstCourtAppearanceByEventIdOrderByDate(event.id))
-            .thenReturn(CourtAppearanceGenerator.generate())
+            .thenReturn(CourtAppearanceGenerator.generate(CourtGenerator.DEFAULT))
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 

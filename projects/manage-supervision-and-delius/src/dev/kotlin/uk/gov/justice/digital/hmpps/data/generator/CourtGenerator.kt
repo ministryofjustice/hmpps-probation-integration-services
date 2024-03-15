@@ -7,4 +7,9 @@ object CourtGenerator {
         IdGenerator.getAndIncrement(),
         "Hull Court"
     )
+
+    val BHAM = Court(
+        IdGenerator.getAndIncrement(),
+        "Birmingham Court"
+    )
 }

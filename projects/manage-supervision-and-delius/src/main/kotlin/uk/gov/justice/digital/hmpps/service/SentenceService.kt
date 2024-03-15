@@ -4,19 +4,18 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
-import java.time.LocalDate
 
 @Service
 class SentenceService(
     private val eventRepository: EventSentenceRepository,
-    private val courtRepository: CourtRepository
+    private val courtApperanceRepository: CourtAppearanceRepository
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
         val events = eventRepository.findActiveSentencesByCrn(crn)
         return SentenceOverview(events.map {
-            val courtApperance = courtRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
+            val courtApperance = courtApperanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
             it.toSentence(courtApperance)
         })
     }
