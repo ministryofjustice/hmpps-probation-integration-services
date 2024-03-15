@@ -52,6 +52,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonalDetails'
+  /personal-details/{crn}/summary:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Summary
+      operationId: getPersonSummary
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonSummary'
+  /personal-details/{crn}/personal-contact/{id}:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Contact
+      operationId: getPersonContact
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalContact'
   /personal-details/{crn}/document/{documentId}:
     get:
       tags:
@@ -161,6 +205,8 @@ components:
         to:
           type: string
           format: date
+        verified:
+          type: boolean
         lastUpdated:
           type: string
           format: date
@@ -265,6 +311,7 @@ components:
           type: string
     PersonalDetails:
       required:
+      - aliases
       - circumstances
       - contacts
       - crn
@@ -274,6 +321,7 @@ components:
       - name
       - otherAddresses
       - preferredGender
+      - previousAddresses
       - provisions
       - sex
       type: object
@@ -292,6 +340,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Address'
+        previousAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
         preferredGender:
           type: string
         dateOfBirth:
@@ -299,6 +351,14 @@ components:
           format: date
         preferredName:
           type: string
+        previousSurname:
+          type: string
+        preferredLanguage:
+          type: string
+        aliases:
+          type: array
+          items:
+            $ref: '#/components/schemas/Name'
         telephoneNumber:
           type: string
         mobileNumber:
@@ -333,6 +393,22 @@ components:
           items:
             type: string
         lastUpdated:
+          type: string
+          format: date
+    PersonSummary:
+      required:
+      - crn
+      - dateOfBirth
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        crn:
+          type: string
+        pnc:
+          type: string
+        dateOfBirth:
           type: string
           format: date
     StreamingResponseBody:

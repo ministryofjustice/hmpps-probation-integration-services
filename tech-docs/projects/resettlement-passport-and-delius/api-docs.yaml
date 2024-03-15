@@ -160,7 +160,7 @@ components:
   schemas:
     CreateAppointment:
       required:
-      - end
+      - duration
       - start
       - type
       - uuid
@@ -180,9 +180,11 @@ components:
         start:
           type: string
           format: date-time
-        end:
+        duration:
           type: string
-          format: date-time
+          description: ISO-8601 representation of the duration
+          format: duration
+          example: PT30M
         notes:
           type: string
         uuid:
@@ -325,31 +327,10 @@ components:
           type: string
           format: date-time
         duration:
-          type: object
-          properties:
-            seconds:
-              type: integer
-              format: int64
-            zero:
-              type: boolean
-            nano:
-              type: integer
-              format: int32
-            negative:
-              type: boolean
-            positive:
-              type: boolean
-            units:
-              type: array
-              items:
-                type: object
-                properties:
-                  durationEstimated:
-                    type: boolean
-                  timeBased:
-                    type: boolean
-                  dateBased:
-                    type: boolean
+          type: string
+          description: ISO-8601 representation of the duration
+          format: duration
+          example: PT30M
         staff:
           $ref: '#/components/schemas/Staff'
         location:

@@ -238,20 +238,7 @@
         "description": "string"
       },
       "dateTime": "string",
-      "duration": {
-        "seconds": "integer",
-        "zero": "boolean",
-        "nano": "integer",
-        "negative": "boolean",
-        "positive": "boolean",
-        "units": [
-          {
-            "durationEstimated": "boolean",
-            "timeBased": "boolean",
-            "dateBased": "boolean"
-          }
-        ]
-      },
+      "duration": "PT30M",
       "staff": {
         "code": "string",
         "name": {
@@ -673,10 +660,11 @@
 </tr>
 
 <tr>
-<td>end</td>
+<td>duration</td>
 <td>string</td>
 <td>true</td>
-<td></td>
+<td><p>ISO-8601 representation of the duration</p>
+</td>
 <td>
   
 </td>
@@ -1212,9 +1200,10 @@
 
 <tr>
 <td>duration</td>
-<td>object</td>
+<td>string</td>
 <td>true</td>
-<td></td>
+<td><p>ISO-8601 representation of the duration</p>
+</td>
 <td>
   
 </td>

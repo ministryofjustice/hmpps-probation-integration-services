@@ -104,6 +104,12 @@
         <a href="./api-reference.html#personal-details-crn"><span>/personal-details/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#personal-details-crn-summary"><span>/personal-details/{crn}/summary</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#personal-details-crn-personal-contact-id"><span>/personal-details/{crn}/personal-contact/{id}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#personal-details-crn-document-documentid"><span>/personal-details/{crn}/document/{documentId}</span></a>
       </li>
       <li>
@@ -305,6 +311,7 @@
     "postcode": "string",
     "from": "string",
     "to": "string",
+    "verified": "boolean",
     "lastUpdated": "string",
     "type": "string",
     "status": "string"
@@ -320,6 +327,24 @@
       "postcode": "string",
       "from": "string",
       "to": "string",
+      "verified": "boolean",
+      "lastUpdated": "string",
+      "type": "string",
+      "status": "string"
+    }
+  ],
+  "previousAddresses": [
+    {
+      "buildingName": "string",
+      "buildingNumber": "string",
+      "streetName": "string",
+      "district": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string",
+      "from": "string",
+      "to": "string",
+      "verified": "boolean",
       "lastUpdated": "string",
       "type": "string",
       "status": "string"
@@ -328,6 +353,15 @@
   "preferredGender": "string",
   "dateOfBirth": "string",
   "preferredName": "string",
+  "previousSurname": "string",
+  "preferredLanguage": "string",
+  "aliases": [
+    {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    }
+  ],
   "telephoneNumber": "string",
   "mobileNumber": "string",
   "email": "string",
@@ -370,6 +404,164 @@
 </td>
 <td>
 <a href='#schema-personaldetails'>PersonalDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="personal-details-crn-summary">/personal-details/{crn}/summary</h2>
+
+<h3 id="personal-details-crn-summary-get">get</h3>
+
+  <p><em>Person Summary</em></p>
+
+
+
+
+<h4 id="personal-details-crn-summary-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-summary-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "crn": "string",
+  "pnc": "string",
+  "dateOfBirth": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="personal-details-crn-personal-contact-id">/personal-details/{crn}/personal-contact/{id}</h2>
+
+<h3 id="personal-details-crn-personal-contact-id-get">get</h3>
+
+  <p><em>Person Contact</em></p>
+
+
+
+
+<h4 id="personal-details-crn-personal-contact-id-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-personal-contact-id-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "relationship": "string",
+  "relationshipType": "string",
+  "address": {
+    "buildingName": "string",
+    "buildingNumber": "string",
+    "streetName": "string",
+    "district": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "lastUpdated": "string"
+  },
+  "notes": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personalcontact'>PersonalContact</a>
 </td>
 </tr>
 
@@ -546,6 +738,7 @@
       "postcode": "string",
       "from": "string",
       "to": "string",
+      "verified": "boolean",
       "lastUpdated": "string",
       "type": "string",
       "status": "string"
@@ -561,6 +754,24 @@
         "postcode": "string",
         "from": "string",
         "to": "string",
+        "verified": "boolean",
+        "lastUpdated": "string",
+        "type": "string",
+        "status": "string"
+      }
+    ],
+    "previousAddresses": [
+      {
+        "buildingName": "string",
+        "buildingNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string",
+        "from": "string",
+        "to": "string",
+        "verified": "boolean",
         "lastUpdated": "string",
         "type": "string",
         "status": "string"
@@ -569,6 +780,15 @@
     "preferredGender": "string",
     "dateOfBirth": "string",
     "preferredName": "string",
+    "previousSurname": "string",
+    "preferredLanguage": "string",
+    "aliases": [
+      {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    ],
     "telephoneNumber": "string",
     "mobileNumber": "string",
     "email": "string",
@@ -860,6 +1080,16 @@
 <tr>
 <td>to</td>
 <td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>verified</td>
+<td>boolean</td>
 <td>false</td>
 <td></td>
 <td>
@@ -1294,6 +1524,16 @@
 </tr>
 
 <tr>
+<td>previousAddresses</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+<tr>
 <td>preferredGender</td>
 <td>string</td>
 <td>true</td>
@@ -1320,6 +1560,36 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>previousSurname</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>preferredLanguage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>aliases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
 </td>
 </tr>
 
@@ -1459,6 +1729,58 @@
 <td>lastUpdated</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personsummary">PersonSummary</h3>
+
+
+<table class='schema-personsummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pnc</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
   
