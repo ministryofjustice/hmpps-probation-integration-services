@@ -47,8 +47,8 @@ class PersonalDetailsService(
             crn = person.crn,
             name = person.name(),
             mainAddress = mainAddress,
-            otherAddresses = otherAddresses,
-            previousAddresses = previousAddresses,
+            otherAddressCount = otherAddresses.size,
+            previousAddressCount = previousAddresses.size,
             contacts = personalContacts.map(PersonalContactEntity::toContact),
             preferredGender = person.gender.description,
             dateOfBirth = person.dateOfBirth,
@@ -92,15 +92,33 @@ class PersonalDetailsService(
     fun getPersonSummary(crn: String): PersonSummary {
         return personRepository.getSummary(crn).toPersonSummary()
     }
+
+    fun getPersonAddresses(crn: String): AddressOverview {
+        val person = personRepository.getSummary(crn)
+        val addresses = addressRepository.findByPersonId(person.id)
+        val currentAddresses = addresses.filter { it.endDate == null }
+
+        return AddressOverview(
+            personSummary = person.toPersonSummary(),
+            mainAddress = currentAddresses.firstOrNull { it.status.code == "M" }?.toAddress(),
+            otherAddresses = currentAddresses.filter { it.status.code != "M" }.map(PersonAddress::toAddress)
+                .mapNotNull { it },
+            previousAddresses = addresses.filter { it.endDate != null }.map(PersonAddress::toAddress).mapNotNull { it }
+        )
+    }
 }
 
 fun PersonalContactEntity.toContact() = PersonalContact(
-    name = Name(forename = forename, middleName = middleNames, surname = surname),
+    personSummary = person.toSummary(),
+    name = Name(forename, middleNames, surname),
     relationship = relationship,
     address = address.toAddress(),
     notes = notes,
     relationshipType = relationshipType.description
 )
+
+fun Person.toSummary() =
+    PersonSummary(name = Name(forename, secondName, surname), pnc = pnc, dateOfBirth = dateOfBirth, crn = crn)
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
 fun PersonAddress.toAddress() = Address.from(

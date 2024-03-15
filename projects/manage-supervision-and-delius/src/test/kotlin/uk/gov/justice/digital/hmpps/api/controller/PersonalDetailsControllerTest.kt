@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.Circumstances
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.Disabilities
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalDetails
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.Provisions
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.PersonalDetailsService
 import uk.gov.justice.digital.hmpps.service.toAddress
@@ -50,7 +47,8 @@ internal class PersonalDetailsControllerTest {
             mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
             mobileNumber = "0897672332",
             telephoneNumber = "090876522",
-            otherAddresses = listOfNotNull(PersonDetailsGenerator.PERSON_ADDRESS_2.toAddress()),
+            otherAddressCount = 1,
+            previousAddressCount = 1,
             preferredGender = "Male",
             preferredName = "Steve",
             religionOrBelief = "Christian",
@@ -97,6 +95,25 @@ internal class PersonalDetailsControllerTest {
 
         whenever(personalDetailsService.getPersonSummary(crn)).thenReturn(expectedResponse)
         val res = controller.getPersonSummary(crn)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls get addresses function `() {
+        val crn = "X000005"
+        val expectedSummary = PersonSummary(
+            Name(forename = "TestName", middleName = null, surname = "TestSurname"), pnc = "Test PNC",
+            crn = "CRN",
+            dateOfBirth = LocalDate.now(),
+        )
+
+        val expectedResponse = AddressOverview(
+            personSummary = expectedSummary, mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
+            otherAddresses = listOfNotNull(PersonDetailsGenerator.PERSON_ADDRESS_2.toAddress()),
+            previousAddresses = listOfNotNull(PersonDetailsGenerator.PREVIOUS_ADDRESS.toAddress())
+        )
+        whenever(personalDetailsService.getPersonAddresses(crn)).thenReturn(expectedResponse)
+        val res = controller.getPersonAddresses(crn)
         assertThat(res, equalTo(expectedResponse))
     }
 }
