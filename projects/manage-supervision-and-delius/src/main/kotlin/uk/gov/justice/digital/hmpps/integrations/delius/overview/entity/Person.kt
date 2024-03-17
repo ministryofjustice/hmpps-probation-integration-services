@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -75,6 +76,10 @@ class Person(
     val genderIdentity: ReferenceData?,
 
     val genderIdentityDescription: String?,
+
+    @Column(name = "Interpreter_required")
+    @Convert(converter = YesNoConverter::class)
+    val requiresInterpreter: Boolean? = false,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false

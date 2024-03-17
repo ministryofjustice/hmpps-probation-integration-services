@@ -86,6 +86,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.aliases[0].forename, equalTo(ALIAS_1.forename))
         assertThat(res.genderIdentity, equalTo("Test Gender Identity"))
         assertThat(res.selfDescribedGender, equalTo("Some gender description"))
+        assertThat(res.requiresInterpreter, equalTo(true))
     }
 
     @Test

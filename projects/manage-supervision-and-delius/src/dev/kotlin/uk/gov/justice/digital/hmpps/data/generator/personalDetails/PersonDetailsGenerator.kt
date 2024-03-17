@@ -20,9 +20,19 @@ object PersonDetailsGenerator {
     val GENDER_IDENTITY_RD = ReferenceData(IdGenerator.getAndIncrement(), "GI", "Test Gender Identity")
 
     val PERSONAL_DETAILS = generatePersonDetails(
-        "X000005", "Caroline",
-        "Louise", "Bloggs", "Caz", GENDER_FEMALE, RELIGION_DEFAULT,
-        SEXUAL_ORIENTATION, LANGUAGE_RD, "Smith", GENDER_IDENTITY_RD, "Some gender description"
+        "X000005",
+        "Caroline",
+        "Louise",
+        "Bloggs",
+        "Caz",
+        GENDER_FEMALE,
+        RELIGION_DEFAULT,
+        SEXUAL_ORIENTATION,
+        LANGUAGE_RD,
+        "Smith",
+        GENDER_IDENTITY_RD,
+        "Some gender description",
+        requiresInterpreter = true
     )
 
     val ALIAS_1 = generateAlias("Sam", "Edward", "Smith", PERSONAL_DETAILS.id)
@@ -243,9 +253,19 @@ object PersonDetailsGenerator {
     )
 
     fun generatePersonDetails(
-        crn: String, forename: String, secondName: String, surname: String, preferredName: String,
-        gender: ReferenceData, religion: ReferenceData, sexualOrientation: ReferenceData, language: ReferenceData,
-        previousSurname: String, genderIdentity: ReferenceData, genderIdentityDescription: String
+        crn: String,
+        forename: String,
+        secondName: String,
+        surname: String,
+        preferredName: String,
+        gender: ReferenceData,
+        religion: ReferenceData,
+        sexualOrientation: ReferenceData,
+        language: ReferenceData,
+        previousSurname: String,
+        genderIdentity: ReferenceData,
+        genderIdentityDescription: String,
+        requiresInterpreter: Boolean = false
     ) = Person(
         id = IdGenerator.getAndIncrement(),
         crn = crn,
@@ -264,7 +284,8 @@ object PersonDetailsGenerator {
         language = language,
         previousSurname = previousSurname,
         genderIdentity = genderIdentity,
-        genderIdentityDescription = genderIdentityDescription
+        genderIdentityDescription = genderIdentityDescription,
+        requiresInterpreter = requiresInterpreter,
     )
 
     fun generateDocument(personId: Long, alfrescoId: String, name: String, documentType: String) = PersonDocument(

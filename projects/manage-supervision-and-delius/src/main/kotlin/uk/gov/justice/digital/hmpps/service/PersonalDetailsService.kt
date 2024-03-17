@@ -80,7 +80,8 @@ class PersonalDetailsService(
             previousSurname = person.previousSurname,
             aliases = aliases.map { Name(forename = it.forename, middleName = it.secondName, it.surname) },
             genderIdentity = person.genderIdentity?.description,
-            selfDescribedGender = person.genderIdentityDescription
+            selfDescribedGender = person.genderIdentityDescription,
+            requiresInterpreter = person.requiresInterpreter
         )
     }
 

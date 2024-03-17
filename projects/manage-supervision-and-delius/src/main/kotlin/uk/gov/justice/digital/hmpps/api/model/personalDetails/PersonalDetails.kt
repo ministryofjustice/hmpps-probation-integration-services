@@ -28,6 +28,7 @@ data class PersonalDetails(
     val sex: String,
     val religionOrBelief: String?,
     val sexualOrientation: String?,
+    val requiresInterpreter: Boolean? = false,
     val documents: List<Document>
 
 )
