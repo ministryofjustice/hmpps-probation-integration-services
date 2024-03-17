@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
@@ -128,14 +129,16 @@ object PersonGenerator {
             OVERVIEW.id,
             ReferenceData(IdGenerator.getAndIncrement(), "D01", "Mental Illness"),
             LocalDate.now().minusDays(1),
-            LocalDate.now().minusDays(1)
+            LocalDate.now().minusDays(1),
+            USER
         ),
         Disability(
             IdGenerator.getAndIncrement(),
             OVERVIEW.id,
             ReferenceData(IdGenerator.getAndIncrement(), "D02", "Visual Impairment"),
             LocalDate.now(),
-            LocalDate.now().minusDays(1)
+            LocalDate.now().minusDays(1),
+            USER
         )
     )
 
@@ -149,14 +152,21 @@ object PersonGenerator {
                 "Full-time employed (30 or more hours per week"
             ),
             LocalDate.now(),
-            LocalDate.now().minusDays(1)
-        ),
+            USER,
+            null,
+            true,
+            LocalDate.now().minusDays(1),
+
+            ),
         PersonalCircumstance(
             IdGenerator.getAndIncrement(),
             OVERVIEW.id,
             ReferenceData(IdGenerator.getAndIncrement(), "A02", "Accommodation"),
             PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), "Friends/Family (settled)"),
             LocalDate.now(),
+            USER,
+            null,
+            true,
             LocalDate.now().minusDays(1)
         )
     )
@@ -167,14 +177,16 @@ object PersonGenerator {
             OVERVIEW.id,
             ReferenceData(IdGenerator.getAndIncrement(), "FF01", "Flex refreshment breaks"),
             LocalDate.now(),
-            LocalDate.now().minusDays(1)
+            LocalDate.now().minusDays(1),
+            USER
         ),
         Provision(
             IdGenerator.getAndIncrement(),
             OVERVIEW.id,
             ReferenceData(IdGenerator.getAndIncrement(), "CC02", "Colour/visibility marking"),
             LocalDate.now(),
-            LocalDate.now().minusDays(1)
+            LocalDate.now().minusDays(1),
+            USER
         )
     )
 

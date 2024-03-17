@@ -38,7 +38,7 @@ class PersonAddress(
     val town: String?,
     val county: String?,
     val postcode: String?,
-
+    val telephoneNumber: String?,
     val startDate: LocalDate,
     val endDate: LocalDate? = null,
 

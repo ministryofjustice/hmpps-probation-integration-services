@@ -26,7 +26,7 @@ class OverviewService(
     fun getOverview(crn: String): Overview {
         val person = personRepository.getPerson(crn)
         val provisions = provisionRepository.findByPersonId(person.id)
-        val personalCircumstances = personalCircumstanceRepository.findByPersonId(person.id)
+        val personalCircumstances = personalCircumstanceRepository.findCurrentCircumstances(person.id)
         val disabilities = disabilityRepository.findByPersonId(person.id)
         val personalDetails = person.toPersonalDetails(personalCircumstances, disabilities, provisions)
         val schedule = Schedule(contactRepository.firstAppointment(person.id)?.toNextAppointment())

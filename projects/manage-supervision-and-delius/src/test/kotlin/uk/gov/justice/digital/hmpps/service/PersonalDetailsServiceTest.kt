@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -14,8 +15,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
-import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.AddressOverview
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
@@ -58,6 +57,18 @@ internal class PersonalDetailsServiceTest {
     @InjectMocks
     lateinit var service: PersonalDetailsService
 
+    private lateinit var personSummary: Summary
+
+    @BeforeEach
+    fun setup() {
+        val crn = "X000005"
+        personSummary = Summary(
+            id = 1,
+            forename = "TestName",
+            surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
+        )
+    }
+
     @Test
     fun `calls personal details function`() {
         val crn = "X000005"
@@ -65,7 +76,7 @@ internal class PersonalDetailsServiceTest {
         whenever(personRepository.findByCrn(crn)).thenReturn(PersonDetailsGenerator.PERSONAL_DETAILS)
         whenever(provisionRepository.findByPersonId(any())).thenReturn(emptyList())
         whenever(disabilityRepository.findByPersonId(any())).thenReturn(emptyList())
-        whenever(personalCircumstanceRepository.findByPersonId(any())).thenReturn(PersonGenerator.PERSONAL_CIRCUMSTANCES)
+        whenever(personalCircumstanceRepository.findCurrentCircumstances(any())).thenReturn(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         whenever(aliasRepository.findByPersonId(any())).thenReturn(emptyList())
         whenever(personalContactRepository.findByPersonId(any())).thenReturn(emptyList())
 
@@ -116,26 +127,14 @@ internal class PersonalDetailsServiceTest {
     @Test
     fun `calls get summary function`() {
         val crn = "X000005"
-
-        val expected = Summary(
-            id = 1,
-            forename = "TestName",
-            surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
-        )
-        whenever(personRepository.findSummary(crn)).thenReturn(expected)
+        whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         val res = service.getPersonSummary(crn)
-        assertThat(res, equalTo(expected.toPersonSummary()))
+        assertThat(res, equalTo(personSummary.toPersonSummary()))
     }
 
     @Test
     fun `calls get addresses function`() {
         val crn = "X000005"
-
-        val summary = Summary(
-            id = 1,
-            forename = "TestName",
-            surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
-        )
 
         val addresses = listOf(
             PersonDetailsGenerator.PERSON_ADDRESS_1,
@@ -144,18 +143,14 @@ internal class PersonalDetailsServiceTest {
         )
 
         val expectedResponse = AddressOverview(
-            personSummary = PersonSummary(
-                Name(forename = summary.forename, middleName = null, surname = summary.surname),
-                pnc = summary.pnc,
-                crn = summary.crn,
-                dateOfBirth = summary.dateOfBirth
-            ),
+            personSummary = personSummary.toPersonSummary(),
             previousAddresses = listOfNotNull(PersonDetailsGenerator.PREVIOUS_ADDRESS.toAddress()),
             mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
             otherAddresses = listOfNotNull(PersonDetailsGenerator.PERSON_ADDRESS_2.toAddress())
         )
 
-        whenever(personRepository.findSummary(crn)).thenReturn(summary)
+        whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
+
         whenever(addressRepository.findByPersonId(1)).thenReturn(addresses)
         val res = service.getPersonAddresses(crn)
         assertThat(res, equalTo(expectedResponse))

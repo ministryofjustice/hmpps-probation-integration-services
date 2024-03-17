@@ -43,14 +43,16 @@ object PersonDetailsGenerator {
         PERSONAL_DETAILS.id,
         DISABILITY_1_RD,
         LocalDate.now().minusDays(1),
-        LocalDate.now().minusDays(1)
+        LocalDate.now().minusDays(1),
+        USER,
     )
     val DISABILITY_2 = Disability(
         IdGenerator.getAndIncrement(),
         PERSONAL_DETAILS.id,
         DISABILITY_2_RD,
         LocalDate.now().minusDays(2),
-        LocalDate.now().minusDays(2)
+        LocalDate.now().minusDays(2),
+        USER,
     )
 
     val PROVISION_1 = Provision(
@@ -58,14 +60,16 @@ object PersonDetailsGenerator {
         PERSONAL_DETAILS.id,
         PROVISION_1_RD,
         LocalDate.now().minusDays(1),
-        LocalDate.now().minusDays(1)
+        LocalDate.now().minusDays(1),
+        USER,
     )
     val PROVISION_2 = Provision(
         IdGenerator.getAndIncrement(),
         PERSONAL_DETAILS.id,
         PROVISION_2_RD,
         LocalDate.now().minusDays(2),
-        LocalDate.now().minusDays(2)
+        LocalDate.now().minusDays(2),
+        USER,
     )
 
     val PERSONAL_CIRC_1 = PersonalCircumstance(
@@ -74,6 +78,9 @@ object PersonDetailsGenerator {
         PERSONAL_CIRCUMSTANCE_1_RD,
         PERSONAL_CIRCUMSTANCE_SUBTYPE_1,
         LocalDate.now().minusDays(1),
+        USER,
+        notes = "Some Notes",
+        evidenced = true,
         LocalDate.now().minusDays(1)
     )
     val PERSONAL_CIRC_2 = PersonalCircumstance(
@@ -82,7 +89,23 @@ object PersonDetailsGenerator {
         PERSONAL_CIRCUMSTANCE_2_RD,
         PERSONAL_CIRCUMSTANCE_SUBTYPE_2,
         LocalDate.now().minusDays(1),
+        USER,
+        notes = "Some Notes",
+        evidenced = true,
         LocalDate.now().minusDays(1)
+    )
+
+    val PERSONAL_CIRC_PREV = PersonalCircumstance(
+        IdGenerator.getAndIncrement(),
+        PERSONAL_DETAILS.id,
+        PERSONAL_CIRCUMSTANCE_2_RD,
+        PERSONAL_CIRCUMSTANCE_SUBTYPE_2,
+        LocalDate.now().minusDays(1),
+        USER,
+        notes = "Previous circumstance Notes",
+        evidenced = true,
+        LocalDate.now().minusDays(8),
+        endDate = LocalDate.now().minusDays(3),
     )
 
     val RELATIONSHIP_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Family Member")
@@ -153,6 +176,7 @@ object PersonDetailsGenerator {
         null,
         null,
         null,
+        telephoneNumber = null,
         LocalDate.now(),
         null,
         true,
@@ -214,6 +238,7 @@ object PersonDetailsGenerator {
         status = status,
         type = type,
         typeVerified = verified,
+        telephoneNumber = "0191876865",
         lastUpdatedUser = USER
     )
 
