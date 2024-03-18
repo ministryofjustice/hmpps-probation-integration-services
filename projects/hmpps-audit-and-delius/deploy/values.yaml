@@ -1,0 +1,28 @@
+# Common values
+generic-service:
+  nameOverride: hmpps-audit-and-delius
+  serviceAccountName: hmpps-audit-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/hmpps-audit-and-delius
+
+  ingress:
+    tlsSecretName: hmpps-audit-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    hmpps-audit-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    hmpps-audit-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    hmpps-audit-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    hmpps-audit-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: hmpps-audit-and-delius
+
