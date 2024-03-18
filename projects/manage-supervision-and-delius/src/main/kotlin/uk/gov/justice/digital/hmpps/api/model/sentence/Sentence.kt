@@ -4,4 +4,4 @@ data class Sentence(
     val offence: OffenceDetails,
     val conviction: Conviction? = null,
 
-)
+    )

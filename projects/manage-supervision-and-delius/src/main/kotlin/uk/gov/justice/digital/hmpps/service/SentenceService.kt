@@ -34,15 +34,14 @@ class SentenceService(
                         Offence(description = it.offence.description, count = it.offenceCount ?: 0)
                     }
                 )
-            ),
-            Conviction(sentencingCourt = courtAppearance?.court?.name,
-                        responsibleCourt = court?.name,
-                        convictionDate = convictionDate,
-                        additionalSentences.map { it.toAdditionalSentence() }
+                    ),
+                Conviction(sentencingCourt = courtAppearance?.court?.name,
+                    responsibleCourt = court?.name,
+                    convictionDate = convictionDate,
+                    additionalSentences.map { it.toAdditionalSentence() }
+                )
             )
-        )
-    }
-
+        }
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, refData!!.description)

@@ -82,24 +82,26 @@ class SentenceServiceTest {
         val expected = SentenceOverview(
             listOf(
                 Sentence(
-                        OffenceDetails(
-                            Offence("Murder", 1),
-                            LocalDate.now(),
-                            "overview",
-                            listOf(
-                                Offence("Burglary", 1)
-                            )
-                        ),
-                        Conviction("Hull Court",
-                            null,
-                            null,
-                            listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"),
-                                AdditionalSentence(null, 500, "fine notes", "Fine")
-                            )
+                    OffenceDetails(
+                        Offence("Murder", 1),
+                        LocalDate.now(),
+                        "overview",
+                        listOf(
+                            Offence("Burglary", 1)
+                        )
+                    ),
+                    Conviction(
+                        "Hull Court",
+                        null,
+                        null,
+                        listOf(
+                            AdditionalSentence(3, null, null, "Disqualified from Driving"),
+                            AdditionalSentence(null, 500, "fine notes", "Fine")
                         )
                     )
                 )
             )
+        )
 
         assertEquals(expected, response)
         verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
