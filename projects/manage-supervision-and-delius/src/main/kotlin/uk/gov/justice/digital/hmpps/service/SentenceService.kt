@@ -36,8 +36,10 @@ class SentenceService(
                             }
                 )
             ),
-            Conviction(sentencingCourt = courtAppearance?.court?.name, responsibleCourt = court?.name, convictionDate = convictionDate),
-            additionalSentences.map { it.toAdditionalSentence() }
+            Conviction(sentencingCourt = courtAppearance?.court?.name,
+                        responsibleCourt = court?.name,
+                        convictionDate = convictionDate,
+                        additionalSentences.map { it.toAdditionalSentence() })
         )
     }
 

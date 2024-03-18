@@ -8,6 +8,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
+import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -71,6 +72,9 @@ class SentenceServiceTest {
             .getFirstCourtAppearanceByEventIdOrderByDate(event.id))
             .thenReturn(CourtAppearanceGenerator.generate(CourtGenerator.DEFAULT))
 
+        whenever(additionalSentenceRepository.getAllByEvent_Id(event.id))
+            .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
+
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
@@ -86,9 +90,11 @@ class SentenceServiceTest {
                         ),
                         Conviction("Hull Court",
                             null,
-                            null
-                        ),
-                        listOf()
+                            null,
+                            listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"),
+                                AdditionalSentence(null, 500, "fine notes", "Fine")
+                            )
+                        )
                     )
                 )
             )
