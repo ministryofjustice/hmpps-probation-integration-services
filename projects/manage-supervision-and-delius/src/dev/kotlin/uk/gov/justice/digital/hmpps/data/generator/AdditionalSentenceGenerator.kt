@@ -10,7 +10,9 @@ object AdditionalSentenceGenerator {
     val REF_FINE = generateReferenceDate("FINE", "Fine")
 
     val SENTENCE_DISQ = generateSentence(length = 3, referenceData = REF_DISQ, event = PersonGenerator.EVENT_1)
-    val SENTENCE_FINE = generateSentence(amount = 500, referenceData = REF_FINE, notes = "fine notes", event = PersonGenerator.EVENT_2)
+    val SENTENCE_FINE =
+        generateSentence(amount = 500, referenceData = REF_FINE, notes = "fine notes", event = PersonGenerator.EVENT_2)
+
     fun generateSentence(
         length: Long? = null,
         amount: Long? = null,
