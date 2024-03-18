@@ -74,7 +74,7 @@ class SentenceServiceTest {
         )
             .thenReturn(CourtAppearanceGenerator.generate(CourtGenerator.DEFAULT))
 
-        whenever(additionalSentenceRepository.getAllByEvent_Id(event.id))
+        whenever(additionalSentenceRepository.getAllByEventId(event.id))
             .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)

@@ -19,7 +19,7 @@ class SentenceService(
         val events = eventRepository.findActiveSentencesByCrn(crn)
         return SentenceOverview(events.map {
             val courtAppearance = courtApperanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
-            val additionalSentences = additionalSentenceRepository.getAllByEvent_Id(it.id)
+            val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
             it.toSentence(courtAppearance, additionalSentences)
         })
     }
