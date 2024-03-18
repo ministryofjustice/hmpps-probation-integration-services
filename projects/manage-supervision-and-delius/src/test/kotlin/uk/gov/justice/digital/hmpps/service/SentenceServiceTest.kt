@@ -46,6 +46,7 @@ class SentenceServiceTest {
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoInteractions(courtAppearanceRepository)
+        verifyNoInteractions(additionalSentenceRepository)
     }
 
     @Test
@@ -105,7 +106,9 @@ class SentenceServiceTest {
 
         assertEquals(expected, response)
         verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
+        verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
 
         verifyNoMoreInteractions(eventRepository)
+        verifyNoMoreInteractions(additionalSentenceRepository)
     }
 }
