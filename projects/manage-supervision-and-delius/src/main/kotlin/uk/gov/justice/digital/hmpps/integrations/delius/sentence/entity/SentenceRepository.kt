@@ -27,5 +27,5 @@ interface CourtAppearanceRepository: JpaRepository<CourtAppearance, Long> {
 }
 
 interface AdditionalSentenceRepository: JpaRepository<AdditionalSentence, Long> {
-    fun getAllById(id: Long): List<AdditionalSentence>
+    fun getAllByEvent_Id(id: Long): List<AdditionalSentence>
 }

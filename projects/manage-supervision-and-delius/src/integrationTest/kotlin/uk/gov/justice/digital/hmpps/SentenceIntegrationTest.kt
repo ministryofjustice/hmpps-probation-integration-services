@@ -42,7 +42,7 @@ class SentenceIntegrationTest {
                             )
                         ),
                         Conviction("Hull Court", "Birmingham Court", LocalDate.now()),
-                        listOf()
+                        listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                     ),
                     Sentence(
                         OffenceDetails(
