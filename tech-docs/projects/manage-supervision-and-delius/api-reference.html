@@ -107,10 +107,19 @@
         <a href="./api-reference.html#personal-details-crn-summary"><span>/personal-details/{crn}/summary</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#personal-details-crn-provisions"><span>/personal-details/{crn}/provisions</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#personal-details-crn-personal-contact-id"><span>/personal-details/{crn}/personal-contact/{id}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#personal-details-crn-document-documentid"><span>/personal-details/{crn}/document/{documentId}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#personal-details-crn-disabilities"><span>/personal-details/{crn}/disabilities</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#personal-details-crn-circumstances"><span>/personal-details/{crn}/circumstances</span></a>
       </li>
       <li>
         <a href="./api-reference.html#personal-details-crn-addresses"><span>/personal-details/{crn}/addresses</span></a>
@@ -337,6 +346,7 @@
     "town": "string",
     "county": "string",
     "postcode": "string",
+    "telephoneNumber": "string",
     "from": "string",
     "to": "string",
     "verified": "boolean",
@@ -395,6 +405,7 @@
   "sex": "string",
   "religionOrBelief": "string",
   "sexualOrientation": "string",
+  "requiresInterpreter": "boolean",
   "documents": [
     {
       "id": "string",
@@ -476,6 +487,90 @@
 </td>
 <td>
 <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="personal-details-crn-provisions">/personal-details/{crn}/provisions</h2>
+
+<h3 id="personal-details-crn-provisions-get">get</h3>
+
+  <p><em>Person Provisions</em></p>
+
+
+
+
+<h4 id="personal-details-crn-provisions-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-provisions-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "provisions": [
+    {
+      "description": "string",
+      "notes": "string",
+      "startDate": "string",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-provisionoverview'>ProvisionOverview</a>
 </td>
 </tr>
 
@@ -670,6 +765,176 @@
 
 
 
+<h2 id="personal-details-crn-disabilities">/personal-details/{crn}/disabilities</h2>
+
+<h3 id="personal-details-crn-disabilities-get">get</h3>
+
+  <p><em>Person Disabilities</em></p>
+
+
+
+
+<h4 id="personal-details-crn-disabilities-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-disabilities-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "disabilities": [
+    {
+      "description": "string",
+      "notes": "string",
+      "startDate": "string",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-disabilityoverview'>DisabilityOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="personal-details-crn-circumstances">/personal-details/{crn}/circumstances</h2>
+
+<h3 id="personal-details-crn-circumstances-get">get</h3>
+
+  <p><em>Person Circumstances</em></p>
+
+
+
+
+<h4 id="personal-details-crn-circumstances-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-circumstances-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "circumstances": [
+    {
+      "type": "string",
+      "subType": "string",
+      "notes": "string",
+      "verified": "boolean",
+      "startDate": "string",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-circumstanceoverview'>CircumstanceOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="personal-details-crn-addresses">/personal-details/{crn}/addresses</h2>
 
 <h3 id="personal-details-crn-addresses-get">get</h3>
@@ -735,6 +1000,7 @@
     "town": "string",
     "county": "string",
     "postcode": "string",
+    "telephoneNumber": "string",
     "from": "string",
     "to": "string",
     "verified": "boolean",
@@ -756,6 +1022,7 @@
       "town": "string",
       "county": "string",
       "postcode": "string",
+      "telephoneNumber": "string",
       "from": "string",
       "to": "string",
       "verified": "boolean",
@@ -778,6 +1045,7 @@
       "town": "string",
       "county": "string",
       "postcode": "string",
+      "telephoneNumber": "string",
       "from": "string",
       "to": "string",
       "verified": "boolean",
@@ -924,6 +1192,7 @@
       "town": "string",
       "county": "string",
       "postcode": "string",
+      "telephoneNumber": "string",
       "from": "string",
       "to": "string",
       "verified": "boolean",
@@ -982,6 +1251,7 @@
     "sex": "string",
     "religionOrBelief": "string",
     "sexualOrientation": "string",
+    "requiresInterpreter": "boolean",
     "documents": [
       {
         "id": "string",
@@ -1222,6 +1492,16 @@
 
 <tr>
 <td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -2019,6 +2299,16 @@
 </tr>
 
 <tr>
+<td>requiresInterpreter</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>documents</td>
 <td>array</td>
 <td>true</td>
@@ -2063,8 +2353,310 @@
 </tbody>
 </table>
 
+<h3 id="schema-provision">Provision</h3>
+
+
+<table class='schema-provision'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedBy</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provisionoverview">ProvisionOverview</h3>
+
+
+<table class='schema-provisionoverview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>provisions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provision'>Provision</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-streamingresponsebody">StreamingResponseBody</h3>
 
+
+<h3 id="schema-disability">Disability</h3>
+
+
+<table class='schema-disability'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedBy</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-disabilityoverview">DisabilityOverview</h3>
+
+
+<table class='schema-disabilityoverview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>disabilities</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-disability'>Disability</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-circumstance">Circumstance</h3>
+
+
+<table class='schema-circumstance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subType</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>verified</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedBy</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-circumstanceoverview">CircumstanceOverview</h3>
+
+
+<table class='schema-circumstanceoverview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>circumstances</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-circumstance'>Circumstance</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 <h3 id="schema-addressoverview">AddressOverview</h3>
 

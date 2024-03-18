@@ -71,6 +71,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonSummary'
+  /personal-details/{crn}/provisions:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Provisions
+      operationId: getPersonProvisions
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisionOverview'
   /personal-details/{crn}/personal-contact/{id}:
     get:
       tags:
@@ -120,6 +139,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StreamingResponseBody'
+  /personal-details/{crn}/disabilities:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Disabilities
+      operationId: getPersonDisabilities
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisabilityOverview'
+  /personal-details/{crn}/circumstances:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Circumstances
+      operationId: getPersonCircumstances
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CircumstanceOverview'
   /personal-details/{crn}/addresses:
     get:
       tags:
@@ -218,6 +275,8 @@ components:
         county:
           type: string
         postcode:
+          type: string
+        telephoneNumber:
           type: string
         from:
           type: string
@@ -445,6 +504,8 @@ components:
           type: string
         sexualOrientation:
           type: string
+        requiresInterpreter:
+          type: boolean
         documents:
           type: array
           items:
@@ -461,8 +522,109 @@ components:
         lastUpdated:
           type: string
           format: date
+    Provision:
+      required:
+      - description
+      - lastUpdated
+      - lastUpdatedBy
+      - startDate
+      type: object
+      properties:
+        description:
+          type: string
+        notes:
+          type: string
+        startDate:
+          type: string
+          format: date
+        lastUpdated:
+          type: string
+          format: date
+        lastUpdatedBy:
+          $ref: '#/components/schemas/Name'
+    ProvisionOverview:
+      required:
+      - personSummary
+      - provisions
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        provisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provision'
     StreamingResponseBody:
       type: object
+    Disability:
+      required:
+      - description
+      - lastUpdated
+      - lastUpdatedBy
+      - startDate
+      type: object
+      properties:
+        description:
+          type: string
+        notes:
+          type: string
+        startDate:
+          type: string
+          format: date
+        lastUpdated:
+          type: string
+          format: date
+        lastUpdatedBy:
+          $ref: '#/components/schemas/Name'
+    DisabilityOverview:
+      required:
+      - disabilities
+      - personSummary
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        disabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Disability'
+    Circumstance:
+      required:
+      - lastUpdated
+      - lastUpdatedBy
+      - startDate
+      - subType
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+        subType:
+          type: string
+        notes:
+          type: string
+        verified:
+          type: boolean
+        startDate:
+          type: string
+          format: date
+        lastUpdated:
+          type: string
+          format: date
+        lastUpdatedBy:
+          $ref: '#/components/schemas/Name'
+    CircumstanceOverview:
+      required:
+      - circumstances
+      - personSummary
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        circumstances:
+          type: array
+          items:
+            $ref: '#/components/schemas/Circumstance'
     AddressOverview:
       required:
       - otherAddresses
