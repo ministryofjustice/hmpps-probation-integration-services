@@ -15,15 +15,19 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.AddressOverview
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalContact
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalDetails
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.ALIAS_1
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.DISABILITY_1
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.DISABILITY_2
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CIRC_1
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CIRC_2
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CIRC_PREV
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CONTACT_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PREVIOUS_ADDRESS
-import uk.gov.justice.digital.hmpps.service.toContact
-import uk.gov.justice.digital.hmpps.service.toSummary
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_1
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_2
+import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -82,6 +86,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.aliases[0].forename, equalTo(ALIAS_1.forename))
         assertThat(res.genderIdentity, equalTo("Test Gender Identity"))
         assertThat(res.selfDescribedGender, equalTo("Some gender description"))
+        assertThat(res.requiresInterpreter, equalTo(true))
     }
 
     @Test
@@ -167,7 +172,6 @@ internal class PersonalDetailsIntegrationTest {
     @Test
     fun `addresses are returned`() {
         val person = PERSONAL_DETAILS
-        val contact = PERSONAL_CONTACT_1
         val res = mockMvc
             .perform(get("/personal-details/${person.crn}/addresses").withToken())
             .andExpect(status().isOk)
@@ -183,6 +187,64 @@ internal class PersonalDetailsIntegrationTest {
     fun `addresses person not found`() {
         mockMvc
             .perform(get("/personal-details/X999999/addresses").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `circumstances are returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/circumstances").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CircumstanceOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.circumstances[0], equalTo(PERSONAL_CIRC_1.toCircumstance()))
+        assertThat(res.circumstances[1], equalTo(PERSONAL_CIRC_2.toCircumstance()))
+        assertThat(res.circumstances[2], equalTo(PERSONAL_CIRC_PREV.toCircumstance()))
+    }
+
+    @Test
+    fun `circumstances not found`() {
+        mockMvc
+            .perform(get("/personal-details/X999999/circumstances").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `disabilities are returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/disabilities").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<DisabilityOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.disabilities[0], equalTo(DISABILITY_1.toDisability()))
+        assertThat(res.disabilities[1], equalTo(DISABILITY_2.toDisability()))
+    }
+
+    @Test
+    fun `disabilities not found`() {
+        mockMvc
+            .perform(get("/personal-details/X999999/disabilities").withToken())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `provisions are returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/provisions").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<ProvisionOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.provisions[0], equalTo(PROVISION_1.toProvision()))
+        assertThat(res.provisions[1], equalTo(PROVISION_2.toProvision()))
+    }
+
+    @Test
+    fun `provisions not found`() {
+        mockMvc
+            .perform(get("/personal-details/X999999/provisions").withToken())
             .andExpect(status().isNotFound)
     }
 }

@@ -103,6 +103,7 @@ class DataLoader(
             PersonDetailsGenerator.PROVISION_2,
             PersonDetailsGenerator.PERSONAL_CIRC_1,
             PersonDetailsGenerator.PERSONAL_CIRC_2,
+            PersonDetailsGenerator.PERSONAL_CIRC_PREV,
             PersonDetailsGenerator.RELATIONSHIP_TYPE,
             PersonDetailsGenerator.CONTACT_ADDRESS,
             PersonDetailsGenerator.PERSONAL_CONTACT_1,

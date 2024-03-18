@@ -7,6 +7,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 
 @Immutable
@@ -30,6 +31,13 @@ class Disability(
 
     @Column(name = "last_updated_datetime")
     val lastUpdated: LocalDate,
+
+    @ManyToOne
+    @JoinColumn(name = "last_updated_user_id")
+    val lastUpdatedUser: User,
+
+    @Column(name = "notes", columnDefinition = "clob")
+    val notes: String? = null,
 
     val finishDate: LocalDate? = null,
 

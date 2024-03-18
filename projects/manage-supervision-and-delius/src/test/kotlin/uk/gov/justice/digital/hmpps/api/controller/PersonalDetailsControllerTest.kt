@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.controller
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -16,9 +17,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
-import uk.gov.justice.digital.hmpps.service.PersonalDetailsService
-import uk.gov.justice.digital.hmpps.service.toAddress
-import uk.gov.justice.digital.hmpps.service.toContact
+import uk.gov.justice.digital.hmpps.service.*
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -29,6 +28,17 @@ internal class PersonalDetailsControllerTest {
 
     @InjectMocks
     lateinit var controller: PersonalDetailsController
+
+    private lateinit var personSummary: PersonSummary
+
+    @BeforeEach
+    fun setup() {
+        personSummary = PersonSummary(
+            Name(forename = "TestName", middleName = null, surname = "TestSurname"), pnc = "Test PNC",
+            crn = "CRN",
+            dateOfBirth = LocalDate.now(),
+        )
+    }
 
     @Test
     fun `calls personal details service to get data`() {
@@ -89,33 +99,59 @@ internal class PersonalDetailsControllerTest {
     @Test
     fun `calls get Person summary function `() {
         val crn = "X000005"
-        val expectedResponse = PersonSummary(
-            Name(forename = "TestName", middleName = null, surname = "TestSurname"), pnc = "Test PNC",
-            crn = "CRN",
-            dateOfBirth = LocalDate.now(),
-        )
-
-        whenever(personalDetailsService.getPersonSummary(crn)).thenReturn(expectedResponse)
+        whenever(personalDetailsService.getPersonSummary(crn)).thenReturn(personSummary)
         val res = controller.getPersonSummary(crn)
-        assertThat(res, equalTo(expectedResponse))
+        assertThat(res, equalTo(personSummary))
     }
 
     @Test
     fun `calls get addresses function `() {
         val crn = "X000005"
-        val expectedSummary = PersonSummary(
-            Name(forename = "TestName", middleName = null, surname = "TestSurname"), pnc = "Test PNC",
-            crn = "CRN",
-            dateOfBirth = LocalDate.now(),
-        )
 
         val expectedResponse = AddressOverview(
-            personSummary = expectedSummary, mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
+            personSummary = personSummary, mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
             otherAddresses = listOfNotNull(PersonDetailsGenerator.PERSON_ADDRESS_2.toAddress()),
             previousAddresses = listOfNotNull(PersonDetailsGenerator.PREVIOUS_ADDRESS.toAddress())
         )
         whenever(personalDetailsService.getPersonAddresses(crn)).thenReturn(expectedResponse)
         val res = controller.getPersonAddresses(crn)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls get circumstances function `() {
+        val crn = "X000005"
+        val expectedResponse = CircumstanceOverview(
+            personSummary = personSummary,
+            circumstances = listOfNotNull(PersonDetailsGenerator.PERSONAL_CIRC_1.toCircumstance()),
+        )
+        whenever(personalDetailsService.getPersonCircumstances(crn)).thenReturn(expectedResponse)
+        val res = controller.getPersonCircumstances(crn)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls get disabilities function `() {
+        val crn = "X000005"
+
+        val expectedResponse = DisabilityOverview(
+            personSummary = personSummary,
+            disabilities = listOfNotNull(PersonDetailsGenerator.DISABILITY_1.toDisability()),
+        )
+        whenever(personalDetailsService.getPersonDisabilities(crn)).thenReturn(expectedResponse)
+        val res = controller.getPersonDisabilities(crn)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls get provisions function `() {
+        val crn = "X000005"
+        val expectedResponse = ProvisionOverview(
+            personSummary = personSummary,
+            provisions = listOfNotNull(PersonDetailsGenerator.PROVISION_1.toProvision()),
+        )
+        whenever(personalDetailsService.getPersonProvisions(crn)).thenReturn(expectedResponse)
+        val res = controller.getPersonProvisions(crn)
         assertThat(res, equalTo(expectedResponse))
     }
 }

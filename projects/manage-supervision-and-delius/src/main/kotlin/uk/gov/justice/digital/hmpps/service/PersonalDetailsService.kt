@@ -9,6 +9,8 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.overview.PersonalCircumstance
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.Disability
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.Provision
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
@@ -30,7 +32,7 @@ class PersonalDetailsService(
     fun getPersonalDetails(crn: String): PersonalDetails {
         val person = personRepository.getPerson(crn)
         val provisions = provisionRepository.findByPersonId(person.id)
-        val personalCircumstances = personalCircumstanceRepository.findByPersonId(person.id)
+        val personalCircumstances = personalCircumstanceRepository.findCurrentCircumstances(person.id)
         val disabilities = disabilityRepository.findByPersonId(person.id)
         val allAddresses = addressRepository.findByPersonId(person.id)
         val currentAddresses = allAddresses.filter { it.endDate == null }
@@ -78,7 +80,8 @@ class PersonalDetailsService(
             previousSurname = person.previousSurname,
             aliases = aliases.map { Name(forename = it.forename, middleName = it.secondName, it.surname) },
             genderIdentity = person.genderIdentity?.description,
-            selfDescribedGender = person.genderIdentityDescription
+            selfDescribedGender = person.genderIdentityDescription,
+            requiresInterpreter = person.requiresInterpreter
         )
     }
 
@@ -108,7 +111,63 @@ class PersonalDetailsService(
             previousAddresses = addresses.filter { it.endDate != null }.map(PersonAddress::toAddress).mapNotNull { it }
         )
     }
+
+    fun getPersonCircumstances(crn: String): CircumstanceOverview {
+        val person = personRepository.getSummary(crn)
+        val circumstances = personalCircumstanceRepository.findAllCircumstances(person.id)
+
+        return CircumstanceOverview(
+            personSummary = person.toPersonSummary(),
+            circumstances = circumstances.map { it.toCircumstance() }
+        )
+    }
+
+    fun getPersonProvisions(crn: String): ProvisionOverview {
+        val person = personRepository.getSummary(crn)
+        val provisions = provisionRepository.findByPersonId(person.id)
+
+        return ProvisionOverview(
+            personSummary = person.toPersonSummary(),
+            provisions = provisions.map { it.toProvision() }
+        )
+    }
+
+    fun getPersonDisabilities(crn: String): DisabilityOverview {
+        val person = personRepository.getSummary(crn)
+        val disabilities = disabilityRepository.findByPersonId(person.id)
+
+        return DisabilityOverview(
+            personSummary = person.toPersonSummary(),
+            disabilities = disabilities.map { it.toDisability() }
+        )
+    }
 }
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance.toCircumstance() =
+    Circumstance(
+        type = type.description,
+        subType = subType.description,
+        notes = notes, verified = evidenced,
+        startDate = startDate,
+        lastUpdated = lastUpdated,
+        lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
+    )
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision() = Provision(
+    description = type.description,
+    notes = notes,
+    startDate = startDate,
+    lastUpdated = lastUpdated,
+    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
+)
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability() = Disability(
+    description = type.description,
+    notes = notes,
+    startDate = startDate,
+    lastUpdated = lastUpdated,
+    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
+)
 
 fun PersonalContactEntity.toContact() = PersonalContact(
     personSummary = person.toSummary(),
@@ -143,6 +202,7 @@ fun PersonAddress.toAddress() = Address.from(
     lastUpdated = lastUpdated,
     status = status.description,
     type = type.description,
+    telephoneNumber = telephoneNumber,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
 
 )
