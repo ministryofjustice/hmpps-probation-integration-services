@@ -13,7 +13,14 @@ import java.time.ZonedDateTime
 object PersonGenerator {
 
     val OVERVIEW = generateOverview("X000004")
-    val EVENT_1 = generateEvent(OVERVIEW, eventNumber = "7654321", notes = "overview", additionalOffences = emptyList(), court = CourtGenerator.BHAM, convictionDate = LocalDate.now())
+    val EVENT_1 = generateEvent(
+        OVERVIEW,
+        eventNumber = "7654321",
+        notes = "overview",
+        additionalOffences = emptyList(),
+        court = CourtGenerator.BHAM,
+        convictionDate = LocalDate.now()
+    )
     val EVENT_2 = generateEvent(
         OVERVIEW,
         eventNumber = "1234567",
@@ -291,6 +298,5 @@ object PersonGenerator {
         personId: Long,
         id: Long = IdGenerator.getAndIncrement(),
     ) = Registration(personId, type, false, false, id)
-
 }
 

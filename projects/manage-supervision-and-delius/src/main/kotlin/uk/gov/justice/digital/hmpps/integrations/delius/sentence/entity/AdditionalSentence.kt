@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Ref
 @Entity
 @Table(name = "additional_sentence")
 @SQLRestriction("soft_deleted = 0")
-class AdditionalSentence (
+class AdditionalSentence(
 
     @Id
     @Column(name = "additional_sentence_id")
@@ -37,4 +37,4 @@ class AdditionalSentence (
     @JoinColumn(name = "additional_sentence_type_id")
     val refData: ReferenceData? = null,
 
-)
+    )

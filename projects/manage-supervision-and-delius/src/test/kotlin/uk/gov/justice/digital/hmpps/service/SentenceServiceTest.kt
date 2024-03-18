@@ -68,8 +68,10 @@ class SentenceServiceTest {
             )
         )
 
-        whenever(courtAppearanceRepository
-            .getFirstCourtAppearanceByEventIdOrderByDate(event.id))
+        whenever(
+            courtAppearanceRepository
+                .getFirstCourtAppearanceByEventIdOrderByDate(event.id)
+        )
             .thenReturn(CourtAppearanceGenerator.generate(CourtGenerator.DEFAULT))
 
         whenever(additionalSentenceRepository.getAllByEvent_Id(event.id))

@@ -52,7 +52,7 @@ class SentenceIntegrationTest {
                         ),
                         Conviction(null, null, null, listOf())
                     )
-                )
+            )
         )
 
         assertEquals(expected, response)

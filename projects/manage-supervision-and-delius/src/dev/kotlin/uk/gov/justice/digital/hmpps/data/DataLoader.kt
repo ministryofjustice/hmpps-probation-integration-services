@@ -49,7 +49,13 @@ class DataLoader(
         entityManager.persist(AdditionalSentenceGenerator.REF_DISQ)
         entityManager.persist(AdditionalSentenceGenerator.REF_FINE)
         entityManager.persist(
-            AdditionalSentenceGenerator.generateSentence(3, null, null, PersonGenerator.EVENT_1, AdditionalSentenceGenerator.REF_DISQ)
+            AdditionalSentenceGenerator.generateSentence(
+                3,
+                null,
+                null,
+                PersonGenerator.EVENT_1,
+                AdditionalSentenceGenerator.REF_DISQ
+            )
         )
         entityManager.persist(CourtGenerator.DEFAULT)
         entityManager.persist(CourtAppearanceGenerator.generate())
