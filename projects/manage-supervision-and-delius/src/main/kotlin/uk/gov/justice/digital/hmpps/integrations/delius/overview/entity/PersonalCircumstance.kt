@@ -5,6 +5,7 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -43,7 +44,8 @@ class PersonalCircumstance(
     @Column(name = "notes", columnDefinition = "clob")
     val notes: String? = null,
 
-    val evidenced: Boolean = false,
+    @Convert(converter = YesNoConverter::class)
+    val evidenced: Boolean? = false,
 
     val startDate: LocalDate,
 

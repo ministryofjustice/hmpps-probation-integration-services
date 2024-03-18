@@ -13,7 +13,7 @@ data class Circumstance(
     val type: String,
     val subType: String,
     val notes: String?,
-    val verified: Boolean = false,
+    val verified: Boolean?,
     val startDate: LocalDate,
     val lastUpdated: LocalDate,
     val lastUpdatedBy: Name
