@@ -13,7 +13,7 @@ import java.time.LocalDate
 @Immutable
 @Entity(name = "PersonalDetailsAddress")
 @Table(name = "offender_address")
-@SQLRestriction("soft_deleted = 0 and address_type_id is not null")
+@SQLRestriction("soft_deleted = 0")
 class PersonAddress(
 
     @Column(name = "offender_id")
@@ -25,7 +25,7 @@ class PersonAddress(
 
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData,
+    val type: ReferenceData?,
 
     @Column(name = "building_name")
     val buildingName: String?,
