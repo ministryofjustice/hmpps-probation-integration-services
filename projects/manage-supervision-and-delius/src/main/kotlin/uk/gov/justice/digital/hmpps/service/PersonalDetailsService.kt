@@ -185,7 +185,13 @@ fun PersonalContactEntity.toContact() = PersonalContact(
 )
 
 fun Person.toSummary() =
-    PersonSummary(name = Name(forename, secondName, surname), pnc = pnc, dateOfBirth = dateOfBirth, crn = crn, offenderId = id)
+    PersonSummary(
+        name = Name(forename, secondName, surname),
+        pnc = pnc,
+        dateOfBirth = dateOfBirth,
+        crn = crn,
+        offenderId = id
+    )
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
 fun PersonAddress.toAddress() = Address.from(
@@ -220,4 +226,5 @@ fun ContactAddress.toAddress() = uk.gov.justice.digital.hmpps.api.model.personal
 )
 
 fun PersonDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)
-fun PersonSummaryEntity.toPersonSummary() = PersonSummary(Name(forename, secondName, surname), crn, id, pnc, dateOfBirth)
+fun PersonSummaryEntity.toPersonSummary() =
+    PersonSummary(Name(forename, secondName, surname), crn, id, pnc, dateOfBirth)
