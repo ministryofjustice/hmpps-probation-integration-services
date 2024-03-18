@@ -27,16 +27,17 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
 
         entityManager.persist(PersonGenerator.OVERVIEW.gender)
-        PersonGenerator.OVERVIEW.disabilities.forEach { entityManager.persist(it.type) }
-        PersonGenerator.OVERVIEW.provisions.forEach { entityManager.persist(it.type) }
-        PersonGenerator.OVERVIEW.personalCircumstances.forEach {
+        entityManager.persist(UserGenerator.USER)
+        PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
+        PersonGenerator.PROVISIONS.forEach { entityManager.persist(it.type) }
+        PersonGenerator.PERSONAL_CIRCUMSTANCES.forEach {
             entityManager.persist(it.type)
             entityManager.persist(it.subType)
         }
 
-        entityManager.persistCollection(PersonGenerator.OVERVIEW.disabilities)
-        entityManager.persistCollection(PersonGenerator.OVERVIEW.provisions)
-        entityManager.persistCollection(PersonGenerator.OVERVIEW.personalCircumstances)
+        entityManager.persistCollection(PersonGenerator.DISABILITIES)
+        entityManager.persistCollection(PersonGenerator.PROVISIONS)
+        entityManager.persistCollection(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         entityManager.persist(PersonGenerator.OVERVIEW)
 
         entityManager.persist(CourtGenerator.BHAM)
@@ -87,6 +88,8 @@ class DataLoader(
             PersonDetailsGenerator.GENDER_FEMALE,
             PersonDetailsGenerator.RELIGION_DEFAULT,
             PersonDetailsGenerator.SEXUAL_ORIENTATION,
+            PersonDetailsGenerator.LANGUAGE_RD,
+            PersonDetailsGenerator.GENDER_IDENTITY_RD,
             PersonDetailsGenerator.PERSONAL_DETAILS,
             PersonDetailsGenerator.DISABILITY_1_RD,
             PersonDetailsGenerator.DISABILITY_2_RD,
@@ -102,6 +105,7 @@ class DataLoader(
             PersonDetailsGenerator.PROVISION_2,
             PersonDetailsGenerator.PERSONAL_CIRC_1,
             PersonDetailsGenerator.PERSONAL_CIRC_2,
+            PersonDetailsGenerator.PERSONAL_CIRC_PREV,
             PersonDetailsGenerator.RELATIONSHIP_TYPE,
             PersonDetailsGenerator.CONTACT_ADDRESS,
             PersonDetailsGenerator.PERSONAL_CONTACT_1,
@@ -112,8 +116,11 @@ class DataLoader(
             PersonDetailsGenerator.PERSON_ADDRESS_TYPE_2,
             PersonDetailsGenerator.PERSON_ADDRESS_2,
             PersonDetailsGenerator.NULL_ADDRESS,
+            PersonDetailsGenerator.PREVIOUS_ADDRESS,
             PersonDetailsGenerator.DOCUMENT_1,
-            PersonDetailsGenerator.DOCUMENT_2
+            PersonDetailsGenerator.DOCUMENT_2,
+            PersonDetailsGenerator.ALIAS_1,
+            PersonDetailsGenerator.ALIAS_2
         )
     }
 

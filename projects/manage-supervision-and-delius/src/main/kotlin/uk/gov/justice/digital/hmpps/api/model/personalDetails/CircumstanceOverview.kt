@@ -4,17 +4,17 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import java.time.LocalDate
 
-data class PersonalContact(
+data class CircumstanceOverview(
     val personSummary: PersonSummary,
-    val contactId: Long,
-    val name: Name,
-    val relationship: String?,
-    val relationshipType: String,
-    val address: ContactAddress?,
+    val circumstances: List<Circumstance>
+)
+
+data class Circumstance(
+    val type: String,
+    val subType: String,
     val notes: String?,
-    val phone: String?,
-    val email: String?,
-    val startDate: LocalDate?,
+    val verified: Boolean = false,
+    val startDate: LocalDate,
     val lastUpdated: LocalDate,
     val lastUpdatedBy: Name
 )

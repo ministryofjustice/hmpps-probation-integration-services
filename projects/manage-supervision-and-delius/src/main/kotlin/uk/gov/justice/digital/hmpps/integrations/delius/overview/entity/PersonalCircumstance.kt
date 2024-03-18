@@ -5,13 +5,16 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "personal_circumstance")
-@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
+@SQLRestriction("soft_deleted = 0")
 class PersonalCircumstance(
     @Id
     @Column(name = "personal_circumstance_id")
@@ -33,6 +36,15 @@ class PersonalCircumstance(
     @Column(name = "last_updated_datetime")
     val lastUpdated: LocalDate,
 
+    @ManyToOne
+    @JoinColumn(name = "last_updated_user_id")
+    val lastUpdatedUser: User,
+
+    @Column(name = "notes", columnDefinition = "clob")
+    val notes: String? = null,
+
+    val evidenced: Boolean = false,
+
     val startDate: LocalDate,
 
     val endDate: LocalDate? = null,
@@ -41,6 +53,26 @@ class PersonalCircumstance(
     val softDeleted: Boolean = false,
 
     )
+
+interface PersonCircumstanceRepository : JpaRepository<PersonalCircumstance, Long> {
+
+    @Query(
+        """
+        select pc from PersonalCircumstance pc 
+        where pc.personId = :personId
+        and (pc.endDate is null or pc.endDate > current_date )
+    """
+    )
+    fun findCurrentCircumstances(personId: Long): List<PersonalCircumstance>
+
+    @Query(
+        """
+        select pc from PersonalCircumstance pc 
+        where pc.personId = :personId
+    """
+    )
+    fun findAllCircumstances(personId: Long): List<PersonalCircumstance>
+}
 
 @Immutable
 @Entity

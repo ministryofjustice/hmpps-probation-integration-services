@@ -8,10 +8,16 @@ data class PersonalDetails(
     val name: Name,
     val contacts: List<PersonalContact>,
     val mainAddress: Address?,
-    val otherAddresses: List<Address>,
+    val otherAddressCount: Int,
+    val previousAddressCount: Int,
     val preferredGender: String,
     val dateOfBirth: LocalDate,
     val preferredName: String?,
+    val previousSurname: String?,
+    val preferredLanguage: String?,
+    val genderIdentity: String?,
+    val selfDescribedGender: String?,
+    val aliases: List<Name>,
     val telephoneNumber: String?,
     val mobileNumber: String?,
     val email: String?,
@@ -22,6 +28,7 @@ data class PersonalDetails(
     val sex: String,
     val religionOrBelief: String?,
     val sexualOrientation: String?,
+    val requiresInterpreter: Boolean? = false,
     val documents: List<Document>
 
 )

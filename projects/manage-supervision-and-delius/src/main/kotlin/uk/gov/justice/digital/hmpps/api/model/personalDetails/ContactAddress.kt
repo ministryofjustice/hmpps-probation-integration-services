@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
+import uk.gov.justice.digital.hmpps.api.model.Name
 import java.time.LocalDate
 
 data class ContactAddress(
@@ -10,7 +11,8 @@ data class ContactAddress(
     val town: String?,
     val county: String?,
     val postcode: String?,
-    val lastUpdated: LocalDate?
+    val lastUpdated: LocalDate,
+    val lastUpdatedBy: Name,
 ) {
     companion object {
         fun from(
@@ -21,7 +23,8 @@ data class ContactAddress(
             town: String? = null,
             county: String? = null,
             postcode: String? = null,
-            lastUpdated: LocalDate? = null
+            lastUpdated: LocalDate,
+            lastUpdatedBy: Name
         ): ContactAddress? =
             if (
                 buildingName == null && buildingNumber == null && streetName == null &&
@@ -29,7 +32,17 @@ data class ContactAddress(
             ) {
                 null
             } else {
-                ContactAddress(buildingName, buildingNumber, streetName, district, town, county, postcode, lastUpdated)
+                ContactAddress(
+                    buildingName,
+                    buildingNumber,
+                    streetName,
+                    district,
+                    town,
+                    county,
+                    postcode,
+                    lastUpdated,
+                    lastUpdatedBy
+                )
             }
     }
 }

@@ -14,9 +14,12 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Overview
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDITIONAL_OFFENCE_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDITIONAL_OFFENCE_2
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DISABILITIES
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EVENT_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAIN_OFFENCE_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSONAL_CIRCUMSTANCES
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PROVISIONS
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -36,27 +39,27 @@ internal class OverviewIntegrationTest {
         assertThat(res.personalDetails.name.forename, equalTo(person.forename))
         assertThat(
             res.personalDetails.disabilities[0].description,
-            equalTo(OVERVIEW.disabilities[0].type.description)
+            equalTo(DISABILITIES[0].type.description)
         )
         assertThat(
             res.personalDetails.disabilities[1].description,
-            equalTo(OVERVIEW.disabilities[1].type.description)
+            equalTo(DISABILITIES[1].type.description)
         )
         assertThat(
             res.personalDetails.provisions[0].description,
-            equalTo(OVERVIEW.provisions[0].type.description)
+            equalTo(PROVISIONS[0].type.description)
         )
         assertThat(
             res.personalDetails.provisions[1].description,
-            equalTo(OVERVIEW.provisions[1].type.description)
+            equalTo(PROVISIONS[1].type.description)
         )
         assertThat(
             res.personalDetails.personalCircumstances[0].type,
-            equalTo(OVERVIEW.personalCircumstances[0].type.description)
+            equalTo(PERSONAL_CIRCUMSTANCES[0].type.description)
         )
         assertThat(
             res.personalDetails.personalCircumstances[1].type,
-            equalTo(OVERVIEW.personalCircumstances[1].type.description)
+            equalTo(PERSONAL_CIRCUMSTANCES[1].type.description)
         )
         assertThat(
             res.schedule.nextAppointment?.description,

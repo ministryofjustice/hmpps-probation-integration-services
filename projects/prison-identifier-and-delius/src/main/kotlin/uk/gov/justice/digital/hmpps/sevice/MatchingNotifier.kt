@@ -11,9 +11,8 @@ class MatchingNotifier(
     private val notificationPublisher: NotificationPublisher
 ) {
     fun sendForMatch(crns: List<String>, dryRun: Boolean) {
-        crns.ifEmpty { personRepository.findAllCrns() }.asSequence()
-            .map { notification(it, dryRun) }
-            .forEach { notificationPublisher.publish(it) }
+        crns.ifEmpty { personRepository.findAllCrns() }
+            .forEach { notificationPublisher.publish(notification(it, dryRun)) }
     }
 
     private fun notification(crn: String, dryRun: Boolean): Notification<HmppsDomainEvent> = Notification(
