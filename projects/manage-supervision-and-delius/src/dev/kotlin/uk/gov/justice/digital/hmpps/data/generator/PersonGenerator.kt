@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -11,7 +13,7 @@ import java.time.ZonedDateTime
 object PersonGenerator {
 
     val OVERVIEW = generateOverview("X000004")
-    val EVENT_1 = generateEvent(OVERVIEW, eventNumber = "7654321", notes = "overview", additionalOffences = emptyList())
+    val EVENT_1 = generateEvent(OVERVIEW, eventNumber = "7654321", notes = "overview", additionalOffences = emptyList(), court = CourtGenerator.BHAM, convictionDate = LocalDate.now())
     val EVENT_2 = generateEvent(
         OVERVIEW,
         eventNumber = "1234567",
@@ -103,6 +105,8 @@ object PersonGenerator {
     fun generateEvent(
         person: Person,
         id: Long = IdGenerator.getAndIncrement(),
+        court: Court? = null,
+        convictionDate: LocalDate? = null,
         eventNumber: String,
         active: Boolean = true,
         inBreach: Boolean = false,
@@ -114,6 +118,8 @@ object PersonGenerator {
         Event(
             id,
             person.id,
+            court,
+            convictionDate,
             eventNumber,
             disposal = disposal,
             inBreach = inBreach,
@@ -285,5 +291,6 @@ object PersonGenerator {
         personId: Long,
         id: Long = IdGenerator.getAndIncrement(),
     ) = Registration(personId, type, false, false, id)
+
 }
 
