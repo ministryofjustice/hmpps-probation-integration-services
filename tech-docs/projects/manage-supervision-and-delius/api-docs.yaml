@@ -120,6 +120,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StreamingResponseBody'
+  /personal-details/{crn}/addresses:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Addresses
+      operationId: getPersonAddresses
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressOverview'
   /overview/{crn}:
     get:
       tags:
@@ -183,6 +202,7 @@ components:
     Address:
       required:
       - from
+      - lastUpdatedBy
       type: object
       properties:
         buildingName:
@@ -210,6 +230,8 @@ components:
         lastUpdated:
           type: string
           format: date
+        lastUpdatedBy:
+          $ref: '#/components/schemas/Name'
         type:
           type: string
         status:
@@ -227,6 +249,9 @@ components:
           type: string
           format: date
     ContactAddress:
+      required:
+      - lastUpdated
+      - lastUpdatedBy
       type: object
       properties:
         buildingName:
@@ -246,6 +271,8 @@ components:
         lastUpdated:
           type: string
           format: date
+        lastUpdatedBy:
+          $ref: '#/components/schemas/Name'
     Disabilities:
       required:
       - disabilities
@@ -283,6 +310,22 @@ components:
           type: string
         surname:
           type: string
+    PersonSummary:
+      required:
+      - crn
+      - dateOfBirth
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        crn:
+          type: string
+        pnc:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
     PersonalCircumstance:
       required:
       - subType
@@ -295,10 +338,19 @@ components:
           type: string
     PersonalContact:
       required:
+      - contactId
+      - lastUpdated
+      - lastUpdatedBy
       - name
+      - personSummary
       - relationshipType
       type: object
       properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        contactId:
+          type: integer
+          format: int64
         name:
           $ref: '#/components/schemas/Name'
         relationship:
@@ -309,6 +361,18 @@ components:
           $ref: '#/components/schemas/ContactAddress'
         notes:
           type: string
+        phone:
+          type: string
+        email:
+          type: string
+        startDate:
+          type: string
+          format: date
+        lastUpdated:
+          type: string
+          format: date
+        lastUpdatedBy:
+          $ref: '#/components/schemas/Name'
     PersonalDetails:
       required:
       - aliases
@@ -319,9 +383,9 @@ components:
       - disabilities
       - documents
       - name
-      - otherAddresses
+      - otherAddressCount
       - preferredGender
-      - previousAddresses
+      - previousAddressCount
       - provisions
       - sex
       type: object
@@ -336,14 +400,12 @@ components:
             $ref: '#/components/schemas/PersonalContact'
         mainAddress:
           $ref: '#/components/schemas/Address'
-        otherAddresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/Address'
-        previousAddresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/Address'
+        otherAddressCount:
+          type: integer
+          format: int32
+        previousAddressCount:
+          type: integer
+          format: int32
         preferredGender:
           type: string
         dateOfBirth:
@@ -354,6 +416,10 @@ components:
         previousSurname:
           type: string
         preferredLanguage:
+          type: string
+        genderIdentity:
+          type: string
+        selfDescribedGender:
           type: string
         aliases:
           type: array
@@ -395,24 +461,27 @@ components:
         lastUpdated:
           type: string
           format: date
-    PersonSummary:
-      required:
-      - crn
-      - dateOfBirth
-      - name
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/Name'
-        crn:
-          type: string
-        pnc:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
     StreamingResponseBody:
       type: object
+    AddressOverview:
+      required:
+      - otherAddresses
+      - personSummary
+      - previousAddresses
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        mainAddress:
+          $ref: '#/components/schemas/Address'
+        otherAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        previousAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
     Activity:
       required:
       - acceptableAbsences
