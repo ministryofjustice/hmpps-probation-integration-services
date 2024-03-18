@@ -65,6 +65,7 @@ jobs:
           - prison-education-and-delius
           - prison-identifier-and-delius
           - prisoner-profile-and-delius
+          - probation-search-and-delius
           - refer-and-monitor-and-delius
           - resettlement-passport-and-delius
           - risk-assessment-scores-to-delius
