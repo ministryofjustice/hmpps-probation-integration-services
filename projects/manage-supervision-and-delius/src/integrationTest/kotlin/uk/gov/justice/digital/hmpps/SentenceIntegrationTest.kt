@@ -41,7 +41,8 @@ class SentenceIntegrationTest {
                                 Offence("Assault", 1)
                             )
                         ),
-                        Conviction("Hull Court", "Birmingham Court", LocalDate.now())
+                        Conviction("Hull Court", "Birmingham Court", LocalDate.now()),
+                        listOf()
                     ),
                     Sentence(
                         OffenceDetails(
@@ -50,7 +51,8 @@ class SentenceIntegrationTest {
                             "overview",
                             emptyList()
                         ),
-                        Conviction(null, null, null)
+                        Conviction(null, null, null),
+                        listOf()
                     )
                 )
         )

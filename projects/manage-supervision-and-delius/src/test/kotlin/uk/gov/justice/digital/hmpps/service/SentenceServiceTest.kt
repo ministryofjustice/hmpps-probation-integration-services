@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import java.time.LocalDate
@@ -23,6 +24,9 @@ class SentenceServiceTest {
 
     @Mock
     lateinit var courtAppearanceRepository: CourtAppearanceRepository
+
+    @Mock
+    lateinit var additionalSentenceRepository: AdditionalSentenceRepository
 
     @InjectMocks
     lateinit var service: SentenceService
@@ -83,7 +87,8 @@ class SentenceServiceTest {
                         Conviction("Hull Court",
                             null,
                             null
-                        )
+                        ),
+                        listOf()
                     )
                 )
             )
