@@ -31,10 +31,10 @@ class AdditionalSentence(
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
-    val event: Event? = null,
+    val event: Event,
 
     @ManyToOne
-    @JoinColumn(name = "additional_sentence_type_id")
-    val refData: ReferenceData? = null,
+    @JoinColumn(name = "additional_sentence_type_id", nullable = false)
+    val refData: ReferenceData,
 
     )
