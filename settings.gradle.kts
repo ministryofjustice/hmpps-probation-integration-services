@@ -34,6 +34,7 @@ include(
     "prison-education-and-delius",
     "prison-identifier-and-delius",
     "prisoner-profile-and-delius",
+    "probation-search-and-delius",
     "redrive-dead-letter-queues",
     "refer-and-monitor-and-delius",
     "resettlement-passport-and-delius",
