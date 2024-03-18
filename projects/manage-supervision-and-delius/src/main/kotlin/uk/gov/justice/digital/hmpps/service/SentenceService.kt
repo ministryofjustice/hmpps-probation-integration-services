@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtApp
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
-
 @Service
 class SentenceService(
     private val eventRepository: EventSentenceRepository,
@@ -25,24 +24,26 @@ class SentenceService(
         })
     }
 
-    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>) = mainOffence?.let {
-        mainOffence ->
-        Sentence(
-            (OffenceDetails(offence = Offence(mainOffence.offence.description, mainOffence.offenceCount),
-                            dateOfOffence = mainOffence.date,
-                            notes = notes,
-                            additionalOffences = additionalOffences.map {
-                                Offence(description = it.offence.description, count = it.offenceCount ?: 0)
-                            }
+    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>) =
+        mainOffence?.let { mainOffence ->
+            Sentence(
+                (OffenceDetails(offence = Offence(mainOffence.offence.description, mainOffence.offenceCount),
+                    dateOfOffence = mainOffence.date,
+                    notes = notes,
+                    additionalOffences = additionalOffences.map {
+                        Offence(description = it.offence.description, count = it.offenceCount ?: 0)
+                    }
                 )
-            ),
-            Conviction(sentencingCourt = courtAppearance?.court?.name, responsibleCourt = court?.name, convictionDate = convictionDate),
-            additionalSentences.map { it.toAdditionalSentence() }
-        )
-    }
-
+                    ),
+                Conviction(
+                    sentencingCourt = courtAppearance?.court?.name,
+                    responsibleCourt = court?.name,
+                    convictionDate = convictionDate
+                ),
+                additionalSentences.map { it.toAdditionalSentence() }
+            )
+        }
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, refData!!.description)
-
 }

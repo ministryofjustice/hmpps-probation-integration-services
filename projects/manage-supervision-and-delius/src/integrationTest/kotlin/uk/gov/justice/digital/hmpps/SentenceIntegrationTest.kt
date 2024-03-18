@@ -31,30 +31,30 @@ class SentenceIntegrationTest {
 
         val expected = SentenceOverview(
             listOf(
-                    Sentence(
-                        OffenceDetails(
-                            Offence("Murder", 1),
-                            LocalDate.now(),
-                            "overview",
-                            listOf(
-                                Offence("Burglary", 1),
-                                Offence("Assault", 1)
-                            )
-                        ),
-                        Conviction("Hull Court", "Birmingham Court", LocalDate.now()),
-                        listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
+                Sentence(
+                    OffenceDetails(
+                        Offence("Murder", 1),
+                        LocalDate.now(),
+                        "overview",
+                        listOf(
+                            Offence("Burglary", 1),
+                            Offence("Assault", 1)
+                        )
                     ),
-                    Sentence(
-                        OffenceDetails(
-                            Offence("Another Murder", 1),
-                            LocalDate.now(),
-                            "overview",
-                            emptyList()
-                        ),
-                        Conviction(null, null, null),
-                        listOf()
-                    )
+                    Conviction("Hull Court", "Birmingham Court", LocalDate.now()),
+                    listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
+                ),
+                Sentence(
+                    OffenceDetails(
+                        Offence("Another Murder", 1),
+                        LocalDate.now(),
+                        "overview",
+                        emptyList()
+                    ),
+                    Conviction(null, null, null),
+                    listOf()
                 )
+            )
         )
 
         assertEquals(expected, response)

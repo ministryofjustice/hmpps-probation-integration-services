@@ -25,7 +25,7 @@ object AdditionalSentenceGenerator {
         false,
         event,
         referenceData
-        )
+    )
 
     fun generateReferenceDate(code: String, description: String) =
         ReferenceData(IdGenerator.getAndIncrement(), code, description)

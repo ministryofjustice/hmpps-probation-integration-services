@@ -67,8 +67,10 @@ class SentenceServiceTest {
             )
         )
 
-        whenever(courtAppearanceRepository
-            .getFirstCourtAppearanceByEventIdOrderByDate(event.id))
+        whenever(
+            courtAppearanceRepository
+                .getFirstCourtAppearanceByEventIdOrderByDate(event.id)
+        )
             .thenReturn(CourtAppearanceGenerator.generate(CourtGenerator.DEFAULT))
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
@@ -76,22 +78,23 @@ class SentenceServiceTest {
         val expected = SentenceOverview(
             listOf(
                 Sentence(
-                        OffenceDetails(
-                            Offence("Murder", 1),
-                            LocalDate.now(),
-                            "overview",
-                            listOf(
-                                Offence("Burglary", 1)
-                            )
-                        ),
-                        Conviction("Hull Court",
-                            null,
-                            null
-                        ),
-                        listOf()
-                    )
+                    OffenceDetails(
+                        Offence("Murder", 1),
+                        LocalDate.now(),
+                        "overview",
+                        listOf(
+                            Offence("Burglary", 1)
+                        )
+                    ),
+                    Conviction(
+                        "Hull Court",
+                        null,
+                        null
+                    ),
+                    listOf()
                 )
             )
+        )
 
         assertEquals(expected, response)
         verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
