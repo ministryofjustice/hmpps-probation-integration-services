@@ -22,8 +22,7 @@ class AdditionalSentence(
     @Column(name = "amount")
     val amount: Long? = null,
 
-    @Lob
-    @Column(name = "notes")
+    @Column(name = "notes", columnDefinition = "clob")
     val notes: String? = null,
 
     @Column(columnDefinition = "number")
@@ -35,6 +34,6 @@ class AdditionalSentence(
 
     @ManyToOne
     @JoinColumn(name = "additional_sentence_type_id", nullable = false)
-    val refData: ReferenceData,
+    val type: ReferenceData,
 
     )

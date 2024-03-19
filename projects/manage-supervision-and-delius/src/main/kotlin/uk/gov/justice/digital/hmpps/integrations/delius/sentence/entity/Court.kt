@@ -13,7 +13,7 @@ class Court(
     @Column(name = "court_id")
     val id: Long,
 
-    @Column(name = "court_name")
-    val name: String
+    @Column(name = "court_name", nullable = true)
+    val name: String?
 
 )

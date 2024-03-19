@@ -6,8 +6,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Addition
 
 object AdditionalSentenceGenerator {
 
-    val REF_DISQ = generateReferenceDate("DISQ", "Disqualified from Driving")
-    val REF_FINE = generateReferenceDate("FINE", "Fine")
+    val REF_DISQ = generateReferenceData("DISQ", "Disqualified from Driving")
+    val REF_FINE = generateReferenceData("FINE", "Fine")
 
     val SENTENCE_DISQ = generateSentence(length = 3, referenceData = REF_DISQ, event = PersonGenerator.EVENT_1)
     val SENTENCE_FINE =
@@ -29,7 +29,7 @@ object AdditionalSentenceGenerator {
         referenceData
     )
 
-    fun generateReferenceDate(code: String, description: String) =
+    private fun generateReferenceData(code: String, description: String) =
         ReferenceData(IdGenerator.getAndIncrement(), code, description)
 }
 

@@ -42,5 +42,5 @@ class SentenceService(
     )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
-        AdditionalSentence(length, amount, notes, refData!!.description)
+        AdditionalSentence(length, amount, notes, type.description)
 }
