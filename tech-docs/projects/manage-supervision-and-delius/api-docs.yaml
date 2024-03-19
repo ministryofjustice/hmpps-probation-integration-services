@@ -374,12 +374,16 @@ components:
       - crn
       - dateOfBirth
       - name
+      - offenderId
       type: object
       properties:
         name:
           $ref: '#/components/schemas/Name'
         crn:
           type: string
+        offenderId:
+          type: integer
+          format: int64
         pnc:
           type: string
         dateOfBirth:
