@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.audit.repository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionNotFoundException
 import java.time.ZonedDateTime
 
 interface BusinessInteractionRepository : JpaRepository<BusinessInteraction, Long> {
@@ -18,3 +19,6 @@ interface BusinessInteractionRepository : JpaRepository<BusinessInteraction, Lon
         enabledDate: ZonedDateTime = ZonedDateTime.now()
     ): BusinessInteraction?
 }
+
+fun BusinessInteractionRepository.getByCode(code: String) =
+    findByCode(code) ?: throw BusinessInteractionNotFoundException(code)
