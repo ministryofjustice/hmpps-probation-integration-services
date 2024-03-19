@@ -7,9 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -42,10 +40,25 @@ class DataLoader(
         entityManager.persistCollection(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         entityManager.persist(PersonGenerator.OVERVIEW)
 
+        entityManager.persist(CourtGenerator.BHAM)
         entityManager.persist(PersonGenerator.EVENT_1)
         entityManager.persist(PersonGenerator.EVENT_2)
         entityManager.persist(PersonGenerator.INACTIVE_EVENT_1)
         entityManager.persist(PersonGenerator.INACTIVE_EVENT_2)
+
+        entityManager.persist(AdditionalSentenceGenerator.REF_DISQ)
+        entityManager.persist(AdditionalSentenceGenerator.REF_FINE)
+        entityManager.persist(
+            AdditionalSentenceGenerator.generateSentence(
+                3,
+                null,
+                null,
+                PersonGenerator.EVENT_1,
+                AdditionalSentenceGenerator.REF_DISQ
+            )
+        )
+        entityManager.persist(CourtGenerator.DEFAULT)
+        entityManager.persist(CourtAppearanceGenerator.generate())
 
         entityManager.persistAll(
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
