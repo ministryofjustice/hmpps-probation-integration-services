@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 @Component
 @Conditional(AwsCondition::class)
 @ConditionalOnProperty("messaging.producer.topic")
-class AwsNotificationPublisher(
+class TopicPublisher(
     private val notificationTemplate: SnsTemplate,
     @Value("\${messaging.producer.topic}") private val topic: String
 ) : NotificationPublisher {

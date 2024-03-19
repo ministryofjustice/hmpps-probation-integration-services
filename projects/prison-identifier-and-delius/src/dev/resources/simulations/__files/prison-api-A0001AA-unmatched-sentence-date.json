@@ -1,0 +1,16 @@
+[
+  {
+    "bookingId": 10000001,
+    "sentenceSequence": 1,
+    "termSequence": 1,
+    "sentenceType": "ADIMP_ORA20",
+    "sentenceTypeDescription": "ORA 2020 Standard Determinate Sentence",
+    "startDate": "2021-01-01",
+    "years": 10,
+    "lifeSentence": false,
+    "caseId": "0000001",
+    "sentenceTermCode": "IMP",
+    "lineSeq": 1,
+    "sentenceStartDate": "2021-01-01"
+  }
+]

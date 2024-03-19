@@ -1,0 +1,56 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/prison-api/api/prisoners/A0001AA"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prison-api-A0001AA-prisoner.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/prison-api/api/bookings/offenderNo/A0001AA?basicInfo=true&extraInfo=false"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prison-api-A0001AA-booking.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/prison-api/api/offender-sentences/booking/10000001/sentenceTerms"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prison-api-A0001AA-sentence.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/prison-api/api/bookings/offenderNo/A0002AA?basicInfo=true&extraInfo=false"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prison-api-A0002AA-booking-inactive.json"
+      }
+    }
+  ]
+}

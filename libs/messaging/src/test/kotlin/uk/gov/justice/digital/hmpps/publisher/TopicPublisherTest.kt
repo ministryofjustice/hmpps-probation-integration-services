@@ -20,7 +20,7 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 
 @ExtendWith(MockitoExtension::class)
-class AwsNotificationPublisherTest {
+class TopicPublisherTest {
 
     @Mock
     lateinit var notificationTemplate: SnsTemplate
@@ -29,7 +29,7 @@ class AwsNotificationPublisherTest {
 
     @BeforeEach
     fun setup() {
-        publisher = AwsNotificationPublisher(notificationTemplate, "my-topic")
+        publisher = TopicPublisher(notificationTemplate, "my-topic")
     }
 
     @Test
