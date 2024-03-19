@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.service.ContactSearchAuditRequest
 import uk.gov.justice.digital.hmpps.service.ContactSearchRequest
 import uk.gov.justice.digital.hmpps.service.PageRequest
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
@@ -70,6 +71,6 @@ internal class IntegrationTest {
         assertThat(saved.parameters["pageSize"], equalTo(pageSize))
         assertThat(saved.parameters["sort"], equalTo(sort))
         assertThat(saved.parameters["direction"], equalTo(direction))
-        assertThat(saved.dateTime, equalTo(dateTime))
+        assertThat(saved.dateTime, isCloseTo(dateTime))
     }
 }
