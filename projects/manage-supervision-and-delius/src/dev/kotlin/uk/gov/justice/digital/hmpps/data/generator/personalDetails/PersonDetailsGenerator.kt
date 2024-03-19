@@ -292,10 +292,8 @@ object PersonDetailsGenerator {
         id = IdGenerator.getAndIncrement(),
         lastUpdated = ZonedDateTime.now().minusDays(1),
         alfrescoId = alfrescoId,
-        createdAt = ZonedDateTime.now().minusDays(1),
         name = name,
         personId = personId,
-        primaryKeyId = personId,
         type = documentType
     )
 
