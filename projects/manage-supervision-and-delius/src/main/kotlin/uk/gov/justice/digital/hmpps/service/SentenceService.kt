@@ -27,7 +27,7 @@ class SentenceService(
     fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>) = Sentence(
         OffenceDetails(
             offence = mainOffence?.let { Offence(it.offence.description, it.offenceCount) },
-            dateOfOffence = mainOffence?.date!!,
+            dateOfOffence = mainOffence?.date,
             notes = notes,
             additionalOffences = additionalOffences.map {
                 Offence(description = it.offence.description, count = it.offenceCount ?: 0)
