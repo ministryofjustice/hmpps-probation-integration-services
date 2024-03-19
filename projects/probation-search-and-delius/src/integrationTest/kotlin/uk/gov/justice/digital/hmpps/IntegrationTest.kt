@@ -21,8 +21,10 @@ import uk.gov.justice.digital.hmpps.service.ContactSearchAuditRequest
 import uk.gov.justice.digital.hmpps.service.ContactSearchRequest
 import uk.gov.justice.digital.hmpps.service.PageRequest
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -44,6 +46,7 @@ internal class IntegrationTest {
         val pageSize = 1
         val sort = "date"
         val direction = "asc"
+        val dateTime = ZonedDateTime.now()
         mockMvc
             .perform(
                 post("/probation-search/audit/contact-search")
@@ -51,7 +54,8 @@ internal class IntegrationTest {
                     .withJson(
                         ContactSearchAuditRequest(
                             ContactSearchRequest(crn, query, true),
-                            PageRequest(page, pageSize, sort, direction)
+                            PageRequest(page, pageSize, sort, direction),
+                            dateTime
                         )
                     )
             ).andExpect(status().isCreated)
@@ -67,5 +71,6 @@ internal class IntegrationTest {
         assertThat(saved.parameters["pageSize"], equalTo(pageSize))
         assertThat(saved.parameters["sort"], equalTo(sort))
         assertThat(saved.parameters["direction"], equalTo(direction))
+        assertThat(saved.dateTime, isCloseTo(dateTime))
     }
 }
