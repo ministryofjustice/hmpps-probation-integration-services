@@ -25,7 +25,7 @@ class PersonAddress(
 
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData,
+    val type: ReferenceData?,
 
     @Column(name = "building_name")
     val buildingName: String?,

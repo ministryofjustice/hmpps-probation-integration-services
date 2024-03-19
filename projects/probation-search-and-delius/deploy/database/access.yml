@@ -1,0 +1,11 @@
+database:
+  access:
+    username_key: /probation-search-and-delius/db-username
+    password_key: /probation-search-and-delius/db-password
+    tables:
+      - audited_interaction
+
+  audit:
+    username: ProbationSearchAndDelius
+    forename: Probation Search
+    surname: Service

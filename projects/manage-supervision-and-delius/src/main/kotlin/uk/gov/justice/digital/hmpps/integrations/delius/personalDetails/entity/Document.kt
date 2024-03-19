@@ -26,9 +26,6 @@ class PersonDocument(
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
 
-    @Column
-    val primaryKeyId: Long,
-
     @Column(name = "document_name")
     val name: String,
 
@@ -37,15 +34,6 @@ class PersonDocument(
 
     @Column(name = "last_saved")
     val lastUpdated: ZonedDateTime,
-
-    @Column(name = "created_datetime")
-    val createdAt: ZonedDateTime,
-
-    @Column
-    val createdByUserId: Long = 0,
-
-    @Column
-    val lastUpdatedUserId: Long = 0,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
