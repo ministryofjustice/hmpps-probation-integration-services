@@ -14,19 +14,22 @@ HMPPS has a number of systems each holding information about a person's interact
 
 The matching process can be triggered by a request to the integration service API endpoint
 
-| Business Event        | API Endpoint                 |
-|-----------------------|------------------------------|
-| List of CRNs to Match | /person/populate-noms-number |
+| Business Event             | API Endpoint                                                                                                                                                                              |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| List of CRNs to Match      | [/person/match-by-crn](https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/prison-identifier-and-delius/api-reference.html#person-match-by-crn)   |
+| List of NOMIS IDs to Match | [/person/match-by-noms](https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/prison-identifier-and-delius/api-reference.html#person-match-by-noms) |
 
-### Domain Event Processing (Not Yet Implemented)
+### Domain Event Processing
 
 The matching process will be triggered by domain events raised by Delius, once these events are implemented
 
-| Business Event                     | Message Event Type / Filter     |
-|------------------------------------|---------------------------------|
-| New Sentence Added to Delius       | probation-case.sentence.created |
-| Sentence Changed in Delius         | probation-case.sentence.amended |
-| Sentence Moved to New Delius Event | probation-case.sentence.move    |
+| Business Event                     | Message Event Type / Filter              | Status              |
+|------------------------------------|------------------------------------------|---------------------|
+| New Sentence Added to Delius       | probation-case.sentence.created          | Not yet implemented |
+| Sentence Changed in Delius         | probation-case.sentence.amended          | Not yet implemented |
+| Sentence Moved to New Delius Event | probation-case.sentence.move             | Not yet implemented |
+| Prisoner received into NOMIS       | prison-offender-events.prisoner.received | Active              |
+| Prisoner merged in NOMIS           | prison-offender-events.prisoner.merged   | Active              |
 
 ## Workflows
 
@@ -41,8 +44,8 @@ The matching process will be triggered by domain events raised by Delius, once t
 API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests
 
-| API Endpoint | Required Role                                   |
-|--------------|-------------------------------------------------|
+| API Endpoint | Required Role                                    |
+|--------------|--------------------------------------------------|
 | All          | ROLE\_PROBATION\_API_\_PRISON_IDENTIFIER__UPDATE |
 
 ## Concepts

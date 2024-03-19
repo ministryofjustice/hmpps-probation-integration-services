@@ -20,7 +20,7 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - 'curl -fsSL -X POST "https://$BASE_URL/person/populate-noms-number?dryRun=$DRY_RUN" --header "Authorization: Bearer $(curl -fsSL --request POST "$AUTH_URL?grant_type=client_credentials" --user "$CLIENT_ID:$CLIENT_SECRET"  | jq -r .access_token)" --header "Content-Type: application/json"'
+                - 'curl -fsSL -X POST "https://$BASE_URL/person/match-by-crn?dryRun=$DRY_RUN" --header "Authorization: Bearer $(curl -fsSL --request POST "$AUTH_URL?grant_type=client_credentials" --user "$CLIENT_ID:$CLIENT_SECRET"  | jq -r .access_token)" --header "Content-Type: application/json"'
               env:
                 - name: AUTH_URL
                   value: {{ index .Values "generic-service" "env" "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI" }}

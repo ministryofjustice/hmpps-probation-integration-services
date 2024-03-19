@@ -50,6 +50,7 @@ spring:
 messaging:
   consumer.queue: prison-identifier
   producer.queue: prison-identifier
+  producer.topic: domain-events
 
 seed.database: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
@@ -58,8 +59,9 @@ jwt.authorities:
   - ROLE_PROBATION_API__PRISON_IDENTIFIER__UPDATE
 
 integrations:
-  prisoner-search:
-    url: http://localhost:${wiremock.port}
+  prison-api.url: http://localhost:${wiremock.port}/prison-api
+  prisoner-search.url: http://localhost:${wiremock.port}/prisoner-search
+  probation-search.url: http://localhost:${wiremock.port}/probation-search
 
 oauth2:
   client-id: prison-identifier-and-delius

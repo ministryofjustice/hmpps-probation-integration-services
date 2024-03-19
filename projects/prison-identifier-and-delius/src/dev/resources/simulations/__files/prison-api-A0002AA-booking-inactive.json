@@ -1,0 +1,12 @@
+{
+  "offenderNo": "A0001AA",
+  "bookingId": 20000002,
+  "bookingNo": "00002A",
+  "offenderId": 20000002,
+  "rootOffenderId": 20000002,
+  "firstName": "Bob",
+  "lastName": "Smith",
+  "dateOfBirth": "1992-03-15",
+  "activeFlag": false,
+  "agencyId": "OUT"
+}

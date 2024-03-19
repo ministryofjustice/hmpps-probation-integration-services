@@ -1,13 +1,16 @@
-package uk.gov.justice.digital.hmpps.integrations.prison
+package uk.gov.justice.digital.hmpps.client
 
 import com.fasterxml.jackson.annotation.JsonAlias
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.service.annotation.PostExchange
 import java.time.LocalDate
 
-data class SearchResponse(
-    val content: List<PrisonSearchResult>
-)
+interface PrisonerSearchClient {
+    @PostExchange(url = "/global-search")
+    fun globalSearch(@RequestBody body: PrisonerSearchRequest): PrisonerSearchResponse
+}
 
-data class SearchRequest(
+data class PrisonerSearchRequest(
     val prisonerIdentifier: String?,
     val firstName: String,
     val lastName: String,
@@ -16,7 +19,11 @@ data class SearchRequest(
     val includeAliases: Boolean = true
 )
 
-data class PrisonSearchResult(
+data class PrisonerSearchResponse(
+    val content: List<PrisonerSearchResult>
+)
+
+data class PrisonerSearchResult(
     val firstName: String,
     val lastName: String,
     val prisonerNumber: String,

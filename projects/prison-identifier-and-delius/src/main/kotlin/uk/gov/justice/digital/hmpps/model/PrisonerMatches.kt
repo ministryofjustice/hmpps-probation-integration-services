@@ -1,15 +1,16 @@
-package uk.gov.justice.digital.hmpps.sevice.model
+package uk.gov.justice.digital.hmpps.model
 
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.prison.PrisonSearchResult
+import uk.gov.justice.digital.hmpps.client.PrisonerSearchResult
+import uk.gov.justice.digital.hmpps.entity.Person
+import uk.gov.justice.digital.hmpps.service.DateMatcher
+import uk.gov.justice.digital.hmpps.service.withinDays
 
-data class PersonMatch(
+data class PrisonerMatches(
     val person: Person,
-    val responses: List<PrisonSearchResult>,
-    val nomsNumberShared: Boolean?
+    val responses: List<PrisonerSearchResult>
 ) {
 
-    private fun nameMatchType(prisoner: PrisonSearchResult): ComponentMatch.MatchType =
+    private fun nameMatchType(prisoner: PrisonerSearchResult): ComponentMatch.MatchType =
         when {
             prisoner.firstName.equals(person.forename, true) &&
                 prisoner.lastName.equals(person.surname, true) -> ComponentMatch.MatchType.MATCH
@@ -20,9 +21,9 @@ data class PersonMatch(
             else -> ComponentMatch.MatchType.PARTIAL
         }
 
-    private fun nameMatch(prisoner: PrisonSearchResult) = ComponentMatch.Name(nameMatchType(prisoner))
+    private fun nameMatch(prisoner: PrisonerSearchResult) = ComponentMatch.Name(nameMatchType(prisoner))
 
-    private fun dobMatch(prisoner: PrisonSearchResult) = ComponentMatch.DateOfBirth(
+    private fun dobMatch(prisoner: PrisonerSearchResult) = ComponentMatch.DateOfBirth(
         when (prisoner.dateOfBirth) {
             person.dateOfBirth -> ComponentMatch.MatchType.MATCH
             in DateMatcher.variations(person.dateOfBirth) -> ComponentMatch.MatchType.PARTIAL
@@ -30,7 +31,7 @@ data class PersonMatch(
         }
     )
 
-    private fun identifierMatch(prisoner: PrisonSearchResult): ComponentMatch.Identifier? = listOf(
+    private fun identifierMatch(prisoner: PrisonerSearchResult): ComponentMatch.Identifier? = listOf(
         prisoner.prisonerNumber to person.nomsNumber,
         prisoner.pncNumber to person.pncNumber,
         prisoner.croNumber to person.croNumber
@@ -43,7 +44,7 @@ data class PersonMatch(
     private fun exclusiveField(first: String?, second: String?): Boolean =
         (first == null && second != null) || (first != null && second == null)
 
-    private fun sentenceDateMatch(prisoner: PrisonSearchResult) = ComponentMatch.SentenceDate(
+    private fun sentenceDateMatch(prisoner: PrisonerSearchResult) = ComponentMatch.SentenceDate(
         when {
             person.isSentenced() && (prisoner.sentenceStartDate != null && person.sentenceDates()
                 .any { it.withinDays(prisoner.sentenceStartDate) }) -> ComponentMatch.MatchType.MATCH
@@ -53,7 +54,7 @@ data class PersonMatch(
         }
     )
 
-    private fun componentMatches(prisoner: PrisonSearchResult): List<ComponentMatch> =
+    private fun componentMatches(prisoner: PrisonerSearchResult): List<ComponentMatch> =
         when (val idMatch = identifierMatch(prisoner)) {
             is ComponentMatch.Identifier -> listOf(idMatch)
             else -> listOfNotNull(
@@ -68,7 +69,7 @@ data class PersonMatch(
     val matches =
         potentialMatches.filter { potential -> potential.matches.all { it.type == ComponentMatch.MatchType.MATCH } }
 
-    val match: PrisonSearchResult? = if (matches.size == 1) matches.first().prisoner else null
+    val match: PrisonerSearchResult? = if (matches.size == 1) matches.first().prisoner else null
 }
 
 sealed interface ComponentMatch {
@@ -78,13 +79,11 @@ sealed interface ComponentMatch {
 
     data class Name(override val type: MatchType) : ComponentMatch
     data class DateOfBirth(override val type: MatchType) : ComponentMatch
-
     data class Identifier(override val type: MatchType) : ComponentMatch
-
     data class SentenceDate(override val type: MatchType) : ComponentMatch
     enum class MatchType {
         MATCH, PARTIAL, INCONCLUSIVE
     }
 }
 
-data class PotentialMatch(val prisoner: PrisonSearchResult, val matches: List<ComponentMatch>)
+data class PotentialMatch(val prisoner: PrisonerSearchResult, val matches: List<ComponentMatch>)

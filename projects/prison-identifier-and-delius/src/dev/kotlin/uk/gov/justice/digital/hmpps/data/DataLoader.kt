@@ -11,10 +11,10 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateCustody
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateEvent
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -31,44 +31,40 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         val personWithNomsEvent = generateEvent(PersonGenerator.PERSON_WITH_NOMS)
-        val personWithNomsDisposal = generateDisposal(LocalDate.now(), personWithNomsEvent)
+        val personWithNomsDisposal = generateDisposal(LocalDate.of(2022, 11, 11), personWithNomsEvent)
         val personWithNomsCustody = generateCustody(personWithNomsDisposal)
 
         val personWithNoNomsNumberEvent = generateEvent(PersonGenerator.PERSON_WITH_NO_NOMS)
-        val personWithNoNomsNumberDisposal = generateDisposal(
-            LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
-            personWithNoNomsNumberEvent
-        )
+        val personWithNoNomsNumberDisposal = generateDisposal(LocalDate.of(2022, 12, 12), personWithNoNomsNumberEvent)
         val personWithNoNomsNumberCustody = generateCustody(personWithNoNomsNumberDisposal)
 
         val personWithMultiMatchEvent = generateEvent(PersonGenerator.PERSON_WITH_MULTI_MATCH)
-        val personWithMultiMatchDisposal = generateDisposal(
-            LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
-            personWithMultiMatchEvent
-        )
+        val personWithMultiMatchDisposal = generateDisposal(LocalDate.of(2022, 12, 12), personWithMultiMatchEvent)
         val personWithMultiMatchCustody = generateCustody(personWithMultiMatchDisposal)
 
         val personWithNoMatchEvent = generateEvent(PersonGenerator.PERSON_WITH_NO_MATCH)
-        val personWithNoMatchDisposal = generateDisposal(
-            LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
-            personWithNoMatchEvent
-        )
+        val personWithNoMatchDisposal = generateDisposal(LocalDate.of(2022, 12, 12), personWithNoMatchEvent)
         val personWithNoMatchCustody = generateCustody(personWithNoMatchDisposal)
 
         val personWithNomsInDeliusEvent = generateEvent(PersonGenerator.PERSON_WITH_NOMS_IN_DELIUS)
-        val personWithNomsInDeliusDisposal = generateDisposal(
-            LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
-            personWithNomsInDeliusEvent
-        )
+        val personWithNomsInDeliusDisposal = generateDisposal(LocalDate.of(2022, 12, 12), personWithNomsInDeliusEvent)
         val personWithNomsInDeliusCustody = generateCustody(personWithNomsInDeliusDisposal)
 
         em.saveAll(
-            PersonGenerator.MALE,
+            ReferenceDataGenerator.GENDER_SET,
+            ReferenceDataGenerator.MALE,
+            ReferenceDataGenerator.CUSTODY_STATUS_SET,
+            ReferenceDataGenerator.CUSTODY_STATUS,
+            ReferenceDataGenerator.ADDITIONAL_IDENTIFIER_TYPE_SET,
+            ReferenceDataGenerator.DUPLICATE_NOMS,
+            ReferenceDataGenerator.FORMER_NOMS,
             PersonGenerator.PERSON_WITH_NOMS,
             PersonGenerator.PERSON_WITH_NO_NOMS,
             PersonGenerator.PERSON_WITH_MULTI_MATCH,
             PersonGenerator.PERSON_WITH_NO_MATCH,
             PersonGenerator.PERSON_WITH_NOMS_IN_DELIUS,
+            PersonGenerator.PERSON_WITH_DUPLICATE_NOMS,
+            PersonGenerator.PERSON_WITH_EXISTING_NOMS,
             personWithNomsEvent,
             personWithNomsDisposal,
             personWithNomsCustody,

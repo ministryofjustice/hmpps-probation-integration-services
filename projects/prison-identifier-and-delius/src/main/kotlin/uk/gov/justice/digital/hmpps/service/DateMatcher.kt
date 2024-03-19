@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.sevice.model
+package uk.gov.justice.digital.hmpps.service
 
 import java.time.DateTimeException
 import java.time.LocalDate
