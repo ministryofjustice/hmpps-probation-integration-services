@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -20,6 +19,18 @@ import java.time.LocalDate
 class SentenceIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
+
+    @Test
+    fun `no active sentences`() {
+        val response = mockMvc
+            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}").withToken())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<SentenceOverview>()
+
+        val expected = SentenceOverview(listOf())
+
+        assertEquals(expected, response)
+    }
 
     @Test
     fun `get active sentences`() {

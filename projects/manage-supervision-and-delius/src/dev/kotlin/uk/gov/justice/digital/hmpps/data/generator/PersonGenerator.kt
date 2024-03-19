@@ -13,6 +13,7 @@ import java.time.ZonedDateTime
 object PersonGenerator {
 
     val OVERVIEW = generateOverview("X000004")
+    val OFFENDER_WITHOUT_EVENTS = generateOverview("X000005")
     val EVENT_1 = generateEvent(
         OVERVIEW,
         eventNumber = "7654321",

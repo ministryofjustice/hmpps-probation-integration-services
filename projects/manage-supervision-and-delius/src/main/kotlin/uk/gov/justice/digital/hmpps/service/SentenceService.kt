@@ -24,24 +24,22 @@ class SentenceService(
         })
     }
 
-    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>) =
-        mainOffence?.let { mainOffence ->
-            Sentence(
-                (OffenceDetails(offence = Offence(mainOffence.offence.description, mainOffence.offenceCount),
-                    dateOfOffence = mainOffence.date,
-                    notes = notes,
-                    additionalOffences = additionalOffences.map {
-                        Offence(description = it.offence.description, count = it.offenceCount ?: 0)
-                    }
-                )
-                    ),
-                Conviction(sentencingCourt = courtAppearance?.court?.name,
-                    responsibleCourt = court?.name,
-                    convictionDate = convictionDate,
-                    additionalSentences.map { it.toAdditionalSentence() }
-                )
-            )
-        }
+    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>) = Sentence(
+        OffenceDetails(
+            offence = mainOffence?.let { Offence(it.offence.description, it.offenceCount) },
+            dateOfOffence = mainOffence?.date!!,
+            notes = notes,
+            additionalOffences = additionalOffences.map {
+                Offence(description = it.offence.description, count = it.offenceCount ?: 0)
+            }
+        ),
+        Conviction(
+            sentencingCourt = courtAppearance?.court?.name,
+            responsibleCourt = court?.name,
+            convictionDate = convictionDate,
+            additionalSentences.map { it.toAdditionalSentence() }
+        )
+    )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, refData!!.description)
