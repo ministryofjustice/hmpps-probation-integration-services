@@ -1,7 +1,6 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
-    "core-person-record-and-delius",
     "accredited-programmes-and-oasys",
     "approved-premises-and-delius",
     "approved-premises-and-oasys",
@@ -9,6 +8,7 @@ include(
     "assessment-summary-and-delius",
     "cas2-and-delius",
     "cas3-and-delius",
+    "core-person-record-and-delius",
     "court-case-and-delius",
     "create-and-vary-a-licence-and-delius",
     "custody-key-dates-and-delius",
