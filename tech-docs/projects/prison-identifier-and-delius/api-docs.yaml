@@ -14,11 +14,59 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /person/populate-noms-number:
+  /person/match-by-noms:
     get:
       tags:
       - matching-controller
-      operationId: populateNomsNumbers
+      operationId: matchByNoms
+      parameters:
+      - name: dryRun
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - name: nomsNumbers
+        in: query
+        required: true
+        schema:
+          maxItems: 500
+          minItems: 1
+          type: array
+          items:
+            type: string
+      responses:
+        "202":
+          description: Accepted
+    post:
+      tags:
+      - matching-controller
+      operationId: matchByNoms_1
+      parameters:
+      - name: dryRun
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              maxItems: 500
+              minItems: 1
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "202":
+          description: Accepted
+  /person/match-by-crn:
+    get:
+      tags:
+      - matching-controller
+      operationId: matchByCrn
       parameters:
       - name: dryRun
         in: query
@@ -36,12 +84,12 @@ paths:
           items:
             type: string
       responses:
-        "200":
-          description: OK
+        "202":
+          description: Accepted
     post:
       tags:
       - matching-controller
-      operationId: populateNomsNumbers_1
+      operationId: matchByCrn_1
       parameters:
       - name: dryRun
         in: query
@@ -59,8 +107,8 @@ paths:
               items:
                 type: string
       responses:
-        "200":
-          description: OK
+        "202":
+          description: Accepted
 components:
   securitySchemes:
     hmpps-auth-token:

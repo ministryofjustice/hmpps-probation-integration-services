@@ -118,7 +118,10 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#person-populate-noms-number"><span>/person/populate-noms-number</span></a>
+        <a href="./api-reference.html#person-match-by-noms"><span>/person/match-by-noms</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#person-match-by-crn"><span>/person/match-by-crn</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -154,14 +157,132 @@
 
 
 
-<h2 id="person-populate-noms-number">/person/populate-noms-number</h2>
+<h2 id="person-match-by-noms">/person/match-by-noms</h2>
 
-<h3 id="person-populate-noms-number-get">get</h3>
-
-
+<h3 id="person-match-by-noms-get">get</h3>
 
 
-<h4 id="person-populate-noms-number-get-parameters">Parameters</h4>
+
+
+<h4 id="person-match-by-noms-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>dryRun</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>nomsNumbers</td>
+<td>query</td>
+<td>array</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="person-match-by-noms-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>202</td>
+<td>
+<p>Accepted</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="person-match-by-noms-post">post</h3>
+
+
+
+
+<h4 id="person-match-by-noms-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>dryRun</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="person-match-by-noms-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>202</td>
+<td>
+<p>Accepted</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="person-match-by-crn">/person/match-by-crn</h2>
+
+<h3 id="person-match-by-crn-get">get</h3>
+
+
+
+
+<h4 id="person-match-by-crn-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -194,7 +315,7 @@
 
 
 
-<h4 id="person-populate-noms-number-get-responses">Responses</h4>
+<h4 id="person-match-by-crn-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -202,9 +323,9 @@
 <tbody>
 
 <tr>
-<td>200</td>
+<td>202</td>
 <td>
-<p>OK</p>
+<p>Accepted</p>
 
 
 
@@ -218,12 +339,12 @@
 </table>
 
 
-<h3 id="person-populate-noms-number-post">post</h3>
+<h3 id="person-match-by-crn-post">post</h3>
 
 
 
 
-<h4 id="person-populate-noms-number-post-parameters">Parameters</h4>
+<h4 id="person-match-by-crn-post-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -246,7 +367,7 @@
 
 
 
-<h4 id="person-populate-noms-number-post-responses">Responses</h4>
+<h4 id="person-match-by-crn-post-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -254,9 +375,9 @@
 <tbody>
 
 <tr>
-<td>200</td>
+<td>202</td>
 <td>
-<p>OK</p>
+<p>Accepted</p>
 
 
 

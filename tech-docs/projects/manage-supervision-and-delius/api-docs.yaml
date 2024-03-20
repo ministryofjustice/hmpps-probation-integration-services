@@ -218,11 +218,51 @@ paths:
                 $ref: '#/components/schemas/Overview'
 components:
   schemas:
-    MainOffence:
+    AdditionalSentence:
+      required:
+      - description
+      type: object
+      properties:
+        length:
+          type: integer
+          format: int64
+        amount:
+          type: integer
+          format: int64
+        notes:
+          type: string
+        description:
+          type: string
+    Conviction:
+      required:
+      - additionalSentences
+      type: object
+      properties:
+        sentencingCourt:
+          type: string
+        responsibleCourt:
+          type: string
+        convictionDate:
+          type: string
+          format: date
+        additionalSentences:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdditionalSentence'
+    Offence:
+      required:
+      - count
+      - description
+      type: object
+      properties:
+        description:
+          type: string
+        count:
+          type: integer
+          format: int64
+    OffenceDetails:
       required:
       - additionalOffences
-      - dateOfOffence
-      - offence
       type: object
       properties:
         offence:
@@ -236,26 +276,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offence'
-    Offence:
-      required:
-      - count
-      - description
-      type: object
-      properties:
-        description:
-          type: string
-        count:
-          type: integer
-          format: int64
-    SentenceOverview:
+    Sentence:
       required:
       - offence
       type: object
       properties:
         offence:
+          $ref: '#/components/schemas/OffenceDetails'
+        conviction:
+          $ref: '#/components/schemas/Conviction'
+    SentenceOverview:
+      required:
+      - sentences
+      type: object
+      properties:
+        sentences:
           type: array
           items:
-            $ref: '#/components/schemas/MainOffence'
+            $ref: '#/components/schemas/Sentence'
     Address:
       required:
       - from
@@ -691,20 +729,6 @@ components:
           format: date-time
         description:
           type: string
-    Order:
-      required:
-      - description
-      - startDate
-      type: object
-      properties:
-        description:
-          type: string
-        endDate:
-          type: string
-          format: date
-        startDate:
-          type: string
-          format: date
     Overview:
       required:
       - personalDetails
@@ -744,46 +768,11 @@ components:
         count:
           type: integer
           format: int32
-    Rar:
-      required:
-      - completed
-      - scheduled
-      - totalDays
-      type: object
-      properties:
-        completed:
-          type: integer
-          format: int32
-        scheduled:
-          type: integer
-          format: int32
-        totalDays:
-          type: integer
-          format: int32
     Schedule:
       type: object
       properties:
         nextAppointment:
           $ref: '#/components/schemas/NextAppointment'
-    Sentence:
-      required:
-      - additionalOffences
-      - eventNumber
-      - mainOffence
-      type: object
-      properties:
-        additionalOffences:
-          type: array
-          items:
-            $ref: '#/components/schemas/Offence'
-        eventNumber:
-          type: string
-        mainOffence:
-          $ref: '#/components/schemas/Offence'
-        order:
-          $ref: '#/components/schemas/Order'
-        rar:
-          $ref: '#/components/schemas/Rar'
   securitySchemes:
     hmpps-auth-token:
       type: http

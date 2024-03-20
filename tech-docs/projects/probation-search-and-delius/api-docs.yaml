@@ -14,21 +14,64 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
-    get:
+  /probation-search/audit/contact-search:
+    post:
       tags:
-      - api-controller
-      operationId: handle
-      parameters:
-      - name: inputId
-        in: path
+      - search-audit-resource
+      operationId: auditContactSearch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactSearchAuditRequest'
         required: true
-        schema:
-          type: string
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
 components:
+  schemas:
+    ContactSearchAuditRequest:
+      required:
+      - dateTime
+      - pagination
+      - search
+      type: object
+      properties:
+        search:
+          $ref: '#/components/schemas/ContactSearchRequest'
+        pagination:
+          $ref: '#/components/schemas/PageRequest'
+        dateTime:
+          type: string
+          format: date-time
+    ContactSearchRequest:
+      required:
+      - crn
+      - matchAllTerms
+      type: object
+      properties:
+        crn:
+          type: string
+        query:
+          type: string
+        matchAllTerms:
+          type: boolean
+    PageRequest:
+      required:
+      - page
+      - pageSize
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        sort:
+          type: string
+        direction:
+          type: string
   securitySchemes:
     hmpps-auth-token:
       type: http
