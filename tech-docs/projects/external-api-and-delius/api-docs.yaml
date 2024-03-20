@@ -55,6 +55,28 @@ components:
           type: string
         plea:
           type: string
+    Manager:
+      required:
+      - allocated
+      - code
+      - name
+      - team
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        username:
+          type: string
+        email:
+          type: string
+        telephoneNumber:
+          type: string
+        team:
+          $ref: '#/components/schemas/Team'
+        allocated:
+          type: boolean
     MappaDetail:
       required:
       - startDate
@@ -77,6 +99,16 @@ components:
           type: string
           format: date
         notes:
+          type: string
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
           type: string
     Offence:
       required:
@@ -103,6 +135,16 @@ components:
         schedule15ViolentOffence:
           type: boolean
     OffenceCategory:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    Provider:
       required:
       - code
       - description
@@ -165,15 +207,35 @@ components:
             $ref: '#/components/schemas/CourtAppearance'
     SupervisionResponse:
       required:
+      - communityManager
       - supervisions
       type: object
       properties:
+        communityManager:
+          $ref: '#/components/schemas/Manager'
         mappaDetail:
           $ref: '#/components/schemas/MappaDetail'
         supervisions:
           type: array
           items:
             $ref: '#/components/schemas/Supervision'
+    Team:
+      required:
+      - code
+      - description
+      - provider
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        email:
+          type: string
+        telephoneNumber:
+          type: string
+        provider:
+          $ref: '#/components/schemas/Provider'
   securitySchemes:
     hmpps-auth-token:
       type: http
