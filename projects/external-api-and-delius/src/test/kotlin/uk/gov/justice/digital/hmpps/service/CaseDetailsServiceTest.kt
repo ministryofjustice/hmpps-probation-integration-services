@@ -10,12 +10,15 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import org.springframework.ldap.core.LdapTemplate
+import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.EVENT
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
-import uk.gov.justice.digital.hmpps.integration.delius.PersonRepository
+import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonManager
+import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.model.CourtAppearance
 import uk.gov.justice.digital.hmpps.model.LengthUnit
@@ -30,13 +33,16 @@ import java.time.ZonedDateTime
 @ExtendWith(MockitoExtension::class)
 internal class CaseDetailsServiceTest {
     @Mock
-    lateinit var personRepository: PersonRepository
+    lateinit var personManagerRepository: PersonManagerRepository
 
     @Mock
     lateinit var registrationRepository: RegistrationRepository
 
     @Mock
     lateinit var eventRepository: EventRepository
+
+    @Mock
+    lateinit var ldapTemplate: LdapTemplate
 
     @InjectMocks
     lateinit var caseDetailsService: CaseDetailsService
@@ -49,7 +55,7 @@ internal class CaseDetailsServiceTest {
 
     @Test
     fun `returns supervisions`() {
-        whenever(personRepository.findByCrn(PERSON.crn)).thenReturn(PERSON)
+        whenever(personManagerRepository.findByPersonCrn(PERSON.crn)).thenReturn(DataGenerator.PERSON_MANAGER)
         whenever(eventRepository.findByPersonIdOrderByConvictionDateDesc(PERSON.id)).thenReturn(listOf(EVENT))
         val response = caseDetailsService.getSupervisions(PERSON.crn).supervisions
         assertThat(response, hasSize(1))

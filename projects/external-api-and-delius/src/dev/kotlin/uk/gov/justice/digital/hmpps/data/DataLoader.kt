@@ -30,7 +30,12 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(applicationReadyEvent: ApplicationReadyEvent) {
         with(entityManager) {
+            persist(DataGenerator.DEFAULT_PROVIDER)
+            persist(DataGenerator.DEFAULT_TEAM)
+            persist(DataGenerator.JOHN_SMITH)
+            persist(DataGenerator.JS_USER)
             persist(DataGenerator.PERSON)
+            persist(DataGenerator.PERSON_MANAGER)
             persist(DataGenerator.OFFENCE)
             persist(DataGenerator.COURT)
             persist(DataGenerator.COURT_APPEARANCE_TYPE)

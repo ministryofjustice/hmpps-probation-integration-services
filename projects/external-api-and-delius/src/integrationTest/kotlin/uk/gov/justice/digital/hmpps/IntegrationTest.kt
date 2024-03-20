@@ -31,6 +31,26 @@ internal class IntegrationTest {
                 content().json(
                     """
                     {
+                        "communityManager": {
+                          "code": "DEFJOSM",                 
+                          "name": {
+                            "forename": "John",
+                            "surname": "Smith"
+                          },   
+                          "username": "john-smith",
+                          "email": "john.smith@moj.gov.uk",
+                          "telephoneNumber": "07321165373",
+                          "team": {
+                            "code": "DEFUAT",
+                            "description": "Default Team",
+                            "email": "team@justice.co.uk",
+                            "telephoneNumber": "020 334 1257",
+                            "provider": {
+                              "code": "DEF",
+                              "description": "Default Provider"
+                            }
+                          }              
+                        },
                         "mappaDetail": {
                           "level": 1,                 
                           "levelDescription": "Description of M1",   
