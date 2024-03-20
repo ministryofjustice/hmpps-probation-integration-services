@@ -1,21 +1,31 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
-import uk.gov.justice.digital.hmpps.integration.delius.PersonRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.findMappa
-import uk.gov.justice.digital.hmpps.integration.delius.getByCrn
+import uk.gov.justice.digital.hmpps.integration.delius.entity.*
+import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.model.CourtAppearance
+import uk.gov.justice.digital.hmpps.model.Offence
+import uk.gov.justice.digital.hmpps.model.Provider
+import uk.gov.justice.digital.hmpps.model.Team
 
 @Service
 class CaseDetailsService(
-    private val personRepository: PersonRepository,
+    private val comRepository: PersonManagerRepository,
     private val registrationRepository: RegistrationRepository,
     private val eventRepository: EventRepository,
+    private val ldapTemplate: LdapTemplate
 ) {
-    fun getSupervisions(crn: String): SupervisionResponse = with(personRepository.getByCrn(crn)) {
-        val supervisions = eventRepository.findByPersonIdOrderByConvictionDateDesc(id).map { event ->
+    fun getSupervisions(crn: String): SupervisionResponse = with(comRepository.getForCrn(crn)) {
+        staff.user?.apply {
+            ldapTemplate.findByUsername<LdapUser>(username)?.let {
+                email = it.email
+                telephone = it.telephone
+            }
+        }
+        val supervisions = eventRepository.findByPersonIdOrderByConvictionDateDesc(person.id).map { event ->
             Supervision(
                 number = event.number.toInt(),
                 active = event.active,
@@ -41,7 +51,7 @@ class CaseDetailsService(
                 }
             )
         }
-        val mappaDetail = registrationRepository.findMappa(id)?.let {
+        val mappaDetail = registrationRepository.findMappa(person.id)?.let {
             MappaDetail(
                 it.level?.code?.toMappaLevel(),
                 it.level?.description,
@@ -52,7 +62,7 @@ class CaseDetailsService(
                 it.notes
             )
         }
-        return SupervisionResponse(mappaDetail, supervisions)
+        return SupervisionResponse(asCom(), mappaDetail, supervisions)
     }
 }
 
@@ -64,3 +74,17 @@ private fun String.toMappaLevel() = Level.entries.find { it.name == this }?.numb
 
 private fun String.toMappaCategory() = Category.entries.find { it.name == this }?.number
     ?: throw IllegalStateException("Unexpected MAPPA category: $this")
+
+private fun PersonManager.asCom() = Manager(
+    staff.code,
+    staff.name(),
+    staff.user?.username,
+    staff.user?.email,
+    staff.user?.telephone,
+    team.asModel(provider())
+)
+
+private fun PersonManager.provider() = Provider(provider.code, provider.description)
+
+private fun uk.gov.justice.digital.hmpps.integration.delius.entity.Team.asModel(provider: Provider) =
+    Team(code, description, emailAddress, telephone, provider)

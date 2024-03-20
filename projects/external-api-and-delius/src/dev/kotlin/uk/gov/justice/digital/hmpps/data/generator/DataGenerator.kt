@@ -1,23 +1,28 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integration.delius.entity.AdditionalOffence
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Court
-import uk.gov.justice.digital.hmpps.integration.delius.entity.CourtAppearance
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Disposal
-import uk.gov.justice.digital.hmpps.integration.delius.entity.DisposalType
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Event
-import uk.gov.justice.digital.hmpps.integration.delius.entity.MainOffence
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Offence
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integration.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
 object DataGenerator {
-    val PERSON = Person(id = IdGenerator.getAndIncrement(), crn = "A000001")
+    val DEFAULT_PROVIDER = Provider("DEF", "Default Provider", IdGenerator.getAndIncrement())
+    val DEFAULT_TEAM =
+        Team("DEFUAT", "Default Team", "020 334 1257", "team@justice.co.uk", IdGenerator.getAndIncrement())
+    val JOHN_SMITH = Staff("DEFJOSM", "John", "Smith", null, IdGenerator.getAndIncrement())
+    val JS_USER = StaffUser(JOHN_SMITH, "john-smith", IdGenerator.getAndIncrement())
+
+    val PERSON = Person(id = IdGenerator.getAndIncrement(), crn = "A000001", softDeleted = false)
+    val PERSON_MANAGER = PersonManager(
+        PERSON,
+        DEFAULT_PROVIDER,
+        DEFAULT_TEAM,
+        JOHN_SMITH,
+        true,
+        IdGenerator.getAndIncrement()
+    )
 
     val OFFENCE = Offence(
         id = IdGenerator.getAndIncrement(),
