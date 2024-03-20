@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /core-person-record-and-delius/db-username
+    password_key: /core-person-record-and-delius/db-password
+
+  audit:
+    username: CorePersonRecordAndDelius
+    forename: Core Person
+    surname: Service

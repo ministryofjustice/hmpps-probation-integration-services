@@ -41,6 +41,7 @@ jobs:
           - assessment-summary-and-delius
           - cas2-and-delius
           - cas3-and-delius
+          - core-person-record-and-delius
           - court-case-and-delius
           - create-and-vary-a-licence-and-delius
           - custody-key-dates-and-delius
