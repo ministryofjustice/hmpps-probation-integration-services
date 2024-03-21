@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -12,6 +13,9 @@ import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonSummaryEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
@@ -29,24 +33,43 @@ class SentenceServiceTest {
     @Mock
     lateinit var additionalSentenceRepository: AdditionalSentenceRepository
 
+    @Mock
+    lateinit var personRepository: PersonRepository
+
     @InjectMocks
     lateinit var service: SentenceService
+
+    private lateinit var personSummary: PersonalDetailsServiceTest.Summary
+
+    @BeforeEach
+    fun setup() {
+        val crn = "X000005"
+        personSummary = PersonalDetailsServiceTest.Summary(
+            id = 1,
+            forename = "TestName",
+            surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
+        )
+    }
 
     @Test
     fun `no active sentences`() {
 
-        whenever(eventRepository.findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(
+        whenever(personRepository.findSummary(PersonGenerator.OVERVIEW.crn)).thenReturn(personSummary)
+        whenever(eventRepository.findActiveSentencesByPersonId(personSummary.id)).thenReturn(
             listOf()
         )
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(SentenceOverview(listOf()), response)
-        verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
+        verify(personRepository, times(1)).findSummary(PersonGenerator.OVERVIEW.crn)
+        verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
 
         verifyNoMoreInteractions(eventRepository)
+        verifyNoMoreInteractions(personRepository)
         verifyNoInteractions(courtAppearanceRepository)
         verifyNoInteractions(additionalSentenceRepository)
+
     }
 
     @Test
@@ -63,7 +86,8 @@ class SentenceServiceTest {
             additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
         )
 
-        whenever(eventRepository.findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(
+        whenever(personRepository.findSummary(PersonGenerator.OVERVIEW.crn)).thenReturn(personSummary)
+        whenever(eventRepository.findActiveSentencesByPersonId(personSummary.id)).thenReturn(
             listOf(
                 event
             )
@@ -105,10 +129,24 @@ class SentenceServiceTest {
         )
 
         assertEquals(expected, response)
-        verify(eventRepository, times(1)).findActiveSentencesByCrn(PersonGenerator.OVERVIEW.crn)
+        verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
+        verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
+        verifyNoMoreInteractions(courtAppearanceRepository)
+
     }
+
+    data class Summary(
+        override val id: Long,
+        override val forename: String,
+        override val secondName: String? = null,
+        override val thirdName: String? = null,
+        override val surname: String,
+        override val crn: String,
+        override val pnc: String?,
+        override val dateOfBirth: LocalDate
+    ) : PersonSummaryEntity
 }

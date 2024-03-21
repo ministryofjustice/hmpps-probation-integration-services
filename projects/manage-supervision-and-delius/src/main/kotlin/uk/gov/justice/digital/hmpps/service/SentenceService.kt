@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
@@ -13,10 +15,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Addition
 class SentenceService(
     private val eventRepository: EventSentenceRepository,
     private val courtApperanceRepository: CourtAppearanceRepository,
-    private val additionalSentenceRepository: AdditionalSentenceRepository
+    private val additionalSentenceRepository: AdditionalSentenceRepository,
+    private val personRepository: PersonRepository
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
-        val events = eventRepository.findActiveSentencesByCrn(crn)
+        val person = personRepository.getSummary(crn)
+        val events = eventRepository.findActiveSentencesByPersonId(person.id)
         return SentenceOverview(events.map {
             val courtAppearance = courtApperanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
             val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
