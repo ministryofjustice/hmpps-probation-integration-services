@@ -36,6 +36,11 @@ internal class ScheduleIntegrationTest {
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toAppointment().id))
+        assertThat(res.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toAppointment().type))
+        assertThat(
+            res.appointments[0].location?.officeName,
+            equalTo(ContactGenerator.FIRST_APPT_CONTACT.toAppointment().location?.officeName)
+        )
     }
 
     @Test
@@ -48,6 +53,14 @@ internal class ScheduleIntegrationTest {
             .andReturn().response.contentAsJson<Schedule>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.appointments[0].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment().id))
+        assertThat(
+            res.appointments[0].type,
+            equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment().type)
+        )
+        assertThat(
+            res.appointments[0].location?.officeName,
+            equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment().location?.officeName)
+        )
     }
 
     @Test
@@ -78,5 +91,9 @@ internal class ScheduleIntegrationTest {
         val expectedAppointment = ContactGenerator.NEXT_APPT_CONTACT.toAppointment().copy(documents = expectedDocs)
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.appointment.id, equalTo(expectedAppointment.id))
+        assertThat(res.appointment.id, equalTo(expectedAppointment.id))
+        assertThat(res.appointment.type, equalTo(expectedAppointment.type))
+        assertThat(res.appointment.location?.officeName, equalTo(expectedAppointment.location?.officeName))
+        assertThat(res.appointment.documents.size, equalTo(expectedAppointment.documents.size))
     }
 }
