@@ -29,6 +29,10 @@ class OverviewService(
         val personalCircumstances = personalCircumstanceRepository.findCurrentCircumstances(person.id)
         val disabilities = disabilityRepository.findByPersonId(person.id)
         val personalDetails = person.toPersonalDetails(personalCircumstances, disabilities, provisions)
+        val previousAppointments = contactRepository.getPreviousAppointments(person.id)
+        val previousAppointmentNoOutcome =
+            previousAppointments.filter { it.attended != false && it.outcome == null }.size
+        val absentWithoutEvidence = previousAppointments.filter { it.attended == false && it.outcome == null }.size
         val schedule = Schedule(contactRepository.firstAppointment(person.id)?.toNextAppointment())
         val events = eventRepository.findByPersonId(person.id)
         val activeEvents = events.filter { it.active }
@@ -40,6 +44,8 @@ class OverviewService(
 
 
         return Overview(
+            appointmentsWithoutOutcome = previousAppointmentNoOutcome,
+            absencesWithoutEvidence = absentWithoutEvidence,
             personalDetails = personalDetails,
             schedule = schedule,
             previousOrders = PreviousOrders(previousOrdersBreached, previousOrders),
@@ -95,7 +101,7 @@ class OverviewService(
     fun Disability.toDisability() =
         uk.gov.justice.digital.hmpps.api.model.overview.Disability(description = type.description)
 
-    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision() =
+    fun Provision.toProvision() =
         uk.gov.justice.digital.hmpps.api.model.overview.Provision(description = type.description)
 
     fun Contact.toNextAppointment() =
