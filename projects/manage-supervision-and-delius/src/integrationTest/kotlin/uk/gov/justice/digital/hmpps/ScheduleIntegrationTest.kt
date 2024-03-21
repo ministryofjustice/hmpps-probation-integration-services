@@ -41,6 +41,7 @@ internal class ScheduleIntegrationTest {
             res.appointments[0].location?.officeName,
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.toAppointment().location?.officeName)
         )
+        assertThat(res.appointments[0].location?.postcode, equalTo("H34 7TH"))
     }
 
     @Test
@@ -61,6 +62,7 @@ internal class ScheduleIntegrationTest {
             res.appointments[0].location?.officeName,
             equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment().location?.officeName)
         )
+        assertThat(res.appointments[0].location?.postcode, equalTo("H34 7TH"))
     }
 
     @Test
@@ -91,9 +93,9 @@ internal class ScheduleIntegrationTest {
         val expectedAppointment = ContactGenerator.NEXT_APPT_CONTACT.toAppointment().copy(documents = expectedDocs)
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.appointment.id, equalTo(expectedAppointment.id))
-        assertThat(res.appointment.id, equalTo(expectedAppointment.id))
         assertThat(res.appointment.type, equalTo(expectedAppointment.type))
         assertThat(res.appointment.location?.officeName, equalTo(expectedAppointment.location?.officeName))
         assertThat(res.appointment.documents.size, equalTo(expectedAppointment.documents.size))
+        assertThat(res.appointment.location?.postcode, equalTo("H34 7TH"))
     }
 }
