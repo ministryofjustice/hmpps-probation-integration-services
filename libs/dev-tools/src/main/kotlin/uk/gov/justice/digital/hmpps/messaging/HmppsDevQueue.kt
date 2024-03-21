@@ -12,9 +12,7 @@ import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.LinkedList
-import java.util.Queue
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.locks.ReentrantLock
@@ -139,12 +137,23 @@ class HmppsNotificationListener(
 
 @Component
 @ConditionalOnProperty("messaging.producer.topic")
-class HmppsNotificationPublisher(
+class TopicPublisher(
     @Value("\${messaging.producer.topic}") private val topicName: String,
     private val channelManager: HmppsChannelManager
 ) : NotificationPublisher {
     override fun publish(notification: Notification<*>) {
         channelManager.getChannel(topicName).publish(notification)
+    }
+}
+
+@Component
+@ConditionalOnProperty("messaging.producer.queue")
+class QueuePublisher(
+    @Value("\${messaging.producer.queue}") private val queueName: String,
+    private val channelManager: HmppsChannelManager
+) : NotificationPublisher {
+    override fun publish(notification: Notification<*>) {
+        channelManager.getChannel(queueName).publish(notification)
     }
 }
 

@@ -1,16 +1,13 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.RiskOGRS
-import uk.gov.justice.digital.hmpps.api.model.RiskRecord
-import uk.gov.justice.digital.hmpps.api.model.RiskRegistration
-import uk.gov.justice.digital.hmpps.api.model.name
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
+import uk.gov.justice.digital.hmpps.integrations.delius.registration.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.registration.entity.Registration
 
 @Service
@@ -49,5 +46,11 @@ class AllocationRiskService(
         }
     }
 
-    fun Registration.forRisk() = RiskRegistration(registerType.description, startDate, endDate, notes)
+    fun Registration.forRisk() = RiskRegistration(
+        registerType.description,
+        startDate,
+        endDate,
+        notes,
+        registerType.flag?.description?.let(::RegistrationFlag)
+    )
 }

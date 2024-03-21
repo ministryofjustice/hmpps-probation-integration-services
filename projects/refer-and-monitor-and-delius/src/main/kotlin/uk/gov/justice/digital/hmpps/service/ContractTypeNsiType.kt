@@ -25,6 +25,7 @@ object ContractTypeNsiType {
         "DNR-NEN" to "CRS04",
         "DNR-SC" to "CRS04",
         "DNR-SY" to "CRS04",
-        "DNR-WM" to "CRS04"
+        "DNR-WM" to "CRS04",
+        "DNR-SW" to "CRS04",
     )
 }

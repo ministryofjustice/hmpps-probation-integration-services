@@ -36,6 +36,8 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: HMPPSAllocations
 
+requirement.types.ignored:
+
 management:
   endpoints.web:
     base-path: /
@@ -53,7 +55,6 @@ spring:
   ldap.embedded.base-dn: ${spring.ldap.base}
 
 seed.database: true
-wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 jwt.authorities:
@@ -67,7 +68,7 @@ integrations:
     client-id: workforce-allocations-to-delius
     client-secret: workforce-allocations-to-delius
   alfresco:
-    url: https://alfresco.test.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg
+    url: https://hmpps-delius-alfresco-test.apps.live.cloud-platform.service.justice.gov.uk/alfresco/service/noms-spg
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

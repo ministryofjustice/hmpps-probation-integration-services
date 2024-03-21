@@ -11,7 +11,7 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
 
-    INTEGRATIONS_ALFRESCO_URL: https://alfresco.test.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg/
+    INTEGRATIONS_ALFRESCO_URL: https://hmpps-delius-alfresco-test.apps.live.cloud-platform.service.justice.gov.uk/alfresco/service/noms-spg/
     INTEGRATIONS_PRE-SENTENCE-REPORTS_BASE-URL: https://pre-sentence-service-dev.hmpps.service.justice.gov.uk
     INTEGRATIONS_NEW-TECH_BASE-URL: https://ndelius.test.probation.service.justice.gov.uk/newTech
 

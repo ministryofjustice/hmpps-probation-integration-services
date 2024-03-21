@@ -10,6 +10,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            cloud-platform.justice.gov.uk/namespace: {{ .Values.namespace.label }}
         spec:
           containers:
             - name: update-noms-numbers
@@ -17,13 +20,13 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - 'curl -fsSL -X POST "https://$BASE_URL/person/populate-noms-number?trialOnly=$TRIAL_ONLY" --header "Authorization: Bearer $(curl -fsSL --request POST "$AUTH_URL?grant_type=client_credentials" --user "$CLIENT_ID:$CLIENT_SECRET"  | jq -r .access_token)" --header "Content-Type: application/json"'
+                - 'curl -fsSL -X POST "https://$BASE_URL/person/match-by-crn?dryRun=$DRY_RUN" --header "Authorization: Bearer $(curl -fsSL --request POST "$AUTH_URL?grant_type=client_credentials" --user "$CLIENT_ID:$CLIENT_SECRET"  | jq -r .access_token)" --header "Content-Type: application/json"'
               env:
                 - name: AUTH_URL
                   value: {{ index .Values "generic-service" "env" "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI" }}
                 - name: BASE_URL
                   value: {{ index .Values "generic-service" "ingress" "host" }}
-                - name: TRIAL_ONLY
+                - name: DRY_RUN
                   value: '{{ index .Values "generic-service" "env" "NOMS_DRY_RUN" }}'
                 - name: CLIENT_ID
                   valueFrom:

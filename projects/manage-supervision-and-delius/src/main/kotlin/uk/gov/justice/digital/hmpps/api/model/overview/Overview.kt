@@ -6,5 +6,6 @@ data class Overview(
     val personalDetails: PersonalDetails,
     val previousOrders: PreviousOrders,
     val schedule: Schedule,
-    val sentences: List<Sentence>
+    val sentences: List<Sentence>,
+    val registrations: List<String>,
 )

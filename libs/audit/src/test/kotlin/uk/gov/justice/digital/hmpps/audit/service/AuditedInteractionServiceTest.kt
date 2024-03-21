@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.audit.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -63,19 +64,22 @@ class AuditedInteractionServiceTest {
         val parameters = AuditedInteraction.Parameters(
             Pair("key", "value")
         )
+        val dateTime = ZonedDateTime.now()
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.TEST_BI_CODE,
             parameters,
-            AuditedInteraction.Outcome.SUCCESS
+            AuditedInteraction.Outcome.SUCCESS,
+            dateTime
         )
         val aiCaptor = ArgumentCaptor.forClass(AuditedInteraction::class.java)
         verify(auditedInteractionRepository, Mockito.times(1)).save(aiCaptor.capture())
         val saved = aiCaptor.value
 
-        assertThat(saved.businessInteractionId, Matchers.equalTo(1))
-        assertThat(saved.outcome, Matchers.equalTo(AuditedInteraction.Outcome.SUCCESS))
-        assertThat(saved.userId, Matchers.equalTo(user.id))
-        assertThat(saved.parameters, Matchers.equalTo(parameters))
+        assertThat(saved.businessInteractionId, equalTo(1))
+        assertThat(saved.outcome, equalTo(AuditedInteraction.Outcome.SUCCESS))
+        assertThat(saved.userId, equalTo(user.id))
+        assertThat(saved.parameters, equalTo(parameters))
+        assertThat(saved.dateTime, equalTo(dateTime))
     }
 
     @Test
@@ -90,7 +94,8 @@ class AuditedInteractionServiceTest {
             auditedInteractionService.createAuditedInteraction(
                 BusinessInteractionCode.TEST_BI_CODE,
                 parameters,
-                AuditedInteraction.Outcome.SUCCESS
+                AuditedInteraction.Outcome.SUCCESS,
+                ZonedDateTime.now()
             )
         }
     }
@@ -107,13 +112,13 @@ class AuditedInteractionServiceTest {
                 Pair("key", "value")
             )
         )
-        assertThat(auditedInteraction.businessInteractionId, Matchers.equalTo(111))
-        assertThat(auditedInteraction.userId, Matchers.equalTo(222))
-        assertThat(auditedInteraction.dateTime, Matchers.equalTo(dateTime))
-        assertThat(auditedInteraction.outcome, Matchers.equalTo(AuditedInteraction.Outcome.SUCCESS))
+        assertThat(auditedInteraction.businessInteractionId, equalTo(111))
+        assertThat(auditedInteraction.userId, equalTo(222))
+        assertThat(auditedInteraction.dateTime, equalTo(dateTime))
+        assertThat(auditedInteraction.outcome, equalTo(AuditedInteraction.Outcome.SUCCESS))
         assertThat(
             auditedInteraction.parameters,
-            Matchers.equalTo(AuditedInteraction.Parameters(Pair("key", "value")))
+            equalTo(AuditedInteraction.Parameters(Pair("key", "value")))
         )
     }
 
@@ -123,39 +128,39 @@ class AuditedInteractionServiceTest {
             111,
             222
         )
-        assertThat(auditedInteraction.businessInteractionId, Matchers.equalTo(111))
-        assertThat(auditedInteraction.userId, Matchers.equalTo(222))
-        assertThat(auditedInteraction.dateTime, Matchers.equalTo(auditedInteraction.dateTime))
-        assertThat(auditedInteraction.outcome, Matchers.equalTo(AuditedInteraction.Outcome.SUCCESS))
+        assertThat(auditedInteraction.businessInteractionId, equalTo(111))
+        assertThat(auditedInteraction.userId, equalTo(222))
+        assertThat(auditedInteraction.dateTime, equalTo(auditedInteraction.dateTime))
+        assertThat(auditedInteraction.outcome, equalTo(AuditedInteraction.Outcome.SUCCESS))
         assertThat(
             auditedInteraction.parameters,
-            Matchers.equalTo(AuditedInteraction.Parameters())
+            equalTo(AuditedInteraction.Parameters())
         )
     }
 
     @Test
     fun `test audit interaction id class defaults`() {
         val auditedInteractionId = AuditedInteractionId()
-        assertThat(auditedInteractionId.businessInteractionId, Matchers.equalTo(0))
-        assertThat(auditedInteractionId.userId, Matchers.equalTo(0))
-        assertThat(auditedInteractionId.dateTime, Matchers.equalTo(auditedInteractionId.dateTime))
+        assertThat(auditedInteractionId.businessInteractionId, equalTo(0))
+        assertThat(auditedInteractionId.userId, equalTo(0))
+        assertThat(auditedInteractionId.dateTime, equalTo(auditedInteractionId.dateTime))
     }
 
     @Test
     fun `test audit interaction id class`() {
         val dateTime = ZonedDateTime.now()
         val auditedInteractionId = AuditedInteractionId(dateTime, 111, 222)
-        assertThat(auditedInteractionId.businessInteractionId, Matchers.equalTo(111))
-        assertThat(auditedInteractionId.userId, Matchers.equalTo(222))
-        assertThat(auditedInteractionId.dateTime, Matchers.equalTo(dateTime))
+        assertThat(auditedInteractionId.businessInteractionId, equalTo(111))
+        assertThat(auditedInteractionId.userId, equalTo(222))
+        assertThat(auditedInteractionId.dateTime, equalTo(dateTime))
     }
 
     @Test
     fun `business interaction class defaults`() {
         val dateTime = ZonedDateTime.now()
         val businessInteraction = BusinessInteraction(111, "code", dateTime)
-        assertThat(businessInteraction.id, Matchers.equalTo(111))
-        assertThat(businessInteraction.code, Matchers.equalTo("code"))
-        assertThat(businessInteraction.enabledDate, Matchers.equalTo(dateTime))
+        assertThat(businessInteraction.id, equalTo(111))
+        assertThat(businessInteraction.code, equalTo("code"))
+        assertThat(businessInteraction.enabledDate, equalTo(dateTime))
     }
 }

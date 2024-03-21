@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
 import java.time.LocalDate
 
 @Immutable
@@ -18,6 +19,13 @@ class Event(
 
     @Column(name = "offender_id")
     val personId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "court_id")
+    val court: Court? = null,
+
+    @Column(name = "conviction_date")
+    val convictionDate: LocalDate?,
 
     @Column(name = "event_number")
     val eventNumber: String,
@@ -36,6 +44,9 @@ class Event(
 
     @OneToMany(mappedBy = "event")
     val additionalOffences: List<AdditionalOffence> = emptyList(),
+
+    @Column(name = "notes", columnDefinition = "clob")
+    val notes: String?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -121,6 +132,9 @@ class MainOffence(
     @Column(name = "main_offence_id")
     val id: Long,
 
+    @Column(name = "offence_count")
+    val offenceCount: Long,
+
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
     val event: Event,
@@ -144,6 +158,9 @@ class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
     val id: Long,
+
+    @Column(name = "offence_count")
+    val offenceCount: Long?,
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)

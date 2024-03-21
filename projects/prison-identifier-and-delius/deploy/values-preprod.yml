@@ -9,8 +9,10 @@ generic-service:
     SENTRY_ENVIRONMENT: preprod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/oauth/token
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/.well-known/jwks.json
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
+
+    INTEGRATIONS_PRISON-API_URL: https://prison-api-preprod.prison.service.justice.gov.uk
     INTEGRATIONS_PRISONER-SEARCH_URL: https://prisoner-search-preprod.prison.service.justice.gov.uk
+    INTEGRATIONS_PROBATION-SEARCH_URL: https://probation-offender-search-preprod.hmpps.service.justice.gov.uk
 
 generic-prometheus-alerts:
   businessHoursOnly: true
@@ -18,3 +20,6 @@ generic-prometheus-alerts:
 noms:
   update:
     schedule: 0 7 * * 1
+
+namespace:
+  label: hmpps-probation-integration-services-preprod

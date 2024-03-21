@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
@@ -81,7 +82,30 @@ class ReferralService(
 
     fun bookingChanged(crn: String, details: BookingChanged, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
-        getReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId).apply {
+        val referral = getReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
+        contactService.createContact(
+            ContactDetails(
+                date = details.changedAt,
+                type = ContactTypeCode.BOOKING_CHANGED,
+                locationCode = ap.locationCode(),
+                description = "Booking changed for ${details.premises.name}",
+                notes = listOfNotNull(
+                    "The expected arrival and/or departure dates for the booking have changed.",
+                    "Previous: ${DeliusDateFormatter.format(referral.expectedArrivalDate)} to ${
+                        DeliusDateFormatter.format(
+                            referral.expectedDepartureDate
+                        )
+                    }",
+                    "Current: ${DeliusDateFormatter.format(details.arrivalOn)} to ${DeliusDateFormatter.format(details.departureOn)}",
+                    "For more details, click here: ${details.applicationUrl}"
+                ).joinToString(System.lineSeparator() + System.lineSeparator())
+            ),
+            person = person,
+            eventId = referral.eventId,
+            staff = staffRepository.getByCode(details.changedBy.staffCode),
+            probationAreaCode = ap.probationArea.code
+        )
+        referral.apply {
             expectedArrivalDate = details.arrivalOn
             expectedDepartureDate = details.departureOn
         }

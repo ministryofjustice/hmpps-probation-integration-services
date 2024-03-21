@@ -25,6 +25,9 @@ generic-service:
       SENTRY_DSN: SENTRY_DSN
     prison-identifier-and-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+      MESSAGING_PRODUCER_QUEUE: QUEUE_NAME
+    hmpps-domain-events-topic:
+      MESSAGING_PRODUCER_TOPIC: topic_arn
 
 generic-prometheus-alerts:
   targetApplication: prison-identifier-and-delius
