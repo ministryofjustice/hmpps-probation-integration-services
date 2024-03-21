@@ -1,159 +1,21 @@
 name: Security
 
 on:
-  schedule:
-    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
-  workflow_dispatch:
   push:
-    branches:
-      - main
-    paths:
-      - '**/.trivyignore'
 
 jobs:
-  get-projects:
+  secrets:
     runs-on: ubuntu-latest
-    outputs:
-      projects: ${{ steps.get-projects.outputs.projects }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: get-projects
-        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_OUTPUT"
-
-  trivy-scan:
-    runs-on: ubuntu-latest
-    needs:
-      - get-projects
-    strategy:
-      fail-fast: false
-      matrix:
-        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Scan image
-        uses: aquasecurity/trivy-action@062f2592684a31eb3aa050cc61e7ca1451cecd3d # v0.18.0
+      - name: Authenticate
+        uses: ./.github/actions/cloud-platform-auth
         with:
-          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
-          exit-code: '0'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
-          limit-severities-for-sarif: true
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      - name: Get Trivy results
-        uses: aquasecurity/trivy-action@062f2592684a31eb3aa050cc61e7ca1451cecd3d # v0.18.0
-        with:
-          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
-          format: 'json'
-          output: 'trivy.json'
-          trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
-
-      - name: Output results
-        run: |
-          jq -c '{"${{ matrix.project }}": .Results[].Vulnerabilities | select(. != null) | flatten}' trivy.json | tee results.json
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: trivy-results-${{ matrix.project }}
-          path: results.json
-
-  trivy-merge:
-    runs-on: ubuntu-latest
-    needs:
-      - trivy-scan
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: trivy-results-*
-          path: results
-
-      - name: Merge results
-        run: |
-          find results -maxdepth 2 -name results.json -exec cat {} \; | jq -c --slurp 'map(to_entries | map(.key as $matrix_key | .value | map_values({($matrix_key): .}))) | flatten | reduce .[] as $item ({}; . * $item)' | tee results.json
-
-      - name: Create GitHub issues
-        run: |
-          jq -c 'to_entries | map((.value // empty) + {Projects: [.key]})
-            | flatten 
-            | group_by(.VulnerabilityID) 
-            | map(reduce .[] as $vuln (.[0] + {Locations:[]}; .Projects += $vuln.Projects | .Locations += [$vuln.PkgName + ":" + $vuln.InstalledVersion + " (" + $vuln.PkgPath + ")"]))
-            | map_values({Title: .VulnerabilityID, Body: ("### " + .Title + "\n" + .PrimaryURL + "\n>" + .Description + "\n#### Projects:\n* " + (.Projects | sort | unique | join("\n* ")) + "\n#### Locations:\n* `" + (.Locations | sort | unique | join("`\n* `")) + "`\n#### References:\n* " + (.References | sort | unique | join("\n* ")))})
-            | .[]' < results.json \
-          | while read -r vulnerability; do
-            title=$(jq -r '.Title' <<< "$vulnerability")
-            jq -r '.Body' <<< "$vulnerability" | tee "${title}-body.json"
-            existing=$(gh issue list --state open --label dependencies --label security --search "$title" --json 'number' --jq '.[].number' | head -n1)
-            if [ -n "$existing" ]; then
-              echo "Issue '$title' already exists, updating body..."
-              gh issue edit "$existing" --body-file "${title}-body.json"
-            else
-              gh issue create --title "$title" --body-file "${title}-body.json" --label 'dependencies,security'
-            fi
-          done
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Close GitHub issues
-        run: |
-          openissues="$(gh issue list --state open --label dependencies --label security | awk '{print $3}')"
-          scanresults="$(jq -r -c 'with_entries(select(.value != null)) | .[].VulnerabilityID' < results.json | sort -u)"
-          issuestoclose="$(comm -23 <(echo "$openissues" | sort -u) <(echo "$scanresults" | sort -u))" #print lines only present in first file
-          echo "openissues=$openissues"
-          echo "scanresults=$scanresults"
-          echo "issuestoclose=$issuestoclose"
-          for cve in $issuestoclose; do
-            echo "$cve is already resolved, removing matching issue..."
-            issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve" | awk '{print $1}')
-            echo "$issuenumber" | xargs -n1 gh issue close
-          done
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Fail job if any vulnerabilities are found
-        run: if [ "$(jq '. | with_entries(select(.value != null)) | length' < results.json)" != 0 ]; then exit 1; fi
-
-  veracode-scan:
-    runs-on: ubuntu-latest
-    needs:
-      - get-projects
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: temurin
-
-      - uses: gradle/actions/setup-gradle@v3
-        with:
-          cache-read-only: true
-
-      - name: Build jars
-        run: ./gradlew jar
-
-      - name: Package jars
-        run: find . -name '*.jar' | zip -r package.zip -@
-
-      - name: Upload to Veracode
-        uses: veracode/veracode-uploadandscan-action@0.2.6
-        with:
-          appname: hmpps-probation-integration-services
-          createprofile: false
-          deleteincompletescan: 2 # force delete any incomplete scans
-          filepath: package.zip
-          vid: ${{ secrets.CYBERSECURITY_VERACODE_API_ID }}
-          vkey: ${{ secrets.CYBERSECURITY_VERACODE_API_KEY }}
+      - run: kubectl create secret generic slack-token --from-literal=token=${{ secrets.SLACK_BOT_TOKEN }}
