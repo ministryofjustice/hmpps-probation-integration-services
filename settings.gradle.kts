@@ -85,7 +85,7 @@ dependencyResolutionManagement {
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.1.0"
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
             library("mapstruct", "org.mapstruct:mapstruct:1.5.5.Final")
             library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.5.Final")
