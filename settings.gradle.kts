@@ -8,6 +8,7 @@ include(
     "assessment-summary-and-delius",
     "cas2-and-delius",
     "cas3-and-delius",
+    "core-person-record-and-delius",
     "court-case-and-delius",
     "create-and-vary-a-licence-and-delius",
     "custody-key-dates-and-delius",
@@ -34,6 +35,7 @@ include(
     "prison-education-and-delius",
     "prison-identifier-and-delius",
     "prisoner-profile-and-delius",
+    "probation-search-and-delius",
     "redrive-dead-letter-queues",
     "refer-and-monitor-and-delius",
     "resettlement-passport-and-delius",
@@ -77,7 +79,7 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.5.0")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.5.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.6.0")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.1.0"

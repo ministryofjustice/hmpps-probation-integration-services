@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
@@ -30,7 +31,8 @@ class AuditableServiceTest {
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.TEST_BI_CODE),
             eq(AuditedInteraction.Parameters(mutableMapOf("field" to "value"))),
-            eq(AuditedInteraction.Outcome.SUCCESS)
+            eq(AuditedInteraction.Outcome.SUCCESS),
+            any()
         )
     }
 
@@ -43,7 +45,8 @@ class AuditableServiceTest {
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.TEST_BI_CODE),
             eq(AuditedInteraction.Parameters(mutableMapOf("field" to "value"))),
-            eq(AuditedInteraction.Outcome.FAIL)
+            eq(AuditedInteraction.Outcome.FAIL),
+            any()
         )
     }
 
@@ -56,7 +59,7 @@ class AuditableServiceTest {
 
         fun fail(): Nothing = audit(
             BusinessInteractionCode.TEST_BI_CODE,
-            AuditedInteraction.Parameters(mutableMapOf("field" to "value"))
+            params = AuditedInteraction.Parameters(mutableMapOf("field" to "value"))
         ) {
             throw IllegalArgumentException("Something went wrong")
         }

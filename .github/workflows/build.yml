@@ -41,6 +41,7 @@ jobs:
           - assessment-summary-and-delius
           - cas2-and-delius
           - cas3-and-delius
+          - core-person-record-and-delius
           - court-case-and-delius
           - create-and-vary-a-licence-and-delius
           - custody-key-dates-and-delius
@@ -65,6 +66,7 @@ jobs:
           - prison-education-and-delius
           - prison-identifier-and-delius
           - prisoner-profile-and-delius
+          - probation-search-and-delius
           - refer-and-monitor-and-delius
           - resettlement-passport-and-delius
           - risk-assessment-scores-to-delius

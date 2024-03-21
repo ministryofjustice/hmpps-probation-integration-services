@@ -47,7 +47,11 @@ class RiskService(
         return regEvent?.let { deRegEvents + it } ?: deRegEvents
     }
 
-    private fun createRegistration(person: Person, registrations: List<Registration>, risk: Risk): HmppsDomainEvent {
+    private fun createRegistration(
+        person: Person,
+        registrations: MutableList<Registration>,
+        risk: Risk
+    ): HmppsDomainEvent {
         val type = registerTypeRepository.getByCode(risk.code)
         val nextReviewDate = type.reviewPeriod?.let { LocalDate.now().plusMonths(it) }
         val notes = listOfNotNull(
@@ -82,7 +86,7 @@ class RiskService(
                 nextReviewDate
             ).withReview(reviewContact)
         )
-        registrations.addLast(registration)
+        registrations += registration
         return registration.regEvent(person.crn)
     }
 }

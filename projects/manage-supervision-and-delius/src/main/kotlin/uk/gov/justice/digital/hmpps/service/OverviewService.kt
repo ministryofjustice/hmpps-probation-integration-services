@@ -4,24 +4,31 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.overview.*
-import uk.gov.justice.digital.hmpps.api.model.overview.Disability
 import uk.gov.justice.digital.hmpps.api.model.overview.Offence
-import uk.gov.justice.digital.hmpps.api.model.overview.PersonalCircumstance
-import uk.gov.justice.digital.hmpps.api.model.overview.Provision
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision
 
 @Service
 class OverviewService(
-    private val personRepository: PersonOverviewRepository,
+    private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
     private val requirementRepository: RequirementRepository,
+    private val registrationRepository: RegistrationRepository,
+    private val provisionRepository: ProvisionRepository,
+    private val disabilityRepository: DisabilityRepository,
+    private val personalCircumstanceRepository: PersonCircumstanceRepository,
     private val eventRepository: EventRepository
 ) {
 
     @Transactional
     fun getOverview(crn: String): Overview {
         val person = personRepository.getPerson(crn)
-        val personalDetails = person.toPersonalDetails()
+        val provisions = provisionRepository.findByPersonId(person.id)
+        val personalCircumstances = personalCircumstanceRepository.findCurrentCircumstances(person.id)
+        val disabilities = disabilityRepository.findByPersonId(person.id)
+        val personalDetails = person.toPersonalDetails(personalCircumstances, disabilities, provisions)
         val schedule = Schedule(contactRepository.firstAppointment(person.id)?.toNextAppointment())
         val events = eventRepository.findByPersonId(person.id)
         val activeEvents = events.filter { it.active }
@@ -29,6 +36,8 @@ class OverviewService(
         val activeEventsBreached = activeEvents.count { it.inBreach }
         val previousOrders = events.count { !it.active && it.disposal != null }
         val previousOrdersBreached = events.count { !it.active && it.disposal != null && it.inBreach }
+        val registrations = registrationRepository.findByPersonId(person.id)
+
 
         return Overview(
             personalDetails = personalDetails,
@@ -37,7 +46,7 @@ class OverviewService(
             sentences = sentences.mapNotNull { it },
             activity = null, //ToDo
             compliance = Compliance(currentBreaches = activeEventsBreached, failureToComplyInLast12Months = 0), //ToDo
-            registrations = person.registrations.map { it.type.description }
+            registrations = registrations.map { it.type.description }
         )
     }
 
@@ -58,7 +67,11 @@ class OverviewService(
             rar = disposal?.let { getRar(it.id) })
     }
 
-    fun Person.toPersonalDetails() = PersonalDetails(
+    fun Person.toPersonalDetails(
+        personalCircumstances: List<PersonalCircumstance>,
+        disabilities: List<Disability>,
+        provisions: List<Provision>
+    ) = PersonalDetails(
         name = name(),
         mobileNumber = mobileNumber,
         telephoneNumber = telephoneNumber,
@@ -73,14 +86,17 @@ class OverviewService(
     fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Offence.toOffence() =
         Offence(code = code, description = description)
 
-    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance.toPersonalCircumstance() =
-        PersonalCircumstance(type = type.description, subType = subType.description)
+    fun PersonalCircumstance.toPersonalCircumstance() =
+        uk.gov.justice.digital.hmpps.api.model.overview.PersonalCircumstance(
+            type = type.description,
+            subType = subType.description
+        )
 
-    fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability() =
-        Disability(description = type.description)
+    fun Disability.toDisability() =
+        uk.gov.justice.digital.hmpps.api.model.overview.Disability(description = type.description)
 
     fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision() =
-        Provision(description = type.description)
+        uk.gov.justice.digital.hmpps.api.model.overview.Provision(description = type.description)
 
     fun Contact.toNextAppointment() =
         NextAppointment(description = type.description, date = startDateTime())

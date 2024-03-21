@@ -4,7 +4,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 
 data class Name(
     val forename: String,
-    val middleName: String?,
+    val middleName: String? = null,
     val surname: String
 )
 

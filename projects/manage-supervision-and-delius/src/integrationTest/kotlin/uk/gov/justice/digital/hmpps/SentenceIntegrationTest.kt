@@ -8,9 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.sentence.MainOffence
-import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
-import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceOverview
+import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -23,6 +21,18 @@ class SentenceIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
+    fun `no active sentences`() {
+        val response = mockMvc
+            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}").withToken())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<SentenceOverview>()
+
+        val expected = SentenceOverview(listOf())
+
+        assertEquals(expected, response)
+    }
+
+    @Test
     fun `get active sentences`() {
         val response = mockMvc
             .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
@@ -31,20 +41,31 @@ class SentenceIntegrationTest {
 
         val expected = SentenceOverview(
             listOf(
-                MainOffence(
-                    Offence("Murder", 1),
-                    LocalDate.now(),
-                    "overview",
-                    listOf(
-                        Offence("Burglary", 1),
-                        Offence("Assault", 1)
+                Sentence(
+                    OffenceDetails(
+                        Offence("Murder", 1),
+                        LocalDate.now(),
+                        "overview",
+                        listOf(
+                            Offence("Burglary", 1),
+                            Offence("Assault", 1)
+                        )
+                    ),
+                    Conviction(
+                        "Hull Court",
+                        "Birmingham Court",
+                        LocalDate.now(),
+                        listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                     )
                 ),
-                MainOffence(
-                    Offence("Another Murder", 1),
-                    LocalDate.now(),
-                    "overview",
-                    emptyList()
+                Sentence(
+                    OffenceDetails(
+                        Offence("Another Murder", 1),
+                        LocalDate.now(),
+                        "overview",
+                        emptyList()
+                    ),
+                    Conviction(null, null, null, listOf())
                 )
             )
         )
