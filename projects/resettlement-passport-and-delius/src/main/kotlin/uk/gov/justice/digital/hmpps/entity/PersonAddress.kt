@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
@@ -33,24 +32,6 @@ class PersonAddress(
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean? = false,
     var endDate: LocalDate? = null,
-    val softDeleted: Boolean = false
-)
-
-@Entity
-@Immutable
-@Table(name = "offender")
-@SQLRestriction("soft_deleted = 0")
-class Person(
-    @Id
-    @Column(name = "offender_id")
-    val id: Long,
-
-    @Column(columnDefinition = "char(7)")
-    val crn: String,
-
-    @Column(name = "noms_number", columnDefinition = "char(7)")
-    val noms: String?,
-
     val softDeleted: Boolean = false
 )
 
