@@ -2,9 +2,10 @@ package uk.gov.justice.digital.hmpps.service
 
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
+import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integration.delius.entity.ReferenceData
 
-fun Person.detail() = PersonDetail(
+fun Person.detail(aliases: List<Alias>, addresses: List<Address>) = PersonDetail(
     identifiers(),
     name(),
     dob,
@@ -13,7 +14,9 @@ fun Person.detail() = PersonDetail(
     nationality?.asCodeDescription(),
     ethnicity?.asCodeDescription(),
     ethnicityDescription,
-    contactDetails()
+    contactDetails(),
+    aliases,
+    addresses
 )
 
 fun Person.identifiers() =
@@ -31,4 +34,15 @@ fun Person.name() =
 fun Person.contactDetails() = ContactDetails.of(telephoneNumber, mobileNumber, emailAddress)
 
 fun ReferenceData.asCodeDescription() = CodeDescription(code, description)
+
+fun uk.gov.justice.digital.hmpps.integration.delius.entity.Alias.asModel() = Alias(
+    Name(
+        firstName,
+        listOfNotNull(secondName, thirdName).ifEmpty { null }?.joinToString(" "),
+        surname
+    ),
+    dateOfBirth
+)
+
+fun PersonAddress.asAddress() = postcode?.let { Address(it) }
 

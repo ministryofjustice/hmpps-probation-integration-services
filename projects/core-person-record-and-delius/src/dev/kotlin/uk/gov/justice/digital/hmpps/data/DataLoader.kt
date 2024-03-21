@@ -25,15 +25,18 @@ class DataLoader(
 
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        entityManager.saveAll(
+        saveAll(
             PersonGenerator.TITLE,
             PersonGenerator.GENDER,
             PersonGenerator.ETHNICITY,
             PersonGenerator.NATIONALITY,
+            PersonGenerator.MAIN_ADDRESS,
             PersonGenerator.MIN_PERSON,
-            PersonGenerator.FULL_PERSON
+            PersonGenerator.FULL_PERSON,
+            *PersonGenerator.FULL_PERSON_ALIASES.toTypedArray(),
+            *PersonGenerator.FULL_PERSON_ADDRESSES.toTypedArray()
         )
     }
 
-    private fun EntityManager.saveAll(vararg entities: Any) = entities.forEach(entityManager::merge)
+    private fun saveAll(vararg entities: Any) = entities.forEach(entityManager::merge)
 }

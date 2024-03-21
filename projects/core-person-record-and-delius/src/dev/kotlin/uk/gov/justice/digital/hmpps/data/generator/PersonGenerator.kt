@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Alias
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
+import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integration.delius.entity.ReferenceData
 import java.time.LocalDate
 
@@ -9,6 +11,7 @@ object PersonGenerator {
     val GENDER = generateReferenceData("GEN")
     val NATIONALITY = generateReferenceData("NAT")
     val TITLE = generateReferenceData("TIT")
+    val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
 
     val MIN_PERSON =
         generatePerson("M123456", firstname = "Isabelle", surname = "Necessary", dob = LocalDate.of(1990, 3, 5))
@@ -34,6 +37,16 @@ object PersonGenerator {
         NATIONALITY,
         ETHNICITY,
         "Description of ethnicity"
+    )
+
+    val FULL_PERSON_ALIASES = listOf(
+        generateAlias(
+            FULL_PERSON.id, "Freddy", null, null, "Banter", LocalDate.of(1974, 2, 17)
+        )
+    )
+
+    val FULL_PERSON_ADDRESSES = listOf(
+        generateAddress(FULL_PERSON.id, MAIN_ADDRESS, "PC1 1TS", LocalDate.now().minusDays(30))
     )
 
     fun generateReferenceData(
@@ -91,4 +104,25 @@ object PersonGenerator {
         softDeleted,
         id
     )
+
+    fun generateAlias(
+        personId: Long,
+        firstName: String,
+        secondName: String?,
+        thirdName: String?,
+        surname: String,
+        dateOfBirth: LocalDate,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Alias(personId, firstName, secondName, thirdName, surname, dateOfBirth, softDeleted, id)
+
+    fun generateAddress(
+        personId: Long,
+        status: ReferenceData,
+        postcode: String,
+        startDate: LocalDate,
+        endDate: LocalDate? = null,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = PersonAddress(personId, status, postcode, startDate, endDate, softDeleted, id)
 }

@@ -11,7 +11,9 @@ data class PersonDetail(
     val nationality: CodeDescription?,
     val ethnicity: CodeDescription?,
     val ethnicityDescription: String?,
-    val contactDetails: ContactDetails?
+    val contactDetails: ContactDetails?,
+    val aliases: List<Alias>,
+    val addresses: List<Address>
 )
 
 data class Identifiers(
@@ -28,8 +30,8 @@ data class Name(
     val forename: String,
     val middleName: String?,
     val surname: String,
-    val previousSurname: String?,
-    val preferred: String?
+    val previousSurname: String? = null,
+    val preferred: String? = null
 )
 
 data class ContactDetails(val telephone: String?, val mobile: String?, val email: String?) {
@@ -44,3 +46,7 @@ data class ContactDetails(val telephone: String?, val mobile: String?, val email
 }
 
 data class CodeDescription(val code: String, val description: String)
+
+data class Alias(val name: Name, val dateOfBirth: LocalDate)
+
+data class Address(val postcode: String)
