@@ -61,7 +61,7 @@ internal class OverviewServiceTest {
         whenever(disabilityRepository.findByPersonId(any())).thenReturn(emptyList())
         whenever(personalCircumstanceRepository.findCurrentCircumstances(any())).thenReturn(PersonGenerator.PERSONAL_CIRCUMSTANCES)
 
-        whenever(contactRepository.findFirstAppointment(any(), any(), any(), any())).thenReturn(
+        whenever(contactRepository.findUpComingAppointments(any(), any(), any())).thenReturn(
             listOf(FIRST_APPT_CONTACT)
         )
         whenever(requirementRepository.getRarDays(any())).thenReturn(

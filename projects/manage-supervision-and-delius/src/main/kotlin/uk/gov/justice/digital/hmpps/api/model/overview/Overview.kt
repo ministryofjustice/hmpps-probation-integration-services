@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.api.model.overview
 
 data class Overview(
+    val appointmentsWithoutOutcome: Int = 0,
+    val absencesWithoutEvidence: Int = 0,
     val activity: Activity?,
     val compliance: Compliance?,
     val personalDetails: PersonalDetails,
