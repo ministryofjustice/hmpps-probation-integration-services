@@ -42,7 +42,7 @@ data class Person(
     @Column(name = "most_recent_prisoner_number")
     val prisonerNumber: String?,
 
-    val firstname: String,
+    val firstName: String,
     val secondName: String?,
     val thirdName: String?,
     val surname: String,

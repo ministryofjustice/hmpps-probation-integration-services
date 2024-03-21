@@ -69,5 +69,6 @@ class RequirementMainCategory(
     @Column(name = "rqmnt_type_main_category_id", nullable = false)
     val id: Long,
     val code: String,
+    val description: String
 )
 

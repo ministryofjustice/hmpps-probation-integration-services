@@ -24,7 +24,7 @@ fun Person.identifiers() =
 
 fun Person.name() =
     Name(
-        firstname,
+        firstName,
         listOfNotNull(secondName, thirdName).ifEmpty { null }?.joinToString(" "),
         surname,
         previousSurname,

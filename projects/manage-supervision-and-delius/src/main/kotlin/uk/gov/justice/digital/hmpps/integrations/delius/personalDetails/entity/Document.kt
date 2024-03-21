@@ -23,6 +23,9 @@ class PersonDocument(
     @Column(name = "offender_id")
     val personId: Long,
 
+    @Column(name = "primary_key_id")
+    val primaryKeyId: Long?,
+
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
 
@@ -41,6 +44,8 @@ class PersonDocument(
 
 interface DocumentRepository : JpaRepository<PersonDocument, Long> {
     fun findByPersonId(personId: Long): List<PersonDocument>
+
+    fun findByPersonIdAndPrimaryKeyId(personId: Long, primaryKeyId: Long): List<PersonDocument>
 
     @Query("select d.name from PersonDocument d join Person p on p.id = d.personId and p.crn = :crn and d.alfrescoId = :alfrescoId")
     fun findNameByPersonCrnAndAlfrescoId(crn: String, alfrescoId: String): String?
