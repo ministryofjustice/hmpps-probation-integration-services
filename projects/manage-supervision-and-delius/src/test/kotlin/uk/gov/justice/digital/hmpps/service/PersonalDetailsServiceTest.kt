@@ -62,7 +62,6 @@ internal class PersonalDetailsServiceTest {
 
     @BeforeEach
     fun setup() {
-        val crn = "X000005"
         personSummary = Summary(
             id = 1,
             forename = "TestName",
