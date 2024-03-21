@@ -4,11 +4,11 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -43,20 +43,61 @@ class Contact(
     @Convert(converter = YesNoConverter::class)
     var attended: Boolean? = null,
 
+    @Column(name = "sensitive")
+    @Convert(converter = YesNoConverter::class)
+    var sensitive: Boolean? = null,
+
     @Column(name = "complied")
     @Convert(converter = YesNoConverter::class)
     var complied: Boolean? = null,
 
-    @Column(name = "rqmnt_id")
-    val requirementId: Long? = null,
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id")
+    val outcome: ContactOutcome? = null,
+
+    @Column(name = "linked_document_contact_id")
+    val linkedDocumentContactId: Long? = null,
+
+    @Lob
+    val notes: String?,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_id")
+    val requirement: Requirement? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "staff_id")
+    val staff: Staff? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "office_location_id")
+    val location: OfficeLocation? = null,
 
     @Column(name = "contact_end_time")
     val endTime: ZonedDateTime? = null,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdated: ZonedDateTime,
+
+    @ManyToOne
+    @JoinColumn(name = "last_updated_user_id")
+    val lastUpdatedUser: User,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     var softDeleted: Boolean = false
 ) {
     fun startDateTime(): ZonedDateTime = ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon)
+    fun endDateTime(): ZonedDateTime? =
+        if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null
+
+    fun isInitial(): Boolean = setOf(
+        ContactTypeCode.INITIAL_APPOINTMENT_IN_OFFICE.value,
+        ContactTypeCode.INITIAL_APPOINTMENT_ON_DOORSTEP.value,
+        ContactTypeCode.INITIAL_APPOINTMENT_HOME_VISIT.value,
+        ContactTypeCode.INITIAL_APPOINTMENT_BY_VIDEO.value
+    ).contains(type.code)
+
+    fun rescheduled(): Boolean = outcome?.code == ContactOutcomeTypeCode.RESCHEDULED.value
 }
 
 @Immutable
@@ -76,9 +117,48 @@ class ContactType(
 
     @Column
     val description: String,
+
+    @Column(name = "national_standards_contact")
+    @Convert(converter = YesNoConverter::class)
+    val nationalStandardsContact: Boolean = false,
 )
 
+@Immutable
+@Entity
+@Table(name = "r_contact_outcome_type")
+class ContactOutcome(
+    @Id
+    @Column(name = "contact_outcome_type_id")
+    val id: Long,
+
+    val code: String,
+
+    val description: String,
+
+    @Column(name = "outcome_attendance")
+    @Convert(converter = YesNoConverter::class)
+    val outcomeAttendance: Boolean? = null,
+
+    @Column(name = "outcome_compliant_acceptable")
+    @Convert(converter = YesNoConverter::class)
+    val outcomeCompliantAcceptable: Boolean? = null,
+)
+
+enum class ContactOutcomeTypeCode(val value: String) {
+    RESCHEDULED("RSSR")
+}
+
+enum class ContactTypeCode(val value: String) {
+    INITIAL_APPOINTMENT_IN_OFFICE("COAI"),
+    INITIAL_APPOINTMENT_ON_DOORSTEP("CODI"),
+    INITIAL_APPOINTMENT_HOME_VISIT("COHV"),
+    INITIAL_APPOINTMENT_BY_VIDEO("COVI")
+}
+
 interface ContactRepository : JpaRepository<Contact, Long> {
+
+    fun findByPersonIdAndId(personId: Long, id: Long): Contact?
+
     @Query(
         """
             select c.*
@@ -92,20 +172,168 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """,
         nativeQuery = true
     )
-    fun findFirstAppointment(
+    fun findUpComingAppointments(
         personId: Long,
         dateNow: String,
         timeNow: String,
-        pageable: Pageable = PageRequest.of(0, 1)
+    ): List<Contact>
+
+    @Query(
+        """
+            select c.*
+            from contact c
+            join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            where c.offender_id = :personId and ct.attendance_contact = 'Y'
+            and (to_char(c.contact_date, 'YYYY-MM-DD') < :dateNow
+            or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') < :timeNow))
+            and c.soft_deleted = 0
+            order by c.contact_date, c.contact_start_time asc
+        """,
+        nativeQuery = true
+    )
+    fun findPreviousAppointments(
+        personId: Long,
+        dateNow: String,
+        timeNow: String
     ): List<Contact>
 }
+
+fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
+    findByPersonIdAndId(personId, contactId) ?: throw NotFoundException("Contact", "contactId", contactId)
 
 fun ContactRepository.firstAppointment(
     personId: Long,
     date: LocalDate = LocalDate.now(),
     startTime: ZonedDateTime = ZonedDateTime.now()
-): Contact? = findFirstAppointment(
+): Contact? = findUpComingAppointments(
     personId,
     date.format(DateTimeFormatter.ISO_LOCAL_DATE),
     startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon))
 ).firstOrNull()
+
+fun ContactRepository.getUpComingAppointments(
+    personId: Long,
+    date: LocalDate = LocalDate.now(),
+    startTime: ZonedDateTime = ZonedDateTime.now()
+): List<Contact> = findUpComingAppointments(
+    personId = personId,
+    dateNow = date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+    timeNow = startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+)
+
+fun ContactRepository.getPreviousAppointments(
+    personId: Long,
+    date: LocalDate = LocalDate.now(),
+    startTime: ZonedDateTime = ZonedDateTime.now()
+): List<Contact> = findPreviousAppointments(
+    personId = personId,
+    dateNow = date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+    timeNow = startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+)
+
+@Immutable
+@Entity
+@Table(name = "staff")
+class Staff(
+
+    @Column(name = "officer_code", columnDefinition = "char(7)")
+    val code: String,
+
+    @Column
+    val forename: String,
+
+    @Column
+    val surname: String,
+
+    @JoinColumn(name = "probation_area_id")
+    @OneToOne
+    val provider: Provider,
+
+    @Id
+    @Column(name = "staff_id")
+    val id: Long
+) {
+    fun isUnallocated(): Boolean {
+        return code.endsWith("U")
+    }
+}
+
+@Immutable
+@Entity
+@Table(name = "probation_area")
+class Provider(
+    @Column(name = "code", columnDefinition = "char(3)")
+    val code: String,
+
+    val description: String,
+
+    @Id
+    @Column(name = "probation_area_id")
+    val id: Long,
+
+    @Column(name = "end_date")
+    var endDate: LocalDate? = null
+)
+
+@Immutable
+@Entity
+@Table(name = "office_location")
+class OfficeLocation(
+
+    @Column(name = "code", columnDefinition = "char(7)")
+    val code: String,
+
+    val description: String,
+    val buildingName: String?,
+    val buildingNumber: String?,
+    val streetName: String?,
+    val district: String?,
+    val townCity: String?,
+    val county: String?,
+    val postcode: String?,
+    val telephoneNumber: String?,
+    val startDate: LocalDate,
+    val endDate: LocalDate?,
+
+    @JoinColumn(name = "district_id")
+    @ManyToOne
+    val ldu: District,
+
+    @Id
+    @Column(name = "office_location_id")
+    val id: Long
+)
+
+@Immutable
+@Entity
+@Table(name = "district")
+class District(
+
+    @Column(name = "code")
+    val code: String,
+
+    val description: String,
+
+    @ManyToOne
+    @JoinColumn(name = "borough_id")
+    val borough: Borough,
+
+    @Id
+    @Column(name = "district_id")
+    val id: Long
+)
+
+@Immutable
+@Entity
+@Table(name = "borough")
+class Borough(
+
+    @Column(name = "code")
+    val code: String,
+
+    val description: String,
+
+    @Id
+    @Column(name = "borough_id")
+    val id: Long
+)

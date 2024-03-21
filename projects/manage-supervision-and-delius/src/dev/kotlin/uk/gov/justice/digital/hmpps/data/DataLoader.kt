@@ -26,6 +26,14 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
 
+        entityManager.persistAll(
+            ContactGenerator.DEFAULT_PROVIDER,
+            ContactGenerator.DEFAULT_BOROUGH,
+            ContactGenerator.DEFAULT_DISTRICT,
+            ContactGenerator.DEFAULT_STAFF,
+            ContactGenerator.LOCATION_BRK_1
+        )
+
         entityManager.persist(PersonGenerator.OVERVIEW.gender)
         entityManager.persist(UserGenerator.USER)
         PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
@@ -73,6 +81,9 @@ class DataLoader(
             ContactGenerator.FIRST_NON_APPT_CONTACT,
             ContactGenerator.NEXT_APPT_CONTACT,
             ContactGenerator.FIRST_APPT_CONTACT,
+            ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT,
+            ContactGenerator.CONTACT_DOCUMENT_1,
+            ContactGenerator.CONTACT_DOCUMENT_2,
             PersonGenerator.OFFENCE_1,
             PersonGenerator.MAIN_OFFENCE_1,
             PersonGenerator.OFFENCE_2,

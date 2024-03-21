@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactRepository
+import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -155,15 +156,4 @@ internal class PersonalDetailsServiceTest {
         val res = service.getPersonAddresses(crn)
         assertThat(res, equalTo(expectedResponse))
     }
-
-    data class Summary(
-        override val id: Long,
-        override val forename: String,
-        override val secondName: String? = null,
-        override val thirdName: String? = null,
-        override val surname: String,
-        override val crn: String,
-        override val pnc: String?,
-        override val dateOfBirth: LocalDate
-    ) : PersonSummaryEntity
 }
