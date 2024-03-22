@@ -1059,21 +1059,29 @@
     }
   ],
   "number": "integer",
-  "sort": {
-    "empty": "boolean",
-    "sorted": "boolean",
-    "unsorted": "boolean"
-  },
+  "sort": [
+    {
+      "direction": "string",
+      "nullHandling": "string",
+      "ascending": "boolean",
+      "property": "string",
+      "ignoreCase": "boolean"
+    }
+  ],
   "first": "boolean",
   "last": "boolean",
   "numberOfElements": "integer",
   "pageable": {
     "offset": "integer",
-    "sort": {
-      "empty": "boolean",
-      "sorted": "boolean",
-      "unsorted": "boolean"
-    },
+    "sort": [
+      {
+        "direction": "string",
+        "nullHandling": "string",
+        "ascending": "boolean",
+        "property": "string",
+        "ignoreCase": "boolean"
+      }
+    ],
     "pageNumber": "integer",
     "pageSize": "integer",
     "paged": "boolean",
@@ -2182,7 +2190,7 @@
 
 <tr>
 <td>sort</td>
-<td>object</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
@@ -2264,7 +2272,7 @@
 
 <tr>
 <td>sort</td>
-<td>object</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
@@ -2325,7 +2333,27 @@
 <tbody>
 
 <tr>
-<td>empty</td>
+<td>direction</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nullHandling</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ascending</td>
 <td>boolean</td>
 <td>false</td>
 <td></td>
@@ -2335,8 +2363,8 @@
 </tr>
 
 <tr>
-<td>sorted</td>
-<td>boolean</td>
+<td>property</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
@@ -2345,7 +2373,7 @@
 </tr>
 
 <tr>
-<td>unsorted</td>
+<td>ignoreCase</td>
 <td>boolean</td>
 <td>false</td>
 <td></td>

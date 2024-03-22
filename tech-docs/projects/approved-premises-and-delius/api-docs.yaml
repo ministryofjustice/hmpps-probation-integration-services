@@ -629,7 +629,9 @@ components:
           type: integer
           format: int32
         sort:
-          $ref: '#/components/schemas/SortObject'
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
         first:
           type: boolean
         last:
@@ -648,7 +650,9 @@ components:
           type: integer
           format: int64
         sort:
-          $ref: '#/components/schemas/SortObject'
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
         pageNumber:
           type: integer
           format: int32
@@ -662,11 +666,15 @@ components:
     SortObject:
       type: object
       properties:
-        empty:
+        direction:
+          type: string
+        nullHandling:
+          type: string
+        ascending:
           type: boolean
-        sorted:
-          type: boolean
-        unsorted:
+        property:
+          type: string
+        ignoreCase:
           type: boolean
     StaffGrade:
       required:

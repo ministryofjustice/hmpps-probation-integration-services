@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /probation-cases/{identifier}:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - person-resource
+      operationId: getPersonDetails
       parameters:
-      - name: inputId
+      - name: identifier
         in: path
         required: true
         schema:
@@ -28,7 +28,122 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDetail'
 components:
+  schemas:
+    Address:
+      required:
+      - postcode
+      type: object
+      properties:
+        postcode:
+          type: string
+    Alias:
+      required:
+      - dateOfBirth
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        dateOfBirth:
+          type: string
+          format: date
+    CodeDescription:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    ContactDetails:
+      type: object
+      properties:
+        telephone:
+          type: string
+        mobile:
+          type: string
+        email:
+          type: string
+    Identifiers:
+      required:
+      - crn
+      - deliusId
+      type: object
+      properties:
+        deliusId:
+          type: integer
+          format: int64
+        crn:
+          type: string
+        nomsId:
+          type: string
+        prisonerNumber:
+          type: string
+        pnc:
+          type: string
+        cro:
+          type: string
+        ni:
+          type: string
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+        previousSurname:
+          type: string
+        preferred:
+          type: string
+    PersonDetail:
+      required:
+      - addresses
+      - aliases
+      - dateOfBirth
+      - identifiers
+      - name
+      type: object
+      properties:
+        identifiers:
+          $ref: '#/components/schemas/Identifiers'
+        name:
+          $ref: '#/components/schemas/Name'
+        dateOfBirth:
+          type: string
+          format: date
+        title:
+          $ref: '#/components/schemas/CodeDescription'
+        gender:
+          $ref: '#/components/schemas/CodeDescription'
+        nationality:
+          $ref: '#/components/schemas/CodeDescription'
+        ethnicity:
+          $ref: '#/components/schemas/CodeDescription'
+        ethnicityDescription:
+          type: string
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        aliases:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alias'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
   securitySchemes:
     hmpps-auth-token:
       type: http
