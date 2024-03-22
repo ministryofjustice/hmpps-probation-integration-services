@@ -7,10 +7,7 @@ import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
-import org.mockito.kotlin.any
-import org.mockito.kotlin.never
-import org.mockito.kotlin.timeout
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -23,10 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_DUPLICATE_NOMS
-import uk.gov.justice.digital.hmpps.entity.AdditionalIdentifierRepository
-import uk.gov.justice.digital.hmpps.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.entity.getByCrn
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -47,6 +41,9 @@ internal class PrisonMatchingIntegrationTest {
 
     @SpyBean
     lateinit var additionalIdentifierRepository: AdditionalIdentifierRepository
+
+    @SpyBean
+    lateinit var contactRepository: ContactRepository
 
     @MockBean
     lateinit var telemetryService: TelemetryService
@@ -190,6 +187,12 @@ internal class PrisonMatchingIntegrationTest {
         assertThat(person.nomsNumber, equalTo("G5541WW"))
         val custody = custodyRepository.findByIdOrNull(custodyId)!!
         assertThat(custody.prisonerNumber, equalTo("13831A"))
+        verify(contactRepository).save(check {
+            assertThat(it.personId, equalTo(person.id))
+            assertThat(it.eventId, equalTo(custody.disposal.event.id))
+            assertThat(it.type.code, equalTo("EDSS"))
+            assertThat(it.notes, equalTo("Prison Number: 13831A" + System.lineSeparator()))
+        })
     }
 
     @Test

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataSet
 
@@ -14,6 +15,8 @@ object ReferenceDataGenerator {
     val DUPLICATE_NOMS = generateIdentifierType("DNOMS")
     val FORMER_NOMS = generateIdentifierType("XNOMS")
 
+    val CONTACT_TYPE = generateContactType("EDSS")
+
     fun generateGender(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceData(id, code, GENDER_SET)
     fun generateCustodyStatus(code: String, id: Long = IdGenerator.getAndIncrement()) =
         ReferenceData(id, code, CUSTODY_STATUS_SET)
@@ -22,4 +25,6 @@ object ReferenceDataGenerator {
         ReferenceData(id, code, ADDITIONAL_IDENTIFIER_TYPE_SET)
 
     fun generateReferenceDataSet(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(id, name)
+
+    fun generateContactType(code: String, id: Long = IdGenerator.getAndIncrement()) = ContactType(id, code)
 }
