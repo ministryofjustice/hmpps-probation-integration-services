@@ -25,8 +25,8 @@ class ProbationMatchingService(
         val matchResult = findMatchingProbationRecord(nomsNumber)
         if (!dryRun && matchResult is Success) {
             with(matchResult) {
-                matchWriter.update(prisonIdentifiers, person, custody)
-                notifier.identifierAdded(person.crn, prisonIdentifiers)
+                val changes = matchWriter.update(prisonIdentifiers, person, custody)
+                if (changes) notifier.identifierAdded(person.crn, prisonIdentifiers)
             }
         }
         return matchResult
@@ -43,8 +43,8 @@ class ProbationMatchingService(
         }
         if (!dryRun) {
             existing.forEach {
-                matchWriter.update(PrisonIdentifiers(newNomsNumber), it)
-                notifier.identifierUpdated(it.crn, newNomsNumber, oldNomsNumber)
+                val changes = matchWriter.update(PrisonIdentifiers(newNomsNumber), it)
+                if (changes) notifier.identifierUpdated(it.crn, newNomsNumber, oldNomsNumber)
             }
         }
         return MergeResult.Success(
