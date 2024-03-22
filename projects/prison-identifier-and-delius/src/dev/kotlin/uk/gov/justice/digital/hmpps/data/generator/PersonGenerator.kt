@@ -43,6 +43,9 @@ object PersonGenerator {
     fun generateEvent(person: Person, id: Long = IdGenerator.getAndIncrement()) =
         Event(id = id, person = person, active = true, softDeleted = false)
 
+    fun generateOrderManager(event: Event, id: Long = IdGenerator.getAndIncrement()) =
+        OrderManager(id = id, eventId = event.id, staffId = 9999, teamId = 9999, providerId = 9999)
+
     fun generateDisposal(startDate: LocalDate, event: Event, id: Long = IdGenerator.getAndIncrement()) =
         Disposal(id, startDate, event, active = true, softDeleted = false)
 

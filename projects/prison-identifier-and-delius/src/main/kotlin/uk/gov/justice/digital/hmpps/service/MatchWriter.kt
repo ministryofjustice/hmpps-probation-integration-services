@@ -12,6 +12,9 @@ class MatchWriter(
     private val additionalIdentifierRepository: AdditionalIdentifierRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val prisonerRepository: PrisonerRepository,
+    private val contactRepository: ContactRepository,
+    private val contactTypeRepository: ContactTypeRepository,
+    private val orderManagerRepository: OrderManagerRepository,
 ) {
     @Transactional
     fun update(prisonIdentifiers: PrisonIdentifiers, person: Person, custody: Custody? = null) {
@@ -25,6 +28,7 @@ class MatchWriter(
             person.mostRecentPrisonerNumber = prisonIdentifiers.bookingNumber
             personRepository.save(person)
             person.rebuildPrisonerLinks()
+            custody.createContactForChange()
         }
     }
 
@@ -69,5 +73,20 @@ class MatchWriter(
         events.mapNotNull { it.disposal?.custody?.prisonerNumber }
             .map { prisonerNumber -> Prisoner(PrisonerId(id, prisonerNumber)) }
             .let(prisonerRepository::saveAll)
+    }
+
+    private fun Custody.createContactForChange() {
+        val orderManager = orderManagerRepository.getByEventId(disposal.event.id)
+        contactRepository.save(
+            Contact(
+                personId = disposal.event.person.id,
+                eventId = disposal.event.id,
+                type = contactTypeRepository.getByCode(ContactType.CUSTODY_UPDATE),
+                notes = "Prison Number: $prisonerNumber" + System.lineSeparator(),
+                providerId = orderManager.providerId,
+                teamId = orderManager.teamId,
+                staffId = orderManager.staffId
+            )
+        )
     }
 }
