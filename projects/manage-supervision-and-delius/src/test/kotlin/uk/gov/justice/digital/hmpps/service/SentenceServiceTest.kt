@@ -8,14 +8,13 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonSummaryEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
@@ -43,7 +42,6 @@ class SentenceServiceTest {
 
     @BeforeEach
     fun setup() {
-        val crn = "X000005"
         personSummary = PersonalDetailsServiceTest.Summary(
             id = 1,
             forename = "TestName",
@@ -59,9 +57,10 @@ class SentenceServiceTest {
             listOf()
         )
 
+        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"),listOf())
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
-        assertEquals(SentenceOverview(listOf()), response)
+        assertEquals(expected,response)
         verify(personRepository, times(1)).findSummary(PersonGenerator.OVERVIEW.crn)
         verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
 
@@ -105,9 +104,11 @@ class SentenceServiceTest {
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
+            Name("TestName", surname = "TestSurname"),
             listOf(
                 Sentence(
                     OffenceDetails(
+                        "123457",
                         Offence("Murder", 1),
                         LocalDate.now(),
                         "overview",
@@ -138,15 +139,4 @@ class SentenceServiceTest {
         verifyNoMoreInteractions(courtAppearanceRepository)
 
     }
-
-    data class Summary(
-        override val id: Long,
-        override val forename: String,
-        override val secondName: String? = null,
-        override val thirdName: String? = null,
-        override val surname: String,
-        override val crn: String,
-        override val pnc: String?,
-        override val dateOfBirth: LocalDate
-    ) : PersonSummaryEntity
 }
