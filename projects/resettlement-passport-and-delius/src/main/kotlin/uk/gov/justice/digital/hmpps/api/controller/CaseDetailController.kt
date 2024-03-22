@@ -24,4 +24,8 @@ class CaseDetailController(private val caseDetailService: CaseDetailService) {
     @PreAuthorize("hasRole('PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL')")
     @GetMapping("/{crn}/community-manager")
     fun getCommunityManager(@PathVariable crn: String) = caseDetailService.findCommunityManager(crn)
+
+    @PreAuthorize("hasRole('PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL')")
+    @GetMapping("/{crn}")
+    fun getPersonDetail(@PathVariable crn: String) = caseDetailService.getPersonDetail(crn)
 }

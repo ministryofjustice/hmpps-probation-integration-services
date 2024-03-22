@@ -1,17 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.CaseIdentifiers
-import uk.gov.justice.digital.hmpps.api.model.Manager
-import uk.gov.justice.digital.hmpps.api.model.MappaDetail
-import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.entity.Category
-import uk.gov.justice.digital.hmpps.entity.Level
-import uk.gov.justice.digital.hmpps.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.Staff
-import uk.gov.justice.digital.hmpps.entity.findMappa
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Service
@@ -37,6 +29,8 @@ class CaseDetailService(
 
     fun findCommunityManager(crn: String) = personManagerRepository.findByPersonCrn(crn)?.staff?.asManager()
         ?: throw NotFoundException("Person", "crn", crn)
+
+    fun getPersonDetail(crn: String) = personRepository.getByCrn(crn).detail()
 }
 
 private fun String.toMappaLevel() = Level.entries.find { it.name == this }?.number
@@ -50,3 +44,7 @@ private fun Staff.asManager() = if (code.endsWith("U")) {
 } else {
     Manager(Name(forename, surname), false)
 }
+
+private fun Person.detail() = PersonDetail(
+    crn, Name(firstName, surname), dateOfBirth, ContactDetails.of(telephoneNumber, mobileNumber, emailAddress)
+)

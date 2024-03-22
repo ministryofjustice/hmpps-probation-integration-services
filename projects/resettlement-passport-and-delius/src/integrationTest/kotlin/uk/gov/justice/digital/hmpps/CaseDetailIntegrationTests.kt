@@ -10,10 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.CaseIdentifiers
-import uk.gov.justice.digital.hmpps.api.model.Manager
-import uk.gov.justice.digital.hmpps.api.model.MappaDetail
-import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -65,5 +62,25 @@ class CaseDetailIntegrationTests {
             equalTo(Name(ProviderGenerator.DEFAULT_STAFF.forename, ProviderGenerator.DEFAULT_STAFF.surname))
         )
         assertFalse(manager.unallocated)
+    }
+
+    @Test
+    fun `person detail is returned correctly`() {
+        val detail = mockMvc.perform(get("/probation-cases/${PersonGenerator.DEFAULT.crn}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<PersonDetail>()
+
+        assertThat(detail.crn, equalTo(PersonGenerator.DEFAULT.crn))
+        assertThat(detail.name, equalTo(Name("Fred", "Williams")))
+        assertThat(detail.dateOfBirth, equalTo(LocalDate.of(1982, 8, 19)))
+        assertThat(
+            detail.contactDetails, equalTo(
+                ContactDetails(
+                    "020 346 7982",
+                    "07452819463",
+                    "freddy@justice.co.uk"
+                )
+            )
+        )
     }
 }
