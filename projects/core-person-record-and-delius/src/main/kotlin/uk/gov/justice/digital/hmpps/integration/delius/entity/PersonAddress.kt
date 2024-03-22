@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
@@ -26,6 +27,7 @@ class PersonAddress(
 )
 
 interface AddressRepository : JpaRepository<PersonAddress, Long> {
+    @EntityGraph(attributePaths = ["status"])
     fun findAllByPersonIdAndStatusCodeInOrderByStartDateDesc(
         personId: Long,
         statusCodes: List<String>
