@@ -4,7 +4,6 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -84,7 +83,7 @@ object PersonGenerator {
         LocalDate.now()
     )
 
-    val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F")
+    val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main")
     val REQUIREMENT = generateRequirement(ACTIVE_ORDER)
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
@@ -93,7 +92,7 @@ object PersonGenerator {
         rarActivity = true,
         attended = true,
         complied = true,
-        requirementId = REQUIREMENT.id
+        requirement = REQUIREMENT
     )
     val REQUIREMENT_CONTACT_2 = ContactGenerator.generateContact(
         OVERVIEW,
@@ -102,7 +101,7 @@ object PersonGenerator {
         rarActivity = true,
         attended = null,
         complied = true,
-        requirementId = REQUIREMENT.id
+        requirement = REQUIREMENT
     )
 
     val REGISTER_TYPE_1 = generateRegisterType("CODE1", "Restraining Order")

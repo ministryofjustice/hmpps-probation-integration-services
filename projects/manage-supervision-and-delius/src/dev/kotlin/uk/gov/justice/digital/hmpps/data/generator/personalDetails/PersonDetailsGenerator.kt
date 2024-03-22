@@ -288,12 +288,19 @@ object PersonDetailsGenerator {
         requiresInterpreter = requiresInterpreter,
     )
 
-    fun generateDocument(personId: Long, alfrescoId: String, name: String, documentType: String) = PersonDocument(
+    fun generateDocument(
+        personId: Long,
+        alfrescoId: String,
+        name: String,
+        documentType: String,
+        primaryKeyId: Long? = null
+    ) = PersonDocument(
         id = IdGenerator.getAndIncrement(),
         lastUpdated = ZonedDateTime.now().minusDays(1),
         alfrescoId = alfrescoId,
         name = name,
         personId = personId,
+        primaryKeyId = primaryKeyId,
         type = documentType
     )
 
