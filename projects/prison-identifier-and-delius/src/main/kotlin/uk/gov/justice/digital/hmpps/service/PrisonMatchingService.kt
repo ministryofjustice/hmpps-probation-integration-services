@@ -24,8 +24,8 @@ class PrisonMatchingService(
         val matchResult = findMatchingPrisonRecord(crn)
         if (!dryRun && matchResult is Success) {
             with(matchResult) {
-                matchWriter.update(prisonIdentifiers, person, custody)
-                notifier.identifierAdded(crn, prisonIdentifiers)
+                val changes = matchWriter.update(prisonIdentifiers, person, custody)
+                if (changes) notifier.identifierAdded(person.crn, prisonIdentifiers)
             }
         }
         return matchResult
