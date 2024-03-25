@@ -101,6 +101,15 @@
         <a href="./api-reference.html#sentence-crn"><span>/sentence/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#schedule-crn-upcoming"><span>/schedule/{crn}/upcoming</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#schedule-crn-previous"><span>/schedule/{crn}/previous</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#schedule-crn-appointment-contactid"><span>/schedule/{crn}/appointment/{contactId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#personal-details-crn"><span>/personal-details/{crn}</span></a>
       </li>
       <li>
@@ -244,6 +253,407 @@
 </td>
 <td>
 <a href='#schema-sentenceoverview'>SentenceOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="schedule-crn-upcoming">/schedule/{crn}/upcoming</h2>
+
+<h3 id="schedule-crn-upcoming-get">get</h3>
+
+  <p><em>Gets upcoming schedule information’ </em></p>
+
+
+
+
+<h4 id="schedule-crn-upcoming-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="schedule-crn-upcoming-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "appointments": [
+    {
+      "id": "integer",
+      "type": "string",
+      "startDateTime": "string",
+      "endDateTime": "string",
+      "rarToolKit": "string",
+      "notes": "string",
+      "isSensitive": "boolean",
+      "hasOutcome": "boolean",
+      "wasAbsent": "boolean",
+      "officerName": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "isInitial": "boolean",
+      "isNationalStandard": "boolean",
+      "location": {
+        "officeName": "string",
+        "buildingName": "string",
+        "buildingNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string",
+        "ldu": "string",
+        "telephoneNumber": "string"
+      },
+      "rescheduled": "boolean",
+      "didTheyComply": "boolean",
+      "absentWaitingEvidence": "boolean",
+      "rearrangeOrCancelReason": "string",
+      "rescheduledBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "repeating": "boolean",
+      "nonComplianceReason": "string",
+      "documents": [
+        {
+          "id": "string",
+          "name": "string",
+          "lastUpdated": "string"
+        }
+      ],
+      "rarCategory": "string",
+      "acceptableAbsence": "boolean",
+      "acceptableAbsenceReason": "string",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-schedule'>Schedule</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="schedule-crn-previous">/schedule/{crn}/previous</h2>
+
+<h3 id="schedule-crn-previous-get">get</h3>
+
+  <p><em>Gets previous schedule information’ </em></p>
+
+
+
+
+<h4 id="schedule-crn-previous-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="schedule-crn-previous-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "appointments": [
+    {
+      "id": "integer",
+      "type": "string",
+      "startDateTime": "string",
+      "endDateTime": "string",
+      "rarToolKit": "string",
+      "notes": "string",
+      "isSensitive": "boolean",
+      "hasOutcome": "boolean",
+      "wasAbsent": "boolean",
+      "officerName": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "isInitial": "boolean",
+      "isNationalStandard": "boolean",
+      "location": {
+        "officeName": "string",
+        "buildingName": "string",
+        "buildingNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string",
+        "ldu": "string",
+        "telephoneNumber": "string"
+      },
+      "rescheduled": "boolean",
+      "didTheyComply": "boolean",
+      "absentWaitingEvidence": "boolean",
+      "rearrangeOrCancelReason": "string",
+      "rescheduledBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "repeating": "boolean",
+      "nonComplianceReason": "string",
+      "documents": [
+        {
+          "id": "string",
+          "name": "string",
+          "lastUpdated": "string"
+        }
+      ],
+      "rarCategory": "string",
+      "acceptableAbsence": "boolean",
+      "acceptableAbsenceReason": "string",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-schedule'>Schedule</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="schedule-crn-appointment-contactid">/schedule/{crn}/appointment/{contactId}</h2>
+
+<h3 id="schedule-crn-appointment-contactid-get">get</h3>
+
+  <p><em>Gets individual appointment information’ </em></p>
+
+
+
+
+<h4 id="schedule-crn-appointment-contactid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>contactId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="schedule-crn-appointment-contactid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "appointment": {
+    "id": "integer",
+    "type": "string",
+    "startDateTime": "string",
+    "endDateTime": "string",
+    "rarToolKit": "string",
+    "notes": "string",
+    "isSensitive": "boolean",
+    "hasOutcome": "boolean",
+    "wasAbsent": "boolean",
+    "officerName": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "isInitial": "boolean",
+    "isNationalStandard": "boolean",
+    "location": {
+      "officeName": "string",
+      "buildingName": "string",
+      "buildingNumber": "string",
+      "streetName": "string",
+      "district": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string",
+      "ldu": "string",
+      "telephoneNumber": "string"
+    },
+    "rescheduled": "boolean",
+    "didTheyComply": "boolean",
+    "absentWaitingEvidence": "boolean",
+    "rearrangeOrCancelReason": "string",
+    "rescheduledBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "repeating": "boolean",
+    "nonComplianceReason": "string",
+    "documents": [
+      {
+        "id": "string",
+        "name": "string",
+        "lastUpdated": "string"
+      }
+    ],
+    "rarCategory": "string",
+    "acceptableAbsence": "boolean",
+    "acceptableAbsenceReason": "string",
+    "lastUpdated": "string",
+    "lastUpdatedBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    }
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personappointment'>PersonAppointment</a>
 </td>
 </tr>
 
@@ -1142,6 +1552,8 @@
 
 
 <pre><code>{
+  "appointmentsWithoutOutcome": "integer",
+  "absencesWithoutEvidence": "integer",
   "activity": {
     "acceptableAbsences": "integer",
     "complied": "integer",
@@ -1288,10 +1700,76 @@
     "count": "integer"
   },
   "schedule": {
-    "nextAppointment": {
-      "date": "string",
-      "description": "string"
-    }
+    "personSummary": {
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "crn": "string",
+      "offenderId": "integer",
+      "pnc": "string",
+      "dateOfBirth": "string"
+    },
+    "appointments": [
+      {
+        "id": "integer",
+        "type": "string",
+        "startDateTime": "string",
+        "endDateTime": "string",
+        "rarToolKit": "string",
+        "notes": "string",
+        "isSensitive": "boolean",
+        "hasOutcome": "boolean",
+        "wasAbsent": "boolean",
+        "officerName": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "isInitial": "boolean",
+        "isNationalStandard": "boolean",
+        "location": {
+          "officeName": "string",
+          "buildingName": "string",
+          "buildingNumber": "string",
+          "streetName": "string",
+          "district": "string",
+          "town": "string",
+          "county": "string",
+          "postcode": "string",
+          "ldu": "string",
+          "telephoneNumber": "string"
+        },
+        "rescheduled": "boolean",
+        "didTheyComply": "boolean",
+        "absentWaitingEvidence": "boolean",
+        "rearrangeOrCancelReason": "string",
+        "rescheduledBy": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "repeating": "boolean",
+        "nonComplianceReason": "string",
+        "documents": [
+          {
+            "id": "string",
+            "name": "string",
+            "lastUpdated": "string"
+          }
+        ],
+        "rarCategory": "string",
+        "acceptableAbsence": "boolean",
+        "acceptableAbsenceReason": "string",
+        "lastUpdated": "string",
+        "lastUpdatedBy": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        }
+      }
+    ]
   },
   "sentences": [
     {
@@ -1580,6 +2058,600 @@
 <td></td>
 <td>
   <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-appointment">Appointment</h3>
+
+
+<table class='schema-appointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDateTime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDateTime</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rarToolKit</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isSensitive</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>hasOutcome</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>wasAbsent</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>officerName</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>isInitial</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isNationalStandard</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>location</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-officeaddress'>OfficeAddress</a>
+</td>
+</tr>
+
+<tr>
+<td>rescheduled</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>didTheyComply</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>absentWaitingEvidence</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rearrangeOrCancelReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduledBy</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>repeating</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nonComplianceReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-document'>Document</a>
+</td>
+</tr>
+
+<tr>
+<td>rarCategory</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>acceptableAbsence</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>acceptableAbsenceReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedBy</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-document">Document</h3>
+
+
+<table class='schema-document'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-officeaddress">OfficeAddress</h3>
+
+
+<table class='schema-officeaddress'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>officeName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ldu</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personsummary">PersonSummary</h3>
+
+
+<table class='schema-personsummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pnc</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-schedule">Schedule</h3>
+
+
+<table class='schema-schedule'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>appointments</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-appointment'>Appointment</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personappointment">PersonAppointment</h3>
+
+
+<table class='schema-personappointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>appointment</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-appointment'>Appointment</a>
 </td>
 </tr>
 
@@ -1905,152 +2977,6 @@
 <td>lastUpdated</td>
 <td>string</td>
 <td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-document">Document</h3>
-
-
-<table class='schema-document'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>lastUpdated</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-name">Name</h3>
-
-
-<table class='schema-name'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>forename</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>middleName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personsummary">PersonSummary</h3>
-
-
-<table class='schema-personsummary'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>offenderId</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pnc</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>dateOfBirth</td>
-<td>string</td>
-<td>true</td>
 <td></td>
 <td>
   
@@ -2969,38 +3895,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-nextappointment">NextAppointment</h3>
-
-
-<table class='schema-nextappointment'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>date</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-overview">Overview</h3>
 
 
@@ -3009,6 +3903,26 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>appointmentsWithoutOutcome</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>absencesWithoutEvidence</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>activity</td>
@@ -3109,28 +4023,6 @@
 <td></td>
 <td>
   
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-schedule">Schedule</h3>
-
-
-<table class='schema-schedule'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>nextAppointment</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-nextappointment'>NextAppointment</a>
 </td>
 </tr>
 

@@ -93,6 +93,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CaseIdentifiers'
+  /probation-cases/{crn}:
+    get:
+      tags:
+      - case-detail-controller
+      operationId: getPersonDetail
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDetail'
   /probation-cases/{crn}/mappa:
     get:
       tags:
@@ -197,6 +215,41 @@ components:
       properties:
         crn:
           type: string
+    ContactDetails:
+      type: object
+      properties:
+        telephone:
+          type: string
+        mobile:
+          type: string
+        email:
+          type: string
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+    PersonDetail:
+      required:
+      - crn
+      - dateOfBirth
+      - name
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        dateOfBirth:
+          type: string
+          format: date
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
     MappaDetail:
       required:
       - startDate
@@ -227,16 +280,6 @@ components:
           $ref: '#/components/schemas/Name'
         unallocated:
           type: boolean
-    Name:
-      required:
-      - forename
-      - surname
-      type: object
-      properties:
-        forename:
-          type: string
-        surname:
-          type: string
     DutyToReferNSI:
       required:
       - nsiSubType

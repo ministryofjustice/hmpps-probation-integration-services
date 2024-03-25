@@ -33,6 +33,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SentenceOverview'
+  /schedule/{crn}/upcoming:
+    get:
+      tags:
+      - Sentence
+      summary: 'Gets upcoming schedule information’ '
+      operationId: getUpcomingSchedule
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+  /schedule/{crn}/previous:
+    get:
+      tags:
+      - Sentence
+      summary: 'Gets previous schedule information’ '
+      operationId: getPreviousSchedule
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+  /schedule/{crn}/appointment/{contactId}:
+    get:
+      tags:
+      - Sentence
+      summary: 'Gets individual appointment information’ '
+      operationId: getContact
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contactId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonAppointment'
   /personal-details/{crn}:
     get:
       tags:
@@ -294,6 +357,171 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sentence'
+    Appointment:
+      required:
+      - documents
+      - hasOutcome
+      - id
+      - isInitial
+      - isNationalStandard
+      - lastUpdated
+      - lastUpdatedBy
+      - rescheduled
+      - startDateTime
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        startDateTime:
+          type: string
+          format: date-time
+        endDateTime:
+          type: string
+          format: date-time
+        rarToolKit:
+          type: string
+        notes:
+          type: string
+        isSensitive:
+          type: boolean
+        hasOutcome:
+          type: boolean
+        wasAbsent:
+          type: boolean
+        officerName:
+          $ref: '#/components/schemas/Name'
+        isInitial:
+          type: boolean
+        isNationalStandard:
+          type: boolean
+        location:
+          $ref: '#/components/schemas/OfficeAddress'
+        rescheduled:
+          type: boolean
+        didTheyComply:
+          type: boolean
+        absentWaitingEvidence:
+          type: boolean
+        rearrangeOrCancelReason:
+          type: string
+        rescheduledBy:
+          $ref: '#/components/schemas/Name'
+        repeating:
+          type: boolean
+        nonComplianceReason:
+          type: string
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        rarCategory:
+          type: string
+        acceptableAbsence:
+          type: boolean
+        acceptableAbsenceReason:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+        lastUpdatedBy:
+          $ref: '#/components/schemas/Name'
+    Document:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+    OfficeAddress:
+      required:
+      - ldu
+      - officeName
+      type: object
+      properties:
+        officeName:
+          type: string
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        ldu:
+          type: string
+        telephoneNumber:
+          type: string
+    PersonSummary:
+      required:
+      - crn
+      - dateOfBirth
+      - name
+      - offenderId
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        crn:
+          type: string
+        offenderId:
+          type: integer
+          format: int64
+        pnc:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+    Schedule:
+      required:
+      - appointments
+      - personSummary
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        appointments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+    PersonAppointment:
+      required:
+      - appointment
+      - personSummary
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        appointment:
+          $ref: '#/components/schemas/Appointment'
     Address:
       required:
       - from
@@ -380,51 +608,6 @@ components:
           items:
             type: string
         lastUpdated:
-          type: string
-          format: date
-    Document:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        lastUpdated:
-          type: string
-          format: date-time
-    Name:
-      required:
-      - forename
-      - surname
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
-          type: string
-    PersonSummary:
-      required:
-      - crn
-      - dateOfBirth
-      - name
-      - offenderId
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/Name'
-        crn:
-          type: string
-        offenderId:
-          type: integer
-          format: int64
-        pnc:
-          type: string
-        dateOfBirth:
           type: string
           format: date
     PersonalCircumstance:
@@ -718,19 +901,10 @@ components:
         failureToComplyInLast12Months:
           type: integer
           format: int32
-    NextAppointment:
-      required:
-      - date
-      - description
-      type: object
-      properties:
-        date:
-          type: string
-          format: date-time
-        description:
-          type: string
     Overview:
       required:
+      - absencesWithoutEvidence
+      - appointmentsWithoutOutcome
       - personalDetails
       - previousOrders
       - registrations
@@ -738,6 +912,12 @@ components:
       - sentences
       type: object
       properties:
+        appointmentsWithoutOutcome:
+          type: integer
+          format: int32
+        absencesWithoutEvidence:
+          type: integer
+          format: int32
         activity:
           $ref: '#/components/schemas/Activity'
         compliance:
@@ -768,11 +948,6 @@ components:
         count:
           type: integer
           format: int32
-    Schedule:
-      type: object
-      properties:
-        nextAppointment:
-          $ref: '#/components/schemas/NextAppointment'
   securitySchemes:
     hmpps-auth-token:
       type: http
