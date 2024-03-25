@@ -165,7 +165,7 @@ internal class PrisonMatchingIntegrationTest {
             .perform(post("/person/match-by-crn?dryRun=false").withToken().withJson(listOf(crn)))
             .andExpect(status().is2xxSuccessful)
 
-        verify(telemetryService, timeout(300_000)).trackEvent(
+        verify(telemetryService, timeout(5000)).trackEvent(
             "MatchResultSuccess", mapOf(
                 "reason" to "Matched CRN A000003 to NOMS number G5541WW and custody $custodyId to 13831A",
                 "crn" to "A000003",
