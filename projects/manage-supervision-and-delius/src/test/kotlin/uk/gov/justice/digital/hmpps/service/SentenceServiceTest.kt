@@ -57,10 +57,10 @@ class SentenceServiceTest {
             listOf()
         )
 
-        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"),listOf())
+        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf())
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
-        assertEquals(expected,response)
+        assertEquals(expected, response)
         verify(personRepository, times(1)).findSummary(PersonGenerator.OVERVIEW.crn)
         verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
 
@@ -68,7 +68,6 @@ class SentenceServiceTest {
         verifyNoMoreInteractions(personRepository)
         verifyNoInteractions(courtAppearanceRepository)
         verifyNoInteractions(additionalSentenceRepository)
-
     }
 
     @Test
@@ -137,6 +136,5 @@ class SentenceServiceTest {
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
         verifyNoMoreInteractions(courtAppearanceRepository)
-
     }
 }

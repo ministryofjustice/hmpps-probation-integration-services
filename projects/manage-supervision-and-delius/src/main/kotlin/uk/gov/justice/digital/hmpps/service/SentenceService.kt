@@ -26,10 +26,10 @@ class SentenceService(
         return SentenceOverview(
             name = person.toName(),
             sentences = events.map {
-            val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
-            val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
-            it.toSentence(courtAppearance, additionalSentences)
-        })
+                val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
+                val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
+                it.toSentence(courtAppearance, additionalSentences)
+            })
     }
 
     fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>) = Sentence(
@@ -54,5 +54,5 @@ class SentenceService(
         AdditionalSentence(length, amount, notes, type.description)
 
     fun PersonSummaryEntity.toName() =
-        Name(forename, secondName , surname)
+        Name(forename, secondName, surname)
 }
