@@ -46,6 +46,12 @@ generic-service:
     flipt-db:
       FLIPT_DB_URL: URL
 
+  allowlist:
+    dxw-vpn: 54.76.254.148/32
+    groups:
+      - internal
+      - unilink_staff
+
   custommetrics:
     enabled: true
     metricsPath: /metrics
