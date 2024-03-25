@@ -95,10 +95,12 @@ fun HmppsDomainEvent.rsr() = RiskAssessment(
     additionalInformation["RSRBand"] as String
 )
 
-fun HmppsDomainEvent.ospIndecent() = RiskAssessment(
-    additionalInformation["OSPIndecentScore"] as Double,
-    additionalInformation["OSPIndecentBand"] as String,
-)
+fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.let {
+    RiskAssessment(
+        additionalInformation["OSPIndecentScore"] as Double,
+        additionalInformation["OSPIndecentBand"] as String,
+    )
+}
 
 fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndecentIndirectBand"]?.let {
     RiskAssessment(
@@ -107,10 +109,12 @@ fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndecentI
     )
 }
 
-fun HmppsDomainEvent.ospContact() = RiskAssessment(
-    additionalInformation["OSPContactScore"] as Double,
-    additionalInformation["OSPContactBand"] as String,
-)
+fun HmppsDomainEvent.ospContact() = additionalInformation["OSPContactScore"]?.let {
+    RiskAssessment(
+        additionalInformation["OSPContactScore"] as Double,
+        additionalInformation["OSPContactBand"] as String,
+    )
+}
 
 fun HmppsDomainEvent.ospDirectContact() = additionalInformation["OSPDirectContactBand"]?.let {
     RiskAssessment(
