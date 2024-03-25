@@ -1,0 +1,11 @@
+database:
+  access:
+    username_key: /make-recall-decisions-and-delius/db-username
+    password_key: /make-recall-decisions-and-delius/db-password
+    tables:
+      - contact
+
+  audit:
+    username: MakeRecallDecisionsAndDelius
+    forename: Consider a recall
+    surname: Service

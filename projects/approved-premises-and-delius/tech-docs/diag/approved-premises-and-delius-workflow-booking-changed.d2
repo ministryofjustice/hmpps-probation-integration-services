@@ -1,0 +1,43 @@
+# Approved Premises Workflow: Booking Changed
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+approved_premises: Approved Premises (CAS1)  {
+     style.font-size: 24
+
+     explanation: |md
+     ## Booking Workflow
+     Update an Approved Premises Booking
+     |
+
+     booking_changed: Update Booking
+}
+
+domain_event: "approved-premises\n.booking.changed" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+
+     explanation: |md
+     ## AP Referral Workflow
+     Update Delius AP referral to match
+     |
+
+    d_referral: Update Delius\nAP Referral
+}
+
+approved_premises -> domain_event -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
+*.*.style.font-size: 12

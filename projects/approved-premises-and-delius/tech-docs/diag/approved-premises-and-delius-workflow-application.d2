@@ -1,0 +1,64 @@
+# Approved Premises Workflow: Referral Application
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+approved_premises: Approved Premises (CAS1)  {
+     style.font-size: 24
+
+     explanation: |md
+     ## Referral Application Workflow
+     Referral application actions raise domain events
+     |
+
+     application_submitted: Application Submitted
+     application_assessed: Application Assessed
+     application_withdrawn: Application Withdrawn
+
+     application_submitted -> application_assessed
+     application_submitted -> application_withdrawn
+     application_assessed -> application_withdrawn
+}
+
+domain_event_1: "approved-premises\n.application.submitted" {
+    style.font-size: 12
+    shape: queue
+}
+domain_event_2: "approved-premises\n.application.assessed" {
+    style.font-size: 12
+    shape: queue
+}
+domain_event_3: "approved-premises\n.application.withdrawn" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+
+     explanation: |md
+     ## Delius Workflow
+     Contacts of a specific type are added to Delius\
+     for each referral application action
+     |
+
+    d_contact: Create Contact
+}
+
+approved_premises -> domain_event_1
+approved_premises -> domain_event_2
+approved_premises -> domain_event_3
+
+domain_event_1 -> delius
+domain_event_2 -> delius
+domain_event_3 -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
+*.*.style.font-size: 12

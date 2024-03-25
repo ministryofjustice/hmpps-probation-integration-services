@@ -1,0 +1,28 @@
+asyncapi: 2.6.0
+info:
+  title: Manage POM Cases and Delius
+  description: Reflect changes to POM allocation and handover dates in Delius
+  version: 0.1.0
+
+servers:
+  development:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-dev-manage-pom-cases-and-delius-queue
+    protocol: sqs
+  preproduction:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-preprod-manage-pom-cases-and-delius-queue
+    protocol: sqs
+  production:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-manage-pom-cases-and-delius-queue
+    protocol: sqs
+
+channels:
+  hmpps-domain-events/manage-pom-cases-and-delius/handover-changed:
+    subscribe:
+      operationId: offender-management.handover.changed
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/offender-management/handover-changed.yml
+  hmpps-domain-events/manage-pom-cases-and-delius/allocation-changed:
+    subscribe:
+      operationId: offender-management.pom.allocated
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/offender-management/pom-allocated.yml

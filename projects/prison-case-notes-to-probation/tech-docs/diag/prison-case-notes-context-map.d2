@@ -1,0 +1,46 @@
+
+style {
+  fill: "#ffffff"
+}
+
+context-nomis: Prisons/NOMIS Context {
+
+  entities: Entities {
+    grid-columns: 3
+    case-note: Case Note
+    offender: Person in Prison
+    location: Location
+    author: Author
+  }
+
+  interface: Offender Case Notes API {
+    link: https://github.com/ministryofjustice/offender-case-notes
+    type: Open Host Service
+  }
+}
+
+context-delius: Delius Context {
+  link: https://github.com/ministryofjustice/delius
+  style.stroke-width: 8
+
+  entities: Entities {
+    grid-columns: 3
+    person-on-probation: Person on Probation
+    institution: Institution
+    probation-area: Probation Area
+    contact: Contact
+    staff: Staff
+    team: Team
+
+  }
+  interface: Prison Case Notes to Probation {
+    link: https://github.com/ministryofjustice/hmpps-probation-integration-services/tree/main/projects/prison-case-notes-to-probation
+    type: Anti-Corruption Layer
+  }
+}
+
+context-nomis.interface--context-delius.interface: Upstream\n\n\nDownstream
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2

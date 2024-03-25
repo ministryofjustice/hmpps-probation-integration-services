@@ -1,0 +1,34 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174000"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-tier-calculation.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/hmpps-tier/crn/A000002/tier/123e4567-e89b-12d3-a456-426614174000"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "status": 404,
+          "userMessage": "Resource with id [A000002] not found.",
+          "developerMessage": "Resource with id [A000002] not found."
+        }
+      }
+    }
+  ]
+}

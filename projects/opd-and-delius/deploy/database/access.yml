@@ -1,0 +1,13 @@
+database:
+  access:
+    username_key: /opd-and-delius/db-username
+    password_key: /opd-and-delius/db-password
+    tables:
+      - nsi
+      - nsi_manager
+      - contact
+
+  audit:
+    username: OpdAndDelius
+    forename: OPD and Delius
+    surname: Service

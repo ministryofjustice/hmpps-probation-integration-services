@@ -1,0 +1,17 @@
+{
+  "Type": "Notification",
+  "MessageId": "aa2c2828-167f-529b-8e19-73735a2fb85c",
+  "TopicArn": "arn:aws:sns:eu-west-2:000000000000:example",
+  "Message": "{\"eventType\":\"example\",\"version\":1,\"description\":\"Example event\",\"detailUrl\":\"http://localhost:{wiremock.port}/example/123\",\"occurredAt\":\"2022-07-27T15:22:08.452612281+01:00\",\"additionalInformation\":{\"exampleId\":\"123\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000001\"}]}}",
+  "Timestamp": "2022-07-27T14:22:08.509Z",
+  "SignatureVersion": "1",
+  "Signature": "EXAMPLE",
+  "SigningCertURL": "https://sns.eu-west-2.amazonaws.com/EXAMPLE.pem",
+  "UnsubscribeURL": "https://sns.eu-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=EXAMPLE",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "example"
+    }
+  }
+}

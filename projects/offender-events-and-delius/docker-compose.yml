@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  aws:
+    image: localstack/localstack:0.12.10
+    container_name: localstack
+    environment:
+      - SERVICES=sns,sqs
+      - DEFAULT_REGION=eu-west-2
+      - AWS_DEFAULT_REGION=eu-west-2
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    ports:
+      - '4566:4566'

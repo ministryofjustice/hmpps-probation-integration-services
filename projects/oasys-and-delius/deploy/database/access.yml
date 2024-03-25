@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /oasys-and-delius/db-username
+    password_key: /oasys-and-delius/db-password
+
+  audit:
+    username: OasysAndDelius
+    forename: Oasys and Delius
+    surname: Service

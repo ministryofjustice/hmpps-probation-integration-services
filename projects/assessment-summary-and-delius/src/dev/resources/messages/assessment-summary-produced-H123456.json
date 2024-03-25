@@ -1,0 +1,12 @@
+{
+  "Type": "Notification",
+  "MessageId": "33ad848a-4342-5ff2-9fe9-d96307935317",
+  "Message": "{\n  \"eventType\": \"assessment.summary.produced\",\n  \"version\": 1,\n  \"description\": \"Assessment Summary has been produced\",\n  \"detailUrl\": \"http://localhost:{wiremock.port}/eor/oasys/ass/asssumm/H123456/ALLOW/10078385/COMPLETE\",\n  \"occurredAt\": \"2023-12-15T08:34:44+00:00\"\n}",
+  "Timestamp": "2023-12-15T08:34:44.000Z",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "risk-assessment.scores.determined"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+name: Get build info
+description: Generate build info files for Gradle projects
+
+inputs:
+  project:
+    description: The name of the project
+    required: true
+  version:
+    description: The version of the service to deploy
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Check if Gradle project
+      id: gradle_file
+      uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v2
+      with:
+        files: projects/${{ inputs.project }}/build.gradle.kts
+
+    - uses: actions/setup-java@v4
+      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - uses: gradle/actions/setup-gradle@v3
+      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
+      with:
+        cache-read-only: true
+
+    - name: Get build info
+      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
+      run: |
+        echo '::group::Generate build info'
+        ./gradlew ${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo
+        echo '::endgroup::'
+      shell: bash
+      env:
+        ORG_GRADLE_PROJECT_version: ${{ inputs.version }}

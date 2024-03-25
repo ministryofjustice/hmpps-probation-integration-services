@@ -1,0 +1,19 @@
+{
+  "eventType": "unpaid-work.assessment.completed",
+  "version": "2",
+  "description": "UPW Assessment Completed",
+  "occurredAt": "2022-10-18T08:19:19.451579+01:00",
+  "detailUrl": "http://localhost:{wiremock.port}/api/upw/download/12345",
+  "additionalInformation": {
+    "episodeId": "12345",
+    "eventId": "1234567890"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "D001022"
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+generic-service:
+  ingress:
+    host: feature-flags.hmpps.service.justice.gov.uk
+
+  env:
+    FLIPT_AUTHENTICATION_SESSION_DOMAIN: feature-flags.hmpps.service.justice.gov.uk
+    FLIPT_AUTHENTICATION_METHODS_GITHUB_REDIRECT_ADDRESS: https://feature-flags.hmpps.service.justice.gov.uk

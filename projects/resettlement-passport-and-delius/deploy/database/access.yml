@@ -1,0 +1,13 @@
+database:
+  access:
+    username_key: /resettlement-passport-and-delius/db-username
+    password_key: /resettlement-passport-and-delius/db-password
+    tables:
+      - audited_interaction
+      - contact
+      - contact_alert
+
+  audit:
+    username: ResettlementPassportAndDelius
+    forename: Resettlement Passport
+    surname: Service

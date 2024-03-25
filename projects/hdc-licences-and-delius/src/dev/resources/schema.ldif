@@ -1,0 +1,49 @@
+dn: dc=moj,dc=com
+dc: moj
+objectclass: top
+objectclass: domain
+
+dn: ou=Users,dc=moj,dc=com
+ou: Users
+objectclass: top
+objectclass: organizationalUnit
+
+dn: cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com
+cn: ndRoleCatalogue
+objectclass: top
+objectclass: javaContainer
+
+dn: cn=LHDCBT002,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com
+cn: LHDCBT002
+description: Digital Licence Create
+objectclass: top
+objectClass: NDRole
+
+dn: cn=LHDCBT003,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com
+cn: LHDCBT003
+description: Digital Licence Vary
+objectclass: top
+objectClass: NDRole
+
+dn: cn=test.user,ou=Users,dc=moj,dc=com
+cn: test.user
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Test
+sn: User
+mail: test.user@example.com
+
+dn: cn=LHDCBT002,cn=test.user,ou=Users,dc=moj,dc=com
+cn: LHDCBT002
+objectclass: top
+objectClass: NDRoleAssociation
+
+dn: cn=inactive.user,ou=Users,dc=moj,dc=com
+cn: inactive.user
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Inactive
+sn: User
+endDate: 20000101

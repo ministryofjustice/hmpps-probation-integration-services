@@ -1,0 +1,43 @@
+name: SchemaSpy report
+
+on:
+  schedule:
+    - cron: "0 7 * * WED" # Every Wednesday at 07:00 UTC
+
+  workflow_dispatch:
+
+jobs:
+  schema-spy:
+    name: Schema Spy report generation
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    environment: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Generate report
+        run: tools/schema-spy/run.sh
+        env:
+          DB: ${{ secrets.SCHEMA_SPY_DB }}
+          HOST: ${{ secrets.SCHEMA_SPY_HOST }}
+          PORT: ${{ secrets.SCHEMA_SPY_PORT }}
+          SCHEMA: ${{ secrets.SCHEMA_SPY_SCHEMA }}
+          DB_USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
+          DB_PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
+
+      - name: Publish HTML report
+        uses: JamesIves/github-pages-deploy-action@65b5dfd4f5bcd3a7403bbc2959c144256167464e # v4.5.0
+        with:
+          folder: schema-spy-report
+          target-folder: schema-spy-report
+
+      - name: Add HTML report URL to the job summary
+        run: echo '[Schema Spy HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/schema-spy-report)' | tee -a "$GITHUB_STEP_SUMMARY"

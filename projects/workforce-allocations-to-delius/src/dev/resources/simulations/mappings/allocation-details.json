@@ -1,0 +1,82 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/person/allocate-new-person-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "new-person-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/person/allocate-historic-person-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "historic-person-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/event/allocate-new-order-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "new-event-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/event/allocate-historic-order-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "historic-event-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/requirements/allocate-new-requirement-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "new-requirement-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/requirements/allocate-historic-requirement-manager"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "historic-requirement-allocation-body.json"
+      }
+    }
+  ]
+}

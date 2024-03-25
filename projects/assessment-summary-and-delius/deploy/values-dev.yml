@@ -1,0 +1,18 @@
+generic-service:
+  ingress:
+    host: assessment-summary-and-delius-dev.hmpps.service.justice.gov.uk
+
+  scheduledDowntime:
+    enabled: true
+
+  env:
+    SENTRY_ENVIRONMENT: dev
+    INTEGRATIONS_ORDS_URL: https://t2.oasys.service.justice.gov.uk/eor/oasys
+
+    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
+    SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 0
+
+    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
+
+generic-prometheus-alerts:
+  businessHoursOnly: true

@@ -1,0 +1,148 @@
+name: Report to Slack
+description: Publish results of an Azure Monitor Application Insights query to Slack
+
+inputs:
+  title:
+    description: Report title
+    required: true
+  summary:
+    description: Report summary
+    required: true
+  event_name:
+    description: Comma-separated list of custom events to include in the report (e.g. Event1,Event2,Event3)
+    required: true
+  project_name:
+    description: Cloud role name of the service to report on
+    required: true
+  column1_header:
+    description: Column 1 header
+    default: CRN
+    required: true
+  column1_value:
+    description: Column 1 value from customDimensions
+    default: crn
+    required: true
+  column2_header:
+    description: Column 2 header
+    default: Reason
+    required: true
+  column2_value:
+    description: Column 2 value from customDimensions
+    default: reason
+    required: true
+  time_range:
+    description: Filter the timestamp
+    default: ago(7d)..now()
+    required: true
+  slack_channel:
+    description: Name to the Slack channel to report to
+    required: true
+  slack_token:
+    description: Slack token
+    required: true
+  app_insights_key:
+    description: Application Insights API key
+    required: true
+  app_insights_guid:
+    description: Application Insights GUID
+    required: true
+  app_insights_subscription_id:
+    description: Application Insights Subscription ID
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Format event name list # adds quotes for app insights e.g. 'a,b,c' -> 'a","b","c'
+      id: event_names
+      run: echo "result=$(echo "$event_name" | sed 's/,/","/g')" | tee -a "$GITHUB_OUTPUT"
+      shell: bash
+      env:
+        event_name: ${{ inputs.event_name }}
+
+    - name: Search app insights
+      id: search
+      run: |
+        echo "result=$(curl -fsSL -H "x-api-key: $key" --data-urlencode "query=$query" --get "$url")" | tee -a "$GITHUB_OUTPUT"
+      shell: bash
+      env:
+        url: https://api.applicationinsights.io/v1/apps/${{ inputs.app_insights_guid }}/query
+        key: ${{ inputs.app_insights_key }}
+        query: |
+          customEvents
+          | where timestamp between (${{ inputs.time_range }})
+          | where cloud_RoleName in ("${{ inputs.project_name }}")
+          | where name in ("${{ steps.event_names.outputs.result }}")
+          | project customDimensions.${{ inputs.column1_value }}, customDimensions.${{ inputs.column2_value }}, itemId, timestamp
+          | order by tostring(customDimensions_${{ inputs.column1_value }}) asc
+
+    - name: Transform results into Slack message
+      id: transform
+      if: fromJson(steps.search.outputs.result).tables[0].rows[0] != null
+      shell: bash
+      run: |
+        echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
+          {
+            "blocks": ([
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": ":information_source: ${{ inputs.title }}"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "plain_text",
+                  "text": "${{ inputs.summary }}"
+                },
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*${{ inputs.column1_header }}*"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*${{ inputs.column2_header }}*"
+                  }
+                ]
+              }
+            ] +
+            (. | [_nwise(5)] | map({
+              "type": "section",
+              "fields": (. | map([
+                {
+                  type: "plain_text",
+                  text: .[0]
+                },
+                {
+                  type: "mrkdwn",
+                  text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ inputs.app_insights_subscription_id }}%22%7D|Details>).")
+                }
+              ]) | flatten)
+            })) +
+            [
+              {
+                "type": "context",
+                "elements": [
+                  {
+                    "type": "mrkdwn",
+                    "text": ">This report was generated automatically. For more information, contact the <https://moj.enterprise.slack.com/archives/C02HQ4M2YQN|probation integration team>."
+                  }
+                ]
+              }
+            ])
+          }')" | tee -a "$GITHUB_OUTPUT"
+      env:
+        search_result: ${{ steps.search.outputs.result }}
+
+    - name: Send message to Slack
+      id: send
+      if: steps.transform.outputs.result != null
+      uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
+      with:
+        channel-id: ${{ inputs.slack_channel }}
+        payload: ${{ steps.transform.outputs.result }}
+      env:
+        SLACK_BOT_TOKEN: ${{ inputs.slack_token }}

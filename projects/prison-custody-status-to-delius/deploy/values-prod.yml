@@ -1,0 +1,8 @@
+generic-service:
+  ingress:
+    host: prison-custody-status-to-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/oauth/token
+    SENTRY_ENVIRONMENT: prod
+    INTEGRATIONS_PRISON-API_URL: https://api.prison.service.justice.gov.uk

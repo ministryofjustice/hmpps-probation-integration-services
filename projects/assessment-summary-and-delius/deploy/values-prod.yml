@@ -1,0 +1,9 @@
+enabled: false # TODO set this to true when you're ready to deploy your service
+
+generic-service:
+  ingress:
+    host: assessment-summary-and-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod
+    INTEGRATIONS_ORDS_URL: https://bridge-oasys.az.justice.gov.uk/eor/oasys

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "eventType": "prison-offender-events.prisoner.received",
+  "description": "A prisoner has been received into prison",
+  "occurredAt": "2023-08-04T08:09:36.649098+01:00",
+  "publishedAt": "2023-08-04T09:06:46.65281576+01:00",
+  "additionalInformation": {
+    "nomsNumber": "A0001AA",
+    "reason": "ADMISSION",
+    "probableCause": "RECALL",
+    "source": "PRISON",
+    "nomisMovementReasonCode": "N",
+    "details": "ACTIVE IN:ADM-N",
+    "currentLocation": "IN_PRISON",
+    "prisonId": "WSI",
+    "currentPrisonStatus": "UNDER_PRISON_CARE"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "NOMS",
+        "value": "A0001AA"
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/api/bookings/1200836"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "booking_1200836.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/api/bookings/offenderNo/A0001DY"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "booking_noms_A0001DY.json"
+      }
+    }
+  ]
+}

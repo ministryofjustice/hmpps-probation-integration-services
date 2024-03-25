@@ -1,0 +1,28 @@
+# Common values
+generic-service:
+  nameOverride: manage-offences-and-delius
+  serviceAccountName: manage-offences-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-offences-and-delius
+
+  ingress:
+    tlsSecretName: manage-offences-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    manage-offences-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    manage-offences-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    manage-offences-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    manage-offences-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: manage-offences-and-delius
+

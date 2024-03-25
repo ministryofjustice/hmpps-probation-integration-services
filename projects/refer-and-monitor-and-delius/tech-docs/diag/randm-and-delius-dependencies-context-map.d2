@@ -1,0 +1,47 @@
+
+style {
+  fill: "#ffffff"
+}
+
+context-refer-and-monitor: Refer and Monitor Context {
+  link: https://github.com/ministryofjustice/hmpps-interventions-service
+
+  entities: Entities {
+    grid-columns: 3
+    pop: Person\non Probation
+    referral: CRS Referral
+    contact_details: Contact Details
+    appointments: CRS Appointments
+    responsible_office: Responsible Officer
+  }
+}
+
+context-delius: Delius Context {
+  style.stroke-width: 8
+  interface: Refer and Monitor and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 4
+    pop: Person\non Probation { link: "https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/concepts.html#person" }
+    responsible_officer: Responsible Officer  { link: "https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/concepts.html#responsible-officer" }
+    identifiers: Person Identifiers
+    staff: Staff
+    team: Team
+    offender-manager: Offender Manager
+    lao: Limited Access\nOffender
+    address: Address
+    event: Event { link: "https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/concepts.html#event" }
+    disposal: Disposal { link: "https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/concepts.html#disposal" }
+    offence: Main Offence
+    pdu: Probation\nDelivery Units
+    offices: Probation Offices
+  }
+}
+
+context-delius.interface--context-refer-and-monitor: Upstream\n\n\nDownstream
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2

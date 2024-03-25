@@ -1,0 +1,24 @@
+generic-service:
+  nameOverride: offender-events-and-delius
+  serviceAccountName: offender-events-and-delius
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/offender-events-and-delius
+
+  ingress:
+    tlsSecretName: offender-events-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    offender-events-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    offender-events-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    offender-events-and-delius-topic:
+      MESSAGING_PRODUCER_TOPIC: TOPIC_ARN
+
+generic-prometheus-alerts:
+  targetApplication: offender-events-and-delius

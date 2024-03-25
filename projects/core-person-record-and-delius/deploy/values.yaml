@@ -1,0 +1,22 @@
+# Common values
+generic-service:
+  nameOverride: core-person-record-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/core-person-record-and-delius
+
+  ingress:
+    tlsSecretName: core-person-record-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    core-person-record-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    core-person-record-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: core-person-record-and-delius
+

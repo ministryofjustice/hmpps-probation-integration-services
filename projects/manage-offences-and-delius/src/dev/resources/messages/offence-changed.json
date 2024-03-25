@@ -1,0 +1,9 @@
+{
+  "eventType": "manage-offences.offence.changed",
+  "version": 1,
+  "description": "An offence has been updated/created",
+  "occurredAt": "2023-07-31T18:35:59.442+01:00[Europe/London]",
+  "additionalInformation": {
+    "offenceCode": "AB06001"
+  }
+}

@@ -1,0 +1,58 @@
+name: Analyse
+description: Publish test results to GitHub Actions, and analyse source code and results using Sonar
+
+inputs:
+  token:
+    description: Sonar token
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: test-results-*
+        path: test-results
+
+    - name: Unpack test results
+      run: for dir in test-results/*; do cp -R "$dir"/* .; done
+      shell: bash
+
+    - name: Publish test reports
+      uses: mikepenz/action-junit-report@9379f0ccddcab154835d4e2487555ee79614fe95 # v4.2.1
+      if: always() && github.actor != 'dependabot[bot]'
+      with:
+        check_name: |-
+          Unit test results
+          Integration test results
+        report_paths: |-
+          **/build/test-results/test/TEST-*.xml
+          **/build/test-results/integrationTest/TEST-*.xml
+
+    - name: Set version
+      id: version
+      shell: bash
+      run: |
+        version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+        echo "ORG_GRADLE_PROJECT_version=$version" | tee -a "$GITHUB_ENV"
+        echo "version=$version" | tee -a "$GITHUB_OUTPUT"
+
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - uses: gradle/actions/setup-gradle@v3
+      with:
+        cache-read-only: true
+
+    - name: Sonar analysis
+      if: github.actor != 'dependabot[bot]'
+      run: ./gradlew sonar
+      shell: bash
+      env:
+        SONAR_TOKEN: ${{ inputs.token }}

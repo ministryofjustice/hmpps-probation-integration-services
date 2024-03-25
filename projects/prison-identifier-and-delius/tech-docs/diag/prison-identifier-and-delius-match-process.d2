@@ -1,0 +1,118 @@
+# Prison / Probation Person Matching
+
+direction: down
+
+one: Delius  {
+    explanation: |md
+    ## Delius Person Record / CRN
+    - Delius record must have an active event
+    - Delius record must have an active disposal
+    - Delius record must not have a NOMS number
+    |
+}
+
+
+two: NOMIS {
+    explanation: |md
+    ## Search NOMIS using Prison API Global Search
+    - Fields used for search are:
+      - First Name, Last Name
+      - Date of Birth
+      - Gender
+      - One Identifier - Either PNC, CRO or none
+    - The name search includes aliases
+    - Remove any results without booking number
+    - Remove any results without sentence dates
+    |
+}
+
+three: Delius {
+    explanation: |md
+    ## Match Sentence Start Date
+    - Match sentence start date across NOMIS and Delius
+    - There is tolerance of 1 week
+    |
+}
+
+four: Delius {
+    explanation: |md
+    ## Match Other System Identifiers
+    - Matching PNC is taken as a definitive match
+    - Matching CRO is taken as a definitive match
+    |
+}
+
+five: Delius {
+    explanation: |md
+    ## Match on Personal Details
+    - Exact match on forename, surname and date of birth is taken as a match
+    - Variations on spelling of names results in no match
+    - Variation in date of birth results in no match
+      - i.e. There is no tolerance on birth date matching
+    |
+}
+
+clash_check: Delius  {
+    explanation: |md
+    ## Determine if Record Would be a Duplicate
+    - Check if the matched NOMS Number is present\
+      on another Delius record
+    |
+}
+
+match: Delius  {
+    explanation: |md
+    ## Add Prison Details to Delius
+    - NOMS number added to the Delius person record
+    - Booking number added to the Delius custody record\
+    (as Prisoner Number)
+    |
+}
+
+no_action: No Action  {
+    explanation: |md
+    ## No Match
+    - No updates to Delius are made
+    |
+}
+
+end_1: End {
+  shape: circle
+}
+
+end_2: End {
+  shape: circle
+}
+
+one -> two
+
+two -> three: Results
+two -> no_action: No Results
+
+three -> four: Match
+three -> no_action: No Match
+
+four -> clash_check: Yes
+four -> five: No
+
+five -> clash_check: Yes
+five -> no_action: No
+
+clash_check -> match: Not Present on Other Record
+clash_check -> no_action: Present on Other Record
+
+match -> end_1
+no_action -> end_2
+
+# Styles
+
+style {
+  fill: "#ffffff"
+}
+
+** {
+  style {
+    border-radius: 10
+    stroke-width: 2
+  }
+}

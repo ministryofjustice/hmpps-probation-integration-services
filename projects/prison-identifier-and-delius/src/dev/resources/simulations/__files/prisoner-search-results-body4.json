@@ -1,0 +1,37 @@
+{
+  "content": [
+    {
+      "prisonerNumber": "E1234XS",
+      "bookNumber": "76543A",
+      "firstName": "Bob",
+      "lastName": "Smith",
+      "dateOfBirth": "2000-12-12",
+      "gender": "Male"
+     }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10,
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "offset": 0,
+    "unpaged": false,
+    "paged": true
+  },
+  "last": true,
+  "totalPages": 1,
+  "totalElements": 1,
+  "first": true,
+  "size": 10,
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "numberOfElements": 1,
+  "empty": false
+}

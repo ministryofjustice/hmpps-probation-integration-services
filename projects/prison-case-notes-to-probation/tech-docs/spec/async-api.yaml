@@ -1,0 +1,23 @@
+asyncapi: 2.6.0
+info:
+  title: Prison Case Notes to Probation
+  description: Import Prison Case Notes to the Delius Contact Log
+  version: 0.1.0
+
+servers:
+  development:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-dev-prison-case-notes-to-probation-queue
+    protocol: sqs
+  preproduction:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-preprod-prison-case-notes-to-probation-queue
+    protocol: sqs
+  production:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-prison-case-notes-to-probation-queue
+    protocol: sqs
+
+channels:
+  hmpps-domain-events/prison-case-notes-to-probation/prison.case-note.published:
+    subscribe:
+      operationId: prison.case-note.published
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/prison/case-note-published.yml

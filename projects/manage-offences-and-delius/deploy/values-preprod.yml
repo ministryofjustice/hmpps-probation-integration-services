@@ -1,0 +1,14 @@
+generic-service:
+  ingress:
+    host: manage-offences-and-delius-preprod.hmpps.service.justice.gov.uk
+
+  scheduledDowntime:
+    enabled: true
+
+  env:
+    SENTRY_ENVIRONMENT: preprod
+    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/oauth/token
+    INTEGRATIONS_MANAGE-OFFENCES_URL: https://manage-offences-api-preprod.hmpps.service.justice.gov.uk
+
+generic-prometheus-alerts:
+  businessHoursOnly: true

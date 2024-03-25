@@ -1,0 +1,43 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/person/4880d097-ea80-4492-bdb7-86228cdf29ef"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-person-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/event/5716275b-127e-4115-971f-0c131bcbf065"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-event-allocation-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/allocation/requirements/6aafe304-861f-4479-8380-fec5f90f6d17"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-requirement-allocation-body.json"
+      }
+    }
+  ]
+}

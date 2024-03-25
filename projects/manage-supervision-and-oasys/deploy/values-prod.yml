@@ -1,0 +1,13 @@
+enabled: false # TODO set this to true when you're ready to deploy your service
+
+generic-service:
+  ingress:
+    host: manage-supervision-and-oasys.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/.well-known/jwks.json
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
+
+    INTEGRATIONS_ORDS_URL: https://bridge-oasys.az.justice.gov.uk/eor/oasys
+

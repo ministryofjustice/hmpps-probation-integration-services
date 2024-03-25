@@ -1,0 +1,6 @@
+generic-service:
+  ingress:
+    host: offender-events-and-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod

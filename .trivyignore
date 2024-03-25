@@ -1,0 +1,7 @@
+# expat: parsing large tokens can trigger a denial of service
+# A fix has been released in libexpat 2.6.0 which has been included in Alpine, but a rebuild of the eclipse-temurin:*-alpine images hasn't happened yet.
+# References:
+# * https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/3231
+# * https://github.com/alpinelinux/docker-alpine/issues/377
+# * https://github.com/adoptium/containers/issues/501
+CVE-2023-52425 exp:2024-03-11

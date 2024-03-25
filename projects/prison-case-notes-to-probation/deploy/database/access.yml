@@ -1,0 +1,14 @@
+database:
+  access:
+    username_key: /prison-case-notes-to-probation/db-username
+    password_key: /prison-case-notes-to-probation/db-password
+    tables:
+      - audited_interaction
+      - contact
+      - staff
+      - staff_team
+
+  audit:
+    username: PrisonCaseNotesToProbation
+    forename: Prison Case Notes
+    surname: Service

@@ -1,0 +1,27 @@
+[
+  {
+    "offenderNo": "A0001AA",
+    "firstName": "Bob",
+    "lastName": "Smith",
+    "dateOfBirth": "1992-03-15",
+    "gender": "Male",
+    "sexCode": "M",
+    "nationalities": "British",
+    "currentlyInPrison": "N",
+    "latestBookingId": 1000001,
+    "latestLocationId": "OUT",
+    "latestLocation": "Outside",
+    "pncNumber": "24/000001Y",
+    "croNumber": "00001/24M",
+    "ethnicity": "White: Eng./Welsh/Scot./N.Irish/British",
+    "ethnicityCode": "W1",
+    "birthCountry": "England",
+    "religion": "No Religion",
+    "religionCode": "NIL",
+    "convictedStatus": "Convicted",
+    "legalStatus": "SENTENCED",
+    "imprisonmentStatus": "ADIMP_ORA20",
+    "imprisonmentStatusDesc": "ORA 2020 Standard Determinate Sentence",
+    "receptionDate": "2024-02-15"
+  }
+]

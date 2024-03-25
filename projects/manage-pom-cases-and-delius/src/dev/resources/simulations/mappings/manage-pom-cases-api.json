@@ -1,0 +1,95 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/handovers/A1024BY"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "create-handover-date.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/handovers/A2048BY"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "update-handover-and-start-date.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/handovers/A4096BY"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "create-handover-and-start-date.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/pom-allocation/A0123BY/0"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404,
+        "bodyFileName": "not-yet-allocation.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/pom-allocation/A0123BY/1"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "new-allocation.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/pom-allocation/A0123BY/2"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "pom-reallocated.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/pom-allocation/A0123BY/3"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404,
+        "bodyFileName": "deallocation.json"
+      }
+    }
+  ]
+}

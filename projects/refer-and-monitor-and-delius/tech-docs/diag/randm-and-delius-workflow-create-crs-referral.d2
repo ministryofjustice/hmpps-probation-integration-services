@@ -1,0 +1,34 @@
+# Refer and Monitor Workflow: Create Delius NSI
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+refer_and_monitor: Refer and Monitor  {
+     style.font-size: 15
+     crs_referral: Create CRS referral {
+         shape: oval
+     }
+}
+
+# What happens in Delius?
+delius: Delius {
+    style {
+        font-size: 20
+    }
+
+    d_create_nsi: Create CRS\nreferral NSI
+    d_create_contact: Create CRS\nreferral contacts
+
+    d_create_nsi -> d_create_contact
+}
+
+refer_and_monitor -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
+*.*.style.font-size: 12

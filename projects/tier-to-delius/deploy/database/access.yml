@@ -1,0 +1,15 @@
+database:
+  access:
+    username_key: /tier-to-delius/db-username
+    password_key: /tier-to-delius/db-password
+    tables:
+      - contact
+      - offender
+      - management_tier
+    packages:
+      - pkg_triggersupport # for caseload rebuild
+
+  audit:
+    username: TierToDelius
+    forename: Tier
+    surname: Service

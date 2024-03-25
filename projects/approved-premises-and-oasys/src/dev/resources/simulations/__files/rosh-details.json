@@ -1,0 +1,42 @@
+{
+  "source": "OASys",
+  "inputs": {
+    "crn": "PS500133",
+    "laoPrivilege": "ALLOW",
+    "assessmentPk": 1315026,
+    "expectedStatus": "OPEN"
+  },
+  "crn": "PS500133",
+  "limitedAccessOffender": false,
+  "assessments": [
+    {
+      "assessmentPk": 1315026,
+      "assessmentType": "LAYER3",
+      "dateCompleted": null,
+      "assessorSignedDate": null,
+      "initiationDate": "2022-11-09T14:33:53",
+      "assessmentStatus": "OPEN",
+      "superStatus": "WIP",
+      "laterWIPAssessmentExists": false,
+      "latestWIPDate": "2022-11-09T14:33:53",
+      "laterSignLockAssessmentExists": false,
+      "latestSignLockDate": null,
+      "laterPartCompUnsignedAssessmentExists": false,
+      "latestPartCompUnsignedDate": null,
+      "laterPartCompSignedAssessmentExists": false,
+      "latestPartCompSignedDate": null,
+      "laterCompleteAssessmentExists": false,
+      "latestCompleteDate": "2022-11-09T14:05:13",
+      "riskChildrenCommunity": "High",
+      "riskPrisonersCustody": "High",
+      "riskStaffCustody": "Low",
+      "riskStaffCommunity": "High",
+      "riskKnownAdultCustody": "Low",
+      "riskKnownAdultCommunity": "Medium",
+      "riskPublicCustody": "Low",
+      "riskPublicCommunity": "Low",
+      "riskChildrenCustody": "Medium",
+      "lastUpdatedDate": "2022-11-17T15:02:17"
+    }
+  ]
+}

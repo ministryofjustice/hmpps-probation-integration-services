@@ -1,0 +1,56 @@
+name: Report
+
+on:
+  schedule:
+    - cron: "30 7 * * MON" # Every Monday at 07:30 UTC
+  workflow_dispatch:
+
+jobs:
+  allocation-failures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
+        with:
+          title: Allocations Integration Report
+          summary: The following cases failed to allocate in Delius over the last 7 days. Please check and manually correct the cases if required.
+          event_name: AllocationFailed
+          project_name: workforce-allocations-to-delius
+          slack_channel: topic-pi-workforce-allocation
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+
+  cas1-failures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
+        with:
+          title: Approved Premises (CAS1) Integration Report
+          summary: The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required.
+          event_name: ApprovedPremisesFailureReport
+          project_name: approved-premises-and-delius
+          slack_channel: topic-pi-approved-premises
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+
+  refer-and-monitor-failures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
+        with:
+          title: Refer and Monitor Integration Report
+          summary: The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required.
+          event_name: ReferAndMonitorFailureReport
+          column2_value: message
+          project_name: refer-and-monitor-and-delius
+          slack_channel: topic-pi-referandmonitor
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}

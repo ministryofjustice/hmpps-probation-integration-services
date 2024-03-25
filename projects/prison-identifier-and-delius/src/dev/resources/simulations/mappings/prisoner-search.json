@@ -1,0 +1,68 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "/prisoner-search/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"prisonerIdentifier\":\"07/220000004Q\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prisoner-search-results-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/prisoner-search/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"firstName\":\"Jack\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prisoner-search-results-body2.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/prisoner-search/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"firstName\":\"Fred\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prisoner-search-results-body3.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/prisoner-search/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"prisonerIdentifier\":\"E1234XS\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prisoner-search-results-body4.json"
+      }
+    }
+  ]
+}

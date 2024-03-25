@@ -1,0 +1,23 @@
+name: Merge changes
+description: Merge changes from the matrix build into a single output
+
+outputs:
+  changes:
+    description: A JSON array of projects where changes were reported by the build
+    value: ${{ steps.check-changes.outputs.changes }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+    - uses: cloudposse/github-action-matrix-outputs-read@33cac12fa9282a7230a418d859b93fdbc4f27b5a # v1
+      id: read-changes
+      with:
+        matrix-step-name: output-changes
+
+    - name: Check changes
+      id: check-changes
+      shell: bash
+      run: echo "changes=$(echo $changes | jq '. | values[] | [.]' | jq --slurp 'add' | jq --compact-output '. // []')" | tee -a "$GITHUB_OUTPUT"
+      env:
+        changes: ${{ steps.read-changes.outputs.result }}

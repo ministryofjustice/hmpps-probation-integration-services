@@ -1,0 +1,21 @@
+database:
+  access:
+    username_key: /approved-premises-and-delius/db-username
+    password_key: /approved-premises-and-delius/db-password
+    tables:
+      - offender_address
+      - contact
+      - contact_alert
+      - nsi
+      - nsi_manager
+      - approved_premises_referral
+      - approved_premises_residence
+
+    sequences:
+      - ap_referral_id_seq
+      - ap_residence_id_seq
+
+  audit:
+    username: ApprovedPremisesAndDelius
+    forename: Approved Premises
+    surname: Service

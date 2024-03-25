@@ -1,0 +1,83 @@
+{
+  "matches": [
+    {
+      "offender": {
+        "offenderId": 1,
+        "title": "Mr",
+        "firstName": "Bob",
+        "middleNames": [],
+        "surname": "Smith",
+        "dateOfBirth": "1960-04-07",
+        "gender": "Smith",
+        "otherIds": {
+          "crn": "A000001",
+          "croNumber": "AB12/123456C",
+          "niNumber": "JJ123456C"
+        },
+        "contactDetails": {
+          "phoneNumbers": [],
+          "emailAddresses": []
+        },
+        "offenderProfile": {
+          "offenderLanguages": {
+            "requiresInterpreter": false
+          },
+          "previousConviction": {
+            "detail": {}
+          }
+        },
+        "offenderManagers": [
+          {
+            "staff": {
+              "code": "N57UATU",
+              "forenames": "Unallocated",
+              "surname": "Staff"
+            },
+            "partitionArea": "National Data",
+            "softDeleted": false,
+            "team": {
+              "code": "N57UAT",
+              "description": "Unallocated Team(N57)",
+              "district": {
+                "code": "N57UAT",
+                "description": "Unallocated Level 3(N57)"
+              },
+              "borough": {
+                "code": "N57UAT",
+                "description": "Unallocated Level2(N57)"
+              }
+            },
+            "probationArea": {
+              "code": "N57",
+              "description": "Kent Surrey Sussex Region",
+              "nps": false
+            },
+            "fromDate": "1900-01-01",
+            "active": true,
+            "allocationReason": {
+              "code": "IN1",
+              "description": "Initial Allocation"
+            }
+          }
+        ],
+        "softDeleted": false,
+        "currentDisposal": "0",
+        "partitionArea": "National Data",
+        "currentRestriction": true,
+        "restrictionMessage": "This is a restricted offender record. Please contact a system administrator",
+        "currentExclusion": false,
+        "exclusionMessage": "You are excluded from viewing this offender record. Please contact a system administrator",
+        "currentTier": "UD0",
+        "activeProbationManagedSentence": false,
+        "probationStatus": {
+          "status": "NOT_SENTENCED",
+          "inBreach": false,
+          "preSentenceActivity": false,
+          "awaitingPsr": false
+        },
+        "age": 63
+      }
+    }
+  ],
+  "matchedBy": "ALL_SUPPLIED"
+}

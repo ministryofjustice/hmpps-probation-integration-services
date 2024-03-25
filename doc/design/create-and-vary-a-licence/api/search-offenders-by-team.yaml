@@ -1,0 +1,160 @@
+---
+openapi: 3.0.1
+info:
+  title: Licence Caseload
+  description: ""
+  termsOfService: ""
+  version: "1"
+servers:
+  - url: /
+tags:
+  - name: Team LicenceCaseload
+paths:
+  /licence-caseload/by-team:
+    post:
+      tags:
+        - Licence Search by Team
+      description: Search endpoint scoped to a list of probation teams
+      requestBody:
+        description: List of people matching filter conditions
+        content:
+          "*/*":
+            schema:
+              $ref: "#/components/schemas/LicenceCaseloadRequest"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/LicenceCaseloadPerson"
+components:
+  schemas:
+    LicenceCaseloadRequest:
+      type: object
+      required:
+        - teamCodes
+      properties:
+        teamCodes:
+          type: array
+          items:
+            type: string
+        query:
+          type: string
+        sortBy:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                enum:
+                  - identifiers.crn
+                  - name.forename
+                  - name.surname
+                  - manager.name.forename
+                  - manager.name.surname
+              direction:
+                type: string
+                enum:
+                  - asc
+                  - desc
+                default: asc
+          default: [{field: name.forename}, {field: name.surname}]
+        pageSize:
+          type: integer
+          default: 100
+        offset:
+          type: integer
+          default: 0
+    LicenceCaseloadPerson:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: object
+                properties:
+                  forename:
+                    type: string
+                  surname:
+                    type: string
+                  middleName:
+                    type: string
+              identifiers:
+                type: object
+                properties:
+                  crn:
+                    type: string
+                  cro:
+                    type: string
+                  noms:
+                    type: string
+                  pnc:
+                    type: string
+              manager:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  name:
+                    type: object
+                    properties:
+                      forename:
+                        type: string
+                      surname:
+                        type: string
+                      middleName:
+                        type: string
+                  team:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      description:
+                        type: string
+                      borough:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                          description:
+                            type: string
+                      district:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                          description:
+                            type: string
+                  probationArea:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      description:
+                        type: string
+              allocationDate:
+                type: string
+                examples:
+                  - "2022-10-17"
+        numberOfElements:
+          type: number
+        pageable:
+          type: object
+          properties:
+            offset:
+              type: number
+            pageSize:
+              type: number
+            sort:
+              type: object
+              properties:
+                sorted:
+                  type: boolean
+        totalElements:
+          type: number
