@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -209,8 +210,8 @@ fun AppointmentRepository.appointmentClashes(
 ): Boolean = getClashCount(
     personId,
     date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-    startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
-    endTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon))
+    startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
+    endTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
 ) > 0
 
 interface AppointmentTypeRepository : JpaRepository<AppointmentType, Long> {
