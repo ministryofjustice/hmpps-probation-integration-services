@@ -25,8 +25,8 @@ class ProbationMatchingService(
         val matchResult = findMatchingProbationRecord(nomsNumber)
         if (!dryRun && matchResult is Success) {
             with(matchResult) {
-                matchWriter.update(prisonIdentifiers, person, custody)
-                notifier.identifierAdded(person.crn, prisonIdentifiers)
+                val changes = matchWriter.update(prisonIdentifiers, person, custody)
+                if (changes) notifier.identifierAdded(person.crn, prisonIdentifiers)
             }
         }
         return matchResult
@@ -34,7 +34,7 @@ class ProbationMatchingService(
 
     fun replaceIdentifiers(oldNomsNumber: String, newNomsNumber: String, dryRun: Boolean): MergeResult {
         personRepository.findAllByNomsNumber(newNomsNumber).joinToString { it.crn }.takeIf { it.isNotEmpty() }?.let {
-            throw IllegalArgumentException("NOMS number $newNomsNumber is already assigned to $it")
+            return MergeResult.Ignored("NOMS number $newNomsNumber is already assigned to $it")
         }
 
         val existing = personRepository.findAllByNomsNumber(oldNomsNumber)
@@ -43,12 +43,12 @@ class ProbationMatchingService(
         }
         if (!dryRun) {
             existing.forEach {
-                matchWriter.update(PrisonIdentifiers(newNomsNumber), it)
-                notifier.identifierUpdated(it.crn, newNomsNumber, oldNomsNumber)
+                val changes = matchWriter.update(PrisonIdentifiers(newNomsNumber), it)
+                if (changes) notifier.identifierUpdated(it.crn, newNomsNumber, oldNomsNumber)
             }
         }
         return MergeResult.Success(
-            "Replaced NOMS numbers for ${existing.size} records", mapOf(
+            "Replaced NOMS numbers for ${existing.size} record${if (existing.size == 1) "" else "s"}", mapOf(
                 "existingNomsNumber" to oldNomsNumber,
                 "updatedNomsNumber" to newNomsNumber,
                 "matches" to objectMapper.writeValueAsString(existing.map { mapOf("crn" to it.crn) })

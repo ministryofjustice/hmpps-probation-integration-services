@@ -41,9 +41,9 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate, val featureFlags: FeatureFlag
         eventNumber: Int?,
         assessmentDate: ZonedDateTime,
         rsr: RiskAssessment,
-        ospIndecent: RiskAssessment,
+        ospIndecent: RiskAssessment?,
         ospIndirectIndecent: RiskAssessment?,
-        ospContact: RiskAssessment,
+        ospContact: RiskAssessment?,
         ospDirectContact: RiskAssessment?,
     ) {
         try {
@@ -53,10 +53,10 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate, val featureFlags: FeatureFlag
                 .addValue("p_rsr_assessor_date", assessmentDate)
                 .addValue("p_rsr_score", rsr.score)
                 .addValue("p_rsr_level_code", rsr.band)
-                .addValue("p_osp_score_i", ospIndecent.score)
-                .addValue("p_osp_score_c", ospContact.score)
-                .addValue("p_osp_level_i_code", ospIndecent.band)
-                .addValue("p_osp_level_c_code", ospContact.band)
+                .addValue("p_osp_score_i", ospIndecent?.score)
+                .addValue("p_osp_score_c", ospContact?.score)
+                .addValue("p_osp_level_i_code", ospIndecent?.band)
+                .addValue("p_osp_level_c_code", ospContact?.band)
 
             if (featureFlags.enabled("osp-indirect-indecent-and-direct-contact")) {
                 updateRsrAndOspScoresProcedure.withIndirectIndecentAndDirectContact.execute(

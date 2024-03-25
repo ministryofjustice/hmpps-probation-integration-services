@@ -65,9 +65,19 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `handles null OSP-IIC and OSP-DC bands`() {
+    fun `handles old OSP scores`() {
         val notification = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED_WITHOUT_OSPIIC_OSPDC,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent("RsrScoresUpdated", notification.message.telemetryProperties())
+    }
+
+    @Test
+    fun `handles new OSP scores`() {
+        val notification = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED_WITH_OSPII_OSPDC,
             attributes = MessageAttributes("risk-assessment.scores.determined")
         )
         channelManager.getChannel(queueName).publishAndWait(notification)

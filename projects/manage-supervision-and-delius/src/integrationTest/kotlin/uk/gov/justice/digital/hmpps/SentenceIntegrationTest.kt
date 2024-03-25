@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -27,7 +28,9 @@ class SentenceIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 
-        val expected = SentenceOverview(listOf())
+        val expected = SentenceOverview(
+            Name("Caroline", "Louise", "Bloggs"), listOf()
+        )
 
         assertEquals(expected, response)
     }
@@ -40,9 +43,11 @@ class SentenceIntegrationTest {
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
+            Name("Forename", "Middle1", "Surname"),
             listOf(
                 Sentence(
                     OffenceDetails(
+                        "7654321",
                         Offence("Murder", 1),
                         LocalDate.now(),
                         "overview",
@@ -60,6 +65,7 @@ class SentenceIntegrationTest {
                 ),
                 Sentence(
                     OffenceDetails(
+                        "1234567",
                         Offence("Another Murder", 1),
                         LocalDate.now(),
                         "overview",

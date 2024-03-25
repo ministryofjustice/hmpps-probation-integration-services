@@ -17,12 +17,14 @@ class MatchWriter(
     private val orderManagerRepository: OrderManagerRepository,
 ) {
     @Transactional
-    fun update(prisonIdentifiers: PrisonIdentifiers, person: Person, custody: Custody? = null) {
-        if (person.nomsNumber != prisonIdentifiers.prisonerNumber) {
+    fun update(prisonIdentifiers: PrisonIdentifiers, person: Person, custody: Custody? = null): Boolean {
+        val nomsNumberChanged = person.nomsNumber != prisonIdentifiers.prisonerNumber
+        if (nomsNumberChanged) {
             removeDuplicateNomsNumbers(person, prisonIdentifiers.prisonerNumber)
             updateNomsNumber(person, prisonIdentifiers.prisonerNumber)
         }
-        if (custody != null && custody.prisonerNumber != prisonIdentifiers.prisonerNumber) {
+        val bookingNumberChanged = custody?.prisonerNumber != prisonIdentifiers.bookingNumber
+        if (bookingNumberChanged && custody != null) {
             custody.prisonerNumber = prisonIdentifiers.bookingNumber
             custodyRepository.save(custody)
             person.mostRecentPrisonerNumber = prisonIdentifiers.bookingNumber
@@ -30,6 +32,7 @@ class MatchWriter(
             person.rebuildPrisonerLinks()
             custody.createContactForChange()
         }
+        return nomsNumberChanged || bookingNumberChanged
     }
 
     private fun removeDuplicateNomsNumbers(person: Person, nomsNumber: String) {
