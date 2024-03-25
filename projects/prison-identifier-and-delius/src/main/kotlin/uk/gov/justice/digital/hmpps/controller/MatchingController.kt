@@ -18,7 +18,7 @@ class MatchingController(private val notifier: Notifier) {
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 CRNs. Leave blank to match all CRNs.")
         @RequestBody crns: List<String>?
     ) {
-        Thread.ofVirtual().start { notifier.requestPrisonMatching(crns ?: listOf(), dryRun) }
+        notifier.requestPrisonMatching(crns ?: listOf(), dryRun)
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -29,6 +29,6 @@ class MatchingController(private val notifier: Notifier) {
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 NOMS numbers.")
         @RequestBody nomsNumbers: List<String>
     ) {
-        Thread.ofVirtual().start { notifier.requestProbationMatching(nomsNumbers, dryRun) }
+        notifier.requestProbationMatching(nomsNumbers, dryRun)
     }
 }

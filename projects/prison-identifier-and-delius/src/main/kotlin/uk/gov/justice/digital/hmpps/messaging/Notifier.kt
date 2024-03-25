@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.message.*
@@ -18,12 +19,14 @@ class Notifier(
         const val REQUEST_PROBATION_MATCH = "prison-identifier.internal.probation-match-requested"
     }
 
+    @Async
     fun requestPrisonMatching(crns: List<String>, dryRun: Boolean) {
         crns.ifEmpty { personRepository.findAllCrns() }.asSequence()
             .map { notification(REQUEST_PRISON_MATCH, PersonIdentifier("CRN", it), dryRun) }
             .forEach { queuePublisher.publish(it) }
     }
 
+    @Async
     fun requestProbationMatching(nomsNumbers: List<String>, dryRun: Boolean) {
         nomsNumbers.asSequence()
             .map { notification(REQUEST_PROBATION_MATCH, PersonIdentifier("NOMS", it), dryRun) }

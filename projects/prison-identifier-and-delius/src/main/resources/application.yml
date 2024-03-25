@@ -26,7 +26,7 @@ spring:
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
-  threads.virtual.enabled: true
+  threads.virtual.enabled: false
 
 springdoc.default-produces-media-type: application/json
 
