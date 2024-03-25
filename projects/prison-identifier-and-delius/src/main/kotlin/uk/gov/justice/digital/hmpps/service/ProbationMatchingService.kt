@@ -34,7 +34,7 @@ class ProbationMatchingService(
 
     fun replaceIdentifiers(oldNomsNumber: String, newNomsNumber: String, dryRun: Boolean): MergeResult {
         personRepository.findAllByNomsNumber(newNomsNumber).joinToString { it.crn }.takeIf { it.isNotEmpty() }?.let {
-            throw IllegalArgumentException("NOMS number $newNomsNumber is already assigned to $it")
+            return MergeResult.Ignored("NOMS number $newNomsNumber is already assigned to $it")
         }
 
         val existing = personRepository.findAllByNomsNumber(oldNomsNumber)
@@ -48,7 +48,7 @@ class ProbationMatchingService(
             }
         }
         return MergeResult.Success(
-            "Replaced NOMS numbers for ${existing.size} records", mapOf(
+            "Replaced NOMS numbers for ${existing.size} record${if (existing.size == 1) "" else "s"}", mapOf(
                 "existingNomsNumber" to oldNomsNumber,
                 "updatedNomsNumber" to newNomsNumber,
                 "matches" to objectMapper.writeValueAsString(existing.map { mapOf("crn" to it.crn) })

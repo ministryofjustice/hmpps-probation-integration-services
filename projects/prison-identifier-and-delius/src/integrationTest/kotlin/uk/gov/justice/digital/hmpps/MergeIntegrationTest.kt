@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -35,7 +32,7 @@ internal class MergeIntegrationTest {
 
         verify(telemetryService).trackEvent(
             "MergeResultSuccess", mapOf(
-                "reason" to "Replaced NOMS numbers for 1 records",
+                "reason" to "Replaced NOMS numbers for 1 record",
                 "existingNomsNumber" to "A0007AA",
                 "updatedNomsNumber" to "B0007BB",
                 "matches" to """[{"crn":"A000007"}]""",
@@ -45,14 +42,19 @@ internal class MergeIntegrationTest {
     }
 
     @Test
-    fun `merge fails if the new noms number is already assigned`() {
+    fun `logs event if the new noms number is already assigned`() {
         val event = prepEvent("prisoner-merged", wireMockServer.port()).apply {
             message.additionalInformation["nomsNumber"] = PERSON_WITH_NOMS.nomsNumber!!
         }
 
-        val exception = assertThrows<IllegalArgumentException> { handler.handle(event) }
+        handler.handle(event)
 
-        assertThat(exception.message, equalTo("NOMS number E1234XS is already assigned to A000001"))
+        verify(telemetryService).trackEvent(
+            "MergeResultIgnored", mapOf(
+                "reason" to "NOMS number E1234XS is already assigned to A000001",
+                "dryRun" to "false",
+            )
+        )
     }
 
     @Test
