@@ -1,6 +1,7 @@
 generic-service:
   ingress:
     host: tier-to-delius-dev.hmpps.service.justice.gov.uk
+    className: production-only # TODO remove after CP ingress testing
 
   scheduledDowntime:
     enabled: true
