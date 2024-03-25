@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
+import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -38,11 +39,11 @@ class SentenceServiceTest {
     @InjectMocks
     lateinit var service: SentenceService
 
-    private lateinit var personSummary: PersonalDetailsServiceTest.Summary
+    private lateinit var personSummary: Summary
 
     @BeforeEach
     fun setup() {
-        personSummary = PersonalDetailsServiceTest.Summary(
+        personSummary = Summary (
             id = 1,
             forename = "TestName",
             surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
