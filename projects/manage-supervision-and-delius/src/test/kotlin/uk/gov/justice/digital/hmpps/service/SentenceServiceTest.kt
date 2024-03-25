@@ -43,7 +43,7 @@ class SentenceServiceTest {
 
     @BeforeEach
     fun setup() {
-        personSummary = Summary (
+        personSummary = Summary(
             id = 1,
             forename = "TestName",
             surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
