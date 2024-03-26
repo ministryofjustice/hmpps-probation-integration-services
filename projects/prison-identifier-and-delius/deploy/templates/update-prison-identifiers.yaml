@@ -1,0 +1,47 @@
+{{- if index .Values "bulk-update" "enabled" }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-prison-identifiers
+spec:
+  schedule: {{ index .Values "bulk-update" "schedule" }}
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: prison-identifier-and-delius
+          containers:
+            - name: update-prison-identifiers
+              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-identifier-and-delius:{{ .Values.version }}"
+              resources:
+                requests:
+                  memory: "1Gi"
+                  cpu: "4"
+                limits:
+                  memory: "2Gi"
+                  cpu: "4"
+              env:
+                {{- range $secret, $envs := index .Values "generic-service" "namespace_secrets" }}
+                  {{- range $key, $val := $envs }}
+                - name: {{ $key }}
+                  valueFrom:
+                    secretKeyRef:
+                      key: {{ trimSuffix "?" $val }}
+                      name: {{ $secret }}{{ if hasSuffix "?" $val }}
+                      optional: true{{ end }}  {{- end }}
+                {{- end }}
+                {{- range $key, $val := index .Values "generic-service" "env" }}
+                - name: {{ $key }}
+                  value: "{{ $val }}"
+                {{- end }}
+                - name: MESSAGING_CONSUMER_ENABLED
+                  value: "false"
+                - name: BULK_UPDATE_ENABLED
+                  value: "true"
+                - name: BULK_UPDATE_DRY-RUN
+                  value: "{{ index .Values "bulk-update" "dry-run" }}"
+          restartPolicy: Never
+{{- end -}}

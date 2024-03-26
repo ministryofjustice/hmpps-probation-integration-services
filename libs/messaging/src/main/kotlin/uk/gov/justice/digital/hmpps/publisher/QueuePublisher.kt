@@ -19,7 +19,7 @@ class QueuePublisher(
     private val sqsTemplate: SqsTemplate,
     private val objectMapper: ObjectMapper,
     @Value("\${messaging.producer.queue}") private val queue: String,
-    @Value("\${messaging.producer.concurrency:75}") private val limit: Int
+    @Value("\${messaging.producer.concurrency:1000}") private val limit: Int
 ) : NotificationPublisher {
 
     private val permit = Semaphore(limit)

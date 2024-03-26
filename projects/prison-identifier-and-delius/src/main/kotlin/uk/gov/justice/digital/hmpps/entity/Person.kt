@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.service.withinDays
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.util.stream.Stream
 
 @Entity
 @Table(name = "offender")
@@ -121,7 +122,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
 
     @Query("select p.crn from Person p where p.softDeleted = false")
-    fun findAllCrns(): List<String>
+    fun findAllCrns(): Stream<String>
 
     fun findAllByNomsNumberAndIdNot(nomsNumber: String, id: Long): List<Person>
 

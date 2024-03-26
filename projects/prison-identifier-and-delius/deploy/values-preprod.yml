@@ -14,12 +14,10 @@ generic-service:
     INTEGRATIONS_PRISONER-SEARCH_URL: https://prisoner-search-preprod.prison.service.justice.gov.uk
     INTEGRATIONS_PROBATION-SEARCH_URL: https://probation-offender-search-preprod.hmpps.service.justice.gov.uk
 
+bulk-update:
+  enabled: true
+  dry-run: true
+  schedule: 0 7 * * 1
+
 generic-prometheus-alerts:
   businessHoursOnly: true
-
-noms:
-  update:
-    schedule: 0 7 * * 1
-
-namespace:
-  label: hmpps-probation-integration-services-preprod

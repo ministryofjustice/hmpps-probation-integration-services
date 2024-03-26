@@ -21,12 +21,10 @@ generic-service:
 
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
+bulk-update:
+  enabled: true
+  dry-run: true
+  schedule: 0 7 * * 1
+
 generic-prometheus-alerts:
   businessHoursOnly: true
-
-noms:
-  update:
-    schedule: 0 7 * * 1
-
-namespace:
-  label: hmpps-probation-integration-services-dev

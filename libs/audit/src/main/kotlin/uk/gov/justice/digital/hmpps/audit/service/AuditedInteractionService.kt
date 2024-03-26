@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.audit.service
 
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.InteractionCode
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
@@ -17,7 +18,7 @@ class AuditedInteractionService(
     private val auditedInteractionRepository: AuditedInteractionRepository
 ) {
     @Async
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun createAuditedInteraction(
         interactionCode: InteractionCode,
         params: AuditedInteraction.Parameters,
