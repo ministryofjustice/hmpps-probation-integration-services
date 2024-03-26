@@ -312,6 +312,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AdditionalSentence'
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
     Offence:
       required:
       - count
@@ -326,8 +338,11 @@ components:
     OffenceDetails:
       required:
       - additionalOffences
+      - eventNumber
       type: object
       properties:
+        eventNumber:
+          type: string
         offence:
           $ref: '#/components/schemas/Offence'
         dateOfOffence:
@@ -341,18 +356,21 @@ components:
             $ref: '#/components/schemas/Offence'
     Sentence:
       required:
-      - offence
+      - offenceDetails
       type: object
       properties:
-        offence:
+        offenceDetails:
           $ref: '#/components/schemas/OffenceDetails'
         conviction:
           $ref: '#/components/schemas/Conviction'
     SentenceOverview:
       required:
+      - name
       - sentences
       type: object
       properties:
+        name:
+          $ref: '#/components/schemas/Name'
         sentences:
           type: array
           items:
@@ -442,18 +460,6 @@ components:
         lastUpdated:
           type: string
           format: date-time
-    Name:
-      required:
-      - forename
-      - surname
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
-          type: string
     OfficeAddress:
       required:
       - ldu
