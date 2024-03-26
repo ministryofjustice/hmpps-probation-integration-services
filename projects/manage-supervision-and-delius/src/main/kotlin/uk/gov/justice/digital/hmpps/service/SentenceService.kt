@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
+import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -17,7 +18,8 @@ class SentenceService(
     private val eventRepository: EventSentenceRepository,
     private val courtAppearanceRepository: CourtAppearanceRepository,
     private val additionalSentenceRepository: AdditionalSentenceRepository,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val requirementRepository: RequirementRepository
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
         val person = personRepository.getSummary(crn)
@@ -57,4 +59,11 @@ class SentenceService(
         Name(forename, secondName, surname)
 
     fun Disposal.toOrder() = Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
+
+    private fun getRar(disposalId: Long): Rar {
+        val rarDays = requirementRepository.getRarDays(disposalId)
+        val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
+        val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
+        return Rar(completed = completedDays, scheduled = scheduledDays)
+    }
 }

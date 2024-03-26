@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
@@ -33,6 +34,9 @@ class SentenceServiceTest {
 
     @Mock
     lateinit var additionalSentenceRepository: AdditionalSentenceRepository
+
+    @Mock
+    lateinit var requirementRepository: RequirementRepository
 
     @Mock
     lateinit var personRepository: PersonRepository
