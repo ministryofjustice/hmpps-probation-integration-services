@@ -63,7 +63,7 @@ class OverviewService(
         return Rar(completed = completedDays, scheduled = scheduledDays)
     }
 
-    fun Disposal.toOrder() = Order(description = type.description, startDate = date, endDate = expectedEndDate())
+    fun Disposal.toOrder() = Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
     fun Event.toSentence() = mainOffence?.offence?.let { offence ->
         Sentence(
             mainOffence = offence.toOffence(),

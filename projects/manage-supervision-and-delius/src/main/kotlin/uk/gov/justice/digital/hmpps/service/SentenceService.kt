@@ -56,5 +56,5 @@ class SentenceService(
     fun PersonSummaryEntity.toName() =
         Name(forename, secondName, surname)
 
-    fun Disposal.toOrder() = Order(description = type.description, startDate = date, endDate = expectedEndDate())
+    fun Disposal.toOrder() = Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 }

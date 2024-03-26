@@ -126,7 +126,7 @@ class SentenceServiceTest {
                             AdditionalSentence(null, 500, "fine notes", "Fine")
                         )
                     ),
-                    Order("Default Sentence Type", null, LocalDate.now().minusDays(14))
+                    Order("Default Sentence Type", null, null, LocalDate.now().minusDays(14))
                 )
             )
         )
