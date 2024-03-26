@@ -62,7 +62,7 @@ object PersonGenerator {
     )
 
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
-    val ACTIVE_ORDER = generateDisposal(EVENT_1)
+    val ACTIVE_ORDER = generateDisposal(EVENT_1, length = 12)
 
     val INACTIVE_ORDER_1 = generateDisposal(INACTIVE_EVENT_1)
     val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2)
