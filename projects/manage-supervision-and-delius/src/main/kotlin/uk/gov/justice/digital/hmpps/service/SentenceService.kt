@@ -2,11 +2,10 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonSummaryEntity
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
+import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
@@ -47,7 +46,8 @@ class SentenceService(
             responsibleCourt = court?.name,
             convictionDate = convictionDate,
             additionalSentences.map { it.toAdditionalSentence() }
-        )
+        ),
+        order = disposal?.toOrder()
     )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
@@ -55,4 +55,6 @@ class SentenceService(
 
     fun PersonSummaryEntity.toName() =
         Name(forename, secondName, surname)
+
+    fun Disposal.toOrder() = Order(description = type.description, startDate = date, endDate = expectedEndDate())
 }

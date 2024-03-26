@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -61,7 +62,8 @@ class SentenceIntegrationTest {
                         "Birmingham Court",
                         LocalDate.now(),
                         listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
-                    )
+                    ),
+                    Order("Default Sentence Type", null, LocalDate.now().minusDays(14))
                 ),
                 Sentence(
                     OffenceDetails(
