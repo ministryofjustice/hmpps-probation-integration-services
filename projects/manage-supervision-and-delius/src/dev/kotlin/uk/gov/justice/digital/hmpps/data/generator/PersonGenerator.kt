@@ -83,8 +83,10 @@ object PersonGenerator {
         LocalDate.now()
     )
 
+    val MAIN_CAT_F_SUB_ID = IdGenerator.getAndIncrement();
+    val MAIN_CAT_F_TYPE = ReferenceData(MAIN_CAT_F_SUB_ID, "G03", "High Intensity")
     val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main")
-    val REQUIREMENT = generateRequirement(ACTIVE_ORDER)
+    val REQUIREMENT = generateRequirement(ACTIVE_ORDER, MAIN_CAT_F_SUB_ID)
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
         ContactGenerator.APPT_CT_1,
@@ -238,9 +240,9 @@ object PersonGenerator {
 
     fun generateRequirement(
         disposal: Disposal,
-        length: Long? = null,
-        notes: String? = null,
-        subCategoryId: String? = null,
+        subCategoryId: Long,
+        length: Long = 12,
+        notes: String = "my notes",
         mainCategory: RequirementMainCategory = MAIN_CAT_F,
         active: Boolean = true,
         softDeleted: Boolean = false,

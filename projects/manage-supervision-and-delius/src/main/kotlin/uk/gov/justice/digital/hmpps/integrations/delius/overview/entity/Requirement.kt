@@ -21,7 +21,7 @@ class Requirement(
     val notes: String?,
 
     @Column(name = "rqmnt_type_sub_category_id")
-    val subCategoryId: String?,
+    val subCategoryId: Long?,
 
     @ManyToOne
     @JoinColumn(name = "disposal_id")
@@ -77,7 +77,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
 
     @Query(
         """
-            SELECT r."LENGTH", rrtmc.DESCRIPTION, rsrl.CODE_DESCRIPTION, r.RQMNT_NOTES 
+            SELECT r."LENGTH", rrtmc.DESCRIPTION, rsrl.CODE_DESCRIPTION as codeDescription, r.RQMNT_NOTES as notes 
             FROM rqmnt r
             JOIN R_RQMNT_TYPE_MAIN_CATEGORY rrtmc 
             ON r.RQMNT_TYPE_MAIN_CATEGORY_ID = RRTMC.RQMNT_TYPE_MAIN_CATEGORY_ID 

@@ -64,7 +64,7 @@ class SentenceIntegrationTest {
                         listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                     ),
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
-                    listOf()
+                    listOf(Requirement("Main", "High Intensity", 12, "my notes"))
                 ),
                 Sentence(
                     OffenceDetails(
