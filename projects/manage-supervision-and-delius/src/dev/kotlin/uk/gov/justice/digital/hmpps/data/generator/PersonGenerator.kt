@@ -238,11 +238,14 @@ object PersonGenerator {
 
     fun generateRequirement(
         disposal: Disposal,
+        length: Long? = null,
+        notes: String? = null,
+        subCategoryId: String? = null,
         mainCategory: RequirementMainCategory = MAIN_CAT_F,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Requirement(id, disposal, mainCategory, active, softDeleted)
+    ) = Requirement(id, length, notes, subCategoryId, disposal, mainCategory, active, softDeleted)
 
     fun generateDisposalType(
         code: String,

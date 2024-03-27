@@ -15,6 +15,14 @@ class Requirement(
     @Column(name = "rqmnt_id", nullable = false)
     val id: Long,
 
+    val length: Long?,
+
+    @Column(name = "rqmnt_notes")
+    val notes: String?,
+
+    @Column(name = "rqmnt_type_sub_category_id")
+    val subCategoryId: String?,
+
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal? = null,
@@ -33,6 +41,13 @@ class Requirement(
 interface RarDays {
     val days: Int
     val type: String
+}
+
+interface RequirementDetails {
+    val description: String?
+    val codeDescription: String?
+    val length: Long?
+    val notes: String?
 }
 
 interface RequirementRepository : JpaRepository<Requirement, Long> {
@@ -59,6 +74,26 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         """, nativeQuery = true
     )
     fun getRarDays(disposalId: Long): List<RarDays>
+
+    @Query(
+        """
+            SELECT r."LENGTH", rrtmc.DESCRIPTION, rsrl.CODE_DESCRIPTION, r.RQMNT_NOTES 
+            FROM rqmnt r
+            JOIN R_RQMNT_TYPE_MAIN_CATEGORY rrtmc 
+            ON r.RQMNT_TYPE_MAIN_CATEGORY_ID = RRTMC.RQMNT_TYPE_MAIN_CATEGORY_ID 
+            JOIN R_STANDARD_REFERENCE_LIST rsrl 
+            ON RSRL.STANDARD_REFERENCE_LIST_ID = r.RQMNT_TYPE_SUB_CATEGORY_ID 
+            JOIN DISPOSAL d 
+            ON r.DISPOSAL_ID = d.DISPOSAL_ID 
+            JOIN EVENT e 
+            ON e.EVENT_ID = d.EVENT_ID 
+            JOIN OFFENDER o 
+            ON o.OFFENDER_ID = e.OFFENDER_ID 
+            AND o.CRN = :crn
+            AND e.EVENT_NUMBER = :eventNumber
+        """, nativeQuery = true
+    )
+    fun getRequirements(crn: String, eventNumber: String) : List<RequirementDetails>
 }
 
 @Immutable

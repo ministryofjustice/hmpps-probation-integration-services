@@ -6,7 +6,9 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
+import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
@@ -29,11 +31,11 @@ class SentenceService(
             sentences = events.map {
                 val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
                 val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
-                it.toSentence(courtAppearance, additionalSentences)
+                it.toSentence(courtAppearance, additionalSentences, crn)
             })
     }
 
-    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>) = Sentence(
+    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>, crn: String) = Sentence(
         OffenceDetails(
             eventNumber = eventNumber,
             offence = mainOffence?.let { Offence(it.offence.description, it.offenceCount) },
@@ -50,7 +52,7 @@ class SentenceService(
             additionalSentences.map { it.toAdditionalSentence() }
         ),
         order = disposal?.toOrder(),
-        listOf()
+        requirements = disposal.let { requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() } }
     )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
@@ -60,6 +62,8 @@ class SentenceService(
         Name(forename, secondName, surname)
 
     fun Disposal.toOrder() = Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
+
+    fun RequirementDetails.toRequirement() = Requirement(description, codeDescription, length, notes)
 
     private fun getRar(disposalId: Long): Rar {
         val rarDays = requirementRepository.getRarDays(disposalId)
