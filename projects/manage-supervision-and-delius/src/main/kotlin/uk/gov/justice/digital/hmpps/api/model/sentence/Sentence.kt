@@ -7,5 +7,5 @@ data class Sentence(
     val offenceDetails: OffenceDetails,
     val conviction: Conviction? = null,
     val order: Order? = null,
-    val rar: Rar? = null
+    val requirements: List<Requirement>
 )

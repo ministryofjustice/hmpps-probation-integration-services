@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
+import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
@@ -130,7 +131,8 @@ class SentenceServiceTest {
                             AdditionalSentence(null, 500, "fine notes", "Fine")
                         )
                     ),
-                    Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14))
+                    Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
+                    listOf()
                 )
             )
         )
