@@ -16,7 +16,7 @@ class ActivityService(
     @Transactional
     fun getPersonActivity(crn: String): PersonActivity {
         val summary = personRepository.getSummary(crn)
-        val contacts = contactRepository.findByPersonIdOrderByDateDesc(summary.id)
+        val contacts = contactRepository.findByPersonId(summary.id)
 
         return PersonActivity(
             personSummary = summary.toPersonSummary(),

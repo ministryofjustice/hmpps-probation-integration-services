@@ -197,7 +197,16 @@ enum class ContactTypeCode(val value: String) {
 }
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-    fun findByPersonIdOrderByDateDesc(personId: Long): List<Contact>
+
+    @Query(
+        """
+        select c from Contact c
+        where c.personId = :personId
+        order by c.date, c.startTime desc 
+    """
+    )
+    fun findByPersonId(personId: Long): List<Contact>
+
     fun findByPersonIdAndId(personId: Long, id: Long): Contact?
 
     @Query(
