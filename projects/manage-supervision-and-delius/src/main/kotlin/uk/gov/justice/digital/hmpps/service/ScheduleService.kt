@@ -3,31 +3,27 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.activity.Activity
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
-import uk.gov.justice.digital.hmpps.api.model.schedule.Appointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 
 @Service
 class ScheduleService(
     private val personRepository: PersonRepository,
-    private val contactRepository: ContactRepository,
-    private val documentRepository: DocumentRepository
+    private val contactRepository: ContactRepository
 ) {
 
     @Transactional
     fun getPersonAppointment(crn: String, contactId: Long): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
-        val documents = if (contact.linkedDocumentContactId != null)
-            documentRepository.findByPersonIdAndPrimaryKeyId(contact.personId, contact.linkedDocumentContactId)
-                .map { it.toDocument() } else emptyList()
         return PersonAppointment(
             personSummary = summary.toPersonSummary(),
-            appointment = contact.toAppointment(documents)
+            appointment = contact.toActivity()
         )
     }
 
@@ -37,7 +33,7 @@ class ScheduleService(
         val appointments = contactRepository.getUpComingAppointments(summary.id)
         return Schedule(
             personSummary = summary.toPersonSummary(),
-            appointments = appointments.map { it.toAppointment() })
+            appointments = appointments.map { it.toActivity() })
     }
 
     @Transactional
@@ -46,7 +42,7 @@ class ScheduleService(
         val appointments = contactRepository.getPreviousAppointments(summary.id)
         return Schedule(
             personSummary = summary.toPersonSummary(),
-            appointments = appointments.map { it.toAppointment() })
+            appointments = appointments.map { it.toActivity() })
     }
 }
 
@@ -63,7 +59,7 @@ fun OfficeLocation.toOfficeAddress() = OfficeAddress.from(
     telephoneNumber = telephoneNumber
 )
 
-fun Contact.toAppointment(documents: List<Document> = emptyList()) = Appointment(
+fun Contact.toActivity() = Activity(
     id = id,
     type = type.description,
     isNationalStandard = type.nationalStandardsContact,
@@ -73,7 +69,7 @@ fun Contact.toAppointment(documents: List<Document> = emptyList()) = Appointment
     acceptableAbsenceReason = if (outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
         outcome.description else null,
     absentWaitingEvidence = attended == false && outcome == null,
-    documents = documents,
+    documents = documents.map { it.toDocument() },
     startDateTime = startDateTime(),
     endDateTime = endDateTime(),
     hasOutcome = outcome != null,
@@ -87,10 +83,21 @@ fun Contact.toAppointment(documents: List<Document> = emptyList()) = Appointment
     officerName = staff?.forename?.let { Name(forename = it, surname = staff.surname) },
     rarCategory = requirement?.mainCategory?.description,
     rarToolKit = requirement?.mainCategory?.description,
-    rescheduled = rescheduled(),
+    rescheduled = rescheduledPop(),
+    rescheduledStaff = rescheduledPop() || rescheduledStaff(),
+    rescheduledPop = rescheduledPop(),
     rearrangeOrCancelReason = if (rescheduled()) outcome?.description else null,
     rescheduledBy = if (rescheduled()) Name(
         forename = lastUpdatedUser.forename,
         surname = lastUpdatedUser.surname
-    ) else null
+    ) else null,
+    isAppointment = type.attendanceContact,
+    action = action?.description,
+    isSystemContact = false, //ToDo
+    isEmailOrTextFromPop = isEmailOrTextFromPop(),
+    isEmailOrTextToPop = isEmailOrTextToPop(),
+    isPhoneCallFromPop = isPhoneCallFromPop(),
+    isPhoneCallToPop = isPhoneCallToPop()
 )
+
+fun ContactDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)

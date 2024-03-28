@@ -4,8 +4,8 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_BORO
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -28,6 +28,9 @@ object ContactGenerator {
     )
     val DEFAULT_STAFF = generateStaff("N01BDT1", "John", "Smith")
 
+    val BREACH_CONTACT_TYPE = generateContactType("BRE02", false, "Breach Contact Type")
+    val BREACH_ENFORCEMENT_ACTION = generateEnforcementAction("BRE02", "Breach Enforcement Action", BREACH_CONTACT_TYPE)
+
     val APPT_CT_1 = generateContactType("C089", true, "Alcohol Key Worker Session (NS)")
     val OTHER_CT = generateContactType("XXXX", false, "Non attendance contact type")
     val APPT_CT_2 = generateContactType("CODI", true, "Initial Appointment on Doorstep (NS)")
@@ -37,7 +40,8 @@ object ContactGenerator {
         OVERVIEW,
         APPT_CT_1,
         ZonedDateTime.of(LocalDateTime.now().minusDays(1), ZoneId.of("Europe/London")),
-        attended = false
+        attended = false,
+        action = BREACH_ENFORCEMENT_ACTION
     )
     val PREVIOUS_APPT_CONTACT = generateContact(
         OVERVIEW,
@@ -58,24 +62,51 @@ object ContactGenerator {
         OVERVIEW,
         APPT_CT_3,
         ZonedDateTime.of(LocalDateTime.now().plusHours(3), ZoneId.of("Europe/London")),
-        linkedDocumentContactId = IdGenerator.getAndIncrement()
     )
 
-    val CONTACT_DOCUMENT_1 = PersonDetailsGenerator.generateDocument(
+    val CONTACT_DOCUMENT_1 = generateContactDocument(
         OVERVIEW.id,
         "B001",
         "contact.doc",
         "DOCUMENT",
-        primaryKeyId = NEXT_APPT_CONTACT.linkedDocumentContactId
-
+        primaryKeyId = NEXT_APPT_CONTACT.id,
+        contact = NEXT_APPT_CONTACT
     )
-    val CONTACT_DOCUMENT_2 = PersonDetailsGenerator.generateDocument(
+    val CONTACT_DOCUMENT_2 = generateContactDocument(
         OVERVIEW.id,
         "B002",
         "contact2.doc",
         "DOCUMENT",
-        primaryKeyId = NEXT_APPT_CONTACT.linkedDocumentContactId
+        primaryKeyId = NEXT_APPT_CONTACT.id,
+        contact = NEXT_APPT_CONTACT
     )
+
+    fun generateContactDocument(
+        personId: Long,
+        alfrescoId: String,
+        name: String,
+        documentType: String,
+        primaryKeyId: Long? = null,
+        contact: Contact?
+    ): ContactDocument {
+        val doc = ContactDocument(contact)
+        doc.id = IdGenerator.getAndIncrement()
+        doc.lastUpdated = ZonedDateTime.now().minusDays(1)
+        doc.alfrescoId = alfrescoId
+        doc.name = name
+        doc.personId = personId
+        doc.primaryKeyId = primaryKeyId
+        doc.type = documentType
+        return doc
+    }
+
+    fun generateEnforcementAction(code: String, description: String, contactType: ContactType) =
+        EnforcementAction(
+            id = IdGenerator.getAndIncrement(),
+            code = code,
+            description = description,
+            contactType = contactType
+        )
 
     fun generateContact(
         person: Person,
@@ -87,7 +118,7 @@ object ContactGenerator {
         sensitive: Boolean? = null,
         requirement: Requirement? = null,
         notes: String? = null,
-        linkedDocumentContactId: Long? = null
+        action: EnforcementAction? = null
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         personId = person.id,
@@ -104,7 +135,7 @@ object ContactGenerator {
         staff = DEFAULT_STAFF,
         location = LOCATION_BRK_1,
         notes = notes,
-        linkedDocumentContactId = linkedDocumentContactId
+        action = action
     )
 
     private fun generateContactType(code: String, attendance: Boolean, description: String) =

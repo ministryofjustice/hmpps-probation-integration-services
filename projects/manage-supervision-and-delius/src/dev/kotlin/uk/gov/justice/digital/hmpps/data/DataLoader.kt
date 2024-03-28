@@ -73,6 +73,8 @@ class DataLoader(
             PersonGenerator.ACTIVE_ORDER,
             PersonGenerator.INACTIVE_ORDER_1,
             PersonGenerator.INACTIVE_ORDER_2,
+            ContactGenerator.BREACH_CONTACT_TYPE,
+            ContactGenerator.BREACH_ENFORCEMENT_ACTION,
             ContactGenerator.APPT_CT_1,
             ContactGenerator.OTHER_CT,
             ContactGenerator.APPT_CT_2,

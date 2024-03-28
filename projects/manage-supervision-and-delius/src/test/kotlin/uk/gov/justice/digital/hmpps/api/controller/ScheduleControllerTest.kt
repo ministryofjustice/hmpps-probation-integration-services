@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.service.ScheduleService
-import uk.gov.justice.digital.hmpps.service.toAppointment
+import uk.gov.justice.digital.hmpps.service.toActivity
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -44,8 +44,8 @@ internal class ScheduleControllerTest {
         val expectedResponse = Schedule(
             personSummary = personSummary,
             appointments = listOfNotNull(
-                ContactGenerator.FIRST_APPT_CONTACT.toAppointment(),
-                ContactGenerator.NEXT_APPT_CONTACT.toAppointment()
+                ContactGenerator.FIRST_APPT_CONTACT.toActivity(),
+                ContactGenerator.NEXT_APPT_CONTACT.toActivity()
             ),
         )
         whenever(scheduleService.getPersonUpcomingSchedule(crn)).thenReturn(expectedResponse)
@@ -59,8 +59,8 @@ internal class ScheduleControllerTest {
         val expectedResponse = Schedule(
             personSummary = personSummary,
             appointments = listOfNotNull(
-                ContactGenerator.PREVIOUS_APPT_CONTACT.toAppointment(),
-                ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment()
+                ContactGenerator.PREVIOUS_APPT_CONTACT.toActivity(),
+                ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity()
             ),
         )
         whenever(scheduleService.getPersonPreviousSchedule(crn)).thenReturn(expectedResponse)
@@ -74,7 +74,7 @@ internal class ScheduleControllerTest {
         val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
         val expectedResponse = PersonAppointment(
             personSummary = personSummary,
-            appointment = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment()
+            appointment = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity()
         )
         whenever(scheduleService.getPersonAppointment(crn, id)).thenReturn(expectedResponse)
         val res = controller.getContact(crn, id)

@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 
 @ExtendWith(MockitoExtension::class)
@@ -25,9 +24,6 @@ internal class ScheduleServiceTest {
 
     @Mock
     lateinit var contactRepository: ContactRepository
-
-    @Mock
-    lateinit var documentRepository: DocumentRepository
 
     @InjectMocks
     lateinit var service: ScheduleService
@@ -55,7 +51,7 @@ internal class ScheduleServiceTest {
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.appointments, equalTo(expectedContacts.map { it.toAppointment() }))
+        assertThat(res.appointments, equalTo(expectedContacts.map { it.toActivity() }))
     }
 
     @Test
@@ -64,12 +60,11 @@ internal class ScheduleServiceTest {
         val expectedContact = ContactGenerator.NEXT_APPT_CONTACT
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         whenever(contactRepository.findByPersonIdAndId(any(), any())).thenReturn(expectedContact)
-        whenever(documentRepository.findByPersonIdAndPrimaryKeyId(any(), any())).thenReturn(emptyList())
         val res = service.getPersonAppointment(crn, ContactGenerator.NEXT_APPT_CONTACT.id)
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.appointment, equalTo(expectedContact.toAppointment()))
+        assertThat(res.appointment, equalTo(expectedContact.toActivity()))
     }
 
     @Test
@@ -83,6 +78,6 @@ internal class ScheduleServiceTest {
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.appointments, equalTo(expectedContacts.map { it.toAppointment() }))
+        assertThat(res.appointments, equalTo(expectedContacts.map { it.toActivity() }))
     }
 }
