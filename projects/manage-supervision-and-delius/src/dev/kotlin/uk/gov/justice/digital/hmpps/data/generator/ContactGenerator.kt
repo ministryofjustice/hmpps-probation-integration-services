@@ -41,7 +41,8 @@ object ContactGenerator {
         APPT_CT_1,
         ZonedDateTime.of(LocalDateTime.now().minusDays(1), ZoneId.of("Europe/London")),
         attended = false,
-        action = BREACH_ENFORCEMENT_ACTION
+        action = BREACH_ENFORCEMENT_ACTION,
+        startTime = null
     )
     val PREVIOUS_APPT_CONTACT = generateContact(
         OVERVIEW,
@@ -51,7 +52,7 @@ object ContactGenerator {
     val FIRST_NON_APPT_CONTACT = generateContact(
         OVERVIEW,
         OTHER_CT,
-        ZonedDateTime.of(LocalDateTime.now().plusHours(1), ZoneId.of("Europe/London"))
+        ZonedDateTime.of(LocalDateTime.now().plusHours(1), ZoneId.of("Europe/London")),
     )
     val FIRST_APPT_CONTACT = generateContact(
         OVERVIEW,
@@ -118,13 +119,14 @@ object ContactGenerator {
         sensitive: Boolean? = null,
         requirement: Requirement? = null,
         notes: String? = null,
-        action: EnforcementAction? = null
+        action: EnforcementAction? = null,
+        startTime: ZonedDateTime? = ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone)
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         personId = person.id,
         type = contactType,
         date = startDateTime.toLocalDate(),
-        startTime = ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone),
+        startTime = startTime,
         rarActivity = rarActivity,
         attended = attended,
         sensitive = sensitive,

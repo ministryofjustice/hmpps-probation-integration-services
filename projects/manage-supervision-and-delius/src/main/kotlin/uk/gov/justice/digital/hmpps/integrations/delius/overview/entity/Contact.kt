@@ -91,7 +91,10 @@ class Contact(
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     val softDeleted: Boolean = false
 ) {
-    fun startDateTime(): ZonedDateTime = ZonedDateTime.of(date, startTime?.toLocalTime(), EuropeLondon)
+    fun startDateTime(): ZonedDateTime =
+        if (startTime != null) ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon) else
+            ZonedDateTime.of(date, date.atStartOfDay().toLocalTime(), EuropeLondon)
+
     fun endDateTime(): ZonedDateTime? =
         if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null
 
