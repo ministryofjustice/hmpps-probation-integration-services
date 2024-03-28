@@ -62,7 +62,7 @@ object ContactGenerator {
     val NEXT_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_3,
-        ZonedDateTime.of(LocalDateTime.now().plusHours(3), ZoneId.of("Europe/London")),
+        ZonedDateTime.of(LocalDateTime.now().plusHours(3), ZoneId.of("Europe/London"))
     )
 
     val CONTACT_DOCUMENT_1 = generateContactDocument(
