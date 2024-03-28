@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.client.approvedpremises.EventDetailsClient
@@ -42,7 +41,7 @@ class Cas2Service(
                 |Application status was updated to: ${details.eventDetails.newStatus.label}
                 |
                 |Details: ${details.eventDetails.newStatus.description}
-                |* ${details.eventDetails.newStatus.statusDetails.joinToString(separator = System.lineSeparator() + "|* ") { it.name }}
+                |* ${details.eventDetails.newStatus.statusDetails.joinToString(separator = System.lineSeparator() + "|* ") { it.label }}
                 |
                 |Details of the application can be found here: ${details.eventDetails.applicationUrl}
                 """.trimMargin(),
