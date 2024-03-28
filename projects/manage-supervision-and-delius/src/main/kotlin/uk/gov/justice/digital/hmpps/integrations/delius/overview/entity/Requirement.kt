@@ -17,7 +17,7 @@ class Requirement(
 
     val length: Long?,
 
-    @Column(name = "rqmnt_notes")
+    @Column(name = "rqmnt_notes", columnDefinition = "clob")
     val notes: String?,
 
     @Column(name = "rqmnt_type_sub_category_id")
