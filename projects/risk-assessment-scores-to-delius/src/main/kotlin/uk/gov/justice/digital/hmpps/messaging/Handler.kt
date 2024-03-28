@@ -102,7 +102,7 @@ fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.
     )
 }
 
-fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndecentIndirectBand"]?.let {
+fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment(
         additionalInformation["OSPIndirectIndecentScore"] as Double,
         additionalInformation["OSPIndirectIndecentBand"] as String,
@@ -138,6 +138,10 @@ fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "ospIndecentBand" to additionalInformation["OSPIndecentBand"].toString(),
     "ospContactScore" to additionalInformation["OSPContactScore"].toString(),
     "ospContactBand" to additionalInformation["OSPContactBand"].toString(),
+    "ospIndirectIndecentScore" to additionalInformation["OSPIndirectIndecentScore"].toString(),
+    "ospIndirectIndecentBand" to additionalInformation["OSPIndirectIndecentBand"].toString(),
+    "ospDirectContactScore" to additionalInformation["OSPDirectContactScore"].toString(),
+    "ospDirectContactBand" to additionalInformation["OSPDirectContactBand"].toString(),
     "OGRS3Yr1" to additionalInformation["OGRS3Yr1"].toString(),
     "OGRS3Yr2" to additionalInformation["OGRS3Yr2"].toString()
 )

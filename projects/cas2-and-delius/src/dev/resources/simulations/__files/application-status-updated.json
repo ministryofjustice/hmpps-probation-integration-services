@@ -9,7 +9,17 @@
     "newStatus": {
       "name": "moreInfoRequested",
       "label": "More information requested",
-      "description": "More information about the application has been requested from the POM (Prison Offender Manager)."
+      "description": "More information about the application has been requested from the POM (Prison Offender Manager).",
+      "statusDetails": [
+        {
+          "name": "personalInformation",
+          "label": "Personal Information"
+        },
+        {
+          "name": "healthNeeds",
+          "label": "Health Needs"
+        }
+      ]
     }
   }
 }

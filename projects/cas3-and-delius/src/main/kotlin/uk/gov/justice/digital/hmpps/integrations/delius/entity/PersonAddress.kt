@@ -39,20 +39,20 @@ class PersonAddress(
     @ManyToOne
     @JoinColumn(name = "address_status_id")
     var status: ReferenceData,
-    val streetName: String?,
+    var streetName: String?,
     @Column(name = "town_city")
-    val town: String?,
-    val county: String?,
-    val postcode: String?,
+    var town: String?,
+    var county: String?,
+    var postcode: String?,
     val telephoneNumber: String? = null,
-    val buildingName: String? = null,
-    val district: String? = null,
+    var buildingName: String? = null,
+    var district: String? = null,
     val addressNumber: String? = null,
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean? = false,
     @Convert(converter = YesNoConverter::class)
     val typeVerified: Boolean? = false,
-    val startDate: LocalDate = LocalDate.now(),
+    var startDate: LocalDate = LocalDate.now(),
     var endDate: LocalDate? = null,
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false,

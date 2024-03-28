@@ -62,7 +62,7 @@ object PersonGenerator {
     )
 
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
-    val ACTIVE_ORDER = generateDisposal(EVENT_1)
+    val ACTIVE_ORDER = generateDisposal(EVENT_1, length = 12)
 
     val INACTIVE_ORDER_1 = generateDisposal(INACTIVE_EVENT_1)
     val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2)
@@ -83,8 +83,10 @@ object PersonGenerator {
         LocalDate.now()
     )
 
+    val MAIN_CAT_F_SUB_ID = IdGenerator.getAndIncrement();
+    val MAIN_CAT_F_TYPE = ReferenceData(MAIN_CAT_F_SUB_ID, "G03", "High Intensity")
     val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main")
-    val REQUIREMENT = generateRequirement(ACTIVE_ORDER)
+    val REQUIREMENT = generateRequirement(ACTIVE_ORDER, MAIN_CAT_F_SUB_ID)
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
         ContactGenerator.APPT_CT_1,
@@ -238,11 +240,14 @@ object PersonGenerator {
 
     fun generateRequirement(
         disposal: Disposal,
+        subCategoryId: Long,
+        length: Long = 12,
+        notes: String = "my notes",
         mainCategory: RequirementMainCategory = MAIN_CAT_F,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Requirement(id, disposal, mainCategory, active, softDeleted)
+    ) = Requirement(id, length, notes, subCategoryId, disposal, mainCategory, active, softDeleted)
 
     fun generateDisposalType(
         code: String,
@@ -255,13 +260,14 @@ object PersonGenerator {
     fun generateDisposal(
         event: Event,
         date: LocalDate = LocalDate.now().minusDays(14),
+        length: Long? = null,
         type: DisposalType = DEFAULT_DISPOSAL_TYPE,
         enteredEndDate: LocalDate? = null,
         notionalEndDate: LocalDate? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Disposal(event, date, type, enteredEndDate, notionalEndDate, active, softDeleted, id)
+    ) = Disposal(event, date, length, type, enteredEndDate, notionalEndDate, active, softDeleted, id)
 
     fun generateOffence(
         description: String,

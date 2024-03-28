@@ -101,7 +101,8 @@ class DataLoader(
             PersonGenerator.REGISTER_TYPE_1,
             PersonGenerator.REGISTER_TYPE_2,
             PersonGenerator.REGISRATION_1,
-            PersonGenerator.REGISRATION_2
+            PersonGenerator.REGISRATION_2,
+            PersonGenerator.MAIN_CAT_F_TYPE
         )
 
         personalDetailsData()

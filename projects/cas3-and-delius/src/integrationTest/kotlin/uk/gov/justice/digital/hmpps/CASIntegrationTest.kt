@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
@@ -53,9 +55,6 @@ internal class CASIntegrationTest {
 
     @MockBean
     lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
@@ -185,7 +184,7 @@ internal class CASIntegrationTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     fun `person departed message is processed correctly`() {
         val eventName = "person-departed"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -217,7 +216,7 @@ internal class CASIntegrationTest {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     fun `person departed message update is processed correctly`() {
         val eventName = "person-departed-update"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -249,7 +248,7 @@ internal class CASIntegrationTest {
     }
 
     @Test
-    @Order(8)
+    @Order(6)
     fun `person arrived updated message is processed correctly`() {
         val eventName = "person-arrived-update"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -277,8 +276,17 @@ internal class CASIntegrationTest {
 
         assertThat(
             contact!!.notes,
-            equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+            equalTo(
+                listOf(
+                    existingNotes,
+                    "Address details were updated: ${DeliusDateTimeFormatter.format(eventDetailsCopy.timestamp)}",
+                    eventDetails.eventDetails.noteText
+                ).joinToString(System.lineSeparator())
+            )
         )
+
+        val mainAddress = addressRepository.findMainAddress(contact.offenderId)
+        assertThat(mainAddress?.startDate, equalTo(eventDetails.eventDetails.arrivedAt.toLocalDate()))
     }
 
     @Test

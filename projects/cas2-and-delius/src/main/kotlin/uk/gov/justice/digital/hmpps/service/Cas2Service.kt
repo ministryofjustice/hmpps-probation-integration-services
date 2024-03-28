@@ -38,10 +38,13 @@ class Cas2Service(
             date = details.eventDetails.updatedAt,
             description = "CAS2 Referral Updated - ${details.eventDetails.newStatus.label}",
             notes = """
-                Application status was updated to: ${details.eventDetails.newStatus.label} - ${details.eventDetails.newStatus.description}
-                
-                Details of the application can be found here: ${details.eventDetails.applicationUrl}
-                """.trimIndent(),
+                |Application status was updated to: ${details.eventDetails.newStatus.label}
+                |
+                |Details: ${details.eventDetails.newStatus.description}
+                |* ${details.eventDetails.newStatus.statusDetails.joinToString(separator = System.lineSeparator() + "|* ") { it.label }}
+                |
+                |Details of the application can be found here: ${details.eventDetails.applicationUrl}
+                """.trimMargin(),
             urn = "urn:hmpps:cas2:application-status-updated:${details.id}",
         )
         if (success) telemetryService.trackEvent(
