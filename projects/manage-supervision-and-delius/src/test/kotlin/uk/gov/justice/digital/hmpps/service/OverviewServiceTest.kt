@@ -51,7 +51,7 @@ internal class OverviewServiceTest {
         val crn = "X000004"
         val expectedAppointmentDateTime = ZonedDateTime.of(
             FIRST_APPT_CONTACT.date,
-            FIRST_APPT_CONTACT.startTime.toLocalTime(),
+            FIRST_APPT_CONTACT.startTime?.toLocalTime(),
             EuropeLondon
         )
         whenever(personRepository.findByCrn(crn)).thenReturn(PersonGenerator.OVERVIEW)
