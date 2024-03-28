@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.AddressService
 import uk.gov.justice.digital.hmpps.integrations.delius.ContactService
@@ -77,8 +78,12 @@ class Handler(
             "accommodation.cas3.person.arrived.updated" -> {
                 val person = personRepository.getByCrn(event.crn())
                 val detail = cas3ApiClient.getPersonArrived(event.url())
-                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) { detail }
-                addressService.updateMainAddress(person, detail.eventDetails)
+                contactService.createOrUpdateContact(
+                    event.crn(),
+                    replaceNotes = false,
+                    extraInfo = "Address details were updated: ${DeliusDateTimeFormatter.format(detail.timestamp)}"
+                ) { detail }
+                addressService.updateCas3Address(person, detail.eventDetails)
                 telemetryService.trackEvent("PersonArrivedUpdated", event.telemetryProperties())
             }
 

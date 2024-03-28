@@ -5,10 +5,10 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Recordable
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.By
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3Event
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.EventDetails
+import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Recordable
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -30,6 +30,7 @@ class ContactService(
         crn: String,
         person: Person? = null,
         replaceNotes: Boolean = true,
+        extraInfo: String? = null,
         getEvent: () -> EventDetails<T>
     ) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
         val event = getEvent()
@@ -40,7 +41,11 @@ class ContactService(
                 if (replaceNotes) {
                     existing.notes = event.eventDetails.noteText
                 } else {
-                    existing.notes = "${existing.notes}${System.lineSeparator()}${event.eventDetails.noteText}"
+                    existing.notes = listOfNotNull(
+                        existing.notes,
+                        extraInfo,
+                        event.eventDetails.noteText
+                    ).joinToString(System.lineSeparator())
                 }
                 existing.date = event.timestamp.toLocalDate()
                 existing.startTime = event.timestamp

@@ -28,6 +28,23 @@ class AddressService(
         toPersonAddress(person, details).apply(personAddressRepository::save)
     }
 
+    fun updateCas3Address(person: Person, details: PersonArrived) {
+        val personForUpdate = personRepository.getByIdForUpdate(person.id)
+        val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
+        if (currentMain?.type?.code == AddressTypeCode.CAS3.code) {
+            val addressLines = details.premises.addressLines
+            currentMain.apply {
+                buildingName = addressLines.buildingName
+                streetName = addressLines.streetName
+                district = addressLines.district
+                town = details.premises.town
+                county = details.premises.region
+                postcode = details.premises.postcode
+                startDate = details.arrivedAt.toLocalDate()
+            }
+        }
+    }
+
     fun endMainAddress(person: Person, endDate: LocalDate) {
         val personForUpdate = personRepository.getByIdForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
