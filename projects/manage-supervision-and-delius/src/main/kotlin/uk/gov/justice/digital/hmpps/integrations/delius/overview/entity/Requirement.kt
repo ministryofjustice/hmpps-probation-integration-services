@@ -77,20 +77,22 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
 
     @Query(
         """
-            SELECT r."LENGTH", rrtmc.DESCRIPTION, rsrl.CODE_DESCRIPTION as codeDescription, r.RQMNT_NOTES as notes 
+            SELECT r."LENGTH", rrtmc.description, rsrl.code_description AS codeDescription, r.rqmnt_notes AS notes 
             FROM rqmnt r
-            JOIN R_RQMNT_TYPE_MAIN_CATEGORY rrtmc 
-            ON r.RQMNT_TYPE_MAIN_CATEGORY_ID = RRTMC.RQMNT_TYPE_MAIN_CATEGORY_ID 
-            JOIN R_STANDARD_REFERENCE_LIST rsrl 
-            ON RSRL.STANDARD_REFERENCE_LIST_ID = r.RQMNT_TYPE_SUB_CATEGORY_ID 
-            JOIN DISPOSAL d 
-            ON r.DISPOSAL_ID = d.DISPOSAL_ID 
-            JOIN EVENT e 
-            ON e.EVENT_ID = d.EVENT_ID 
-            JOIN OFFENDER o 
-            ON o.OFFENDER_ID = e.OFFENDER_ID 
-            AND o.CRN = :crn
-            AND e.EVENT_NUMBER = :eventNumber
+            JOIN r_rqmnt_type_main_category rrtmc 
+            ON r.rqmnt_type_main_category_id = rrtmc.rqmnt_type_main_category_id 
+            JOIN r_standard_reference_list rsrl 
+            ON rsrl.standard_reference_list_id = r.rqmnt_type_sub_category_id 
+            JOIN disposal d 
+            ON r.disposal_id = d.disposal_id 
+            JOIN event e 
+            ON e.event_id = d.event_id
+            JOIN offender o 
+            ON o.offender_id = e.offender_id 
+            AND o.crn = :crn
+            AND e.event_number = :eventNumber
+            AND e.soft_deleted = 0 
+            AND e.active_flag = 1
         """, nativeQuery = true
     )
     fun getRequirements(crn: String, eventNumber: String) : List<RequirementDetails>
