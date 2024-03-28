@@ -15,10 +15,6 @@
     "notes": "Person departed.",
     "reason": "Left of own accord | Other",
     "reasonDetail": "",
-    "moveOnCategory": {
-      "description": "Friends and family",
-      "label": ""
-    },
     "recordedBy": {
       "staffCode": "N03HPT1",
       "probationRegionCode": "N03"
