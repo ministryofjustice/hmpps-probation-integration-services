@@ -6,14 +6,13 @@ import org.springframework.jdbc.core.SqlParameter
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.messaging.RiskAssessment
 import java.sql.SQLException
 import java.sql.Types
 import java.time.ZonedDateTime
 
 @Service
-class RiskScoreService(jdbcTemplate: JdbcTemplate, val featureFlags: FeatureFlags) {
+class RiskScoreService(jdbcTemplate: JdbcTemplate) {
     private val updateRsrAndOspScoresProcedure = SimpleJdbcCall(jdbcTemplate)
         .withCatalogName("pkg_triggersupport")
         .withProcedureName("procUpdateCAS")
@@ -28,10 +27,6 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate, val featureFlags: FeatureFlag
             SqlParameter("p_osp_score_c", Types.NUMERIC),
             SqlParameter("p_osp_level_i_code", Types.VARCHAR),
             SqlParameter("p_osp_level_c_code", Types.VARCHAR),
-        )
-
-    private val SimpleJdbcCall.withIndirectIndecentAndDirectContact
-        get() = declareParameters(
             SqlParameter("p_osp_level_iic_code", Types.VARCHAR),
             SqlParameter("p_osp_level_dc_code", Types.VARCHAR),
         )
@@ -47,26 +42,20 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate, val featureFlags: FeatureFlag
         ospDirectContact: RiskAssessment?,
     ) {
         try {
-            val params = MapSqlParameterSource()
-                .addValue("p_crn", crn)
-                .addValue("p_event_number", eventNumber)
-                .addValue("p_rsr_assessor_date", assessmentDate)
-                .addValue("p_rsr_score", rsr.score)
-                .addValue("p_rsr_level_code", rsr.band)
-                .addValue("p_osp_score_i", ospIndecent?.score)
-                .addValue("p_osp_score_c", ospContact?.score)
-                .addValue("p_osp_level_i_code", ospIndecent?.band)
-                .addValue("p_osp_level_c_code", ospContact?.band)
-
-            if (featureFlags.enabled("osp-indirect-indecent-and-direct-contact")) {
-                updateRsrAndOspScoresProcedure.withIndirectIndecentAndDirectContact.execute(
-                    params
-                        .addValue("p_osp_level_iic_code", ospIndirectIndecent?.band)
-                        .addValue("p_osp_level_dc_code", ospDirectContact?.band)
-                )
-            } else {
-                updateRsrAndOspScoresProcedure.execute(params)
-            }
+            updateRsrAndOspScoresProcedure.execute(
+                MapSqlParameterSource()
+                    .addValue("p_crn", crn)
+                    .addValue("p_event_number", eventNumber)
+                    .addValue("p_rsr_assessor_date", assessmentDate)
+                    .addValue("p_rsr_score", rsr.score)
+                    .addValue("p_rsr_level_code", rsr.band)
+                    .addValue("p_osp_score_i", ospIndecent?.score)
+                    .addValue("p_osp_score_c", ospContact?.score)
+                    .addValue("p_osp_level_i_code", ospIndecent?.band)
+                    .addValue("p_osp_level_c_code", ospContact?.band)
+                    .addValue("p_osp_level_iic_code", ospIndirectIndecent?.band)
+                    .addValue("p_osp_level_dc_code", ospDirectContact?.band)
+            )
         } catch (e: UncategorizedSQLException) {
             e.sqlException.takeIf { it.isValidationError }
                 ?.parsedValidationMessage

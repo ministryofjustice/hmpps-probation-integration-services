@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -20,7 +19,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.messaging.RiskAssessment
 import java.sql.SQLException
 import java.time.ZonedDateTime
@@ -31,15 +29,7 @@ internal class RiskScoreServiceTest {
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @Mock
-    private lateinit var featureFlags: FeatureFlags
-
-    @Mock
     private lateinit var simpleJdbcCall: SimpleJdbcCall
-
-    @BeforeEach
-    fun featureFlag() {
-        givenTheOspFlagIs(true)
-    }
 
     @Test
     fun `scores are passed to the database procedure`() {
@@ -47,17 +37,6 @@ internal class RiskScoreServiceTest {
             assertDoesNotThrow {
                 whenUpdatingRsrAndOspScores()
                 thenProcedureIsCalled()
-            }
-        }
-    }
-
-    @Test
-    fun `scores are passed to the old database procedure when flag is disabled`() {
-        givenTheOspFlagIs(false)
-        givenTheDatabaseProcedureSucceeds().use {
-            assertDoesNotThrow {
-                whenUpdatingRsrAndOspScores()
-                thenTheOldProcedureIsCalled()
             }
         }
     }
@@ -95,7 +74,7 @@ internal class RiskScoreServiceTest {
     }
 
     private fun whenUpdatingRsrAndOspScores() {
-        RiskScoreService(jdbcTemplate, featureFlags).updateRsrAndOspScores(
+        RiskScoreService(jdbcTemplate).updateRsrAndOspScores(
             crn = "A000001",
             eventNumber = 123,
             assessmentDate = ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
@@ -128,32 +107,10 @@ internal class RiskScoreServiceTest {
         )
     }
 
-    private fun thenTheOldProcedureIsCalled() {
-        val expectedValues = mapOf(
-            "p_crn" to "A000001",
-            "p_event_number" to 123,
-            "p_rsr_assessor_date" to ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
-            "p_rsr_score" to 1.00,
-            "p_rsr_level_code" to "A",
-            "p_osp_score_i" to 2.00,
-            "p_osp_score_c" to 4.00,
-            "p_osp_level_i_code" to "B",
-            "p_osp_level_c_code" to "D"
-        )
-        verify(simpleJdbcCall).execute(
-            check<MapSqlParameterSource> { params ->
-                assertThat(params.values, equalTo(expectedValues))
-            }
-        )
-    }
-
     private fun givenTheDatabaseProcedureSucceeds(): MockedConstruction<SimpleJdbcCall> {
         whenever(simpleJdbcCall.withProcedureName("procUpdateCAS")).thenReturn(simpleJdbcCall)
         whenever(simpleJdbcCall.withoutProcedureColumnMetaDataAccess()).thenReturn(simpleJdbcCall)
-        whenever(simpleJdbcCall.declareParameters(*Array(9) { any() })).thenReturn(simpleJdbcCall)
-        if (featureFlags.enabled("osp-indirect-indecent-and-direct-contact")) {
-            whenever(simpleJdbcCall.declareParameters(*Array(2) { any() })).thenReturn(simpleJdbcCall)
-        }
+        whenever(simpleJdbcCall.declareParameters(*Array(11) { any() })).thenReturn(simpleJdbcCall)
         return mockConstructionWithAnswer(SimpleJdbcCall::class.java, { simpleJdbcCall })
     }
 
@@ -161,10 +118,6 @@ internal class RiskScoreServiceTest {
         val mockedConstruction = givenTheDatabaseProcedureSucceeds()
         whenever(simpleJdbcCall.execute(any(SqlParameterSource::class.java))).thenThrow(e)
         return mockedConstruction
-    }
-
-    private fun givenTheOspFlagIs(value: Boolean) {
-        whenever(featureFlags.enabled("osp-indirect-indecent-and-direct-contact")).thenReturn(value)
     }
 
     private fun sqlException(message: String? = null, code: Int = 20000) =
