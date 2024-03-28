@@ -12,12 +12,12 @@
       "description": "More information about the application has been requested from the POM (Prison Offender Manager).",
       "statusDetails": [
         {
-          "label": "personalInformation",
-          "name": "Personal Information"
+          "name": "personalInformation",
+          "label": "Personal Information"
         },
         {
-          "label": "healthNeeds",
-          "name": "Health Needs"
+          "name": "healthNeeds",
+          "label": "Health Needs"
         }
       ]
     }
