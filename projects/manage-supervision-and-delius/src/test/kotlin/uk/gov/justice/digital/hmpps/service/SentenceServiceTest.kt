@@ -75,6 +75,7 @@ class SentenceServiceTest {
         verifyNoMoreInteractions(personRepository)
         verifyNoInteractions(courtAppearanceRepository)
         verifyNoInteractions(additionalSentenceRepository)
+        verifyNoInteractions(requirementRepository)
     }
 
     @Test
@@ -91,21 +92,26 @@ class SentenceServiceTest {
             additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
         )
 
-        whenever(personRepository.findSummary(PersonGenerator.OVERVIEW.crn)).thenReturn(personSummary)
-        whenever(eventRepository.findActiveSentencesByPersonId(personSummary.id)).thenReturn(
-            listOf(
-                event
-            )
-        )
+        val requirement = RequirementDetails(1, "Main", "High Intensity", 12, "new requirement")
 
-        whenever(
-            courtAppearanceRepository
-                .getFirstCourtAppearanceByEventIdOrderByDate(event.id)
-        )
+        val completedRarDays = OverviewServiceTest.RarDays(1, "COMPLETED")
+
+        val scheduledRarDays = OverviewServiceTest.RarDays(2, "SCHEDULED")
+
+        whenever(personRepository.findSummary(PersonGenerator.OVERVIEW.crn)).thenReturn(personSummary)
+
+        whenever(eventRepository.findActiveSentencesByPersonId(personSummary.id)).thenReturn(listOf(event))
+
+        whenever(courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(event.id))
             .thenReturn(CourtAppearanceGenerator.generate(CourtGenerator.DEFAULT))
 
         whenever(additionalSentenceRepository.getAllByEventId(event.id))
             .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
+
+        whenever(requirementRepository.getRequirements(PersonGenerator.OVERVIEW.crn, event.eventNumber))
+            .thenReturn(listOf(requirement))
+
+        whenever(requirementRepository.getRarDaysByRequirementId(requirement._id)).thenReturn(listOf(completedRarDays, scheduledRarDays))
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
@@ -132,7 +138,7 @@ class SentenceServiceTest {
                         )
                     ),
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
-                    listOf()
+                    listOf(Requirement(requirement._description, requirement._codeDescription, requirement._length, requirement._notes, Rar(completedRarDays._days, scheduledRarDays._days, 3)))
                 )
             )
         )
@@ -145,5 +151,29 @@ class SentenceServiceTest {
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
         verifyNoMoreInteractions(courtAppearanceRepository)
+    }
+
+    data class RequirementDetails(
+        val _id: Long,
+        val _description: String?,
+        val _codeDescription: String?,
+        val _length: Long?,
+        val _notes: String?
+    ) : uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails {
+        override val id: Long
+            get() = _id
+
+        override val description: String?
+            get() = _description
+
+        override val codeDescription: String?
+            get() = _codeDescription
+
+        override val length: Long?
+            get() = _length
+
+        override val notes: String?
+            get() = _notes
+
     }
 }

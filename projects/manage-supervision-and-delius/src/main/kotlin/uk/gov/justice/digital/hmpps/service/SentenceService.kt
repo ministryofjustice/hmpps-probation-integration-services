@@ -52,7 +52,7 @@ class SentenceService(
             additionalSentences.map { it.toAdditionalSentence() }
         ),
         order = disposal?.toOrder(),
-        requirements = disposal.let { requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() } }
+        requirements = disposal.let { requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() } },
     )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
@@ -63,10 +63,16 @@ class SentenceService(
 
     fun Disposal.toOrder() = Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
-    fun RequirementDetails.toRequirement() = Requirement(description, codeDescription, length, notes)
+    fun RequirementDetails.toRequirement() = Requirement(
+        description,
+        codeDescription,
+        length,
+        notes,
+        getRar(id)
+    )
 
-    private fun getRar(disposalId: Long): Rar {
-        val rarDays = requirementRepository.getRarDays(disposalId)
+    private fun getRar(requirementId: Long): Rar {
+        val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
         val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
         val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
         return Rar(completed = completedDays, scheduled = scheduledDays)

@@ -44,6 +44,7 @@ interface RarDays {
 }
 
 interface RequirementDetails {
+    val id: Long
     val description: String?
     val codeDescription: String?
     val length: Long?
@@ -77,7 +78,30 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
 
     @Query(
         """
-            SELECT r."LENGTH", rrtmc.description, rsrl.code_description AS codeDescription, r.rqmnt_notes AS notes 
+        select count(r.rqmnt_id) as days, 'SCHEDULED' as type from contact c
+        join rqmnt r on r.rqmnt_id = c.rqmnt_id
+        join r_rqmnt_type_main_category mc on r.rqmnt_type_main_category_id = mc.rqmnt_type_main_category_id
+        where c.rar_activity = 'Y' and c.soft_deleted = 0
+        and (c.attended is null)
+        and (c.complied is null or c.complied = 'Y')
+        and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
+        and r.disposal_id = :requirementId
+        union
+        select count(r.rqmnt_id) as days, 'COMPLETED' as type from contact c
+        join rqmnt r on r.rqmnt_id = c.rqmnt_id
+        join r_rqmnt_type_main_category mc on r.rqmnt_type_main_category_id = mc.rqmnt_type_main_category_id
+        where c.rar_activity = 'Y' and c.soft_deleted = 0
+        and (c.attended = 'Y')
+        and (c.complied is null or c.complied = 'Y')
+        and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
+        and r.rqmnt_id = :requirementId
+        """, nativeQuery = true
+    )
+    fun getRarDaysByRequirementId(requirementId: Long): List<RarDays>
+
+    @Query(
+        """
+            SELECT r.rqmnt_id as id, r."LENGTH", rrtmc.description, rsrl.code_description AS codeDescription, r.rqmnt_notes AS notes 
             FROM rqmnt r
             JOIN r_rqmnt_type_main_category rrtmc 
             ON r.rqmnt_type_main_category_id = rrtmc.rqmnt_type_main_category_id 
