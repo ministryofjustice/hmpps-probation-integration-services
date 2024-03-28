@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -7,6 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.message.*
 import uk.gov.justice.digital.hmpps.model.PrisonIdentifiers
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
+import kotlin.streams.asSequence
 
 @Service
 class Notifier(
@@ -20,14 +22,21 @@ class Notifier(
     }
 
     @Async
+    @Transactional
+    fun requestPrisonMatchingAsync(crns: List<String>, dryRun: Boolean) {
+        requestPrisonMatching(crns, dryRun)
+    }
+
+    @Transactional
     fun requestPrisonMatching(crns: List<String>, dryRun: Boolean) {
-        crns.ifEmpty { personRepository.findAllCrns() }.asSequence()
+        crns.asSequence()
+            .ifEmpty { personRepository.findAllCrns().asSequence() }
             .map { notification(REQUEST_PRISON_MATCH, PersonIdentifier("CRN", it), dryRun) }
             .forEach { queuePublisher.publish(it) }
     }
 
     @Async
-    fun requestProbationMatching(nomsNumbers: List<String>, dryRun: Boolean) {
+    fun requestProbationMatchingAsync(nomsNumbers: List<String>, dryRun: Boolean) {
         nomsNumbers.asSequence()
             .map { notification(REQUEST_PROBATION_MATCH, PersonIdentifier("NOMS", it), dryRun) }
             .forEach { queuePublisher.publish(it) }

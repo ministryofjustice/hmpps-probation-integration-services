@@ -9,9 +9,6 @@ generic-service:
   ingress:
     tlsSecretName: prison-identifier-and-delius-cert
 
-  env:
-    NOMS_DRY_RUN: "true"
-
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL

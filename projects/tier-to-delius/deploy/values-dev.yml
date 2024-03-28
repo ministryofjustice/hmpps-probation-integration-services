@@ -2,6 +2,14 @@ generic-service:
   ingress:
     host: tier-to-delius-dev.hmpps.service.justice.gov.uk
     className: production-only # TODO remove after CP ingress testing
+  replicaCount: 6
+  resources:
+    requests:
+      cpu: 4  # TODO remove after CP ingress testing
+      memory: 512Mi
+    limit:
+      cpu: 4
+      memory: 1Gi
 
   scheduledDowntime:
     enabled: true
