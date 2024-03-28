@@ -119,7 +119,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
             AND e.active_flag = 1
         """, nativeQuery = true
     )
-    fun getRequirements(crn: String, eventNumber: String) : List<RequirementDetails>
+    fun getRequirements(crn: String, eventNumber: String): List<RequirementDetails>
 }
 
 @Immutable
