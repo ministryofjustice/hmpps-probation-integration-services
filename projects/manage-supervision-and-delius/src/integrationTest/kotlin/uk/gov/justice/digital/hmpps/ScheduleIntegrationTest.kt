@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
-import uk.gov.justice.digital.hmpps.service.toAppointment
+import uk.gov.justice.digital.hmpps.service.toActivity
 import uk.gov.justice.digital.hmpps.service.toDocument
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -35,11 +35,11 @@ internal class ScheduleIntegrationTest {
             .andReturn().response.contentAsJson<Schedule>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toAppointment().id))
-        assertThat(res.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toAppointment().type))
+        assertThat(res.appointments[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
+        assertThat(res.appointments[0].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
         assertThat(
             res.appointments[0].location?.officeName,
-            equalTo(ContactGenerator.FIRST_APPT_CONTACT.toAppointment().location?.officeName)
+            equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
         )
         assertThat(res.appointments[0].location?.postcode, equalTo("H34 7TH"))
     }
@@ -53,14 +53,14 @@ internal class ScheduleIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Schedule>()
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.appointments[0].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment().id))
+        assertThat(res.appointments[0].id, equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().id))
         assertThat(
             res.appointments[0].type,
-            equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment().type)
+            equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().type)
         )
         assertThat(
             res.appointments[0].location?.officeName,
-            equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toAppointment().location?.officeName)
+            equalTo(ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.toActivity().location?.officeName)
         )
         assertThat(res.appointments[0].location?.postcode, equalTo("H34 7TH"))
     }
@@ -90,7 +90,7 @@ internal class ScheduleIntegrationTest {
             .andReturn().response.contentAsJson<PersonAppointment>()
         val expectedDocs =
             listOf(ContactGenerator.CONTACT_DOCUMENT_1.toDocument(), ContactGenerator.CONTACT_DOCUMENT_2.toDocument())
-        val expectedAppointment = ContactGenerator.NEXT_APPT_CONTACT.toAppointment().copy(documents = expectedDocs)
+        val expectedAppointment = ContactGenerator.NEXT_APPT_CONTACT.toActivity().copy(documents = expectedDocs)
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.appointment.id, equalTo(expectedAppointment.id))
         assertThat(res.appointment.type, equalTo(expectedAppointment.type))

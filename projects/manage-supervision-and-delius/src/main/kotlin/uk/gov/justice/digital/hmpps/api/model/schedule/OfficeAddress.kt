@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.schedule
 
 data class OfficeAddress(
-    val officeName: String,
+    val officeName: String?,
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,
@@ -14,7 +14,7 @@ data class OfficeAddress(
 ) {
     companion object {
         fun from(
-            officeName: String,
+            officeName: String?,
             buildingName: String?,
             buildingNumber: String?,
             streetName: String?,
@@ -26,7 +26,7 @@ data class OfficeAddress(
             telephoneNumber: String?
         ): OfficeAddress? =
             if (
-                buildingName == null && buildingNumber == null && streetName == null &&
+                officeName == null && buildingName == null && buildingNumber == null && streetName == null &&
                 district == null && town == null && county == null && postcode == null
             ) {
                 null

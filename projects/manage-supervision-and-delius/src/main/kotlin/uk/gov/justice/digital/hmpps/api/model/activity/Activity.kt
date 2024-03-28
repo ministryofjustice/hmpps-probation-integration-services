@@ -1,10 +1,11 @@
-package uk.gov.justice.digital.hmpps.api.model.schedule
+package uk.gov.justice.digital.hmpps.api.model.activity
 
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
+import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
 import java.time.ZonedDateTime
 
-data class Appointment(
+data class Activity(
 
     val id: Long,
     val type: String,
@@ -20,6 +21,8 @@ data class Appointment(
     val isNationalStandard: Boolean,
     var location: OfficeAddress? = null,
     val rescheduled: Boolean,
+    val rescheduledStaff: Boolean,
+    val rescheduledPop: Boolean,
     val didTheyComply: Boolean?,
     val absentWaitingEvidence: Boolean?,
     val rearrangeOrCancelReason: String?,
@@ -30,6 +33,13 @@ data class Appointment(
     val rarCategory: String?,
     val acceptableAbsence: Boolean?,
     val acceptableAbsenceReason: String?,
+    val isAppointment: Boolean = false,
+    val action: String?,
+    val isSystemContact: Boolean? = false,
+    val isEmailOrTextFromPop: Boolean? = false,
+    val isPhoneCallFromPop: Boolean? = false,
+    val isEmailOrTextToPop: Boolean? = false,
+    val isPhoneCallToPop: Boolean? = false,
     val lastUpdated: ZonedDateTime,
     val lastUpdatedBy: Name
 )

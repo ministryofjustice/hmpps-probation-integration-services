@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -37,26 +38,30 @@ class Contact(
 
     @Column(name = "rar_activity", length = 1)
     @Convert(converter = YesNoConverter::class)
-    var rarActivity: Boolean? = null,
+    val rarActivity: Boolean? = null,
 
     @Column(name = "attended")
     @Convert(converter = YesNoConverter::class)
-    var attended: Boolean? = null,
+    val attended: Boolean? = null,
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
-    var sensitive: Boolean? = null,
+    val sensitive: Boolean? = null,
 
     @Column(name = "complied")
     @Convert(converter = YesNoConverter::class)
-    var complied: Boolean? = null,
+    val complied: Boolean? = null,
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
     val outcome: ContactOutcome? = null,
 
-    @Column(name = "linked_document_contact_id")
-    val linkedDocumentContactId: Long? = null,
+    @OneToMany(mappedBy = "contact")
+    val documents: List<ContactDocument> = emptyList(),
+
+    @ManyToOne
+    @JoinColumn(name = "latest_enforcement_action_id", referencedColumnName = "enforcement_action_id")
+    val action: EnforcementAction? = null,
 
     @Lob
     val notes: String?,
@@ -84,7 +89,7 @@ class Contact(
     val lastUpdatedUser: User,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    var softDeleted: Boolean = false
+    val softDeleted: Boolean = false
 ) {
     fun startDateTime(): ZonedDateTime = ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon)
     fun endDateTime(): ZonedDateTime? =
@@ -97,7 +102,21 @@ class Contact(
         ContactTypeCode.INITIAL_APPOINTMENT_BY_VIDEO.value
     ).contains(type.code)
 
-    fun rescheduled(): Boolean = outcome?.code == ContactOutcomeTypeCode.RESCHEDULED.value
+    fun rescheduledStaff(): Boolean = setOf(
+        ContactOutcomeTypeCode.RESCHEDULED.value,
+        ContactOutcomeTypeCode.RESCHEDULED_SR.value
+    ).contains(outcome?.code)
+
+    fun rescheduledPop(): Boolean = setOf(
+        ContactOutcomeTypeCode.RESCHEDULED.value,
+        ContactOutcomeTypeCode.RESCHEDULED_POP.value
+    ).contains(outcome?.code)
+
+    fun rescheduled(): Boolean = rescheduledStaff() || rescheduledPop()
+    fun isEmailOrTextFromPop(): Boolean = type.code.equals(ContactTypeCode.EMAIL_OR_TEXT_FROM_POP.value)
+    fun isEmailOrTextToPop(): Boolean = type.code.equals(ContactTypeCode.EMAIL_OR_TEXT_TO_POP.value)
+    fun isPhoneCallFromPop(): Boolean = type.code.equals(ContactTypeCode.PHONE_CONTACT_FROM_POP.value)
+    fun isPhoneCallToPop(): Boolean = type.code.equals(ContactTypeCode.PHONE_CONTACT_TO_POP.value)
 }
 
 @Immutable
@@ -144,19 +163,41 @@ class ContactOutcome(
     val outcomeCompliantAcceptable: Boolean? = null,
 )
 
+@Immutable
+@Entity
+@Table(name = "r_enforcement_action")
+class EnforcementAction(
+    val code: String,
+    val description: String,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_type_id")
+    val contactType: ContactType,
+
+    @Id
+    @Column(name = "enforcement_action_id")
+    val id: Long = 0
+)
+
 enum class ContactOutcomeTypeCode(val value: String) {
-    RESCHEDULED("RSSR")
+    RESCHEDULED("RSSR"),
+    RESCHEDULED_SR("RSSL"),
+    RESCHEDULED_POP("RSOF")
 }
 
 enum class ContactTypeCode(val value: String) {
     INITIAL_APPOINTMENT_IN_OFFICE("COAI"),
     INITIAL_APPOINTMENT_ON_DOORSTEP("CODI"),
     INITIAL_APPOINTMENT_HOME_VISIT("COHV"),
-    INITIAL_APPOINTMENT_BY_VIDEO("COVI")
+    INITIAL_APPOINTMENT_BY_VIDEO("COVI"),
+    EMAIL_OR_TEXT_FROM_POP("CMOA"),
+    EMAIL_OR_TEXT_TO_POP("CMOB"),
+    PHONE_CONTACT_FROM_POP("CTOA"),
+    PHONE_CONTACT_TO_POP("CTOB"),
 }
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-
+    fun findByPersonIdOrderByDateDesc(personId: Long): List<Contact>
     fun findByPersonIdAndId(personId: Long, id: Long): Contact?
 
     @Query(
@@ -272,7 +313,7 @@ class Provider(
     val id: Long,
 
     @Column(name = "end_date")
-    var endDate: LocalDate? = null
+    val endDate: LocalDate? = null
 )
 
 @Immutable

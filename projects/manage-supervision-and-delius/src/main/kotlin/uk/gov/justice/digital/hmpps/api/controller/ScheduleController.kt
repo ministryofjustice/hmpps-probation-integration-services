@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.ScheduleService
 
 @RestController
-@Tag(name = "Sentence")
+@Tag(name = "Schedule")
 @RequestMapping("/schedule/{crn}")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class ScheduleController(private val scheduleService: ScheduleService) {

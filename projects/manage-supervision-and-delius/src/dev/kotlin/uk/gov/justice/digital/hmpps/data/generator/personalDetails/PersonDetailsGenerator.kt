@@ -294,15 +294,17 @@ object PersonDetailsGenerator {
         name: String,
         documentType: String,
         primaryKeyId: Long? = null
-    ) = PersonDocument(
-        id = IdGenerator.getAndIncrement(),
-        lastUpdated = ZonedDateTime.now().minusDays(1),
-        alfrescoId = alfrescoId,
-        name = name,
-        personId = personId,
-        primaryKeyId = primaryKeyId,
-        type = documentType
-    )
+    ): PersonDocument {
+        val doc = PersonDocument()
+        doc.id = IdGenerator.getAndIncrement()
+        doc.lastUpdated = ZonedDateTime.now().minusDays(1)
+        doc.alfrescoId = alfrescoId
+        doc.name = name
+        doc.personId = personId
+        doc.primaryKeyId = primaryKeyId
+        doc.type = documentType
+        return doc
+    }
 
     fun generateAlias(forename: String, secondName: String, surname: String, personId: Long) = Alias(
         id = IdGenerator.getAndIncrement(),
