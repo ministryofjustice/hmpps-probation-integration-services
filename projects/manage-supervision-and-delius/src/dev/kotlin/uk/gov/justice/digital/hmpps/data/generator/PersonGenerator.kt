@@ -242,7 +242,7 @@ object PersonGenerator {
         disposal: Disposal,
         subCategoryId: Long,
         length: Long = 12,
-        notes: String? = null,
+        notes: String? = "my notes",
         mainCategory: RequirementMainCategory = MAIN_CAT_F,
         active: Boolean = true,
         softDeleted: Boolean = false,
