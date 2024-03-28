@@ -34,7 +34,7 @@ class Contact(
     val date: LocalDate = LocalDate.now(),
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime = ZonedDateTime.now(),
+    val startTime: ZonedDateTime? = ZonedDateTime.now(),
 
     @Column(name = "rar_activity", length = 1)
     @Convert(converter = YesNoConverter::class)
@@ -91,7 +91,7 @@ class Contact(
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     val softDeleted: Boolean = false
 ) {
-    fun startDateTime(): ZonedDateTime = ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon)
+    fun startDateTime(): ZonedDateTime = ZonedDateTime.of(date, startTime?.toLocalTime(), EuropeLondon)
     fun endDateTime(): ZonedDateTime? =
         if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null
 
