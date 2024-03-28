@@ -35,25 +35,28 @@ class SentenceService(
             })
     }
 
-    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>, crn: String) = Sentence(
-        OffenceDetails(
-            eventNumber = eventNumber,
-            offence = mainOffence?.let { Offence(it.offence.description, it.offenceCount) },
-            dateOfOffence = mainOffence?.date,
-            notes = notes,
-            additionalOffences = additionalOffences.map {
-                Offence(description = it.offence.description, count = it.offenceCount ?: 0)
-            }
-        ),
-        Conviction(
-            sentencingCourt = courtAppearance?.court?.name,
-            responsibleCourt = court?.name,
-            convictionDate = convictionDate,
-            additionalSentences.map { it.toAdditionalSentence() }
-        ),
-        order = disposal?.toOrder(),
-        requirements = disposal.let { requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() } },
-    )
+    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>, crn: String) =
+        Sentence(
+            OffenceDetails(
+                eventNumber = eventNumber,
+                offence = mainOffence?.let { Offence(it.offence.description, it.offenceCount) },
+                dateOfOffence = mainOffence?.date,
+                notes = notes,
+                additionalOffences = additionalOffences.map {
+                    Offence(description = it.offence.description, count = it.offenceCount ?: 0)
+                }
+            ),
+            Conviction(
+                sentencingCourt = courtAppearance?.court?.name,
+                responsibleCourt = court?.name,
+                convictionDate = convictionDate,
+                additionalSentences.map { it.toAdditionalSentence() }
+            ),
+            order = disposal?.toOrder(),
+            requirements = disposal.let {
+                requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() }
+            },
+        )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
@@ -61,7 +64,8 @@ class SentenceService(
     fun PersonSummaryEntity.toName() =
         Name(forename, secondName, surname)
 
-    fun Disposal.toOrder() = Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
+    fun Disposal.toOrder() =
+        Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
     fun RequirementDetails.toRequirement() = Requirement(
         description,

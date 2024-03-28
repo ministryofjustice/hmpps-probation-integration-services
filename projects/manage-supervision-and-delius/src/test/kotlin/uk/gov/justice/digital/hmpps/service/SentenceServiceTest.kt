@@ -111,7 +111,12 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(PersonGenerator.OVERVIEW.crn, event.eventNumber))
             .thenReturn(listOf(requirement))
 
-        whenever(requirementRepository.getRarDaysByRequirementId(requirement._id)).thenReturn(listOf(completedRarDays, scheduledRarDays))
+        whenever(requirementRepository.getRarDaysByRequirementId(requirement._id)).thenReturn(
+            listOf(
+                completedRarDays,
+                scheduledRarDays
+            )
+        )
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
@@ -138,7 +143,15 @@ class SentenceServiceTest {
                         )
                     ),
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
-                    listOf(Requirement(requirement._description, requirement._codeDescription, requirement._length, requirement._notes, Rar(completedRarDays._days, scheduledRarDays._days, 3)))
+                    listOf(
+                        Requirement(
+                            requirement._description,
+                            requirement._codeDescription,
+                            requirement._length,
+                            requirement._notes,
+                            Rar(completedRarDays._days, scheduledRarDays._days, 3)
+                        )
+                    )
                 )
             )
         )
@@ -174,6 +187,5 @@ class SentenceServiceTest {
 
         override val notes: String?
             get() = _notes
-
     }
 }
