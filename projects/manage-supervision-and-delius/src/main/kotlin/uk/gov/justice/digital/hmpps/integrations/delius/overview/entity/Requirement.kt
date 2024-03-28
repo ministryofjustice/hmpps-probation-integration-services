@@ -15,6 +15,14 @@ class Requirement(
     @Column(name = "rqmnt_id", nullable = false)
     val id: Long,
 
+    val length: Long?,
+
+    @Column(name = "rqmnt_notes")
+    val notes: String?,
+
+    @Column(name = "rqmnt_type_sub_category_id")
+    val subCategoryId: Long?,
+
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal? = null,
@@ -33,6 +41,14 @@ class Requirement(
 interface RarDays {
     val days: Int
     val type: String
+}
+
+interface RequirementDetails {
+    val id: Long
+    val description: String?
+    val codeDescription: String?
+    val length: Long?
+    val notes: String?
 }
 
 interface RequirementRepository : JpaRepository<Requirement, Long> {
@@ -59,6 +75,51 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         """, nativeQuery = true
     )
     fun getRarDays(disposalId: Long): List<RarDays>
+
+    @Query(
+        """
+        select count(r.rqmnt_id) as days, 'SCHEDULED' as type from contact c
+        join rqmnt r on r.rqmnt_id = c.rqmnt_id
+        join r_rqmnt_type_main_category mc on r.rqmnt_type_main_category_id = mc.rqmnt_type_main_category_id
+        where c.rar_activity = 'Y' and c.soft_deleted = 0
+        and (c.attended is null)
+        and (c.complied is null or c.complied = 'Y')
+        and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
+        and r.disposal_id = :requirementId
+        union
+        select count(r.rqmnt_id) as days, 'COMPLETED' as type from contact c
+        join rqmnt r on r.rqmnt_id = c.rqmnt_id
+        join r_rqmnt_type_main_category mc on r.rqmnt_type_main_category_id = mc.rqmnt_type_main_category_id
+        where c.rar_activity = 'Y' and c.soft_deleted = 0
+        and (c.attended = 'Y')
+        and (c.complied is null or c.complied = 'Y')
+        and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
+        and r.rqmnt_id = :requirementId
+        """, nativeQuery = true
+    )
+    fun getRarDaysByRequirementId(requirementId: Long): List<RarDays>
+
+    @Query(
+        """
+            SELECT r.rqmnt_id as id, r."LENGTH", rrtmc.description, rsrl.code_description AS codeDescription, r.rqmnt_notes AS notes 
+            FROM rqmnt r
+            JOIN r_rqmnt_type_main_category rrtmc 
+            ON r.rqmnt_type_main_category_id = rrtmc.rqmnt_type_main_category_id 
+            JOIN r_standard_reference_list rsrl 
+            ON rsrl.standard_reference_list_id = r.rqmnt_type_sub_category_id 
+            JOIN disposal d 
+            ON r.disposal_id = d.disposal_id 
+            JOIN event e 
+            ON e.event_id = d.event_id
+            JOIN offender o 
+            ON o.offender_id = e.offender_id 
+            AND o.crn = :crn
+            AND e.event_number = :eventNumber
+            AND e.soft_deleted = 0 
+            AND e.active_flag = 1
+        """, nativeQuery = true
+    )
+    fun getRequirements(crn: String, eventNumber: String) : List<RequirementDetails>
 }
 
 @Immutable
