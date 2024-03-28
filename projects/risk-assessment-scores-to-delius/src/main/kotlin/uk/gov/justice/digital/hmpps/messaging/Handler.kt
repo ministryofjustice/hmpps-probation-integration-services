@@ -102,7 +102,7 @@ fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.
     )
 }
 
-fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndecentIndirectBand"]?.let {
+fun HmppsDomainEvent.ospIndirectIndecent() = additionalInformation["OSPIndirectIndecentBand"]?.let {
     RiskAssessment(
         additionalInformation["OSPIndirectIndecentScore"] as Double,
         additionalInformation["OSPIndirectIndecentBand"] as String,
