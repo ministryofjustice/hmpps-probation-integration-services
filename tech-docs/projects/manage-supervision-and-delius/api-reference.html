@@ -137,6 +137,9 @@
         <a href="./api-reference.html#overview-crn"><span>/overview/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#activity-crn"><span>/activity/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -251,7 +254,26 @@
             "description": "string"
           }
         ]
-      }
+      },
+      "order": {
+        "description": "string",
+        "length": "integer",
+        "endDate": "string",
+        "startDate": "string"
+      },
+      "requirements": [
+        {
+          "description": "string",
+          "codeDescription": "string",
+          "length": "integer",
+          "notes": "string",
+          "rar": {
+            "completed": "integer",
+            "scheduled": "integer",
+            "totalDays": "integer"
+          }
+        }
+      ]
     }
   ]
 }</code></pre>
@@ -357,6 +379,8 @@
         "telephoneNumber": "string"
       },
       "rescheduled": "boolean",
+      "rescheduledStaff": "boolean",
+      "rescheduledPop": "boolean",
       "didTheyComply": "boolean",
       "absentWaitingEvidence": "boolean",
       "rearrangeOrCancelReason": "string",
@@ -377,6 +401,13 @@
       "rarCategory": "string",
       "acceptableAbsence": "boolean",
       "acceptableAbsenceReason": "string",
+      "isAppointment": "boolean",
+      "action": "string",
+      "isSystemContact": "boolean",
+      "isEmailOrTextFromPop": "boolean",
+      "isPhoneCallFromPop": "boolean",
+      "isEmailOrTextToPop": "boolean",
+      "isPhoneCallToPop": "boolean",
       "lastUpdated": "string",
       "lastUpdatedBy": {
         "forename": "string",
@@ -488,6 +519,8 @@
         "telephoneNumber": "string"
       },
       "rescheduled": "boolean",
+      "rescheduledStaff": "boolean",
+      "rescheduledPop": "boolean",
       "didTheyComply": "boolean",
       "absentWaitingEvidence": "boolean",
       "rearrangeOrCancelReason": "string",
@@ -508,6 +541,13 @@
       "rarCategory": "string",
       "acceptableAbsence": "boolean",
       "acceptableAbsenceReason": "string",
+      "isAppointment": "boolean",
+      "action": "string",
+      "isSystemContact": "boolean",
+      "isEmailOrTextFromPop": "boolean",
+      "isPhoneCallFromPop": "boolean",
+      "isEmailOrTextToPop": "boolean",
+      "isPhoneCallToPop": "boolean",
       "lastUpdated": "string",
       "lastUpdatedBy": {
         "forename": "string",
@@ -628,6 +668,8 @@
       "telephoneNumber": "string"
     },
     "rescheduled": "boolean",
+    "rescheduledStaff": "boolean",
+    "rescheduledPop": "boolean",
     "didTheyComply": "boolean",
     "absentWaitingEvidence": "boolean",
     "rearrangeOrCancelReason": "string",
@@ -648,6 +690,13 @@
     "rarCategory": "string",
     "acceptableAbsence": "boolean",
     "acceptableAbsenceReason": "string",
+    "isAppointment": "boolean",
+    "action": "string",
+    "isSystemContact": "boolean",
+    "isEmailOrTextFromPop": "boolean",
+    "isPhoneCallFromPop": "boolean",
+    "isEmailOrTextToPop": "boolean",
+    "isPhoneCallToPop": "boolean",
     "lastUpdated": "string",
     "lastUpdatedBy": {
       "forename": "string",
@@ -1561,10 +1610,70 @@
   "appointmentsWithoutOutcome": "integer",
   "absencesWithoutEvidence": "integer",
   "activity": {
-    "acceptableAbsences": "integer",
-    "complied": "integer",
-    "nationalStandardsAppointments": "integer",
-    "rescheduled": "integer"
+    "id": "integer",
+    "type": "string",
+    "startDateTime": "string",
+    "endDateTime": "string",
+    "rarToolKit": "string",
+    "notes": "string",
+    "isSensitive": "boolean",
+    "hasOutcome": "boolean",
+    "wasAbsent": "boolean",
+    "officerName": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "isInitial": "boolean",
+    "isNationalStandard": "boolean",
+    "location": {
+      "officeName": "string",
+      "buildingName": "string",
+      "buildingNumber": "string",
+      "streetName": "string",
+      "district": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string",
+      "ldu": "string",
+      "telephoneNumber": "string"
+    },
+    "rescheduled": "boolean",
+    "rescheduledStaff": "boolean",
+    "rescheduledPop": "boolean",
+    "didTheyComply": "boolean",
+    "absentWaitingEvidence": "boolean",
+    "rearrangeOrCancelReason": "string",
+    "rescheduledBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "repeating": "boolean",
+    "nonComplianceReason": "string",
+    "documents": [
+      {
+        "id": "string",
+        "name": "string",
+        "lastUpdated": "string"
+      }
+    ],
+    "rarCategory": "string",
+    "acceptableAbsence": "boolean",
+    "acceptableAbsenceReason": "string",
+    "isAppointment": "boolean",
+    "action": "string",
+    "isSystemContact": "boolean",
+    "isEmailOrTextFromPop": "boolean",
+    "isPhoneCallFromPop": "boolean",
+    "isEmailOrTextToPop": "boolean",
+    "isPhoneCallToPop": "boolean",
+    "lastUpdated": "string",
+    "lastUpdatedBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    }
   },
   "compliance": {
     "currentBreaches": "integer",
@@ -1748,6 +1857,8 @@
           "telephoneNumber": "string"
         },
         "rescheduled": "boolean",
+        "rescheduledStaff": "boolean",
+        "rescheduledPop": "boolean",
         "didTheyComply": "boolean",
         "absentWaitingEvidence": "boolean",
         "rearrangeOrCancelReason": "string",
@@ -1768,6 +1879,13 @@
         "rarCategory": "string",
         "acceptableAbsence": "boolean",
         "acceptableAbsenceReason": "string",
+        "isAppointment": "boolean",
+        "action": "string",
+        "isSystemContact": "boolean",
+        "isEmailOrTextFromPop": "boolean",
+        "isPhoneCallFromPop": "boolean",
+        "isEmailOrTextToPop": "boolean",
+        "isPhoneCallToPop": "boolean",
         "lastUpdated": "string",
         "lastUpdatedBy": {
           "forename": "string",
@@ -1806,7 +1924,26 @@
             "description": "string"
           }
         ]
-      }
+      },
+      "order": {
+        "description": "string",
+        "length": "integer",
+        "endDate": "string",
+        "startDate": "string"
+      },
+      "requirements": [
+        {
+          "description": "string",
+          "codeDescription": "string",
+          "length": "integer",
+          "notes": "string",
+          "rar": {
+            "completed": "integer",
+            "scheduled": "integer",
+            "totalDays": "integer"
+          }
+        }
+      ]
     }
   ],
   "registrations": [
@@ -1818,6 +1955,146 @@
 </td>
 <td>
 <a href='#schema-overview'>Overview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="activity-crn">/activity/{crn}</h2>
+
+<h3 id="activity-crn-get">get</h3>
+
+  <p><em>Gets all activity for a person’ </em></p>
+
+
+
+
+<h4 id="activity-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="activity-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "activities": [
+    {
+      "id": "integer",
+      "type": "string",
+      "startDateTime": "string",
+      "endDateTime": "string",
+      "rarToolKit": "string",
+      "notes": "string",
+      "isSensitive": "boolean",
+      "hasOutcome": "boolean",
+      "wasAbsent": "boolean",
+      "officerName": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "isInitial": "boolean",
+      "isNationalStandard": "boolean",
+      "location": {
+        "officeName": "string",
+        "buildingName": "string",
+        "buildingNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string",
+        "ldu": "string",
+        "telephoneNumber": "string"
+      },
+      "rescheduled": "boolean",
+      "rescheduledStaff": "boolean",
+      "rescheduledPop": "boolean",
+      "didTheyComply": "boolean",
+      "absentWaitingEvidence": "boolean",
+      "rearrangeOrCancelReason": "string",
+      "rescheduledBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "repeating": "boolean",
+      "nonComplianceReason": "string",
+      "documents": [
+        {
+          "id": "string",
+          "name": "string",
+          "lastUpdated": "string"
+        }
+      ],
+      "rarCategory": "string",
+      "acceptableAbsence": "boolean",
+      "acceptableAbsenceReason": "string",
+      "isAppointment": "boolean",
+      "action": "string",
+      "isSystemContact": "boolean",
+      "isEmailOrTextFromPop": "boolean",
+      "isPhoneCallFromPop": "boolean",
+      "isEmailOrTextToPop": "boolean",
+      "isPhoneCallToPop": "boolean",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personactivity'>PersonActivity</a>
 </td>
 </tr>
 
@@ -2069,6 +2346,162 @@
 </tbody>
 </table>
 
+<h3 id="schema-order">Order</h3>
+
+
+<table class='schema-order'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-rar">Rar</h3>
+
+
+<table class='schema-rar'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>completed</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>scheduled</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalDays</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-requirement">Requirement</h3>
+
+
+<table class='schema-requirement'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>codeDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rar</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-rar'>Rar</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-sentence">Sentence</h3>
 
 
@@ -2095,6 +2528,26 @@
 <td></td>
 <td>
   <a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+<tr>
+<td>order</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-order'>Order</a>
+</td>
+</tr>
+
+<tr>
+<td>requirements</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-requirement'>Requirement</a>
 </td>
 </tr>
 
@@ -2133,10 +2586,10 @@
 </tbody>
 </table>
 
-<h3 id="schema-appointment">Appointment</h3>
+<h3 id="schema-activity">Activity</h3>
 
 
-<table class='schema-appointment'>
+<table class='schema-activity'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
@@ -2283,6 +2736,26 @@
 </tr>
 
 <tr>
+<td>rescheduledStaff</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduledPop</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>didTheyComply</td>
 <td>boolean</td>
 <td>false</td>
@@ -2383,6 +2856,76 @@
 </tr>
 
 <tr>
+<td>isAppointment</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>action</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isSystemContact</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isEmailOrTextFromPop</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isPhoneCallFromPop</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isEmailOrTextToPop</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isPhoneCallToPop</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>lastUpdated</td>
 <td>string</td>
 <td>true</td>
@@ -2459,7 +3002,7 @@
 <tr>
 <td>officeName</td>
 <td>string</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -2646,7 +3189,7 @@
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-appointment'>Appointment</a>
+  <a href='#schema-activity'>Activity</a>
 </td>
 </tr>
 
@@ -2678,7 +3221,7 @@
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-appointment'>Appointment</a>
+  <a href='#schema-activity'>Activity</a>
 </td>
 </tr>
 
@@ -3838,58 +4381,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-activity">Activity</h3>
-
-
-<table class='schema-activity'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>acceptableAbsences</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>complied</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>nationalStandardsAppointments</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>rescheduled</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-compliance">Compliance</h3>
 
 
@@ -4050,6 +4541,38 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personactivity">PersonActivity</h3>
+
+
+<table class='schema-personactivity'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>activities</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-activity'>Activity</a>
 </td>
 </tr>
 
