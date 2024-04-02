@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
@@ -29,8 +28,7 @@ class AllocationDemandService(
     private val caseViewRequirementRepository: CaseViewRequirementRepository,
     private val eventRepository: EventRepository,
     private val contactRepository: ContactRepository,
-    private val courtAppearanceRepository: CourtAppearanceRepository,
-    @Value("\${requirement.types.ignored}") private val requirementTypesToIgnore: List<String>
+    private val courtAppearanceRepository: CourtAppearanceRepository
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -151,7 +149,6 @@ class AllocationDemandService(
         val eventId = eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(crn, eventNumber)!!.id
 
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
-            .filter { it.mainCategory.code !in requirementTypesToIgnore }
             .map { it.toRequirement() }
         val initialAppointment = contactRepository.getInitialAppointmentData(person.id, eventId)
         val emails = ldapService.findEmailsForStaffIn(listOfNotNull(staff, allocatingStaff, initialAppointment?.staff))
