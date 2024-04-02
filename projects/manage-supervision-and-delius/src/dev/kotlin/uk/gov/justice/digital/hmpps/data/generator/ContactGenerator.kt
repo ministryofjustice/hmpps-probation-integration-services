@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_BORO
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import java.time.LocalDate
@@ -39,7 +40,7 @@ object ContactGenerator {
     val PREVIOUS_APPT_CONTACT_ABSENT = generateContact(
         OVERVIEW,
         APPT_CT_1,
-        ZonedDateTime.of(LocalDateTime.now().minusDays(1), ZoneId.of("Europe/London")),
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(1), EuropeLondon),
         attended = false,
         action = BREACH_ENFORCEMENT_ACTION,
         startTime = null
@@ -47,22 +48,22 @@ object ContactGenerator {
     val PREVIOUS_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_1,
-        ZonedDateTime.of(LocalDateTime.now().minusHours(1), ZoneId.of("Europe/London"))
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusHours(1), EuropeLondon)
     )
     val FIRST_NON_APPT_CONTACT = generateContact(
         OVERVIEW,
         OTHER_CT,
-        ZonedDateTime.of(LocalDateTime.now().plusHours(1), ZoneId.of("Europe/London")),
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(1), EuropeLondon),
     )
     val FIRST_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_2,
-        ZonedDateTime.of(LocalDateTime.now().plusHours(2), ZoneId.of("Europe/London"))
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(2), EuropeLondon)
     )
     val NEXT_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_3,
-        ZonedDateTime.of(LocalDateTime.now().plusHours(3), ZoneId.of("Europe/London"))
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(3), EuropeLondon)
     )
 
     val CONTACT_DOCUMENT_1 = generateContactDocument(
@@ -92,7 +93,7 @@ object ContactGenerator {
     ): ContactDocument {
         val doc = ContactDocument(contact)
         doc.id = IdGenerator.getAndIncrement()
-        doc.lastUpdated = ZonedDateTime.now().minusDays(1)
+        doc.lastUpdated = ZonedDateTime.now(EuropeLondon).minusDays(1)
         doc.alfrescoId = alfrescoId
         doc.name = name
         doc.personId = personId
