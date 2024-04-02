@@ -59,7 +59,7 @@ class ContactService(
         } else {
             contactRepository.save(
                 newContact(
-                    event.timestamp,
+                    event.occurredAt(),
                     personId,
                     event.eventDetails.contactTypeCode,
                     event.eventDetails.urn,
