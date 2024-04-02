@@ -34,7 +34,7 @@ class Contact(
     val date: LocalDate = LocalDate.now(),
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime? = ZonedDateTime.now(),
+    val startTime: ZonedDateTime? = ZonedDateTime.now(EuropeLondon),
 
     @Column(name = "rar_activity", length = 1)
     @Convert(converter = YesNoConverter::class)
