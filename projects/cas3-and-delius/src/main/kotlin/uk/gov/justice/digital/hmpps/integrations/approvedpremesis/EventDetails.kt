@@ -10,7 +10,9 @@ data class EventDetails<out T : Cas3Event>(
     val timestamp: ZonedDateTime,
     val eventType: String,
     val eventDetails: T
-)
+) {
+    fun occurredAt() = if (eventDetails is OccurredAt)  eventDetails.occurredAt else timestamp
+}
 
 data class ApplicationSubmitted(
     val applicationId: String
@@ -90,7 +92,7 @@ data class PersonArrived(
     val notes: String,
     val premises: Address,
     override val recordedBy: By?
-) : Cas3Event, Recordable {
+) : Cas3Event, Recordable, OccurredAt {
     override val urn = "urn:hmpps:cas3:person-arrived:$bookingId"
     override val noteText =
         listOfNotNull(
@@ -99,6 +101,7 @@ data class PersonArrived(
             notes
         ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.PERSON_ARRIVED
+    override val occurredAt = arrivedAt
 }
 
 data class PersonDeparted(
@@ -111,7 +114,7 @@ data class PersonDeparted(
     val reason: String,
     val reasonDetail: String?,
     override val recordedBy: By?
-) : Cas3Event, Recordable {
+) : Cas3Event, Recordable, OccurredAt {
     override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
     override val noteText = listOfNotNull(
         "Departure date: ${DeliusDateFormatter.format(departedAt)}",
@@ -120,6 +123,7 @@ data class PersonDeparted(
         notes
     ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.PERSON_DEPARTED
+    override val occurredAt = departedAt
 }
 
 data class Address(
@@ -150,10 +154,6 @@ data class AddressLines(
     val district: String?
 )
 
-data class Category(
-    val description: String
-)
-
 data class By(
     val staffCode: String,
     val probationRegionCode: String
@@ -161,4 +161,8 @@ data class By(
 
 interface Recordable {
     val recordedBy: By?
+}
+
+interface OccurredAt {
+    val occurredAt: ZonedDateTime
 }
