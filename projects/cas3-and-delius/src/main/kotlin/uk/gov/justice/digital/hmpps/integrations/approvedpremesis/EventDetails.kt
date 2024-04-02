@@ -11,7 +11,7 @@ data class EventDetails<out T : Cas3Event>(
     val eventType: String,
     val eventDetails: T
 ) {
-    fun occurredAt() = if (eventDetails is OccurredAt)  eventDetails.occurredAt else timestamp
+    fun occurredAt() = if (eventDetails is OccurredAt) eventDetails.occurredAt else timestamp
 }
 
 data class ApplicationSubmitted(
