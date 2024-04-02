@@ -257,7 +257,7 @@ fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
 fun ContactRepository.firstAppointment(
     personId: Long,
     date: LocalDate = LocalDate.now(),
-    startTime: ZonedDateTime = ZonedDateTime.now()
+    startTime: ZonedDateTime = ZonedDateTime.now(EuropeLondon)
 ): Contact? = findUpComingAppointments(
     personId,
     date.format(DateTimeFormatter.ISO_LOCAL_DATE),
@@ -267,7 +267,7 @@ fun ContactRepository.firstAppointment(
 fun ContactRepository.getUpComingAppointments(
     personId: Long,
     date: LocalDate = LocalDate.now(),
-    startTime: ZonedDateTime = ZonedDateTime.now()
+    startTime: ZonedDateTime = ZonedDateTime.now(EuropeLondon)
 ): List<Contact> = findUpComingAppointments(
     personId = personId,
     dateNow = date.format(DateTimeFormatter.ISO_LOCAL_DATE),
@@ -277,7 +277,7 @@ fun ContactRepository.getUpComingAppointments(
 fun ContactRepository.getPreviousAppointments(
     personId: Long,
     date: LocalDate = LocalDate.now(),
-    startTime: ZonedDateTime = ZonedDateTime.now()
+    startTime: ZonedDateTime = ZonedDateTime.now(EuropeLondon)
 ): List<Contact> = findPreviousAppointments(
     personId = personId,
     dateNow = date.format(DateTimeFormatter.ISO_LOCAL_DATE),
