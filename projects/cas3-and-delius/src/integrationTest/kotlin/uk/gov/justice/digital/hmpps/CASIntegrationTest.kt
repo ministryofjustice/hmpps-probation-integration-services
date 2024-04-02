@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
@@ -16,9 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.web.servlet.MockMvc
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.*
@@ -171,6 +170,7 @@ internal class CASIntegrationTest {
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         assertThat(contact!!.type.code, equalTo("EAAR"))
+        assertThat(contact.date, equalTo(eventDetails.eventDetails.arrivedAt.toLocalDate()))
         assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
         assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
 
@@ -207,8 +207,9 @@ internal class CASIntegrationTest {
         Mockito.verify(telemetryService).notificationReceived(event)
 
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
-
         assertThat(contact!!.type.code, equalTo("EADP"))
+        assertThat(contact.date, equalTo(eventDetails.eventDetails.departedAt.toLocalDate()))
+
         val person = personRepository.findByCrn(event.message.crn())
         val address = addressRepository.findAll().filter { it.personId == person?.id }[0]
         assertThat(address!!.status.code, equalTo("P"))
