@@ -7,7 +7,7 @@ generic-service:
     requests:
       cpu: 4  # TODO remove after CP ingress testing
       memory: 512Mi
-    limit:
+    limits:
       cpu: 4
       memory: 1Gi
 
