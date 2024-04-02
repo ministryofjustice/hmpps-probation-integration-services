@@ -19,14 +19,19 @@ import uk.gov.justice.digital.hmpps.epf.entity.*
 internal class CaseDetailsServiceTest {
     @Mock
     internal lateinit var personRepository: PersonRepository
+
     @Mock
     internal lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
+
     @Mock
     internal lateinit var personManagerRepository: PersonManagerRepository
+
     @Mock
     internal lateinit var courtAppearanceRepository: CourtAppearanceRepository
+
     @Mock
     internal lateinit var eventRepository: EventRepository
+
     @Mock
     internal lateinit var ogrsAssessmentRepository: OgrsAssessmentRepository
 
