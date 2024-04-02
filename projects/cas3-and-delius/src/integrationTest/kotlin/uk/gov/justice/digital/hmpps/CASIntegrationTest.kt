@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
@@ -169,6 +170,7 @@ internal class CASIntegrationTest {
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         assertThat(contact!!.type.code, equalTo("EAAR"))
+        assertThat(contact.date, equalTo(eventDetails.eventDetails.arrivedAt.toLocalDate()))
         assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
         assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
 
