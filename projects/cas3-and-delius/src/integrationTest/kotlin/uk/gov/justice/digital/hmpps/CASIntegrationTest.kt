@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
@@ -256,7 +257,7 @@ internal class CASIntegrationTest {
         val existingContact = contactRepository.getByExternalReference(existingEventDetails.eventDetails.urn)
         val existingNotes = existingContact!!.notes
         val eventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-$eventName")
-        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now())
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now(EuropeLondon))
         wireMockServer.stubFor(
             get(urlEqualTo("/cas3-api/events/person-arrived/12345"))
                 .willReturn(

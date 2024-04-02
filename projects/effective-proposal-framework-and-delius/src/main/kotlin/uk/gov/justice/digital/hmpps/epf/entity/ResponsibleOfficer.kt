@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.epf.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
@@ -41,6 +36,8 @@ class ResponsibleOfficer(
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PersonManager(
 
+    val personId: Long,
+
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val provider: Provider,
@@ -58,6 +55,11 @@ class PersonManager(
 
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long> {
 
-    @EntityGraph(attributePaths = ["communityManager", "prisonManager"])
+    @EntityGraph(attributePaths = ["communityManager.provider", "prisonManager.provider"])
     fun findByPersonIdAndEndDateIsNull(personId: Long): ResponsibleOfficer?
+}
+
+interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
+    @EntityGraph(attributePaths = ["provider"])
+    fun findByPersonId(personId: Long): PersonManager?
 }
