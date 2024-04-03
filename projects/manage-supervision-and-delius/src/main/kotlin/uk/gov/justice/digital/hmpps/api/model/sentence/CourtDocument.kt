@@ -4,6 +4,6 @@ import java.time.LocalDate
 
 data class CourtDocument(
     val id: Long,
-    val lastSaved: LocalDate,
-    val description: String
+    val lastSaved: LocalDate?,
+    val item: String?
 )

@@ -9,6 +9,8 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
@@ -18,7 +20,8 @@ class SentenceService(
     private val courtAppearanceRepository: CourtAppearanceRepository,
     private val additionalSentenceRepository: AdditionalSentenceRepository,
     private val personRepository: PersonRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
+    private val documentRepository: DocumentRepository
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
         val person = personRepository.getSummary(crn)
@@ -28,11 +31,11 @@ class SentenceService(
             sentences = events.map {
                 val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
                 val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
-                it.toSentence(courtAppearance, additionalSentences, crn, person.id)
+                it.toSentence(courtAppearance, additionalSentences, crn)
             })
     }
 
-    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>, crn: String, id: Long) =
+    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>, crn: String) =
         Sentence(
             OffenceDetails(
                 eventNumber = eventNumber,
@@ -51,7 +54,7 @@ class SentenceService(
             ),
             order = disposal?.toOrder(),
             requirements = requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() },
-            courtDocuments = eventRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() }
+            courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() }
         )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
@@ -78,5 +81,5 @@ class SentenceService(
         return Rar(completed = completedDays, scheduled = scheduledDays)
     }
 
-    fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, description)
+    fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, item)
 }

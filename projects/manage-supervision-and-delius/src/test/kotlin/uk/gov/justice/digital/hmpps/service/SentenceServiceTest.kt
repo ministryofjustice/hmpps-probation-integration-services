@@ -18,9 +18,10 @@ import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDate
@@ -42,6 +43,9 @@ class SentenceServiceTest {
 
     @Mock
     lateinit var personRepository: PersonRepository
+
+    @Mock
+    lateinit var documentRepository: DocumentRepository
 
     @InjectMocks
     lateinit var service: SentenceService
@@ -77,6 +81,7 @@ class SentenceServiceTest {
         verifyNoInteractions(courtAppearanceRepository)
         verifyNoInteractions(additionalSentenceRepository)
         verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(documentRepository)
     }
 
     @Test
@@ -121,7 +126,7 @@ class SentenceServiceTest {
             )
         )
 
-        whenever(eventRepository.getCourtDocuments(personSummary.id, event.eventNumber)).thenReturn(listOf(courtDocumentDetails))
+        whenever(documentRepository.getCourtDocuments(event.id, event.eventNumber)).thenReturn(listOf(courtDocumentDetails))
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
@@ -198,7 +203,7 @@ class SentenceServiceTest {
     data class CourtDocs (
         val _id: Long,
         val _lastSaved: LocalDate,
-        val _description: String) : CourtDocumentDetails {
+        val _item: String) : CourtDocumentDetails {
 
         override val id: Long
             get() = _id
@@ -206,8 +211,8 @@ class SentenceServiceTest {
         override val lastSaved: LocalDate
             get() = _lastSaved
 
-        override val description: String
-            get() = _description
+        override val item: String
+            get() = _item
 
     }
 }
