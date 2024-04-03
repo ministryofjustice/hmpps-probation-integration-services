@@ -102,6 +102,8 @@ class DataLoader(
             PersonGenerator.REGISTER_TYPE_2,
             PersonGenerator.REGISRATION_1,
             PersonGenerator.REGISRATION_2,
+            PersonGenerator.REGISTRATION_REVIEW_1,
+            PersonGenerator.REGISTRATION_REVIEW_2,
             PersonGenerator.MAIN_CAT_F_TYPE
         )
 
