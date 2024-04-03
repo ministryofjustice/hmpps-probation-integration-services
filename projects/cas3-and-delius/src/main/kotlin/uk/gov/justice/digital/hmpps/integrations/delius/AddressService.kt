@@ -51,7 +51,7 @@ class AddressService(
         currentMain?.apply {
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
-            currentMain.endDate = endDate
+            currentMain.endDate = maxOf(endDate, currentMain.startDate)
         }
     }
 
