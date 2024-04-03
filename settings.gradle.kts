@@ -66,9 +66,9 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.1.1")
-            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.1.0")
+            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.1.1")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.1.1")
-            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.0")
+            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.1")
             library("aws-sts", "software.amazon.awssdk:sts:2.25.2")
             library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.25.2")
             bundle(
@@ -85,7 +85,7 @@ dependencyResolutionManagement {
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.2.0"
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
             library("mapstruct", "org.mapstruct:mapstruct:1.5.5.Final")
             library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.5.Final")
