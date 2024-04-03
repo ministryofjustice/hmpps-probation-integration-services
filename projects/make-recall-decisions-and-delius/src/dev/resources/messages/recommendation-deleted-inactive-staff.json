@@ -1,0 +1,21 @@
+{
+  "eventType": "prison-recall.recommendation.deleted",
+  "version": 1,
+  "description": "Deleted recommendation in 'Consider a recall'",
+  "detailUrl": "http://localhost:{wiremock.port}/mrd/delete-recommendation-rationale/1",
+  "occurredAt": "2022-12-01T14:25:40.117Z",
+  "additionalInformation": {
+    "recommendationUrl": "https://example.com/overview",
+    "bookedBy": {
+      "username": "WithInactiveStaff"
+    }
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X000009"
+      }
+    ]
+  }
+}

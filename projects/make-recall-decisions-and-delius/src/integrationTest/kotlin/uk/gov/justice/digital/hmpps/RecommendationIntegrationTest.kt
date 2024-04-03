@@ -90,6 +90,15 @@ internal class RecommendationIntegrationTest {
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }
 
+    @Test
+    fun `recommendation deleted contact is assigned to manager when provided staff member is no longer active`() {
+        val notification = prepEvent("recommendation-deleted-inactive-staff", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = getContact(PersonGenerator.RECOMMENDATION_DELETED_INACTIVE_STAFF.id)!!
+        assertThat(contact.staffId, equalTo(PersonGenerator.DEFAULT_STAFF.id))
+    }
+
     private fun getContact(personId: Long) = entityManager
         .createQuery("select c from Contact c where c.personId = :personId", Contact::class.java)
         .setParameter("personId", personId)
