@@ -16,7 +16,7 @@ class SearchAuditService(
         audit(BusinessInteractionCode.SEARCH_CONTACTS, auditRequest.dateTime, auditRequest.username) { audit ->
             with(auditRequest.search) {
                 audit["crn"] = crn
-                personRepository.findByCrn(crn)?.also { audit["offenderId"] = it.id }
+                audit["offenderId"] = personRepository.findByCrn(crn)!!.id
                 query?.also { audit["query"] = it }
                 audit["matchAllTerms"] = matchAllTerms
             }
