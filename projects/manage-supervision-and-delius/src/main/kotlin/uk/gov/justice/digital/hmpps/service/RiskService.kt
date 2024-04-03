@@ -6,8 +6,10 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlag
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlags
 import uk.gov.justice.digital.hmpps.api.model.risk.RiskFlag
+import uk.gov.justice.digital.hmpps.api.model.risk.RiskFlagRemoval
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
+import uk.gov.justice.digital.hmpps.integrations.delius.risk.DeRegistration
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlagRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.getRiskFlag
 
@@ -33,7 +35,8 @@ class RiskService(
         val riskFlags = riskFlagRepository.findByPersonId(summary.id)
         return PersonRiskFlags(
             personSummary = summary.toPersonSummary(),
-            riskFlags = riskFlags.map { it.toRiskFlag() }
+            riskFlags = riskFlags.filter { !it.deRegistered }.map { it.toRiskFlag() },
+            removedRiskFlags = riskFlags.filter { it.deRegistered }.map { it.toRiskFlag() }
         )
     }
 }
@@ -45,5 +48,13 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag() 
     createdDate = createdDate,
     createdBy = Name(forename = createdBy.forename, surname = createdBy.surname),
     nextReviewDate = nextReviewDate,
-    mostRecentReviewDate = reviews.filter { it.completed == true }.maxByOrNull { it.date }?.date
+    mostRecentReviewDate = reviews.filter { it.completed == true }.maxByOrNull { it.date }?.date,
+    removed = deRegistered,
+    removalHistory = deRegistrations.map { it.toRiskFlagRemoval() }
+)
+
+fun DeRegistration.toRiskFlagRemoval() = RiskFlagRemoval(
+    notes = notes,
+    removedBy = Name(forename = staff.forename, surname = staff.surname),
+    removalDate = deRegistrationDate
 )

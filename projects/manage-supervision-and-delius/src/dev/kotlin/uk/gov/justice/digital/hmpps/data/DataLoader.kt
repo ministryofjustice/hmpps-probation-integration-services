@@ -100,10 +100,13 @@ class DataLoader(
             PersonGenerator.REQUIREMENT_CONTACT_2,
             PersonGenerator.REGISTER_TYPE_1,
             PersonGenerator.REGISTER_TYPE_2,
-            PersonGenerator.REGISRATION_1,
-            PersonGenerator.REGISRATION_2,
+            PersonGenerator.REGISTRATION_1,
+            PersonGenerator.REGISTRATION_2,
+            PersonGenerator.REGISTRATION_3,
             PersonGenerator.REGISTRATION_REVIEW_1,
             PersonGenerator.REGISTRATION_REVIEW_2,
+            PersonGenerator.REGISTRATION_REVIEW_3,
+            PersonGenerator.DEREGISTRATION_1,
             PersonGenerator.MAIN_CAT_F_TYPE
         )
 

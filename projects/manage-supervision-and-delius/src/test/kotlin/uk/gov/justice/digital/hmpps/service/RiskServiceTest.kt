@@ -45,8 +45,8 @@ internal class RiskServiceTest {
     fun `calls get risks function`() {
         val crn = "X000005"
         val expectedRiskFlags = listOf(
-            PersonGenerator.REGISRATION_1,
-            PersonGenerator.REGISRATION_2
+            PersonGenerator.REGISTRATION_1,
+            PersonGenerator.REGISTRATION_2
         )
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         whenever(riskFlagRepository.findByPersonId(any())).thenReturn(expectedRiskFlags)
@@ -60,10 +60,10 @@ internal class RiskServiceTest {
     @Test
     fun `calls get risk function`() {
         val crn = "X000005"
-        val expectedRiskFlag = PersonGenerator.REGISRATION_2
+        val expectedRiskFlag = PersonGenerator.REGISTRATION_2
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         whenever(riskFlagRepository.findByPersonIdAndId(any(), any())).thenReturn(expectedRiskFlag)
-        val res = service.getPersonRiskFlag(crn, PersonGenerator.REGISRATION_2.id)
+        val res = service.getPersonRiskFlag(crn, PersonGenerator.REGISTRATION_2.id)
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
