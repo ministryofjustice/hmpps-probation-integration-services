@@ -45,5 +45,5 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag() 
     createdDate = createdDate,
     createdBy = Name(forename = createdBy.forename, surname = createdBy.surname),
     nextReviewDate = nextReviewDate,
-    mostRecentReviewDate = reviews.map{it.reviewDue}.sortedByDescending { it }.firstOrNull()
+    mostRecentReviewDate = reviews.filter { it.completed == true }.maxByOrNull { it.date }?.date
 )

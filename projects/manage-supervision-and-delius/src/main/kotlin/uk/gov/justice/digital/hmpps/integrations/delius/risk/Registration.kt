@@ -82,7 +82,7 @@ class RegistrationReview(
     val notes: String?,
 
     @Convert(converter = YesNoConverter::class)
-    val completed: Boolean,
+    val completed: Boolean?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
