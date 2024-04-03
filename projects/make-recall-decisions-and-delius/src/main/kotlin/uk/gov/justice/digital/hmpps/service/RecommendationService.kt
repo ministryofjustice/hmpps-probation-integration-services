@@ -59,7 +59,7 @@ class RecommendationService(
         val contact = personRepository.getPerson(crn).addContact(
             details,
             date = occurredAt,
-            staff = staffRepository.getStaff(username),
+            staff = staffRepository.findStaffByUsername(username),
             type = contactTypeRepository.getByCode(ContactType.RECOMMENDATION_DELETED)
         )
         contactRepository.save(contact)
@@ -68,7 +68,7 @@ class RecommendationService(
 
     private fun Person.addContact(
         details: RecommendationDetails,
-        staff: Staff,
+        staff: Staff?,
         date: ZonedDateTime,
         type: ContactType,
         outcome: ContactOutcome? = null,
@@ -83,7 +83,7 @@ class RecommendationService(
             notes = details.notes,
             providerId = manager.providerId,
             teamId = manager.teamId,
-            staffId = staff.id,
+            staffId = staff?.id ?: manager.staffId,
             outcome = outcome,
             isSensitive = details.sensitive
         )
