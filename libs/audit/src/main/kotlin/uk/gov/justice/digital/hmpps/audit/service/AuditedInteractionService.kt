@@ -10,12 +10,14 @@ import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepositor
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
 import uk.gov.justice.digital.hmpps.security.ServiceContext
+import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.ZonedDateTime
 
 @Service
 class AuditedInteractionService(
     private val businessInteractionRepository: BusinessInteractionRepository,
-    private val auditedInteractionRepository: AuditedInteractionRepository
+    private val auditedInteractionRepository: AuditedInteractionRepository,
+    private val auditUserService: AuditUserService
 ) {
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -23,19 +25,19 @@ class AuditedInteractionService(
         interactionCode: InteractionCode,
         params: AuditedInteraction.Parameters,
         outcome: AuditedInteraction.Outcome,
-        dateTime: ZonedDateTime
+        dateTime: ZonedDateTime,
+        username: String?
     ) {
-        ServiceContext.servicePrincipal()!!.let {
-            val bi = businessInteractionRepository.getByCode(interactionCode.code)
-            auditedInteractionRepository.save(
-                AuditedInteraction(
-                    businessInteractionId = bi.id,
-                    userId = it.userId,
-                    dateTime = dateTime,
-                    parameters = params,
-                    outcome = outcome
-                )
+        val bi = businessInteractionRepository.getByCode(interactionCode.code)
+        auditedInteractionRepository.save(
+            AuditedInteraction(
+                businessInteractionId = bi.id,
+                userId = username?.let { auditUserService.findUser(it) }?.id
+                    ?: ServiceContext.servicePrincipal()!!.userId,
+                dateTime = dateTime,
+                parameters = params,
+                outcome = outcome
             )
-        }
+        )
     }
 }
