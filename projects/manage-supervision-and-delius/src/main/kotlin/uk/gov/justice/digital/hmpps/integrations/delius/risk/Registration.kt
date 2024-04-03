@@ -9,13 +9,14 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Immutable
 @Entity
-@SQLRestriction("soft_deleted = 0 and deregistered = 0")
+@SQLRestriction("soft_deleted = 0")
 @Table(name = "registration")
 class RiskFlag(
 
@@ -35,6 +36,10 @@ class RiskFlag(
 
     @Column(name = "created_datetime")
     val createdDate: LocalDate,
+
+    @OneToMany
+    @JoinColumn(name = "registration_id")
+    val deRegistrations: List<DeRegistration>,
 
     @ManyToOne
     @JoinColumn(name = "created_by_user_id")
@@ -93,3 +98,31 @@ class RegistrationReview(
     @Column(name = "registration_review_id")
     val id: Long
 )
+
+@Immutable
+@Entity
+@SQLRestriction("soft_deleted = 0")
+@Table(name = "deregistration")
+class DeRegistration(
+    @Id
+    @Column(name = "deregistration_id", nullable = false)
+    val id: Long,
+
+    @Column(name = "deregistration_date")
+    val deRegistrationDate: LocalDate,
+
+    @ManyToOne
+    @JoinColumn(name = "registration_id", nullable = false)
+    val registration: RiskFlag,
+
+    @Column(name = "registration_notes", columnDefinition = "clob")
+    val notes: String?,
+
+    @ManyToOne
+    @JoinColumn(name = "staff_id")
+    val staff: Staff,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean
+)
+

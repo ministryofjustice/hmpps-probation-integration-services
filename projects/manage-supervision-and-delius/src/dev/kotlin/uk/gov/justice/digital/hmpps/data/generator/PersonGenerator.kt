@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.risk.DeRegistration
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RegistrationReview
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
@@ -110,18 +112,26 @@ object PersonGenerator {
 
     val REGISTER_TYPE_1 = generateRegisterType("CODE1", "Restraining Order")
     val REGISTER_TYPE_2 = generateRegisterType("CODE2", "Domestic Abuse Perpetrator")
-    val REGISRATION_1 = generateRegistration(REGISTER_TYPE_1, OVERVIEW.id, "Notes")
-    val REGISRATION_2 = generateRegistration(REGISTER_TYPE_2, OVERVIEW.id, "Notes")
+    val REGISTRATION_1 = generateRegistration(REGISTER_TYPE_1, OVERVIEW.id, "Notes")
+    val REGISTRATION_2 = generateRegistration(REGISTER_TYPE_2, OVERVIEW.id, "Notes")
+    val REGISTRATION_3 = generateRegistration(REGISTER_TYPE_2, OVERVIEW.id, "Notes", deRegistered = true)
 
     val REGISTRATION_REVIEW_1 = generateRiskReview(
-        REGISRATION_2, LocalDate.now().minusDays(4),
+        REGISTRATION_2, LocalDate.now().minusDays(4),
         LocalDate.now().minusDays(1), "Notes", ZonedDateTime.now().minusDays(1)
     )
 
     val REGISTRATION_REVIEW_2 = generateRiskReview(
-        REGISRATION_2, LocalDate.now().minusDays(1),
+        REGISTRATION_2, LocalDate.now().minusDays(1),
         LocalDate.now().minusDays(2), "Most recent Notes", ZonedDateTime.now().minusDays(1)
     )
+
+    val REGISTRATION_REVIEW_3 = generateRiskReview(
+        REGISTRATION_3, LocalDate.now().minusDays(1),
+        LocalDate.now().minusDays(2), "Most recent Notes", ZonedDateTime.now().minusDays(1)
+    )
+
+    val DEREGISTRATION_1 = generateDeRegistration(REGISTRATION_3, LocalDate.now().minusDays(1), "Made a mistake")
 
     fun generateEvent(
         person: Person,
@@ -316,9 +326,27 @@ object PersonGenerator {
         personId: Long,
         notes: String?,
         id: Long = IdGenerator.getAndIncrement(),
+        deRegistered: Boolean = false
     ) = RiskFlag(
-        personId, type, false, notes, LocalDate.now(), USER, LocalDate.now().plusDays(1), emptyList(),
-        false, id
+        personId,
+        type,
+        deRegistered,
+        notes,
+        LocalDate.now(),
+        emptyList(),
+        USER,
+        LocalDate.now().plusDays(1),
+        emptyList(),
+        false,
+        id
+    )
+
+    fun generateDeRegistration(
+        riskFlag: RiskFlag,
+        deRegistrationDate: LocalDate,
+        notes: String?,
+    ) = DeRegistration(
+        IdGenerator.getAndIncrement(), deRegistrationDate, riskFlag, notes, DEFAULT_STAFF, false
     )
 
     fun generateRiskReview(
