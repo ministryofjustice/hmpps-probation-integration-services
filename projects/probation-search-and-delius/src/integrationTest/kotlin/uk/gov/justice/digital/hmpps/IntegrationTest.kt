@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.service.ContactSearchAuditRequest
 import uk.gov.justice.digital.hmpps.service.ContactSearchRequest
 import uk.gov.justice.digital.hmpps.service.PageRequest
@@ -54,6 +55,7 @@ internal class IntegrationTest {
                     .withJson(
                         ContactSearchAuditRequest(
                             ContactSearchRequest(crn, query, true),
+                            "SearchUser",
                             PageRequest(page, pageSize, sort, direction),
                             dateTime
                         )
@@ -64,13 +66,14 @@ internal class IntegrationTest {
         verify(air, timeout(2000)).save(audit.capture())
 
         val saved = audit.firstValue
+        assertThat(saved.userId, equalTo(UserGenerator.SEARCH_USER.id))
         assertThat(saved.parameters["crn"], equalTo(crn))
         assertThat(saved.parameters["query"], equalTo(query))
         assertThat(saved.parameters["matchAllTerms"], equalTo(true))
         assertThat(saved.parameters["page"], equalTo(page))
         assertThat(saved.parameters["pageSize"], equalTo(pageSize))
-        assertThat(saved.parameters["sort"], equalTo(sort))
-        assertThat(saved.parameters["direction"], equalTo(direction))
+        assertThat(saved.parameters["sortedBy"], equalTo(sort))
+        assertThat(saved.parameters["sortDirection"], equalTo(direction))
         assertThat(saved.dateTime, isCloseTo(dateTime))
     }
 }

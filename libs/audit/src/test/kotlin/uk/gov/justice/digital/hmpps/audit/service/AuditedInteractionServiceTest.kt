@@ -69,7 +69,8 @@ class AuditedInteractionServiceTest {
             BusinessInteractionCode.TEST_BI_CODE,
             parameters,
             AuditedInteraction.Outcome.SUCCESS,
-            dateTime
+            dateTime,
+            null
         )
         val aiCaptor = ArgumentCaptor.forClass(AuditedInteraction::class.java)
         verify(auditedInteractionRepository, Mockito.times(1)).save(aiCaptor.capture())
@@ -95,9 +96,42 @@ class AuditedInteractionServiceTest {
                 BusinessInteractionCode.TEST_BI_CODE,
                 parameters,
                 AuditedInteraction.Outcome.SUCCESS,
-                ZonedDateTime.now()
+                ZonedDateTime.now(),
+                null
             )
         }
+    }
+
+    @Test
+    fun `create audited interaction with username override`() {
+        setupUser()
+        val anotherUser = AuditUser(99, "AnotherUser")
+        whenever(auditUserService.findUser(anotherUser.username)).thenReturn(anotherUser)
+
+        val bi = BusinessInteraction(1, BusinessInteractionCode.TEST_BI_CODE.code, ZonedDateTime.now())
+        whenever(businessInteractionRepository.findByCode(eq(BusinessInteractionCode.TEST_BI_CODE.code), any()))
+            .thenReturn(bi)
+
+        val parameters = AuditedInteraction.Parameters(
+            Pair("key", "value")
+        )
+        val dateTime = ZonedDateTime.now()
+        auditedInteractionService.createAuditedInteraction(
+            BusinessInteractionCode.TEST_BI_CODE,
+            parameters,
+            AuditedInteraction.Outcome.SUCCESS,
+            dateTime,
+            anotherUser.username
+        )
+        val aiCaptor = ArgumentCaptor.forClass(AuditedInteraction::class.java)
+        verify(auditedInteractionRepository, Mockito.times(1)).save(aiCaptor.capture())
+        val saved = aiCaptor.value
+
+        assertThat(saved.businessInteractionId, equalTo(1))
+        assertThat(saved.outcome, equalTo(AuditedInteraction.Outcome.SUCCESS))
+        assertThat(saved.userId, equalTo(anotherUser.id))
+        assertThat(saved.parameters, equalTo(parameters))
+        assertThat(saved.dateTime, equalTo(dateTime))
     }
 
     @Test

@@ -4,13 +4,15 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.ZonedDateTime
 
 @Service
-class SearchAuditService(auditedInteractionService: AuditedInteractionService) :
-    AuditableService(auditedInteractionService) {
+class SearchAuditService(
+    auditedInteractionService: AuditedInteractionService
+) : AuditableService(auditedInteractionService) {
     fun auditContactSearch(auditRequest: ContactSearchAuditRequest) =
-        audit(BusinessInteractionCode.SEARCH_CONTACTS, auditRequest.dateTime) { audit ->
+        audit(BusinessInteractionCode.SEARCH_CONTACTS, auditRequest.dateTime, auditRequest.username) { audit ->
             with(auditRequest.search) {
                 audit["crn"] = crn
                 query?.also { audit["query"] = it }
@@ -19,14 +21,15 @@ class SearchAuditService(auditedInteractionService: AuditedInteractionService) :
             with(auditRequest.pagination) {
                 audit["page"] = page
                 audit["pageSize"] = pageSize
-                sort?.also { audit["sort"] = it }
-                direction?.also { audit["direction"] = it }
+                sort?.also { audit["sortedBy"] = it }
+                direction?.also { audit["sortDirection"] = it }
             }
         }
 }
 
 data class ContactSearchAuditRequest(
     val search: ContactSearchRequest,
+    val username: String,
     val pagination: PageRequest,
     val dateTime: ZonedDateTime
 )
