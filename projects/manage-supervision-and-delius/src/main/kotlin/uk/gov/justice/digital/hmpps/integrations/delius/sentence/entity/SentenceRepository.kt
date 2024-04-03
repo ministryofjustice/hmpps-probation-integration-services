@@ -58,7 +58,7 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
         ORDER BY last_saved DESC
         """, nativeQuery = true
     )
-    fun getCourtDocuments(personId: Long, eventNumber: Long): List<CourtDocumentDetails>
+    fun getCourtDocuments(personId: Long, eventNumber: String): List<CourtDocumentDetails>
 }
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {

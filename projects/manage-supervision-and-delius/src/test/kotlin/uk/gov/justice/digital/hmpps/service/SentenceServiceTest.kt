@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDate
@@ -94,6 +95,8 @@ class SentenceServiceTest {
 
         val requirement = RequirementDetails(1, "Main", "High Intensity", 12, "new requirement")
 
+        val courtDocumentDetails = CourtDocs(1, LocalDate.now(), "Pre Sentence Event")
+
         val completedRarDays = OverviewServiceTest.RarDays(1, "COMPLETED")
 
         val scheduledRarDays = OverviewServiceTest.RarDays(2, "SCHEDULED")
@@ -117,6 +120,8 @@ class SentenceServiceTest {
                 scheduledRarDays
             )
         )
+
+        whenever(eventRepository.getCourtDocuments(personSummary.id, event.eventNumber)).thenReturn(listOf(courtDocumentDetails))
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
@@ -151,7 +156,8 @@ class SentenceServiceTest {
                             requirement._notes,
                             Rar(completedRarDays._days, scheduledRarDays._days, 3)
                         )
-                    )
+                    ),
+                    listOf(CourtDocument(1, LocalDate.now(), "Pre Sentence Event"))
                 )
             )
         )
@@ -187,5 +193,21 @@ class SentenceServiceTest {
 
         override val notes: String?
             get() = _notes
+    }
+
+    data class CourtDocs (
+        val _id: Long,
+        val _lastSaved: LocalDate,
+        val _description: String) : CourtDocumentDetails {
+
+        override val id: Long
+            get() = _id
+
+        override val lastSaved: LocalDate
+            get() = _lastSaved
+
+        override val description: String
+            get() = _description
+
     }
 }
