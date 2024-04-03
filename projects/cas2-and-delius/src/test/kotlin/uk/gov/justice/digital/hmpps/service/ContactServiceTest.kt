@@ -92,7 +92,7 @@ class ContactServiceTest {
             assertThat(it.notes, equalTo("Some notes"))
             assertThat(it.externalReference, equalTo("urn"))
         })
-        verify(auditedInteractionService).createAuditedInteraction(eq(ADD_CONTACT), any(), any(), any())
+        verify(auditedInteractionService).createAuditedInteraction(eq(ADD_CONTACT), any(), any(), any(), anyOrNull())
     }
 
     @Test
@@ -102,7 +102,7 @@ class ContactServiceTest {
         createContact()
 
         verify(contactRepository, never()).save(any())
-        verify(auditedInteractionService, never()).createAuditedInteraction(any(), any(), any(), any())
+        verify(auditedInteractionService, never()).createAuditedInteraction(any(), any(), any(), any(), anyOrNull())
         verify(telemetryService).trackEvent("ContactAlreadyExists", mapOf("urn" to "urn"), mapOf())
     }
 

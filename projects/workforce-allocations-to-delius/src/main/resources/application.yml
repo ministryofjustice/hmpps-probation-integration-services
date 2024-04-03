@@ -36,8 +36,6 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: HMPPSAllocations
 
-requirement.types.ignored:
-
 management:
   endpoints.web:
     base-path: /

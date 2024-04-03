@@ -26,6 +26,7 @@ class DataLoader(
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
+        auditUserRepository.save(UserGenerator.SEARCH_USER)
         BusinessInteractionCode.entries.forEach {
             bir.save(
                 BusinessInteraction(

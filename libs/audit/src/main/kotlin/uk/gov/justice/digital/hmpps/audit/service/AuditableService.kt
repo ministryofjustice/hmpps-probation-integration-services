@@ -8,6 +8,7 @@ abstract class AuditableService(private val auditedInteractionService: AuditedIn
     protected fun <T> audit(
         interactionCode: InteractionCode,
         dateTime: ZonedDateTime = ZonedDateTime.now(),
+        username: String? = null,
         params: AuditedInteraction.Parameters = AuditedInteraction.Parameters(),
         code: (AuditedInteraction.Parameters) -> T
     ): T {
@@ -17,7 +18,8 @@ abstract class AuditableService(private val auditedInteractionService: AuditedIn
                 interactionCode,
                 params,
                 AuditedInteraction.Outcome.SUCCESS,
-                dateTime
+                dateTime,
+                username
             )
             return result
         } catch (e: Exception) {
@@ -25,7 +27,8 @@ abstract class AuditableService(private val auditedInteractionService: AuditedIn
                 interactionCode,
                 params,
                 AuditedInteraction.Outcome.FAIL,
-                dateTime
+                dateTime,
+                username
             )
             throw e
         }
