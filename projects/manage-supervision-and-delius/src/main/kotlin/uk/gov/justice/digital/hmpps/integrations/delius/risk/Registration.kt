@@ -115,11 +115,11 @@ class DeRegistration(
     @JoinColumn(name = "registration_id", nullable = false)
     val registration: RiskFlag,
 
-    @Column(name = "deregistration_notes", columnDefinition = "clob")
+    @Column(name = "deregistering_notes", columnDefinition = "clob")
     val notes: String?,
 
     @ManyToOne
-    @JoinColumn(name = "deregistration_staff_id")
+    @JoinColumn(name = "deregistering_staff_id")
     val staff: Staff,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
