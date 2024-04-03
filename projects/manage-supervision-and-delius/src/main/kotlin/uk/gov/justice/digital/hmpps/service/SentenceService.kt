@@ -53,9 +53,7 @@ class SentenceService(
                 additionalSentences.map { it.toAdditionalSentence() }
             ),
             order = disposal?.toOrder(),
-            requirements = disposal.let {
-                requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() }
-            },
+            requirements = requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() }
         )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
