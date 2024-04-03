@@ -62,7 +62,6 @@ interface RiskFlagRepository : JpaRepository<RiskFlag, Long> {
 fun RiskFlagRepository.getRiskFlag(personId: Long, id: Long): RiskFlag =
     findByPersonIdAndId(personId, id) ?: throw NotFoundException("Risk", "id", id)
 
-
 @Entity
 @Table(name = "registration_review")
 @SQLRestriction("soft_deleted = 0")
