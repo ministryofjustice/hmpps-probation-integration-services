@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.service.ContactSearchAuditRequest
 import uk.gov.justice.digital.hmpps.service.ContactSearchRequest
@@ -41,7 +42,7 @@ internal class IntegrationTest {
 
     @Test
     fun `api calls successfully records audit record`() {
-        val crn = "T123456"
+        val person = PersonGenerator.DEFAULT
         val query = "The quick brown fox"
         val page = 0
         val pageSize = 1
@@ -54,7 +55,7 @@ internal class IntegrationTest {
                     .withToken()
                     .withJson(
                         ContactSearchAuditRequest(
-                            ContactSearchRequest(crn, query, true),
+                            ContactSearchRequest(person.crn, query, true),
                             "SearchUser",
                             PageRequest(page, pageSize, sort, direction),
                             dateTime
@@ -67,7 +68,8 @@ internal class IntegrationTest {
 
         val saved = audit.firstValue
         assertThat(saved.userId, equalTo(UserGenerator.SEARCH_USER.id))
-        assertThat(saved.parameters["crn"], equalTo(crn))
+        assertThat(saved.parameters["crn"], equalTo(person.crn))
+        assertThat(saved.parameters["offenderId"], equalTo(person.id))
         assertThat(saved.parameters["query"], equalTo(query))
         assertThat(saved.parameters["matchAllTerms"], equalTo(true))
         assertThat(saved.parameters["page"], equalTo(page))

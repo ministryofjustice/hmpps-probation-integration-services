@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.ZonedDateTime
 
@@ -18,6 +20,7 @@ import java.time.ZonedDateTime
 class DataLoader(
     private val auditUserRepository: AuditUserRepository,
     private val bir: BusinessInteractionRepository,
+    private val personRepository: PersonRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -36,5 +39,6 @@ class DataLoader(
                 )
             )
         }
+        personRepository.save(PersonGenerator.DEFAULT)
     }
 }
