@@ -36,6 +36,7 @@ class ResponsibleOfficer(
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PersonManager(
 
+    @Column(name = "offender_id")
     val personId: Long,
 
     @ManyToOne
