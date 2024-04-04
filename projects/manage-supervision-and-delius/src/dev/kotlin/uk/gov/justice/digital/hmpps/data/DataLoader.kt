@@ -73,7 +73,7 @@ class DataLoader(
         val courtReportType = CourtReportGenerator.DEFAULT_TYPE
         entityManager.persist(courtReportType)
         val courtReport = CourtReportGenerator.generate(courtReportType, courtAppearance)
-        val document = PersonDetailsGenerator.generateCourtDocument(
+        val courtDocument = PersonDetailsGenerator.generateCourtDocument(
             PersonGenerator.OVERVIEW.id,
             "A003",
             "court report",
@@ -81,7 +81,16 @@ class DataLoader(
             courtReport.courtReportId
         )
 
-        entityManager.persist(document)
+        val eventDocument = PersonDetailsGenerator.generateEventDocument(
+            PersonGenerator.OVERVIEW.id,
+            "A004",
+            "event",
+            "DOCUMENT",
+            PersonGenerator.EVENT_1.id
+        )
+
+        entityManager.persist(eventDocument)
+        entityManager.persist(courtDocument)
         entityManager.persist(courtReport)
 
         entityManager.persistAll(
