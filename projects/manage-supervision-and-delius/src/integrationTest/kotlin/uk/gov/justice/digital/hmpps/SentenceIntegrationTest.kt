@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -66,7 +67,8 @@ class SentenceIntegrationTest {
                         listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                     ),
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
-                    listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1)))
+                    listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1))),
+                    listOf(CourtDocument(112, LocalDate.now().minusDays(1), "Pre-Sentence Report - Fast"))
                 ),
                 Sentence(
                     OffenceDetails(
@@ -78,6 +80,7 @@ class SentenceIntegrationTest {
                     ),
                     Conviction(null, null, null, listOf()),
                     null,
+                    listOf(),
                     listOf()
                 )
             )
