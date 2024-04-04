@@ -4,7 +4,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 
 @Entity(name = "R_COURT_REPORT_TYPE")
-class CourtReportType (
+class CourtReportType(
 
     @Id val courtReportTypeId: Long,
 

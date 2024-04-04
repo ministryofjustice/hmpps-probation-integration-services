@@ -69,7 +69,6 @@ class DataLoader(
         val courtAppearance = CourtAppearanceGenerator.generate()
         entityManager.persist(courtAppearance)
 
-
         val courtReportType = CourtReportGenerator.DEFAULT_TYPE
         entityManager.persist(courtReportType)
         val courtReport = CourtReportGenerator.generate(courtReportType, courtAppearance)
