@@ -50,7 +50,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag() 
     nextReviewDate = nextReviewDate,
     mostRecentReviewDate = reviews.filter { it.completed == true }.maxByOrNull { it.date }?.date,
     removed = deRegistered,
-    removalHistory = deRegistrations.map { it.toRiskFlagRemoval() }
+    removalHistory = deRegistrations.sortedByDescending { it.deRegistrationDate }.map { it.toRiskFlagRemoval() }
 )
 
 fun DeRegistration.toRiskFlagRemoval() = RiskFlagRemoval(
