@@ -83,7 +83,7 @@ class DataLoader(
         val eventDocument = PersonDetailsGenerator.generateEventDocument(
             PersonGenerator.OVERVIEW.id,
             "A004",
-            "event",
+            "event report",
             "DOCUMENT",
             PersonGenerator.EVENT_1.id
         )

@@ -73,7 +73,7 @@ class CourtReportDocument : Document()
 interface CourtDocumentDetails {
     val id: Long
     val lastSaved: LocalDate
-    val item: String
+    val documentName: String
 }
 
 interface DocumentRepository : JpaRepository<PersonDocument, Long> {
@@ -84,8 +84,8 @@ interface DocumentRepository : JpaRepository<PersonDocument, Long> {
 
     @Query(
         """
-            SELECT id, lastSaved, item FROM (
-                SELECT d.DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, NVL(DECODE(d.DOCUMENT_TYPE, 'CPS_PACK', 'CPS Pack', rdt.DESCRIPTION), 'Pre Sentence Event') AS item
+            SELECT id, lastSaved, documentName FROM (
+                SELECT d.DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, d.DOCUMENT_NAME AS documentName
                 FROM DOCUMENT d 
                 JOIN EVENT e 
                 ON e.EVENT_ID = d.PRIMARY_KEY_ID 
@@ -97,14 +97,12 @@ interface DocumentRepository : JpaRepository<PersonDocument, Long> {
                 AND e.EVENT_NUMBER = :eventNumber
                 AND TABLE_NAME = 'EVENT'
                 UNION 
-                SELECT d.DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, rcrt.DESCRIPTION AS item
+                SELECT d.DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, d.DOCUMENT_NAME AS documentName
                 FROM DOCUMENT d 
                 JOIN COURT_REPORT cr 
                 ON cr.COURT_REPORT_ID = d.PRIMARY_KEY_ID 
                 JOIN COURT_APPEARANCE ca 
                 ON ca.COURT_APPEARANCE_ID = cr.COURT_APPEARANCE_ID 
-                JOIN R_COURT_REPORT_TYPE rcrt 
-                ON rcrt.COURT_REPORT_TYPE_ID = cr.COURT_REPORT_TYPE_ID 
                 JOIN EVENT e 
                 ON e.EVENT_ID = ca.EVENT_ID 
                 WHERE e.EVENT_ID = :id

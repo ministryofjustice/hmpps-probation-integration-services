@@ -8,10 +8,12 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
 @Service
@@ -81,5 +83,5 @@ class SentenceService(
         return Rar(completed = completedDays, scheduled = scheduledDays)
     }
 
-    fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, item)
+    fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)
 }

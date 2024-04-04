@@ -5,5 +5,5 @@ import java.time.LocalDate
 data class CourtDocument(
     val id: Long,
     val lastSaved: LocalDate?,
-    val item: String?
+    val documentName: String?
 )

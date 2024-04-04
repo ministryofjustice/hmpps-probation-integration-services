@@ -209,7 +209,7 @@ class SentenceServiceTest {
     data class CourtDocs(
         val _id: Long,
         val _lastSaved: LocalDate,
-        val _item: String
+        val _documentName: String
     ) : CourtDocumentDetails {
 
         override val id: Long
@@ -218,7 +218,7 @@ class SentenceServiceTest {
         override val lastSaved: LocalDate
             get() = _lastSaved
 
-        override val item: String
-            get() = _item
+        override val documentName: String
+            get() = _documentName
     }
 }

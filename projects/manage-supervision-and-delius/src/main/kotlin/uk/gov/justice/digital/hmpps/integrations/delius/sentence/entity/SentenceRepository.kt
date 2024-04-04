@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
-import java.time.LocalDate
 
 interface EventSentenceRepository : JpaRepository<Event, Long> {
     @Query(
