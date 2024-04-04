@@ -89,10 +89,6 @@ interface DocumentRepository : JpaRepository<PersonDocument, Long> {
                 FROM DOCUMENT d 
                 JOIN EVENT e 
                 ON e.EVENT_ID = d.PRIMARY_KEY_ID 
-                LEFT JOIN DISPOSAL d2 
-                ON d2.EVENT_ID = e.EVENT_ID 
-                LEFT JOIN R_DISPOSAL_TYPE rdt 
-                ON rdt.DISPOSAL_TYPE_ID = d2.DISPOSAL_TYPE_ID 
                 WHERE e.EVENT_ID = :id
                 AND e.EVENT_NUMBER = :eventNumber
                 AND TABLE_NAME = 'EVENT'
