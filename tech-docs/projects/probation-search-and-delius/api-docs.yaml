@@ -35,10 +35,13 @@ components:
       - dateTime
       - pagination
       - search
+      - username
       type: object
       properties:
         search:
           $ref: '#/components/schemas/ContactSearchRequest'
+        username:
+          type: string
         pagination:
           $ref: '#/components/schemas/PageRequest'
         dateTime:

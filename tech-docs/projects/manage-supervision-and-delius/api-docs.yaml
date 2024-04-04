@@ -96,6 +96,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonAppointment'
+  /risk-flags/{crn}:
+    get:
+      tags:
+      - Risk Flags
+      summary: 'Gets all risk flags for an offender’ '
+      operationId: getPersonRiskFlags
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonRiskFlags'
+  /risk-flags/{crn}/{riskFlagId}:
+    get:
+      tags:
+      - Risk Flags
+      summary: 'Gets an individual risk flag for an offender’ '
+      operationId: getPersonRiskFlag
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: riskFlagId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonRiskFlag'
   /personal-details/{crn}:
     get:
       tags:
@@ -621,6 +665,80 @@ components:
           $ref: '#/components/schemas/PersonSummary'
         appointment:
           $ref: '#/components/schemas/Activity'
+    PersonRiskFlags:
+      required:
+      - personSummary
+      - removedRiskFlags
+      - riskFlags
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        riskFlags:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskFlag'
+        removedRiskFlags:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskFlag'
+    RiskFlag:
+      required:
+      - createdBy
+      - createdDate
+      - description
+      - id
+      - removalHistory
+      - removed
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        notes:
+          type: string
+        nextReviewDate:
+          type: string
+          format: date
+        mostRecentReviewDate:
+          type: string
+          format: date
+        createdDate:
+          type: string
+          format: date
+        createdBy:
+          $ref: '#/components/schemas/Name'
+        removed:
+          type: boolean
+        removalHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskFlagRemoval'
+    RiskFlagRemoval:
+      required:
+      - removalDate
+      - removedBy
+      type: object
+      properties:
+        notes:
+          type: string
+        removalDate:
+          type: string
+          format: date
+        removedBy:
+          $ref: '#/components/schemas/Name'
+    PersonRiskFlag:
+      required:
+      - personSummary
+      - riskFlag
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        riskFlag:
+          $ref: '#/components/schemas/RiskFlag'
     Address:
       required:
       - from
