@@ -4,10 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonDocument
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -298,6 +295,42 @@ object PersonDetailsGenerator {
         val doc = PersonDocument()
         doc.id = IdGenerator.getAndIncrement()
         doc.lastUpdated = ZonedDateTime.now().minusDays(1)
+        doc.alfrescoId = alfrescoId
+        doc.name = name
+        doc.personId = personId
+        doc.primaryKeyId = primaryKeyId
+        doc.type = documentType
+        return doc
+    }
+
+    fun generateCourtDocument(
+        personId: Long,
+        alfrescoId: String,
+        name: String,
+        documentType: String,
+        primaryKeyId: Long? = null
+    ): CourtReportDocument {
+        val doc = CourtReportDocument()
+        doc.id = IdGenerator.getAndIncrement()
+        doc.lastUpdated = ZonedDateTime.now().minusDays(1)
+        doc.alfrescoId = alfrescoId
+        doc.name = name
+        doc.personId = personId
+        doc.primaryKeyId = primaryKeyId
+        doc.type = documentType
+        return doc
+    }
+
+    fun generateEventDocument(
+        personId: Long,
+        alfrescoId: String,
+        name: String,
+        documentType: String,
+        primaryKeyId: Long? = null
+    ): EventDocument {
+        val doc = EventDocument()
+        doc.id = IdGenerator.getAndIncrement()
+        doc.lastUpdated = ZonedDateTime.now().minusDays(3)
         doc.alfrescoId = alfrescoId
         doc.name = name
         doc.personId = personId

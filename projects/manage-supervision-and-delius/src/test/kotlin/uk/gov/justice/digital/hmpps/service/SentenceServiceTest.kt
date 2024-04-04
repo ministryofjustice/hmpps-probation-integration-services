@@ -18,6 +18,8 @@ import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
@@ -41,6 +43,9 @@ class SentenceServiceTest {
 
     @Mock
     lateinit var personRepository: PersonRepository
+
+    @Mock
+    lateinit var documentRepository: DocumentRepository
 
     @InjectMocks
     lateinit var service: SentenceService
@@ -76,6 +81,7 @@ class SentenceServiceTest {
         verifyNoInteractions(courtAppearanceRepository)
         verifyNoInteractions(additionalSentenceRepository)
         verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(documentRepository)
     }
 
     @Test
@@ -93,6 +99,8 @@ class SentenceServiceTest {
         )
 
         val requirement = RequirementDetails(1, "Main", "High Intensity", 12, "new requirement")
+
+        val courtDocumentDetails = CourtDocs(1, LocalDate.now(), "Pre Sentence Event")
 
         val completedRarDays = OverviewServiceTest.RarDays(1, "COMPLETED")
 
@@ -115,6 +123,12 @@ class SentenceServiceTest {
             listOf(
                 completedRarDays,
                 scheduledRarDays
+            )
+        )
+
+        whenever(documentRepository.getCourtDocuments(event.id, event.eventNumber)).thenReturn(
+            listOf(
+                courtDocumentDetails
             )
         )
 
@@ -151,7 +165,8 @@ class SentenceServiceTest {
                             requirement._notes,
                             Rar(completedRarDays._days, scheduledRarDays._days, 3)
                         )
-                    )
+                    ),
+                    listOf(CourtDocument(1, LocalDate.now(), "Pre Sentence Event"))
                 )
             )
         )
@@ -160,10 +175,12 @@ class SentenceServiceTest {
         verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
+        verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
         verifyNoMoreInteractions(courtAppearanceRepository)
+        verifyNoMoreInteractions(documentRepository)
     }
 
     data class RequirementDetails(
@@ -187,5 +204,21 @@ class SentenceServiceTest {
 
         override val notes: String?
             get() = _notes
+    }
+
+    data class CourtDocs(
+        val _id: Long,
+        val _lastSaved: LocalDate,
+        val _documentName: String
+    ) : CourtDocumentDetails {
+
+        override val id: Long
+            get() = _id
+
+        override val lastSaved: LocalDate
+            get() = _lastSaved
+
+        override val documentName: String
+            get() = _documentName
     }
 }
