@@ -67,8 +67,8 @@ class SentenceIntegrationTest {
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
                     listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1))),
                     listOf(
-                        CourtDocument(112, LocalDate.now().minusDays(1), "Pre-Sentence Report - Fast"),
-                        CourtDocument(113, LocalDate.now().minusDays(3), "Default Sentence Type")
+                        CourtDocument(115, LocalDate.now().minusDays(1), "Pre-Sentence Report - Fast"),
+                        CourtDocument(116, LocalDate.now().minusDays(3), "Default Sentence Type")
                     )
                 ),
                 Sentence(
