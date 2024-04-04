@@ -33,6 +33,7 @@ class DataLoader(
             persist(PersonGenerator.DECISION_TO_RECALL)
             persist(PersonGenerator.DECISION_NOT_TO_RECALL)
             persist(PersonGenerator.RECOMMENDATION_DELETED)
+            persist(PersonGenerator.RECOMMENDATION_DELETED_INACTIVE_STAFF)
 
             persist(PersonGenerator.DEFAULT_PROVIDER)
             persist(PersonGenerator.DEFAULT_LAU)
@@ -42,6 +43,7 @@ class DataLoader(
             persist(PersonGenerator.DECISION_TO_RECALL.manager!!)
             persist(PersonGenerator.DECISION_NOT_TO_RECALL.manager!!)
             persist(PersonGenerator.RECOMMENDATION_DELETED.manager!!)
+            persist(PersonGenerator.RECOMMENDATION_DELETED_INACTIVE_STAFF.manager!!)
 
             persist(PersonGenerator.CASE_SUMMARY.gender)
             persist(PersonGenerator.CASE_SUMMARY.ethnicity)
@@ -97,6 +99,8 @@ class DataLoader(
             persist(UserGenerator.WITH_STAFF)
             persist(UserGenerator.USER_DETAILS.staff)
             persist(UserGenerator.USER_DETAILS)
+            persist(UserGenerator.WITH_INACTIVE_STAFF.staff)
+            persist(UserGenerator.WITH_INACTIVE_STAFF)
         }
     }
 }

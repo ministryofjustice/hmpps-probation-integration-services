@@ -27,6 +27,7 @@ object PersonGenerator {
     val EXCLUDED = generateUserAccess("X000006", exclusions = listOf(UserGenerator.TEST_USER1))
     val NO_ACCESS_LIMITATIONS = generateUserAccess("X000007")
     val RECOMMENDATION_DELETED = generate("X000008")
+    val RECOMMENDATION_DELETED_INACTIVE_STAFF = generate("X000009")
 
     fun generate(
         crn: String,

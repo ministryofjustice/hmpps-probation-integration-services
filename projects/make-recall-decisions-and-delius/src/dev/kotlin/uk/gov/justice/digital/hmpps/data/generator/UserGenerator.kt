@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.details.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.StaffUser
 import uk.gov.justice.digital.hmpps.user.AuditUser
+import java.time.LocalDate
 
 object UserGenerator {
     val AUDIT_USER = AuditUser(IdGenerator.getAndIncrement(), "MakeRecallDecisionsAndDelius")
@@ -21,5 +22,10 @@ object UserGenerator {
         "Middle name",
         "Surname",
         UserDetailsStaff(IdGenerator.getAndIncrement(), "TEST002", null)
+    )
+    val WITH_INACTIVE_STAFF = StaffUser(
+        IdGenerator.getAndIncrement(),
+        "WithInactiveStaff",
+        Staff(IdGenerator.getAndIncrement(), "TEST003", endDate = LocalDate.now().minusDays(1))
     )
 }

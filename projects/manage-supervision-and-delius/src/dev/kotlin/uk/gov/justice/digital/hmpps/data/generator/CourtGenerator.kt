@@ -12,6 +12,4 @@ object CourtGenerator {
         IdGenerator.getAndIncrement(),
         "Birmingham Court"
     )
-
-
 }

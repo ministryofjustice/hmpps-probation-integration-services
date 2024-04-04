@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlag
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlags
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISRATION_1
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTRATION_1
 import uk.gov.justice.digital.hmpps.service.RiskService
 import uk.gov.justice.digital.hmpps.service.toRiskFlag
 import java.time.LocalDate
@@ -45,8 +45,8 @@ internal class RiskControllerTest {
         val expectedResponse = PersonRiskFlags(
             personSummary = personSummary,
             riskFlags = listOfNotNull(
-                PersonGenerator.REGISRATION_1.toRiskFlag(),
-                PersonGenerator.REGISRATION_2.toRiskFlag()
+                PersonGenerator.REGISTRATION_1.toRiskFlag(),
+                PersonGenerator.REGISTRATION_2.toRiskFlag()
             )
         )
         whenever(riskService.getPersonRiskFlags(crn)).thenReturn(expectedResponse)
@@ -59,10 +59,10 @@ internal class RiskControllerTest {
         val crn = "X000005"
         val expectedResponse = PersonRiskFlag(
             personSummary = personSummary,
-            riskFlag = PersonGenerator.REGISRATION_1.toRiskFlag()
+            riskFlag = PersonGenerator.REGISTRATION_1.toRiskFlag()
         )
-        whenever(riskService.getPersonRiskFlag(crn, REGISRATION_1.id)).thenReturn(expectedResponse)
-        val res = controller.getPersonRiskFlag(crn, REGISRATION_1.id)
+        whenever(riskService.getPersonRiskFlag(crn, REGISTRATION_1.id)).thenReturn(expectedResponse)
+        val res = controller.getPersonRiskFlag(crn, REGISTRATION_1.id)
         assertThat(res, equalTo(expectedResponse))
     }
 }

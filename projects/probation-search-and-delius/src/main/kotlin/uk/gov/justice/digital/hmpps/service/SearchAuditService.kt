@@ -4,16 +4,19 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import java.time.ZonedDateTime
 
 @Service
 class SearchAuditService(
-    auditedInteractionService: AuditedInteractionService
+    auditedInteractionService: AuditedInteractionService,
+    private val personRepository: PersonRepository
 ) : AuditableService(auditedInteractionService) {
     fun auditContactSearch(auditRequest: ContactSearchAuditRequest) =
         audit(BusinessInteractionCode.SEARCH_CONTACTS, auditRequest.dateTime, auditRequest.username) { audit ->
             with(auditRequest.search) {
                 audit["crn"] = crn
+                audit["offenderId"] = personRepository.findByCrn(crn)!!.id
                 query?.also { audit["query"] = it }
                 audit["matchAllTerms"] = matchAllTerms
             }

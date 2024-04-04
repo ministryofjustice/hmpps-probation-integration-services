@@ -126,7 +126,11 @@ class SentenceServiceTest {
             )
         )
 
-        whenever(documentRepository.getCourtDocuments(event.id, event.eventNumber)).thenReturn(listOf(courtDocumentDetails))
+        whenever(documentRepository.getCourtDocuments(event.id, event.eventNumber)).thenReturn(
+            listOf(
+                courtDocumentDetails
+            )
+        )
 
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
@@ -202,10 +206,11 @@ class SentenceServiceTest {
             get() = _notes
     }
 
-    data class CourtDocs (
+    data class CourtDocs(
         val _id: Long,
         val _lastSaved: LocalDate,
-        val _item: String) : CourtDocumentDetails {
+        val _item: String
+    ) : CourtDocumentDetails {
 
         override val id: Long
             get() = _id
@@ -215,6 +220,5 @@ class SentenceServiceTest {
 
         override val item: String
             get() = _item
-
     }
 }

@@ -11,4 +11,6 @@ data class RiskFlag(
     val mostRecentReviewDate: LocalDate?,
     val createdDate: LocalDate,
     val createdBy: Name,
+    val removed: Boolean,
+    val removalHistory: List<RiskFlagRemoval>
 )

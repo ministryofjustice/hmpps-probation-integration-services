@@ -6,11 +6,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtRep
 
 object CourtReportGenerator {
 
-    val DEFAULT_TYPE = CourtReportType(IdGenerator.getAndIncrement(), "Pre-Sentence Report - Fast" )
+    val DEFAULT_TYPE = CourtReportType(IdGenerator.getAndIncrement(), "Pre-Sentence Report - Fast")
 
     fun generate(
         courtReportType: CourtReportType?,
-        courtAppearance: CourtAppearance )
-    = CourtReport(IdGenerator.getAndIncrement(), courtReportType, courtAppearance)
-
+        courtAppearance: CourtAppearance
+    ) = CourtReport(IdGenerator.getAndIncrement(), courtReportType, courtAppearance)
 }

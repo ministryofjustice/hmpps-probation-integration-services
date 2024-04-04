@@ -112,7 +112,8 @@ interface DocumentRepository : JpaRepository<PersonDocument, Long> {
                 AND d.TABLE_NAME = 'COURT_REPORT'   
             )
             ORDER BY lastSaved DESC 
-        """, nativeQuery = true)
+        """, nativeQuery = true
+    )
     fun getCourtDocuments(id: Long, eventNumber: String): List<CourtDocumentDetails>
 }
 
