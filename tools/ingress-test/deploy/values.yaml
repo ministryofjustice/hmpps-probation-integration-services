@@ -16,6 +16,7 @@ generic-service:
     enabled: true
     host: ingress-test.probation-integration.service.justice.gov.uk
     tlsSecretName: ingress-test-cert
+    className: production-only
 
   allowlist:
     groups:
