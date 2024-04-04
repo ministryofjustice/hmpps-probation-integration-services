@@ -171,10 +171,12 @@ class SentenceServiceTest {
         verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
+        verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
         verifyNoMoreInteractions(courtAppearanceRepository)
+        verifyNoMoreInteractions(documentRepository)
     }
 
     data class RequirementDetails(
