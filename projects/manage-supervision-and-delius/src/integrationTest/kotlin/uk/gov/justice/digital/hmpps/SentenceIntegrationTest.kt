@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -16,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -65,7 +67,9 @@ class SentenceIntegrationTest {
                         listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                     ),
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
-                    listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1)))
+                    listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1))),
+                    listOf(CourtDocument(112, LocalDate.now().minusDays(1), "Pre-Sentence Report - Fast"),
+                            CourtDocument(113, LocalDate.now().minusDays(3), "Default Sentence Type"))
                 ),
                 Sentence(
                     OffenceDetails(
@@ -77,6 +81,7 @@ class SentenceIntegrationTest {
                     ),
                     Conviction(null, null, null, listOf()),
                     null,
+                    listOf(),
                     listOf()
                 )
             )

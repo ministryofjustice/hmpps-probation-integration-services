@@ -7,4 +7,5 @@ data class Sentence(
     val conviction: Conviction? = null,
     val order: Order? = null,
     val requirements: List<Requirement> = listOf(),
+    val courtDocuments: List<CourtDocument> = listOf()
 )

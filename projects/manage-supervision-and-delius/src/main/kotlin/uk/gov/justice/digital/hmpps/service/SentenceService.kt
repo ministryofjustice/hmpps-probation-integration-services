@@ -9,10 +9,9 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
 @Service
@@ -21,7 +20,8 @@ class SentenceService(
     private val courtAppearanceRepository: CourtAppearanceRepository,
     private val additionalSentenceRepository: AdditionalSentenceRepository,
     private val personRepository: PersonRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
+    private val documentRepository: DocumentRepository
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
         val person = personRepository.getSummary(crn)
@@ -53,9 +53,8 @@ class SentenceService(
                 additionalSentences.map { it.toAdditionalSentence() }
             ),
             order = disposal?.toOrder(),
-            requirements = disposal.let {
-                requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() }
-            },
+            requirements = requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() },
+            courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() }
         )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
@@ -81,4 +80,6 @@ class SentenceService(
         val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
         return Rar(completed = completedDays, scheduled = scheduledDays)
     }
+
+    fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, item)
 }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -59,11 +60,60 @@ class ContactDocument(
 @DiscriminatorValue("OFFENDER")
 class PersonDocument : Document()
 
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("EVENT")
+class EventDocument : Document()
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("COURT_REPORT")
+class CourtReportDocument : Document()
+
+interface CourtDocumentDetails {
+    val id: Long
+    val lastSaved: LocalDate
+    val item: String
+}
+
 interface DocumentRepository : JpaRepository<PersonDocument, Long> {
     fun findByPersonId(personId: Long): List<PersonDocument>
 
     @Query("select d.name from PersonDocument d join Person p on p.id = d.personId and p.crn = :crn and d.alfrescoId = :alfrescoId")
     fun findNameByPersonCrnAndAlfrescoId(crn: String, alfrescoId: String): String?
+
+    @Query(
+        """
+            SELECT id, lastSaved, item FROM (
+                SELECT d.DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, NVL(DECODE(d.DOCUMENT_TYPE, 'CPS_PACK', 'CPS Pack', rdt.DESCRIPTION), 'Pre Sentence Event') AS item
+                FROM DOCUMENT d 
+                JOIN EVENT e 
+                ON e.EVENT_ID = d.PRIMARY_KEY_ID 
+                LEFT JOIN DISPOSAL d2 
+                ON d2.EVENT_ID = e.EVENT_ID 
+                LEFT JOIN R_DISPOSAL_TYPE rdt 
+                ON rdt.DISPOSAL_TYPE_ID = d2.DISPOSAL_TYPE_ID 
+                WHERE e.EVENT_ID = :id
+                AND e.EVENT_NUMBER = :eventNumber
+                AND TABLE_NAME = 'EVENT'
+                UNION 
+                SELECT d.DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, rcrt.DESCRIPTION AS item
+                FROM DOCUMENT d 
+                JOIN COURT_REPORT cr 
+                ON cr.COURT_REPORT_ID = d.PRIMARY_KEY_ID 
+                JOIN COURT_APPEARANCE ca 
+                ON ca.COURT_APPEARANCE_ID = cr.COURT_APPEARANCE_ID 
+                JOIN R_COURT_REPORT_TYPE rcrt 
+                ON rcrt.COURT_REPORT_TYPE_ID = cr.COURT_REPORT_TYPE_ID 
+                JOIN EVENT e 
+                ON e.EVENT_ID = ca.EVENT_ID 
+                WHERE e.EVENT_ID = :id
+                AND e.EVENT_NUMBER = :eventNumber
+                AND d.TABLE_NAME = 'COURT_REPORT'   
+            )
+            ORDER BY lastSaved DESC 
+        """, nativeQuery = true)
+    fun getCourtDocuments(id: Long, eventNumber: String): List<CourtDocumentDetails>
 }
 
 fun DocumentRepository.getDocument(crn: String, alfrescoId: String) =
