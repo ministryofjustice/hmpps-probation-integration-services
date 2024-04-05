@@ -32,6 +32,8 @@ class Cas2Service(
 
     fun applicationStatusUpdated(event: HmppsDomainEvent) {
         val details = eventDetailsClient.getApplicationStatusUpdatedDetails(event.url)
+        val statusDetailsList = details.eventDetails.newStatus.statusDetails
+            ?.joinToString("${System.lineSeparator()}|* ", "${System.lineSeparator()}|* ") { it.label } ?: ""
         val success = contactService.createContact(
             crn = event.crn,
             type = ContactType.REFERRAL_UPDATED,
@@ -40,8 +42,7 @@ class Cas2Service(
             notes = """
                 |Application status was updated to: ${details.eventDetails.newStatus.label}
                 |
-                |Details: ${details.eventDetails.newStatus.description}
-                |* ${details.eventDetails.newStatus.statusDetails.joinToString(separator = System.lineSeparator() + "|* ") { it.label }}
+                |Details: ${details.eventDetails.newStatus.description}$statusDetailsList
                 |
                 |Details of the application can be found here: ${details.eventDetails.applicationUrl}
                 """.trimMargin(),

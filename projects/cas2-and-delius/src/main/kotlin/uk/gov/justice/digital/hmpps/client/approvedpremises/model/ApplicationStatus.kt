@@ -4,7 +4,7 @@ data class ApplicationStatus(
     val name: String,
     val label: String,
     val description: String,
-    val statusDetails: List<ApplicationStatusDetail>,
+    val statusDetails: List<ApplicationStatusDetail>?,
 )
 
 data class ApplicationStatusDetail(
