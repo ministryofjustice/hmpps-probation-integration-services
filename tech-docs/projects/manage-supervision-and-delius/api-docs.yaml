@@ -375,6 +375,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AdditionalSentence'
+    CourtDocument:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        lastSaved:
+          type: string
+          format: date
+        documentName:
+          type: string
     Name:
       required:
       - forename
@@ -466,6 +479,7 @@ components:
           $ref: '#/components/schemas/Rar'
     Sentence:
       required:
+      - courtDocuments
       - offenceDetails
       - requirements
       type: object
@@ -480,6 +494,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Requirement'
+        courtDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourtDocument'
     SentenceOverview:
       required:
       - name
