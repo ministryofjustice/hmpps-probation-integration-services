@@ -27,14 +27,17 @@ class SentenceService(
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
         val person = personRepository.getSummary(crn)
-        val events = eventRepository.findActiveSentencesByPersonId(person.id)
+        val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
+
         return SentenceOverview(
             name = person.toName(),
-            sentences = events.map {
+            sentences = activeEvents.map {
                 val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
                 val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
                 it.toSentence(courtAppearance, additionalSentences, crn)
-            })
+            },
+            ProbabtionHistory(inactiveEvents.count(), inactiveEvents.count { it.inBreach })
+        )
     }
 
     fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>, crn: String) =

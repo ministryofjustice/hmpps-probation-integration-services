@@ -65,16 +65,16 @@ class SentenceServiceTest {
     fun `no active sentences`() {
 
         whenever(personRepository.findSummary(PersonGenerator.OVERVIEW.crn)).thenReturn(personSummary)
-        whenever(eventRepository.findActiveSentencesByPersonId(personSummary.id)).thenReturn(
+        whenever(eventRepository.findSentencesByPersonId(personSummary.id)).thenReturn(
             listOf()
         )
 
-        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf())
+        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf(), ProbabtionHistory(0, 0))
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(expected, response)
         verify(personRepository, times(1)).findSummary(PersonGenerator.OVERVIEW.crn)
-        verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
+        verify(eventRepository, times(1)).findSentencesByPersonId(personSummary.id)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(personRepository)
@@ -108,7 +108,7 @@ class SentenceServiceTest {
 
         whenever(personRepository.findSummary(PersonGenerator.OVERVIEW.crn)).thenReturn(personSummary)
 
-        whenever(eventRepository.findActiveSentencesByPersonId(personSummary.id)).thenReturn(listOf(event))
+        whenever(eventRepository.findSentencesByPersonId(personSummary.id)).thenReturn(listOf(event))
 
         whenever(courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(event.id))
             .thenReturn(CourtAppearanceGenerator.generate(CourtGenerator.DEFAULT))
@@ -168,11 +168,12 @@ class SentenceServiceTest {
                     ),
                     listOf(CourtDocument(1, LocalDate.now(), "Pre Sentence Event"))
                 )
-            )
+            ),
+            ProbabtionHistory(0, 0)
         )
 
         assertEquals(expected, response)
-        verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
+        verify(eventRepository, times(1)).findSentencesByPersonId(personSummary.id)
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
         verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)
