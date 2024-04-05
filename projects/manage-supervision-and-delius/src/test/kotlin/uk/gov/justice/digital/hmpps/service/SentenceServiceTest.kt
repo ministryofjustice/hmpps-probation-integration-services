@@ -69,7 +69,7 @@ class SentenceServiceTest {
             listOf()
         )
 
-        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf(), ProbabtionHistory(0, 0))
+        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf(), ProbationHistory(0, 0))
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(expected, response)
@@ -169,7 +169,7 @@ class SentenceServiceTest {
                     listOf(CourtDocument(1, LocalDate.now(), "Pre Sentence Event"))
                 )
             ),
-            ProbabtionHistory(0, 0)
+            ProbationHistory(0, 0)
         )
 
         assertEquals(expected, response)

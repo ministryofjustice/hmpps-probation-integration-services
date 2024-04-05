@@ -36,7 +36,7 @@ class SentenceService(
                 val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
                 it.toSentence(courtAppearance, additionalSentences, crn)
             },
-            ProbabtionHistory(inactiveEvents.count(), inactiveEvents.count { it.inBreach })
+            ProbationHistory(inactiveEvents.count(), inactiveEvents.count { it.inBreach })
         )
     }
 
