@@ -94,7 +94,7 @@ internal class CreateAppointmentIntTests {
 
         assertThat(appointment.type.code, equalTo(create.type.code))
         assertThat(appointment.date, equalTo(start.toLocalDate()))
-        assertThat(appointment.startTime, isCloseTo(start))
+        assertThat(appointment.startTime!!, isCloseTo(start))
         assertThat(appointment.notes, equalTo(notes))
         assertThat(appointment.externalReference, equalTo(create.urn))
 
