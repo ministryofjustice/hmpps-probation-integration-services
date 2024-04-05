@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 
 @Service
@@ -47,7 +48,7 @@ class AppointmentService(
     private fun uk.gov.justice.digital.hmpps.entity.Appointment.asAppointment(): Appointment =
         Appointment(
             Appointment.Type(type.code, type.description),
-            ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon),
+            ZonedDateTime.of(date, startTime?.toLocalTime() ?: LocalTime.MIDNIGHT, EuropeLondon),
             duration,
             staff.asStaff(),
             location?.asLocation(),
