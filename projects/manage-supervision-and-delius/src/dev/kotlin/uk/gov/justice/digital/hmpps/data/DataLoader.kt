@@ -8,7 +8,12 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_REPORT
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.DEFAULT_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.COURT_DOCUMENT
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -66,31 +71,13 @@ class DataLoader(
             )
         )
         entityManager.persist(CourtGenerator.DEFAULT)
-        val courtAppearance = CourtAppearanceGenerator.generate()
-        entityManager.persist(courtAppearance)
+        entityManager.persist(COURT_APPEARANCE)
 
-        val courtReportType = CourtReportGenerator.DEFAULT_TYPE
-        entityManager.persist(courtReportType)
-        val courtReport = CourtReportGenerator.generate(courtReportType, courtAppearance)
-        val courtDocument = PersonDetailsGenerator.generateCourtDocument(
-            PersonGenerator.OVERVIEW.id,
-            "A003",
-            "court report",
-            "DOCUMENT",
-            courtReport.courtReportId
-        )
+        entityManager.persist(DEFAULT_TYPE)
+        entityManager.persist(COURT_REPORT)
 
-        val eventDocument = PersonDetailsGenerator.generateEventDocument(
-            PersonGenerator.OVERVIEW.id,
-            "A004",
-            "event report",
-            "DOCUMENT",
-            PersonGenerator.EVENT_1.id
-        )
-
-        entityManager.persist(eventDocument)
-        entityManager.persist(courtDocument)
-        entityManager.persist(courtReport)
+        entityManager.persist(EVENT_DOCUMENT)
+        entityManager.persist(COURT_DOCUMENT)
 
         entityManager.persistAll(
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,

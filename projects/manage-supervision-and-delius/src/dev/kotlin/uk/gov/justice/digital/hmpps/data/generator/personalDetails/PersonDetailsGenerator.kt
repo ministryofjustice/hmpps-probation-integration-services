@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_REPORT
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
@@ -195,6 +196,22 @@ object PersonDetailsGenerator {
 
     val DOCUMENT_1 = generateDocument(PERSONAL_DETAILS.id, "A001", "induction.doc", "DOCUMENT")
     val DOCUMENT_2 = generateDocument(PERSONAL_DETAILS.id, "A002", "other.doc", "DOCUMENT")
+
+    val COURT_DOCUMENT = generateCourtDocument(
+        PersonGenerator.OVERVIEW.id,
+        "A003",
+        "court report",
+        "DOCUMENT",
+        COURT_REPORT.courtReportId
+    )
+
+    val EVENT_DOCUMENT = generateEventDocument(
+        PersonGenerator.OVERVIEW.id,
+        "A004",
+        "event report",
+        "DOCUMENT",
+        PersonGenerator.EVENT_1.id
+    )
 
     fun generateContactAddress(
         addressNumber: String,
