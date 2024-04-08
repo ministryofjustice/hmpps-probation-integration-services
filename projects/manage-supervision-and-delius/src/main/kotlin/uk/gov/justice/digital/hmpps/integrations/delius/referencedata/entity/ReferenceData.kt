@@ -18,5 +18,5 @@ class ReferenceData(
     val code: String,
 
     @Column(name = "code_description", length = 500, nullable = false)
-    val description: String
+    val description: String,
 )

@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
@@ -47,6 +48,9 @@ class SentenceServiceTest {
     @Mock
     lateinit var documentRepository: DocumentRepository
 
+    @Mock
+    lateinit var personalContactRepository: PersonalContactRepository
+
     @InjectMocks
     lateinit var service: SentenceService
 
@@ -69,7 +73,7 @@ class SentenceServiceTest {
             listOf()
         )
 
-        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf(), ProbationHistory(0, 0))
+        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf(), ProbationHistory(0, 0, 0))
         val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(expected, response)
@@ -169,7 +173,7 @@ class SentenceServiceTest {
                     listOf(CourtDocument(1, LocalDate.now(), "Pre Sentence Event"))
                 )
             ),
-            ProbationHistory(0, 0)
+            ProbationHistory(0, 0, 0)
         )
 
         assertEquals(expected, response)

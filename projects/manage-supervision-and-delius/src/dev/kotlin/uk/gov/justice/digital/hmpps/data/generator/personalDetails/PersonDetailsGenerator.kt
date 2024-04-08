@@ -128,6 +128,7 @@ object PersonDetailsGenerator {
         "0897676554",
         LocalDate.now(),
         LocalDate.now(),
+        LocalDate.now(),
         RELATIONSHIP_TYPE,
         CONTACT_ADDRESS,
         USER

@@ -31,7 +31,7 @@ class SentenceIntegrationTest {
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            Name("Caroline", "Louise", "Bloggs"), listOf(), ProbationHistory(0, 0)
+            Name("Caroline", "Louise", "Bloggs"), listOf(), ProbationHistory(0, 0, 0)
         )
 
         assertEquals(expected, response)
@@ -85,7 +85,7 @@ class SentenceIntegrationTest {
                     listOf()
                 )
             ),
-            ProbationHistory(2, 2)
+            ProbationHistory(2, 2, 0)
         )
 
         assertEquals(expected, response)

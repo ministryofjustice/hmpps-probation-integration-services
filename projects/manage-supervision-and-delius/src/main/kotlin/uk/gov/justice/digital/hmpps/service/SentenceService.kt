@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
@@ -23,11 +24,13 @@ class SentenceService(
     private val additionalSentenceRepository: AdditionalSentenceRepository,
     private val personRepository: PersonRepository,
     private val requirementRepository: RequirementRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val personalContactRepository: PersonalContactRepository
 ) {
     fun getMostRecentActiveEvent(crn: String): SentenceOverview {
         val person = personRepository.getSummary(crn)
         val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
+        val professionalContacts = personalContactRepository.getByContactType(person.id, "PROF")
 
         return SentenceOverview(
             name = person.toName(),
@@ -36,7 +39,7 @@ class SentenceService(
                 val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
                 it.toSentence(courtAppearance, additionalSentences, crn)
             },
-            ProbationHistory(inactiveEvents.count(), inactiveEvents.count { it.inBreach })
+            ProbationHistory(inactiveEvents.count(), inactiveEvents.count { it.inBreach }, professionalContacts.count())
         )
     }
 
