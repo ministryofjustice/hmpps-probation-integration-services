@@ -18,12 +18,14 @@ object ConvictionEventGenerator {
     val OFFENCE_MAIN_TYPE = Offence(
         IdGenerator.getAndIncrement(),
         "C01",
+        "Murder of a person",
         "Murder"
     )
     val ADDITIONAL_OFFENCE_TYPE = Offence(
         IdGenerator.getAndIncrement(),
         "C02",
-        "Stealing a kitten"
+        "Stealing a kitten",
+        "Theft"
     )
     val DEFAULT_EVENT = ConvictionEventEntity(
         IdGenerator.getAndIncrement(),

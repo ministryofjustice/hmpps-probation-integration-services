@@ -13,6 +13,7 @@ data class Conviction(
 data class Offence(
     val offenceId: Long,
     val description: String,
+    val mainCategoryDescription: String?,
     val mainOffence: Boolean = false
 )
 
@@ -28,6 +29,7 @@ data class Sentence(
 )
 
 data class Custody(
+    val bookingNumber: String?,
     val status: CustodyStatus,
     val keyDates: List<KeyDate>
 )

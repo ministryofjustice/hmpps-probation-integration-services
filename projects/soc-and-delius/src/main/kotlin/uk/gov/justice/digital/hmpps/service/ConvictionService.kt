@@ -46,6 +46,7 @@ class ConvictionService(
                     Offence(
                         convictionEventEntity.mainOffence.id,
                         convictionEventEntity.mainOffence.offence.description,
+                        convictionEventEntity.mainOffence.offence.mainCategoryDescription,
                         true
                     )
                 )
@@ -55,6 +56,7 @@ class ConvictionService(
                     Offence(
                         it.id,
                         it.offence.description,
+                        it.offence.mainCategoryDescription,
                         false
                     )
                 }
@@ -79,6 +81,6 @@ private fun Disposal.asModel(custody: uk.gov.justice.digital.hmpps.entity.Custod
 
 private fun ReferenceData.custodialStatus() = CustodyStatus(code, description)
 private fun uk.gov.justice.digital.hmpps.entity.Custody.custodyModel() =
-    Custody(status.custodialStatus(), keyDates.map { it.toModel() })
+    Custody(prisonerNumber, status.custodialStatus(), keyDates.map { it.toModel() })
 
 private fun KeyDate.toModel() = uk.gov.justice.digital.hmpps.model.KeyDate(type.code, type.description, date)

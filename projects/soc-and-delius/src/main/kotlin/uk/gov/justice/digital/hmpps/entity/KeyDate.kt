@@ -23,6 +23,9 @@ class Custody(
     @Column(name = "disposal_id")
     val disposalId: Long,
 
+    @Column
+    var prisonerNumber: String?,
+
     @ManyToOne
     @JoinColumn(name = "custodial_status_id")
     val status: ReferenceData,

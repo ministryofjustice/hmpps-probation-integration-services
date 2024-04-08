@@ -69,7 +69,7 @@ class ConvictionEventPerson(
 @Immutable
 @Table(name = "disposal")
 @Entity
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -162,7 +162,10 @@ class Offence(
     val code: String,
 
     @Column
-    val description: String
+    val description: String,
+
+    @Column
+    val mainCategoryDescription: String,
 )
 
 interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long> {
