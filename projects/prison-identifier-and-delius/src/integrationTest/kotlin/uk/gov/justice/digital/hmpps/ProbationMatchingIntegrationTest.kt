@@ -47,7 +47,7 @@ internal class ProbationMatchingIntegrationTest {
 
     @Test
     fun `inactive booking is ignored`() {
-        val event = prepEvent("prisoner-received-inactive-booking", wireMockServer.port())
+        val event = prepEvent("prisoner-status-changed-inactive-booking", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
@@ -61,7 +61,7 @@ internal class ProbationMatchingIntegrationTest {
     fun `prisoner received updates identifiers`() {
         withMatchResponse("probation-search-single-result.json")
 
-        val event = prepEvent("prisoner-received", wireMockServer.port())
+        val event = prepEvent("prisoner-status-changed", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(event)
 
         verify(telemetryService).trackEvent(
@@ -90,7 +90,7 @@ internal class ProbationMatchingIntegrationTest {
     fun `multiple matches are refined by sentence date`() {
         withMatchResponse("probation-search-multiple-results.json")
 
-        val event = prepEvent("prisoner-received", wireMockServer.port())
+        val event = prepEvent("prisoner-status-changed", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(event)
 
         verify(telemetryService).trackEvent(
@@ -119,7 +119,7 @@ internal class ProbationMatchingIntegrationTest {
     fun `no matches from probation search`() {
         withMatchResponse("probation-search-no-results.json")
 
-        val event = prepEvent("prisoner-received", wireMockServer.port())
+        val event = prepEvent("prisoner-status-changed", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(event)
 
         verify(telemetryService).trackEvent(
@@ -144,7 +144,7 @@ internal class ProbationMatchingIntegrationTest {
             "prison-api-A0001AA-unmatched-sentence-date.json"
         )
 
-        val event = prepEvent("prisoner-received", wireMockServer.port())
+        val event = prepEvent("prisoner-status-changed", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(event)
 
         verify(telemetryService).trackEvent(

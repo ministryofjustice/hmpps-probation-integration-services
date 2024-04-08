@@ -32,13 +32,15 @@ class Handler(
                 .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findNomsNumber()), message.dryRun)
                 .also { telemetryService.logResult(it, message.dryRun) }
 
-            "prison-offender-events.prisoner.received" -> probationMatchingService
+            "prison-offender-events.prisoner.imprisonment-status-changed" -> probationMatchingService
                 .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findNomsNumber()), messagingDryRun)
                 .also { telemetryService.logResult(it, messagingDryRun) }
 
             "prison-offender-events.prisoner.merged" -> probationMatchingService
                 .replaceIdentifiers(message.oldNoms, message.newNoms, messagingDryRun)
                 .also { telemetryService.logResult(it, messagingDryRun) }
+
+            else -> throw IllegalArgumentException("Unexpected event type: ${notification.eventType}")
         }
     }
 
