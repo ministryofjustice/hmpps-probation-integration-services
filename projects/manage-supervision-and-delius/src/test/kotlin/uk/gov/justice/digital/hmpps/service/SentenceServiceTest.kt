@@ -74,7 +74,7 @@ class SentenceServiceTest {
         )
 
         val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf(), ProbationHistory(0, 0, 0))
-        val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(expected, response)
         verify(personRepository, times(1)).findSummary(PersonGenerator.OVERVIEW.crn)
@@ -136,7 +136,7 @@ class SentenceServiceTest {
             )
         )
 
-        val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
             Name("TestName", surname = "TestSurname"),

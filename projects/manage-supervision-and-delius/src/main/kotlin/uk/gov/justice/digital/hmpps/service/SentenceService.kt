@@ -27,7 +27,7 @@ class SentenceService(
     private val documentRepository: DocumentRepository,
     private val personalContactRepository: PersonalContactRepository
 ) {
-    fun getMostRecentActiveEvent(crn: String): SentenceOverview {
+    fun getEvents(crn: String): SentenceOverview {
         val person = personRepository.getSummary(crn)
         val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
         val professionalContacts = personalContactRepository.getByContactType(person.id, "PROF")

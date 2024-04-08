@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -19,6 +20,7 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["logging.level.org.hibernate.SQL=DEBUG", "logging.level.org.hibernate.orm.jdbc.bind=TRACE"])
 class SentenceIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -67,8 +69,8 @@ class SentenceIntegrationTest {
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
                     listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1))),
                     listOf(
-                        CourtDocument(115, LocalDate.now().minusDays(1), "court report"),
-                        CourtDocument(116, LocalDate.now().minusDays(3), "event report")
+                        CourtDocument(118, LocalDate.now().minusDays(1), "court report"),
+                        CourtDocument(119, LocalDate.now().minusDays(3), "event report")
                     )
                 ),
                 Sentence(
@@ -85,7 +87,7 @@ class SentenceIntegrationTest {
                     listOf()
                 )
             ),
-            ProbationHistory(2, 2, 0)
+            ProbationHistory(2, 2, 1)
         )
 
         assertEquals(expected, response)

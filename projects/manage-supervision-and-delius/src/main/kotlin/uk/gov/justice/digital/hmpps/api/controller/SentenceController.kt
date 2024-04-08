@@ -17,5 +17,5 @@ class SentenceController(private val sentenceService: SentenceService) {
 
     @GetMapping
     @Operation(summary = "Display the most recent ‘Active Event’ ")
-    fun getOverview(@PathVariable crn: String) = sentenceService.getMostRecentActiveEvent(crn)
+    fun getOverview(@PathVariable crn: String) = sentenceService.getEvents(crn)
 }

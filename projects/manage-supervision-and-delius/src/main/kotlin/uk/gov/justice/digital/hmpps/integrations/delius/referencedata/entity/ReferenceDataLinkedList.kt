@@ -15,8 +15,8 @@ class ReferenceDataLinkedList(
 @Embeddable
 class ReferenceDataLinkedListId(
     @Column(name = "STANDARD_REFERENCE_DATA1")
-    val data1: String,
+    val data1: Long,
 
     @Column(name = "STANDARD_REFERENCE_DATA2")
-    val data2: String
+    val data2: Long
 ) : Serializable
