@@ -32,7 +32,7 @@ jobs:
           summary: The following cases failed to process in Delius over the last 7 days. Please check and manually correct the cases if required.
           event_name: ApprovedPremisesFailureReport
           project_name: approved-premises-and-delius
-          slack_channel: topic-pi-approved-premises
+          slack_channel: topic-pi-cas123
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
           app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
           app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
