@@ -19,6 +19,7 @@ object KeyDateGenerator {
     val CUSTODY = Custody(
         IdGenerator.getAndIncrement(),
         ConvictionEventGenerator.DISPOSAL_2.id,
+        "1234BN",
         CUSTODY_STATUS
     )
     val KEYDATE = KeyDate(
@@ -30,6 +31,7 @@ object KeyDateGenerator {
     val CUSTODY_1 = Custody(
         IdGenerator.getAndIncrement(),
         ConvictionEventGenerator.DISPOSAL.id,
+        "2234BN",
         CUSTODY_STATUS
     )
     val KEYDATE_1 = KeyDate(
