@@ -22,7 +22,7 @@ class QueuePublisher(
     @Value("\${messaging.producer.concurrency:1000}") private val limit: Int
 ) : NotificationPublisher {
 
-    private val permit = Semaphore(limit)
+    private val permit = Semaphore(limit, true)
     override fun publish(notification: Notification<*>) {
         notification.message?.also { _ ->
             permit.acquire()

@@ -66,11 +66,13 @@ internal class ConvictionsIntegrationTest {
                     Offence(
                         ConvictionEventGenerator.MAIN_OFFENCE.id,
                         ConvictionEventGenerator.OFFENCE_MAIN_TYPE.description,
+                        ConvictionEventGenerator.OFFENCE_MAIN_TYPE.mainCategoryDescription,
                         true
                     ),
                     Offence(
                         ConvictionEventGenerator.OTHER_OFFENCE.id,
                         ConvictionEventGenerator.ADDITIONAL_OFFENCE_TYPE.description,
+                        ConvictionEventGenerator.ADDITIONAL_OFFENCE_TYPE.mainCategoryDescription,
                         false
                     )
                 ),
@@ -79,9 +81,10 @@ internal class ConvictionsIntegrationTest {
                     ConvictionEventGenerator.DISPOSAL.startDate,
                     null,
                     Custody(
+                        KeyDateGenerator.CUSTODY_1.prisonerNumber,
                         CustodyStatus(
-                            KeyDateGenerator.CUSTODY.status.code,
-                            KeyDateGenerator.CUSTODY.status.description
+                            KeyDateGenerator.CUSTODY_1.status.code,
+                            KeyDateGenerator.CUSTODY_1.status.description
                         ),
                         listOf(
                             KeyDate(

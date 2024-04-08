@@ -13,13 +13,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 
 @Entity
@@ -41,7 +36,7 @@ class Appointment(
     val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    val startTime: ZonedDateTime?,
 
     @Column(name = "contact_end_time")
     val endTime: ZonedDateTime?,
@@ -102,7 +97,7 @@ class Appointment(
 
     val duration: Duration
         get() =
-            if (endTime != null) {
+            if (startTime != null && endTime != null) {
                 val sTime = startTime.toLocalTime()
                 val eTime = endTime.toLocalTime()
                 if (sTime <= eTime) {

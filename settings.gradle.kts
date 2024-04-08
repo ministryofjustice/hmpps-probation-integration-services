@@ -94,11 +94,11 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.enterprise") version "3.16.2" }
-gradleEnterprise {
+plugins { id("com.gradle.develocity") version "3.17" }
+develocity {
     buildScan {
-        publishAlwaysIf(!System.getenv("CI").isNullOrEmpty())
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }
+        termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
+        termsOfUseAgree.set("yes")
     }
 }
