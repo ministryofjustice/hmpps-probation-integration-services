@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
 import java.time.LocalDate
 
@@ -85,6 +86,10 @@ class Disposal(
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
+
+    @ManyToOne
+    @JoinColumn(name = "disposal_termination_reason_id")
+    val terminationReason: ReferenceData? = null,
 
     @Column(name = "entered_notional_end_date")
     val enteredEndDate: LocalDate? = null,

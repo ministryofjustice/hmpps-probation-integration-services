@@ -1,8 +1,15 @@
 package uk.gov.justice.digital.hmpps.api.model.overview
 
-data class Activity(
-    val acceptableAbsences: Int,
-    val complied: Int,
-    val nationalStandardsAppointments: Int,
-    val rescheduled: Int
+data class ActivityCount(
+    val unacceptableAbsenceCount: Int,
+    val attendedButDidNotComplyCount: Int,
+    val outcomeNotRecordedCount: Int,
+    val waitingForEvidenceCount: Int,
+    val rescheduledCount: Int,
+    val absentCount: Int,
+    val rescheduledByStaffCount: Int,
+    val rescheduledByPersonOnProbationCount: Int,
+    val lettersCount: Int,
+    val nationalStandardAppointmentsCount: Int,
+    val compliedAppointmentsCount: Int,
 )

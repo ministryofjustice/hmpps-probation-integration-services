@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.overview.*
 import uk.gov.justice.digital.hmpps.api.model.overview.Offence
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreaches
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance
@@ -19,6 +21,7 @@ class OverviewService(
     private val provisionRepository: ProvisionRepository,
     private val disabilityRepository: DisabilityRepository,
     private val personalCircumstanceRepository: PersonCircumstanceRepository,
+    private val nsiRepository: NsiRepository,
     private val eventRepository: EventRepository
 ) {
 
@@ -37,9 +40,10 @@ class OverviewService(
         val events = eventRepository.findByPersonId(person.id)
         val activeEvents = events.filter { it.active }
         val sentences = activeEvents.map { it.toSentence() }
-        val activeEventsBreached = activeEvents.count { it.inBreach }
-        val previousOrders = events.count { !it.active && it.disposal != null }
-        val previousOrdersBreached = events.count { !it.active && it.disposal != null && it.inBreach }
+        val allBreaches = nsiRepository.getAllBreaches(person.id)
+        val previousOrders = events.filter { !it.active && it.disposal != null }
+        val previousOrdersBreached = allBreaches.filter { it.eventId in previousOrders.map { it.id } }.size
+        val compliance = toSentenceCompliance(previousAppointments.map { it.toActivity() }, allBreaches)
         val registrations = registrationRepository.findByPersonId(person.id)
 
 
@@ -48,19 +52,12 @@ class OverviewService(
             absencesWithoutEvidence = absentWithoutEvidence,
             personalDetails = personalDetails,
             schedule = schedule,
-            previousOrders = PreviousOrders(previousOrdersBreached, previousOrders),
+            previousOrders = PreviousOrders(previousOrdersBreached, previousOrders.size),
             sentences = sentences.mapNotNull { it },
-            activity = null, //ToDo
-            compliance = Compliance(currentBreaches = activeEventsBreached, failureToComplyInLast12Months = 0), //ToDo
+            activity = toSentenceActivityCounts(previousAppointments.map { it.toActivity() }),
+            compliance = compliance,
             registrations = registrations.map { it.type.description }
         )
-    }
-
-    private fun getRar(disposalId: Long): Rar {
-        val rarDays = requirementRepository.getRarDays(disposalId)
-        val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
-        val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
-        return Rar(completed = completedDays, scheduled = scheduledDays)
     }
 
     fun Disposal.toOrder() =
@@ -72,7 +69,7 @@ class OverviewService(
             eventNumber = eventNumber,
             additionalOffences = additionalOffences.map { it.offence.toOffence() },
             order = disposal?.toOrder(),
-            rar = disposal?.let { getRar(it.id) })
+            rar = disposal?.let { requirementRepository.getRar(it.id) })
     }
 
     fun Person.toPersonalDetails(
