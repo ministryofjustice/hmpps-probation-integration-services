@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 
 @Immutable
 @Entity
@@ -120,6 +121,13 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         """, nativeQuery = true
     )
     fun getRequirements(crn: String, eventNumber: String): List<RequirementDetails>
+}
+
+fun RequirementRepository.getRar(disposalId: Long): Rar {
+    val rarDays = getRarDays(disposalId)
+    val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
+    val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
+    return Rar(completed = completedDays, scheduled = scheduledDays)
 }
 
 @Immutable

@@ -8,6 +8,7 @@ import java.time.ZonedDateTime
 data class Activity(
 
     val id: Long,
+    val eventNumber: String?,
     val type: String,
     val startDateTime: ZonedDateTime,
     val endDateTime: ZonedDateTime?,
@@ -40,6 +41,7 @@ data class Activity(
     val isPhoneCallFromPop: Boolean? = false,
     val isEmailOrTextToPop: Boolean? = false,
     val isPhoneCallToPop: Boolean? = false,
+    val isPastAppointment: Boolean = (isAppointment && ZonedDateTime.now() > startDateTime),
     val lastUpdated: ZonedDateTime,
     val lastUpdatedBy: Name
 )

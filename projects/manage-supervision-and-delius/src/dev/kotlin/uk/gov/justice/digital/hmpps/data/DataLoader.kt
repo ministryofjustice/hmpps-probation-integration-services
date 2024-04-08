@@ -131,7 +131,12 @@ class DataLoader(
             PersonGenerator.REGISTRATION_REVIEW_2,
             PersonGenerator.REGISTRATION_REVIEW_3,
             PersonGenerator.DEREGISTRATION_1,
-            PersonGenerator.MAIN_CAT_F_TYPE
+            PersonGenerator.MAIN_CAT_F_TYPE,
+            PersonGenerator.NSI_BREACH_TYPE,
+            PersonGenerator.NSI_STATUS,
+            PersonGenerator.BREACH_PREVIOUS_ORDER_1,
+            PersonGenerator.BREACH_PREVIOUS_ORDER_2,
+            PersonGenerator.BREACH_ON_ACTIVE_ORDER
         )
 
         personalDetailsData()
