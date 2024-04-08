@@ -8,8 +8,9 @@ dependencies {
 
     api(libs.bundles.aws.messaging)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(project(":libs:dev-tools"))
     testImplementation(libs.bundles.mockito)
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa")
 }
 
