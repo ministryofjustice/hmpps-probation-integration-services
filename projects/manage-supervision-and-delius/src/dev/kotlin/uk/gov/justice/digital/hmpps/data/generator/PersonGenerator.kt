@@ -2,6 +2,9 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiStatus
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.DeRegistration
@@ -23,7 +26,7 @@ object PersonGenerator {
         notes = "overview",
         additionalOffences = emptyList(),
         court = CourtGenerator.BHAM,
-        convictionDate = LocalDate.now()
+        convictionDate = LocalDate.now(),
     )
     val EVENT_2 = generateEvent(
         OVERVIEW,
@@ -289,7 +292,7 @@ object PersonGenerator {
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Disposal(event, date, length, type, enteredEndDate, notionalEndDate, active, softDeleted, id)
+    ) = Disposal(event, date, length, type, null, enteredEndDate, notionalEndDate, active, softDeleted, id)
 
     fun generateOffence(
         description: String,
@@ -356,5 +359,31 @@ object PersonGenerator {
         notes: String?,
         createdDate: ZonedDateTime,
     ) = RegistrationReview(riskFlag, date, reviewDue, notes, true, false, createdDate, IdGenerator.getAndIncrement())
+
+    val NSI_BREACH_TYPE = generateNsiType("BRE")
+    val NSI_STATUS = generateNsiStatus("STATUS1", "An NSI Status")
+    val BREACH_PREVIOUS_ORDER_1 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_1.event.id, NSI_BREACH_TYPE, NSI_STATUS)
+    val BREACH_PREVIOUS_ORDER_2 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_2.event.id, NSI_BREACH_TYPE, NSI_STATUS)
+    val BREACH_ON_ACTIVE_ORDER = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_BREACH_TYPE, NSI_STATUS)
+
+    fun generateNsiType(code: String) = NsiType(id = IdGenerator.getAndIncrement(), code = code)
+    fun generateNsiStatus(code: String, description: String) =
+        NsiStatus(id = IdGenerator.getAndIncrement(), code = code, description = description)
+
+    fun generateNsi(
+        personId: Long,
+        eventId: Long,
+        type: NsiType,
+        status: NsiStatus
+
+    ) = Nsi(
+        id = IdGenerator.getAndIncrement(),
+        personId = personId,
+        actualStartDate = LocalDate.now().minusDays(5),
+        expectedStartDate = LocalDate.now().minusDays(5),
+        eventId = eventId,
+        type = type,
+        nsiStatus = status
+    )
 }
 

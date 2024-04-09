@@ -76,7 +76,7 @@ fun Contact.toActivity() = Activity(
     isInitial = isInitial(),
     lastUpdated = lastUpdated,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
-    wasAbsent = outcome?.outcomeAttendance,
+    wasAbsent = outcome?.outcomeAttendance == false,
     nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
     notes = notes,
     location = location?.toOfficeAddress(),
@@ -97,7 +97,8 @@ fun Contact.toActivity() = Activity(
     isEmailOrTextFromPop = isEmailOrTextFromPop(),
     isEmailOrTextToPop = isEmailOrTextToPop(),
     isPhoneCallFromPop = isPhoneCallFromPop(),
-    isPhoneCallToPop = isPhoneCallToPop()
+    isPhoneCallToPop = isPhoneCallToPop(),
+    eventNumber = event?.eventNumber
 )
 
 fun ContactDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)

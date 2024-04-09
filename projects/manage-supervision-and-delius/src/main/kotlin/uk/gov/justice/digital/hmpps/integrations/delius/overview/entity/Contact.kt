@@ -27,6 +27,10 @@ class Contact(
     val personId: Long,
 
     @ManyToOne
+    @JoinColumn(name = "event_id")
+    val event: Event? = null,
+
+    @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
 
@@ -209,6 +213,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     """
     )
     fun findByPersonId(personId: Long): List<Contact>
+
+    fun findByPersonIdAndEventIdIn(personId: Long, eventId: List<Long>): List<Contact>
 
     fun findByPersonIdAndId(personId: Long, id: Long): Contact?
 

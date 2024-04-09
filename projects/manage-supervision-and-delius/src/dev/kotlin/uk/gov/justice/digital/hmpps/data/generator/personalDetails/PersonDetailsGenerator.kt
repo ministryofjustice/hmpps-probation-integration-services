@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_REPORT
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER

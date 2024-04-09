@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -72,6 +73,10 @@ class DataLoader(
         entityManager.persist(CourtReportGenerator.EVENT_DOCUMENT)
         entityManager.persist(CourtReportGenerator.COURT_DOCUMENT)
         entityManager.persist(CourtReportGenerator.COURT_REPORT)
+        entityManager.persist(COURT_APPEARANCE)
+
+        entityManager.persist(CourtReportGenerator.DEFAULT_TYPE)
+        entityManager.persist(CourtReportGenerator.COURT_REPORT)
 
         entityManager.persistAll(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
@@ -90,6 +95,7 @@ class DataLoader(
             ContactGenerator.FIRST_NON_APPT_CONTACT,
             ContactGenerator.NEXT_APPT_CONTACT,
             ContactGenerator.FIRST_APPT_CONTACT,
+            ContactGenerator.ACCEPTABLE_ABSENCE,
             ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT,
             ContactGenerator.CONTACT_DOCUMENT_1,
             ContactGenerator.CONTACT_DOCUMENT_2,
@@ -114,7 +120,12 @@ class DataLoader(
             PersonGenerator.REGISTRATION_REVIEW_2,
             PersonGenerator.REGISTRATION_REVIEW_3,
             PersonGenerator.DEREGISTRATION_1,
-            PersonGenerator.MAIN_CAT_F_TYPE
+            PersonGenerator.MAIN_CAT_F_TYPE,
+            PersonGenerator.NSI_BREACH_TYPE,
+            PersonGenerator.NSI_STATUS,
+            PersonGenerator.BREACH_PREVIOUS_ORDER_1,
+            PersonGenerator.BREACH_PREVIOUS_ORDER_2,
+            PersonGenerator.BREACH_ON_ACTIVE_ORDER
         )
 
         personalDetailsData()

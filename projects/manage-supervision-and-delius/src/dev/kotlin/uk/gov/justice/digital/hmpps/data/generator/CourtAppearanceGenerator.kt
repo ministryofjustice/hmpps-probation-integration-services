@@ -7,6 +7,7 @@ import java.time.LocalDate
 
 object CourtAppearanceGenerator {
 
+    val COURT_APPEARANCE = generate()
     fun generate(
         court: Court = CourtGenerator.DEFAULT,
         date: LocalDate = LocalDate.now().minusMonths(5),

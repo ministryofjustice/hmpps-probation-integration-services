@@ -65,4 +65,5 @@ object CourtReportGenerator {
         doc.type = documentType
         return doc
     }
+
 }
