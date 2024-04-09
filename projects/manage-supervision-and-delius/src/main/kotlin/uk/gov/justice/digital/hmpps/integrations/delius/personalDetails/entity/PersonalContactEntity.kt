@@ -79,35 +79,8 @@ interface PersonalContactRepository : JpaRepository<PersonalContactEntity, Long>
     """
     )
     fun findById(crn: String, contactId: Long): PersonalContactEntity?
-
-    @Query(
-        """
-            SELECT pc.FIRST_NAME, pc.OTHER_NAMES, pc.SURNAME, pc.MOBILE_NUMBER, pc.EMAIL_ADDRESS, pc.END_DATE
-            FROM PERSONAL_CONTACT pc
-            JOIN OFFENDER o
-            ON o.OFFENDER_ID = pc.OFFENDER_ID
-            JOIN R_STANDARD_REFERENCE_LIST rsrl
-            ON rsrl.STANDARD_REFERENCE_LIST_ID = pc.RELATIONSHIP_TYPE_ID 
-            JOIN R_LINKED_LIST rll
-            ON rll.STANDARD_REFERENCE_DATA1 = pc.RELATIONSHIP_TYPE_ID
-            JOIN R_STANDARD_REFERENCE_LIST rsrl2
-            ON RSRL2.STANDARD_REFERENCE_LIST_ID = rll.STANDARD_REFERENCE_DATA2
-            WHERE o.OFFENDER_ID = :personId
-            AND rsrl2.CODE_VALUE = :contactType
-    """, nativeQuery = true
-    )
-    fun getByContactType(personId: Long, contactType: String): List<ContactDetails>
 }
 
 fun PersonalContactRepository.getContact(crn: String, id: Long): PersonalContactEntity =
     findById(crn, id) ?: throw NotFoundException("PersonalContact", "id", id)
-
-interface ContactDetails {
-    val firstName: String
-    val otherNames: String?
-    val surname: String
-    val mobileNumber: String?
-    val emailAddress: String?
-    val endDate: LocalDate?
-}
 

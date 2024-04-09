@@ -4,10 +4,11 @@ import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataLinkedList
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataLinkedListId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -119,11 +120,6 @@ object PersonDetailsGenerator {
 
     val RELATIONSHIP_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Family Member")
 
-    val DATA1 = IdGenerator.getAndIncrement();
-    val DATA2 = IdGenerator.getAndIncrement();
-    val RELATIONSHIP_TYPE_GP = ReferenceData(DATA1, "RT02", "GP")
-    val RELATIONSHIP_TYPE_PROF = ReferenceData(DATA2, "PROF", "Professional")
-    val REF_DATA_LINK = ReferenceDataLinkedList(ReferenceDataLinkedListId(DATA1, DATA2))
 
     val CONTACT_ADDRESS = generateContactAddress("31", "Test Steet", "Test town", "Test County", "NE1 56A")
     val PERSONAL_CONTACT_1 = PersonalContactEntity(
@@ -139,23 +135,6 @@ object PersonDetailsGenerator {
         LocalDate.now(),
         LocalDate.now(),
         RELATIONSHIP_TYPE,
-        CONTACT_ADDRESS,
-        USER
-    )
-
-    val PROFESSIONAL_CONTACT_1 = PersonalContactEntity(
-        IdGenerator.getAndIncrement(),
-        PersonGenerator.OVERVIEW,
-        "Bruce",
-        "John",
-        "Smith",
-        "Doctor",
-        "email.test",
-        "0897676554",
-        LocalDate.now(),
-        LocalDate.now(),
-        LocalDate.now(),
-        RELATIONSHIP_TYPE_GP,
         CONTACT_ADDRESS,
         USER
     )

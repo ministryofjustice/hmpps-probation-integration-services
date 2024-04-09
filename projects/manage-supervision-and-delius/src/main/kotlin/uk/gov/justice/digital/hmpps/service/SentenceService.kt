@@ -10,11 +10,7 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
 @Service
@@ -25,12 +21,11 @@ class SentenceService(
     private val personRepository: PersonRepository,
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
-    private val personalContactRepository: PersonalContactRepository
+    private val offenderManagerRepository: OffenderManagerRepository
 ) {
     fun getEvents(crn: String): SentenceOverview {
-        val person = personRepository.getSummary(crn)
+        val person = personRepository.getPerson(crn)
         val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
-        val professionalContacts = personalContactRepository.getByContactType(person.id, "PROF")
 
         return SentenceOverview(
             name = person.toName(),
@@ -39,7 +34,11 @@ class SentenceService(
                 val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
                 it.toSentence(courtAppearance, additionalSentences, crn)
             },
-            ProbationHistory(inactiveEvents.count(), inactiveEvents.count { it.inBreach }, professionalContacts.count())
+            ProbationHistory(
+                inactiveEvents.count(),
+                inactiveEvents.count { it.inBreach },
+                offenderManagerRepository.countOffenderManagersByPersonAndEndDateIsNotNull(person)
+            )
         )
     }
 
@@ -68,7 +67,7 @@ class SentenceService(
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
 
-    fun PersonSummaryEntity.toName() =
+    fun Person.toName() =
         Name(forename, secondName, surname)
 
     fun Disposal.toOrder() =

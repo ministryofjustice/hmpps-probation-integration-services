@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtReportDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.EventDocument
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtReport
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtReportType
 import java.time.ZonedDateTime

@@ -8,15 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_APPEARANCE
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_DOCUMENT
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_REPORT
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROFESSIONAL_CONTACT_1
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.REF_DATA_LINK
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.RELATIONSHIP_TYPE_GP
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.RELATIONSHIP_TYPE_PROF
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -75,18 +67,15 @@ class DataLoader(
         )
         entityManager.persist(CourtGenerator.DEFAULT)
 
-        entityManager.persist(COURT_APPEARANCE)
+        entityManager.persist(CourtReportGenerator.COURT_APPEARANCE)
         entityManager.persist(CourtReportGenerator.DEFAULT_TYPE)
-        entityManager.persist(EVENT_DOCUMENT)
-        entityManager.persist(COURT_DOCUMENT)
-        entityManager.persist(COURT_REPORT)
-
-        entityManager.persist(RELATIONSHIP_TYPE_GP)
-        entityManager.persist(RELATIONSHIP_TYPE_PROF)
-        entityManager.persist(REF_DATA_LINK)
-        entityManager.persist(PROFESSIONAL_CONTACT_1)
+        entityManager.persist(CourtReportGenerator.EVENT_DOCUMENT)
+        entityManager.persist(CourtReportGenerator.COURT_DOCUMENT)
+        entityManager.persist(CourtReportGenerator.COURT_REPORT)
 
         entityManager.persistAll(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
+            OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
             PersonGenerator.ACTIVE_ORDER,
             PersonGenerator.INACTIVE_ORDER_1,
