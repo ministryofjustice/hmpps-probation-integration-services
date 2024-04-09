@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 object ContactGenerator {
@@ -121,7 +120,8 @@ object ContactGenerator {
         requirement: Requirement? = null,
         notes: String? = null,
         action: EnforcementAction? = null,
-        startTime: ZonedDateTime? = ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone)
+        startTime: ZonedDateTime? = ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone),
+        event: Event = PersonGenerator.EVENT_1
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         personId = person.id,
@@ -138,7 +138,8 @@ object ContactGenerator {
         staff = DEFAULT_STAFF,
         location = LOCATION_BRK_1,
         notes = notes,
-        action = action
+        action = action,
+        event = event
     )
 
     private fun generateContactType(code: String, attendance: Boolean, description: String) =

@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.FIRST_APPT_C
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import java.time.ZonedDateTime
 
@@ -43,6 +44,9 @@ internal class OverviewServiceTest {
     @Mock
     lateinit var personalCircumstanceRepository: PersonCircumstanceRepository
 
+    @Mock
+    lateinit var nsiRepository: NsiRepository
+
     @InjectMocks
     lateinit var service: OverviewService
 
@@ -60,7 +64,12 @@ internal class OverviewServiceTest {
         whenever(provisionRepository.findByPersonId(any())).thenReturn(emptyList())
         whenever(disabilityRepository.findByPersonId(any())).thenReturn(emptyList())
         whenever(personalCircumstanceRepository.findCurrentCircumstances(any())).thenReturn(PersonGenerator.PERSONAL_CIRCUMSTANCES)
-
+        whenever(nsiRepository.findByPersonIdAndTypeCode(any(), any())).thenReturn(
+            listOf(
+                PersonGenerator.BREACH_PREVIOUS_ORDER_1,
+                PersonGenerator.BREACH_PREVIOUS_ORDER_2
+            )
+        )
         whenever(contactRepository.findUpComingAppointments(any(), any(), any())).thenReturn(
             listOf(FIRST_APPT_CONTACT)
         )
