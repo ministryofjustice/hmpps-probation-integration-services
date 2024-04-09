@@ -7,14 +7,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_DOCUMENT
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.COURT_DOCUMENT
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -33,7 +34,7 @@ class SentenceIntegrationTest {
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            Name("Caroline", "Louise", "Bloggs"), listOf()
+            Name("Caroline", "Louise", "Bloggs"), listOf(), ProbationHistory(0, null, 0, 0)
         )
 
         assertEquals(expected, response)
@@ -44,6 +45,7 @@ class SentenceIntegrationTest {
         val response = mockMvc
             .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
+            .andDo(print())
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
@@ -86,7 +88,8 @@ class SentenceIntegrationTest {
                     listOf(),
                     listOf()
                 )
-            )
+            ),
+            ProbationHistory(2, LocalDate.of(2023, 4, 9), 2, 1)
         )
 
         assertEquals(expected, response)

@@ -10,10 +10,8 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearance
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
 @Service
@@ -23,18 +21,27 @@ class SentenceService(
     private val additionalSentenceRepository: AdditionalSentenceRepository,
     private val personRepository: PersonRepository,
     private val requirementRepository: RequirementRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val offenderManagerRepository: OffenderManagerRepository
 ) {
-    fun getMostRecentActiveEvent(crn: String): SentenceOverview {
-        val person = personRepository.getSummary(crn)
-        val events = eventRepository.findActiveSentencesByPersonId(person.id)
+    fun getEvents(crn: String): SentenceOverview {
+        val person = personRepository.getPerson(crn)
+        val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
+
         return SentenceOverview(
             name = person.toName(),
-            sentences = events.map {
+            sentences = activeEvents.map {
                 val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
                 val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
                 it.toSentence(courtAppearance, additionalSentences, crn)
-            })
+            },
+            ProbationHistory(
+                inactiveEvents.count(),
+                getMostRecentTerminatedDateFromInactiveEvents(inactiveEvents),
+                inactiveEvents.count { it.inBreach },
+                offenderManagerRepository.countOffenderManagersByPersonAndEndDateIsNotNull(person)
+            )
+        )
     }
 
     fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>, crn: String) =
@@ -62,7 +69,7 @@ class SentenceService(
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
 
-    fun PersonSummaryEntity.toName() =
+    fun Person.toName() =
         Name(forename, secondName, surname)
 
     fun Disposal.toOrder() =
@@ -84,4 +91,11 @@ class SentenceService(
     }
 
     fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)
+
+    fun getMostRecentTerminatedDateFromInactiveEvents(events: List<Event>): LocalDate? {
+        if (events.isNotEmpty()) {
+            return events.sortedByDescending { it.disposal?.terminationDate }[0].disposal?.terminationDate
+        }
+        return null
+    }
 }

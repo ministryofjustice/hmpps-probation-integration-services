@@ -71,8 +71,8 @@ object PersonGenerator {
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
     val ACTIVE_ORDER = generateDisposal(EVENT_1, length = 12)
 
-    val INACTIVE_ORDER_1 = generateDisposal(INACTIVE_EVENT_1)
-    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2)
+    val INACTIVE_ORDER_1 = generateDisposal(INACTIVE_EVENT_1, LocalDate.of(2023, 4, 8))
+    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.of(2023, 4, 9))
 
     val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
     val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(
@@ -284,6 +284,7 @@ object PersonGenerator {
 
     fun generateDisposal(
         event: Event,
+        terminationDate: LocalDate? = null,
         date: LocalDate = LocalDate.now().minusDays(14),
         length: Long? = null,
         type: DisposalType = DEFAULT_DISPOSAL_TYPE,
@@ -292,7 +293,19 @@ object PersonGenerator {
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Disposal(event, date, length, type, null, enteredEndDate, notionalEndDate, active, softDeleted, id)
+    ) = Disposal(
+        event,
+        date,
+        length,
+        type,
+        null,
+        enteredEndDate,
+        notionalEndDate,
+        terminationDate,
+        active,
+        softDeleted,
+        id
+    )
 
     fun generateOffence(
         description: String,

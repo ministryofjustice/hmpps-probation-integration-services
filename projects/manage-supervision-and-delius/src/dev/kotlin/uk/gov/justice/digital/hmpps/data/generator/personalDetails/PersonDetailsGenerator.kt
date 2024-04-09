@@ -5,7 +5,10 @@ import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -117,6 +120,7 @@ object PersonDetailsGenerator {
     )
 
     val RELATIONSHIP_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Family Member")
+
     val CONTACT_ADDRESS = generateContactAddress("31", "Test Steet", "Test town", "Test County", "NE1 56A")
     val PERSONAL_CONTACT_1 = PersonalContactEntity(
         IdGenerator.getAndIncrement(),
@@ -127,6 +131,7 @@ object PersonDetailsGenerator {
         "Brother",
         "email.test",
         "0897676554",
+        LocalDate.now(),
         LocalDate.now(),
         LocalDate.now(),
         RELATIONSHIP_TYPE,
@@ -196,22 +201,6 @@ object PersonDetailsGenerator {
 
     val DOCUMENT_1 = generateDocument(PERSONAL_DETAILS.id, "A001", "induction.doc", "DOCUMENT")
     val DOCUMENT_2 = generateDocument(PERSONAL_DETAILS.id, "A002", "other.doc", "DOCUMENT")
-
-    val COURT_DOCUMENT = generateCourtDocument(
-        PersonGenerator.OVERVIEW.id,
-        "A003",
-        "court report",
-        "DOCUMENT",
-        COURT_REPORT.courtReportId
-    )
-
-    val EVENT_DOCUMENT = generateEventDocument(
-        PersonGenerator.OVERVIEW.id,
-        "A004",
-        "event report",
-        "DOCUMENT",
-        PersonGenerator.EVENT_1.id
-    )
 
     fun generateContactAddress(
         addressNumber: String,
@@ -312,42 +301,6 @@ object PersonDetailsGenerator {
         val doc = PersonDocument()
         doc.id = IdGenerator.getAndIncrement()
         doc.lastUpdated = ZonedDateTime.now().minusDays(1)
-        doc.alfrescoId = alfrescoId
-        doc.name = name
-        doc.personId = personId
-        doc.primaryKeyId = primaryKeyId
-        doc.type = documentType
-        return doc
-    }
-
-    fun generateCourtDocument(
-        personId: Long,
-        alfrescoId: String,
-        name: String,
-        documentType: String,
-        primaryKeyId: Long? = null
-    ): CourtReportDocument {
-        val doc = CourtReportDocument()
-        doc.id = IdGenerator.getAndIncrement()
-        doc.lastUpdated = ZonedDateTime.now().minusDays(1)
-        doc.alfrescoId = alfrescoId
-        doc.name = name
-        doc.personId = personId
-        doc.primaryKeyId = primaryKeyId
-        doc.type = documentType
-        return doc
-    }
-
-    fun generateEventDocument(
-        personId: Long,
-        alfrescoId: String,
-        name: String,
-        documentType: String,
-        primaryKeyId: Long? = null
-    ): EventDocument {
-        val doc = EventDocument()
-        doc.id = IdGenerator.getAndIncrement()
-        doc.lastUpdated = ZonedDateTime.now().minusDays(3)
         doc.alfrescoId = alfrescoId
         doc.name = name
         doc.personId = personId
