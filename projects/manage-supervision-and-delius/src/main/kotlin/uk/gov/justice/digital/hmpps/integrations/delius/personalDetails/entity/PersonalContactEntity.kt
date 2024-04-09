@@ -45,6 +45,9 @@ class PersonalContactEntity(
     @Column(name = "start_date")
     val startDate: LocalDate?,
 
+    @Column(name = "end_date")
+    val endDate: LocalDate?,
+
     @Column(name = "last_updated_datetime")
     val lastUpdated: LocalDate,
 
@@ -80,5 +83,4 @@ interface PersonalContactRepository : JpaRepository<PersonalContactEntity, Long>
 
 fun PersonalContactRepository.getContact(crn: String, id: Long): PersonalContactEntity =
     findById(crn, id) ?: throw NotFoundException("PersonalContact", "id", id)
-
 

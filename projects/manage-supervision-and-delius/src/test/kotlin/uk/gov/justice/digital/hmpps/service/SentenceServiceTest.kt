@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -23,7 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.D
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
-import uk.gov.justice.digital.hmpps.utils.Summary
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -47,34 +46,31 @@ class SentenceServiceTest {
     @Mock
     lateinit var documentRepository: DocumentRepository
 
+    @Mock
+    lateinit var offenderManagerRepository: OffenderManagerRepository
+
     @InjectMocks
     lateinit var service: SentenceService
 
-    private lateinit var personSummary: Summary
-
-    @BeforeEach
-    fun setup() {
-        personSummary = Summary(
-            id = 1,
-            forename = "TestName",
-            surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
-        )
-    }
 
     @Test
     fun `no active sentences`() {
 
-        whenever(personRepository.findSummary(PersonGenerator.OVERVIEW.crn)).thenReturn(personSummary)
-        whenever(eventRepository.findActiveSentencesByPersonId(personSummary.id)).thenReturn(
+        whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(
             listOf()
         )
+        whenever(offenderManagerRepository.countOffenderManagersByPersonAndEndDateIsNotNull(PersonGenerator.OVERVIEW)).thenReturn(
+            0
+        )
 
-        val expected = SentenceOverview(Name("TestName", surname = "TestSurname"), listOf())
-        val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
+        val expected = SentenceOverview(Name("Forename", "Middle1", "Surname"), listOf(), ProbationHistory(0, 0, 0))
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(expected, response)
-        verify(personRepository, times(1)).findSummary(PersonGenerator.OVERVIEW.crn)
-        verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
+
+        verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
+        verify(eventRepository, times(1)).findSentencesByPersonId(PersonGenerator.OVERVIEW.id)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(personRepository)
@@ -106,9 +102,9 @@ class SentenceServiceTest {
 
         val scheduledRarDays = OverviewServiceTest.RarDays(2, "SCHEDULED")
 
-        whenever(personRepository.findSummary(PersonGenerator.OVERVIEW.crn)).thenReturn(personSummary)
+        whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findActiveSentencesByPersonId(personSummary.id)).thenReturn(listOf(event))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
         whenever(courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(event.id))
             .thenReturn(CourtAppearanceGenerator.generate(CourtGenerator.DEFAULT))
@@ -132,10 +128,10 @@ class SentenceServiceTest {
             )
         )
 
-        val response = service.getMostRecentActiveEvent(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
-            Name("TestName", surname = "TestSurname"),
+            Name("Forename", "Middle1", "Surname"),
             listOf(
                 Sentence(
                     OffenceDetails(
@@ -168,11 +164,12 @@ class SentenceServiceTest {
                     ),
                     listOf(CourtDocument(1, LocalDate.now(), "Pre Sentence Event"))
                 )
-            )
+            ),
+            ProbationHistory(0, 0, 0)
         )
 
         assertEquals(expected, response)
-        verify(eventRepository, times(1)).findActiveSentencesByPersonId(personSummary.id)
+        verify(eventRepository, times(1)).findSentencesByPersonId(PersonGenerator.OVERVIEW.id)
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
         verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)

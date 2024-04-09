@@ -12,9 +12,9 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_DOCUMENT
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.COURT_DOCUMENT
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -33,7 +33,7 @@ class SentenceIntegrationTest {
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            Name("Caroline", "Louise", "Bloggs"), listOf()
+            Name("Caroline", "Louise", "Bloggs"), listOf(), ProbationHistory(0, 0, 0)
         )
 
         assertEquals(expected, response)
@@ -86,7 +86,8 @@ class SentenceIntegrationTest {
                     listOf(),
                     listOf()
                 )
-            )
+            ),
+            ProbationHistory(2, 2, 1)
         )
 
         assertEquals(expected, response)

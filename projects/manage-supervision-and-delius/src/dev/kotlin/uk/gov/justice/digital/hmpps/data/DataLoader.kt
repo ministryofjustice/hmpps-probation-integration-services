@@ -9,11 +9,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_REPORT
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.DEFAULT_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.COURT_DOCUMENT
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -71,15 +67,20 @@ class DataLoader(
             )
         )
         entityManager.persist(CourtGenerator.DEFAULT)
+
+        entityManager.persist(CourtReportGenerator.COURT_APPEARANCE)
+        entityManager.persist(CourtReportGenerator.DEFAULT_TYPE)
+        entityManager.persist(CourtReportGenerator.EVENT_DOCUMENT)
+        entityManager.persist(CourtReportGenerator.COURT_DOCUMENT)
+        entityManager.persist(CourtReportGenerator.COURT_REPORT)
         entityManager.persist(COURT_APPEARANCE)
 
-        entityManager.persist(DEFAULT_TYPE)
-        entityManager.persist(COURT_REPORT)
-
-        entityManager.persist(EVENT_DOCUMENT)
-        entityManager.persist(COURT_DOCUMENT)
+        entityManager.persist(CourtReportGenerator.DEFAULT_TYPE)
+        entityManager.persist(CourtReportGenerator.COURT_REPORT)
 
         entityManager.persistAll(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
+            OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
             PersonGenerator.ACTIVE_ORDER,
             PersonGenerator.INACTIVE_ORDER_1,
