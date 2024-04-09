@@ -16,6 +16,6 @@ import uk.gov.justice.digital.hmpps.service.ComplianceService
 class ComplianceController(private val complianceService: ComplianceService) {
 
     @GetMapping
-    @Operation(summary = "Gets all compliance info for a person’ ")
+    @Operation(summary = "Gets all compliance info for a person")
     fun getPersonCompliance(@PathVariable crn: String) = complianceService.getPersonCompliance(crn)
 }
