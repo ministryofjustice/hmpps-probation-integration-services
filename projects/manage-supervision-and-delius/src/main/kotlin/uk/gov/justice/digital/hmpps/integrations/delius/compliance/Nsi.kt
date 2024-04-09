@@ -37,7 +37,7 @@ class Nsi(
     val id: Long = 0,
 
     @Column(name = "active_flag", columnDefinition = "number")
-    var active: Boolean = true,
+    val active: Boolean = true,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
