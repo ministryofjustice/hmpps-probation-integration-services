@@ -36,13 +36,17 @@ object ContactGenerator {
     val APPT_CT_2 = generateContactType("CODI", true, "Initial Appointment on Doorstep (NS)")
     val APPT_CT_3 = generateContactType("CODC", true, "Planned Doorstep Contact (NS)")
 
+    val ACCEPTABLE_ABSENCE = generateOutcome("OUT", "Acceptable", false, true)
+
     val PREVIOUS_APPT_CONTACT_ABSENT = generateContact(
         OVERVIEW,
         APPT_CT_1,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(1), EuropeLondon),
         attended = false,
         action = BREACH_ENFORCEMENT_ACTION,
-        startTime = null
+        startTime = null,
+        outcome = ACCEPTABLE_ABSENCE
+
     )
     val PREVIOUS_APPT_CONTACT = generateContact(
         OVERVIEW,
@@ -121,7 +125,8 @@ object ContactGenerator {
         notes: String? = null,
         action: EnforcementAction? = null,
         startTime: ZonedDateTime? = ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone),
-        event: Event = PersonGenerator.EVENT_1
+        event: Event = PersonGenerator.EVENT_1,
+        outcome: ContactOutcome? = null
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         personId = person.id,
@@ -139,8 +144,12 @@ object ContactGenerator {
         location = LOCATION_BRK_1,
         notes = notes,
         action = action,
-        event = event
+        event = event,
+        outcome = outcome
     )
+
+    private fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
+        ContactOutcome(IdGenerator.getAndIncrement(), code, description, attendance, acceptable)
 
     private fun generateContactType(code: String, attendance: Boolean, description: String) =
         ContactType(IdGenerator.getAndIncrement(), code, attendance, description)
