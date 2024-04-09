@@ -76,7 +76,7 @@ fun Contact.toActivity() = Activity(
     isInitial = isInitial(),
     lastUpdated = lastUpdated,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
-    wasAbsent = outcome?.outcomeAttendance,
+    wasAbsent = outcome?.outcomeAttendance == false,
     nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
     notes = notes,
     location = location?.toOfficeAddress(),

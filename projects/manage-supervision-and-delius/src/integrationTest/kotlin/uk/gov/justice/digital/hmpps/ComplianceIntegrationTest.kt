@@ -33,12 +33,15 @@ internal class ComplianceIntegrationTest {
             res.previousOrders.breaches,
             equalTo(2)
         )
+        assertThat(res.currentSentences[0].eventNumber, equalTo("7654321"))
+        assertThat(res.currentSentences[1].eventNumber, equalTo("1234567"))
         assertThat(res.currentSentences[0].activeBreach?.status, equalTo("An NSI Status"))
         assertThat(res.currentSentences[0].compliance.breachStarted, equalTo(true))
         assertThat(res.currentSentences[0].compliance.currentBreaches, equalTo(1))
-        assertThat(res.currentSentences[0].activity.waitingForEvidenceCount, equalTo(1))
+        assertThat(res.currentSentences[0].activity.waitingForEvidenceCount, equalTo(0))
         assertThat(res.currentSentences[0].activity.compliedAppointmentsCount, equalTo(2))
-        assertThat(res.currentSentences[0].activity.outcomeNotRecordedCount, equalTo(4))
+        assertThat(res.currentSentences[0].activity.outcomeNotRecordedCount, equalTo(3))
+        assertThat(res.currentSentences[0].activity.acceptableAbsenceCount, equalTo(1))
     }
 
     @Test

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.overview
 
 data class ActivityCount(
+    val acceptableAbsenceCount: Int,
     val unacceptableAbsenceCount: Int,
     val attendedButDidNotComplyCount: Int,
     val outcomeNotRecordedCount: Int,

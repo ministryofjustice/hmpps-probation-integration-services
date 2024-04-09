@@ -94,6 +94,7 @@ class DataLoader(
             ContactGenerator.FIRST_NON_APPT_CONTACT,
             ContactGenerator.NEXT_APPT_CONTACT,
             ContactGenerator.FIRST_APPT_CONTACT,
+            ContactGenerator.ACCEPTABLE_ABSENCE,
             ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT,
             ContactGenerator.CONTACT_DOCUMENT_1,
             ContactGenerator.CONTACT_DOCUMENT_2,

@@ -41,6 +41,7 @@ class ComplianceService(
 
         fun Event.toSentenceCompliance() = mainOffence?.offence?.let { offence ->
             SentenceCompliance(
+                eventNumber = eventNumber,
                 mainOffence = Offence(code = offence.code, description = offence.description),
                 rar = disposal?.let { requirementRepository.getRar(it.id) },
                 order = disposal?.let {
@@ -97,7 +98,8 @@ fun toSentenceActivityCounts(activities: List<Activity>) = ActivityCount(
     rescheduledByPersonOnProbationCount = activities.count { it.rescheduled && it.rescheduledPop },
     rescheduledByStaffCount = activities.count { it.rescheduled && it.rescheduledStaff },
     rescheduledCount = activities.count { it.rescheduled },
-    unacceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == false }
+    unacceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == false },
+    acceptableAbsenceCount = activities.count { it.isPastAppointment && it.wasAbsent == true && it.acceptableAbsence == true }
 )
 
 fun toSentenceCompliance(activities: List<Activity>, breaches: List<Nsi>) = Compliance(
