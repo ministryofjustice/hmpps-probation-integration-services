@@ -29,7 +29,6 @@ object CourtReportGenerator {
         PersonGenerator.EVENT_1.id
     )
 
-
     fun generateCourtDocument(
         personId: Long,
         alfrescoId: String,
@@ -65,5 +64,4 @@ object CourtReportGenerator {
         doc.type = documentType
         return doc
     }
-
 }

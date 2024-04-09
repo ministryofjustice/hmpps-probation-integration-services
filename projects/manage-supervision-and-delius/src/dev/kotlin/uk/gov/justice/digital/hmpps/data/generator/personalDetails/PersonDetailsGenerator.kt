@@ -121,7 +121,6 @@ object PersonDetailsGenerator {
 
     val RELATIONSHIP_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "FM01", "Family Member")
 
-
     val CONTACT_ADDRESS = generateContactAddress("31", "Test Steet", "Test town", "Test County", "NE1 56A")
     val PERSONAL_CONTACT_1 = PersonalContactEntity(
         IdGenerator.getAndIncrement(),

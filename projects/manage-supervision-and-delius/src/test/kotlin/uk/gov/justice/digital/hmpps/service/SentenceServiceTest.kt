@@ -52,7 +52,6 @@ class SentenceServiceTest {
     @InjectMocks
     lateinit var service: SentenceService
 
-
     @Test
     fun `no active sentences`() {
 
