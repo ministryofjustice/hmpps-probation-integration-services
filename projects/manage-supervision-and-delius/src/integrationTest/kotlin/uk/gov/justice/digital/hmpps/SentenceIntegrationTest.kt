@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
@@ -33,7 +34,7 @@ class SentenceIntegrationTest {
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            Name("Caroline", "Louise", "Bloggs"), listOf(), ProbationHistory(0, 0, 0)
+            Name("Caroline", "Louise", "Bloggs"), listOf(), ProbationHistory(0, null, 0, 0)
         )
 
         assertEquals(expected, response)
@@ -44,6 +45,7 @@ class SentenceIntegrationTest {
         val response = mockMvc
             .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
+            .andDo(print())
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
@@ -87,7 +89,7 @@ class SentenceIntegrationTest {
                     listOf()
                 )
             ),
-            ProbationHistory(2, 2, 1)
+            ProbationHistory(2, LocalDate.of(2023, 4, 9), 2, 1)
         )
 
         assertEquals(expected, response)

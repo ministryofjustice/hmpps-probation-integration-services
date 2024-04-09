@@ -97,6 +97,9 @@ class Disposal(
     @Column(name = "notional_end_date")
     val notionalEndDate: LocalDate? = null,
 
+    @Column(name = "termination_date")
+    val terminationDate: LocalDate? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,
 

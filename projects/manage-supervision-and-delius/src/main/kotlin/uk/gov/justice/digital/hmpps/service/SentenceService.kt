@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
 @Service
@@ -36,6 +37,7 @@ class SentenceService(
             },
             ProbationHistory(
                 inactiveEvents.count(),
+                getMostRecentTerminatedDateFromInactiveEvents(inactiveEvents),
                 inactiveEvents.count { it.inBreach },
                 offenderManagerRepository.countOffenderManagersByPersonAndEndDateIsNotNull(person)
             )
@@ -89,4 +91,11 @@ class SentenceService(
     }
 
     fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)
+
+    fun getMostRecentTerminatedDateFromInactiveEvents(events: List<Event>): LocalDate? {
+        if (events.isNotEmpty()) {
+            return events.sortedByDescending { it.disposal?.terminationDate }[0].disposal?.terminationDate
+        }
+        return null
+    }
 }
