@@ -327,6 +327,8 @@ components:
       - status
       type: object
       properties:
+        bookingNumber:
+          type: string
         status:
           $ref: '#/components/schemas/CustodyStatus'
         keyDates:
@@ -354,6 +356,8 @@ components:
           type: integer
           format: int64
         description:
+          type: string
+        mainCategoryDescription:
           type: string
         mainOffence:
           type: boolean
