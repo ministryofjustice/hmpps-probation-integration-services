@@ -106,8 +106,8 @@ interface ContactDetails {
     val firstName: String
     val otherNames: String?
     val surname: String
-    val mobileNumber: String
-    val emailAddress: String
+    val mobileNumber: String?
+    val emailAddress: String?
     val endDate: LocalDate?
 }
 

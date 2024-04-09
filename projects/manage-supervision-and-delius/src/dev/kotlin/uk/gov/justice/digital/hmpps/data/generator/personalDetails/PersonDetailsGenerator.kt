@@ -330,42 +330,6 @@ object PersonDetailsGenerator {
         return doc
     }
 
-    fun generateCourtDocument(
-        personId: Long,
-        alfrescoId: String,
-        name: String,
-        documentType: String,
-        primaryKeyId: Long? = null
-    ): CourtReportDocument {
-        val doc = CourtReportDocument()
-        doc.id = IdGenerator.getAndIncrement()
-        doc.lastUpdated = ZonedDateTime.now().minusDays(1)
-        doc.alfrescoId = alfrescoId
-        doc.name = name
-        doc.personId = personId
-        doc.primaryKeyId = primaryKeyId
-        doc.type = documentType
-        return doc
-    }
-
-    fun generateEventDocument(
-        personId: Long,
-        alfrescoId: String,
-        name: String,
-        documentType: String,
-        primaryKeyId: Long? = null
-    ): EventDocument {
-        val doc = EventDocument()
-        doc.id = IdGenerator.getAndIncrement()
-        doc.lastUpdated = ZonedDateTime.now().minusDays(3)
-        doc.alfrescoId = alfrescoId
-        doc.name = name
-        doc.personId = personId
-        doc.primaryKeyId = primaryKeyId
-        doc.type = documentType
-        return doc
-    }
-
     fun generateAlias(forename: String, secondName: String, surname: String, personId: Long) = Alias(
         id = IdGenerator.getAndIncrement(),
         forename = forename,

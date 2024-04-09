@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_DOCUMENT
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -67,8 +69,8 @@ class SentenceIntegrationTest {
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
                     listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1))),
                     listOf(
-                        CourtDocument(118, LocalDate.now().minusDays(1), "court report"),
-                        CourtDocument(119, LocalDate.now().minusDays(3), "event report")
+                        CourtDocument(COURT_DOCUMENT.id, LocalDate.now().minusDays(1), "court report"),
+                        CourtDocument(EVENT_DOCUMENT.id, LocalDate.now().minusDays(3), "event report")
                     )
                 ),
                 Sentence(
