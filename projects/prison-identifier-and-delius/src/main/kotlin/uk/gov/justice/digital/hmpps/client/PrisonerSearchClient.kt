@@ -29,6 +29,7 @@ data class PrisonerSearchResult(
     val prisonerNumber: String,
     @JsonAlias("bookNumber")
     val bookingNumber: String?,
+    @JsonAlias("pncNumberCanonicalLong")
     val pncNumber: String?,
     val croNumber: String?,
     val sentenceStartDate: LocalDate?,

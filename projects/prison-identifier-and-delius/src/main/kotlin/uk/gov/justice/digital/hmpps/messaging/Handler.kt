@@ -31,6 +31,7 @@ class Handler(
                     .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findNomsNumber()), message.dryRun)
                     .also { telemetryService.logResult(it, message.dryRun) }
 
+                "prison-offender-events.prisoner.sentence-dates-changed",
                 "prison-offender-events.prisoner.imprisonment-status-changed" -> probationMatchingService
                     .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findNomsNumber()), messagingDryRun)
                     .also { telemetryService.logResult(it, messagingDryRun) }
