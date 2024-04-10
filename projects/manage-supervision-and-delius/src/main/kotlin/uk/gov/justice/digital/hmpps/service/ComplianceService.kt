@@ -83,7 +83,8 @@ class ComplianceService(
             startDate = date,
             endDate = expectedEndDate(),
             mainOffence = mainOffence,
-            breaches = breachCount
+            breaches = breachCount,
+            status = terminationReason?.description
         )
 }
 

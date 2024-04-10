@@ -83,6 +83,7 @@ class DataLoader(
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
             PersonGenerator.ACTIVE_ORDER,
+            PersonGenerator.TERMINATION_REASON,
             PersonGenerator.INACTIVE_ORDER_1,
             PersonGenerator.INACTIVE_ORDER_2,
             ContactGenerator.BREACH_CONTACT_TYPE,
