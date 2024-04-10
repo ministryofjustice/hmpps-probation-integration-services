@@ -71,7 +71,7 @@ class EventDocument : Document()
 class CourtReportDocument : Document()
 
 interface CourtDocumentDetails {
-    val id: Long
+    val id: String
     val lastSaved: LocalDate
     val documentName: String
 }
@@ -85,7 +85,7 @@ interface DocumentRepository : JpaRepository<PersonDocument, Long> {
     @Query(
         """
             SELECT id, lastSaved, documentName FROM (
-                SELECT d.DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, d.DOCUMENT_NAME AS documentName
+                SELECT d.ALFRESCO_DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, d.DOCUMENT_NAME AS documentName
                 FROM DOCUMENT d 
                 JOIN EVENT e 
                 ON e.EVENT_ID = d.PRIMARY_KEY_ID 
@@ -93,7 +93,7 @@ interface DocumentRepository : JpaRepository<PersonDocument, Long> {
                 AND e.EVENT_NUMBER = :eventNumber
                 AND TABLE_NAME = 'EVENT'
                 UNION 
-                SELECT d.DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, d.DOCUMENT_NAME AS documentName
+                SELECT d.ALFRESCO_DOCUMENT_ID AS id, d.LAST_SAVED AS lastSaved, d.DOCUMENT_NAME AS documentName
                 FROM DOCUMENT d 
                 JOIN COURT_REPORT cr 
                 ON cr.COURT_REPORT_ID = d.PRIMARY_KEY_ID 

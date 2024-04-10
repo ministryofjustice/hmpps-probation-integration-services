@@ -96,7 +96,7 @@ class SentenceServiceTest {
 
         val requirement = RequirementDetails(1, "Main", "High Intensity", 12, "new requirement")
 
-        val courtDocumentDetails = CourtDocs(1, LocalDate.now(), "Pre Sentence Event")
+        val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
         val completedRarDays = OverviewServiceTest.RarDays(1, "COMPLETED")
 
@@ -162,7 +162,7 @@ class SentenceServiceTest {
                             Rar(completedRarDays._days, scheduledRarDays._days, 3)
                         )
                     ),
-                    listOf(CourtDocument(1, LocalDate.now(), "Pre Sentence Event"))
+                    listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event"))
                 )
             ),
             ProbationHistory(0, null, 0, 0)
@@ -204,12 +204,12 @@ class SentenceServiceTest {
     }
 
     data class CourtDocs(
-        val _id: Long,
+        val _id: String,
         val _lastSaved: LocalDate,
         val _documentName: String
     ) : CourtDocumentDetails {
 
-        override val id: Long
+        override val id: String
             get() = _id
 
         override val lastSaved: LocalDate
