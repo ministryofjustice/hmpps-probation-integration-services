@@ -323,6 +323,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Overview'
+  /compliance/{crn}:
+    get:
+      tags:
+      - Compliance
+      summary: Gets all compliance info for a person
+      operationId: getPersonCompliance
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonCompliance'
   /activity/{crn}:
     get:
       tags:
@@ -447,6 +466,32 @@ components:
         startDate:
           type: string
           format: date
+        status:
+          type: string
+        mainOffence:
+          type: string
+        breaches:
+          type: integer
+          format: int32
+    ProbationHistory:
+      required:
+      - numberOfProfessionalContacts
+      - numberOfTerminatedEventBreaches
+      - numberOfTerminatedEvents
+      type: object
+      properties:
+        numberOfTerminatedEvents:
+          type: integer
+          format: int32
+        dateOfMostRecentTerminatedEvent:
+          type: string
+          format: date
+        numberOfTerminatedEventBreaches:
+          type: integer
+          format: int32
+        numberOfProfessionalContacts:
+          type: integer
+          format: int64
     Rar:
       required:
       - completed
@@ -501,6 +546,7 @@ components:
     SentenceOverview:
       required:
       - name
+      - probationHistory
       - sentences
       type: object
       properties:
@@ -510,6 +556,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sentence'
+        probationHistory:
+          $ref: '#/components/schemas/ProbationHistory'
     Activity:
       required:
       - documents
@@ -518,6 +566,7 @@ components:
       - isAppointment
       - isInitial
       - isNationalStandard
+      - isPastAppointment
       - lastUpdated
       - lastUpdatedBy
       - rescheduled
@@ -530,6 +579,8 @@ components:
         id:
           type: integer
           format: int64
+        eventNumber:
+          type: string
         type:
           type: string
         startDateTime:
@@ -597,6 +648,8 @@ components:
         isEmailOrTextToPop:
           type: boolean
         isPhoneCallToPop:
+          type: boolean
+        isPastAppointment:
           type: boolean
         lastUpdated:
           type: string
@@ -1104,16 +1157,79 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Address'
+    ActivityCount:
+      required:
+      - absentCount
+      - acceptableAbsenceCount
+      - attendedButDidNotComplyCount
+      - compliedAppointmentsCount
+      - lettersCount
+      - nationalStandardAppointmentsCount
+      - outcomeNotRecordedCount
+      - rescheduledByPersonOnProbationCount
+      - rescheduledByStaffCount
+      - rescheduledCount
+      - unacceptableAbsenceCount
+      - waitingForEvidenceCount
+      type: object
+      properties:
+        acceptableAbsenceCount:
+          type: integer
+          format: int32
+        unacceptableAbsenceCount:
+          type: integer
+          format: int32
+        attendedButDidNotComplyCount:
+          type: integer
+          format: int32
+        outcomeNotRecordedCount:
+          type: integer
+          format: int32
+        waitingForEvidenceCount:
+          type: integer
+          format: int32
+        rescheduledCount:
+          type: integer
+          format: int32
+        absentCount:
+          type: integer
+          format: int32
+        rescheduledByStaffCount:
+          type: integer
+          format: int32
+        rescheduledByPersonOnProbationCount:
+          type: integer
+          format: int32
+        lettersCount:
+          type: integer
+          format: int32
+        nationalStandardAppointmentsCount:
+          type: integer
+          format: int32
+        compliedAppointmentsCount:
+          type: integer
+          format: int32
     Compliance:
       required:
+      - breachStarted
+      - breachesOnCurrentOrderCount
       - currentBreaches
-      - failureToComplyInLast12Months
+      - failureToComplyCount
+      - priorBreachesOnCurrentOrderCount
       type: object
       properties:
         currentBreaches:
           type: integer
           format: int32
-        failureToComplyInLast12Months:
+        breachStarted:
+          type: boolean
+        breachesOnCurrentOrderCount:
+          type: integer
+          format: int32
+        priorBreachesOnCurrentOrderCount:
+          type: integer
+          format: int32
+        failureToComplyCount:
           type: integer
           format: int32
     Overview:
@@ -1134,7 +1250,7 @@ components:
           type: integer
           format: int32
         activity:
-          $ref: '#/components/schemas/Activity'
+          $ref: '#/components/schemas/ActivityCount'
         compliance:
           $ref: '#/components/schemas/Compliance'
         personalDetails:
@@ -1155,6 +1271,7 @@ components:
       required:
       - breaches
       - count
+      - orders
       type: object
       properties:
         breaches:
@@ -1163,6 +1280,55 @@ components:
         count:
           type: integer
           format: int32
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    Breach:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+        status:
+          type: string
+    PersonCompliance:
+      required:
+      - currentSentences
+      - personSummary
+      - previousOrders
+      type: object
+      properties:
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
+        currentSentences:
+          type: array
+          items:
+            $ref: '#/components/schemas/SentenceCompliance'
+        previousOrders:
+          $ref: '#/components/schemas/PreviousOrders'
+    SentenceCompliance:
+      required:
+      - activity
+      - compliance
+      - eventNumber
+      - mainOffence
+      type: object
+      properties:
+        eventNumber:
+          type: string
+        mainOffence:
+          $ref: '#/components/schemas/Offence'
+        order:
+          $ref: '#/components/schemas/Order'
+        activeBreach:
+          $ref: '#/components/schemas/Breach'
+        rar:
+          $ref: '#/components/schemas/Rar'
+        compliance:
+          $ref: '#/components/schemas/Compliance'
+        activity:
+          $ref: '#/components/schemas/ActivityCount'
     PersonActivity:
       required:
       - activities

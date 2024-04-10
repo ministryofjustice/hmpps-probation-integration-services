@@ -143,6 +143,9 @@
         <a href="./api-reference.html#overview-crn"><span>/overview/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#compliance-crn"><span>/compliance/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#activity-crn"><span>/activity/{crn}</span></a>
       </li>
       <li>
@@ -265,7 +268,10 @@
         "description": "string",
         "length": "integer",
         "endDate": "string",
-        "startDate": "string"
+        "startDate": "string",
+        "status": "string",
+        "mainOffence": "string",
+        "breaches": "integer"
       },
       "requirements": [
         {
@@ -288,7 +294,13 @@
         }
       ]
     }
-  ]
+  ],
+  "probationHistory": {
+    "numberOfTerminatedEvents": "integer",
+    "dateOfMostRecentTerminatedEvent": "string",
+    "numberOfTerminatedEventBreaches": "integer",
+    "numberOfProfessionalContacts": "integer"
+  }
 }</code></pre>
 
 </td>
@@ -364,6 +376,7 @@
   "appointments": [
     {
       "id": "integer",
+      "eventNumber": "string",
       "type": "string",
       "startDateTime": "string",
       "endDateTime": "string",
@@ -421,6 +434,7 @@
       "isPhoneCallFromPop": "boolean",
       "isEmailOrTextToPop": "boolean",
       "isPhoneCallToPop": "boolean",
+      "isPastAppointment": "boolean",
       "lastUpdated": "string",
       "lastUpdatedBy": {
         "forename": "string",
@@ -504,6 +518,7 @@
   "appointments": [
     {
       "id": "integer",
+      "eventNumber": "string",
       "type": "string",
       "startDateTime": "string",
       "endDateTime": "string",
@@ -561,6 +576,7 @@
       "isPhoneCallFromPop": "boolean",
       "isEmailOrTextToPop": "boolean",
       "isPhoneCallToPop": "boolean",
+      "isPastAppointment": "boolean",
       "lastUpdated": "string",
       "lastUpdatedBy": {
         "forename": "string",
@@ -653,6 +669,7 @@
   },
   "appointment": {
     "id": "integer",
+    "eventNumber": "string",
     "type": "string",
     "startDateTime": "string",
     "endDateTime": "string",
@@ -710,6 +727,7 @@
     "isPhoneCallFromPop": "boolean",
     "isEmailOrTextToPop": "boolean",
     "isPhoneCallToPop": "boolean",
+    "isPastAppointment": "boolean",
     "lastUpdated": "string",
     "lastUpdatedBy": {
       "forename": "string",
@@ -1856,74 +1874,25 @@
   "appointmentsWithoutOutcome": "integer",
   "absencesWithoutEvidence": "integer",
   "activity": {
-    "id": "integer",
-    "type": "string",
-    "startDateTime": "string",
-    "endDateTime": "string",
-    "rarToolKit": "string",
-    "notes": "string",
-    "isSensitive": "boolean",
-    "hasOutcome": "boolean",
-    "wasAbsent": "boolean",
-    "officerName": {
-      "forename": "string",
-      "middleName": "string",
-      "surname": "string"
-    },
-    "isInitial": "boolean",
-    "isNationalStandard": "boolean",
-    "location": {
-      "officeName": "string",
-      "buildingName": "string",
-      "buildingNumber": "string",
-      "streetName": "string",
-      "district": "string",
-      "town": "string",
-      "county": "string",
-      "postcode": "string",
-      "ldu": "string",
-      "telephoneNumber": "string"
-    },
-    "rescheduled": "boolean",
-    "rescheduledStaff": "boolean",
-    "rescheduledPop": "boolean",
-    "didTheyComply": "boolean",
-    "absentWaitingEvidence": "boolean",
-    "rearrangeOrCancelReason": "string",
-    "rescheduledBy": {
-      "forename": "string",
-      "middleName": "string",
-      "surname": "string"
-    },
-    "repeating": "boolean",
-    "nonComplianceReason": "string",
-    "documents": [
-      {
-        "id": "string",
-        "name": "string",
-        "lastUpdated": "string"
-      }
-    ],
-    "rarCategory": "string",
-    "acceptableAbsence": "boolean",
-    "acceptableAbsenceReason": "string",
-    "isAppointment": "boolean",
-    "action": "string",
-    "isSystemContact": "boolean",
-    "isEmailOrTextFromPop": "boolean",
-    "isPhoneCallFromPop": "boolean",
-    "isEmailOrTextToPop": "boolean",
-    "isPhoneCallToPop": "boolean",
-    "lastUpdated": "string",
-    "lastUpdatedBy": {
-      "forename": "string",
-      "middleName": "string",
-      "surname": "string"
-    }
+    "acceptableAbsenceCount": "integer",
+    "unacceptableAbsenceCount": "integer",
+    "attendedButDidNotComplyCount": "integer",
+    "outcomeNotRecordedCount": "integer",
+    "waitingForEvidenceCount": "integer",
+    "rescheduledCount": "integer",
+    "absentCount": "integer",
+    "rescheduledByStaffCount": "integer",
+    "rescheduledByPersonOnProbationCount": "integer",
+    "lettersCount": "integer",
+    "nationalStandardAppointmentsCount": "integer",
+    "compliedAppointmentsCount": "integer"
   },
   "compliance": {
     "currentBreaches": "integer",
-    "failureToComplyInLast12Months": "integer"
+    "breachStarted": "boolean",
+    "breachesOnCurrentOrderCount": "integer",
+    "priorBreachesOnCurrentOrderCount": "integer",
+    "failureToComplyCount": "integer"
   },
   "personalDetails": {
     "crn": "string",
@@ -2058,7 +2027,18 @@
   },
   "previousOrders": {
     "breaches": "integer",
-    "count": "integer"
+    "count": "integer",
+    "orders": [
+      {
+        "description": "string",
+        "length": "integer",
+        "endDate": "string",
+        "startDate": "string",
+        "status": "string",
+        "mainOffence": "string",
+        "breaches": "integer"
+      }
+    ]
   },
   "schedule": {
     "personSummary": {
@@ -2075,6 +2055,7 @@
     "appointments": [
       {
         "id": "integer",
+        "eventNumber": "string",
         "type": "string",
         "startDateTime": "string",
         "endDateTime": "string",
@@ -2132,6 +2113,7 @@
         "isPhoneCallFromPop": "boolean",
         "isEmailOrTextToPop": "boolean",
         "isPhoneCallToPop": "boolean",
+        "isPastAppointment": "boolean",
         "lastUpdated": "string",
         "lastUpdatedBy": {
           "forename": "string",
@@ -2175,7 +2157,10 @@
         "description": "string",
         "length": "integer",
         "endDate": "string",
-        "startDate": "string"
+        "startDate": "string",
+        "status": "string",
+        "mainOffence": "string",
+        "breaches": "integer"
       },
       "requirements": [
         {
@@ -2208,6 +2193,141 @@
 </td>
 <td>
 <a href='#schema-overview'>Overview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="compliance-crn">/compliance/{crn}</h2>
+
+<h3 id="compliance-crn-get">get</h3>
+
+  <p><em>Gets all compliance info for a person</em></p>
+
+
+
+
+<h4 id="compliance-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="compliance-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "currentSentences": [
+    {
+      "eventNumber": "string",
+      "mainOffence": {
+        "description": "string",
+        "count": "integer"
+      },
+      "order": {
+        "description": "string",
+        "length": "integer",
+        "endDate": "string",
+        "startDate": "string",
+        "status": "string",
+        "mainOffence": "string",
+        "breaches": "integer"
+      },
+      "activeBreach": {
+        "startDate": "string",
+        "status": "string"
+      },
+      "rar": {
+        "completed": "integer",
+        "scheduled": "integer",
+        "totalDays": "integer"
+      },
+      "compliance": {
+        "currentBreaches": "integer",
+        "breachStarted": "boolean",
+        "breachesOnCurrentOrderCount": "integer",
+        "priorBreachesOnCurrentOrderCount": "integer",
+        "failureToComplyCount": "integer"
+      },
+      "activity": {
+        "acceptableAbsenceCount": "integer",
+        "unacceptableAbsenceCount": "integer",
+        "attendedButDidNotComplyCount": "integer",
+        "outcomeNotRecordedCount": "integer",
+        "waitingForEvidenceCount": "integer",
+        "rescheduledCount": "integer",
+        "absentCount": "integer",
+        "rescheduledByStaffCount": "integer",
+        "rescheduledByPersonOnProbationCount": "integer",
+        "lettersCount": "integer",
+        "nationalStandardAppointmentsCount": "integer",
+        "compliedAppointmentsCount": "integer"
+      }
+    }
+  ],
+  "previousOrders": {
+    "breaches": "integer",
+    "count": "integer",
+    "orders": [
+      {
+        "description": "string",
+        "length": "integer",
+        "endDate": "string",
+        "startDate": "string",
+        "status": "string",
+        "mainOffence": "string",
+        "breaches": "integer"
+      }
+    ]
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personcompliance'>PersonCompliance</a>
 </td>
 </tr>
 
@@ -2278,6 +2398,7 @@
   "activities": [
     {
       "id": "integer",
+      "eventNumber": "string",
       "type": "string",
       "startDateTime": "string",
       "endDateTime": "string",
@@ -2335,6 +2456,7 @@
       "isPhoneCallFromPop": "boolean",
       "isEmailOrTextToPop": "boolean",
       "isPhoneCallToPop": "boolean",
+      "isPastAppointment": "boolean",
       "lastUpdated": "string",
       "lastUpdatedBy": {
         "forename": "string",
@@ -2690,6 +2812,88 @@
 </td>
 </tr>
 
+<tr>
+<td>status</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>breaches</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationhistory">ProbationHistory</h3>
+
+
+<table class='schema-probationhistory'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>numberOfTerminatedEvents</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfMostRecentTerminatedEvent</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>numberOfTerminatedEventBreaches</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>numberOfProfessionalContacts</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -2888,6 +3092,16 @@
 </td>
 </tr>
 
+<tr>
+<td>probationHistory</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationhistory'>ProbationHistory</a>
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -2904,6 +3118,16 @@
 <td>id</td>
 <td>integer</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -3224,6 +3448,16 @@
 <td>isPhoneCallToPop</td>
 <td>boolean</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isPastAppointment</td>
+<td>boolean</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -4904,6 +5138,138 @@
 </tbody>
 </table>
 
+<h3 id="schema-activitycount">ActivityCount</h3>
+
+
+<table class='schema-activitycount'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>acceptableAbsenceCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unacceptableAbsenceCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>attendedButDidNotComplyCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>outcomeNotRecordedCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>waitingForEvidenceCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduledCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>absentCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduledByStaffCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduledByPersonOnProbationCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lettersCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nationalStandardAppointmentsCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>compliedAppointmentsCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-compliance">Compliance</h3>
 
 
@@ -4924,7 +5290,37 @@
 </tr>
 
 <tr>
-<td>failureToComplyInLast12Months</td>
+<td>breachStarted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>breachesOnCurrentOrderCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>priorBreachesOnCurrentOrderCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>failureToComplyCount</td>
 <td>integer</td>
 <td>true</td>
 <td></td>
@@ -4971,7 +5367,7 @@
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-activity'>Activity</a>
+  <a href='#schema-activitycount'>ActivityCount</a>
 </td>
 </tr>
 
@@ -5064,6 +5460,172 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>orders</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-order'>Order</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-breach">Breach</h3>
+
+
+<table class='schema-breach'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personcompliance">PersonCompliance</h3>
+
+
+<table class='schema-personcompliance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>currentSentences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-sentencecompliance'>SentenceCompliance</a>
+</td>
+</tr>
+
+<tr>
+<td>previousOrders</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-previousorders'>PreviousOrders</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentencecompliance">SentenceCompliance</h3>
+
+
+<table class='schema-sentencecompliance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>order</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-order'>Order</a>
+</td>
+</tr>
+
+<tr>
+<td>activeBreach</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-breach'>Breach</a>
+</td>
+</tr>
+
+<tr>
+<td>rar</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-rar'>Rar</a>
+</td>
+</tr>
+
+<tr>
+<td>compliance</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-compliance'>Compliance</a>
+</td>
+</tr>
+
+<tr>
+<td>activity</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-activitycount'>ActivityCount</a>
 </td>
 </tr>
 
