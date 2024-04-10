@@ -63,7 +63,8 @@ interface EventRepository : JpaRepository<Event, Long> {
             "LEFT JOIN FETCH e.additionalOffences ao " +
             "LEFT JOIN FETCH m.offence mo " +
             "LEFT JOIN FETCH ao.offence aoo " +
-            "WHERE e.personId = :personId"
+            "WHERE e.personId = :personId " +
+            "ORDER BY e.eventNumber DESC"
     )
     fun findByPersonId(personId: Long): List<Event>
 }

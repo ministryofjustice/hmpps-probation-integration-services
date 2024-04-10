@@ -246,7 +246,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and (to_char(c.contact_date, 'YYYY-MM-DD') < :dateNow
             or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') < :timeNow))
             and c.soft_deleted = 0
-            order by c.contact_date, c.contact_start_time asc
+            order by c.contact_date, c.contact_start_time desc
         """,
         nativeQuery = true
     )

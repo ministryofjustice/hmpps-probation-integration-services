@@ -42,6 +42,7 @@ data class Activity(
     val isEmailOrTextToPop: Boolean? = false,
     val isPhoneCallToPop: Boolean? = false,
     val isPastAppointment: Boolean = (isAppointment && ZonedDateTime.now() > startDateTime),
+    val countsTowardsRAR: Boolean?,
     val lastUpdated: ZonedDateTime,
     val lastUpdatedBy: Name
 )
