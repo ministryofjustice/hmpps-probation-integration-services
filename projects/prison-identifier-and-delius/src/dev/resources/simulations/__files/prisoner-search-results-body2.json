@@ -2,9 +2,9 @@
   "content": [
     {
       "prisonerNumber": "G5541WW",
-      "pncNumber": "07/220000004Q",
-      "pncNumberCanonicalShort": "07/220000004Q",
-      "pncNumberCanonicalLong": "2007/220000004Q",
+      "pncNumber": "07/2200004Q",
+      "pncNumberCanonicalShort": "07/2200004Q",
+      "pncNumberCanonicalLong": "2007/2200004Q",
       "croNumber": "222823/07U",
       "bookingId": "1163007",
       "bookNumber": "13831A",
@@ -86,9 +86,9 @@
     },
     {
       "prisonerNumber": "A1234YZ",
-      "pncNumber": "07/220000004Q",
-      "pncNumberCanonicalShort": "07/220000004Q",
-      "pncNumberCanonicalLong": "2007/220000004Q",
+      "pncNumber": "07/2200004Q",
+      "pncNumberCanonicalShort": "07/2200004Q",
+      "pncNumberCanonicalLong": "2007/2200004Q",
       "croNumber": "222823/07U",
       "bookingId": "1163007",
       "bookNumber": "13831B",
