@@ -83,6 +83,7 @@ fun Contact.toActivity() = Activity(
     officerName = staff?.forename?.let { Name(forename = it, surname = staff.surname) },
     rarCategory = requirement?.mainCategory?.description,
     rarToolKit = requirement?.mainCategory?.description,
+    countsTowardsRAR = rarActivity,
     rescheduled = rescheduledPop(),
     rescheduledStaff = rescheduledPop() || rescheduledStaff(),
     rescheduledPop = rescheduledPop(),

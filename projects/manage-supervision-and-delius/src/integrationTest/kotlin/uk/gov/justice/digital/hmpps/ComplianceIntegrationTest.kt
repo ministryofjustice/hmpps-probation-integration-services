@@ -43,7 +43,7 @@ internal class ComplianceIntegrationTest {
         assertThat(res.currentSentences[0].activity.compliedAppointmentsCount, equalTo(2))
         assertThat(res.currentSentences[0].activity.outcomeNotRecordedCount, equalTo(3))
         assertThat(res.currentSentences[0].activity.acceptableAbsenceCount, equalTo(1))
-        assertThat(res.previousOrders.orders[0].status, equalTo(TERMINATION_REASON.description))
+        assertThat(res.previousOrders.orders[1].status, equalTo(TERMINATION_REASON.description))
     }
 
     @Test
