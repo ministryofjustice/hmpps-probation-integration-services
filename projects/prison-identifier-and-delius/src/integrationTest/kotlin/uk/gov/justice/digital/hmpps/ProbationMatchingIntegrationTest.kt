@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.TestPropertySource
 import uk.gov.justice.digital.hmpps.entity.AdditionalIdentifierRepository
 import uk.gov.justice.digital.hmpps.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
@@ -22,6 +23,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@TestPropertySource(properties = ["messaging.consumer.dry-run=true"])
 internal class ProbationMatchingIntegrationTest {
 
     @Value("\${messaging.consumer.queue}")
