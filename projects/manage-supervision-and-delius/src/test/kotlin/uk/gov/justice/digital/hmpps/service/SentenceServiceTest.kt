@@ -93,7 +93,7 @@ class SentenceServiceTest {
             additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
         )
 
-        val requirement = RequirementDetails(1, "G", "Main", "High Intensity", 12, "new requirement")
+        val requirement1 = RequirementDetails(1, "G", "Drug Rehabilitation", "Medium Intensity", 12, "new requirement")
 
         val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
@@ -112,7 +112,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
 
         whenever(requirementRepository.getRequirements(PersonGenerator.OVERVIEW.crn, event.eventNumber))
-            .thenReturn(listOf(requirement))
+            .thenReturn(listOf(requirement1))
 
 //        whenever(requirementRepository.getRarDaysByRequirementId(requirement._id)).thenReturn(
 //            listOf(
@@ -154,11 +154,11 @@ class SentenceServiceTest {
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
                     listOf(
                         Requirement(
-                            requirement._code,
-                            requirement._description,
-                            requirement._codeDescription,
-                            requirement._length,
-                            requirement._notes,
+                            requirement1._code,
+                            requirement1._description,
+                            requirement1._codeDescription,
+                            requirement1._length,
+                            requirement1._notes,
                             null
                         )
                     ),
