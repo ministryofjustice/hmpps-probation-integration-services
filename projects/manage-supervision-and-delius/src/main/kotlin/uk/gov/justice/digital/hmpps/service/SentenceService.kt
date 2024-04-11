@@ -62,7 +62,7 @@ class SentenceService(
                 additionalSentences.map { it.toAdditionalSentence() }
             ),
             order = disposal?.toOrder(),
-            requirements = requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() },
+            requirements = requirementRepository.getRequirements(id, eventNumber).map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() }
         )
 

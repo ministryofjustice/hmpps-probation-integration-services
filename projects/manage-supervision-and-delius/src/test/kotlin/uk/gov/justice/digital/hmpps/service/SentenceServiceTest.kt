@@ -113,7 +113,7 @@ class SentenceServiceTest {
         whenever(additionalSentenceRepository.getAllByEventId(event.id))
             .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
 
-        whenever(requirementRepository.getRequirements(PersonGenerator.OVERVIEW.crn, event.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1, requirement2))
 
         whenever(requirementRepository.getRarDaysByRequirementId(requirement2._id)).thenReturn(
