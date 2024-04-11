@@ -26,7 +26,6 @@ class Handler(
                 "prison-identifier.internal.prison-match-requested" -> prisonMatchingService
                     .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findCrn()), message.dryRun)
                     .also { telemetryService.logResult(it, message.dryRun) }
-
                 "prison-identifier.internal.probation-match-requested" -> probationMatchingService
                     .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findNomsNumber()), message.dryRun)
                     .also { telemetryService.logResult(it, message.dryRun) }
@@ -44,7 +43,9 @@ class Handler(
             }
 
             is OffenderEvent -> when (notification.eventType) {
-                "SENTENCE_CHANGED" -> prisonMatchingService
+                "OFFENDER_DETAILS_CHANGED", // changes to name, date of birth, identifiers in Delius
+                "SENTENCE_CHANGED",         // changes to sentence status and dates in Delius
+                -> prisonMatchingService
                     .matchAndUpdateIdentifiers(message.crn, messagingDryRun)
                     .also { telemetryService.logResult(it, messagingDryRun) }
 
