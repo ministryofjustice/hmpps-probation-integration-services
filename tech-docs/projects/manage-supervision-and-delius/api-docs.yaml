@@ -400,8 +400,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
         lastSaved:
           type: string
           format: date
@@ -650,6 +649,8 @@ components:
         isPhoneCallToPop:
           type: boolean
         isPastAppointment:
+          type: boolean
+        countsTowardsRAR:
           type: boolean
         lastUpdated:
           type: string
