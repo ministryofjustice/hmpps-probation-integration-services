@@ -17,7 +17,7 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val probationMatchingService: ProbationMatchingService,
     private val prisonMatchingService: PrisonMatchingService,
-    @Value("\${messaging.consumer.dry-run:true}") private val messagingDryRun: Boolean
+    @Value("\${messaging.consumer.dry-run:false}") private val messagingDryRun: Boolean
 ) : NotificationHandler<Any> {
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
