@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
-import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
@@ -94,7 +93,7 @@ class SentenceServiceTest {
             additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
         )
 
-        val requirement = RequirementDetails(1, "Main", "High Intensity", 12, "new requirement")
+        val requirement = RequirementDetails(1, "G", "Main", "High Intensity", 12, "new requirement")
 
         val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
@@ -115,12 +114,12 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(PersonGenerator.OVERVIEW.crn, event.eventNumber))
             .thenReturn(listOf(requirement))
 
-        whenever(requirementRepository.getRarDaysByRequirementId(requirement._id)).thenReturn(
-            listOf(
-                completedRarDays,
-                scheduledRarDays
-            )
-        )
+//        whenever(requirementRepository.getRarDaysByRequirementId(requirement._id)).thenReturn(
+//            listOf(
+//                completedRarDays,
+//                scheduledRarDays
+//            )
+//        )
 
         whenever(documentRepository.getCourtDocuments(event.id, event.eventNumber)).thenReturn(
             listOf(
@@ -155,11 +154,12 @@ class SentenceServiceTest {
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
                     listOf(
                         Requirement(
+                            requirement._code,
                             requirement._description,
                             requirement._codeDescription,
                             requirement._length,
                             requirement._notes,
-                            Rar(completedRarDays._days, scheduledRarDays._days, 3)
+                            null
                         )
                     ),
                     listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event"))
@@ -182,18 +182,21 @@ class SentenceServiceTest {
 
     data class RequirementDetails(
         val _id: Long,
-        val _description: String?,
-        val _codeDescription: String?,
+        val _code: String,
+        val _description: String,
+        val _codeDescription: String,
         val _length: Long?,
         val _notes: String?
     ) : uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails {
         override val id: Long
             get() = _id
 
-        override val description: String?
+        override val code: String
+            get() = _code
+        override val description: String
             get() = _description
 
-        override val codeDescription: String?
+        override val codeDescription: String
             get() = _codeDescription
 
         override val length: Long?

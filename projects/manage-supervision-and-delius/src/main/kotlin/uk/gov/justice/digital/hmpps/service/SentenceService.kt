@@ -76,18 +76,23 @@ class SentenceService(
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
     fun RequirementDetails.toRequirement() = Requirement(
+        code,
         description,
         codeDescription,
         length,
         notes,
-        getRar(id)
+        getRar(id, code)
     )
 
-    private fun getRar(requirementId: Long): Rar {
-        val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
-        val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
-        val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
-        return Rar(completed = completedDays, scheduled = scheduledDays)
+    private fun getRar(requirementId: Long, requirementType: String): Rar? {
+        if (requirementType.equals("F", true)) {
+            val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
+            val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
+            val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
+            return Rar(completed = completedDays, scheduled = scheduledDays)
+        }
+
+        return null
     }
 
     fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)

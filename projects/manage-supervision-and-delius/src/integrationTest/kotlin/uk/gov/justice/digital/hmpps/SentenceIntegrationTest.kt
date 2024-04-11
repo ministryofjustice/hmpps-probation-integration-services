@@ -69,7 +69,16 @@ class SentenceIntegrationTest {
                         listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                     ),
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
-                    listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1))),
+                    listOf(
+                        Requirement(
+                            "F",
+                            "Main",
+                            "High Intensity",
+                            12,
+                            "my notes",
+                            Rar(completed = 1, scheduled = 0, totalDays = 1)
+                        )
+                    ),
                     listOf(
                         CourtDocument(COURT_DOCUMENT.alfrescoId, LocalDate.now().minusDays(1), "court report"),
                         CourtDocument(EVENT_DOCUMENT.alfrescoId, LocalDate.now().minusDays(3), "event report")

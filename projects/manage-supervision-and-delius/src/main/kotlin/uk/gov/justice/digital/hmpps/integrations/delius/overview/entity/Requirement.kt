@@ -46,8 +46,9 @@ interface RarDays {
 
 interface RequirementDetails {
     val id: Long
-    val description: String?
-    val codeDescription: String?
+    val code: String
+    val description: String
+    val codeDescription: String
     val length: Long?
     val notes: String?
 }
@@ -102,7 +103,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
 
     @Query(
         """
-            SELECT r.rqmnt_id as id, r."LENGTH", rrtmc.description, rsrl.code_description AS codeDescription, TO_CHAR(SUBSTR(r.rqmnt_notes, 1, 4000)) AS notes 
+            SELECT r.rqmnt_id as id, r."LENGTH", rrtmc.code, rrtmc.description, rsrl.code_description AS codeDescription, TO_CHAR(SUBSTR(r.rqmnt_notes, 1, 4000)) AS notes 
             FROM rqmnt r
             JOIN r_rqmnt_type_main_category rrtmc 
             ON r.rqmnt_type_main_category_id = rrtmc.rqmnt_type_main_category_id 
