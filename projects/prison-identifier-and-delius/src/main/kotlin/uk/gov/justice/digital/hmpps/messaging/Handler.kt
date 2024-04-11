@@ -26,6 +26,7 @@ class Handler(
                 "prison-identifier.internal.prison-match-requested" -> prisonMatchingService
                     .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findCrn()), message.dryRun)
                     .also { telemetryService.logResult(it, message.dryRun) }
+
                 "prison-identifier.internal.probation-match-requested" -> probationMatchingService
                     .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findNomsNumber()), message.dryRun)
                     .also { telemetryService.logResult(it, message.dryRun) }
