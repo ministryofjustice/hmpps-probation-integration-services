@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
+import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
@@ -94,6 +95,7 @@ class SentenceServiceTest {
         )
 
         val requirement1 = RequirementDetails(1, "G", "Drug Rehabilitation", "Medium Intensity", 12, "new requirement")
+        val requirement2 = RequirementDetails(2, "F", "Main", "High Intensity", null, "rar requirement")
 
         val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
@@ -112,14 +114,14 @@ class SentenceServiceTest {
             .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
 
         whenever(requirementRepository.getRequirements(PersonGenerator.OVERVIEW.crn, event.eventNumber))
-            .thenReturn(listOf(requirement1))
+            .thenReturn(listOf(requirement1, requirement2))
 
-//        whenever(requirementRepository.getRarDaysByRequirementId(requirement._id)).thenReturn(
-//            listOf(
-//                completedRarDays,
-//                scheduledRarDays
-//            )
-//        )
+        whenever(requirementRepository.getRarDaysByRequirementId(requirement2._id)).thenReturn(
+            listOf(
+                completedRarDays,
+                scheduledRarDays
+            )
+        )
 
         whenever(documentRepository.getCourtDocuments(event.id, event.eventNumber)).thenReturn(
             listOf(
@@ -160,6 +162,14 @@ class SentenceServiceTest {
                             requirement1._length,
                             requirement1._notes,
                             null
+                        ),
+                        Requirement(
+                            requirement2._code,
+                            requirement2._description,
+                            requirement2._codeDescription,
+                            requirement2._length,
+                            requirement2._notes,
+                            Rar(1, 2, 3)
                         )
                     ),
                     listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event"))
