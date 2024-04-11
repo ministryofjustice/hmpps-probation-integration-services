@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.client.Offence
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.COURT_CATEGORY
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.EXISTING_OFFENCE
+import uk.gov.justice.digital.hmpps.entity.OffenceRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -39,6 +40,9 @@ internal class HandlerTest {
 
     @Mock
     lateinit var detailedOffenceRepository: DetailedOffenceRepository
+
+    @Mock
+    lateinit var offenceRepository: OffenceRepository
 
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
