@@ -72,6 +72,11 @@ class SentenceIntegrationTest {
                     listOf(
                         Requirement(
                             "F",
+                            LocalDate.now().minusDays(1),
+                            LocalDate.now(),
+                            LocalDate.now().minusDays(2),
+                            LocalDate.now().minusDays(3),
+                            null,
                             "1 days RAR, 1 completed",
                             12,
                             "my notes",

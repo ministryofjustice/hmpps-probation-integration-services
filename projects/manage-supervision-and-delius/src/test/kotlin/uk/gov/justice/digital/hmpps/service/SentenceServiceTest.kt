@@ -96,11 +96,11 @@ class SentenceServiceTest {
 
         val requirement1 = RequirementDetails(
             1,
+            LocalDate.now().minusDays(21),
             LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
+            LocalDate.now().minusDays(14),
+            LocalDate.now().minusDays(7),
+            LocalDate.now().minusDays(3),
             "Expired (Normal)",
             12,
             "Weeks",
@@ -185,6 +185,11 @@ class SentenceServiceTest {
                     listOf(
                         Requirement(
                             requirement1._code,
+                            requirement1._expectedStartDate,
+                            requirement1._startDate,
+                            requirement1._expectedEndDate,
+                            requirement1._terminationDate,
+                            requirement1._terminationReason,
                             "${requirement1._description} - ${requirement1._codeDescription}",
                             requirement1._length,
                             requirement1._notes,
@@ -192,6 +197,11 @@ class SentenceServiceTest {
                         ),
                         Requirement(
                             requirement2._code,
+                            requirement2._expectedStartDate,
+                            requirement2._startDate,
+                            requirement2._expectedEndDate,
+                            requirement2._terminationDate,
+                            requirement2._terminationReason,
                             "3 days RAR, 1 completed",
                             requirement2._length,
                             requirement2._notes,

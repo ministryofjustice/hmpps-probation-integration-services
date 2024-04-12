@@ -124,11 +124,11 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
     @Query(
         """
             SELECT  r.rqmnt_id AS id,
-                    r.expected_start_date, 
-                    r.start_date, 
-                    r.commencement_date, 
-                    r.expected_end_date, 
-                    r.termination_date,
+                    r.expected_start_date as expectedStartDate, 
+                    r.start_date as startDate, 
+                    r.commencement_date as commencementDate, 
+                    r.expected_end_date as expectedEndDate, 
+                    r.termination_date as terminationDate,
                     rsrl3.code_description as terminationReason,
                     r."LENGTH", 
                     rsrl2.code_description as lengthUnitValue,

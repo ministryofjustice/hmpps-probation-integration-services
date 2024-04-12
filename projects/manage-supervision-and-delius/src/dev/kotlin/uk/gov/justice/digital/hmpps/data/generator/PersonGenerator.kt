@@ -274,11 +274,11 @@ object PersonGenerator {
         mainCategory: RequirementMainCategory = MAIN_CAT_F,
         active: Boolean = true,
         softDeleted: Boolean = false,
-        expectedStartDate: LocalDate? = null,
+        expectedStartDate: LocalDate? = LocalDate.now().minusDays(1),
         startDate: LocalDate = LocalDate.now(),
-        commencementDate: LocalDate? = null,
-        expectedEndDate: LocalDate? = null,
-        terminationDate: LocalDate? = null,
+        commencementDate: LocalDate? = LocalDate.now().minusDays(4),
+        expectedEndDate: LocalDate? = LocalDate.now().minusDays(2),
+        terminationDate: LocalDate? = LocalDate.now().minusDays(3),
         rqmntTerminationReasonId: String? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Requirement(id, length, notes, subCategoryId, expectedStartDate, startDate, commencementDate, expectedEndDate, terminationDate, rqmntTerminationReasonId, disposal, mainCategory, active, softDeleted)

@@ -76,11 +76,15 @@ class SentenceService(
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
     fun RequirementDetails.toRequirement(): Requirement {
-
         val rar = getRar(id, code)
 
         val requirement = Requirement(
             code,
+            expectedStartDate,
+            startDate,
+            expectedEndDate,
+            terminationDate,
+            terminationReason,
             populateRequirementDescription(description, codeDescription, rar),
             length,
             notes,
