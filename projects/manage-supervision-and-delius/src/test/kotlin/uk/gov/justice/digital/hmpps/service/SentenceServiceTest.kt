@@ -185,16 +185,14 @@ class SentenceServiceTest {
                     listOf(
                         Requirement(
                             requirement1._code,
-                            requirement1._description,
-                            requirement1._codeDescription,
+                            "${requirement1._description} - ${requirement1._codeDescription}",
                             requirement1._length,
                             requirement1._notes,
                             null
                         ),
                         Requirement(
                             requirement2._code,
-                            requirement2._description,
-                            requirement2._codeDescription,
+                            "3 days RAR, 1 completed",
                             requirement2._length,
                             requirement2._notes,
                             Rar(1, 2, 3)

@@ -72,8 +72,7 @@ class SentenceIntegrationTest {
                     listOf(
                         Requirement(
                             "F",
-                            "Main",
-                            "High Intensity",
+                            "1 days RAR, 1 completed",
                             12,
                             "my notes",
                             Rar(completed = 1, scheduled = 0, totalDays = 1)

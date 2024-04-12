@@ -75,14 +75,26 @@ class SentenceService(
     fun Disposal.toOrder() =
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
-    fun RequirementDetails.toRequirement() = Requirement(
-        code,
-        description,
-        codeDescription,
-        length,
-        notes,
-        getRar(id, code)
-    )
+    fun RequirementDetails.toRequirement(): Requirement {
+
+        val rar = getRar(id, code)
+
+        val requirement = Requirement(
+            code,
+            populateRequirementDescription(description, codeDescription, rar),
+            length,
+            notes,
+            getRar(id, code)
+        )
+
+        return requirement
+    }
+
+    fun populateRequirementDescription(description: String, codeDescription: String, rar: Rar?): String {
+        rar?.let { return "" + it.totalDays + " days RAR, " + it.completed + " completed" }
+
+        return "$description - $codeDescription"
+    }
 
     private fun getRar(requirementId: Long, requirementType: String): Rar? {
         if (requirementType.equals("F", true)) {
