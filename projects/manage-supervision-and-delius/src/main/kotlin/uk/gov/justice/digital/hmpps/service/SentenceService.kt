@@ -89,7 +89,7 @@ class SentenceService(
             length,
             lengthUnitValue,
             notes,
-            getRar(id, code)
+            rar
         )
 
         return requirement
