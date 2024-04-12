@@ -23,9 +23,9 @@ class MatchWriter(
             removeDuplicateNomsNumbers(person, prisonIdentifiers.prisonerNumber)
             updateNomsNumber(person, prisonIdentifiers.prisonerNumber)
         }
-        val bookingNumberChanged = custody?.prisonerNumber != prisonIdentifiers.bookingNumber
-        if (bookingNumberChanged && custody != null) {
-            custody.prisonerNumber = prisonIdentifiers.bookingNumber
+        val bookingNumberChanged = custody != null && custody.prisonerNumber != prisonIdentifiers.bookingNumber
+        if (bookingNumberChanged) {
+            custody!!.prisonerNumber = prisonIdentifiers.bookingNumber
             custodyRepository.save(custody)
             person.mostRecentPrisonerNumber = prisonIdentifiers.bookingNumber
             personRepository.save(person)
