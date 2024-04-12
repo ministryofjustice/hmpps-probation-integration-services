@@ -17,7 +17,7 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val probationMatchingService: ProbationMatchingService,
     private val prisonMatchingService: PrisonMatchingService,
-    @Value("\${messaging.consumer.dry-run:true}") private val messagingDryRun: Boolean
+    @Value("\${messaging.consumer.dry-run:false}") private val messagingDryRun: Boolean
 ) : NotificationHandler<Any> {
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
@@ -44,7 +44,9 @@ class Handler(
             }
 
             is OffenderEvent -> when (notification.eventType) {
-                "SENTENCE_CHANGED" -> prisonMatchingService
+                "OFFENDER_DETAILS_CHANGED", // changes to name, date of birth, identifiers in Delius
+                "SENTENCE_CHANGED",         // changes to sentence status and dates in Delius
+                -> prisonMatchingService
                     .matchAndUpdateIdentifiers(message.crn, messagingDryRun)
                     .also { telemetryService.logResult(it, messagingDryRun) }
 
