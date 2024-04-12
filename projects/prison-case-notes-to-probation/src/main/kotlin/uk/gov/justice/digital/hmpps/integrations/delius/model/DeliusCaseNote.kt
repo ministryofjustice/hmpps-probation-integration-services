@@ -33,16 +33,51 @@ data class CaseNoteBody(
     }
 
     fun description(caseNoteType: CaseNoteType): String? {
-        return if (typeLookup().isAlertType()) {
-            "NOMIS ${if (content.length > 194) "${content.take(192)} ~" else content.take(194)}"
-        } else if (caseNoteType.code == CaseNoteType.DEFAULT_CODE) {
-            "NOMIS Case Note - $type - $subType"
-        } else {
-            null
+        return when {
+            typeLookup().isAlertType() -> "NOMIS ${
+                if (content.length > 194) "${content.take(192)} ~" else content.take(194)
+            }"
+
+            isResettlementPassport() -> BcstPathway.from(content)?.let { "BCST case note for $it" }
+            caseNoteType.code == CaseNoteType.DEFAULT_CODE -> "NOMIS Case Note - $type - $subType"
+            else -> null
         }
     }
+
+    fun isResettlementPassport() = type == "RESET" && subType == "BCST"
 }
 
 fun String.isAlertType() = this == "ALERT ACTIVE" || this == "ALERT INACTIVE"
 
 data class StaffName(@NotBlank val forename: String, @NotBlank val surname: String)
+
+enum class BcstPathway(val keyword: String) {
+    ACCOMMODATION("Accommodation"),
+    ATTITUDES_THINKING_AND_BEHAVIOUR("Attitudes"),
+    CHILDREN_FAMILIES_AND_COMMUNITY("Children"),
+    DRUGS_AND_ALCOHOL("Drugs"),
+    EDUCATION_SKILLS_AND_WORK("Education"),
+    FINANCE_AND_ID("Finance"),
+    HEALTH("Health");
+
+    override fun toString(): String = when (this) {
+        ACCOMMODATION -> "Accommodation"
+        ATTITUDES_THINKING_AND_BEHAVIOUR -> "Attitudes, thinking and behaviour"
+        CHILDREN_FAMILIES_AND_COMMUNITY -> "Children, families and community"
+        DRUGS_AND_ALCOHOL -> "Drugs and alcohol"
+        EDUCATION_SKILLS_AND_WORK -> "Education, skills and work"
+        FINANCE_AND_ID -> "Finance and ID"
+        HEALTH -> "Health"
+    }
+
+    companion object {
+        private const val CASE_NOTE_PREFIX = "Case note summary from"
+        private val PATHWAY_REGEX = Regex("$CASE_NOTE_PREFIX (\\w+)")
+        fun from(content: String): BcstPathway? {
+            val match = PATHWAY_REGEX.find(content)?.destructured?.component1()
+            return match?.let { keyword ->
+                entries.firstOrNull { it.keyword.equals(keyword, true) }
+            }
+        }
+    }
+}
