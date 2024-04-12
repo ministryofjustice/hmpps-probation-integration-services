@@ -62,7 +62,7 @@ class SentenceService(
                 additionalSentences.map { it.toAdditionalSentence() }
             ),
             order = disposal?.toOrder(),
-            requirements = requirementRepository.getRequirements(crn, eventNumber).map { it.toRequirement() },
+            requirements = requirementRepository.getRequirements(id, eventNumber).map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() }
         )
 
@@ -75,19 +75,40 @@ class SentenceService(
     fun Disposal.toOrder() =
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
-    fun RequirementDetails.toRequirement() = Requirement(
-        description,
-        codeDescription,
-        length,
-        notes,
-        getRar(id)
-    )
+    fun RequirementDetails.toRequirement(): Requirement {
+        val rar = getRar(id, code)
 
-    private fun getRar(requirementId: Long): Rar {
-        val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
-        val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
-        val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
-        return Rar(completed = completedDays, scheduled = scheduledDays)
+        val requirement = Requirement(
+            code,
+            expectedStartDate,
+            startDate,
+            expectedEndDate,
+            terminationDate,
+            terminationReason,
+            populateRequirementDescription(description, codeDescription, rar),
+            length,
+            notes,
+            getRar(id, code)
+        )
+
+        return requirement
+    }
+
+    fun populateRequirementDescription(description: String, codeDescription: String, rar: Rar?): String {
+        rar?.let { return "" + it.totalDays + " days RAR, " + it.completed + " completed" }
+
+        return "$description - $codeDescription"
+    }
+
+    private fun getRar(requirementId: Long, requirementType: String): Rar? {
+        if (requirementType.equals("F", true)) {
+            val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
+            val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
+            val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
+            return Rar(completed = completedDays, scheduled = scheduledDays)
+        }
+
+        return null
     }
 
     fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)
