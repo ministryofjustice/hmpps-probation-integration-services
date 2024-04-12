@@ -1,5 +1,6 @@
 generic-service:
   ingress:
+    className: production-only
     host: external-api-and-delius.hmpps.service.justice.gov.uk
 
   env:

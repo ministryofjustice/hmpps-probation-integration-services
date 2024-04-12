@@ -1,5 +1,6 @@
 generic-service:
   ingress:
+    className: production-only
     host: prison-case-notes-to-probation.hmpps.service.justice.gov.uk
 
   env:

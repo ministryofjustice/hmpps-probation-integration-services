@@ -1,5 +1,6 @@
 generic-service:
   ingress:
+    className: production-only
     host: cas2-and-delius.hmpps.service.justice.gov.uk
 
   env:

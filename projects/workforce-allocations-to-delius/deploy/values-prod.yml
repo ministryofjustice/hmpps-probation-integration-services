@@ -1,5 +1,6 @@
 generic-service:
   ingress:
+    className: production-only
     host: workforce-allocations-to-delius.hmpps.service.justice.gov.uk
 
   env:

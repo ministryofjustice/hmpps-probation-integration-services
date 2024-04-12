@@ -1,5 +1,6 @@
 generic-service:
   ingress:
+    className: production-only
     host: approved-premises-and-oasys.hmpps.service.justice.gov.uk
 
   env:

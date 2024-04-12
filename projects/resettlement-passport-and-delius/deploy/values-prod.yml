@@ -1,5 +1,6 @@
 generic-service:
   ingress:
+    className: production-only
     host: resettlement-passport-and-delius.hmpps.service.justice.gov.uk
 
   env:

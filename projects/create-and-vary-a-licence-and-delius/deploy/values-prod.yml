@@ -1,5 +1,6 @@
 generic-service:
   ingress:
+    className: production-only
     host: create-and-vary-a-licence-and-delius.hmpps.service.justice.gov.uk
 
   env:

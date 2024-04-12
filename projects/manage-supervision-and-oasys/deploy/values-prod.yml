@@ -2,6 +2,7 @@ enabled: false # TODO set this to true when you're ready to deploy your service
 
 generic-service:
   ingress:
+    className: production-only
     host: manage-supervision-and-oasys.hmpps.service.justice.gov.uk
 
   env:
