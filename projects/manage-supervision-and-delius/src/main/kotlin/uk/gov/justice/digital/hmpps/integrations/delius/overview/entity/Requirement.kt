@@ -59,10 +59,17 @@ interface RarDays {
 
 interface RequirementDetails {
     val id: Long
+    val expectedStartDate: LocalDate?
+    val startDate: LocalDate
+    val commencementDate: LocalDate?
+    val expectedEndDate: LocalDate?
+    val terminationDate: LocalDate?
+    val terminationReason: String?
+    val length: Long?
+    val lengthUnitValue: String?
     val code: String
     val description: String
     val codeDescription: String
-    val length: Long?
     val notes: String?
 }
 
@@ -122,9 +129,9 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
                     r.commencement_date, 
                     r.expected_end_date, 
                     r.termination_date,
-                    rsrl3.code_description,
+                    rsrl3.code_description as terminationReason,
                     r."LENGTH", 
-                    rsrl2.code_description,
+                    rsrl2.code_description as lengthUnitValue,
                     rrtmc.code, 
                     rrtmc.description, 
                     rsrl.code_description AS codeDescription, 

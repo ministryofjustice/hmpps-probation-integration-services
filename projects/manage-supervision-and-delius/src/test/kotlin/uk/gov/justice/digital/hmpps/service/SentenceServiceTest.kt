@@ -94,8 +94,36 @@ class SentenceServiceTest {
             additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
         )
 
-        val requirement1 = RequirementDetails(1, "G", "Drug Rehabilitation", "Medium Intensity", 12, "new requirement")
-        val requirement2 = RequirementDetails(2, "F", "Main", "High Intensity", null, "rar requirement")
+        val requirement1 = RequirementDetails(
+            1,
+            LocalDate.now(),
+            LocalDate.now(),
+            LocalDate.now(),
+            LocalDate.now(),
+            LocalDate.now(),
+            "Expired (Normal)",
+            12,
+            "Weeks",
+            "G",
+            "Drug Rehabilitation",
+            "Medium Intensity",
+            "new requirement"
+        )
+        val requirement2 = RequirementDetails(
+            2,
+            null,
+            LocalDate.now(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "F",
+            "Main",
+            "High Intensity",
+            "rar requirement"
+        )
 
         val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
@@ -192,25 +220,54 @@ class SentenceServiceTest {
 
     data class RequirementDetails(
         val _id: Long,
+        val _expectedStartDate: LocalDate?,
+        val _startDate: LocalDate,
+        val _commencementDate: LocalDate?,
+        val _expectedEndDate: LocalDate?,
+        val _terminationDate: LocalDate?,
+        val _terminationReason: String?,
+        val _length: Long?,
+        val _lengthUnitValue: String?,
         val _code: String,
         val _description: String,
         val _codeDescription: String,
-        val _length: Long?,
         val _notes: String?
     ) : uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails {
         override val id: Long
             get() = _id
 
+        override val expectedStartDate: LocalDate?
+            get() = _expectedStartDate
+
+        override val startDate: LocalDate
+            get() = _startDate
+
+        override val commencementDate: LocalDate?
+            get() = _commencementDate
+
+        override val expectedEndDate: LocalDate?
+            get() = _expectedEndDate
+
+        override val terminationDate: LocalDate?
+            get() = _terminationDate
+
+        override val terminationReason: String?
+            get() = _terminationReason
+
+        override val length: Long?
+            get() = _length
+
+        override val lengthUnitValue: String?
+            get() = _lengthUnitValue
+
         override val code: String
             get() = _code
+
         override val description: String
             get() = _description
 
         override val codeDescription: String
             get() = _codeDescription
-
-        override val length: Long?
-            get() = _length
 
         override val notes: String?
             get() = _notes
