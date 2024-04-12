@@ -281,7 +281,22 @@ object PersonGenerator {
         terminationDate: LocalDate? = LocalDate.now().minusDays(3),
         rqmntTerminationReasonId: String? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Requirement(id, length, notes, subCategoryId, expectedStartDate, startDate, commencementDate, expectedEndDate, terminationDate, rqmntTerminationReasonId, disposal, mainCategory, active, softDeleted)
+    ) = Requirement(
+        id,
+        length,
+        notes,
+        subCategoryId,
+        expectedStartDate,
+        startDate,
+        commencementDate,
+        expectedEndDate,
+        terminationDate,
+        rqmntTerminationReasonId,
+        disposal,
+        mainCategory,
+        active,
+        softDeleted
+    )
 
     fun generateDisposalType(
         code: String,
