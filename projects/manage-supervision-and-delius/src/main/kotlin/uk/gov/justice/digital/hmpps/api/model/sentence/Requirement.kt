@@ -12,6 +12,7 @@ data class Requirement(
     val terminationReason: String?,
     val description: String,
     val length: Long?,
+    val lengthUnitValue: String?,
     val notes: String?,
     val rar: Rar? = null
 )

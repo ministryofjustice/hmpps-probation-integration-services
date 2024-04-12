@@ -87,6 +87,7 @@ class SentenceService(
             terminationReason,
             populateRequirementDescription(description, codeDescription, rar),
             length,
+            lengthUnitValue,
             notes,
             getRar(id, code)
         )

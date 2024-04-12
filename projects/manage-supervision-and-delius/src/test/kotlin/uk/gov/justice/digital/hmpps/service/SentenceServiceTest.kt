@@ -192,6 +192,7 @@ class SentenceServiceTest {
                             requirement1._terminationReason,
                             "${requirement1._description} - ${requirement1._codeDescription}",
                             requirement1._length,
+                            requirement1.lengthUnitValue,
                             requirement1._notes,
                             null
                         ),
@@ -204,6 +205,7 @@ class SentenceServiceTest {
                             requirement2._terminationReason,
                             "3 days RAR, 1 completed",
                             requirement2._length,
+                            requirement2.lengthUnitValue,
                             requirement2._notes,
                             Rar(1, 2, 3)
                         )
