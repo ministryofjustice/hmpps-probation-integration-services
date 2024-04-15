@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -120,10 +121,12 @@ class Contact(
     ).contains(outcome?.code)
 
     fun rescheduled(): Boolean = rescheduledStaff() || rescheduledPop()
-    fun isEmailOrTextFromPop(): Boolean = type.code.equals(ContactTypeCode.EMAIL_OR_TEXT_FROM_POP.value)
-    fun isEmailOrTextToPop(): Boolean = type.code.equals(ContactTypeCode.EMAIL_OR_TEXT_TO_POP.value)
-    fun isPhoneCallFromPop(): Boolean = type.code.equals(ContactTypeCode.PHONE_CONTACT_FROM_POP.value)
-    fun isPhoneCallToPop(): Boolean = type.code.equals(ContactTypeCode.PHONE_CONTACT_TO_POP.value)
+    fun isEmailOrTextFromPop(): Boolean = type.code == ContactTypeCode.EMAIL_OR_TEXT_FROM_POP.value
+    fun isEmailOrTextToPop(): Boolean = type.code == ContactTypeCode.EMAIL_OR_TEXT_TO_POP.value
+    fun isPhoneCallFromPop(): Boolean = type.code == ContactTypeCode.PHONE_CONTACT_FROM_POP.value
+    fun isPhoneCallToPop(): Boolean = type.code == ContactTypeCode.PHONE_CONTACT_TO_POP.value
+    fun isCommunication(): Boolean =
+        type.category?.category?.code?.equals(ContactCategoryCode.COMMUNICATION_CONTACT.value) ?: false
 }
 
 @Immutable
@@ -144,9 +147,32 @@ class ContactType(
     @Column
     val description: String,
 
+    @ManyToOne
+    @JoinTable(
+        name = "r_contact_typecontact_category",
+        inverseJoinColumns = [JoinColumn(name = "contact_type_id", insertable = false, updatable = false)],
+    )
+    val category: ContactCategory? = null,
+
+    @Column(name = "sgc_flag", columnDefinition = "number")
+    val systemGenerated: Boolean = false,
+
     @Column(name = "national_standards_contact")
     @Convert(converter = YesNoConverter::class)
     val nationalStandardsContact: Boolean = false,
+)
+
+@Immutable
+@Entity
+@Table(name = "r_contact_typecontact_category")
+class ContactCategory(
+    @Id
+    @Column(name = "contact_type_id")
+    val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "standard_reference_list_id")
+    val category: ReferenceData,
 )
 
 @Immutable
@@ -201,6 +227,10 @@ enum class ContactTypeCode(val value: String) {
     EMAIL_OR_TEXT_TO_POP("CMOB"),
     PHONE_CONTACT_FROM_POP("CTOA"),
     PHONE_CONTACT_TO_POP("CTOB"),
+}
+
+enum class ContactCategoryCode(val value: String) {
+    COMMUNICATION_CONTACT("LT")
 }
 
 interface ContactRepository : JpaRepository<Contact, Long> {

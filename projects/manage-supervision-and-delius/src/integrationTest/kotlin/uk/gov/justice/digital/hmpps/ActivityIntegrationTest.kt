@@ -33,18 +33,20 @@ internal class ActivityIntegrationTest {
             .andReturn().response.contentAsJson<PersonActivity>()
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.activities.size, equalTo(7))
-        assertThat(res.activities[2].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
-        assertThat(res.activities[2].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
+        assertThat(res.activities.size, equalTo(8))
+        assertThat(res.activities[0].isCommunication, equalTo(true))
+        assertThat(res.activities[0].isSystemContact, equalTo(true))
+        assertThat(res.activities[3].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().id))
+        assertThat(res.activities[3].type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
         assertThat(
             res.activities[2].location?.officeName,
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
         )
-        assertThat(res.activities[2].location?.postcode, equalTo("H34 7TH"))
-        assertThat(res.activities[2].isAppointment, equalTo(true))
-        assertThat(res.activities[1].documents.size, equalTo(2))
-        assertThat(res.activities[3].isAppointment, equalTo(false))
-        assertThat(res.activities[0].documents.size, equalTo(0))
-        assertThat(res.activities[0].action, equalTo("Breach Enforcement Action"))
+        assertThat(res.activities[3].location?.postcode, equalTo("H34 7TH"))
+        assertThat(res.activities[3].isAppointment, equalTo(true))
+        assertThat(res.activities[2].documents.size, equalTo(2))
+        assertThat(res.activities[4].isAppointment, equalTo(false))
+        assertThat(res.activities[1].documents.size, equalTo(0))
+        assertThat(res.activities[1].action, equalTo("Breach Enforcement Action"))
     }
 }
