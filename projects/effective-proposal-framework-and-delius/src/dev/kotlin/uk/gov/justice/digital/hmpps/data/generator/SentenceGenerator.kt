@@ -17,7 +17,6 @@ object SentenceGenerator {
     val RELEASED_CUSTODY = generateCustody(RELEASED_SENTENCE)
     val RELEASE = generateRelease(RELEASED_CUSTODY)
 
-
     fun generateSentence(
         event: Event,
         date: LocalDate = LocalDate.now().minusYears(1),
