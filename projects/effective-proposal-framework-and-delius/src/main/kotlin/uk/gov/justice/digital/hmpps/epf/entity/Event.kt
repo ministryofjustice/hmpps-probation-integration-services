@@ -24,6 +24,8 @@ class Event(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
+    val convictionDate: LocalDate?,
+
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 

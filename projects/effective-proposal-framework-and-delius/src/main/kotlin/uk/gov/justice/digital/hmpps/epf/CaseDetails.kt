@@ -21,7 +21,7 @@ data class CaseDetails(
 }
 
 data class Name(val forename: String, val middleName: String?, val surname: String)
-data class Sentence(val date: LocalDate?, val sentencingCourt: Court, val releaseDate: LocalDate?)
+data class Sentence(val convictionDate: LocalDate?, val sentenceDate: LocalDate?, val sentencingCourt: Court, val releaseDate: LocalDate?)
 data class Court(val name: String)
 data class Provider(val code: String, val name: String)
 

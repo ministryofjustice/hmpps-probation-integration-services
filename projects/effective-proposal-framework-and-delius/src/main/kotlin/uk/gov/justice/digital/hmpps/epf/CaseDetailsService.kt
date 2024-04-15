@@ -25,6 +25,7 @@ class CaseDetailsService(
             person.dateOfBirth,
             person.gender.description,
             Sentence(
+                event.convictionDate,
                 event.disposal?.date,
                 Court(courtName),
                 event.disposal?.custody?.mostRecentRelease()?.date

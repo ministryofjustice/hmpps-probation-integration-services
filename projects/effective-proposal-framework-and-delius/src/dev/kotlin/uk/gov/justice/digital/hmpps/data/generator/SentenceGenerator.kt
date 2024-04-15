@@ -26,9 +26,10 @@ object SentenceGenerator {
 
     fun generateEvent(
         person: Person = PersonGenerator.DEFAULT,
+        convictionDate: LocalDate = LocalDate.now(),
         number: String = "1",
         id: Long = IdGenerator.getAndIncrement()
-    ) = Event(id, number, person)
+    ) = Event(id, number, person, convictionDate)
 
     fun generateCourtAppearance(
         event: Event,

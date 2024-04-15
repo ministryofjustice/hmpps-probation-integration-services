@@ -67,6 +67,7 @@ internal class IntegrationTest {
                     person.dateOfBirth,
                     person.gender.description,
                     Sentence(
+                        SentenceGenerator.RELEASED_EVENT.convictionDate,
                         SentenceGenerator.RELEASED_SENTENCE.date,
                         Court(SentenceGenerator.DEFAULT_COURT.name),
                         SentenceGenerator.RELEASE.date
@@ -88,7 +89,12 @@ internal class IntegrationTest {
             ),
             PersonGenerator.DEFAULT.dateOfBirth,
             PersonGenerator.DEFAULT.gender.description,
-            Sentence(SentenceGenerator.DEFAULT_SENTENCE.date, Court(SentenceGenerator.DEFAULT_COURT.name), null),
+            Sentence(
+                SentenceGenerator.DEFAULT_EVENT.convictionDate,
+                SentenceGenerator.DEFAULT_SENTENCE.date,
+                Court(SentenceGenerator.DEFAULT_COURT.name),
+                null
+            ),
             Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
             3
         )
