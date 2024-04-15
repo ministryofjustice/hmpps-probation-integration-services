@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import java.time.ZonedDateTime
 
 sealed interface PrisonerMovement {
@@ -61,4 +62,9 @@ sealed interface PrisonerMovement {
         MovementReasonCodes.ABSCONDED,
         MovementReasonCodes.ABSCONDED_ECL
     )
+}
+
+fun PrisonerMovement.releaseDateValid(custody: Custody): Boolean {
+    return !occurredAt.isBefore(custody.disposal.date) &&
+        !(custody.mostRecentRelease()?.recall?.date?.let { occurredAt.isBefore(it) } ?: false)
 }

@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/prison-api/api/bookings/offenderNo/A0001AA?basicInfo=true&extraInfo=false"
+        "url": "/prison-api/api/bookings/offenderNo/A0001AA"
       },
       "response": {
         "headers": {
@@ -42,7 +42,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/prison-api/api/bookings/offenderNo/A0002AA?basicInfo=true&extraInfo=false"
+        "url": "/prison-api/api/bookings/offenderNo/A0002AA"
       },
       "response": {
         "headers": {

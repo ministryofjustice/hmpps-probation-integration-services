@@ -11,9 +11,7 @@ interface PrisonApiClient {
 
     @GetExchange(value = "/api/bookings/offenderNo/{nomsNumber}")
     fun getBooking(
-        @PathVariable nomsNumber: String,
-        @RequestParam basicInfo: Boolean = true,
-        @RequestParam extraInfo: Boolean = false
+        @PathVariable nomsNumber: String
     ): Booking
 
     @GetExchange(value = "/api/offender-sentences/booking/{bookingId}/sentenceTerms")

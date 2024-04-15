@@ -125,7 +125,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
                 "nomsNumber" to personReference,
                 "movementType" to movementType,
                 "movementReason" to movementReason,
-                "inOutStatus" to inOutStatus.name,
+                "inOutStatus" to inOutStatus!!.name,
                 "prisonId" to agencyId
             )
         )
@@ -150,5 +150,6 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
         )
 
         Booking.InOutStatus.TRN -> throw IgnorableMessageException("BeingTransferred")
+        else -> throw IgnorableMessageException("NoBookingAvailable")
     }
 }

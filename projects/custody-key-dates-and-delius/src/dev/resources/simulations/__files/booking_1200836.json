@@ -5,7 +5,6 @@
   "firstName": "Frank",
   "lastName": "Jones",
   "agencyId": "MDI",
-  "assignedLivingUnitId": 25638,
   "activeFlag": true,
   "dateOfBirth": "1970-01-01"
 }

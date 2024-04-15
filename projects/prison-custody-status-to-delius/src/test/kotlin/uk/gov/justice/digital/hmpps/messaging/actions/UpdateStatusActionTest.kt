@@ -108,6 +108,23 @@ internal class UpdateStatusActionTest {
         verify(custodyHistoryRepository).save(any())
     }
 
+    @ParameterizedTest
+    @MethodSource("invalidDatesForRelease")
+    fun `invalid release date is ignored`(custody: Custody) {
+        val prisonerMovement = PrisonerMovement.Released(
+            custody.disposal.event.person.nomsNumber,
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            "OUT",
+            PrisonerMovement.Type.RELEASED,
+            "",
+            ZonedDateTime.now().minusDays(1)
+        )
+
+        assertThrows<IgnorableMessageException> {
+            action.accept(PrisonerMovementContext(prisonerMovement, custody))
+        }
+    }
+
     companion object {
 
         private const val NOMS_ID = "T1234ST"
@@ -143,6 +160,20 @@ internal class UpdateStatusActionTest {
         fun noChangeStatuses() = noChangeTypes.flatMap { csc ->
             receivedTypes.map { Arguments.of(prisonerReceived(it), custody(csc)) }
         }
+
+        @JvmStatic
+        fun invalidDatesForRelease() = listOf(
+            EventGenerator.custodialEvent(
+                PersonGenerator.RELEASABLE,
+                InstitutionGenerator.DEFAULT,
+                disposalDate = ZonedDateTime.now()
+            ).disposal!!.custody,
+            EventGenerator.previouslyRecalledEvent(
+                PersonGenerator.RELEASABLE,
+                InstitutionGenerator.DEFAULT,
+                recallDate = ZonedDateTime.now()
+            ).disposal!!.custody
+        )
     }
 
     private fun withReferenceData(vararg referenceData: ReferenceData) {

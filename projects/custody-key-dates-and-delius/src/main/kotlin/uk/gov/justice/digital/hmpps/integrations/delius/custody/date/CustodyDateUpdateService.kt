@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.RestClientResponseException
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.findKeyDateType
@@ -23,8 +25,12 @@ class CustodyDateUpdateService(
     private val telemetryService: TelemetryService
 ) {
     fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
-        val booking = prisonApi.getBookingFromNomsNumber(nomsId.uppercase())
-        updateCustodyKeyDates(booking, dryRun, clientSource)
+        try {
+            val booking = prisonApi.getBookingFromNomsNumber(nomsId.uppercase())
+            updateCustodyKeyDates(booking, dryRun, clientSource)
+        } catch (e: RestClientResponseException) {
+            if (e.statusCode != HttpStatus.NOT_FOUND) throw e
+        }
     }
 
     fun updateCustodyKeyDates(bookingId: Long) {

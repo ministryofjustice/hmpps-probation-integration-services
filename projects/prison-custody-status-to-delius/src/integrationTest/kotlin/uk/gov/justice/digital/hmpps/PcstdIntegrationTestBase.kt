@@ -114,8 +114,8 @@ open class PcstdIntegrationTestBase {
     internal fun Booking.lastMovement(dateTime: ZonedDateTime = ZonedDateTime.now()) = Movement(
         InstitutionGenerator.DEFAULT.nomisCdeCode!!,
         agencyId,
-        movementType,
-        movementReason,
+        movementType!!,
+        movementReason!!,
         dateTime.toLocalDate(),
         dateTime.toLocalTime()
     )

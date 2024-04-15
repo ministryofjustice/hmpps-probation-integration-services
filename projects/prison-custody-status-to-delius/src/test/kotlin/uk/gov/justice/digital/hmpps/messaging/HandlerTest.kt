@@ -297,8 +297,8 @@ internal class HandlerTest {
     private fun Booking.movement() = Movement(
         "OUT",
         agencyId,
-        movementType,
-        movementReason,
+        movementType!!,
+        movementReason!!,
         LocalDate.now(),
         LocalTime.now()
     )
