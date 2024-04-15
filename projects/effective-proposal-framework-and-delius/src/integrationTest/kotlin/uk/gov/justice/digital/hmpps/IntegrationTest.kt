@@ -49,6 +49,36 @@ internal class IntegrationTest {
             .andExpect(jsonPath("$.message", equalTo("Person with crn of ${person.crn} not found")))
     }
 
+    @Test
+    fun `release details are correctly displayed`() {
+        val person = PersonGenerator.RELEASED
+        val crn = person.crn
+        val eventNumber = 1
+        val detailResponse = mockMvc
+            .perform(get("/case-details/$crn/$eventNumber").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<CaseDetails>()
+
+        assertThat(
+            detailResponse, equalTo(
+                CaseDetails(
+                    null,
+                    Name(person.forename, person.secondName, person.surname),
+                    person.dateOfBirth,
+                    person.gender.description,
+                    Sentence(
+                        SentenceGenerator.RELEASED_EVENT.convictionDate,
+                        SentenceGenerator.RELEASED_SENTENCE.date,
+                        Court(SentenceGenerator.DEFAULT_COURT.name),
+                        SentenceGenerator.RELEASE.date
+                    ),
+                    Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
+                    null
+                )
+            )
+        )
+    }
+
     private fun getDetailResponse(): CaseDetails {
         return CaseDetails(
             PersonGenerator.DEFAULT.nomsId,
@@ -59,7 +89,12 @@ internal class IntegrationTest {
             ),
             PersonGenerator.DEFAULT.dateOfBirth,
             PersonGenerator.DEFAULT.gender.description,
-            Sentence(SentenceGenerator.DEFAULT_SENTENCE.date, Court(SentenceGenerator.DEFAULT_COURT.name), null),
+            Sentence(
+                SentenceGenerator.DEFAULT_EVENT.convictionDate,
+                SentenceGenerator.DEFAULT_SENTENCE.date,
+                Court(SentenceGenerator.DEFAULT_COURT.name),
+                null
+            ),
             Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
             3
         )
