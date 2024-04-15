@@ -34,7 +34,7 @@ data class Booking(
     val active: Boolean,
     @JsonAlias("offenderNo")
     val personReference: String,
-    val agencyId: String,
+    val agencyId: String?,
     @JsonAlias("lastMovementTypeCode")
     val movementType: String?,
     @JsonAlias("lastMovementReasonCode")

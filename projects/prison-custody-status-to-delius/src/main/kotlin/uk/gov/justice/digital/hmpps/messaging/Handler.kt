@@ -34,13 +34,21 @@ class Handler(
                 IdentifierAdded, IdentifierUpdated, PrisonerReceived, PrisonerReleased -> {
                     val nomsId = message.personReference.findNomsNumber()!!
                     val booking = prisonApiClient.bookingFromNomsId(nomsId)
-                    val movement = prisonApiClient.getLatestMovement(listOf(nomsId)).first()
-                    booking.prisonerMovement(movement)
+                    val movement = prisonApiClient.getLatestMovement(listOf(nomsId)).firstOrNull()
+                    movement?.let { booking.prisonerMovement(it) }
                 }
 
                 else -> {
                     throw IllegalArgumentException("Unknown event type ${message.eventType}")
                 }
+            }
+
+            if (movement == null) {
+                throw IgnorableMessageException(
+                    "NoMovementInNomis", mapOf(
+                        "nomsNumber" to message.personReference.findNomsNumber()!!
+                    )
+                )
             }
 
             val config = configs.firstOrNull { it.validFor(movement.type, movement.reason) }
@@ -126,7 +134,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
                 "movementType" to movementType,
                 "movementReason" to movementReason,
                 "inOutStatus" to inOutStatus!!.name,
-                "prisonId" to agencyId
+                "prisonId" to (agencyId ?: "")
             )
         )
     }
