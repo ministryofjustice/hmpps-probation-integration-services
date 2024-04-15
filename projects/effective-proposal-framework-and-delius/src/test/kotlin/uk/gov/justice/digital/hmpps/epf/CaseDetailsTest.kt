@@ -20,7 +20,7 @@ internal class CaseDetailsTest {
             Name("John", "", "Smith"),
             LocalDate.of(1982, 8, 3),
             "Male",
-            Sentence(LocalDate.of(2013, 9, 23), Court("NA Court"), LocalDate.of(2022, 8, 2)),
+            Sentence(null, LocalDate.of(2013, 9, 23), Court("NA Court"), LocalDate.of(2022, 8, 2)),
             Provider("N00", "London"),
             null
         )
