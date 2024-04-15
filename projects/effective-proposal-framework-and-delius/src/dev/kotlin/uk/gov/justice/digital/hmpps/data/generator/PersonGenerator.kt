@@ -9,6 +9,7 @@ object PersonGenerator {
     val DEFAULT = generate("N123456", "A1234YZ")
     val EXCLUDED = generate("E123456", currentExclusion = true)
     val RESTRICTED = generate("R123456", currentRestriction = true)
+    val RELEASED = generate("F123456")
 
     fun generate(
         crn: String,
