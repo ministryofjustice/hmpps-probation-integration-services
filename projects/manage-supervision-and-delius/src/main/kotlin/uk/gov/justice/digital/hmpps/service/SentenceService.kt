@@ -95,10 +95,14 @@ class SentenceService(
         return requirement
     }
 
-    fun populateRequirementDescription(description: String, codeDescription: String, rar: Rar?): String {
+    fun populateRequirementDescription(description: String, codeDescription: String?, rar: Rar?): String {
         rar?.let { return "" + it.totalDays + " days RAR, " + it.completed + " completed" }
 
-        return "$description - $codeDescription"
+        if (codeDescription != null) {
+            return "$description - $codeDescription"
+        }
+
+        return description
     }
 
     private fun getRar(requirementId: Long, requirementType: String): Rar? {

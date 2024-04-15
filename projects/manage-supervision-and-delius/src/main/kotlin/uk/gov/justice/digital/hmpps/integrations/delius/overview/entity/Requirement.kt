@@ -69,7 +69,7 @@ interface RequirementDetails {
     val lengthUnitValue: String?
     val code: String
     val description: String
-    val codeDescription: String
+    val codeDescription: String?
     val notes: String?
 }
 

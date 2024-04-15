@@ -125,6 +125,22 @@ class SentenceServiceTest {
             "rar requirement"
         )
 
+        val requirement3 = RequirementDetails(
+            1,
+            LocalDate.now(),
+            LocalDate.now(),
+            null,
+            LocalDate.now().minusDays(7),
+            null,
+            "Expired (Normal)",
+            null,
+            null,
+            "RM49",
+            "Curfew (Electronic Monitored)",
+            null,
+            "new requirement"
+        )
+
         val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
         val completedRarDays = OverviewServiceTest.RarDays(1, "COMPLETED")
@@ -142,7 +158,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
 
         whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
-            .thenReturn(listOf(requirement1, requirement2))
+            .thenReturn(listOf(requirement1, requirement2, requirement3))
 
         whenever(requirementRepository.getRarDaysByRequirementId(requirement2._id)).thenReturn(
             listOf(
@@ -208,6 +224,19 @@ class SentenceServiceTest {
                             requirement2.lengthUnitValue,
                             requirement2._notes,
                             Rar(1, 2, 3)
+                        ),
+                        Requirement(
+                            requirement3._code,
+                            requirement3._expectedStartDate,
+                            requirement3._startDate,
+                            requirement3._expectedEndDate,
+                            requirement3._terminationDate,
+                            requirement3._terminationReason,
+                            requirement3._description,
+                            requirement3._length,
+                            requirement3.lengthUnitValue,
+                            requirement3._notes,
+                            null
                         )
                     ),
                     listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event"))
@@ -240,7 +269,7 @@ class SentenceServiceTest {
         val _lengthUnitValue: String?,
         val _code: String,
         val _description: String,
-        val _codeDescription: String,
+        val _codeDescription: String?,
         val _notes: String?
     ) : uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails {
         override val id: Long
@@ -276,7 +305,7 @@ class SentenceServiceTest {
         override val description: String
             get() = _description
 
-        override val codeDescription: String
+        override val codeDescription: String?
             get() = _codeDescription
 
         override val notes: String?
