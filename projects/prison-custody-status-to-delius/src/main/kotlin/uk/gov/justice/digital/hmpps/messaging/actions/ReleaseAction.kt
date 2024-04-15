@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
 import uk.gov.justice.digital.hmpps.messaging.*
-import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 @Component
@@ -46,7 +45,7 @@ class ReleaseAction(
     }
 
     private fun checkPreConditions(prisonerMovement: PrisonerMovement, custody: Custody) {
-        if (prisonerMovement.occurredBefore(custody.disposal.date, custody.mostRecentRelease()?.recall?.date)) {
+        if (!prisonerMovement.releaseDateValid(custody)) {
             throw IgnorableMessageException("InvalidReleaseDate", prisonerMovement.telemetryProperties())
         }
     }
@@ -110,10 +109,6 @@ class ReleaseAction(
             )
         )
     }
-}
-
-private fun PrisonerMovement.occurredBefore(sentenceDate: ZonedDateTime, recalledDateTime: ZonedDateTime?): Boolean {
-    return occurredAt.isBefore(sentenceDate) || recalledDateTime?.let { occurredAt.isBefore(it) } ?: false
 }
 
 private fun PrisonerMovement.releaseType(): ReleaseTypeCode {

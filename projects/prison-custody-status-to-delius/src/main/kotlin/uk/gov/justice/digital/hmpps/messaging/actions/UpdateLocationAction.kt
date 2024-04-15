@@ -39,9 +39,9 @@ class UpdateLocationAction(
 
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        if (prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.toPrisonId) {
-            return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
-        }
+
+        val result = checkPreconditions(prisonerMovement, custody)
+        if (result != null) return result
 
         val institution = when (prisonerMovement) {
             is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.toPrisonId)
@@ -113,5 +113,14 @@ class UpdateLocationAction(
                 manager = custody.disposal.event.manager()
             )
         }
+    }
+
+    private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody): ActionResult? {
+        if ((prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.toPrisonId) ||
+            (prisonerMovement is PrisonerMovement.Released && !prisonerMovement.releaseDateValid(custody))
+        ) {
+            return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
+        }
+        return null
     }
 }

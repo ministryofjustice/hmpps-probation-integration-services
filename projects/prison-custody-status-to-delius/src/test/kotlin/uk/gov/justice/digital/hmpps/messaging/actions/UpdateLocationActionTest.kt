@@ -16,12 +16,9 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.withManager
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
@@ -123,6 +120,23 @@ internal class UpdateLocationActionTest {
         )
     }
 
+    @ParameterizedTest
+    @MethodSource("invalidDatesForRelease")
+    fun `invalid release date does not update location`(custody: Custody) {
+        val prisonerMovement = PrisonerMovement.Released(
+            custody.disposal.event.person.nomsNumber,
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            "OUT",
+            PrisonerMovement.Type.RELEASED,
+            "",
+            ZonedDateTime.now().minusDays(1)
+        )
+
+        val result = action.accept(PrisonerMovementContext(prisonerMovement, custody))
+
+        assertThat(result, instanceOf(ActionResult.Ignored::class.java))
+    }
+
     companion object {
         private val received = PrisonerMovement.Received(
             custody().disposal.event.person.nomsNumber,
@@ -139,6 +153,20 @@ internal class UpdateLocationActionTest {
             RELEASED,
             "",
             ZonedDateTime.now()
+        )
+
+        @JvmStatic
+        fun invalidDatesForRelease() = listOf(
+            EventGenerator.custodialEvent(
+                PersonGenerator.RELEASABLE,
+                InstitutionGenerator.DEFAULT,
+                disposalDate = ZonedDateTime.now()
+            ).disposal!!.custody,
+            EventGenerator.previouslyRecalledEvent(
+                PersonGenerator.RELEASABLE,
+                InstitutionGenerator.DEFAULT,
+                recallDate = ZonedDateTime.now()
+            ).disposal!!.custody
         )
 
         @JvmStatic
