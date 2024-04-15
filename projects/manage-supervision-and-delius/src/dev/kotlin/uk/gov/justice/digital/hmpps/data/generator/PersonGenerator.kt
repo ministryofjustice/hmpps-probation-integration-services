@@ -95,7 +95,7 @@ object PersonGenerator {
 
     val MAIN_CAT_F_SUB_ID = IdGenerator.getAndIncrement();
     val MAIN_CAT_F_TYPE = ReferenceData(MAIN_CAT_F_SUB_ID, "G03", "High Intensity")
-    val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main")
+    val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main", 1)
     val REQUIREMENT = generateRequirement(ACTIVE_ORDER, MAIN_CAT_F_SUB_ID)
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
@@ -274,8 +274,29 @@ object PersonGenerator {
         mainCategory: RequirementMainCategory = MAIN_CAT_F,
         active: Boolean = true,
         softDeleted: Boolean = false,
+        expectedStartDate: LocalDate? = LocalDate.now().minusDays(1),
+        startDate: LocalDate = LocalDate.now(),
+        commencementDate: LocalDate? = LocalDate.now().minusDays(4),
+        expectedEndDate: LocalDate? = LocalDate.now().minusDays(2),
+        terminationDate: LocalDate? = LocalDate.now().minusDays(3),
+        rqmntTerminationReasonId: String? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Requirement(id, length, notes, subCategoryId, disposal, mainCategory, active, softDeleted)
+    ) = Requirement(
+        id,
+        length,
+        notes,
+        subCategoryId,
+        expectedStartDate,
+        startDate,
+        commencementDate,
+        expectedEndDate,
+        terminationDate,
+        rqmntTerminationReasonId,
+        disposal,
+        mainCategory,
+        active,
+        softDeleted
+    )
 
     fun generateDisposalType(
         code: String,
