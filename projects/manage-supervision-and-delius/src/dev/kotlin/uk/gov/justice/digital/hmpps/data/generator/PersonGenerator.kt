@@ -320,13 +320,15 @@ object PersonGenerator {
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
-        terminationReason: ReferenceData? = null
+        terminationReason: ReferenceData? = null,
+        lengthUnit:  ReferenceData? = null
     ) = Disposal(
         event,
         date,
         length,
         type,
         terminationReason,
+        lengthUnit,
         enteredEndDate,
         notionalEndDate,
         terminationDate,

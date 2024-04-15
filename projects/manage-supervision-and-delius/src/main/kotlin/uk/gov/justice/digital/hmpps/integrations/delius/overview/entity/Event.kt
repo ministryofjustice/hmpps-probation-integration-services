@@ -67,6 +67,7 @@ interface EventRepository : JpaRepository<Event, Long> {
             "ORDER BY e.eventNumber DESC"
     )
     fun findByPersonId(personId: Long): List<Event>
+
 }
 
 @Entity
@@ -91,6 +92,10 @@ class Disposal(
     @ManyToOne
     @JoinColumn(name = "disposal_termination_reason_id")
     val terminationReason: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "entry_length_units_id")
+    val lengthUnit: ReferenceData? = null,
 
     @Column(name = "entered_notional_end_date")
     val enteredEndDate: LocalDate? = null,
