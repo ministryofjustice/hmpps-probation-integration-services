@@ -76,10 +76,10 @@ interface CourtDocumentDetails {
     val documentName: String
 }
 
-interface DocumentRepository : JpaRepository<PersonDocument, Long> {
+interface DocumentRepository : JpaRepository<Document, Long> {
     fun findByPersonId(personId: Long): List<PersonDocument>
 
-    @Query("select d.name from PersonDocument d join Person p on p.id = d.personId and p.crn = :crn and d.alfrescoId = :alfrescoId")
+    @Query("select d.name from Document d join Person p on p.id = d.personId and p.crn = :crn and d.alfrescoId = :alfrescoId")
     fun findNameByPersonCrnAndAlfrescoId(crn: String, alfrescoId: String): String?
 
     @Query(
