@@ -35,6 +35,7 @@ data class Activity(
     val acceptableAbsence: Boolean?,
     val acceptableAbsenceReason: String?,
     val isAppointment: Boolean = false,
+    val isCommunication: Boolean = false,
     val action: String?,
     val isSystemContact: Boolean? = false,
     val isEmailOrTextFromPop: Boolean? = false,

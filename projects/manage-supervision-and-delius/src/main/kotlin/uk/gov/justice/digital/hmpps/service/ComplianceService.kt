@@ -35,7 +35,7 @@ class ComplianceService(
 
         fun breachesForSentence(eventId: Long) = allBreaches.filter { (it.eventId == eventId) }
         fun activeBreachCountForSentence(eventId: Long) =
-            allBreaches.filter { it.eventId == eventId && it.active }.firstOrNull()
+            allBreaches.firstOrNull { it.eventId == eventId && it.active }
 
         fun sentenceActivity(eventNumber: String) = allActiveSentenceActivity.filter { it.eventNumber == eventNumber }
 

@@ -42,7 +42,7 @@ class OverviewService(
         val sentences = activeEvents.map { it.toSentence() }
         val allBreaches = nsiRepository.getAllBreaches(person.id)
         val previousOrders = events.filter { !it.active && it.disposal != null }
-        val previousOrdersBreached = allBreaches.filter { it.eventId in previousOrders.map { it.id } }.size
+        val previousOrdersBreached = allBreaches.filter { it -> it.eventId in previousOrders.map { it.id } }.size
         val compliance = toSentenceCompliance(previousAppointments.map { it.toActivity() }, allBreaches)
         val registrations = registrationRepository.findByPersonId(person.id)
 
