@@ -172,7 +172,7 @@ object ContactGenerator {
         ContactType(IdGenerator.getAndIncrement(), code, attendance, description, systemGenerated = systemGenerated)
 
     private fun generateContactCategory(contactType: ContactType, contactCategory: ReferenceData) =
-        ContactCategory(id = contactType.id, category = contactCategory)
+        ContactCategory(id = ContactCategoryId(contactType.id, category = contactCategory))
 
     fun generateOfficeLocation(
         code: String,

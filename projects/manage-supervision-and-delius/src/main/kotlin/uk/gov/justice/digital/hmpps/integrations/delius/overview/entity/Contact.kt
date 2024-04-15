@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -126,7 +127,7 @@ class Contact(
     fun isPhoneCallFromPop(): Boolean = type.code == ContactTypeCode.PHONE_CONTACT_FROM_POP.value
     fun isPhoneCallToPop(): Boolean = type.code == ContactTypeCode.PHONE_CONTACT_TO_POP.value
     fun isCommunication(): Boolean =
-        type.category?.category?.code?.equals(ContactCategoryCode.COMMUNICATION_CONTACT.value) ?: false
+        type.categories.map { it.id.category.code }.contains(ContactCategoryCode.COMMUNICATION_CONTACT.value)
 }
 
 @Immutable
@@ -147,12 +148,8 @@ class ContactType(
     @Column
     val description: String,
 
-    @ManyToOne
-    @JoinTable(
-        name = "r_contact_typecontact_category",
-        inverseJoinColumns = [JoinColumn(name = "contact_type_id", insertable = false, updatable = false)],
-    )
-    val category: ContactCategory? = null,
+    @OneToMany(mappedBy = "id.contactTypeId")
+    val categories: List<ContactCategory> = emptyList(),
 
     @Column(name = "sgc_flag", columnDefinition = "number")
     val systemGenerated: Boolean = false,
@@ -166,14 +163,19 @@ class ContactType(
 @Entity
 @Table(name = "r_contact_typecontact_category")
 class ContactCategory(
-    @Id
+    @EmbeddedId
+    val id: ContactCategoryId,
+)
+
+@Embeddable
+class ContactCategoryId(
     @Column(name = "contact_type_id")
-    val id: Long,
+    val contactTypeId: Long,
 
     @ManyToOne
     @JoinColumn(name = "standard_reference_list_id")
     val category: ReferenceData,
-)
+) : Serializable
 
 @Immutable
 @Entity
