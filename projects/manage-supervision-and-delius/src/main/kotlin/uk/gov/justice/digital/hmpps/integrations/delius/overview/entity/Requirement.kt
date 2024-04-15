@@ -35,7 +35,7 @@ class Requirement(
 
     val terminationDate: LocalDate?,
 
-    val rqmntTerminationReasonId: String?,
+    val rqmntTerminationReasonId: Long?,
 
     @ManyToOne
     @JoinColumn(name = "disposal_id")

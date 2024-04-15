@@ -279,7 +279,7 @@ object PersonGenerator {
         commencementDate: LocalDate? = LocalDate.now().minusDays(4),
         expectedEndDate: LocalDate? = LocalDate.now().minusDays(2),
         terminationDate: LocalDate? = LocalDate.now().minusDays(3),
-        rqmntTerminationReasonId: String? = null,
+        rqmntTerminationReasonId: Long? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Requirement(
         id,
