@@ -116,11 +116,13 @@ components:
           type: string
     Sentence:
       required:
-      - date
       - sentencingCourt
       type: object
       properties:
-        date:
+        convictionDate:
+          type: string
+          format: date
+        sentenceDate:
           type: string
           format: date
         sentencingCourt:

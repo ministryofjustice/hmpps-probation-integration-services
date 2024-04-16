@@ -275,9 +275,15 @@
       },
       "requirements": [
         {
+          "code": "string",
+          "expectedStartDate": "string",
+          "actualStartDate": "string",
+          "expectedEndDate": "string",
+          "actualEndDate": "string",
+          "terminationReason": "string",
           "description": "string",
-          "codeDescription": "string",
           "length": "integer",
+          "lengthUnitValue": "string",
           "notes": "string",
           "rar": {
             "completed": "integer",
@@ -428,6 +434,7 @@
       "acceptableAbsence": "boolean",
       "acceptableAbsenceReason": "string",
       "isAppointment": "boolean",
+      "isCommunication": "boolean",
       "action": "string",
       "isSystemContact": "boolean",
       "isEmailOrTextFromPop": "boolean",
@@ -571,6 +578,7 @@
       "acceptableAbsence": "boolean",
       "acceptableAbsenceReason": "string",
       "isAppointment": "boolean",
+      "isCommunication": "boolean",
       "action": "string",
       "isSystemContact": "boolean",
       "isEmailOrTextFromPop": "boolean",
@@ -723,6 +731,7 @@
     "acceptableAbsence": "boolean",
     "acceptableAbsenceReason": "string",
     "isAppointment": "boolean",
+    "isCommunication": "boolean",
     "action": "string",
     "isSystemContact": "boolean",
     "isEmailOrTextFromPop": "boolean",
@@ -2110,6 +2119,7 @@
         "acceptableAbsence": "boolean",
         "acceptableAbsenceReason": "string",
         "isAppointment": "boolean",
+        "isCommunication": "boolean",
         "action": "string",
         "isSystemContact": "boolean",
         "isEmailOrTextFromPop": "boolean",
@@ -2168,9 +2178,15 @@
       },
       "requirements": [
         {
+          "code": "string",
+          "expectedStartDate": "string",
+          "actualStartDate": "string",
+          "expectedEndDate": "string",
+          "actualEndDate": "string",
+          "terminationReason": "string",
           "description": "string",
-          "codeDescription": "string",
           "length": "integer",
+          "lengthUnitValue": "string",
           "notes": "string",
           "rar": {
             "completed": "integer",
@@ -2454,6 +2470,7 @@
       "acceptableAbsence": "boolean",
       "acceptableAbsenceReason": "string",
       "isAppointment": "boolean",
+      "isCommunication": "boolean",
       "action": "string",
       "isSystemContact": "boolean",
       "isEmailOrTextFromPop": "boolean",
@@ -2954,7 +2971,17 @@
 <tbody>
 
 <tr>
-<td>description</td>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedStartDate</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -2964,9 +2991,49 @@
 </tr>
 
 <tr>
-<td>codeDescription</td>
+<td>actualStartDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedEndDate</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>actualEndDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -2976,6 +3043,16 @@
 <tr>
 <td>length</td>
 <td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthUnitValue</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
@@ -3391,6 +3468,16 @@
 
 <tr>
 <td>isAppointment</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isCommunication</td>
 <td>boolean</td>
 <td>true</td>
 <td></td>

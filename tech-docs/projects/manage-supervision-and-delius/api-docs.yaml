@@ -508,15 +508,35 @@ components:
           type: integer
           format: int32
     Requirement:
+      required:
+      - actualStartDate
+      - code
+      - description
       type: object
       properties:
-        description:
+        code:
           type: string
-        codeDescription:
+        expectedStartDate:
+          type: string
+          format: date
+        actualStartDate:
+          type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+        actualEndDate:
+          type: string
+          format: date
+        terminationReason:
+          type: string
+        description:
           type: string
         length:
           type: integer
           format: int64
+        lengthUnitValue:
+          type: string
         notes:
           type: string
         rar:
@@ -563,6 +583,7 @@ components:
       - hasOutcome
       - id
       - isAppointment
+      - isCommunication
       - isInitial
       - isNationalStandard
       - isPastAppointment
@@ -635,6 +656,8 @@ components:
         acceptableAbsenceReason:
           type: string
         isAppointment:
+          type: boolean
+        isCommunication:
           type: boolean
         action:
           type: string
