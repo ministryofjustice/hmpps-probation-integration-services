@@ -53,6 +53,8 @@ object PersonGenerator {
     )
     val OFFENCE_1 = generateOffence("Murder", "MAIN")
     val OFFENCE_2 = generateOffence("Another Murder", "MAINA")
+    val OFFENCE_3 = generateOffence("Burglary in a dwelling - 02800", "02800")
+    val OFFENCE_4 = generateOffence("Burglary, other than a dwelling - 03000", "03000")
 
     val MAIN_OFFENCE_1 = generateMainOffence(
         1,
@@ -65,6 +67,20 @@ object PersonGenerator {
         1,
         EVENT_2,
         OFFENCE_2,
+        LocalDate.now()
+    )
+
+    val MAIN_OFFENCE_3 = generateMainOffence(
+        1,
+        INACTIVE_EVENT_1,
+        OFFENCE_3,
+        LocalDate.now()
+    )
+
+    val MAIN_OFFENCE_4 = generateMainOffence(
+        1,
+        INACTIVE_EVENT_2,
+        OFFENCE_4,
         LocalDate.now()
     )
 
@@ -82,7 +98,9 @@ object PersonGenerator {
             length = 25,
             terminationReason = TERMINATION_REASON
         )
-    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.of(2023, 4, 9))
+
+    val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
+    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.of(2023, 4, 9), REF_DATA_MONTHS, length = 7)
 
     val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
     val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(
