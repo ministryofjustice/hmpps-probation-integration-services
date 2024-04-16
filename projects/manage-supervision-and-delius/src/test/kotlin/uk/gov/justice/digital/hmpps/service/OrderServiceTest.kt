@@ -57,8 +57,8 @@ class OrderServiceTest {
         val expected = PreviousOrderHistory(
             listOf(
                 PreviousOrder(
-                    "Murder (25 Years)",
-                    "Default Sentence Type",
+                    "Default Sentence Type (25 Years)",
+                    "Murder",
                     LocalDate.now().minusDays(8)
                 )
             )

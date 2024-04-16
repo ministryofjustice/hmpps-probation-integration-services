@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrderHistory
@@ -51,17 +50,16 @@ class OrderIntegrationTest {
                 MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders").withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andDo(print())
             .andReturn().response.contentAsJson<PreviousOrderHistory>()
 
         val expected = PreviousOrderHistory(
             listOf(
                 PreviousOrder(
-                    "Burglary, other than a dwelling - 03000 (7 Months)",
-                    "Default Sentence Type",
+                    "Default Sentence Type (7 Months)",
+                    "Burglary, other than a dwelling - 03000",
                     LocalDate.now().minusDays(7)
                 ),
-                PreviousOrder("Murder (25 Years)", "Default Sentence Type", LocalDate.now().minusDays(8))
+                PreviousOrder("Default Sentence Type (25 Years)", "Murder", LocalDate.now().minusDays(8))
             )
         )
 
