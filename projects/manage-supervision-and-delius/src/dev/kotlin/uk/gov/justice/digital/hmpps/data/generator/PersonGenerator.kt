@@ -73,8 +73,15 @@ object PersonGenerator {
 
     val TERMINATION_REASON = generateTerminationReason()
 
+    val REF_DATA_YEARS = ReferenceData(IdGenerator.getAndIncrement(), "Y", "Years")
     val INACTIVE_ORDER_1 =
-        generateDisposal(INACTIVE_EVENT_1, LocalDate.of(2023, 4, 8), terminationReason = TERMINATION_REASON)
+        generateDisposal(
+            INACTIVE_EVENT_1,
+            LocalDate.of(2023, 4, 8),
+            REF_DATA_YEARS,
+            length = 25,
+            terminationReason = TERMINATION_REASON
+        )
     val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.of(2023, 4, 9))
 
     val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
@@ -312,6 +319,7 @@ object PersonGenerator {
     fun generateDisposal(
         event: Event,
         terminationDate: LocalDate? = null,
+        lengthUnit: ReferenceData? = null,
         date: LocalDate = LocalDate.now().minusDays(14),
         length: Long? = null,
         type: DisposalType = DEFAULT_DISPOSAL_TYPE,
@@ -320,8 +328,7 @@ object PersonGenerator {
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
-        terminationReason: ReferenceData? = null,
-        lengthUnit:  ReferenceData? = null
+        terminationReason: ReferenceData? = null
     ) = Disposal(
         event,
         date,

@@ -84,6 +84,7 @@ class DataLoader(
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
             PersonGenerator.ACTIVE_ORDER,
             PersonGenerator.TERMINATION_REASON,
+            PersonGenerator.REF_DATA_YEARS,
             PersonGenerator.INACTIVE_ORDER_1,
             PersonGenerator.INACTIVE_ORDER_2,
             ContactGenerator.COMMUNICATION_CATEGORY_RD,
