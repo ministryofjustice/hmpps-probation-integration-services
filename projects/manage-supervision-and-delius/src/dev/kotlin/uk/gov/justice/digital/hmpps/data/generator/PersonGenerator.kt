@@ -93,14 +93,14 @@ object PersonGenerator {
     val INACTIVE_ORDER_1 =
         generateDisposal(
             INACTIVE_EVENT_1,
-            LocalDate.of(2023, 4, 8),
+            LocalDate.now().minusDays(8),
             REF_DATA_YEARS,
             length = 25,
             terminationReason = TERMINATION_REASON
         )
 
     val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
-    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.of(2023, 4, 9), REF_DATA_MONTHS, length = 7)
+    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.now().minusDays(7), REF_DATA_MONTHS, length = 7)
 
     val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
     val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(

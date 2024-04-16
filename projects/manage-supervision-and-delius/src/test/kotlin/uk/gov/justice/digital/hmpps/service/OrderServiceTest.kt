@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrderHistory
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
+import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class OrderServiceTest {
@@ -53,7 +54,15 @@ class OrderServiceTest {
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        val expected = PreviousOrderHistory(listOf(PreviousOrder("Murder (25 Years)", "Default Sentence Type")))
+        val expected = PreviousOrderHistory(
+            listOf(
+                PreviousOrder(
+                    "Murder (25 Years)",
+                    "Default Sentence Type",
+                    LocalDate.now().minusDays(8)
+                )
+            )
+        )
         val response = service.getPreviousEvents(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(expected, response)

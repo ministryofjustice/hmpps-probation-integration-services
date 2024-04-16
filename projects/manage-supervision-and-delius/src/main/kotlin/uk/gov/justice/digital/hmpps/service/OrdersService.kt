@@ -21,6 +21,7 @@ class OrdersService(private val personRepository: PersonRepository,
 
     fun Event.toPrevousOrder(): PreviousOrder = PreviousOrder(
         "${mainOffence?.offence?.description} (${disposal?.length} ${disposal?.lengthUnit?.description})",
-        disposal?.type?.description
+        disposal?.type?.description,
+        disposal?.terminationDate
     )
 }
