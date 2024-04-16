@@ -7,6 +7,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrderHistory
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -32,7 +33,7 @@ class OrderServiceTest {
             listOf()
         )
 
-        val expected = PreviousOrderHistory(listOf())
+        val expected = PreviousOrderHistory(Name("Forename", "Middle1", "Surname"), listOf())
         val response = service.getPreviousEvents(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(expected, response)
@@ -55,6 +56,7 @@ class OrderServiceTest {
         whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
         val expected = PreviousOrderHistory(
+            Name("Forename", "Middle1", "Surname"),
             listOf(
                 PreviousOrder(
                     "Default Sentence Type (25 Years)",

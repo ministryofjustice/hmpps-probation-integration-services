@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrderHistory
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -38,7 +39,7 @@ class OrderIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<PreviousOrderHistory>()
 
-        val expected = PreviousOrderHistory(listOf())
+        val expected = PreviousOrderHistory(Name("Caroline", "Louise", "Bloggs"), listOf())
 
         assertEquals(expected, response)
     }
@@ -53,6 +54,7 @@ class OrderIntegrationTest {
             .andReturn().response.contentAsJson<PreviousOrderHistory>()
 
         val expected = PreviousOrderHistory(
+            Name("Forename", "Middle1", "Surname"),
             listOf(
                 PreviousOrder(
                     "Default Sentence Type (7 Months)",
