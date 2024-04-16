@@ -24,12 +24,16 @@ class CaseDetailsService(
             person.name(),
             person.dateOfBirth,
             person.gender.description,
-            Sentence(
-                event.convictionDate,
-                event.disposal?.date,
-                Court(courtName),
-                event.disposal?.custody?.mostRecentRelease()?.date
-            ),
+            event.convictionDate?.let {
+                Conviction(it, Court(courtName))
+            },
+            event.disposal?.date?.let {
+                Sentence(
+                    it,
+                    Court(courtName),
+                    event.disposal.custody?.mostRecentRelease()?.date
+                )
+            },
             provider,
             ogrsScore
         )
