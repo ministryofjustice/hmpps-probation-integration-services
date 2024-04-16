@@ -54,7 +54,7 @@ class OrderIntegrationTest {
         val expected = PreviousOrderHistory(
             listOf(
                 PreviousOrder("Burglary, other than a dwelling - 03000 (7 Months)", "Default Sentence Type"),
-                PreviousOrder("Burglary in a dwelling - 02800 (25 Years)", "Default Sentence Type")
+                PreviousOrder("Murder (25 Years)", "Default Sentence Type")
             )
         )
 

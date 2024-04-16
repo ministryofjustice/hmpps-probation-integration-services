@@ -159,7 +159,7 @@ class MainOffence(
     @Column(name = "offence_date")
     val date: LocalDate,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: Offence,
 

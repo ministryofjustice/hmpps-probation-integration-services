@@ -73,7 +73,7 @@ object PersonGenerator {
     val MAIN_OFFENCE_3 = generateMainOffence(
         1,
         INACTIVE_EVENT_1,
-        OFFENCE_3,
+        OFFENCE_1,
         LocalDate.now()
     )
 
