@@ -9,6 +9,7 @@ data class CaseDetails(
     val name: Name,
     val dateOfBirth: LocalDate,
     val gender: String,
+    val conviction: Conviction?,
     val sentence: Sentence?,
     val responsibleProvider: Provider?,
     val ogrsScore: Long?
@@ -21,9 +22,13 @@ data class CaseDetails(
 }
 
 data class Name(val forename: String, val middleName: String?, val surname: String)
+data class Conviction(
+    val date: LocalDate,
+    val court: Court,
+)
+
 data class Sentence(
-    val convictionDate: LocalDate?,
-    val sentenceDate: LocalDate?,
+    val date: LocalDate,
     val sentencingCourt: Court,
     val releaseDate: LocalDate?
 )
