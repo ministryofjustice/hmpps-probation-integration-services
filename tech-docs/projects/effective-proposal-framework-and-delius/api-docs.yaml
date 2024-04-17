@@ -72,6 +72,8 @@ components:
           format: date
         gender:
           type: string
+        conviction:
+          $ref: '#/components/schemas/Conviction'
         sentence:
           $ref: '#/components/schemas/Sentence'
         responsibleProvider:
@@ -85,6 +87,17 @@ components:
         ageAtRelease:
           type: integer
           format: int64
+    Conviction:
+      required:
+      - court
+      - date
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        court:
+          $ref: '#/components/schemas/Court'
     Court:
       required:
       - name
@@ -116,13 +129,11 @@ components:
           type: string
     Sentence:
       required:
+      - date
       - sentencingCourt
       type: object
       properties:
-        convictionDate:
-          type: string
-          format: date
-        sentenceDate:
+        date:
           type: string
           format: date
         sentencingCourt:

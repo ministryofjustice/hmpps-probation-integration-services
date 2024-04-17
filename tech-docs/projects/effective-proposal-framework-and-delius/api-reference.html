@@ -214,9 +214,14 @@
   },
   "dateOfBirth": "string",
   "gender": "string",
+  "conviction": {
+    "date": "string",
+    "court": {
+      "name": "string"
+    }
+  },
   "sentence": {
-    "convictionDate": "string",
-    "sentenceDate": "string",
+    "date": "string",
     "sentencingCourt": {
       "name": "string"
     },
@@ -254,9 +259,14 @@
   },
   "dateOfBirth": "string",
   "gender": "string",
+  "conviction": {
+    "date": "string",
+    "court": {
+      "name": "string"
+    }
+  },
   "sentence": {
-    "convictionDate": "string",
-    "sentenceDate": "string",
+    "date": "string",
     "sentencingCourt": {
       "name": "string"
     },
@@ -335,6 +345,16 @@
 </tr>
 
 <tr>
+<td>conviction</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+<tr>
 <td>sentence</td>
 <td>object</td>
 <td>false</td>
@@ -381,6 +401,38 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-conviction">Conviction</h3>
+
+
+<table class='schema-conviction'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>court</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-court'>Court</a>
 </td>
 </tr>
 
@@ -493,19 +545,9 @@
 <tbody>
 
 <tr>
-<td>convictionDate</td>
+<td>date</td>
 <td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>sentenceDate</td>
-<td>string</td>
-<td>false</td>
+<td>true</td>
 <td></td>
 <td>
   
