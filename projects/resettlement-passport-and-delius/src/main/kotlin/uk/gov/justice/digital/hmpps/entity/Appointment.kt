@@ -76,6 +76,7 @@ class Appointment(
     val version: Long = 0,
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     @Column(name = "contact_id")
     val id: Long = 0
 ) {
