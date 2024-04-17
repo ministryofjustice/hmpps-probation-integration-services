@@ -75,10 +75,11 @@ class Handler(
     }
 }
 
-fun HmppsDomainEvent.telemetryProperties() = mapOf(
+fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
-    "crn" to crn()
-)
+    "crn" to crn(),
+    detailUrl?.let { "detailUrl" to it }
+).toMap()
 
 fun HmppsDomainEvent.crn(): String = personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN")
 fun HmppsDomainEvent.url(): URI = URI.create(detailUrl ?: throw IllegalArgumentException("Missing detail url"))
