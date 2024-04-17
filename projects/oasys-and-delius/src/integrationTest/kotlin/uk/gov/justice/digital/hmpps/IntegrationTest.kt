@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integration.delius.person.entity.PersonDetail
+import uk.gov.justice.digital.hmpps.service.codeDescription
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -74,13 +75,45 @@ internal class IntegrationTest {
 
     @ParameterizedTest
     @MethodSource("custodialSentences")
-    fun `releases are correctly returned`(person: Person, releaseRecall: ReleaseRecall) {
+    fun `releases are correctly returned`(person: PersonDetail, releaseRecall: ReleaseRecall) {
         val res = mockMvc
             .perform(get("/probation-cases/${person.crn}/release").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<ReleaseRecall>()
 
         assertThat(res, equalTo(releaseRecall))
+    }
+
+    @Test
+    fun `should retrieve case details`() {
+        val person = PersonGenerator.DETAILED_PERSON
+        val res = mockMvc
+            .perform(get("/probation-cases/${person.crn}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<CaseDetails>()
+
+        assertThat(
+            res, equalTo(
+                CaseDetails(
+                    Identifiers(person.crn, person.noms, person.pnc, person.cro),
+                    Person(
+                        Name(
+                            person.surname,
+                            person.firstName,
+                            listOf(person.secondName!!)
+                        ),
+                        person.dob,
+                        PersonGenerator.GENDER.codeDescription()
+                    ),
+                    Profile(
+                        PersonGenerator.LANGUAGE.codeDescription(),
+                        PersonGenerator.ETHNICITY.codeDescription(),
+                        PersonGenerator.RELIGION.codeDescription()
+                    ),
+                    ContactDetails(null, person.emailAddress, person.telephoneNumber, person.mobileNumber)
+                )
+            )
+        )
     }
 
     companion object {

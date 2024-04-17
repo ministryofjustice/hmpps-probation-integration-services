@@ -35,7 +35,7 @@ internal class SentenceServiceTest {
 
     @Test
     fun `multiple custodial sentences throws exception`() {
-        val person = PersonGenerator.generate("M123456")
+        val person = PersonGenerator.generatePerson("M123456")
         val sentences = listOf(
             SentenceGenerator.generateCustodialSentence(person),
             SentenceGenerator.generateCustodialSentence(person)

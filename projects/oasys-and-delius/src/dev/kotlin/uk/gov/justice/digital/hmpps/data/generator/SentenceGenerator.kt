@@ -12,8 +12,8 @@ object SentenceGenerator {
     val CUSTODY_STATUS = ReferenceDataGenerator.generate("C")
     val RELEASE_TYPE = ReferenceDataGenerator.generate("REL")
     val RECALL_REASON = generateRecallReason("REC")
-    val CUSTODIAL_SENTENCE = generateCustodialSentence(PersonGenerator.CUSTODY_PERSON)
-    val RELEASED_SENTENCE = generateCustodialSentence(PersonGenerator.RELEASED_PERSON)
+    val CUSTODIAL_SENTENCE = generateCustodialSentence(PersonGenerator.CUSTODY_PERSON.asPerson())
+    val RELEASED_SENTENCE = generateCustodialSentence(PersonGenerator.RELEASED_PERSON.asPerson())
     val RELEASE =
         generateRelease(RELEASED_SENTENCE, date = ZonedDateTime.now().minusDays(1), institution = DEFAULT_INSTITUTION)
     val RECALL = generateRecall(RELEASE)
