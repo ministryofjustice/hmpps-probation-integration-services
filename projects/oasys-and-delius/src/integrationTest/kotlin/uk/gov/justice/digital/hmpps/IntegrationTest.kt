@@ -116,6 +116,34 @@ internal class IntegrationTest {
         )
     }
 
+    @Test
+    fun `should retrieve minimal case details`() {
+        val person = PersonGenerator.REGISTERED_PERSON
+        val res = mockMvc
+            .perform(get("/probation-cases/${person.crn}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<CaseDetails>()
+
+        assertThat(
+            res, equalTo(
+                CaseDetails(
+                    Identifiers(person.crn, person.noms, person.pnc, person.cro),
+                    Person(
+                        Name(
+                            person.surname,
+                            person.firstName,
+                            listOf()
+                        ),
+                        person.dob,
+                        null
+                    ),
+                    Profile.from(null, null, null),
+                    ContactDetails.from(null, null, null)
+                )
+            )
+        )
+    }
+
     companion object {
         private val institution = SentenceGenerator.DEFAULT_INSTITUTION
 
