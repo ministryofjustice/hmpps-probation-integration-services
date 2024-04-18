@@ -23,5 +23,6 @@ class ProbationCaseService(
         )
     }
 
-    fun PersonAddress.asAddress() = Address(noFixedAbode, buildingName, addressNumber, streetName, district, town, county, postcode)
+    fun PersonAddress.asAddress() =
+        Address(noFixedAbode, buildingName, addressNumber, streetName, district, town, county, postcode)
 }
