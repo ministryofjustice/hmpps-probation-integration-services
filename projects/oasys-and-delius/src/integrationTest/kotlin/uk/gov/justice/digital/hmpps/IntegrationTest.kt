@@ -87,6 +87,7 @@ internal class IntegrationTest {
     @Test
     fun `should retrieve case details`() {
         val person = PersonGenerator.DETAILED_PERSON
+        val address = PersonGenerator.DETAIL_ADDRESS
         val res = mockMvc
             .perform(get("/probation-cases/${person.crn}").withToken())
             .andExpect(status().is2xxSuccessful)
@@ -110,7 +111,17 @@ internal class IntegrationTest {
                         PersonGenerator.ETHNICITY.codeDescription(),
                         PersonGenerator.RELIGION.codeDescription()
                     ),
-                    ContactDetails(null, person.emailAddress, person.telephoneNumber, person.mobileNumber)
+                    ContactDetails(
+                        Address.from(
+                            noFixedAbode = address.noFixedAbode,
+                            buildingNumber = address.addressNumber,
+                            streetName = address.streetName,
+                            postcode = address.postcode
+                        ),
+                        person.emailAddress,
+                        person.telephoneNumber,
+                        person.mobileNumber
+                    )
                 )
             )
         )

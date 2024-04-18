@@ -56,7 +56,8 @@ class DataLoader(
             PersonGenerator.GENDER,
             PersonGenerator.ETHNICITY,
             PersonGenerator.LANGUAGE,
-            PersonGenerator.RELIGION
+            PersonGenerator.RELIGION,
+            PersonGenerator.MAIN_ADDRESS_STATUS
         )
     }
 
@@ -72,6 +73,7 @@ class DataLoader(
     fun personData() {
         entityManager.saveAll(REGISTERED_PERSON, RELEASED_PERSON, CUSTODY_PERSON, DETAILED_PERSON)
         entityManager.flush()
+        entityManager.persist(PersonGenerator.DETAIL_ADDRESS)
     }
 
     fun registrationData() {
