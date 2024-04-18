@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.epf.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -124,6 +125,7 @@ fun EventRepository.getEvent(crn: String, number: String) =
     findEventByCrnAndEventNumber(crn, number) ?: throw NotFoundException("Event", "crn", crn)
 
 interface KeyDateRepository : JpaRepository<KeyDate, Long> {
+    @EntityGraph(attributePaths = ["type"])
     fun findByCustodyIdAndTypeCode(custodyId: Long, typeCode: String): KeyDate?
 }
 

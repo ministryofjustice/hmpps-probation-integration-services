@@ -30,7 +30,12 @@ dependencies {
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
         "**/config/**",
+        "**/model/**",
         "**/entity/**",
         "**/AppKt.class"
+    )
+    sonarExclusions = listOf(
+        "**/entity/**",
+        "**/model/**"
     )
 }
