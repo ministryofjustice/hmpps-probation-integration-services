@@ -44,13 +44,14 @@ class DataLoader(
             SentenceGenerator.generateOgrsAssessment(LocalDate.now().minusDays(1), 3),
             SentenceGenerator.generateOgrsAssessment(LocalDate.now().minusDays(5), 1),
             SentenceGenerator.generateOgrsAssessment(LocalDate.now(), 5, softDeleted = true),
-            PersonGenerator.RELEASED,
+            PersonGenerator.WITH_RELEASE_DATE,
             ManagerGenerator.RELEASED_PERSON_MANAGER,
+            SentenceGenerator.RELEASE_DATE_TYPE,
             SentenceGenerator.RELEASED_EVENT,
             SentenceGenerator.RELEASED_COURT_APPEARANCE,
             SentenceGenerator.RELEASED_SENTENCE,
             SentenceGenerator.RELEASED_CUSTODY,
-            SentenceGenerator.RELEASE
+            SentenceGenerator.RELEASE_DATE
         )
     }
 
