@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.epf
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.epf.entity.*
 
 @Service
@@ -10,30 +11,25 @@ class CaseDetailsService(
     private val personManagerRepository: PersonManagerRepository,
     private val courtAppearanceRepository: CourtAppearanceRepository,
     private val eventRepository: EventRepository,
+    private val keyDateRepository: KeyDateRepository,
     private val ogrsAssessmentRepository: OgrsAssessmentRepository
 ) {
+    @Transactional
     fun caseDetails(crn: String, eventNumber: Int): CaseDetails {
         val person = personRepository.getPerson(crn)
         val provider = responsibleOfficerRepository.findByPersonIdAndEndDateIsNull(person.id)?.provider()
             ?: personManagerRepository.findByPersonId(person.id)?.provider()
         val event = eventRepository.getEvent(person.crn, eventNumber.toString())
-        val courtName = courtAppearanceRepository.findMostRecentCourtNameByEventId(event.id)
+        val appearance = courtAppearanceRepository.findByEventIdOrderByAppearanceDateDesc(event.id)
+        val erd = event.disposal?.custody?.let { keyDateRepository.getExpectedReleaseDate(it.id) }
         val ogrsScore = ogrsAssessmentRepository.findFirstByEventIdOrderByAssessmentDateDesc(event.id)?.score
         return CaseDetails(
             person.nomsId,
             person.name(),
             person.dateOfBirth,
             person.gender.description,
-            event.convictionDate?.let {
-                Conviction(it, Court(courtName))
-            },
-            event.disposal?.date?.let {
-                Sentence(
-                    it,
-                    Court(courtName),
-                    event.disposal.custody?.mostRecentRelease()?.date
-                )
-            },
+            appearance?.let { Appearance(it.appearanceDate, Court(it.court.name)) },
+            erd?.let { Sentence(it.date) },
             provider,
             ogrsScore
         )

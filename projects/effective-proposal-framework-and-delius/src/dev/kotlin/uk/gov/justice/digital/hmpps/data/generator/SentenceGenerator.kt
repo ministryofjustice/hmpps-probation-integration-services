@@ -2,20 +2,20 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.epf.entity.*
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 object SentenceGenerator {
     val DEFAULT_COURT = generateCourt()
+    val RELEASE_DATE_TYPE = generateKeyDateType(KeyDate.Type.EXPECTED_RELEASE_DATE.code)
 
     val DEFAULT_EVENT = generateEvent()
     val DEFAULT_COURT_APPEARANCE = generateCourtAppearance(DEFAULT_EVENT)
     val DEFAULT_SENTENCE = generateSentence(DEFAULT_EVENT)
 
-    val RELEASED_EVENT = generateEvent(person = PersonGenerator.RELEASED)
+    val RELEASED_EVENT = generateEvent(person = PersonGenerator.WITH_RELEASE_DATE)
     val RELEASED_COURT_APPEARANCE = generateCourtAppearance(RELEASED_EVENT)
     val RELEASED_SENTENCE = generateSentence(RELEASED_EVENT)
     val RELEASED_CUSTODY = generateCustody(RELEASED_SENTENCE)
-    val RELEASE = generateRelease(RELEASED_CUSTODY)
+    val RELEASE_DATE = generateExpectedReleaseDate(RELEASED_CUSTODY, LocalDate.now().plusWeeks(6))
 
     fun generateSentence(
         event: Event,
@@ -54,12 +54,19 @@ object SentenceGenerator {
         disposal: Disposal,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Custody(disposal, listOf(), softDeleted, id)
+    ) = Custody(disposal, softDeleted, id)
 
-    fun generateRelease(
+    fun generateKeyDateType(
+        code: String,
+        description: String = "Key Date Type of $code",
+        id: Long = IdGenerator.getAndIncrement()
+    ) = ReferenceData(id, code, description)
+
+    fun generateExpectedReleaseDate(
         custody: Custody,
         date: LocalDate = LocalDate.now(),
-        createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+        type: ReferenceData = RELEASE_DATE_TYPE,
+        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Release(custody, date, createdDateTime, id)
+    ) = KeyDate(custody, type, date, softDeleted, id)
 }
