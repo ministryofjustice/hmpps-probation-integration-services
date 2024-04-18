@@ -21,7 +21,7 @@ class CaseDetailsService(
             ?: personManagerRepository.findByPersonId(person.id)?.provider()
         val event = eventRepository.getEvent(person.crn, eventNumber.toString())
         val appearance = courtAppearanceRepository.findByEventIdOrderByAppearanceDateDesc(event.id)
-        val erd = event.disposal?.custody?.let { keyDateRepository.getExpectedEndDate(it.id) }
+        val erd = event.disposal?.custody?.let { keyDateRepository.getExpectedReleaseDate(it.id) }
         val ogrsScore = ogrsAssessmentRepository.findFirstByEventIdOrderByAssessmentDateDesc(event.id)?.score
         return CaseDetails(
             person.nomsId,

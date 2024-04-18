@@ -127,5 +127,5 @@ interface KeyDateRepository : JpaRepository<KeyDate, Long> {
     fun findByCustodyIdAndTypeCode(custodyId: Long, typeCode: String): KeyDate?
 }
 
-fun KeyDateRepository.getExpectedEndDate(custodyId: Long) =
+fun KeyDateRepository.getExpectedReleaseDate(custodyId: Long) =
     findByCustodyIdAndTypeCode(custodyId, KeyDate.Type.EXPECTED_RELEASE_DATE.code)
