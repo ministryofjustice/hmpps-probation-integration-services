@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integration.delius.person.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integration.delius.person.entity.PersonDetail
 import uk.gov.justice.digital.hmpps.integration.delius.reference.entity.ReferenceData
 import java.time.LocalDate
@@ -17,6 +18,8 @@ object PersonGenerator {
     val ETHNICITY = ReferenceDataGenerator.generate("ETH", "Ethnicity")
     val LANGUAGE = ReferenceDataGenerator.generate("LAN", "Language")
     val RELIGION = ReferenceDataGenerator.generate("REL", "Religion")
+
+    val MAIN_ADDRESS_STATUS = ReferenceDataGenerator.generate(PersonAddress.MAIN_STATUS_CODE, "Main Address")
 
     val DETAILED_PERSON =
         generate(
@@ -36,6 +39,14 @@ object PersonGenerator {
             telephoneNumber = "0191 256 7234",
             mobileNumber = "07345617263"
         )
+
+    val DETAIL_ADDRESS = generateAddress(
+        DETAILED_PERSON.id,
+        MAIN_ADDRESS_STATUS,
+        addressNumber = "23",
+        streetName = "Mantle Place",
+        postcode = "H34 7TH"
+    )
 
     fun generate(
         crn: String,
@@ -82,6 +93,38 @@ object PersonGenerator {
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Person(crn, softDeleted, id)
+
+    fun generateAddress(
+        personId: Long,
+        status: ReferenceData,
+        noFixedAbode: Boolean = false,
+        buildingName: String? = null,
+        addressNumber: String? = null,
+        streetName: String? = null,
+        district: String? = null,
+        town: String? = null,
+        county: String? = null,
+        postcode: String? = null,
+        startDate: LocalDate = LocalDate.now().minusDays(1),
+        endDate: LocalDate? = null,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = PersonAddress(
+        personId,
+        status,
+        buildingName,
+        addressNumber,
+        streetName,
+        district,
+        town,
+        county,
+        postcode,
+        noFixedAbode,
+        startDate,
+        endDate,
+        softDeleted,
+        id
+    )
 }
 
 fun PersonDetail.asPerson() = Person(crn, softDeleted, id)

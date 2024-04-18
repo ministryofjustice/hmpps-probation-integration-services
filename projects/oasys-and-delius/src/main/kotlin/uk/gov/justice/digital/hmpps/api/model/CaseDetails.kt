@@ -54,6 +54,7 @@ data class ContactDetails(
 }
 
 data class Address(
+    val noFixedAbode: Boolean,
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,
@@ -64,6 +65,7 @@ data class Address(
 ) {
     companion object {
         fun from(
+            noFixedAbode: Boolean = false,
             buildingName: String? = null,
             buildingNumber: String? = null,
             streetName: String? = null,
@@ -74,11 +76,11 @@ data class Address(
         ): Address? =
             if (
                 listOf(buildingName, buildingNumber, streetName, district, town, county, postcode)
-                    .all(String?::isNullOrBlank)
+                    .all(String?::isNullOrBlank) && !noFixedAbode
             ) {
                 null
             } else {
-                Address(buildingName, buildingNumber, streetName, district, town, county, postcode)
+                Address(noFixedAbode, buildingName, buildingNumber, streetName, district, town, county, postcode)
             }
     }
 }
