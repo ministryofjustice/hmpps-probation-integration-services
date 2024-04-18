@@ -90,7 +90,10 @@ internal class IntegrationTest {
             ),
             PersonGenerator.DEFAULT.dateOfBirth,
             PersonGenerator.DEFAULT.gender.description,
-            Appearance(SentenceGenerator.DEFAULT_COURT_APPEARANCE.appearanceDate, Court(SentenceGenerator.DEFAULT_COURT.name)),
+            Appearance(
+                SentenceGenerator.DEFAULT_COURT_APPEARANCE.appearanceDate,
+                Court(SentenceGenerator.DEFAULT_COURT.name)
+            ),
             null,
             Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
             3
