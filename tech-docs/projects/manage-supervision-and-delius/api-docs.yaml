@@ -1349,6 +1349,8 @@ components:
           $ref: '#/components/schemas/Breach'
         rar:
           $ref: '#/components/schemas/Rar'
+        rarCategory:
+          type: string
         compliance:
           $ref: '#/components/schemas/Compliance'
         activity:
