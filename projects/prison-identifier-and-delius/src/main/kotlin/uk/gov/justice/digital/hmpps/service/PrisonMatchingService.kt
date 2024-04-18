@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.client.PrisonerSearchClient
 import uk.gov.justice.digital.hmpps.client.PrisonerSearchRequest
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.entity.getByCrn
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.model.MatchResult.NoMatch
@@ -33,7 +32,8 @@ class PrisonMatchingService(
 
     private fun findMatchingPrisonRecord(crn: String): MatchResult {
         // Get person on probation details
-        val person = personRepository.getByCrn(crn)
+        val person = personRepository.findByCrn(crn)
+            ?: return MatchResult.Ignored("CRN soft deleted", mapOf("crn" to crn))
 
         // Get matching prisoner records
         val searchResults = prisonerSearchClient.globalSearch(person.asSearchRequest()).content

@@ -94,7 +94,52 @@ class SentenceServiceTest {
             additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
         )
 
-        val requirement = RequirementDetails(1, "Main", "High Intensity", 12, "new requirement")
+        val requirement1 = RequirementDetails(
+            1,
+            LocalDate.now().minusDays(21),
+            LocalDate.now(),
+            LocalDate.now().minusDays(14),
+            LocalDate.now().minusDays(7),
+            LocalDate.now().minusDays(3),
+            "Expired (Normal)",
+            12,
+            "Weeks",
+            "G",
+            "Drug Rehabilitation",
+            "Medium Intensity",
+            "new requirement"
+        )
+        val requirement2 = RequirementDetails(
+            2,
+            null,
+            LocalDate.now(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "F",
+            "Main",
+            "High Intensity",
+            "rar requirement"
+        )
+
+        val requirement3 = RequirementDetails(
+            1,
+            LocalDate.now(),
+            LocalDate.now(),
+            null,
+            LocalDate.now().minusDays(7),
+            null,
+            "Expired (Normal)",
+            null,
+            null,
+            "RM49",
+            "Curfew (Electronic Monitored)",
+            null,
+            "new requirement"
+        )
 
         val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
@@ -112,10 +157,10 @@ class SentenceServiceTest {
         whenever(additionalSentenceRepository.getAllByEventId(event.id))
             .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
 
-        whenever(requirementRepository.getRequirements(PersonGenerator.OVERVIEW.crn, event.eventNumber))
-            .thenReturn(listOf(requirement))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
+            .thenReturn(listOf(requirement1, requirement2, requirement3))
 
-        whenever(requirementRepository.getRarDaysByRequirementId(requirement._id)).thenReturn(
+        whenever(requirementRepository.getRarDaysByRequirementId(requirement2._id)).thenReturn(
             listOf(
                 completedRarDays,
                 scheduledRarDays
@@ -155,11 +200,43 @@ class SentenceServiceTest {
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
                     listOf(
                         Requirement(
-                            requirement._description,
-                            requirement._codeDescription,
-                            requirement._length,
-                            requirement._notes,
-                            Rar(completedRarDays._days, scheduledRarDays._days, 3)
+                            requirement1._code,
+                            requirement1._expectedStartDate,
+                            requirement1._startDate,
+                            requirement1._expectedEndDate,
+                            requirement1._terminationDate,
+                            requirement1._terminationReason,
+                            "${requirement1._description} - ${requirement1._codeDescription}",
+                            requirement1._length,
+                            requirement1.lengthUnitValue,
+                            requirement1._notes,
+                            null
+                        ),
+                        Requirement(
+                            requirement2._code,
+                            requirement2._expectedStartDate,
+                            requirement2._startDate,
+                            requirement2._expectedEndDate,
+                            requirement2._terminationDate,
+                            requirement2._terminationReason,
+                            "3 days RAR, 1 completed",
+                            requirement2._length,
+                            requirement2.lengthUnitValue,
+                            requirement2._notes,
+                            Rar(1, 2, 3)
+                        ),
+                        Requirement(
+                            requirement3._code,
+                            requirement3._expectedStartDate,
+                            requirement3._startDate,
+                            requirement3._expectedEndDate,
+                            requirement3._terminationDate,
+                            requirement3._terminationReason,
+                            requirement3._description,
+                            requirement3._length,
+                            requirement3.lengthUnitValue,
+                            requirement3._notes,
+                            null
                         )
                     ),
                     listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event"))
@@ -182,22 +259,54 @@ class SentenceServiceTest {
 
     data class RequirementDetails(
         val _id: Long,
-        val _description: String?,
-        val _codeDescription: String?,
+        val _expectedStartDate: LocalDate?,
+        val _startDate: LocalDate,
+        val _commencementDate: LocalDate?,
+        val _expectedEndDate: LocalDate?,
+        val _terminationDate: LocalDate?,
+        val _terminationReason: String?,
         val _length: Long?,
+        val _lengthUnitValue: String?,
+        val _code: String,
+        val _description: String,
+        val _codeDescription: String?,
         val _notes: String?
     ) : uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails {
         override val id: Long
             get() = _id
 
-        override val description: String?
+        override val expectedStartDate: LocalDate?
+            get() = _expectedStartDate
+
+        override val startDate: LocalDate
+            get() = _startDate
+
+        override val commencementDate: LocalDate?
+            get() = _commencementDate
+
+        override val expectedEndDate: LocalDate?
+            get() = _expectedEndDate
+
+        override val terminationDate: LocalDate?
+            get() = _terminationDate
+
+        override val terminationReason: String?
+            get() = _terminationReason
+
+        override val length: Long?
+            get() = _length
+
+        override val lengthUnitValue: String?
+            get() = _lengthUnitValue
+
+        override val code: String
+            get() = _code
+
+        override val description: String
             get() = _description
 
         override val codeDescription: String?
             get() = _codeDescription
-
-        override val length: Long?
-            get() = _length
 
         override val notes: String?
             get() = _notes

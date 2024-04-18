@@ -6,4 +6,4 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: prod
-    INTEGRATIONS_ORDS_URL: https://bridge-oasys.az.justice.gov.uk/eor/oasys
+    INTEGRATIONS_ORDS_URL: https://int.oasys.service.justice.gov.uk/eor/oasys

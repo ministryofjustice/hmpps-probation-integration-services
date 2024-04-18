@@ -9,14 +9,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.TestPropertySource
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_NOMS
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@TestPropertySource(properties = ["messaging.consumer.dry-run=false"])
 internal class MergeIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String

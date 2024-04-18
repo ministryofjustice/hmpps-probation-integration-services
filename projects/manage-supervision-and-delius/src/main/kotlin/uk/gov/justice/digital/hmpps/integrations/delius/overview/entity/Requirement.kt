@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -23,6 +24,18 @@ class Requirement(
 
     @Column(name = "rqmnt_type_sub_category_id")
     val subCategoryId: Long?,
+
+    val expectedStartDate: LocalDate?,
+
+    val startDate: LocalDate,
+
+    val commencementDate: LocalDate?,
+
+    val expectedEndDate: LocalDate?,
+
+    val terminationDate: LocalDate?,
+
+    val rqmntTerminationReasonId: Long?,
 
     @ManyToOne
     @JoinColumn(name = "disposal_id")
@@ -46,9 +59,17 @@ interface RarDays {
 
 interface RequirementDetails {
     val id: Long
-    val description: String?
-    val codeDescription: String?
+    val expectedStartDate: LocalDate?
+    val startDate: LocalDate
+    val commencementDate: LocalDate?
+    val expectedEndDate: LocalDate?
+    val terminationDate: LocalDate?
+    val terminationReason: String?
     val length: Long?
+    val lengthUnitValue: String?
+    val code: String
+    val description: String
+    val codeDescription: String?
     val notes: String?
 }
 
@@ -102,25 +123,40 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
 
     @Query(
         """
-            SELECT r.rqmnt_id as id, r."LENGTH", rrtmc.description, rsrl.code_description AS codeDescription, TO_CHAR(SUBSTR(r.rqmnt_notes, 1, 4000)) AS notes 
+            SELECT  r.rqmnt_id AS id,
+                    r.expected_start_date as expectedStartDate, 
+                    r.start_date as startDate, 
+                    r.commencement_date as commencementDate, 
+                    r.expected_end_date as expectedEndDate, 
+                    r.termination_date as terminationDate,
+                    rsrl3.code_description as terminationReason,
+                    r."LENGTH", 
+                    rsrl2.code_description as lengthUnitValue,
+                    rrtmc.code, 
+                    rrtmc.description, 
+                    rsrl.code_description AS codeDescription, 
+                    TO_CHAR(SUBSTR(r.rqmnt_notes, 1, 4000)) AS notes 
             FROM rqmnt r
             JOIN r_rqmnt_type_main_category rrtmc 
-            ON r.rqmnt_type_main_category_id = rrtmc.rqmnt_type_main_category_id 
-            JOIN r_standard_reference_list rsrl 
-            ON rsrl.standard_reference_list_id = r.rqmnt_type_sub_category_id 
+            ON rrtmc.rqmnt_type_main_category_id  = r.rqmnt_type_main_category_id 
             JOIN disposal d 
-            ON r.disposal_id = d.disposal_id 
+            ON d.disposal_id = r.disposal_id 
             JOIN event e 
             ON e.event_id = d.event_id
-            JOIN offender o 
-            ON o.offender_id = e.offender_id 
-            AND o.crn = :crn
+            LEFT JOIN r_standard_reference_list rsrl 
+            ON rsrl.standard_reference_list_id = r.rqmnt_type_sub_category_id 
+            LEFT JOIN r_standard_reference_list rsrl2 
+            ON rsrl2.standard_reference_list_id = rrtmc.units_id  
+            LEFT JOIN r_standard_reference_list rsrl3
+            ON rsrl3.standard_reference_list_id = r.rqmnt_termination_reason_id 
+            WHERE e.event_id = :id
             AND e.event_number = :eventNumber
             AND e.soft_deleted = 0 
             AND e.active_flag = 1
+            ORDER BY rrtmc.description
         """, nativeQuery = true
     )
-    fun getRequirements(crn: String, eventNumber: String): List<RequirementDetails>
+    fun getRequirements(id: Long, eventNumber: String): List<RequirementDetails>
 }
 
 fun RequirementRepository.getRar(disposalId: Long): Rar {
@@ -138,6 +174,7 @@ class RequirementMainCategory(
     @Column(name = "rqmnt_type_main_category_id", nullable = false)
     val id: Long,
     val code: String,
-    val description: String
+    val description: String,
+    val unitsId: Long?,
 )
 

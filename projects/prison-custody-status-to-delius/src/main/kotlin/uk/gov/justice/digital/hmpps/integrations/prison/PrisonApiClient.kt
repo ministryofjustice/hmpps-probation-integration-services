@@ -14,7 +14,7 @@ interface PrisonApiClient {
     @GetExchange(value = "/bookings/offenderNo/{nomsId}")
     fun getBookingByNomsId(
         @PathVariable("nomsId") id: String,
-        @RequestParam basicInfo: Boolean = false,
+        @RequestParam fullInfo: Boolean = true,
         @RequestParam extraInfo: Boolean = true
     ): Booking
 
@@ -27,19 +27,19 @@ interface PrisonApiClient {
 
 data class Booking(
     @JsonAlias("bookingId")
-    val id: Long,
+    val id: Long?,
     @JsonAlias("bookingNo")
-    val reference: String,
+    val reference: String?,
     @JsonAlias("activeFlag")
     val active: Boolean,
     @JsonAlias("offenderNo")
     val personReference: String,
-    val agencyId: String,
+    val agencyId: String?,
     @JsonAlias("lastMovementTypeCode")
-    val movementType: String,
+    val movementType: String?,
     @JsonAlias("lastMovementReasonCode")
-    val movementReason: String,
-    val inOutStatus: InOutStatus
+    val movementReason: String?,
+    val inOutStatus: InOutStatus?
 ) {
     enum class InOutStatus {
         IN, OUT, TRN
@@ -78,7 +78,7 @@ data class Booking(
         when (inOutStatus) {
             InOutStatus.IN -> type.received
             InOutStatus.OUT -> type.released
-            InOutStatus.TRN -> null
+            else -> null
         }
     }
 }

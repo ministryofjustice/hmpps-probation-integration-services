@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
@@ -45,7 +44,6 @@ class SentenceIntegrationTest {
         val response = mockMvc
             .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andDo(print())
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
@@ -69,7 +67,21 @@ class SentenceIntegrationTest {
                         listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                     ),
                     Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
-                    listOf(Requirement("Main", "High Intensity", 12, "my notes", Rar(1, 0, 1))),
+                    listOf(
+                        Requirement(
+                            "F",
+                            LocalDate.now().minusDays(1),
+                            LocalDate.now(),
+                            LocalDate.now().minusDays(2),
+                            LocalDate.now().minusDays(3),
+                            null,
+                            "1 days RAR, 1 completed",
+                            12,
+                            null,
+                            "my notes",
+                            Rar(completed = 1, scheduled = 0, totalDays = 1)
+                        )
+                    ),
                     listOf(
                         CourtDocument(COURT_DOCUMENT.alfrescoId, LocalDate.now().minusDays(1), "court report"),
                         CourtDocument(EVENT_DOCUMENT.alfrescoId, LocalDate.now().minusDays(3), "event report")

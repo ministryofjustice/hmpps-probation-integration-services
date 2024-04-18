@@ -2,11 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging.actions
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeRecalled
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeReleased
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodialStatus
@@ -14,11 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustody
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.NO_CHANGE_STATUSES
-import uk.gov.justice.digital.hmpps.messaging.ActionResult
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementAction
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
-import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
+import uk.gov.justice.digital.hmpps.messaging.*
 
 @Component
 class UpdateStatusAction(
@@ -57,7 +49,7 @@ class UpdateStatusAction(
         val (prisonerMovement, custody) = context
         val statusCode = when {
             prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded() -> custody.nextStatus()
-            else -> if (custody.canBeReleased()) {
+            else -> if (custody.canBeReleased() && prisonerMovement.releaseDateValid(custody)) {
                 CustodialStatusCode.RELEASED_ON_LICENCE
             } else {
                 throw IgnorableMessageException("PrisonerStatusCorrect")

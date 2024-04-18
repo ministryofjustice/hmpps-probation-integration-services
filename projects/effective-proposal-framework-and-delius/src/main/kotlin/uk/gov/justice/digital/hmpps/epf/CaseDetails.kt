@@ -9,6 +9,7 @@ data class CaseDetails(
     val name: Name,
     val dateOfBirth: LocalDate,
     val gender: String,
+    val courtAppearance: Appearance?,
     val sentence: Sentence?,
     val responsibleProvider: Provider?,
     val ogrsScore: Long?
@@ -17,11 +18,19 @@ data class CaseDetails(
         get() = YEARS.between(dateOfBirth, LocalDate.now())
 
     val ageAtRelease
-        get() = sentence?.releaseDate?.let { YEARS.between(dateOfBirth, it) }
+        get() = sentence?.expectedReleaseDate?.let { YEARS.between(dateOfBirth, it) }
 }
 
 data class Name(val forename: String, val middleName: String?, val surname: String)
-data class Sentence(val date: LocalDate, val sentencingCourt: Court, val releaseDate: LocalDate?)
+data class Appearance(
+    val date: LocalDate,
+    val court: Court
+)
+
+data class Sentence(
+    val expectedReleaseDate: LocalDate?
+)
+
 data class Court(val name: String)
 data class Provider(val code: String, val name: String)
 

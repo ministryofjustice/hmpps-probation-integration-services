@@ -35,14 +35,20 @@ class ComplianceService(
 
         fun breachesForSentence(eventId: Long) = allBreaches.filter { (it.eventId == eventId) }
         fun activeBreachCountForSentence(eventId: Long) =
-            allBreaches.filter { it.eventId == eventId && it.active }.firstOrNull()
+            allBreaches.firstOrNull { it.eventId == eventId && it.active }
 
         fun sentenceActivity(eventNumber: String) = allActiveSentenceActivity.filter { it.eventNumber == eventNumber }
+        fun requirementActivity(eventNumber: String, rarCategory: String?) =
+            allActiveSentenceActivity.filter { it.eventNumber == eventNumber && it.rarCategory == rarCategory }
+
+        fun getRarCategoryFromSentence(eventNumber: String) =
+            allActiveSentenceActivity.firstOrNull { it.eventNumber == eventNumber && it.rarCategory != null }?.rarCategory
 
         fun Event.toSentenceCompliance() = mainOffence?.offence?.let { offence ->
             SentenceCompliance(
                 eventNumber = eventNumber,
                 mainOffence = Offence(code = offence.code, description = offence.description),
+                rarCategory = getRarCategoryFromSentence(eventNumber),
                 rar = disposal?.let { requirementRepository.getRar(it.id) },
                 order = disposal?.let {
                     Order(
@@ -58,7 +64,12 @@ class ComplianceService(
                         status = it.nsiStatus?.description
                     )
                 },
-                activity = toSentenceActivityCounts(sentenceActivity(eventNumber)),
+                activity = toSentenceActivityCounts(
+                    requirementActivity(
+                        eventNumber,
+                        getRarCategoryFromSentence(eventNumber)
+                    )
+                ),
                 compliance = toSentenceCompliance(sentenceActivity(eventNumber), breachesForSentence(id))
             )
         }

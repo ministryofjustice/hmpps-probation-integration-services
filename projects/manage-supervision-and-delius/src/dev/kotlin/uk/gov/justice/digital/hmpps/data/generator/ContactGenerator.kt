@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -28,11 +29,13 @@ object ContactGenerator {
     )
     val DEFAULT_STAFF = generateStaff("N01BDT1", "John", "Smith")
 
+    val COMMUNICATION_CATEGORY_RD = ReferenceData(IdGenerator.getAndIncrement(), "LT", "Communication")
+
     val BREACH_CONTACT_TYPE = generateContactType("BRE02", false, "Breach Contact Type")
     val BREACH_ENFORCEMENT_ACTION = generateEnforcementAction("BRE02", "Breach Enforcement Action", BREACH_CONTACT_TYPE)
 
     val APPT_CT_1 = generateContactType("C089", true, "Alcohol Key Worker Session (NS)")
-    val OTHER_CT = generateContactType("XXXX", false, "Non attendance contact type")
+    val OTHER_CT = generateContactType("XXXX", false, "Non attendance contact type", systemGenerated = true)
     val APPT_CT_2 = generateContactType("CODI", true, "Initial Appointment on Doorstep (NS)")
     val APPT_CT_3 = generateContactType("CODC", true, "Planned Doorstep Contact (NS)")
 
@@ -48,6 +51,7 @@ object ContactGenerator {
         outcome = ACCEPTABLE_ABSENCE
 
     )
+
     val PREVIOUS_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_1,
@@ -68,6 +72,14 @@ object ContactGenerator {
         APPT_CT_3,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(3), EuropeLondon)
     )
+
+    val PREVIOUS_COMMUNICATION_CONTACT = generateContact(
+        OVERVIEW,
+        OTHER_CT,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(10), EuropeLondon),
+    )
+
+    val COMMUNICATION_CATEGORY = generateContactCategory(OTHER_CT, COMMUNICATION_CATEGORY_RD)
 
     val CONTACT_DOCUMENT_1 = generateContactDocument(
         OVERVIEW.id,
@@ -126,7 +138,7 @@ object ContactGenerator {
         action: EnforcementAction? = null,
         startTime: ZonedDateTime? = ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone),
         event: Event = PersonGenerator.EVENT_1,
-        outcome: ContactOutcome? = null
+        outcome: ContactOutcome? = null,
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         personId = person.id,
@@ -151,8 +163,16 @@ object ContactGenerator {
     private fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
         ContactOutcome(IdGenerator.getAndIncrement(), code, description, attendance, acceptable)
 
-    private fun generateContactType(code: String, attendance: Boolean, description: String) =
-        ContactType(IdGenerator.getAndIncrement(), code, attendance, description)
+    private fun generateContactType(
+        code: String,
+        attendance: Boolean,
+        description: String,
+        systemGenerated: Boolean = false
+    ) =
+        ContactType(IdGenerator.getAndIncrement(), code, attendance, description, systemGenerated = systemGenerated)
+
+    private fun generateContactCategory(contactType: ContactType, contactCategory: ReferenceData) =
+        ContactCategory(id = ContactCategoryId(contactType.id, category = contactCategory))
 
     fun generateOfficeLocation(
         code: String,

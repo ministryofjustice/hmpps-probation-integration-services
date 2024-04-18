@@ -8,6 +8,7 @@ object ManagerGenerator {
     val DEFAULT_PERSON_MANAGER = personManagerGenerator(PersonGenerator.DEFAULT)
     val DEFAULT_RESPONSIBLE_OFFICER =
         responsibleOfficerGenerator(communityManager = DEFAULT_PERSON_MANAGER, prisonManager = null, endDate = null)
+    val RELEASED_PERSON_MANAGER = personManagerGenerator(PersonGenerator.WITH_RELEASE_DATE)
 
     fun responsibleOfficerGenerator(
         id: Long = IdGenerator.getAndIncrement(),

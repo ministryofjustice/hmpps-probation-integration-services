@@ -94,11 +94,12 @@ fun Contact.toActivity() = Activity(
     ) else null,
     isAppointment = type.attendanceContact,
     action = action?.description,
-    isSystemContact = false, //ToDo
+    isSystemContact = type.systemGenerated,
     isEmailOrTextFromPop = isEmailOrTextFromPop(),
     isEmailOrTextToPop = isEmailOrTextToPop(),
     isPhoneCallFromPop = isPhoneCallFromPop(),
     isPhoneCallToPop = isPhoneCallToPop(),
+    isCommunication = isCommunication(),
     eventNumber = event?.eventNumber
 )
 
