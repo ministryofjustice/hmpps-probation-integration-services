@@ -62,7 +62,8 @@ class DataLoader(
 
         RegistrationGenerator.CATEGORIES.values.forEach { em.persist(it) }
         RegistrationGenerator.LEVELS.values.forEach { em.persist(it) }
-        em.persist(
+
+        em.merge(
             RegistrationGenerator.generate(
                 date = LocalDate.now().minusDays(30),
                 category = RegistrationGenerator.CATEGORIES[Category.M1.name],
@@ -97,7 +98,7 @@ class DataLoader(
         )
     }
 
-    fun EntityManager.saveAll(vararg any: Any) = any.forEach { persist(it) }
+    fun EntityManager.saveAll(vararg any: Any) = any.forEach { merge(it) }
 
     private fun createAppointments(person: Person) {
         dates().flatMap { date ->
@@ -125,7 +126,7 @@ class DataLoader(
                     }
                 )
             }
-        }.forEach { em.persist(it) }
+        }.forEach { em.merge(it) }
     }
 
     private fun dates(): List<LocalDate> {

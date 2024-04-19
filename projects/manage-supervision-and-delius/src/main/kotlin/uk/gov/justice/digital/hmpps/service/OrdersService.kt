@@ -11,8 +11,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerso
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 
 @Service
-class OrdersService(private val personRepository: PersonRepository,
-                    private val eventRepository: EventSentenceRepository) {
+class OrdersService(
+    private val personRepository: PersonRepository,
+    private val eventRepository: EventSentenceRepository
+) {
 
     fun getPreviousEvents(crn: String): PreviousOrderHistory {
         val person = personRepository.getPerson(crn)

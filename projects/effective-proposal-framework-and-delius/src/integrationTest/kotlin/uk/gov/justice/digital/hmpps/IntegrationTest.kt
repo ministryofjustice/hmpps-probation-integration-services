@@ -51,7 +51,7 @@ internal class IntegrationTest {
 
     @Test
     fun `release details are correctly displayed`() {
-        val person = PersonGenerator.RELEASED
+        val person = PersonGenerator.WITH_RELEASE_DATE
         val crn = person.crn
         val eventNumber = 1
         val detailResponse = mockMvc
@@ -66,11 +66,12 @@ internal class IntegrationTest {
                     Name(person.forename, person.secondName, person.surname),
                     person.dateOfBirth,
                     person.gender.description,
+                    Appearance(
+                        SentenceGenerator.DEFAULT_COURT_APPEARANCE.appearanceDate,
+                        Court(SentenceGenerator.DEFAULT_COURT.name)
+                    ),
                     Sentence(
-                        SentenceGenerator.RELEASED_EVENT.convictionDate,
-                        SentenceGenerator.RELEASED_SENTENCE.date,
-                        Court(SentenceGenerator.DEFAULT_COURT.name),
-                        SentenceGenerator.RELEASE.date
+                        SentenceGenerator.RELEASE_DATE.date
                     ),
                     Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
                     null
@@ -89,12 +90,11 @@ internal class IntegrationTest {
             ),
             PersonGenerator.DEFAULT.dateOfBirth,
             PersonGenerator.DEFAULT.gender.description,
-            Sentence(
-                SentenceGenerator.DEFAULT_EVENT.convictionDate,
-                SentenceGenerator.DEFAULT_SENTENCE.date,
-                Court(SentenceGenerator.DEFAULT_COURT.name),
-                null
+            Appearance(
+                SentenceGenerator.DEFAULT_COURT_APPEARANCE.appearanceDate,
+                Court(SentenceGenerator.DEFAULT_COURT.name)
             ),
+            null,
             Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
             3
         )

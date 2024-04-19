@@ -75,14 +75,14 @@ dependencyResolutionManagement {
                 "aws-messaging",
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
             )
-            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.2.1")
+            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.3.1")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.5.1")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.8.0")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.2.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.3.0"
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")

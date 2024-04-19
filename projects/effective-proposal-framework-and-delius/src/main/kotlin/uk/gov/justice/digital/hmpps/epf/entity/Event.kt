@@ -3,11 +3,11 @@ package uk.gov.justice.digital.hmpps.epf.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -70,36 +70,41 @@ class Custody(
     @JoinColumn(name = "disposal_id", updatable = false)
     val disposal: Disposal,
 
-    @OneToMany(mappedBy = "custody")
-    val releases: List<Release>,
-
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean,
 
     @Id
     @Column(name = "custody_id")
     val id: Long
-) {
-    fun mostRecentRelease() = releases.maxWithOrNull(compareBy({ it.date }, { it.createdDateTime }))
-}
+)
 
-@Immutable
 @Entity
-class Release(
+@Immutable
+@SQLRestriction("soft_deleted = 0")
+class KeyDate(
+
     @ManyToOne
-    @JoinColumn(name = "custody_id", nullable = false)
+    @JoinColumn(name = "custody_id")
     val custody: Custody,
 
-    @Column(name = "actual_release_date")
-    val date: LocalDate,
+    @ManyToOne
+    @JoinColumn(name = "key_date_type_id")
+    val type: ReferenceData,
 
-    @Column(name = "created_datetime")
-    val createdDateTime: ZonedDateTime,
+    @Column(name = "key_date")
+    var date: LocalDate,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean,
 
     @Id
-    @Column(name = "release_id", nullable = false)
+    @Column(name = "key_date_id")
     val id: Long
-)
+) {
+    enum class Type(val code: String) {
+        EXPECTED_RELEASE_DATE("EXP")
+    }
+}
 
 interface EventRepository : JpaRepository<Event, Long> {
 
@@ -109,7 +114,6 @@ interface EventRepository : JpaRepository<Event, Long> {
         join fetch e.person p
         left join fetch e.disposal d
         left join fetch d.custody c
-        left join fetch c.releases
         where e.number = :number
         and p.crn = :crn
     """
@@ -119,3 +123,11 @@ interface EventRepository : JpaRepository<Event, Long> {
 
 fun EventRepository.getEvent(crn: String, number: String) =
     findEventByCrnAndEventNumber(crn, number) ?: throw NotFoundException("Event", "crn", crn)
+
+interface KeyDateRepository : JpaRepository<KeyDate, Long> {
+    @EntityGraph(attributePaths = ["type"])
+    fun findByCustodyIdAndTypeCode(custodyId: Long, typeCode: String): KeyDate?
+}
+
+fun KeyDateRepository.getExpectedReleaseDate(custodyId: Long) =
+    findByCustodyIdAndTypeCode(custodyId, KeyDate.Type.EXPECTED_RELEASE_DATE.code)
