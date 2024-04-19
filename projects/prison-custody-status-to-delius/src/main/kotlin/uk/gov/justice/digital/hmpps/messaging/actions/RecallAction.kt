@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.Companion.withCode
 import uk.gov.justice.digital.hmpps.messaging.*
-import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 @Component
@@ -76,14 +75,11 @@ class RecallAction(
     }
 
     private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody) {
-        val latestRelease = custody.mostRecentRelease()
         if (!custody.canBeRecalled()) {
             throw IgnorableMessageException("RecallNotRequired")
         }
 
-        if (prisonerMovement.occurredAt.isAfter(ZonedDateTime.now()) ||
-            prisonerMovement.occurredAt.isBefore(latestRelease?.date)
-        ) {
+        if (!prisonerMovement.receivedDateValid(custody)) {
             throw IgnorableMessageException("InvalidRecallDate")
         }
     }

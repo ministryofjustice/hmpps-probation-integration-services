@@ -32,7 +32,7 @@ class UpdateStatusAction(
 
     private fun inboundStatusChange(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        return if (custody.status.canChange()) {
+        return if (custody.status.canChange() && prisonerMovement.receivedDateValid(custody)) {
             val detail = if (custody.canBeRecalled()) "Recall added in custody " else "In custody "
             updateStatus(
                 custody,
