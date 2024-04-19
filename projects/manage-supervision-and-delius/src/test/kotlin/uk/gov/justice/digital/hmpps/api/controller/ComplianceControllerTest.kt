@@ -54,6 +54,7 @@ internal class ComplianceControllerTest {
             activeBreach = breach,
             activity = activityCount,
             rar = rar,
+            rarCategory = "Test RAR",
             compliance = compliance
         )
         val previousOrders = PreviousOrders(breaches = 1, count = 1, orders = listOf(order))

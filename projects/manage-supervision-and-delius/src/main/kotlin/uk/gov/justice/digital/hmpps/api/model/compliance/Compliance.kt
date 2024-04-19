@@ -8,6 +8,7 @@ data class SentenceCompliance(
     val order: Order?,
     val activeBreach: Breach?,
     val rar: Rar?,
+    val rarCategory: String?,
     val compliance: Compliance,
     val activity: ActivityCount
 )

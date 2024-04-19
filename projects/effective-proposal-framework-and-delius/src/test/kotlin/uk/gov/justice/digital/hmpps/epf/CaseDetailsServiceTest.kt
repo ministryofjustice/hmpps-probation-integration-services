@@ -33,6 +33,9 @@ internal class CaseDetailsServiceTest {
     internal lateinit var eventRepository: EventRepository
 
     @Mock
+    internal lateinit var keyDateRepository: KeyDateRepository
+
+    @Mock
     internal lateinit var ogrsAssessmentRepository: OgrsAssessmentRepository
 
     @InjectMocks
@@ -46,7 +49,8 @@ internal class CaseDetailsServiceTest {
         whenever(responsibleOfficerRepository.findByPersonIdAndEndDateIsNull(person.id)).thenReturn(null)
         whenever(personManagerRepository.findByPersonId(person.id)).thenReturn(ManagerGenerator.DEFAULT_PERSON_MANAGER)
         whenever(eventRepository.findEventByCrnAndEventNumber(person.crn, event.number)).thenReturn(event)
-        whenever(courtAppearanceRepository.findMostRecentCourtNameByEventId(event.id)).thenReturn(SentenceGenerator.DEFAULT_COURT.name)
+        whenever(courtAppearanceRepository.findByEventIdOrderByAppearanceDateDesc(event.id))
+            .thenReturn(SentenceGenerator.generateCourtAppearance(event))
 
         val res = service.caseDetails(person.crn, event.number.toInt())
         assertNotNull(res.responsibleProvider)
