@@ -214,18 +214,14 @@
   },
   "dateOfBirth": "string",
   "gender": "string",
-  "conviction": {
+  "courtAppearance": {
     "date": "string",
     "court": {
       "name": "string"
     }
   },
   "sentence": {
-    "date": "string",
-    "sentencingCourt": {
-      "name": "string"
-    },
-    "releaseDate": "string"
+    "expectedReleaseDate": "string"
   },
   "responsibleProvider": {
     "code": "string",
@@ -259,18 +255,14 @@
   },
   "dateOfBirth": "string",
   "gender": "string",
-  "conviction": {
+  "courtAppearance": {
     "date": "string",
     "court": {
       "name": "string"
     }
   },
   "sentence": {
-    "date": "string",
-    "sentencingCourt": {
-      "name": "string"
-    },
-    "releaseDate": "string"
+    "expectedReleaseDate": "string"
   },
   "responsibleProvider": {
     "code": "string",
@@ -295,6 +287,38 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-appearance">Appearance</h3>
+
+
+<table class='schema-appearance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>court</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-court'>Court</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-casedetails">CaseDetails</h3>
 
 
@@ -345,12 +369,12 @@
 </tr>
 
 <tr>
-<td>conviction</td>
+<td>courtAppearance</td>
 <td>object</td>
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-conviction'>Conviction</a>
+  <a href='#schema-appearance'>Appearance</a>
 </td>
 </tr>
 
@@ -401,38 +425,6 @@
 <td></td>
 <td>
   
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-conviction">Conviction</h3>
-
-
-<table class='schema-conviction'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>date</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>court</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-court'>Court</a>
 </td>
 </tr>
 
@@ -545,27 +537,7 @@
 <tbody>
 
 <tr>
-<td>date</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>sentencingCourt</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-court'>Court</a>
-</td>
-</tr>
-
-<tr>
-<td>releaseDate</td>
+<td>expectedReleaseDate</td>
 <td>string</td>
 <td>false</td>
 <td></td>

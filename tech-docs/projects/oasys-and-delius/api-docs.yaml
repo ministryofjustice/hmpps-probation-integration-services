@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /probation-cases/{crn}:
+    get:
+      tags:
+      - probation-case-resource
+      operationId: getCaseDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDetails'
   /probation-cases/{crn}/release:
     get:
       tags:
@@ -52,6 +70,41 @@ paths:
                 $ref: '#/components/schemas/Registrations'
 components:
   schemas:
+    Address:
+      required:
+      - noFixedAbode
+      type: object
+      properties:
+        noFixedAbode:
+          type: boolean
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+    CaseDetails:
+      required:
+      - identifiers
+      - person
+      type: object
+      properties:
+        identifiers:
+          $ref: '#/components/schemas/Identifiers'
+        person:
+          $ref: '#/components/schemas/Person'
+        profile:
+          $ref: '#/components/schemas/Profile'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
     CodeDescription:
       required:
       - code
@@ -62,6 +115,67 @@ components:
           type: string
         description:
           type: string
+    ContactDetails:
+      type: object
+      properties:
+        mainAddress:
+          $ref: '#/components/schemas/Address'
+        emailAddress:
+          type: string
+        telephoneNumber:
+          type: string
+        mobileNumber:
+          type: string
+    Identifiers:
+      required:
+      - crn
+      type: object
+      properties:
+        crn:
+          type: string
+        noms:
+          type: string
+        pnc:
+          type: string
+        cro:
+          type: string
+    Name:
+      required:
+      - forename
+      - middleNames
+      - surname
+      type: object
+      properties:
+        surname:
+          type: string
+        forename:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+    Person:
+      required:
+      - dateOfBirth
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          $ref: '#/components/schemas/CodeDescription'
+    Profile:
+      type: object
+      properties:
+        language:
+          $ref: '#/components/schemas/CodeDescription'
+        ethnicity:
+          $ref: '#/components/schemas/CodeDescription'
+        religion:
+          $ref: '#/components/schemas/CodeDescription'
     Institution:
       required:
       - code

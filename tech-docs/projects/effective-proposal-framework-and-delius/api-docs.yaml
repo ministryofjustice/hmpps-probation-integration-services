@@ -55,6 +55,17 @@ paths:
                 $ref: '#/components/schemas/CaseDetails'
 components:
   schemas:
+    Appearance:
+      required:
+      - court
+      - date
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        court:
+          $ref: '#/components/schemas/Court'
     CaseDetails:
       required:
       - age
@@ -72,8 +83,8 @@ components:
           format: date
         gender:
           type: string
-        conviction:
-          $ref: '#/components/schemas/Conviction'
+        courtAppearance:
+          $ref: '#/components/schemas/Appearance'
         sentence:
           $ref: '#/components/schemas/Sentence'
         responsibleProvider:
@@ -87,17 +98,6 @@ components:
         ageAtRelease:
           type: integer
           format: int64
-    Conviction:
-      required:
-      - court
-      - date
-      type: object
-      properties:
-        date:
-          type: string
-          format: date
-        court:
-          $ref: '#/components/schemas/Court'
     Court:
       required:
       - name
@@ -128,17 +128,9 @@ components:
         name:
           type: string
     Sentence:
-      required:
-      - date
-      - sentencingCourt
       type: object
       properties:
-        date:
-          type: string
-          format: date
-        sentencingCourt:
-          $ref: '#/components/schemas/Court'
-        releaseDate:
+        expectedReleaseDate:
           type: string
           format: date
   securitySchemes:
