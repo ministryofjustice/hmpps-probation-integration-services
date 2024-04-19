@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -16,7 +17,9 @@ import uk.gov.justice.digital.hmpps.client.Offence
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.COURT_CATEGORY
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.EXISTING_OFFENCE
+import uk.gov.justice.digital.hmpps.entity.OffenceRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.repository.DetailedOffenceRepository
@@ -41,10 +44,21 @@ internal class HandlerTest {
     lateinit var detailedOffenceRepository: DetailedOffenceRepository
 
     @Mock
+    lateinit var offenceRepository: OffenceRepository
+
+    @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
+
+    @Mock
+    lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     lateinit var handler: Handler
+
+    @BeforeEach
+    fun setup() {
+        whenever(featureFlags.enabled(FF_CREATE_OFFENCE)).thenReturn(false)
+    }
 
     @Test
     fun `missing reference data is thrown`() {

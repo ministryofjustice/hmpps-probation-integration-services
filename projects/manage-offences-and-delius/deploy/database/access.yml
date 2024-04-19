@@ -4,8 +4,10 @@ database:
     password_key: /manage-offences-and-delius/db-password
     tables:
       - r_detailed_offence
+      - r_offence
     sequences:
       - detailed_offence_id_seq
+      - offence_id_seq
 
   audit:
     username: ManageOffencesAndDelius

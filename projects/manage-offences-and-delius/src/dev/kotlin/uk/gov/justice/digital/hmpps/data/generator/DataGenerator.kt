@@ -3,9 +3,16 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.entity.DetailedOffence
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataSet
+import uk.gov.justice.digital.hmpps.entity.ReferenceOffence
 import java.time.LocalDate
 
 object DataGenerator {
+    val HL_OFFENCE = generateReferenceOffence(
+        code = "09100",
+        mainCategoryCode = "091",
+        subCategoryCode = "00",
+        ogrsOffenceCategoryId = 298456347L
+    )
     val COURT_CATEGORY_SET = ReferenceDataSet(IdGenerator.getAndIncrement(), "COURT CATEGORY")
     val COURT_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "CS", "Summary Non-motoring", COURT_CATEGORY_SET)
     val EXISTING_OFFENCE = DetailedOffence(
@@ -18,5 +25,37 @@ object DataGenerator {
         legislation = "N/A",
         startDate = LocalDate.of(2006, 5, 12),
         endDate = null
+    )
+
+    fun generateReferenceOffence(
+        code: String,
+        description: String = "Description of $code",
+        selectable: Boolean = true,
+        mainCategoryCode: String,
+        mainCategoryDescription: String = "Main Category of $code",
+        mainCategoryAbbreviation: String? = mainCategoryDescription.take(50),
+        ogrsOffenceCategoryId: Long?,
+        subCategoryCode: String,
+        subCategoryDescription: String = "Sub Category of $code",
+        form20Code: String? = null,
+        schedule15SexualOffence: Boolean? = false,
+        schedule15ViolentOffence: Boolean? = false,
+        childAbduction: Boolean? = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = ReferenceOffence(
+        code,
+        description,
+        selectable,
+        mainCategoryCode,
+        mainCategoryDescription,
+        mainCategoryAbbreviation,
+        ogrsOffenceCategoryId,
+        subCategoryCode,
+        subCategoryDescription,
+        form20Code,
+        schedule15SexualOffence,
+        schedule15ViolentOffence,
+        childAbduction,
+        id
     )
 }
