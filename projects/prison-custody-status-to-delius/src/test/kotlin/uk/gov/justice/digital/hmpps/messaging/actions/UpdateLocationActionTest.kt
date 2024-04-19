@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.instanceOf
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -19,6 +20,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
@@ -137,6 +139,29 @@ internal class UpdateLocationActionTest {
         assertThat(result, instanceOf(ActionResult.Ignored::class.java))
     }
 
+    @ParameterizedTest
+    @MethodSource("invalidRecallDates")
+    fun `ignored when recall date not valid`(date: ZonedDateTime) {
+        val nomsId = "A1234BC"
+        val prisonerMovement = PrisonerMovement.Received(
+            nomsId,
+            "OUT",
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            PrisonerMovement.Type.ADMISSION,
+            "",
+            date
+        )
+        val custody = previouslyReleasedEvent(
+            PersonGenerator.generate(nomsId),
+            InstitutionGenerator.DEFAULT,
+            CustodialStatusCode.RELEASED_ON_LICENCE,
+            releaseDate = ZonedDateTime.now().minusDays(7)
+        ).disposal!!.custody!!
+
+        val res = action.accept(PrisonerMovementContext(prisonerMovement, custody))
+        assertThat(res, instanceOf(ActionResult.Ignored::class.java))
+    }
+
     companion object {
         private val received = PrisonerMovement.Received(
             custody().disposal.event.person.nomsNumber,
@@ -157,7 +182,7 @@ internal class UpdateLocationActionTest {
 
         @JvmStatic
         fun invalidDatesForRelease() = listOf(
-            EventGenerator.custodialEvent(
+            custodialEvent(
                 PersonGenerator.RELEASABLE,
                 InstitutionGenerator.DEFAULT,
                 disposalDate = ZonedDateTime.now()
@@ -167,6 +192,12 @@ internal class UpdateLocationActionTest {
                 InstitutionGenerator.DEFAULT,
                 recallDate = ZonedDateTime.now()
             ).disposal!!.custody
+        )
+
+        @JvmStatic
+        fun invalidRecallDates() = listOf(
+            ZonedDateTime.now().plusDays(1),
+            ZonedDateTime.now().minusDays(14)
         )
 
         @JvmStatic
