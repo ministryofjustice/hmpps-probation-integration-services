@@ -7,15 +7,20 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.service.OrdersService
 import uk.gov.justice.digital.hmpps.service.SentenceService
 
 @RestController
 @Tag(name = "Sentence")
 @RequestMapping("/sentence/{crn}")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
-class SentenceController(private val sentenceService: SentenceService) {
+class SentenceController(private val sentenceService: SentenceService, private val ordersService: OrdersService) {
 
     @GetMapping
-    @Operation(summary = "Display the most recent ‘Active Event’ ")
+    @Operation(summary = "Display active events ")
     fun getOverview(@PathVariable crn: String) = sentenceService.getEvents(crn)
+
+    @GetMapping("/previous-orders")
+    @Operation(summary = "Display inactive events ")
+    fun getPreviousEvents(@PathVariable crn: String) = ordersService.getPreviousEvents(crn)
 }

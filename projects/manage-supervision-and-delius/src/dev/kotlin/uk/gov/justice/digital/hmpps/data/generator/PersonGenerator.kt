@@ -53,6 +53,8 @@ object PersonGenerator {
     )
     val OFFENCE_1 = generateOffence("Murder", "MAIN")
     val OFFENCE_2 = generateOffence("Another Murder", "MAINA")
+    val OFFENCE_3 = generateOffence("Burglary in a dwelling - 02800", "02800")
+    val OFFENCE_4 = generateOffence("Burglary, other than a dwelling - 03000", "03000")
 
     val MAIN_OFFENCE_1 = generateMainOffence(
         1,
@@ -68,14 +70,37 @@ object PersonGenerator {
         LocalDate.now()
     )
 
+    val MAIN_OFFENCE_3 = generateMainOffence(
+        1,
+        INACTIVE_EVENT_1,
+        OFFENCE_1,
+        LocalDate.now()
+    )
+
+    val MAIN_OFFENCE_4 = generateMainOffence(
+        1,
+        INACTIVE_EVENT_2,
+        OFFENCE_4,
+        LocalDate.now()
+    )
+
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("DFS", "Default Sentence Type", "NP", 0)
     val ACTIVE_ORDER = generateDisposal(EVENT_1, length = 12)
 
     val TERMINATION_REASON = generateTerminationReason()
 
+    val REF_DATA_YEARS = ReferenceData(IdGenerator.getAndIncrement(), "Y", "Years")
     val INACTIVE_ORDER_1 =
-        generateDisposal(INACTIVE_EVENT_1, LocalDate.of(2023, 4, 8), terminationReason = TERMINATION_REASON)
-    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.of(2023, 4, 9))
+        generateDisposal(
+            INACTIVE_EVENT_1,
+            LocalDate.now().minusDays(8),
+            REF_DATA_YEARS,
+            length = 25,
+            terminationReason = TERMINATION_REASON
+        )
+
+    val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
+    val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.now().minusDays(7), REF_DATA_MONTHS, length = 7)
 
     val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
     val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(
@@ -312,6 +337,7 @@ object PersonGenerator {
     fun generateDisposal(
         event: Event,
         terminationDate: LocalDate? = null,
+        lengthUnit: ReferenceData? = null,
         date: LocalDate = LocalDate.now().minusDays(14),
         length: Long? = null,
         type: DisposalType = DEFAULT_DISPOSAL_TYPE,
@@ -327,6 +353,7 @@ object PersonGenerator {
         length,
         type,
         terminationReason,
+        lengthUnit,
         enteredEndDate,
         notionalEndDate,
         terminationDate,
