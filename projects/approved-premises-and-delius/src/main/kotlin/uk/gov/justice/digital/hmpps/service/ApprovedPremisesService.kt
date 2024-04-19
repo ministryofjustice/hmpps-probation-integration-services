@@ -5,7 +5,8 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremis
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.getApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByEventNumber
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getActiveEvent
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_ASSESSED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_WITHDRAWN
@@ -31,7 +32,7 @@ class ApprovedPremisesService(
     fun applicationSubmitted(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
         val person = personRepository.getByCrn(event.crn())
-        val dEvent = eventRepository.getByEventNumber(person.id, details.eventNumber)
+        val dEvent = eventRepository.getActiveEvent(person.id, details.eventNumber)
         contactService.createContact(
             ContactDetails(
                 date = details.submittedAt,
@@ -49,7 +50,7 @@ class ApprovedPremisesService(
     fun applicationAssessed(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationAssessedDetails(event.url()).eventDetails
         val person = personRepository.getByCrn(event.crn())
-        val dEvent = eventRepository.getByEventNumber(person.id, details.eventNumber)
+        val dEvent = eventRepository.getActiveEvent(person.id, details.eventNumber)
         contactService.createContact(
             ContactDetails(
                 date = details.assessedAt,
@@ -67,7 +68,7 @@ class ApprovedPremisesService(
     fun applicationWithdrawn(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationWithdrawnDetails(event.url()).eventDetails
         val person = personRepository.getByCrn(event.crn())
-        val dEvent = eventRepository.getByEventNumber(person.id, details.eventNumber)
+        val dEvent = eventRepository.getEvent(person.id, details.eventNumber)
         contactService.createContact(
             ContactDetails(
                 date = details.withdrawnAt,
