@@ -117,10 +117,6 @@ internal class RecallActionTest {
         verify(contactService).createContact(any(), any(), any(), any(), anyOrNull())
     }
 
-    @Test
-    fun `non int transfers are ignored`() {
-    }
-
     companion object {
 
         private val nomsId = "R1234AC"
