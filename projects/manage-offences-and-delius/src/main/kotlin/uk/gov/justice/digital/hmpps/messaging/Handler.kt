@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.entity.DetailedOffence
 import uk.gov.justice.digital.hmpps.entity.OffenceRepository
 import uk.gov.justice.digital.hmpps.entity.ReferenceOffence
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.repository.DetailedOffenceRepository
@@ -17,6 +18,8 @@ import uk.gov.justice.digital.hmpps.repository.findCourtCategory
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
+const val FF_CREATE_OFFENCE = "manage-offences-create-offence"
+
 @Component
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
@@ -24,14 +27,17 @@ class Handler(
     private val manageOffencesClient: ManageOffencesClient,
     private val detailedOffenceRepository: DetailedOffenceRepository,
     private val offenceRepository: OffenceRepository,
-    private val referenceDataRepository: ReferenceDataRepository
+    private val referenceDataRepository: ReferenceDataRepository,
+    private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
 
     @Transactional
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val offence = manageOffencesClient.getOffence(notification.message.offenceCode)
-        offence.createOrMerge()
+        if (featureFlags.enabled(FF_CREATE_OFFENCE)) {
+            offence.createOrMerge()
+        }
         val existingEntity = detailedOffenceRepository.findByCode(offence.code)
         detailedOffenceRepository.save(existingEntity.mergeWith(offence.newEntity))
         telemetryService.trackEvent(
