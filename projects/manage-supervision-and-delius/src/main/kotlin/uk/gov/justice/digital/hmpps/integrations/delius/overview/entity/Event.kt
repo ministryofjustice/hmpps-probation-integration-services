@@ -92,6 +92,10 @@ class Disposal(
     @JoinColumn(name = "disposal_termination_reason_id")
     val terminationReason: ReferenceData? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "entry_length_units_id")
+    val lengthUnit: ReferenceData? = null,
+
     @Column(name = "entered_notional_end_date")
     val enteredEndDate: LocalDate? = null,
 
@@ -154,7 +158,7 @@ class MainOffence(
     @Column(name = "offence_date")
     val date: LocalDate,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: Offence,
 
