@@ -161,7 +161,7 @@ class ReferralSource(
 @Entity
 @Immutable
 @Table
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Event(
     @Id
     @Column(name = "event_id")
@@ -215,10 +215,16 @@ fun ReferralSourceRepository.getByCode(code: String) = findByCode(code)
 interface EventRepository : JpaRepository<Event, Long> {
     fun findByPersonIdAndNumber(personId: Long, number: String): Event?
 
+    @Query("select e from Event e where e.personId = :personId and e.number = :number and e.active = true")
+    fun findActiveByPersonIdAndNumber(personId: Long, number: String): Event?
+
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select e.id from Event e where e.id = :id")
     fun findForUpdate(id: Long): Long
 }
 
-fun EventRepository.getByEventNumber(personId: Long, number: String) = findByPersonIdAndNumber(personId, number)
+fun EventRepository.getActiveEvent(personId: Long, number: String) = findActiveByPersonIdAndNumber(personId, number)
+    ?: throw IgnorableMessageException("Active Event Not Found", mapOf("eventNumber" to number))
+
+fun EventRepository.getEvent(personId: Long, number: String) = findByPersonIdAndNumber(personId, number)
     ?: throw IgnorableMessageException("Event Not Found", mapOf("eventNumber" to number))

@@ -459,7 +459,7 @@ internal class ApprovedPremisesServiceTest {
 
     private fun givenAnEvent(person: Person, eventNumber: String): Event {
         val event = PersonGenerator.generateEvent(eventNumber, person.id)
-        whenever(eventRepository.findByPersonIdAndNumber(person.id, eventNumber))
+        whenever(eventRepository.findActiveByPersonIdAndNumber(person.id, eventNumber))
             .thenReturn(event)
         return event
     }
