@@ -67,7 +67,6 @@ interface EventRepository : JpaRepository<Event, Long> {
             "ORDER BY e.eventNumber DESC"
     )
     fun findByPersonId(personId: Long): List<Event>
-
 }
 
 @Entity
