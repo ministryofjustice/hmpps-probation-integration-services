@@ -82,7 +82,7 @@ dependencyResolutionManagement {
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.8.0")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.2.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.3.0"
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
