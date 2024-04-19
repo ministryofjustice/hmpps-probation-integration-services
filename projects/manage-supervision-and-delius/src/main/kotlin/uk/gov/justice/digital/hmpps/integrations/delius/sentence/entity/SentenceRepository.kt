@@ -19,6 +19,8 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
             "ORDER BY e.eventNumber DESC "
     )
     fun findSentencesByPersonId(id: Long): List<Event>
+
+    fun getEventByPersonIdAndEventNumberAndActiveIsTrue(id: Long, eventNumber: String): Event?
 }
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
