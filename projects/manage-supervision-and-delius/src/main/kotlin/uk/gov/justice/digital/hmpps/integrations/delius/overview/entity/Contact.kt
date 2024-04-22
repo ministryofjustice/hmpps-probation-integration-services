@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.io.Serializable
 import java.time.LocalDate
@@ -320,50 +321,6 @@ fun ContactRepository.getPreviousAppointments(
     personId = personId,
     dateNow = date.format(DateTimeFormatter.ISO_LOCAL_DATE),
     timeNow = startTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
-)
-
-@Immutable
-@Entity
-@Table(name = "staff")
-class Staff(
-
-    @Column(name = "officer_code", columnDefinition = "char(7)")
-    val code: String,
-
-    @Column
-    val forename: String,
-
-    @Column
-    val surname: String,
-
-    @JoinColumn(name = "probation_area_id")
-    @OneToOne
-    val provider: Provider,
-
-    @Id
-    @Column(name = "staff_id")
-    val id: Long
-) {
-    fun isUnallocated(): Boolean {
-        return code.endsWith("U")
-    }
-}
-
-@Immutable
-@Entity
-@Table(name = "probation_area")
-class Provider(
-    @Column(name = "code", columnDefinition = "char(3)")
-    val code: String,
-
-    val description: String,
-
-    @Id
-    @Column(name = "probation_area_id")
-    val id: Long,
-
-    @Column(name = "end_date")
-    val endDate: LocalDate? = null
 )
 
 @Immutable
