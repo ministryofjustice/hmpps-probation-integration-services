@@ -1,4 +1,5 @@
 generic-service:
+  replicaCount: 3
   ingress:
     className: production-only
     host: soc-and-delius.hmpps.service.justice.gov.uk

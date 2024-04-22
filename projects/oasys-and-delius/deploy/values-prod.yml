@@ -1,6 +1,7 @@
 enabled: false # TODO set this to true when you're ready to deploy your service
 
 generic-service:
+  replicaCount: 3
   ingress:
     className: production-only
     host: oasys-and-delius.hmpps.service.justice.gov.uk
