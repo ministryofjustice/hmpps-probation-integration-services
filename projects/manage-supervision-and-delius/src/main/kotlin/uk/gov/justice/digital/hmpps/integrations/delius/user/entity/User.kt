@@ -127,7 +127,6 @@ data class Caseload(
     val team: Team
 )
 
-
 @Entity
 @Immutable
 @Table(name = "offender")
