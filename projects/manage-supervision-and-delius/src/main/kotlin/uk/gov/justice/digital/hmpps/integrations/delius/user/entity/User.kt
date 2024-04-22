@@ -108,7 +108,7 @@ class Provider(
 
 @Entity
 @Immutable
-@Table(name = "case_load")
+@Table(name = "caseload")
 data class Caseload(
     @Id
     @Column(name = "caseload_id")
@@ -126,6 +126,7 @@ data class Caseload(
     @JoinColumn(name = "trust_provider_team_id")
     val team: Team
 )
+
 
 @Entity
 @Immutable
