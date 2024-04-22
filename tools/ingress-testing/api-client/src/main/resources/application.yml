@@ -1,7 +1,4 @@
-# Default config
 server.shutdown: graceful
-spring:
-  threads.virtual.enabled: true
 
 management:
   endpoints.web:
