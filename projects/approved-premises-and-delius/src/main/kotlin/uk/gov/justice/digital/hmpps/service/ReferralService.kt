@@ -190,11 +190,7 @@ class ReferralService(
     }
 
     fun getReferral(person: Person, externalReference: String): Referral {
-        val referral: Referral = referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-            person.id,
-            ServiceContext.servicePrincipal()!!.userId,
-            externalReference
-        ) ?: throw IgnorableMessageException(
+        val referral: Referral = findReferral(person, externalReference) ?: throw IgnorableMessageException(
             "Referral Not Found",
             mapOf("crn" to person.crn, "externalReference" to externalReference)
         )
