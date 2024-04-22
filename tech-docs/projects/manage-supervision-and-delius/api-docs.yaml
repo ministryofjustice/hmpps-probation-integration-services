@@ -18,7 +18,7 @@ paths:
     get:
       tags:
       - Sentence
-      summary: 'Display the most recent ‘Active Event’ '
+      summary: 'Display active events '
       operationId: getOverview
       parameters:
       - name: crn
@@ -33,6 +33,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SentenceOverview'
+  /sentence/{crn}/previous-orders:
+    get:
+      tags:
+      - Sentence
+      summary: 'Display inactive events '
+      operationId: getPreviousEvents
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreviousOrderHistory'
   /schedule/{crn}/upcoming:
     get:
       tags:
@@ -577,6 +596,30 @@ components:
             $ref: '#/components/schemas/Sentence'
         probationHistory:
           $ref: '#/components/schemas/ProbationHistory'
+    PreviousOrder:
+      required:
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        terminationDate:
+          type: string
+          format: date
+    PreviousOrderHistory:
+      required:
+      - name
+      - previousOrders
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        previousOrders:
+          type: array
+          items:
+            $ref: '#/components/schemas/PreviousOrder'
     Activity:
       required:
       - documents

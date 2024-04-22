@@ -101,6 +101,9 @@
         <a href="./api-reference.html#sentence-crn"><span>/sentence/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#sentence-crn-previous-orders"><span>/sentence/{crn}/previous-orders</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schedule-crn-upcoming"><span>/schedule/{crn}/upcoming</span></a>
       </li>
       <li>
@@ -186,7 +189,7 @@
 
 <h3 id="sentence-crn-get">get</h3>
 
-  <p><em>Display the most recent ‘Active Event’ </em></p>
+  <p><em>Display active events </em></p>
 
 
 
@@ -312,6 +315,79 @@
 </td>
 <td>
 <a href='#schema-sentenceoverview'>SentenceOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="sentence-crn-previous-orders">/sentence/{crn}/previous-orders</h2>
+
+<h3 id="sentence-crn-previous-orders-get">get</h3>
+
+  <p><em>Display inactive events </em></p>
+
+
+
+
+<h4 id="sentence-crn-previous-orders-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="sentence-crn-previous-orders-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "previousOrders": [
+    {
+      "title": "string",
+      "description": "string",
+      "terminationDate": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-previousorderhistory'>PreviousOrderHistory</a>
 </td>
 </tr>
 
@@ -3182,6 +3258,80 @@
 <td></td>
 <td>
   <a href='#schema-probationhistory'>ProbationHistory</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-previousorder">PreviousOrder</h3>
+
+
+<table class='schema-previousorder'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>title</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-previousorderhistory">PreviousOrderHistory</h3>
+
+
+<table class='schema-previousorderhistory'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>previousOrders</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-previousorder'>PreviousOrder</a>
 </td>
 </tr>
 
