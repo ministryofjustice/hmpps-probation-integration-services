@@ -1,7 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
@@ -11,6 +12,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.risk.DeRegistration
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RegistrationReview
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Caseload
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.CaseloadPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -163,6 +168,19 @@ object PersonGenerator {
     )
 
     val DEREGISTRATION_1 = generateDeRegistration(REGISTRATION_3, LocalDate.now().minusDays(1), "Made a mistake")
+
+    val PERSON_1 =
+        generateCaseloadPerson(OVERVIEW.id, OVERVIEW.crn, OVERVIEW.forename, OVERVIEW.secondName, OVERVIEW.surname)
+    val PERSON_2 = generateCaseloadPerson(
+        PersonDetailsGenerator.PERSONAL_DETAILS.id,
+        PersonDetailsGenerator.PERSONAL_DETAILS.crn,
+        PersonDetailsGenerator.PERSONAL_DETAILS.forename,
+        PersonDetailsGenerator.PERSONAL_DETAILS.secondName,
+        PersonDetailsGenerator.PERSONAL_DETAILS.surname
+    )
+
+    val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, ContactGenerator.DEFAULT_TEAM)
+    val CASELOAD_PERSON_2 = generateCaseload(PERSON_2, ContactGenerator.STAFF_1, ContactGenerator.DEFAULT_TEAM)
 
     fun generateEvent(
         person: Person,
@@ -453,5 +471,17 @@ object PersonGenerator {
         type = type,
         nsiStatus = status
     )
+
+    fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) =
+        Caseload(
+            id = IdGenerator.getAndIncrement(),
+            person = caseLoadPerson,
+            staff = staff,
+            team = team,
+            roleCode = "OM"
+        )
+
+    fun generateCaseloadPerson(id: Long, crn: String, forename: String, middleName: String?, surname: String) =
+        CaseloadPerson(id = id, crn = crn, forename = forename, secondName = middleName, surname = surname)
 }
 
