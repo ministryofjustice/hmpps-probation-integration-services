@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.user.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
@@ -109,6 +110,7 @@ class Provider(
 @Entity
 @Immutable
 @Table(name = "caseload")
+@SQLRestriction("role_code = 'OM'")
 data class Caseload(
     @Id
     @Column(name = "caseload_id")
@@ -124,7 +126,10 @@ data class Caseload(
 
     @ManyToOne
     @JoinColumn(name = "trust_provider_team_id")
-    val team: Team
+    val team: Team,
+
+    @Column(name = "role_code")
+    val roleCode: String
 )
 
 @Entity

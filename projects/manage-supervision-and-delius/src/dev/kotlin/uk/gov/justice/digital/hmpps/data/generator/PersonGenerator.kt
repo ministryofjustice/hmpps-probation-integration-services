@@ -473,7 +473,13 @@ object PersonGenerator {
     )
 
     fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) =
-        Caseload(id = IdGenerator.getAndIncrement(), person = caseLoadPerson, staff = staff, team = team)
+        Caseload(
+            id = IdGenerator.getAndIncrement(),
+            person = caseLoadPerson,
+            staff = staff,
+            team = team,
+            roleCode = "OM"
+        )
 
     fun generateCaseloadPerson(id: Long, crn: String, forename: String, middleName: String?, surname: String) =
         CaseloadPerson(id = id, crn = crn, forename = forename, secondName = middleName, surname = surname)
