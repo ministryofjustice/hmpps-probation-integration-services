@@ -113,7 +113,8 @@ class ReferralService(
 
     fun bookingCancelled(crn: String, details: BookingCancelled, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
-        val referral = getReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId).apply { softDeleted = true }
+        val referral = findReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
+            ?.apply { softDeleted = true }
         contactService.createContact(
             ContactDetails(
                 date = details.cancelledAt,
@@ -126,7 +127,7 @@ class ReferralService(
                 ).joinToString(System.lineSeparator() + System.lineSeparator())
             ),
             person = person,
-            eventId = referral.eventId,
+            eventId = referral?.eventId ?: eventRepository.getEvent(person.id, details.eventNumber).id,
             staff = staffRepository.getByCode(details.cancelledBy.staffCode),
             probationAreaCode = ap.probationArea.code
         )
@@ -205,6 +206,13 @@ class ReferralService(
         }
         return referral
     }
+
+    fun findReferral(person: Person, externalReference: String): Referral? =
+        referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+            person.id,
+            ServiceContext.servicePrincipal()!!.userId,
+            externalReference
+        )
 
     private fun BookingMade.referral(
         person: Person,
