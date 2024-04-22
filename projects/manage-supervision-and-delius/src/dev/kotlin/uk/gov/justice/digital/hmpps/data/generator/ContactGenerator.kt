@@ -3,11 +3,11 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_BOROUGH
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -27,7 +27,26 @@ object ContactGenerator {
         postcode = "H34 7TH",
         ldu = DEFAULT_DISTRICT
     )
-    val DEFAULT_STAFF = generateStaff("N01BDT1", "John", "Smith")
+
+    val DEFAULT_STAFF = generateStaff("N01BDT1", "John", "Smith", emptyList())
+    val STAFF_1 = generateStaff("N01BDT2", "Jim", "Brown", emptyList())
+
+    val DEFAULT_TEAM = generateTeam(code = "TEAM1", description = "Main Team", staff = listOf(DEFAULT_STAFF, STAFF_1))
+
+    val USER = User(
+        id = IdGenerator.getAndIncrement(),
+        forename = "John",
+        surname = "Smith",
+        staff = DEFAULT_STAFF,
+        username = "JohnSmith"
+    )
+    val USER_1 = User(
+        id = IdGenerator.getAndIncrement(),
+        forename = "Jim",
+        surname = "Brown",
+        staff = STAFF_1,
+        username = "JimBrown"
+    )
 
     val COMMUNICATION_CATEGORY_RD = ReferenceData(IdGenerator.getAndIncrement(), "LT", "Communication")
 
@@ -227,5 +246,19 @@ fun generateProvider(
     endDate: LocalDate? = null
 ) = Provider(code, description, id, endDate)
 
-fun generateStaff(code: String, forename: String, surname: String, id: Long = IdGenerator.getAndIncrement()) =
-    Staff(code, forename, surname, DEFAULT_PROVIDER, id)
+fun generateTeam(
+    code: String,
+    description: String = "Description of $code",
+    id: Long = IdGenerator.getAndIncrement(),
+    staff: List<Staff>,
+) = Team(id = id, code = code, description = description, staff = staff)
+
+fun generateStaff(
+    code: String,
+    forename: String,
+    surname: String,
+    caseload: List<Caseload>,
+    id: Long = IdGenerator.getAndIncrement()
+) =
+    Staff(code, forename, surname, DEFAULT_PROVIDER, caseload, emptyList(), id)
+
