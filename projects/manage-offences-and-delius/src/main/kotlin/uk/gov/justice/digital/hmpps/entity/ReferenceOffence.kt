@@ -58,9 +58,6 @@ data class ReferenceOffence(
     val id: Long = 0
 ) {
 
-    @Column
-    val partitionAreaId: Long = 0
-
     @Version
     var rowVersion: Long = 0
 
