@@ -1,5 +1,5 @@
-from flask import Flask, make_response
 import time
+from flask import Flask, make_response
 
 app = Flask(__name__)
 
