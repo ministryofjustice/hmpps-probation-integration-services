@@ -39,7 +39,12 @@ object ProbationCaseGenerator {
         forename = "Aadland",
         surname = "Bertrand",
         dateOfBirth = LocalDate.of(1987, 8, 2),
-        nomsId = "A1234AI"
+        nomsId = "A1234AI",
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        ethnicity = ReferenceDataGenerator.ETHNICITY_WHITE,
+        nationality = ReferenceDataGenerator.NATIONALITY_BRITISH,
+        religion = ReferenceDataGenerator.RELIGION_OTHER,
+        genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
     )
 
     fun generate(
