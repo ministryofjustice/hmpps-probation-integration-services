@@ -31,7 +31,7 @@ object ContactGenerator {
     val DEFAULT_STAFF = generateStaff("N01BDT1", "John", "Smith", emptyList())
     val STAFF_1 = generateStaff("N01BDT2", "Jim", "Brown", emptyList())
 
-    val DEFAULT_TEAM = generateTeam(code = "TEAM1", description = "Main Team", staff = listOf(DEFAULT_STAFF, STAFF_1))
+    val DEFAULT_TEAM = generateTeam(code = "TEAM11", description = "Main Team", staff = listOf(DEFAULT_STAFF, STAFF_1))
 
     val USER = User(
         id = IdGenerator.getAndIncrement(),
