@@ -29,7 +29,7 @@ class SentenceController(
     @Operation(summary = "Display inactive events")
     fun getPreviousEvents(@PathVariable crn: String) = ordersService.getPreviousEvents(crn)
 
-    @GetMapping("/offence-details/{eventNumber}")
+    @GetMapping("/offences/{eventNumber}")
     @Operation(summary = "Display additinal offence details")
     fun getAdditionalOffenceDetails(@PathVariable crn: String, @PathVariable eventNumber: String) =
         offenceService.getOffencesForPerson(crn, eventNumber)

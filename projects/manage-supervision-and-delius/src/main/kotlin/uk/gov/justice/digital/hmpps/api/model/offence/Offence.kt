@@ -7,4 +7,5 @@ data class Offence(
     val category: String?,
     val code: String?,
     val dateOfOffence: LocalDate?,
+    val count: Long?
 )

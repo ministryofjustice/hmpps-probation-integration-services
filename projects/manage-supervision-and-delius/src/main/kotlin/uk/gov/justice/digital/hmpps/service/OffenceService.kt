@@ -32,9 +32,10 @@ class OffenceService(
             mainOffence?.offence?.description,
             mainOffence?.offence?.category,
             mainOffence?.offence?.code?.trim(),
-            mainOffence?.date
+            mainOffence?.date,
+            mainOffence?.offenceCount
         )
 
     private fun AdditionalOffence.toOffence(): Offence =
-        Offence(offence.description, offence.category, offence.code.trim(), date)
+        Offence(offence.description, offence.category, offence.code.trim(), date, offenceCount)
 }

@@ -26,7 +26,7 @@ class OffenceIntegrationTest {
     @Test
     fun `unauthorized status returned`() {
         mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/X123456/offence-details/1"))
+            .perform(MockMvcRequestBuilders.get("/sentence/X123456/offences/1"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
 
@@ -40,7 +40,7 @@ class OffenceIntegrationTest {
         val expected = OffenceDetails(name, null, null, listOf())
         val response = mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}/offence-details/1")
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}/offences/1")
                     .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -61,21 +61,24 @@ class OffenceIntegrationTest {
             PersonGenerator.MAIN_OFFENCE_1.offence.description,
             PersonGenerator.MAIN_OFFENCE_1.offence.category,
             PersonGenerator.MAIN_OFFENCE_1.offence.code,
-            PersonGenerator.MAIN_OFFENCE_1.date
+            PersonGenerator.MAIN_OFFENCE_1.date,
+            1
         )
 
         val additionalOffence1 = Offence(
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.description,
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.category,
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.code,
-            PersonGenerator.ADDITIONAL_OFFENCE_1.date
+            PersonGenerator.ADDITIONAL_OFFENCE_1.date,
+            1
         )
 
         val additionalOffence2 = Offence(
             PersonGenerator.ADDITIONAL_OFFENCE_2.offence.description,
             PersonGenerator.ADDITIONAL_OFFENCE_2.offence.category,
             PersonGenerator.ADDITIONAL_OFFENCE_2.offence.code,
-            PersonGenerator.ADDITIONAL_OFFENCE_2.date
+            PersonGenerator.ADDITIONAL_OFFENCE_2.date,
+            1
         )
 
         val expected = OffenceDetails(
@@ -86,7 +89,7 @@ class OffenceIntegrationTest {
         )
         val response = mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/offence-details/${PersonGenerator.EVENT_1.eventNumber}")
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/offences/${PersonGenerator.EVENT_1.eventNumber}")
                     .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)

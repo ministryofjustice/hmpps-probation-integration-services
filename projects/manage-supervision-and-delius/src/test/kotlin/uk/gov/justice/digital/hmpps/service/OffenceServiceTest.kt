@@ -66,13 +66,15 @@ class OffenceServiceTest {
             PersonGenerator.MAIN_OFFENCE_1.offence.description,
             PersonGenerator.MAIN_OFFENCE_1.offence.category,
             PersonGenerator.MAIN_OFFENCE_1.offence.code,
-            PersonGenerator.MAIN_OFFENCE_1.date
+            PersonGenerator.MAIN_OFFENCE_1.date,
+            1
         )
         val additionalOffence = Offence(
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.description,
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.category,
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.code,
-            PersonGenerator.ADDITIONAL_OFFENCE_1.date
+            PersonGenerator.ADDITIONAL_OFFENCE_1.date,
+            1
         )
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
