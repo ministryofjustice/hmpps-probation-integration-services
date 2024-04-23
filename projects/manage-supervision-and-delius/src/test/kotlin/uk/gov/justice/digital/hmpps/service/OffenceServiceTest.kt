@@ -25,6 +25,12 @@ class OffenceServiceTest {
     @InjectMocks
     lateinit var service: OffenceService
 
+    val name = Name(
+        PersonGenerator.OVERVIEW.forename,
+        PersonGenerator.OVERVIEW.secondName,
+        PersonGenerator.OVERVIEW.surname
+    )
+
     @Test
     fun `no additional offences`() {
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
@@ -37,7 +43,7 @@ class OffenceServiceTest {
             null
         )
 
-        val expected = OffenceDetails(Name("Forename", "Middle1", "Surname"), null, null, listOf())
+        val expected = OffenceDetails(name, null, null, listOf())
         val response = service.getOffencesForPerson(PersonGenerator.OVERVIEW.crn, PersonGenerator.EVENT_1.eventNumber)
 
         assertEquals(expected, response)
@@ -56,11 +62,6 @@ class OffenceServiceTest {
             additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
         )
 
-        val name = Name(
-            PersonGenerator.OVERVIEW.forename,
-            PersonGenerator.OVERVIEW.secondName,
-            PersonGenerator.OVERVIEW.surname
-        )
         val mainOffence = Offence(
             PersonGenerator.MAIN_OFFENCE_1.offence.description,
             PersonGenerator.MAIN_OFFENCE_1.offence.category,
