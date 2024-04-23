@@ -92,14 +92,14 @@ internal class UserIntegrationTest {
     fun `staff for a team`() {
 
         val res = mockMvc
-            .perform(get("/caseload/team/${DEFAULT_TEAM.code}/staff").withToken())
+            .perform(get("/caseload/team/${DEFAULT_TEAM.code.trim()}/staff").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<TeamStaff>()
 
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
-        assertThat(res.staff[0].code.trim(), equalTo(DEFAULT_STAFF.code))
+        assertThat(res.staff[0].code.trim(), equalTo(DEFAULT_STAFF.code.trim()))
         assertThat(res.staff[0].name, equalTo(Name(forename = DEFAULT_STAFF.forename, surname = DEFAULT_STAFF.surname)))
-        assertThat(res.staff[1].code.trim(), equalTo(STAFF_1.code))
+        assertThat(res.staff[1].code.trim(), equalTo(STAFF_1.code.trim()))
         assertThat(res.staff[1].name, equalTo(Name(forename = STAFF_1.forename, surname = STAFF_1.surname)))
     }
 
@@ -108,7 +108,7 @@ internal class UserIntegrationTest {
 
         val person = USER_1
         val res = mockMvc
-            .perform(get("/caseload/staff/${person.staff?.code}").withToken())
+            .perform(get("/caseload/staff/${person.staff?.code?.trim()}").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<StaffCaseload>()
 
