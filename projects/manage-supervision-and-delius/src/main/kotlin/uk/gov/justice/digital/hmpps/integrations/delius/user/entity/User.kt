@@ -38,7 +38,7 @@ interface UserRepository : JpaRepository<User, Long> {
         from User u
         join fetch u.staff s
         join fetch s.provider p
-        where u.username = :username
+        where upper(u.username) = upper(:username)
     """
     )
     fun findByUsername(username: String): User?
