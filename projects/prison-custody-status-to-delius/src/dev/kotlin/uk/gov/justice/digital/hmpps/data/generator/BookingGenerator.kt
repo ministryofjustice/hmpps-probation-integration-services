@@ -23,6 +23,7 @@ object BookingGenerator {
     val ECSL_ACTIVE = generateRelease(PersonGenerator.RELEASABLE_ECSL_ACTIVE.nomsNumber, "ECSL")
     val ABSCONDED = generateRelease(PersonGenerator.ABSCONDED.nomsNumber, "UAL", active = false)
     val ETR_CUSTODY = generateRelease(PersonGenerator.ETR_IN_CUSTODY.nomsNumber, "ETR")
+    val ADMIN_MERGE = generateRelease(PersonGenerator.ADMIN_MERGE.nomsNumber, "MRG")
 
     fun generateRelease(
         nomsId: String,
