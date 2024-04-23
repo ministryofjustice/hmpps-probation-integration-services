@@ -3,21 +3,55 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.user.StaffCase
+import uk.gov.justice.digital.hmpps.api.model.user.*
+import uk.gov.justice.digital.hmpps.api.model.user.Staff
 import uk.gov.justice.digital.hmpps.api.model.user.Team
-import uk.gov.justice.digital.hmpps.api.model.user.User
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Caseload
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.getUser
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 
 @Service
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val caseloadRepository: CaseloadRepository,
+    private val staffRepository: StaffRepository,
+    private val teamRepository: TeamRepository
 ) {
 
     @Transactional
-    fun getUserDetails(username: String): User {
-        return userRepository.getUser(username).toUser()
+    fun getUserCaseload(username: String): StaffCaseload {
+        val user = userRepository.getUser(username)
+        val caseload = caseloadRepository.findByStaffCode(user.staff!!.code)
+        return StaffCaseload(
+            provider = user.staff.provider.description,
+            caseload = caseload.map { it.toStaffCase() },
+            staff = Name(forename = user.staff.forename, surname = user.staff.surname)
+        )
+    }
+
+    @Transactional
+    fun getStaffCaseload(staffCode: String): StaffCaseload {
+        val staff = staffRepository.getStaff(staffCode)
+        val caseload = caseloadRepository.findByStaffCode(staff.code)
+        return StaffCaseload(
+            provider = staff.provider.description,
+            caseload = caseload.map { it.toStaffCase() },
+            staff = Name(forename = staff.forename, surname = staff.surname)
+        )
+    }
+
+    @Transactional
+    fun getUserTeams(username: String): UserTeam {
+        val user = userRepository.getUser(username)
+        val teams = staffRepository.findTeamsByStaffCode(user.staff!!.code)
+            .map { Team(description = it.description, code = it.code) }
+        return UserTeam(provider = user.staff.provider.description, teams = teams)
+    }
+
+    @Transactional
+    fun getTeamStaff(teamCode: String): TeamStaff {
+        val provider = teamRepository.getProvider(teamCode)
+        val staff = teamRepository.findStaffByTeamCode(teamCode)
+            .map { Staff(name = Name(forename = it.forename, surname = it.surname), code = it.code) }
+        return TeamStaff(provider = provider, staff = staff)
     }
 }
 
@@ -28,14 +62,5 @@ fun Caseload.toStaffCase() = StaffCase(
         surname = person.surname
     ),
     crn = person.crn,
-    staff = Name(forename = staff.forename, surname = staff.surname)
 )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team.toTeam() = Team(
-    description = description,
-    cases = staff.flatMap { cl -> cl.caseLoad.map { it.toStaffCase() } })
-
-fun uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User.toUser() = User(
-    cases = staff?.caseLoad?.map { it.toStaffCase() } ?: emptyList(),
-    provider = staff?.provider?.description,
-    teams = staff?.teams?.map { it.toTeam() } ?: emptyList())
