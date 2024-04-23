@@ -149,6 +149,9 @@
         <a href="./api-reference.html#compliance-crn"><span>/compliance/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#caseload-username"><span>/caseload/{username}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#activity-crn"><span>/activity/{crn}</span></a>
       </li>
       <li>
@@ -2425,6 +2428,103 @@
 </td>
 <td>
 <a href='#schema-personcompliance'>PersonCompliance</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="caseload-username">/caseload/{username}</h2>
+
+<h3 id="caseload-username-get">get</h3>
+
+  <p><em>Gets caseloads for a person and staff within their teams</em></p>
+
+
+
+
+<h4 id="caseload-username-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="caseload-username-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "provider": "string",
+  "teams": [
+    {
+      "description": "string",
+      "cases": [
+        {
+          "staff": {
+            "forename": "string",
+            "middleName": "string",
+            "surname": "string"
+          },
+          "caseName": {
+            "forename": "string",
+            "middleName": "string",
+            "surname": "string"
+          },
+          "crn": "string"
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "staff": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "caseName": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "crn": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-user'>User</a>
 </td>
 </tr>
 
@@ -5889,6 +5989,122 @@
 <td></td>
 <td>
   <a href='#schema-activitycount'>ActivityCount</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffcase">StaffCase</h3>
+
+
+<table class='schema-staffcase'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>caseName</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-staffcase'>StaffCase</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-user">User</h3>
+
+
+<table class='schema-user'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>provider</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>teams</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-staffcase'>StaffCase</a>
 </td>
 </tr>
 

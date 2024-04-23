@@ -361,6 +361,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonCompliance'
+  /caseload/{username}:
+    get:
+      tags:
+      - Caseload Info
+      summary: Gets caseloads for a person and staff within their teams
+      operationId: getCaseload
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
   /activity/{crn}:
     get:
       tags:
@@ -1398,6 +1417,47 @@ components:
           $ref: '#/components/schemas/Compliance'
         activity:
           $ref: '#/components/schemas/ActivityCount'
+    StaffCase:
+      required:
+      - caseName
+      - crn
+      - staff
+      type: object
+      properties:
+        staff:
+          $ref: '#/components/schemas/Name'
+        caseName:
+          $ref: '#/components/schemas/Name'
+        crn:
+          type: string
+    Team:
+      required:
+      - cases
+      - description
+      type: object
+      properties:
+        description:
+          type: string
+        cases:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffCase'
+    User:
+      required:
+      - cases
+      - teams
+      type: object
+      properties:
+        provider:
+          type: string
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        cases:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffCase'
     PersonActivity:
       required:
       - activities
