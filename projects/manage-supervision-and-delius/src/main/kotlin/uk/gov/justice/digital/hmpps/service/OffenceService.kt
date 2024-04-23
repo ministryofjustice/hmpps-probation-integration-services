@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.offence.Offence
 import uk.gov.justice.digital.hmpps.api.model.offence.OffenceDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.AdditionalOffence
@@ -8,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 
+@Service
 class OffenceService(
     private val personRepository: PersonRepository,
     private val eventRepository: EventSentenceRepository
