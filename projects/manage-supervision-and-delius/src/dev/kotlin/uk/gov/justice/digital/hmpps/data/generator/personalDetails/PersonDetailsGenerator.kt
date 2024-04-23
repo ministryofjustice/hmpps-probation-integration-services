@@ -1,9 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_REPORT
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.USER
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress

@@ -32,11 +32,16 @@ class DataLoader(
             ContactGenerator.DEFAULT_BOROUGH,
             ContactGenerator.DEFAULT_DISTRICT,
             ContactGenerator.DEFAULT_STAFF,
-            ContactGenerator.LOCATION_BRK_1
+            ContactGenerator.STAFF_1,
+            ContactGenerator.DEFAULT_TEAM,
+            ContactGenerator.LOCATION_BRK_1,
         )
+        entityManager.persist(ContactGenerator.USER)
+
+        entityManager.persist(ContactGenerator.USER_1)
 
         entityManager.persist(PersonGenerator.OVERVIEW.gender)
-        entityManager.persist(UserGenerator.USER)
+
         PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
         PersonGenerator.PROVISIONS.forEach { entityManager.persist(it.type) }
         PersonGenerator.PERSONAL_CIRCUMSTANCES.forEach {
@@ -178,8 +183,14 @@ class DataLoader(
             PersonDetailsGenerator.DOCUMENT_1,
             PersonDetailsGenerator.DOCUMENT_2,
             PersonDetailsGenerator.ALIAS_1,
-            PersonDetailsGenerator.ALIAS_2
+            PersonDetailsGenerator.ALIAS_2,
         )
+        entityManager.flush()
+        entityManager.merge(PersonGenerator.PERSON_1)
+        entityManager.merge(PersonGenerator.PERSON_2)
+        entityManager.flush()
+        entityManager.persist(PersonGenerator.CASELOAD_PERSON_1)
+        entityManager.persist(PersonGenerator.CASELOAD_PERSON_2)
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {

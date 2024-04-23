@@ -60,6 +60,10 @@ prisoner.movement.configs:
       - UpdateStatus
   - types:
       - RELEASED
+    reasons:
+      - MRG
+  - types:
+      - RELEASED
     actionNames:
       - Release
       - UpdateLocation

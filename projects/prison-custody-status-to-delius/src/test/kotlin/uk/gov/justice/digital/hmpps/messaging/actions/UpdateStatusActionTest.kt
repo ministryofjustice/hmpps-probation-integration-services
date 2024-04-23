@@ -17,6 +17,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -125,6 +126,29 @@ internal class UpdateStatusActionTest {
         }
     }
 
+    @ParameterizedTest
+    @MethodSource("invalidRecallDates")
+    fun `ignored when recall date not valid`(date: ZonedDateTime) {
+        val nomsId = "A1234BC"
+        val prisonerMovement = PrisonerMovement.Received(
+            nomsId,
+            "OUT",
+            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+            PrisonerMovement.Type.ADMISSION,
+            "",
+            date
+        )
+        val custody = previouslyReleasedEvent(
+            PersonGenerator.generate(nomsId),
+            InstitutionGenerator.DEFAULT,
+            CustodialStatusCode.RELEASED_ON_LICENCE,
+            releaseDate = ZonedDateTime.now().minusDays(7)
+        ).disposal!!.custody!!
+
+        val res = action.accept(PrisonerMovementContext(prisonerMovement, custody))
+        assertThat(res, instanceOf(ActionResult.Ignored::class.java))
+    }
+
     companion object {
 
         private const val NOMS_ID = "T1234ST"
@@ -173,6 +197,12 @@ internal class UpdateStatusActionTest {
                 InstitutionGenerator.DEFAULT,
                 recallDate = ZonedDateTime.now()
             ).disposal!!.custody
+        )
+
+        @JvmStatic
+        fun invalidRecallDates() = listOf(
+            ZonedDateTime.now().plusDays(1),
+            ZonedDateTime.now().minusDays(14)
         )
     }
 

@@ -29,6 +29,7 @@ class DataLoader(
             merge(DataGenerator.COURT_CATEGORY_SET)
             merge(DataGenerator.COURT_CATEGORY)
             merge(DataGenerator.EXISTING_OFFENCE)
+            merge(DataGenerator.HL_OFFENCE)
         }
     }
 }

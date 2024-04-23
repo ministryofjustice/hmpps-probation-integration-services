@@ -93,11 +93,11 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
         """
         select mo.offence.code as code, mo.offence.description as description, mo.date as date, true as main, mo.event.number as eventNumber
         from MainOffence mo
-        where mo.event.personId = :personId
+        where mo.event.personId = :personId and mo.event.active = true
         union all
         select ao.offence.code, ao.offence.description, ao.date, false, ao.event.number
         from AdditionalOffence ao
-        where ao.event.personId = :personId
+        where ao.event.personId = :personId and ao.event.active = true
     """
     )
     fun findOffencesFor(personId: Long): List<CaseOffence>

@@ -6,6 +6,8 @@ database:
       - contact
       - lic_condition
       - lic_condition_manager
+    packages:
+      - pkg_triggersupport # for caseload rebuild
 
   audit:
     username: CreateAndVaryALicenceAndDelius

@@ -1,0 +1,7 @@
+server.shutdown: graceful
+
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: [ "health", "info" ]
+  endpoint.health.show-details: always
