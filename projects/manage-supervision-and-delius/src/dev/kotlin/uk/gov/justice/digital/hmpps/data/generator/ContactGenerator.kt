@@ -251,7 +251,7 @@ fun generateTeam(
     description: String = "Description of $code",
     id: Long = IdGenerator.getAndIncrement(),
     staff: List<Staff>,
-) = Team(id = id, code = code, description = description, staff = staff)
+) = Team(id = id, code = code, description = description, staff = staff, provider = DEFAULT_PROVIDER)
 
 fun generateStaff(
     code: String,

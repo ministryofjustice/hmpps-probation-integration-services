@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
@@ -28,6 +29,23 @@ class User(
     @Column
     val surname: String,
 )
+
+interface UserRepository : JpaRepository<User, Long> {
+
+    @Query(
+        """
+        select u
+        from User u
+        join fetch u.staff s
+        join fetch s.provider p
+        where u.username = :username
+    """
+    )
+    fun findByUsername(username: String): User?
+}
+
+fun UserRepository.getUser(username: String) =
+    findByUsername(username) ?: throw NotFoundException("User", "username", username)
 
 @Immutable
 @Entity
@@ -56,7 +74,7 @@ class Staff(
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
-    val teams: List<Team> = emptyList(),
+    val teams: List<Team>,
 
     @Id
     @Column(name = "staff_id")
@@ -66,6 +84,29 @@ class Staff(
         return code.endsWith("U")
     }
 }
+
+interface StaffRepository : JpaRepository<Staff, Long> {
+    @Query(
+        """
+        select s.teams 
+        from Staff s
+        where s.code = :staffCode
+    """
+    )
+    fun findTeamsByStaffCode(staffCode: String): List<Team>
+
+    @Query(
+        """
+        select s
+        from Staff s
+        where s.code = :staffCode
+    """
+    )
+    fun findByStaffCode(staffCode: String): Staff?
+}
+
+fun StaffRepository.getStaff(staffCode: String) =
+    findByStaffCode(staffCode) ?: throw NotFoundException("Staff", "staffCode", staffCode)
 
 @Entity
 @Immutable
@@ -87,8 +128,35 @@ class Team(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "staff_id")]
     )
-    val staff: List<Staff>
+    val staff: List<Staff>,
+
+    @JoinColumn(name = "probation_area_id")
+    @ManyToOne
+    val provider: Provider,
 )
+
+interface TeamRepository : JpaRepository<Team, Long> {
+    @Query(
+        """
+        select t.staff
+        from Team t
+        where t.code = :teamCode
+    """
+    )
+    fun findStaffByTeamCode(teamCode: String): List<Staff>
+
+    @Query(
+        """
+        select t.provider.description
+        from Team t
+        where t.code = :teamCode
+    """
+    )
+    fun findProviderByTeamCode(teamCode: String): String?
+}
+
+fun TeamRepository.getProvider(teamCode: String) =
+    findProviderByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
 
 @Immutable
 @Entity
@@ -132,6 +200,18 @@ data class Caseload(
     val roleCode: String
 )
 
+interface CaseloadRepository : JpaRepository<Caseload, Long> {
+    @Query(
+        """
+        select c from Caseload c
+        join fetch c.person p
+        join fetch c.team t
+        where c.staff.code = :staffCode
+    """
+    )
+    fun findByStaffCode(staffCode: String): List<Caseload>
+}
+
 @Entity
 @Immutable
 @Table(name = "offender")
@@ -156,9 +236,5 @@ class CaseloadPerson(
     val surname: String,
 )
 
-interface UserRepository : JpaRepository<User, Long> {
-    fun findUserByUsername(username: String): User?
-}
 
-fun UserRepository.getUser(username: String) =
-    findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
+
