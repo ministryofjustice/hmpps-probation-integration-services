@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
 import uk.gov.justice.digital.hmpps.integrations.cvl.AdditionalLicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.cvl.telemetryProperties
@@ -34,7 +35,8 @@ class LicenceConditionApplier(
     private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val licenceConditionService: LicenceConditionService,
-    private val contactService: ContactService
+    private val contactService: ContactService,
+    private val optimisationTables: OptimisationTables
 ) {
     @Transactional
     fun applyLicenceConditions(
@@ -52,6 +54,7 @@ class LicenceConditionApplier(
             "occurredAt" to occurredAt.toString(),
             "sentenceCount" to sentences.size.toString()
         )
+        optimisationTables.rebuild(com.person.id)
         return when (sentences.size) {
             0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
             1 -> sentences.flatMap {

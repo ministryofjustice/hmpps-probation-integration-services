@@ -8,6 +8,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
@@ -45,6 +46,9 @@ internal class LicenceConditionApplierTest {
 
     @Mock
     internal lateinit var contactService: ContactService
+
+    @Mock
+    internal lateinit var optimisationTables: OptimisationTables
 
     @InjectMocks
     internal lateinit var licenceConditionApplier: LicenceConditionApplier
