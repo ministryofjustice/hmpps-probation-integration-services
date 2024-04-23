@@ -72,7 +72,13 @@ class Handler(
                 }
             }
 
-            val results = actionProcessor.processActions(movement, config.actionNames)
+            val results = if (config.actionNames.isEmpty()) listOf(
+                ActionResult.Ignored(
+                    "NoActions",
+                    movement.telemetryProperties()
+                )
+            )
+            else actionProcessor.processActions(movement, config.actionNames)
             val failure = results.firstOrNull { it is ActionResult.Failure } as ActionResult.Failure?
             if (failure == null) {
                 results.forEach {

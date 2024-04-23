@@ -4,6 +4,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.BookingGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
@@ -608,6 +611,29 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
                 "institution" to "OUT",
                 "reason" to "RELEASED",
                 "movementReason" to "ETR",
+                "movementType" to "Released"
+            )
+        }
+    }
+
+    @Test
+    fun `administrative release is not released`() {
+        val notification = NotificationGenerator.PRISONER_ADMIN_MERGE
+        withBooking(
+            BookingGenerator.ADMIN_MERGE,
+            BookingGenerator.ADMIN_MERGE.lastMovement(notification.message.occurredAt)
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verifyTelemetry("NoActions") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0021AA",
+                "previousInstitution" to "WSI",
+                "institution" to "OUT",
+                "reason" to "RELEASED",
+                "movementReason" to "MRG",
                 "movementType" to "Released"
             )
         }
