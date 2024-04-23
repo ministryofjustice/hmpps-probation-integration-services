@@ -6,5 +6,5 @@ data class OffenceDetails(
     val name: Name,
     val mainOffence: Offence?,
     val mainOffenceNotes: String?,
-    val additionalOffences: List<Offence>? = emptyList()
+    val additionalOffences: List<Offence>,
 )
