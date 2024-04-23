@@ -60,18 +60,21 @@ class OffenceIntegrationTest {
         val mainOffence = Offence(
             PersonGenerator.MAIN_OFFENCE_1.offence.description,
             PersonGenerator.MAIN_OFFENCE_1.offence.category,
+            PersonGenerator.MAIN_OFFENCE_1.offence.code,
             PersonGenerator.MAIN_OFFENCE_1.date
         )
 
         val additionalOffence1 = Offence(
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.description,
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.category,
+            PersonGenerator.ADDITIONAL_OFFENCE_1.offence.code,
             PersonGenerator.ADDITIONAL_OFFENCE_1.date
         )
 
         val additionalOffence2 = Offence(
             PersonGenerator.ADDITIONAL_OFFENCE_2.offence.description,
             PersonGenerator.ADDITIONAL_OFFENCE_2.offence.category,
+            PersonGenerator.ADDITIONAL_OFFENCE_2.offence.code,
             PersonGenerator.ADDITIONAL_OFFENCE_2.date
         )
 

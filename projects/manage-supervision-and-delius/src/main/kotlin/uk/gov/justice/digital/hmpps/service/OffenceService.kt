@@ -28,7 +28,13 @@ class OffenceService(
         Name(forename, secondName, surname)
 
     private fun Event.toOffence(): Offence =
-        Offence(mainOffence?.offence?.description, mainOffence?.offence?.category, mainOffence?.date)
+        Offence(
+            mainOffence?.offence?.description,
+            mainOffence?.offence?.category,
+            mainOffence?.offence?.code?.trim(),
+            mainOffence?.date
+        )
 
-    private fun AdditionalOffence.toOffence(): Offence = Offence(offence.description, offence.category, date)
+    private fun AdditionalOffence.toOffence(): Offence =
+        Offence(offence.description, offence.category, offence.code.trim(), date)
 }

@@ -5,5 +5,6 @@ import java.time.LocalDate
 data class Offence(
     val description: String?,
     val category: String?,
+    val code: String?,
     val dateOfOffence: LocalDate?,
 )
