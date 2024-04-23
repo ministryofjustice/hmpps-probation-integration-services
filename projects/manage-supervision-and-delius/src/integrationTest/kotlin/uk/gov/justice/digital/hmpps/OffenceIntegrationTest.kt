@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.offence.Offence
-import uk.gov.justice.digital.hmpps.api.model.offence.OffenceDetails
+import uk.gov.justice.digital.hmpps.api.model.offence.Offences
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -37,14 +37,14 @@ class OffenceIntegrationTest {
             PersonDetailsGenerator.PERSONAL_DETAILS.secondName,
             PersonDetailsGenerator.PERSONAL_DETAILS.surname
         )
-        val expected = OffenceDetails(name, null, null, listOf())
+        val expected = Offences(name, null, null, listOf())
         val response = mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}/offences/1")
                     .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<OffenceDetails>()
+            .andReturn().response.contentAsJson<Offences>()
 
         assertEquals(expected, response)
     }
@@ -81,7 +81,7 @@ class OffenceIntegrationTest {
             1
         )
 
-        val expected = OffenceDetails(
+        val expected = Offences(
             name,
             mainOffence,
             PersonGenerator.EVENT_1.notes,
@@ -93,7 +93,7 @@ class OffenceIntegrationTest {
                     .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<OffenceDetails>()
+            .andReturn().response.contentAsJson<Offences>()
 
         assertEquals(expected, response)
     }

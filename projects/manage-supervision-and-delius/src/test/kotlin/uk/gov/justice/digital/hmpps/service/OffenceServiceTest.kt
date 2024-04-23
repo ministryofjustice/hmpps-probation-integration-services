@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.offence.Offence
-import uk.gov.justice.digital.hmpps.api.model.offence.OffenceDetails
+import uk.gov.justice.digital.hmpps.api.model.offence.Offences
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
@@ -43,7 +43,7 @@ class OffenceServiceTest {
             null
         )
 
-        val expected = OffenceDetails(name, null, null, listOf())
+        val expected = Offences(name, null, null, listOf())
         val response = service.getOffencesForPerson(PersonGenerator.OVERVIEW.crn, PersonGenerator.EVENT_1.eventNumber)
 
         assertEquals(expected, response)
@@ -87,7 +87,7 @@ class OffenceServiceTest {
             event
         )
 
-        val expected = OffenceDetails(name, mainOffence, event.notes, listOf(additionalOffence))
+        val expected = Offences(name, mainOffence, event.notes, listOf(additionalOffence))
         val response = service.getOffencesForPerson(PersonGenerator.OVERVIEW.crn, PersonGenerator.EVENT_1.eventNumber)
 
         assertEquals(expected, response)

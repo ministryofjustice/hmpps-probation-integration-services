@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.offence.Offence
-import uk.gov.justice.digital.hmpps.api.model.offence.OffenceDetails
+import uk.gov.justice.digital.hmpps.api.model.offence.Offences
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
 
@@ -13,11 +13,11 @@ class OffenceService(
     private val eventRepository: EventSentenceRepository
 ) {
 
-    fun getOffencesForPerson(crn: String, eventNumber: String): OffenceDetails {
+    fun getOffencesForPerson(crn: String, eventNumber: String): Offences {
         val person = personRepository.getPerson(crn)
         val event = eventRepository.getEventByPersonIdAndEventNumberAndActiveIsTrue(person.id, eventNumber)
 
-        return OffenceDetails(
+        return Offences(
             person.toName(),
             event?.toOffence(),
             event?.notes,
