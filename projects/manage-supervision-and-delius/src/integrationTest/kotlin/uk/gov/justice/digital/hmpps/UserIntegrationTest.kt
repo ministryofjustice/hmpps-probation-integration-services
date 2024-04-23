@@ -91,8 +91,9 @@ internal class UserIntegrationTest {
     @Test
     fun `staff for a team`() {
 
+        val code = DEFAULT_TEAM.code.trim()
         val res = mockMvc
-            .perform(get("/caseload/team/${DEFAULT_TEAM.code.trim()}/staff").withToken())
+            .perform(get("/caseload/team/${code}/staff").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<TeamStaff>()
 
