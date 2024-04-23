@@ -8,9 +8,12 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CASELOAD_PERSON_1
 import uk.gov.justice.digital.hmpps.service.UserService
-import uk.gov.justice.digital.hmpps.service.toUser
+import uk.gov.justice.digital.hmpps.service.toStaffCase
 
 @ExtendWith(MockitoExtension::class)
 internal class UserControllerTest {
@@ -22,11 +25,52 @@ internal class UserControllerTest {
     lateinit var controller: UserController
 
     @Test
-    fun `calls get get activity function `() {
+    fun `calls get user case load function `() {
         val username = "username"
-        val expectedResponse = USER.toUser()
-        whenever(userService.getUserDetails(username)).thenReturn(expectedResponse)
-        val res = controller.getCaseload(username)
+        val expectedResponse = StaffCaseload(
+            provider = USER.staff?.provider?.description,
+            caseload = listOf(CASELOAD_PERSON_1.toStaffCase()),
+            staff = Name(forename = USER.staff!!.forename, surname = USER.staff!!.surname)
+        )
+        whenever(userService.getUserCaseload(username)).thenReturn(expectedResponse)
+        val res = controller.getUserCaseload(username)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls get user teams function `() {
+        val username = "username"
+        val expectedResponse = UserTeam(
+            provider = USER.staff?.provider?.description,
+            teams = listOf(Team(description = "desc", code = "code"))
+        )
+        whenever(userService.getUserTeams(username)).thenReturn(expectedResponse)
+        val res = controller.getUserTeams(username)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls get staff in teams function `() {
+        val teamCode = "teamCode"
+        val expectedResponse = TeamStaff(
+            provider = USER.staff?.provider?.description,
+            staff = listOf(Staff(code = "code", name = Name(forename = "forename", surname = "surname")))
+        )
+        whenever(userService.getTeamStaff(teamCode)).thenReturn(expectedResponse)
+        val res = controller.getTeamStaff(teamCode)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls get caseload for staff code `() {
+        val staffCode = "staffCode"
+        val expectedResponse = StaffCaseload(
+            provider = USER.staff?.provider?.description,
+            caseload = listOf(CASELOAD_PERSON_1.toStaffCase()),
+            staff = Name(forename = USER.staff!!.forename, surname = USER.staff!!.surname)
+        )
+        whenever(userService.getStaffCaseload(staffCode)).thenReturn(expectedResponse)
+        val res = controller.getStaffCaseload(staffCode)
         assertThat(res, equalTo(expectedResponse))
     }
 }
