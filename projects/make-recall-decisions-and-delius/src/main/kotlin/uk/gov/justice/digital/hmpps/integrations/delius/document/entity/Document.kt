@@ -19,7 +19,7 @@ class DocumentEntity(
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
 
-    @Column
+    @Column(name = "primary_key_id")
     val primaryKeyId: Long,
 
     @Column(name = "document_name")
@@ -28,19 +28,22 @@ class DocumentEntity(
     @Column(name = "document_type")
     val type: String,
 
-    @Column
+    @Column(name = "table_name")
     val tableName: String,
 
     @Column(name = "created_datetime")
     val createdAt: ZonedDateTime,
 
-    @Column
+    @Column(name = "last_saved")
+    val lastSaved: ZonedDateTime,
+
+    @Column(name = "created_by_user_id")
     val createdByUserId: Long,
 
-    @Column
+    @Column(name = "last_updated_user_id")
     val lastUpdatedUserId: Long,
 
-    @Column(columnDefinition = "number")
+    @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
 
     @Id
@@ -54,6 +57,7 @@ interface Document {
     val type: String
     val tableName: String
     val createdAt: Instant?
+    val lastUpdatedAt: Instant?
     val author: String?
     val description: String?
     val eventId: Long?
