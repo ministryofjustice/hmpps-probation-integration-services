@@ -27,14 +27,16 @@ class OffenceService(
     fun Person.toName() =
         Name(forename, secondName, surname)
 
-    private fun Event.toOffence(): Offence =
+    private fun Event.toOffence(): Offence? = mainOffence?.let {
         Offence(
-            mainOffence?.offence?.description,
-            mainOffence?.offence?.category,
-            mainOffence?.offence?.code?.trim(),
-            mainOffence?.date,
-            mainOffence?.offenceCount
+            it.offence.description,
+            it.offence.category,
+            it.offence.code.trim(),
+            it.date,
+            it.offenceCount
         )
+    }
+
 
     private fun AdditionalOffence.toOffence(): Offence =
         Offence(offence.description, offence.category, offence.code.trim(), date, offenceCount)
