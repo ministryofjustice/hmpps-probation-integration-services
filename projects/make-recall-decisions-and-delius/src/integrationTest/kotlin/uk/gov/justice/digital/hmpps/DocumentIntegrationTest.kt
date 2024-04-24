@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -9,6 +11,8 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.api.model.Document
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -32,5 +36,25 @@ internal class DocumentIntegrationTest {
             )
             .andExpect(header().doesNotExist("Custom-Alfresco-Header"))
             .andExpect(content().bytes(ResourceUtils.getFile("classpath:simulations/__files/document.pdf").readBytes()))
+    }
+
+    @Test
+    fun `approved premises documents data is returned`() {
+
+        val res = mockMvc
+            .perform(get("/ap-documents/X000010").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<List<Document>>()
+
+        assertThat(res.size, equalTo(3))
+        assertThat(res[0].author, equalTo("Dave Brown"))
+        assertThat(res[0].id, equalTo("uuidap1"))
+        assertThat(res[0].name, equalTo("ap_doc_1"))
+        assertThat(res[1].author, equalTo("Brian Cox"))
+        assertThat(res[1].id, equalTo("uuidap2"))
+        assertThat(res[1].name, equalTo("ap_doc_2"))
+        assertThat(res[2].author, equalTo("Steve Smith"))
+        assertThat(res[2].id, equalTo("uuidap3"))
+        assertThat(res[2].name, equalTo("ap_doc_3"))
     }
 }
