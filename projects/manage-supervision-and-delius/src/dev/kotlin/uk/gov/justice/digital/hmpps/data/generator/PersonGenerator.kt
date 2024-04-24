@@ -56,10 +56,11 @@ object PersonGenerator {
         notes = "inactive",
         additionalOffences = emptyList()
     )
-    val OFFENCE_1 = generateOffence("Murder", "MAIN")
-    val OFFENCE_2 = generateOffence("Another Murder", "MAINA")
-    val OFFENCE_3 = generateOffence("Burglary in a dwelling - 02800", "02800")
-    val OFFENCE_4 = generateOffence("Burglary, other than a dwelling - 03000", "03000")
+    val OFFENCE_1 = generateOffence("Murder", "Murder", "MAIN")
+    val OFFENCE_2 = generateOffence("Another Murder", "Murder", "MAINA")
+    val OFFENCE_3 = generateOffence("Burglary in a dwelling - 02800", "Burglary in a dwelling", "02800")
+    val OFFENCE_4 =
+        generateOffence("Burglary, other than a dwelling - 03000", "Burglary other than in a dwelling", "03000")
 
     val MAIN_OFFENCE_1 = generateMainOffence(
         1,
@@ -107,7 +108,7 @@ object PersonGenerator {
     val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
     val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.now().minusDays(7), REF_DATA_MONTHS, length = 7)
 
-    val ADD_OFF_1 = generateOffence("Burglary", "ADD1")
+    val ADD_OFF_1 = generateOffence("Burglary", "Burglary", "ADD1")
     val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(
         1,
         EVENT_1,
@@ -115,7 +116,7 @@ object PersonGenerator {
         LocalDate.now()
     )
 
-    val ADD_OFF_2 = generateOffence("Assault", "ADD2")
+    val ADD_OFF_2 = generateOffence("Assault", "Assault", "ADD2")
     val ADDITIONAL_OFFENCE_2 = generateAdditionalOffence(
         1,
         EVENT_1,
@@ -382,9 +383,10 @@ object PersonGenerator {
 
     fun generateOffence(
         description: String,
+        category: String,
         code: String,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Offence(id, code, description)
+    ) = Offence(id, code, description, category)
 
     fun generateMainOffence(
         offenceCount: Long,

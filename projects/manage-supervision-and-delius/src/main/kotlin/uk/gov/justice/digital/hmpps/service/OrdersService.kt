@@ -20,13 +20,13 @@ class OrdersService(
         val person = personRepository.getPerson(crn)
         val events = eventRepository.findSentencesByPersonId(person.id).filter { it.active.not() }
 
-        return PreviousOrderHistory(name = person.toName(), events.map { it.toPrevousOrder() })
+        return PreviousOrderHistory(name = person.toName(), events.map { it.toPreviousOrder() })
     }
 
     fun Person.toName() =
         Name(forename, secondName, surname)
 
-    fun Event.toPrevousOrder(): PreviousOrder = PreviousOrder(
+    fun Event.toPreviousOrder(): PreviousOrder = PreviousOrder(
         "${disposal?.type?.description} (${disposal?.length} ${disposal?.lengthUnit?.description})",
         mainOffence?.offence?.description,
         disposal?.terminationDate
