@@ -57,7 +57,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
                     .addValue("p_osp_level_dc_code", ospDirectContact?.band)
             )
         } catch (e: UncategorizedSQLException) {
-            e.sqlException.takeIf { it.isValidationError }
+            e.sqlException?.takeIf { it.isValidationError }
                 ?.parsedValidationMessage
                 ?.takeIf { it.isDeliusValidationMessage }
                 ?.let { throw DeliusValidationError(it) }
