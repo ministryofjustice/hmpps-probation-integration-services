@@ -20,7 +20,6 @@ class OffenceService(
         return Offences(
             person.toName(),
             event?.toOffence(),
-            event?.notes,
             event?.additionalOffences?.map { it.toOffence() } ?: emptyList())
     }
 
@@ -33,10 +32,11 @@ class OffenceService(
             it.offence.category,
             it.offence.code.trim(),
             it.date,
-            it.offenceCount
+            it.offenceCount,
+            notes
         )
     }
 
     private fun AdditionalOffence.toOffence(): Offence =
-        Offence(offence.description, offence.category, offence.code.trim(), date, offenceCount)
+        Offence(offence.description, offence.category, offence.code.trim(), date, offenceCount, null)
 }

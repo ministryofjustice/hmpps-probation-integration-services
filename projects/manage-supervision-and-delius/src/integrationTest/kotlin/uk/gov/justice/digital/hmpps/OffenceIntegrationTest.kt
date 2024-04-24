@@ -37,7 +37,7 @@ class OffenceIntegrationTest {
             PersonDetailsGenerator.PERSONAL_DETAILS.secondName,
             PersonDetailsGenerator.PERSONAL_DETAILS.surname
         )
-        val expected = Offences(name, null, null, listOf())
+        val expected = Offences(name, null, listOf())
         val response = mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}/offences/1")
@@ -62,7 +62,8 @@ class OffenceIntegrationTest {
             PersonGenerator.MAIN_OFFENCE_1.offence.category,
             PersonGenerator.MAIN_OFFENCE_1.offence.code,
             PersonGenerator.MAIN_OFFENCE_1.date,
-            1
+            1,
+            PersonGenerator.EVENT_1.notes
         )
 
         val additionalOffence1 = Offence(
@@ -70,7 +71,8 @@ class OffenceIntegrationTest {
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.category,
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.code,
             PersonGenerator.ADDITIONAL_OFFENCE_1.date,
-            1
+            1,
+            null
         )
 
         val additionalOffence2 = Offence(
@@ -78,13 +80,13 @@ class OffenceIntegrationTest {
             PersonGenerator.ADDITIONAL_OFFENCE_2.offence.category,
             PersonGenerator.ADDITIONAL_OFFENCE_2.offence.code,
             PersonGenerator.ADDITIONAL_OFFENCE_2.date,
-            1
+            1,
+            null
         )
 
         val expected = Offences(
             name,
             mainOffence,
-            PersonGenerator.EVENT_1.notes,
             listOf(additionalOffence1, additionalOffence2)
         )
         val response = mockMvc

@@ -43,7 +43,7 @@ class OffenceServiceTest {
             null
         )
 
-        val expected = Offences(name, null, null, listOf())
+        val expected = Offences(name, null, listOf())
         val response = service.getOffencesForPerson(PersonGenerator.OVERVIEW.crn, PersonGenerator.EVENT_1.eventNumber)
 
         assertEquals(expected, response)
@@ -67,14 +67,16 @@ class OffenceServiceTest {
             PersonGenerator.MAIN_OFFENCE_1.offence.category,
             PersonGenerator.MAIN_OFFENCE_1.offence.code,
             PersonGenerator.MAIN_OFFENCE_1.date,
-            1
+            1,
+            event.notes
         )
         val additionalOffence = Offence(
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.description,
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.category,
             PersonGenerator.ADDITIONAL_OFFENCE_1.offence.code,
             PersonGenerator.ADDITIONAL_OFFENCE_1.date,
-            1
+            1,
+            null
         )
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
@@ -87,7 +89,7 @@ class OffenceServiceTest {
             event
         )
 
-        val expected = Offences(name, mainOffence, event.notes, listOf(additionalOffence))
+        val expected = Offences(name, mainOffence, listOf(additionalOffence))
         val response = service.getOffencesForPerson(PersonGenerator.OVERVIEW.crn, PersonGenerator.EVENT_1.eventNumber)
 
         assertEquals(expected, response)
