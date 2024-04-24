@@ -361,12 +361,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonCompliance'
-  /caseload/{username}:
+  /caseload/user/{username}:
     get:
       tags:
       - Caseload Info
-      summary: Gets caseloads for a person and staff within their teams
-      operationId: getCaseload
+      summary: Gets caseloads for the user
+      operationId: getUserCaseload
       parameters:
       - name: username
         in: path
@@ -379,7 +379,64 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/StaffCaseload'
+  /caseload/user/{username}/teams:
+    get:
+      tags:
+      - Caseload Info
+      summary: Gets the users teams
+      operationId: getUserTeams
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserTeam'
+  /caseload/team/{teamCode}/staff:
+    get:
+      tags:
+      - Caseload Info
+      summary: Gets the staff within the team
+      operationId: getTeamStaff
+      parameters:
+      - name: teamCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamStaff'
+  /caseload/staff/{staffCode}:
+    get:
+      tags:
+      - Caseload Info
+      summary: 'Gets the caseload for a staff code '
+      operationId: getStaffCaseload
+      parameters:
+      - name: staffCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffCaseload'
   /activity/{crn}:
     get:
       tags:
@@ -1421,30 +1478,38 @@ components:
       required:
       - caseName
       - crn
-      - staff
       type: object
       properties:
-        staff:
-          $ref: '#/components/schemas/Name'
         caseName:
           $ref: '#/components/schemas/Name'
         crn:
           type: string
+    StaffCaseload:
+      required:
+      - caseload
+      - staff
+      type: object
+      properties:
+        provider:
+          type: string
+        staff:
+          $ref: '#/components/schemas/Name'
+        caseload:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffCase'
     Team:
       required:
-      - cases
+      - code
       - description
       type: object
       properties:
         description:
           type: string
-        cases:
-          type: array
-          items:
-            $ref: '#/components/schemas/StaffCase'
-    User:
+        code:
+          type: string
+    UserTeam:
       required:
-      - cases
       - teams
       type: object
       properties:
@@ -1454,10 +1519,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Team'
-        cases:
+    Staff:
+      required:
+      - code
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        code:
+          type: string
+    TeamStaff:
+      required:
+      - staff
+      type: object
+      properties:
+        provider:
+          type: string
+        staff:
           type: array
           items:
-            $ref: '#/components/schemas/StaffCase'
+            $ref: '#/components/schemas/Staff'
     PersonActivity:
       required:
       - activities
