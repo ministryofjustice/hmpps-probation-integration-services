@@ -17,4 +17,6 @@ class DocumentService(
             ?: throw NotFoundException("Document with id of $id not found for CRN $crn")
         return alfrescoClient.streamDocument(id, filename)
     }
+
+    fun findApprovedPremisesDocuments(crn: String) = documentRepository.getApprovedPremisesDocuments(crn)
 }
