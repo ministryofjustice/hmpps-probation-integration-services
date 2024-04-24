@@ -37,7 +37,6 @@ class OffenceService(
         )
     }
 
-
     private fun AdditionalOffence.toOffence(): Offence =
         Offence(offence.description, offence.category, offence.code.trim(), date, offenceCount)
 }

@@ -78,7 +78,7 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.3.1")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
-            library("insights", "com.microsoft.azure:applicationinsights-web:3.5.1")
+            library("insights", "com.microsoft.azure:applicationinsights-web:3.5.2")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.8.0")
             library(
                 "opentelemetry-annotations",
@@ -94,7 +94,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.develocity") version "3.17.1" }
+plugins { id("com.gradle.develocity") version "3.17.2" }
 develocity {
     buildScan {
         publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }
