@@ -206,7 +206,10 @@ class Offence(
     val code: String,
 
     @Column
-    val description: String
+    val description: String,
+
+    @Column(name = "main_category_description")
+    val category: String
 )
 
 
