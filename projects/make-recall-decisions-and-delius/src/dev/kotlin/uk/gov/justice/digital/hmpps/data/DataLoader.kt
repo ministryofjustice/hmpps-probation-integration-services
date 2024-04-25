@@ -101,6 +101,14 @@ class DataLoader(
             persist(UserGenerator.USER_DETAILS)
             persist(UserGenerator.WITH_INACTIVE_STAFF.staff)
             persist(UserGenerator.WITH_INACTIVE_STAFF)
+
+            persist(DocumentGenerator.DOC_PERSON)
+            persist(DocumentGenerator.AP_USER_1)
+            persist(DocumentGenerator.AP_USER_2)
+            persist(DocumentGenerator.AP_USER_3)
+            persist(DocumentGenerator.AP_DOCUMENT_1)
+            persist(DocumentGenerator.AP_DOCUMENT_2)
+            persist(DocumentGenerator.AP_DOCUMENT_3)
         }
     }
 }
