@@ -20,9 +20,9 @@ class DocumentController(private val documentService: DocumentService) {
         @PathVariable id: String
     ) = documentService.downloadDocument(crn, id)
 
-    @GetMapping(value = ["/ap-documents/{crn}"])
-    @Operation(summary = "Find approved premises documents")
+    @GetMapping(value = ["/ap-residence-plan-document/{crn}"])
+    @Operation(summary = "Find latest approved premises residence plan document")
     fun findApprovedPremisesDocuments(
         @PathVariable crn: String
-    ) = documentService.findApprovedPremisesDocuments(crn)
+    ) = documentService.findAPResidencePlanDocument(crn)
 }

@@ -29,7 +29,10 @@ class DocumentEntity(
     val type: String,
 
     @Column(name = "table_name")
-    val tableName: String,
+    val tableName: String?,
+
+    @Column(name = "template_name")
+    val templateName: String?,
 
     @Column(name = "created_datetime")
     val createdAt: ZonedDateTime,
