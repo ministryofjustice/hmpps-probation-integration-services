@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.NotFound
+import org.hibernate.annotations.NotFoundAction
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
@@ -106,6 +108,7 @@ class ContactDocument(
 
     @ManyToOne
     @JoinColumn(name = "primary_key_id", referencedColumnName = "contact_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     val contact: Contact,
 
     @Column(name = "alfresco_document_id")
@@ -117,7 +120,7 @@ class ContactDocument(
     @Column(name = "last_saved")
     val lastUpdated: ZonedDateTime,
 
-    @Column
+    @Column(name = "table_name")
     val tableName: String = "CONTACT",
 
     @Column(name = "soft_deleted", columnDefinition = "number")
