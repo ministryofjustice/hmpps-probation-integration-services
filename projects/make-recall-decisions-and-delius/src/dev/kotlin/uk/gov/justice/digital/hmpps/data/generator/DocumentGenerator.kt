@@ -1,17 +1,11 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.data.entity.ApprovedPremisesReferral
 import uk.gov.justice.digital.hmpps.data.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.Person
-import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object DocumentGenerator {
-
-    val AP_REFERRAL_1 = ApprovedPremisesReferral(IdGenerator.getAndIncrement(), LocalDate.now().minusDays(2), 1)
-    val AP_REFERRAL_2 = ApprovedPremisesReferral(IdGenerator.getAndIncrement(), LocalDate.now().minusDays(3), 2)
-    val AP_REFERRAL_3 = ApprovedPremisesReferral(IdGenerator.getAndIncrement(), LocalDate.now().minusDays(4), 3)
 
     val DOC_PERSON = Person(IdGenerator.getAndIncrement(), "X000010", false)
 
@@ -58,9 +52,10 @@ object DocumentGenerator {
         lastUpdatedUserId = lastUpdatedUserId,
         name = name,
         person = DOC_PERSON,
-        primaryKeyId = AP_REFERRAL_1.approvedPremisesReferralId,
+        primaryKeyId = ContactGenerator.DEFAULT.id,
         softDeleted = false,
-        tableName = "APPROVED_PREMISES_REFERRAL",
-        type = "DOCUMENT"
+        tableName = "CONTACT",
+        type = "DOCUMENT",
+        templateName = "NAT AP Residence Plan - Male"
     )
 }

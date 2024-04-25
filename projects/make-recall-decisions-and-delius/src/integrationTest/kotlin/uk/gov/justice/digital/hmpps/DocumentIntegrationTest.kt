@@ -42,19 +42,20 @@ internal class DocumentIntegrationTest {
     fun `approved premises documents data is returned`() {
 
         val res = mockMvc
-            .perform(get("/ap-documents/X000010").withToken())
+            .perform(get("/ap-residence-plan-document/X000010").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<List<Document>>()
+            .andReturn().response.contentAsJson<Document>()
 
-        assertThat(res.size, equalTo(3))
-        assertThat(res[0].author, equalTo("Dave Brown"))
-        assertThat(res[0].id, equalTo("uuidap1"))
-        assertThat(res[0].name, equalTo("ap_doc_1"))
-        assertThat(res[1].author, equalTo("Brian Cox"))
-        assertThat(res[1].id, equalTo("uuidap2"))
-        assertThat(res[1].name, equalTo("ap_doc_2"))
-        assertThat(res[2].author, equalTo("Steve Smith"))
-        assertThat(res[2].id, equalTo("uuidap3"))
-        assertThat(res[2].name, equalTo("ap_doc_3"))
+        assertThat(res.author, equalTo("Steve Smith"))
+        assertThat(res.id, equalTo("uuidap3"))
+        assertThat(res.name, equalTo("ap_doc_3"))
+    }
+
+    @Test
+    fun `approved premises data is not found`() {
+
+        mockMvc
+            .perform(get("/ap-residence-plan-document/X000004").withToken())
+            .andExpect(status().isNotFound)
     }
 }

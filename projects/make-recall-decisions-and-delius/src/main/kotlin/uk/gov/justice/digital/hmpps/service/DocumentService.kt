@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.Document
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.document.getAPResidencePlanDocument
 
 @Service
 class DocumentService(
@@ -20,16 +21,16 @@ class DocumentService(
         return alfrescoClient.streamDocument(id, filename)
     }
 
-    fun findApprovedPremisesDocuments(crn: String): List<Document> =
-        documentRepository.getApprovedPremisesDocuments(crn).map {
-            Document(
-                id = it.alfrescoId,
-                name = it.name,
-                description = it.description,
-                type = it.type,
-                author = it.author,
-                createdAt = it.createdAt?.atZone(EuropeLondon),
-                lastUpdatedAt = it.lastUpdatedAt?.atZone(EuropeLondon),
-            )
-        }
+    fun findAPResidencePlanDocument(crn: String): Document =
+        documentRepository.getAPResidencePlanDocument(crn).toDocument()
 }
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.document.entity.Document.toDocument() = Document(
+    id = alfrescoId,
+    name = name,
+    description = description,
+    type = type,
+    author = author,
+    createdAt = createdAt?.atZone(EuropeLondon),
+    lastUpdatedAt = lastUpdatedAt?.atZone(EuropeLondon)
+)

@@ -102,9 +102,6 @@ class DataLoader(
             persist(UserGenerator.WITH_INACTIVE_STAFF.staff)
             persist(UserGenerator.WITH_INACTIVE_STAFF)
 
-            persist(DocumentGenerator.AP_REFERRAL_1)
-            persist(DocumentGenerator.AP_REFERRAL_2)
-            persist(DocumentGenerator.AP_REFERRAL_3)
             persist(DocumentGenerator.DOC_PERSON)
             persist(DocumentGenerator.AP_USER_1)
             persist(DocumentGenerator.AP_USER_2)
