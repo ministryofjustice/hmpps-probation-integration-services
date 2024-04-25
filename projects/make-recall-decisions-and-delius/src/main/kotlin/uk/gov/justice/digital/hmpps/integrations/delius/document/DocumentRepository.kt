@@ -41,4 +41,5 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
     fun findAPResidencePlanDocument(crn: String, pageable: Pageable = PageRequest.of(0, 1)): List<Document>
 }
 
-fun DocumentRepository.getAPResidencePlanDocument(crn: String) = findAPResidencePlanDocument(crn).firstOrNull() ?: throw NotFoundException("AP Residence Plan Document", "crn", crn)
+fun DocumentRepository.getAPResidencePlanDocument(crn: String) =
+    findAPResidencePlanDocument(crn).firstOrNull() ?: throw NotFoundException("AP Residence Plan Document", "crn", crn)
