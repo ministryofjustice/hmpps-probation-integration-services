@@ -47,7 +47,7 @@ class DocumentEntity(
     val lastUpdatedUserId: Long,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 
     @Id
     @Column(name = "document_id")
