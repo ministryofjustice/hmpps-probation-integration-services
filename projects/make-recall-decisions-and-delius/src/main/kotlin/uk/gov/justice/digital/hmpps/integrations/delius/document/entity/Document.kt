@@ -1,22 +1,16 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import java.time.Instant
+import java.time.ZonedDateTime
 
-@Table
 @Entity
 @Immutable
+@Table(name = "document")
 @SQLRestriction("soft_deleted = 0")
-class Document(
-    @Id
-    @Column(name = "document_id")
-    val id: Long,
+class DocumentEntity(
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -25,12 +19,52 @@ class Document(
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
 
+    @Column(name = "primary_key_id")
+    val primaryKeyId: Long,
+
     @Column(name = "document_name")
     val name: String,
 
+    @Column(name = "document_type")
+    val type: String,
+
+    @Column(name = "table_name")
+    val tableName: String?,
+
+    @Column(name = "template_name")
+    val templateName: String?,
+
+    @Column(name = "created_datetime")
+    val createdAt: ZonedDateTime,
+
+    @Column(name = "last_saved")
+    val lastSaved: ZonedDateTime,
+
+    @Column(name = "created_by_user_id")
+    val createdByUserId: Long,
+
+    @Column(name = "last_updated_user_id")
+    val lastUpdatedUserId: Long,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "document_id")
+    val id: Long,
 )
+
+interface Document {
+    val alfrescoId: String
+    val name: String
+    val type: String
+    val tableName: String
+    val createdAt: Instant?
+    val lastUpdatedAt: Instant?
+    val author: String?
+    val description: String?
+    val eventId: Long?
+}
 
 @Immutable
 @Table(name = "offender")
