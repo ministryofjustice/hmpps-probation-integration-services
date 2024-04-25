@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 
@@ -20,8 +21,15 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
     )
     fun findSentencesByPersonId(id: Long): List<Event>
 
-    fun getEventByPersonIdAndEventNumberAndActiveIsTrue(id: Long, eventNumber: String): Event?
+    fun findEventByPersonIdAndEventNumberAndActiveIsTrue(id: Long, eventNumber: String): Event?
 }
+
+fun EventSentenceRepository.getEvent(id: Long, eventNumber: String) =
+    findEventByPersonIdAndEventNumberAndActiveIsTrue(id, eventNumber) ?: throw NotFoundException(
+        "Event",
+        "number",
+        eventNumber
+    )
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
     fun getFirstCourtAppearanceByEventIdOrderByDate(id: Long): CourtAppearance?

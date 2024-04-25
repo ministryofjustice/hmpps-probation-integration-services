@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.offence.Offence
 import uk.gov.justice.digital.hmpps.api.model.offence.Offences
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -31,22 +31,35 @@ class OffenceIntegrationTest {
     }
 
     @Test
-    fun `no additional offences`() {
-        val name = Name(
-            PersonDetailsGenerator.PERSONAL_DETAILS.forename,
-            PersonDetailsGenerator.PERSONAL_DETAILS.secondName,
-            PersonDetailsGenerator.PERSONAL_DETAILS.surname
-        )
-        val expected = Offences(name, null, listOf())
-        val response = mockMvc
+    fun `person does not exist`() {
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders.get("/sentence/X123456/offences/1")
+                    .withToken()
+            )
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect { result: MvcResult ->
+                assertEquals(
+                    "Person with crn of X123456 not found",
+                    result.resolvedException!!.message
+                )
+            }
+    }
+
+    @Test
+    fun `no active events`() {
+        mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}/offences/1")
                     .withToken()
             )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn().response.contentAsJson<Offences>()
-
-        assertEquals(expected, response)
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect { result: MvcResult ->
+                assertEquals(
+                    "Event with number of 1 not found",
+                    result.resolvedException!!.message
+                )
+            }
     }
 
     @Test
