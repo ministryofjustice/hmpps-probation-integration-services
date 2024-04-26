@@ -84,6 +84,17 @@ internal class UserServiceTest {
     }
 
     @Test
+    fun `calls get team caseload function`() {
+        val teamCode = DEFAULT_TEAM.code
+        whenever(teamRepository.findByTeamCode(teamCode)).thenReturn(DEFAULT_TEAM)
+        whenever(caseloadRepository.findByTeamCode(teamCode)).thenReturn(listOf(CASELOAD_PERSON_1))
+        val res = service.getTeamCaseload(teamCode)
+        assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
+        assertThat(res.caseload[0].staff.code, equalTo(CASELOAD_PERSON_1.staff.code))
+        assertThat(res.team.code, equalTo(DEFAULT_TEAM.code))
+    }
+
+    @Test
     fun `calls get caseload for staff function`() {
         val staffCode = DEFAULT_STAFF.code
         whenever(staffRepository.findByStaffCode(staffCode)).thenReturn(DEFAULT_STAFF)

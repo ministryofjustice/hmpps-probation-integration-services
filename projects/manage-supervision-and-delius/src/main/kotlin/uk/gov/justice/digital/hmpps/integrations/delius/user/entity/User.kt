@@ -153,7 +153,19 @@ interface TeamRepository : JpaRepository<Team, Long> {
     """
     )
     fun findProviderByTeamCode(teamCode: String): String?
+
+    @Query(
+        """
+        select t
+        from Team t
+        where t.code = :teamCode
+    """
+    )
+    fun findByTeamCode(teamCode: String): Team?
 }
+
+fun TeamRepository.getTeam(teamCode: String) =
+    findByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
 
 fun TeamRepository.getProvider(teamCode: String) =
     findProviderByTeamCode(teamCode) ?: throw NotFoundException("Team", "teamCode", teamCode)
@@ -210,6 +222,16 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     """
     )
     fun findByStaffCode(staffCode: String): List<Caseload>
+
+    @Query(
+        """
+        select c from Caseload c
+        join fetch c.person p
+        join fetch c.team t
+        where c.team.code = :teamCode
+    """
+    )
+    fun findByTeamCode(teamCode: String): List<Caseload>
 }
 
 @Entity

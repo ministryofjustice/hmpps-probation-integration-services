@@ -23,6 +23,10 @@ class UserController(private val userService: UserService) {
     @Operation(summary = "Gets the users teams")
     fun getUserTeams(@PathVariable username: String) = userService.getUserTeams(username)
 
+    @GetMapping("/team/{teamCode}")
+    @Operation(summary = "Gets the caseload for the team")
+    fun getTeamCaseload(@PathVariable teamCode: String) = userService.getTeamCaseload(teamCode)
+
     @GetMapping("/team/{teamCode}/staff")
     @Operation(summary = "Gets the staff within the team")
     fun getTeamStaff(@PathVariable teamCode: String) = userService.getTeamStaff(teamCode)
