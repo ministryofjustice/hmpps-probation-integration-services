@@ -59,5 +59,7 @@ internal class IntegrationTest {
         assertThat(referenceOffence?.description).isEqualTo("Obstructing a person home office description")
         assertThat(referenceOffence?.mainCategoryCode).isEqualTo("091")
         assertThat(referenceOffence?.subCategoryCode).isEqualTo("55")
+        assertThat(referenceOffence?.schedule15ViolentOffence).isEqualTo(true)
+        assertThat(referenceOffence?.schedule15SexualOffence).isEqualTo(false)
     }
 }
