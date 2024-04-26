@@ -14,7 +14,7 @@ interface CvlClient {
 data class ActivatedLicence(
     val crn: String,
     @JsonAlias("licenceStartDate")
-    val startDate: LocalDate,
+    val startDate: LocalDate?,
     val conditions: Conditions
 )
 
