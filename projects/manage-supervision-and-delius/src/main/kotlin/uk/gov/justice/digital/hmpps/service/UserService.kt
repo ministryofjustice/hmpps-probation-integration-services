@@ -28,6 +28,17 @@ class UserService(
     }
 
     @Transactional
+    fun getTeamCaseload(teamCode: String): TeamCaseload {
+        val team = teamRepository.getTeam(teamCode)
+        val caseload = caseloadRepository.findByTeamCode(team.code)
+        return TeamCaseload(
+            provider = team.provider.description,
+            caseload = caseload.map { it.toTeamCase() },
+            team = Team(description = team.description, team.code)
+        )
+    }
+
+    @Transactional
     fun getStaffCaseload(staffCode: String): StaffCaseload {
         val staff = staffRepository.getStaff(staffCode)
         val caseload = caseloadRepository.findByStaffCode(staff.code)
@@ -64,3 +75,12 @@ fun Caseload.toStaffCase() = StaffCase(
     crn = person.crn,
 )
 
+fun Caseload.toTeamCase() = TeamCase(
+    caseName = Name(
+        forename = person.forename,
+        middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+        surname = person.surname
+    ),
+    crn = person.crn,
+    staff = Staff(name = Name(forename = staff.forename, surname = staff.surname), code = staff.code)
+)

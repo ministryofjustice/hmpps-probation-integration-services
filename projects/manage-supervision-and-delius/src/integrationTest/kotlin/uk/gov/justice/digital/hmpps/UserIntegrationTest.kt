@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.user.StaffCaseload
+import uk.gov.justice.digital.hmpps.api.model.user.TeamCaseload
 import uk.gov.justice.digital.hmpps.api.model.user.TeamStaff
 import uk.gov.justice.digital.hmpps.api.model.user.UserTeam
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
@@ -102,6 +103,22 @@ internal class UserIntegrationTest {
         assertThat(res.staff[0].name, equalTo(Name(forename = DEFAULT_STAFF.forename, surname = DEFAULT_STAFF.surname)))
         assertThat(res.staff[1].code.trim(), equalTo(STAFF_1.code.trim()))
         assertThat(res.staff[1].name, equalTo(Name(forename = STAFF_1.forename, surname = STAFF_1.surname)))
+    }
+
+    @Test
+    fun `all caseload activity for a team`() {
+
+        val code = DEFAULT_TEAM.code.trim()
+        val res = mockMvc
+            .perform(get("/caseload/team/${code}").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<TeamCaseload>()
+
+        assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
+        assertThat(res.caseload[0].crn, equalTo(OVERVIEW.crn))
+        assertThat(res.caseload[0].caseName, equalTo(OVERVIEW.name()))
+        assertThat(res.caseload[1].crn, equalTo(PERSONAL_DETAILS.crn))
+        assertThat(res.caseload[1].caseName, equalTo(PERSONAL_DETAILS.name()))
     }
 
     @Test

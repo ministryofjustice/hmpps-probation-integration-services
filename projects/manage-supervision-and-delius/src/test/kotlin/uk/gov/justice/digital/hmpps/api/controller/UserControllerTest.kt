@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CASELOAD_PERSON_1
 import uk.gov.justice.digital.hmpps.service.UserService
 import uk.gov.justice.digital.hmpps.service.toStaffCase
+import uk.gov.justice.digital.hmpps.service.toTeamCase
 
 @ExtendWith(MockitoExtension::class)
 internal class UserControllerTest {
@@ -46,6 +47,19 @@ internal class UserControllerTest {
         )
         whenever(userService.getUserTeams(username)).thenReturn(expectedResponse)
         val res = controller.getUserTeams(username)
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls get team caseload function `() {
+        val teamCode = "teamCode"
+        val expectedResponse = TeamCaseload(
+            provider = USER.staff?.provider?.description,
+            caseload = listOf(CASELOAD_PERSON_1.toTeamCase()),
+            team = Team(description = "desc", code = "code")
+        )
+        whenever(userService.getTeamCaseload(teamCode)).thenReturn(expectedResponse)
+        val res = controller.getTeamCaseload(teamCode)
         assertThat(res, equalTo(expectedResponse))
     }
 
