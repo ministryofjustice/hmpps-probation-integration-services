@@ -148,6 +148,9 @@
         <a href="./api-reference.html#case-summary-crn-contact-history"><span>/case-summary/{crn}/contact-history</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#ap-residence-plan-document-crn"><span>/ap-residence-plan-document/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -1264,6 +1267,74 @@
 </td>
 <td>
 <a href='#schema-contacthistory'>ContactHistory</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="ap-residence-plan-document-crn">/ap-residence-plan-document/{crn}</h2>
+
+<h3 id="ap-residence-plan-document-crn-get">get</h3>
+
+  <p><em>Find latest approved premises residence plan document</em></p>
+
+
+
+
+<h4 id="ap-residence-plan-document-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="ap-residence-plan-document-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "type": "string",
+  "author": "string",
+  "createdAt": "string",
+  "lastUpdatedAt": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-document'>Document</a>
 </td>
 </tr>
 
@@ -2993,6 +3064,88 @@
 <td>systemGenerated</td>
 <td>boolean</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-document">Document</h3>
+
+
+<table class='schema-document'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>author</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdAt</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedAt</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   

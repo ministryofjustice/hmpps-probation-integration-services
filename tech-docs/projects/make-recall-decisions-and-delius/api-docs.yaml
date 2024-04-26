@@ -288,6 +288,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContactHistory'
+  /ap-residence-plan-document/{crn}:
+    get:
+      tags:
+      - Documents
+      summary: Find latest approved premises residence plan document
+      operationId: findApprovedPremisesDocuments
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
 components:
   schemas:
     Name:
@@ -809,6 +828,29 @@ components:
           type: string
         systemGenerated:
           type: boolean
+    Document:
+      required:
+      - id
+      - name
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        author:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          type: string
+          format: date-time
   securitySchemes:
     hmpps-auth-token:
       type: http

@@ -18,7 +18,7 @@ paths:
     get:
       tags:
       - Sentence
-      summary: 'Display active events '
+      summary: Display active events
       operationId: getOverview
       parameters:
       - name: crn
@@ -37,7 +37,7 @@ paths:
     get:
       tags:
       - Sentence
-      summary: 'Display inactive events '
+      summary: Display inactive events
       operationId: getPreviousEvents
       parameters:
       - name: crn
@@ -52,6 +52,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PreviousOrderHistory'
+  /sentence/{crn}/offences/{eventNumber}:
+    get:
+      tags:
+      - Sentence
+      summary: Display additinal offence details
+      operationId: getAdditionalOffenceDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: eventNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offences'
   /schedule/{crn}/upcoming:
     get:
       tags:
@@ -399,6 +423,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserTeam'
+  /caseload/team/{teamCode}:
+    get:
+      tags:
+      - Caseload Info
+      summary: Gets the caseload for the team
+      operationId: getTeamCaseload
+      parameters:
+      - name: teamCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamCaseload'
   /caseload/team/{teamCode}/staff:
     get:
       tags:
@@ -696,6 +739,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PreviousOrder'
+    Offences:
+      required:
+      - additionalOffences
+      - mainOffence
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        mainOffence:
+          $ref: '#/components/schemas/Offence'
+        additionalOffences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offence'
     Activity:
       required:
       - documents
@@ -1529,6 +1587,33 @@ components:
           $ref: '#/components/schemas/Name'
         code:
           type: string
+    TeamCase:
+      required:
+      - caseName
+      - crn
+      - staff
+      type: object
+      properties:
+        staff:
+          $ref: '#/components/schemas/Staff'
+        caseName:
+          $ref: '#/components/schemas/Name'
+        crn:
+          type: string
+    TeamCaseload:
+      required:
+      - caseload
+      - team
+      type: object
+      properties:
+        provider:
+          type: string
+        team:
+          $ref: '#/components/schemas/Team'
+        caseload:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamCase'
     TeamStaff:
       required:
       - staff
