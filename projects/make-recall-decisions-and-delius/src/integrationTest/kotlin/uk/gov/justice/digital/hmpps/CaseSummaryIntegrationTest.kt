@@ -108,20 +108,20 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(
                 jsonPath(
                     "$.contacts.*.notes",
-                    equalTo(listOf("default", "system-generated", "documents", "past"))
+                    equalTo(listOf("default", "system-generated", "documents", "AP Residence Plan Prepared", "past"))
                 )
             )
             .andExpect(jsonPath("$.contacts[0].outcome", equalTo(ContactGenerator.DEFAULT_OUTCOME.description)))
             .andExpect(jsonPath("$.contacts[1].type.code", equalTo(ContactGenerator.SYSTEM_GENERATED_TYPE.code)))
             .andExpect(jsonPath("$.contacts[2].documents[*].name", equalTo(listOf("doc1", "doc2"))))
-            .andExpect(jsonPath("$.contacts[3].startDateTime", equalTo("2022-01-01T12:00:00Z")))
-            .andExpect(jsonPath("$.summary.hits", equalTo(4)))
-            .andExpect(jsonPath("$.summary.total", equalTo(4)))
-            .andExpect(jsonPath("$.summary.types.size()", equalTo(2)))
-            .andExpect(jsonPath("$.summary.types[0].description", equalTo("System-generated contact type")))
+            .andExpect(jsonPath("$.contacts[4].startDateTime", equalTo("2022-01-01T12:00:00Z")))
+            .andExpect(jsonPath("$.summary.hits", equalTo(5)))
+            .andExpect(jsonPath("$.summary.total", equalTo(5)))
+            .andExpect(jsonPath("$.summary.types.size()", equalTo(3)))
+            .andExpect(jsonPath("$.summary.types[0].description", equalTo("AP Residence Plan Prepared")))
             .andExpect(jsonPath("$.summary.types[0].total", equalTo(1)))
-            .andExpect(jsonPath("$.summary.types[1].description", equalTo("Contact type")))
-            .andExpect(jsonPath("$.summary.types[1].total", equalTo(3)))
+            .andExpect(jsonPath("$.summary.types[1].description", equalTo("System-generated contact type")))
+            .andExpect(jsonPath("$.summary.types[2].total", equalTo(3)))
     }
 
     @Test
@@ -131,7 +131,7 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.contacts.*.notes", equalTo(listOf("past"))))
             .andExpect(jsonPath("$.summary.hits", equalTo(1)))
-            .andExpect(jsonPath("$.summary.total", equalTo(4)))
+            .andExpect(jsonPath("$.summary.total", equalTo(5)))
     }
 
     @Test

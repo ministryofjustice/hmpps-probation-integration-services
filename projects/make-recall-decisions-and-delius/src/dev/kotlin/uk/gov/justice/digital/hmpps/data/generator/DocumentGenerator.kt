@@ -52,7 +52,7 @@ object DocumentGenerator {
         lastUpdatedUserId = lastUpdatedUserId,
         name = name,
         person = DOC_PERSON,
-        primaryKeyId = ContactGenerator.DEFAULT.id,
+        primaryKeyId = ContactGenerator.AP_RESIDENCE_PLAN_PREPARED_CONTACT.id,
         softDeleted = false,
         tableName = "CONTACT",
         type = "DOCUMENT",
