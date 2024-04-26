@@ -16,3 +16,6 @@ CVE-2022-4244
 # Package: org.jsoup:jsoup:1.7.2
 CVE-2021-37714
 
+# Reason: No parsing of untrusted JSON
+# Package: net.minidev:json-smart:2.4.8
+CVE-2023-1370 exp:2024-06-01
