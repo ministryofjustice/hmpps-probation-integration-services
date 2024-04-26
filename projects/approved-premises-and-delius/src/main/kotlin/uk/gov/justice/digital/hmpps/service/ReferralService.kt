@@ -114,7 +114,7 @@ class ReferralService(
     fun bookingCancelled(crn: String, details: BookingCancelled, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
         val referral = findReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
-            ?.apply { softDeleted = true }
+            ?.apply(referralRepository::delete)
         contactService.createContact(
             ContactDetails(
                 date = details.cancelledAt,
