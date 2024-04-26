@@ -34,7 +34,7 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
         and document.template_name in ('NAT AP Residence Plan - Male', 'NAT AP Residence Plan - Female')
         and document.alfresco_document_id is not null
         and document.soft_deleted = 0
-        order by created_datetime desc
+        order by document.created_datetime desc
         """,
         nativeQuery = true
     )
