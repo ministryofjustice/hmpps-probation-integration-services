@@ -13,6 +13,11 @@ import java.time.ZonedDateTime
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @SQLRestriction("soft_deleted = 0")
+@SequenceGenerator(
+    name = "additional_identifier_id_seq",
+    sequenceName = "additional_identifier_id_seq",
+    allocationSize = 1
+)
 class AdditionalIdentifier(
 
     @Column(columnDefinition = "varchar2(30)")
@@ -33,6 +38,7 @@ class AdditionalIdentifier(
 
     @Id
     @Column(name = "additional_identifier_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "additional_identifier_id_seq")
     val id: Long = 0,
 
     @Version
