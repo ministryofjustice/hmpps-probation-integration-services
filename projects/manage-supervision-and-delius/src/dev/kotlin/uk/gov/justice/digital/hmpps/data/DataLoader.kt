@@ -84,6 +84,7 @@ class DataLoader(
         entityManager.persist(CourtReportGenerator.COURT_REPORT)
 
         entityManager.persistAll(
+            OffenderManagerGenerator.TEAM,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
