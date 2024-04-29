@@ -165,6 +165,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t
         from Team t
         where t.code = :teamCode
+        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findByTeamCode(teamCode: String): Team?
