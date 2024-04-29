@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.service.UserService
 @Tag(name = "Caseload Info")
 @RequestMapping("/caseload")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
-class UserController(private val userService: UserService) {
+class CaseloadController(private val userService: UserService) {
 
     @GetMapping("/user/{username}")
     @Operation(summary = "Gets caseloads for the user")
