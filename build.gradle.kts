@@ -14,7 +14,7 @@ plugins {
     kotlin("kapt") version "1.9.23" apply false
     id("org.springframework.boot") version "3.2.5" apply false
     id("io.spring.dependency-management") version "1.1.4" apply false
-    id("com.gorylenko.gradle-git-properties") version "2.4.1" apply false
+    id("com.gorylenko.gradle-git-properties") version "2.4.2" apply false
     id("com.google.cloud.tools.jib") apply false
     id("base")
     id("org.sonarqube")
