@@ -47,13 +47,9 @@ class Staff(
     val surname: String,
 
     @OneToOne(mappedBy = "staff")
-    val user: StaffUser?,
+    val user: StaffUser?
+)
 
-    ) {
-    fun name() = Name(forename, surname)
-}
-
-data class Name(val forename: String, val surname: String)
 
 @Entity
 @Immutable
