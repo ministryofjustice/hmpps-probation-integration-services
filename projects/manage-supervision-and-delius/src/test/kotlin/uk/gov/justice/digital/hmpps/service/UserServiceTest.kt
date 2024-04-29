@@ -8,6 +8,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
@@ -87,8 +89,14 @@ internal class UserServiceTest {
     fun `calls get team caseload function`() {
         val teamCode = DEFAULT_TEAM.code
         whenever(teamRepository.findByTeamCode(teamCode)).thenReturn(DEFAULT_TEAM)
-        whenever(caseloadRepository.findByTeamCode(teamCode)).thenReturn(listOf(CASELOAD_PERSON_1))
-        val res = service.getTeamCaseload(teamCode)
+        whenever(caseloadRepository.findByTeamCode(teamCode, Pageable.ofSize(1))).thenReturn(
+            PageImpl(
+                listOf(
+                    CASELOAD_PERSON_1
+                )
+            )
+        )
+        val res = service.getTeamCaseload(teamCode, Pageable.ofSize(1))
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
         assertThat(res.caseload[0].staff.code, equalTo(CASELOAD_PERSON_1.staff.code))
         assertThat(res.team.code, equalTo(DEFAULT_TEAM.code))

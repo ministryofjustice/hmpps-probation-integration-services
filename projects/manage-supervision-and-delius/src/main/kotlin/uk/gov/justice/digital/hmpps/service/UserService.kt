@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
@@ -28,12 +29,15 @@ class UserService(
     }
 
     @Transactional
-    fun getTeamCaseload(teamCode: String): TeamCaseload {
+    fun getTeamCaseload(teamCode: String, pageable: Pageable): TeamCaseload {
         val team = teamRepository.getTeam(teamCode)
-        val caseload = caseloadRepository.findByTeamCode(team.code)
+        val caseload = caseloadRepository.findByTeamCode(team.code, pageable)
+        caseload.content
         return TeamCaseload(
+            totalElements = caseload.totalElements.toInt(),
+            totalPages = caseload.totalPages,
             provider = team.provider.description,
-            caseload = caseload.map { it.toTeamCase() },
+            caseload = caseload.content.map { it.toTeamCase() },
             team = Team(description = team.description, team.code)
         )
     }

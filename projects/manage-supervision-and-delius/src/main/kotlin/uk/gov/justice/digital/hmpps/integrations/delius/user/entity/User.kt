@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.user.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -238,7 +240,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         where c.team.code = :teamCode
     """
     )
-    fun findByTeamCode(teamCode: String): List<Caseload>
+    fun findByTeamCode(teamCode: String, pageable: Pageable): Page<Caseload>
 }
 
 @Entity
