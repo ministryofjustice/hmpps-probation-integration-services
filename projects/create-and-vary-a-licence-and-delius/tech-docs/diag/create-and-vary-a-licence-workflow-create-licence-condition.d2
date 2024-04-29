@@ -1,0 +1,57 @@
+# Create and Vary a Licence Workflow: Create Licence Condition
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+create-and-vary-a-licence: Create and Vary a Licence {
+     style.font-size: 24
+
+     explanation: |md
+     ## Licence Activitation
+     - On licence activition licence conditions\
+       are supervised by probation practitioners
+     |
+
+     licence_activated: Licence Activated
+}
+
+domain_event: "create-and-vary-a-licence\n.licence.activated" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_licence_condition_1: Map to Delius\nLicence Condition
+    d_licence_condition_2: Create Delius\nLicence Condition
+    d_contact: Create Contact
+
+    d_licence_condition_1 -> d_licence_condition_2 -> d_contact
+
+    explanation: |md
+    ## Licence Creation
+    - Delius is used to log and track the supervision\
+      of all licence conditions
+    - A licence condition entity must be\
+      created in Delius for each condition being supervised
+    - Delius licence condition wording and terminology differs from\
+      that of Create and Vary a Licence
+    - A static mapping exists in the Delius database\
+      between CVL licence conditions and Delius licence conditions
+    |
+
+}
+
+create-and-vary-a-licence -> domain_event -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
+*.*.style.font-size: 12
