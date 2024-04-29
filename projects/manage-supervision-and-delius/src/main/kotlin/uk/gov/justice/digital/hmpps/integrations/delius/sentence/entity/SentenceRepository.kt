@@ -42,5 +42,7 @@ interface AdditionalSentenceRepository : JpaRepository<AdditionalSentence, Long>
 interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 
     fun countOffenderManagersByPersonAndEndDateIsNotNull(person: Person): Long
+
+    fun findOffenderManagersByPerson(person: Person): List<OffenderManager>
 }
 

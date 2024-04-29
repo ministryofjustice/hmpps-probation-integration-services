@@ -1,12 +1,23 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Borough
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Team
 import java.time.LocalDate
 
 object OffenderManagerGenerator {
 
-    val TEAM = Team("N07T02", "OMU B", IdGenerator.getAndIncrement())
+    val BOROUGH = Borough("LTS_ALL", "Leicestershire All", IdGenerator.getAndIncrement())
+    val DISTRICT = District("LTS_ALL", "Leicestershire All", BOROUGH, IdGenerator.getAndIncrement())
+    val TEAM = Team(IdGenerator.getAndIncrement(), DISTRICT, "N07T02", "OMU B")
+
+    val STAFF_1 = Staff(IdGenerator.getAndIncrement(), "Peter", "Parker", null)
+    val STAFF_2 = Staff(IdGenerator.getAndIncrement(), "Bruce", "Wayne", null)
+    val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "pparker")
+    val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne")
 
     val OFFENDER_MANAGER_ACTIVE =
         OffenderManager(
@@ -14,7 +25,7 @@ object OffenderManagerGenerator {
             PersonGenerator.OVERVIEW,
             ContactGenerator.DEFAULT_PROVIDER,
             TEAM,
-            ContactGenerator.STAFF_1,
+            STAFF_1,
             null
         )
     val OFFENDER_MANAGER_INACTIVE =
@@ -23,7 +34,7 @@ object OffenderManagerGenerator {
             PersonGenerator.OVERVIEW,
             ContactGenerator.DEFAULT_PROVIDER,
             TEAM,
-            ContactGenerator.STAFF_1,
+            STAFF_2,
             LocalDate.now()
         )
 }
