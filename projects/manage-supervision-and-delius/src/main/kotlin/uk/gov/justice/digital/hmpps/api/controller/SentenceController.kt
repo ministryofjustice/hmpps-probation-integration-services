@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.service.ContactService
 import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.OrdersService
 import uk.gov.justice.digital.hmpps.service.SentenceService
@@ -18,7 +19,8 @@ import uk.gov.justice.digital.hmpps.service.SentenceService
 class SentenceController(
     private val sentenceService: SentenceService,
     private val ordersService: OrdersService,
-    private val offenceService: OffenceService
+    private val offenceService: OffenceService,
+    private val contactService: ContactService
 ) {
 
     @GetMapping
@@ -30,7 +32,12 @@ class SentenceController(
     fun getPreviousEvents(@PathVariable crn: String) = ordersService.getPreviousEvents(crn)
 
     @GetMapping("/offences/{eventNumber}")
-    @Operation(summary = "Display additinal offence details")
+    @Operation(summary = "Display additional offence details")
     fun getAdditionalOffenceDetails(@PathVariable crn: String, @PathVariable eventNumber: String) =
         offenceService.getOffencesForPerson(crn, eventNumber)
+
+    @GetMapping("/contacts")
+    @Operation(summary = "Display contacts")
+    fun getContacts(@PathVariable crn: String) = contactService.getContacts(crn)
+
 }
