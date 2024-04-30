@@ -14,3 +14,9 @@ data class ApReferral(
 )
 
 data class ApprovedPremises(val description: String)
+
+data class ReferralDetail(
+    val referral: ApReferral,
+    val arrivedAt: ZonedDateTime? = null,
+    val departedAt: ZonedDateTime? = null
+)
