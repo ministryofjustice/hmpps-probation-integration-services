@@ -64,7 +64,7 @@ class ContactServiceTest {
     }
 
     @Test
-    fun `return offender manager records`() {
+    fun `no offender manager records`() {
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
             offenderManagerRepository.findOffenderManagersByPerson(PersonGenerator.OVERVIEW)
@@ -90,7 +90,7 @@ class ContactServiceTest {
     }
 
     @Test
-    fun `return additional offences`() {
+    fun `return offender manager records`() {
 
         val contact1 = Contact(
             "Peter Parker",
