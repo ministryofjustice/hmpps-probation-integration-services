@@ -18,13 +18,13 @@ import uk.gov.justice.digital.hmpps.service.toStaffCase
 import uk.gov.justice.digital.hmpps.service.toTeamCase
 
 @ExtendWith(MockitoExtension::class)
-internal class UserControllerTest {
+internal class CaseloadControllerTest {
 
     @Mock
     lateinit var userService: UserService
 
     @InjectMocks
-    lateinit var controller: UserController
+    lateinit var controller: CaseloadController
 
     @Test
     fun `calls get user case load function `() {
