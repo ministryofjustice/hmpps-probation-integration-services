@@ -17,5 +17,20 @@ data class Offence(
     val endDate: LocalDate? = null,
     val homeOfficeStatsCode: String? = null,
     val homeOfficeDescription: String? = null,
-    val legislation: String? = null
-)
+    val legislation: String? = null,
+    val schedules: List<Schedule> = listOf(),
+) {
+    val schedule15ViolentOffence: Boolean =
+        schedules.any { it.code == Schedule.FIFTEEN && it.partNumber == Schedule.VIOLENT_PART }
+
+    val schedule15SexualOffence: Boolean =
+        schedules.any { it.code == Schedule.FIFTEEN && it.partNumber == Schedule.SEXUAL_PART }
+}
+
+data class Schedule(val code: String, val partNumber: String) {
+    companion object {
+        const val FIFTEEN = "15"
+        const val VIOLENT_PART = "1"
+        const val SEXUAL_PART = "2"
+    }
+}

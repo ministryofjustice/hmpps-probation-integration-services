@@ -10,7 +10,19 @@
   "homeOfficeDescription": "Obstructing a person home office description",
   "changedDate": "2010-03-10T16:12:00",
   "loadDate": "2023-06-05T10:01:42.867727",
-  "schedules": null,
+  "schedules": [
+    {
+      "id": 2,
+      "act": "Criminal Justice Act 2003",
+      "code": "15",
+      "url": "https://www.legislation.gov.uk/ukpga/2003/44/schedule/15",
+      "partNumber": 1,
+      "paragraphNumber": "50",
+      "paragraphTitle": "An offence under the Aviation and Maritime Security Act 1990",
+      "lineReference": null,
+      "legislationText": "Contrary to section 1(1) and (5) of the Aviation and Maritime Security Act 1990."
+    }
+  ],
   "isChild": false,
   "parentOffenceId": null,
   "childOffenceIds": [],

@@ -8,6 +8,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
@@ -17,13 +18,13 @@ import uk.gov.justice.digital.hmpps.service.toStaffCase
 import uk.gov.justice.digital.hmpps.service.toTeamCase
 
 @ExtendWith(MockitoExtension::class)
-internal class UserControllerTest {
+internal class CaseloadControllerTest {
 
     @Mock
     lateinit var userService: UserService
 
     @InjectMocks
-    lateinit var controller: UserController
+    lateinit var controller: CaseloadController
 
     @Test
     fun `calls get user case load function `() {
@@ -54,12 +55,14 @@ internal class UserControllerTest {
     fun `calls get team caseload function `() {
         val teamCode = "teamCode"
         val expectedResponse = TeamCaseload(
+            totalPages = 1,
+            totalElements = 1,
             provider = USER.staff?.provider?.description,
             caseload = listOf(CASELOAD_PERSON_1.toTeamCase()),
             team = Team(description = "desc", code = "code")
         )
-        whenever(userService.getTeamCaseload(teamCode)).thenReturn(expectedResponse)
-        val res = controller.getTeamCaseload(teamCode)
+        whenever(userService.getTeamCaseload(teamCode, PageRequest.of(0, 10))).thenReturn(expectedResponse)
+        val res = controller.getTeamCaseload(teamCode, 0, 10)
         assertThat(res, equalTo(expectedResponse))
     }
 

@@ -27,14 +27,14 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
                'NAT AP Residence Plan on ' || to_char(document.created_datetime, 'dd/MM/yyyy') as description
         from document
         join offender on offender.offender_id = document.offender_id
+        join contact on contact.contact_id = document.primary_key_id and document.table_name = 'CONTACT'
+        join r_contact_type on r_contact_type.contact_type_id = contact.contact_type_id and r_contact_type.code = 'APRAP5'
         left join user_ created_by on created_by.user_id = document.created_by_user_id
         left join user_ updated_by on updated_by.user_id = document.last_updated_user_id
         where offender.crn = :crn
-        and document.table_name = 'CONTACT'
-        and document.template_name in ('NAT AP Residence Plan - Male', 'NAT AP Residence Plan - Female')
         and document.alfresco_document_id is not null
         and document.soft_deleted = 0
-        order by created_datetime desc
+        order by document.created_datetime desc
         """,
         nativeQuery = true
     )

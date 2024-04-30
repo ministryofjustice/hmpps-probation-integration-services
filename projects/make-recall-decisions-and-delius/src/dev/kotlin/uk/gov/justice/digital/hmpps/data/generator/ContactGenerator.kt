@@ -15,6 +15,8 @@ object ContactGenerator {
     val DEFAULT_OUTCOME = ContactOutcome(IdGenerator.getAndIncrement(), "Contact outcome")
     val DEFAULT_TYPE = ContactType(IdGenerator.getAndIncrement(), "TYPE", "Contact type", false)
     val SYSTEM_GENERATED_TYPE = ContactType(IdGenerator.getAndIncrement(), "SG", "System-generated contact type", true)
+    val AP_RESIDENCE_PLAN_PREPARED =
+        ContactType(IdGenerator.getAndIncrement(), "APRAP5", "AP Residence Plan Prepared", false)
 
     val DEFAULT = generate(notes = "default")
     val SYSTEM_GENERATED =
@@ -25,6 +27,9 @@ object ContactGenerator {
             generateContactDocument(it, "uuid2", "doc2")
         )
     }
+    val AP_RESIDENCE_PLAN_PREPARED_CONTACT =
+        generate(notes = "AP Residence Plan Prepared", LocalDate.now().minusDays(3), type = AP_RESIDENCE_PLAN_PREPARED)
+
     val PAST = generate(notes = "past", LocalDate.of(2022, 1, 1), LocalTime.NOON)
     val FUTURE = generate(notes = "future", LocalDate.now().plusDays(1))
 

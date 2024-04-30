@@ -80,11 +80,13 @@ class DataLoader(
             persist(ContactGenerator.DEFAULT_OUTCOME)
             persist(ContactGenerator.DEFAULT_TYPE)
             persist(ContactGenerator.SYSTEM_GENERATED_TYPE)
+            persist(ContactGenerator.AP_RESIDENCE_PLAN_PREPARED)
             persist(ContactGenerator.DEFAULT)
             persist(ContactGenerator.SYSTEM_GENERATED)
             persist(ContactGenerator.FUTURE)
             persist(ContactGenerator.PAST)
             persist(ContactGenerator.WITH_DOCUMENTS)
+            persist(ContactGenerator.AP_RESIDENCE_PLAN_PREPARED_CONTACT)
             ContactGenerator.WITH_DOCUMENTS.documents.forEach { persist(it) }
 
             persist(UserGenerator.TEST_USER1)

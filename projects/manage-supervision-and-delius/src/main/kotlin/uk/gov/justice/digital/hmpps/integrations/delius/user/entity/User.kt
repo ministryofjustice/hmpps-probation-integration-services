@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.user.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -133,6 +135,10 @@ class Team(
     @JoinColumn(name = "probation_area_id")
     @ManyToOne
     val provider: Provider,
+
+    @Column(name = "end_date")
+    val endDate: LocalDate? = null
+
 )
 
 interface TeamRepository : JpaRepository<Team, Long> {
@@ -141,6 +147,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t.staff
         from Team t
         where t.code = :teamCode
+        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findStaffByTeamCode(teamCode: String): List<Staff>
@@ -150,6 +157,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t.provider.description
         from Team t
         where t.code = :teamCode
+        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findProviderByTeamCode(teamCode: String): String?
@@ -159,6 +167,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
         select t
         from Team t
         where t.code = :teamCode
+        and (t.endDate is null or t.endDate > current_date)
     """
     )
     fun findByTeamCode(teamCode: String): Team?
@@ -231,7 +240,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         where c.team.code = :teamCode
     """
     )
-    fun findByTeamCode(teamCode: String): List<Caseload>
+    fun findByTeamCode(teamCode: String, pageable: Pageable): Page<Caseload>
 }
 
 @Entity

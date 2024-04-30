@@ -16,10 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
 import uk.gov.justice.digital.hmpps.integrations.cvl.ApConditions
 import uk.gov.justice.digital.hmpps.integrations.cvl.Conditions
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMappingRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -160,6 +157,45 @@ internal class LicenceConditionApplierTest {
                         "startDate" to activatedLicence.startDate.toString(),
                         "occurredAt" to occurredAt.toString(),
                         "sentenceCount" to "2"
+                    )
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `no start date is logged to telemetry`() {
+        val crn = "S728831"
+        val person = PersonGenerator.generatePerson(crn)
+        val activatedLicence = ActivatedLicence(
+            crn,
+            null,
+            Conditions(ApConditions(listOf(), listOf(), listOf()))
+        )
+        val occurredAt = ZonedDateTime.now()
+        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
+        whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(
+            listOf(
+                SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person))
+            )
+        )
+
+        val ex = licenceConditionApplier.applyLicenceConditions(
+            crn,
+            activatedLicence,
+            occurredAt
+        )
+        assertThat(
+            ex.first(), equalTo(
+                ActionResult.Ignored(
+                    "No Start Date",
+                    mapOf(
+                        "crn" to crn,
+                        "eventNumber" to "1",
+                        "startDate" to "null",
+                        "standardConditions" to "0",
+                        "additionalConditions" to "0",
+                        "bespokeConditions" to "0"
                     )
                 )
             )

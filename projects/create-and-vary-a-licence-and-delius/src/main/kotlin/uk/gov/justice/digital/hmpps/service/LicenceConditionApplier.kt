@@ -79,6 +79,14 @@ class LicenceConditionApplier(
         activatedLicence: ActivatedLicence,
         occurredAt: ZonedDateTime
     ): List<ActionResult> {
+        if (activatedLicence.startDate == null) {
+            return listOf(
+                ActionResult.Ignored(
+                    "No Start Date",
+                    activatedLicence.telemetryProperties(sentencedCase.sentence.event.number)
+                )
+            )
+        }
         val standardResult = activatedLicence.standardConditions(sentencedCase)
         val additionalResult = activatedLicence.additionalConditions(sentencedCase)
         val bespokeResult = activatedLicence.bespokeConditions(sentencedCase)
@@ -109,7 +117,7 @@ class LicenceConditionApplier(
         ) {
             licenceConditionService.createLicenceCondition(
                 sentencedCase.sentence,
-                startDate,
+                startDate!!,
                 category,
                 subCategory,
                 STANDARD_PREFIX,
@@ -144,7 +152,7 @@ class LicenceConditionApplier(
             ) {
                 licenceConditionService.createLicenceCondition(
                     sentencedCase.sentence,
-                    startDate,
+                    startDate!!,
                     cvlMapping.mainCategory,
                     cvlMapping.subCategory,
                     if (!cvlMapping.populateNotes) LIMITED_PREFIX else CONDITION_PREFIX,
@@ -174,7 +182,7 @@ class LicenceConditionApplier(
             if (sentencedCase.licenceConditions.none { it.mainCategory.code == category.code && it.subCategory.code == subCategory.code }) {
                 licenceConditionService.createLicenceCondition(
                     sentencedCase.sentence,
-                    startDate,
+                    startDate!!,
                     category,
                     subCategory,
                     CONDITION_PREFIX,
