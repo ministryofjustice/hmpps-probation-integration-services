@@ -8,11 +8,11 @@ objectclass: top
 objectclass: organizationalUnit
 ou: Users
 
-dn: cn=john-smith,ou=Users,dc=moj,dc=com
+dn: cn=peter-parker,ou=Users,dc=moj,dc=com
 objectclass: top
 objectclass: inetOrgPerson
-cn: john-smith
-sn: Smith
-givenname: John
-mail: john.smith@moj.gov.uk
+cn: peter-parker
+sn: Parker
+givenname: Peter
+mail: peter.parker@moj.gov.uk
 telephoneNumber: 07321165373

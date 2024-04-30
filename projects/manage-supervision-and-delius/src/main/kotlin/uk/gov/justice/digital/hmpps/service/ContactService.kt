@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.Contact
 import uk.gov.justice.digital.hmpps.api.model.sentence.ProfessionalContact
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
@@ -23,6 +24,11 @@ class ContactService(
     fun getContacts(crn: String): ProfessionalContact {
         val person = personRepository.getPerson(crn)
         val contacts = offenderManagerRepository.findOffenderManagersByPerson(person)
+
+        if (contacts.isEmpty()) {
+            throw NotFoundException("Offender Manager", "crn", crn)
+        }
+
         return ProfessionalContact(person.toName(), contacts.map { it.toContact() })
     }
 
@@ -37,7 +43,7 @@ class ContactService(
             }
         }
         return Contact(
-            "$staff.forename $staff.surname",
+            staff.forename + " " + staff.surname,
             staff.user?.email,
             staff.user?.telephone,
             provider.description,

@@ -16,7 +16,7 @@ object OffenderManagerGenerator {
 
     val STAFF_1 = Staff(IdGenerator.getAndIncrement(), "Peter", "Parker", null)
     val STAFF_2 = Staff(IdGenerator.getAndIncrement(), "Bruce", "Wayne", null)
-    val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "pparker")
+    val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker")
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne")
 
     val OFFENDER_MANAGER_ACTIVE =
