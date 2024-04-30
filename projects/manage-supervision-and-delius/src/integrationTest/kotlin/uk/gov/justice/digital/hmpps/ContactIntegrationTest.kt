@@ -48,7 +48,7 @@ class ContactIntegrationTest {
     }
 
     @Test
-    fun `no contacts`() {
+    fun `no offender manager records`() {
 
         mockMvc
             .perform(
@@ -58,14 +58,14 @@ class ContactIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andExpect { result: MvcResult ->
                 assertEquals(
-                    "Offender Manager with crn of ${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn} not found",
+                    "Offender Manager records with crn of ${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn} not found",
                     result.resolvedException!!.message
                 )
             }
     }
 
     @Test
-    fun `return additional offences`() {
+    fun `return offender manager records`() {
         val name = Name(
             PersonGenerator.OVERVIEW.forename,
             PersonGenerator.OVERVIEW.secondName,

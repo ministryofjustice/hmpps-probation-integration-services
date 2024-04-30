@@ -26,7 +26,7 @@ class ContactService(
         val contacts = offenderManagerRepository.findOffenderManagersByPerson(person)
 
         if (contacts.isEmpty()) {
-            throw NotFoundException("Offender Manager", "crn", crn)
+            throw NotFoundException("Offender Manager records", "crn", crn)
         }
 
         return ProfessionalContact(person.toName(), contacts.map { it.toContact() })
