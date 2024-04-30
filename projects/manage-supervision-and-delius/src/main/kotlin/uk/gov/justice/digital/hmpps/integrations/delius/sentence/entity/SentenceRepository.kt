@@ -43,7 +43,7 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 
     fun countOffenderManagersByPersonAndEndDateIsNotNull(person: Person): Long
 
-    fun findOffenderManagersByPerson(person: Person): List<OffenderManager>
+    fun findOffenderManagersByPersonOrderByEndDateDesc(person: Person): List<OffenderManager>
 }
 
 
