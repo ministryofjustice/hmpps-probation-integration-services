@@ -56,7 +56,9 @@ class Handler(
             homeOfficeDescription = homeOfficeDescription,
             legislation = legislation,
             category = referenceDataRepository.findCourtCategory(offenceType)
-                ?: throw NotFoundException("Court category", "code", offenceType)
+                ?: throw NotFoundException("Court category", "code", offenceType),
+            schedule15ViolentOffence = schedule15ViolentOffence,
+            schedule15SexualOffence = schedule15SexualOffence
         )
 
     fun DetailedOffence?.mergeWith(newEntity: DetailedOffence) = this?.copy(
@@ -93,15 +95,15 @@ fun Offence.asReference(highLevelOffence: ReferenceOffence) = ReferenceOffence(
     description = homeOfficeDescription!!,
     mainCategoryCode = mainCategoryCode!!,
     selectable = false,
-    mainCategoryDescription = highLevelOffence.description,
+    mainCategoryDescription = highLevelOffence.description.take(200),
     mainCategoryAbbreviation = highLevelOffence.description.take(50),
     ogrsOffenceCategoryId = highLevelOffence.ogrsOffenceCategoryId,
     subCategoryCode = subCategoryCode!!,
-    subCategoryDescription = "$homeOfficeDescription - $subCategoryCode",
+    subCategoryDescription = "$homeOfficeDescription - $subCategoryCode".take(200),
     form20Code = highLevelOffence.form20Code,
     childAbduction = null,
-    schedule15SexualOffence = null,
-    schedule15ViolentOffence = null
+    schedule15ViolentOffence = schedule15ViolentOffence,
+    schedule15SexualOffence = schedule15SexualOffence
 )
 
 fun ReferenceOffence?.mergeWith(referenceOffence: ReferenceOffence) = this?.copy(
