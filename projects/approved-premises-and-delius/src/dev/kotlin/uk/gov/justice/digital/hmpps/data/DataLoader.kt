@@ -90,7 +90,8 @@ class DataLoader(
     private val probationCaseDataLoader: ProbationCaseDataLoader,
     private val lduRepository: LduRepository,
     private val staffUserRepository: StaffUserRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val referralBookingDataLoader: ReferralBookingDataLoader
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -206,6 +207,7 @@ class DataLoader(
         documentRepository.save(DocumentGenerator.PERSON_DOC)
 
         probationCaseDataLoader.loadData()
+        referralBookingDataLoader.loadData()
     }
 }
 

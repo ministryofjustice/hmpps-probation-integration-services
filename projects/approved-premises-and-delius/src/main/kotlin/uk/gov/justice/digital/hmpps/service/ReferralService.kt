@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.*
@@ -26,6 +27,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.getApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getUnallocatedTeam
 import uk.gov.justice.digital.hmpps.model.ApReferral
 import uk.gov.justice.digital.hmpps.model.ExistingReferrals
+import uk.gov.justice.digital.hmpps.model.ReferralDetail
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.time.ZonedDateTime
 
@@ -209,6 +211,21 @@ class ReferralService(
             ServiceContext.servicePrincipal()!!.userId,
             externalReference
         )
+
+    fun getReferralDetails(crn: String, bookingId: String): ReferralDetail =
+        referralRepository.findReferralDetail(crn, Nsi.EXT_REF_BOOKING_PREFIX + bookingId)?.let {
+            ReferralDetail(
+                ApReferral(
+                    it.referral.referralDate,
+                    it.referral.expectedArrivalDate,
+                    it.referral.expectedDepartureDate,
+                    it.referral.decisionDate,
+                    uk.gov.justice.digital.hmpps.model.ApprovedPremises(it.premises.code.description)
+                ),
+                it.residence?.arrivalDate,
+                it.residence?.departureDate
+            )
+        } ?: throw NotFoundException("Booking $bookingId for crn $crn not found")
 
     private fun BookingMade.referral(
         person: Person,

@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -198,11 +199,29 @@ interface ReferralRepository : JpaRepository<Referral, Long> {
     """
     )
     fun findAllByPersonId(personId: Long): List<ReferralWithAp>
+
+    @Query(
+        """
+            select r as referral, ap as premises, res as residence
+            from Referral r
+            join ApprovedPremises ap on ap.id = r.approvedPremisesId
+            join Person p on p.id = r.personId
+            left join Residence res on res.referralId = r.id
+            where p.crn = :crn and r.referralNotes like '%' || :externalRef || '%'
+        """
+    )
+    fun findReferralDetail(crn: String, externalRef: String): ReferralAndResidence?
 }
 
 interface ReferralWithAp {
     val referral: Referral
     val approvedPremises: String
+}
+
+interface ReferralAndResidence {
+    val referral: Referral
+    val premises: ApprovedPremises
+    val residence: Residence?
 }
 
 interface ReferralSourceRepository : JpaRepository<ReferralSource, Long> {
