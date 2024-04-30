@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
@@ -115,8 +116,19 @@ class ReferralService(
 
     fun bookingCancelled(crn: String, details: BookingCancelled, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
-        val referral = findReferral(person, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
-            ?.apply(referralRepository::delete)
+        val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
+        val referral = findReferral(person, externalReference)?.also {
+            val residence = residenceRepository.findByReferralId(it.id)
+            if (residence == null) referralRepository.delete(it)
+            else throw IgnorableMessageException(
+                "Cannot cancel booking as residency recorded",
+                listOfNotNull(
+                    "externalReference" to externalReference,
+                    "arrivedAt" to DeliusDateTimeFormatter.format(residence.arrivalDate),
+                    residence.departureDate?.let { date -> "departedAt" to DeliusDateTimeFormatter.format(date) }
+                ).toMap()
+            )
+        }
         contactService.createContact(
             ContactDetails(
                 date = details.cancelledAt,

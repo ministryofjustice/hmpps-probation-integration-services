@@ -379,41 +379,38 @@ internal class MessagingIntegrationTest {
 
     @Test
     @Order(6)
-    fun `booking cancelled creates a contact`() {
+    fun `booking cancelled not allowed after arrival`() {
         val event = prepEvent("booking-cancelled", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
-        verify(telemetryService).trackEvent("BookingCancelled", event.message.telemetryProperties())
-
-        val contact = contactRepository.findAll()
-            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.BOOKING_CANCELLED.code }
-        assertThat(contact.alert, equalTo(true))
-        assertThat(
-            contact.notes,
-            equalTo(
-                """
-            Reason for application cancellation
-            
-            For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/364145f9-0af8-488e-9901-b4c46cd9ba37
-                """.trimIndent()
+        verify(telemetryService).trackEvent(
+            "ApprovedPremisesFailureReport",
+            event.message.telemetryProperties() + mapOf(
+                "externalReference" to "urn:uk:gov:hmpps:approved-premises-service:booking:14c80733-4b6d-4f35-b724-66955aac320c",
+                "arrivedAt" to "30/11/2022 14:51:30",
+                "departedAt" to "16/01/2023 17:21:30",
+                "reason" to "Cannot cancel booking as residency recorded"
             )
         )
-        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
-        assertThat(contact.description, equalTo("Booking cancelled for Hope House"))
-        assertNull(contact.outcome)
-        assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
 
+        // contact should not be generated
+        val contact = contactRepository.findAll()
+            .singleOrNull { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.BOOKING_CANCELLED.code }
+        assertNull(contact)
+
+        // referral should not be deleted
         val referral = referralRepository.findAll().firstOrNull {
-            it.personId == contact.person.id && it.eventId == contact.eventId
+            it.personId == PersonGenerator.DEFAULT.id && it.eventId == PersonGenerator.EVENT.id
         }
-        assertNull(referral)
+        assertNotNull(referral)
     }
 
     @Test
     @Order(7)
     fun `application withdrawn creates a contact`() {
         val event = prepEvent("application-withdrawn", wireMockServer.port())
+
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
@@ -433,5 +430,45 @@ internal class MessagingIntegrationTest {
             )
         )
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+    }
+
+    @Test
+    @Order(8)
+    fun `booking cancelled creates a contact when no arrival`() {
+        val event = prepEvent("booking-cancelled", wireMockServer.port())
+
+        val ref = referralRepository.findAll().firstOrNull {
+            it.personId == PersonGenerator.DEFAULT.id && it.eventId == PersonGenerator.EVENT.id
+        }
+        assertNotNull(ref!!)
+
+        residenceRepository.findByReferralId(ref.id)?.also(residenceRepository::delete)
+
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        verify(telemetryService).trackEvent("BookingCancelled", event.message.telemetryProperties())
+
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.BOOKING_CANCELLED.code }
+        assertThat(contact.alert, equalTo(true))
+        assertThat(
+            contact.notes,
+            equalTo(
+                """
+            Reason for application cancellation
+
+            For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/364145f9-0af8-488e-9901-b4c46cd9ba37
+                """.trimIndent()
+            )
+        )
+        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
+        assertThat(contact.description, equalTo("Booking cancelled for Hope House"))
+        assertNull(contact.outcome)
+        assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+
+        val referral = referralRepository.findAll().firstOrNull {
+            it.personId == contact.person.id && it.eventId == contact.eventId
+        }
+        assertNull(referral)
     }
 }

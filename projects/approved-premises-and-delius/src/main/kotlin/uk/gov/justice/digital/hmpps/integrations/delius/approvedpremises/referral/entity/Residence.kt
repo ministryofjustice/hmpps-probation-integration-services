@@ -87,6 +87,7 @@ class MoveOnCategory(
 )
 
 interface ResidenceRepository : JpaRepository<Residence, Long> {
+    fun findByReferralId(referralId: Long): Residence?
     fun findByReferralIdAndCreatedByUserId(referralId: Long, createdByUserId: Long): Residence?
 }
 
