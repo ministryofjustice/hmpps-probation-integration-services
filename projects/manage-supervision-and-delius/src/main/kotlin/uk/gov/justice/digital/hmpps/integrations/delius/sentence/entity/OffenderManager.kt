@@ -50,7 +50,6 @@ class Staff(
     val user: StaffUser?
 )
 
-
 @Entity
 @Immutable
 @Table(name = "user_")
@@ -73,7 +72,6 @@ class StaffUser(
     @Transient
     var telephone: String? = null
 }
-
 
 @Immutable
 @Entity(name = "professional_contact_team")

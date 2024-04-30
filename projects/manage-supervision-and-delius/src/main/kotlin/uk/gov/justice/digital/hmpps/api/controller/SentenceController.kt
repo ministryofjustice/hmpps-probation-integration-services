@@ -39,5 +39,4 @@ class SentenceController(
     @GetMapping("/contacts")
     @Operation(summary = "Display contacts")
     fun getContacts(@PathVariable crn: String) = contactService.getContacts(crn)
-
 }
