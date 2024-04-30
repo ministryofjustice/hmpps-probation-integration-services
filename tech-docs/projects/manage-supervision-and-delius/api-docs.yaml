@@ -14,6 +14,29 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /user/{username}/access/{crn}:
+    get:
+      tags:
+      - User access
+      operationId: checkAccess
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseAccess'
   /sentence/{crn}:
     get:
       tags:
@@ -515,6 +538,23 @@ paths:
                 $ref: '#/components/schemas/PersonActivity'
 components:
   schemas:
+    CaseAccess:
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
     AdditionalSentence:
       required:
       - description
