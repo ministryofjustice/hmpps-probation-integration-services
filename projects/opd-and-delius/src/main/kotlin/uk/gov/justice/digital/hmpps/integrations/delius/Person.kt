@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -19,6 +14,9 @@ class Person(
 
     @Column(columnDefinition = "char(7)")
     val crn: String,
+
+    @Column(name = "noms_number", columnDefinition = "char(7)")
+    val nomsId: String?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
@@ -59,7 +57,12 @@ class PersonManager(
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByPersonCrn(crn: String): PersonManager?
+    fun findByPersonNomsId(nomsId: String): PersonManager?
 }
 
-fun PersonManagerRepository.getByCrn(crn: String) =
-    findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+fun PersonManagerRepository.getByCrnOrNoms(crn: String?, nomsId: String?) =
+    crn?.let(::findByPersonCrn) ?: nomsId?.let(::findByPersonNomsId) ?: throw NotFoundException(
+        "Person",
+        crn?.let { "crn" } ?: nomsId?.let { "nomsId" } ?: "",
+        crn ?: nomsId ?: ""
+    )

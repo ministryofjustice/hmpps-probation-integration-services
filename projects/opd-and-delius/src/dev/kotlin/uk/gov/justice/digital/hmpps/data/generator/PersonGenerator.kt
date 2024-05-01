@@ -5,13 +5,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
 
 object PersonGenerator {
-    val PERSON_OPD_NEW = generatePerson("A000001")
+    val PERSON_OPD_NEW = generatePerson("A000001", "A0001BC")
     val PERSON_MANAGER = generatePersonManager(PERSON_OPD_NEW)
     fun generatePerson(
         crn: String,
+        noms: String? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Person(crn, softDeleted, id)
+    ) = Person(crn, noms, softDeleted, id)
 
     fun generatePersonManager(
         person: Person,
