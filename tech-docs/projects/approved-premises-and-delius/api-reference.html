@@ -133,6 +133,9 @@
         <a href="./api-reference.html#probation-case-crn-referrals"><span>/probation-case/{crn}/referrals</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-case-crn-referrals-bookingid"><span>/probation-case/{crn}/referrals/{bookingId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#documents-crn-id"><span>/documents/{crn}/{id}</span></a>
       </li>
       <li>
@@ -819,6 +822,86 @@
 </td>
 <td>
 <a href='#schema-existingreferrals'>ExistingReferrals</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-referrals-bookingid">/probation-case/{crn}/referrals/{bookingId}</h2>
+
+<h3 id="probation-case-crn-referrals-bookingid-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-referrals-bookingid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>bookingId</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-referrals-bookingid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "referral": {
+    "referralDate": "string",
+    "expectedArrivalDate": "string",
+    "expectedDepartureDate": "string",
+    "decisionDate": "string",
+    "approvedPremises": {
+      "description": "string"
+    }
+  },
+  "arrivedAt": "string",
+  "departedAt": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-referraldetail'>ReferralDetail</a>
 </td>
 </tr>
 
@@ -1976,6 +2059,48 @@
 <td></td>
 <td>
   <a href='#schema-apreferral'>ApReferral</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-referraldetail">ReferralDetail</h3>
+
+
+<table class='schema-referraldetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>referral</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-apreferral'>ApReferral</a>
+</td>
+</tr>
+
+<tr>
+<td>arrivedAt</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>departedAt</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 

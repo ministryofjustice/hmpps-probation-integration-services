@@ -200,6 +200,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExistingReferrals'
+  /probation-case/{crn}/referrals/{bookingId}:
+    get:
+      tags:
+      - referral-controller
+      operationId: findReferralDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralDetail'
   /documents/{crn}/{id}:
     get:
       tags:
@@ -564,6 +587,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ApReferral'
+    ReferralDetail:
+      required:
+      - referral
+      type: object
+      properties:
+        referral:
+          $ref: '#/components/schemas/ApReferral'
+        arrivedAt:
+          type: string
+          format: date-time
+        departedAt:
+          type: string
+          format: date-time
     StreamingResponseBody:
       type: object
     APDocument:
