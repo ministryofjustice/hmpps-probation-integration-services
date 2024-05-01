@@ -29,7 +29,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "nsi")
-@SQLRestriction("soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "nsi_id_generator", sequenceName = "nsi_id_seq", allocationSize = 1)
 class Nsi(
