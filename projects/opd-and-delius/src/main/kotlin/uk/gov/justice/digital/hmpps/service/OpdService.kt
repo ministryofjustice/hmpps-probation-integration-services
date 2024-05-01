@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.integrations.delius.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.getByCrnOrNoms
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrnOrNoms
 import uk.gov.justice.digital.hmpps.messaging.OpdAssessment
 
 @Service

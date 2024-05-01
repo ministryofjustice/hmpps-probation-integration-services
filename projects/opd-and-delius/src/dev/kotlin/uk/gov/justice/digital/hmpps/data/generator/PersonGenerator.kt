@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
 
 object PersonGenerator {
     val PERSON_OPD_NEW = generatePerson("A000001", "A0001BC")
