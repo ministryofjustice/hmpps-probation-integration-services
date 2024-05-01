@@ -42,7 +42,10 @@ class Handler(
         detailedOffenceRepository.save(existingEntity.mergeWith(offence.newEntity))
         telemetryService.trackEvent(
             if (existingEntity == null) "OffenceCodeCreated" else "OffenceCodeUpdated",
-            mapOf("offenceCode" to offence.code)
+            mapOf(
+                "offenceCode" to offence.code,
+                "homeOfficeCode" to offence.homeOfficeCode
+            )
         )
     }
 

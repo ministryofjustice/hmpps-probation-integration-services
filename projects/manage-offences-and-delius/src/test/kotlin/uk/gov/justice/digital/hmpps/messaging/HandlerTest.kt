@@ -89,7 +89,11 @@ internal class HandlerTest {
                 assertThat(it.category, equalTo(COURT_CATEGORY))
             }
         )
-        verify(telemetryService).trackEvent("OffenceCodeCreated", mapOf("offenceCode" to offenceCode), mapOf())
+        verify(telemetryService).trackEvent(
+            "OffenceCodeCreated",
+            mapOf("offenceCode" to offenceCode, "homeOfficeCode" to "01234"),
+            mapOf()
+        )
     }
 
     @Test
@@ -112,13 +116,19 @@ internal class HandlerTest {
                 assertThat(it.category, equalTo(COURT_CATEGORY))
             }
         )
-        verify(telemetryService).trackEvent("OffenceCodeUpdated", mapOf("offenceCode" to offenceCode), mapOf())
+        verify(telemetryService).trackEvent(
+            "OffenceCodeUpdated",
+            mapOf("offenceCode" to offenceCode, "homeOfficeCode" to "01234"),
+            mapOf()
+        )
     }
 
     private fun offence(code: String) = Offence(
         code = code,
         description = "some offence",
         offenceType = COURT_CATEGORY.code,
-        startDate = LocalDate.now()
+        startDate = LocalDate.now(),
+        homeOfficeStatsCode = "012/34",
+        homeOfficeDescription = "Some Offence Description",
     )
 }
