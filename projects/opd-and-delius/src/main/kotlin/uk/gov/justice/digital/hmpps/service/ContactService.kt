@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType

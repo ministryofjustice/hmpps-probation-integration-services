@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiStatus
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiSubType
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.NsiStatus
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.NsiSubType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.NsiType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 
 object ReferenceDataGenerator {
