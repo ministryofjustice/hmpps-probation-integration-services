@@ -46,7 +46,7 @@ fun HmppsDomainEvent.override() = OpdAssessment.Override.of(additionalInformatio
 fun HmppsDomainEvent.assessmentResult() =
     OpdAssessment.Result.of(additionalInformation["opdResult"] as String, override())
 
-fun PersonReference.nomisId(): String? = findNomsNumber() ?: identifiers.firstOrNull { it.type == "nomsId" }?.value
+fun PersonReference.nomisId(): String? = findNomsNumber() ?: identifiers.firstOrNull { it.type == "nomisId" }?.value
 
 fun HmppsDomainEvent.opdAssessment() =
     OpdAssessment(
