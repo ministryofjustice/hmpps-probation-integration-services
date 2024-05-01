@@ -45,10 +45,12 @@ fun HmppsDomainEvent.override() = OpdAssessment.Override.of(additionalInformatio
 fun HmppsDomainEvent.assessmentResult() =
     OpdAssessment.Result.of(additionalInformation["opdResult"] as String, override())
 
-fun HmppsDomainEvent.opdAssessment() = OpdAssessment(personReference.findCrn()!!, assessmentDate(), assessmentResult())
+fun HmppsDomainEvent.opdAssessment() =
+    OpdAssessment(personReference.findCrn(), personReference.findNomsNumber(), assessmentDate(), assessmentResult())
 
 data class OpdAssessment(
-    val crn: String,
+    val crn: String?,
+    val noms: String?,
     val date: ZonedDateTime,
     val result: Result
 ) {
@@ -81,8 +83,9 @@ data class OpdAssessment(
     """.trimMargin()
 }
 
-fun OpdAssessment.telemetryProperties() = mapOf(
-    "crn" to crn,
+fun OpdAssessment.telemetryProperties() = listOfNotNull(
+    crn?.let { "crn" to it },
+    noms?.let { "noms" to it },
     "date" to DeliusDateTimeFormatter.format(date),
     "result" to result.description
-)
+).toMap()
