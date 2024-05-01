@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.getByCrnOrNoms
 import uk.gov.justice.digital.hmpps.messaging.OpdAssessment
 
 @Service
@@ -15,7 +15,7 @@ class OpdService(
 ) {
     @Transactional
     fun processAssessment(opdAssessment: OpdAssessment) {
-        val com = personManagerRepository.getByCrn(opdAssessment.crn)
+        val com = personManagerRepository.getByCrnOrNoms(opdAssessment.crn, opdAssessment.noms)
         val activeEvent = eventRepository.existsByPersonId(com.person.id)
         val nsi = nsiService.findOpdNsi(com.person.id)
 

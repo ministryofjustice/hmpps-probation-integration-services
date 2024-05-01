@@ -25,7 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.NsiType
 import uk.gov.justice.digital.hmpps.integrations.delius.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.getByCrnOrNoms
 import uk.gov.justice.digital.hmpps.messaging.FeatureFlag
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -68,7 +68,7 @@ internal class OpdIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(message)
 
-        val com = personManagerRepository.getByCrn(PersonGenerator.PERSON_OPD_NEW.crn)
+        val com = personManagerRepository.getByCrnOrNoms(PersonGenerator.PERSON_OPD_NEW.crn, null)
         val nsi = nsiRepository.findNsiByPersonIdAndTypeCode(com.person.id, NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
         assertNotNull(nsi!!)
         assertThat(nsi.type.code, equalTo(NsiType.Code.OPD_COMMUNITY_PATHWAY.value))
@@ -113,7 +113,7 @@ internal class OpdIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(message)
 
-        val com = personManagerRepository.getByCrn(PersonGenerator.PERSON_OPD_NEW.crn)
+        val com = personManagerRepository.getByCrnOrNoms(null, PersonGenerator.PERSON_OPD_NEW.nomsId)
         val nsi = nsiRepository.findNsiByPersonIdAndTypeCode(com.person.id, NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
         assertNotNull(nsi!!)
         assertThat(
