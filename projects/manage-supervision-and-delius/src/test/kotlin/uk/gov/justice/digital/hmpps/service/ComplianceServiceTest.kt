@@ -55,7 +55,8 @@ internal class ComplianceServiceTest {
             forename = OVERVIEW.forename,
             secondName = OVERVIEW.secondName,
             surname = OVERVIEW.surname, crn = OVERVIEW.crn, pnc = OVERVIEW.pnc,
-            dateOfBirth = OVERVIEW.dateOfBirth
+            dateOfBirth = OVERVIEW.dateOfBirth,
+            gender = OVERVIEW.gender.description
         )
     }
 

@@ -7,5 +7,6 @@ data class PersonSummary(
     val crn: String,
     val offenderId: Long,
     val pnc: String?,
-    val dateOfBirth: LocalDate
+    val dateOfBirth: LocalDate,
+    val gender: String?
 )

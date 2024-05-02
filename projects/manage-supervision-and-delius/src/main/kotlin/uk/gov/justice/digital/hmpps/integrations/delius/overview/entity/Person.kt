@@ -95,6 +95,7 @@ interface PersonSummaryEntity {
     val crn: String
     val pnc: String?
     val dateOfBirth: LocalDate
+    val gender: String?
 }
 
 interface PersonRepository : JpaRepository<Person, Long> {
@@ -103,9 +104,19 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query(
         """
-        select p.offender_id as id, p.first_name as forename, p.second_name as secondName, p.third_name as thirdName, 
-        p.surname, p.crn, p.pnc_number as pnc, p.date_of_birth_date as dateOfBirth
-        from offender p where p.crn = :crn and p.soft_deleted = 0  
+        select 
+        p.offender_id as id, 
+        p.first_name as forename, 
+        p.second_name as secondName, 
+        p.third_name as thirdName, 
+        p.surname, 
+        p.crn, 
+        p.pnc_number as pnc, 
+        p.date_of_birth_date as dateOfBirth,
+        g.code_description as gender
+        from offender p 
+        left join r_standard_reference_list g on p.gender_id = g.standard_reference_list_id
+        where p.crn = :crn and p.soft_deleted = 0  
         """, nativeQuery = true
     )
     fun findSummary(crn: String): PersonSummaryEntity?

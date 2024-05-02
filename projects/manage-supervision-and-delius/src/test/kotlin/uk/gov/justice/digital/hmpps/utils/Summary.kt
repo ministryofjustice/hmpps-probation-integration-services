@@ -11,5 +11,6 @@ data class Summary(
     override val surname: String,
     override val crn: String,
     override val pnc: String?,
-    override val dateOfBirth: LocalDate
+    override val dateOfBirth: LocalDate,
+    override val gender: String?
 ) : PersonSummaryEntity

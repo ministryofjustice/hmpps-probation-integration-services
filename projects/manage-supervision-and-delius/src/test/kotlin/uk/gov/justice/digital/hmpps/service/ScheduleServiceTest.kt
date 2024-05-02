@@ -37,7 +37,8 @@ internal class ScheduleServiceTest {
             forename = PERSONAL_DETAILS.forename,
             secondName = PERSONAL_DETAILS.secondName,
             surname = PERSONAL_DETAILS.surname, crn = PERSONAL_DETAILS.crn, pnc = PERSONAL_DETAILS.pnc,
-            dateOfBirth = PERSONAL_DETAILS.dateOfBirth
+            dateOfBirth = PERSONAL_DETAILS.dateOfBirth,
+            gender = PERSONAL_DETAILS.gender.description
         )
     }
 
