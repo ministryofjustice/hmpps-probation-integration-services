@@ -25,7 +25,7 @@ class OffenderManager(
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    val team: Team?,
+    val team: Team,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")

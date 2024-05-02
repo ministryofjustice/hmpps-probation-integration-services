@@ -47,7 +47,7 @@ class ContactService(
             staff.user?.email,
             staff.user?.telephone,
             provider.description,
-            team?.district!!.borough.description,
+            team.district.borough.description,
             team.description,
             endDate
         )
