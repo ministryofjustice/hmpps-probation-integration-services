@@ -64,16 +64,16 @@ class Handler(
             schedule15SexualOffence = schedule15SexualOffence
         )
 
-    fun DetailedOffence?.mergeWith(newEntity: DetailedOffence) = this?.copy(
-        code = newEntity.code,
-        description = newEntity.description,
-        startDate = newEntity.startDate,
-        endDate = newEntity.endDate,
-        homeOfficeCode = newEntity.homeOfficeCode,
-        homeOfficeDescription = newEntity.homeOfficeDescription,
-        legislation = newEntity.legislation,
+    fun DetailedOffence?.mergeWith(newEntity: DetailedOffence) = this?.apply {
+        code = newEntity.code
+        description = newEntity.description
+        startDate = newEntity.startDate
+        endDate = newEntity.endDate
+        homeOfficeCode = newEntity.homeOfficeCode
+        homeOfficeDescription = newEntity.homeOfficeDescription
+        legislation = newEntity.legislation
         category = newEntity.category
-    ) ?: newEntity
+    } ?: newEntity
 
     private fun Offence.createOrMerge() {
         if (homeOfficeStatsCode != null && homeOfficeDescription != null) {
@@ -109,17 +109,17 @@ fun Offence.asReference(highLevelOffence: ReferenceOffence) = ReferenceOffence(
     schedule15SexualOffence = schedule15SexualOffence
 )
 
-fun ReferenceOffence?.mergeWith(referenceOffence: ReferenceOffence) = this?.copy(
-    code = code,
-    description = description,
-    mainCategoryCode = mainCategoryCode,
-    mainCategoryDescription = mainCategoryDescription,
-    mainCategoryAbbreviation = mainCategoryAbbreviation,
-    ogrsOffenceCategoryId = ogrsOffenceCategoryId,
-    subCategoryCode = subCategoryCode,
-    subCategoryDescription = subCategoryDescription,
-    form20Code = form20Code,
-    schedule15SexualOffence = schedule15SexualOffence,
-    schedule15ViolentOffence = schedule15ViolentOffence,
-    childAbduction = childAbduction
-) ?: referenceOffence
+fun ReferenceOffence?.mergeWith(referenceOffence: ReferenceOffence) = this?.apply {
+    code = referenceOffence.code
+    description = referenceOffence.description
+    mainCategoryCode = referenceOffence.mainCategoryCode
+    mainCategoryDescription = referenceOffence.mainCategoryDescription
+    mainCategoryAbbreviation = referenceOffence.mainCategoryAbbreviation
+    ogrsOffenceCategoryId = referenceOffence.ogrsOffenceCategoryId
+    subCategoryCode = referenceOffence.subCategoryCode
+    subCategoryDescription = referenceOffence.subCategoryDescription
+    form20Code = referenceOffence.form20Code
+    schedule15SexualOffence = referenceOffence.schedule15SexualOffence
+    schedule15ViolentOffence = referenceOffence.schedule15ViolentOffence
+    childAbduction = referenceOffence.childAbduction
+} ?: referenceOffence

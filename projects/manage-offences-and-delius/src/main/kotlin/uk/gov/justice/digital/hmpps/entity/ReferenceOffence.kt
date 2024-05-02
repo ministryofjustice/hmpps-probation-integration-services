@@ -15,42 +15,42 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "r_offence")
 @SequenceGenerator(name = "offence_id_seq", sequenceName = "offence_id_seq", allocationSize = 1)
-data class ReferenceOffence(
+class ReferenceOffence(
 
     @Column(columnDefinition = "char(5)")
-    val code: String,
+    var code: String,
 
-    val description: String,
+    var description: String,
 
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean?,
+    var selectable: Boolean?,
 
     @Column(columnDefinition = "char(3)")
-    val mainCategoryCode: String,
+    var mainCategoryCode: String,
 
-    val mainCategoryDescription: String,
-    val mainCategoryAbbreviation: String?,
+    var mainCategoryDescription: String,
+    var mainCategoryAbbreviation: String?,
 
-    val ogrsOffenceCategoryId: Long?,
+    var ogrsOffenceCategoryId: Long?,
 
     @Column(columnDefinition = "char(2)")
-    val subCategoryCode: String,
+    var subCategoryCode: String,
 
-    val subCategoryDescription: String,
+    var subCategoryDescription: String,
 
     @Column(name = "form_20_code")
-    val form20Code: String?,
+    var form20Code: String?,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "schedule15_sexual_offence")
-    val schedule15SexualOffence: Boolean?,
+    var schedule15SexualOffence: Boolean?,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "schedule15_violent_offence")
-    val schedule15ViolentOffence: Boolean?,
+    var schedule15ViolentOffence: Boolean?,
 
     @Convert(converter = YesNoConverter::class)
-    val childAbduction: Boolean?,
+    var childAbduction: Boolean?,
 
     @Id
     @GeneratedValue(strategy = SEQUENCE, generator = "offence_id_seq")

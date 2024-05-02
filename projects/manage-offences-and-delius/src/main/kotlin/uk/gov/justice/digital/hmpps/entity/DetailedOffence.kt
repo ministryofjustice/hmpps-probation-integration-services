@@ -25,7 +25,7 @@ import java.time.ZonedDateTime
 @Table(name = "r_detailed_offence")
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "detailed_offence_id_seq", sequenceName = "detailed_offence_id_seq", allocationSize = 1)
-data class DetailedOffence(
+class DetailedOffence(
     @Id
     @Column(name = "detailed_offence_id")
     @GeneratedValue(strategy = SEQUENCE, generator = "detailed_offence_id_seq")
@@ -33,47 +33,47 @@ data class DetailedOffence(
 
     @Version
     @Column(name = "row_version")
-    val version: Long = 0,
+    var version: Long = 0,
 
     @Column(name = "cja_code", columnDefinition = "varchar2(10)")
-    val code: String, // Criminal Justice System code
+    var code: String, // Criminal Justice System code
 
     @Column(name = "offence_description")
-    val description: String?, // Criminal Justice System title
+    var description: String?, // Criminal Justice System title
 
     @Column
-    val startDate: LocalDate,
+    var startDate: LocalDate,
 
     @Column
-    val endDate: LocalDate?,
+    var endDate: LocalDate?,
 
     @Column(name = "ho_code", columnDefinition = "varchar2(6)")
-    val homeOfficeCode: String?,
+    var homeOfficeCode: String?,
 
     @Column(name = "ho_description")
-    val homeOfficeDescription: String?,
+    var homeOfficeDescription: String?,
 
     @Column(columnDefinition = "varchar2(8)")
-    val pnldCode: String? = null, // Police National Legal Database code
+    var pnldCode: String? = null, // Police National Legal Database code
 
     @Column
-    val legislation: String?,
+    var legislation: String?,
 
     @ManyToOne
     @JoinColumn(name = "court_category_id")
-    val category: ReferenceData,
+    var category: ReferenceData,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "schedule15_sexual_offence")
-    val schedule15SexualOffence: Boolean? = null,
+    var schedule15SexualOffence: Boolean? = null,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "schedule15_violent_offence")
-    val schedule15ViolentOffence: Boolean? = null,
+    var schedule15ViolentOffence: Boolean? = null,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "cja_2003_s327_4a")
-    val cjaSection327Subsection4A: Boolean? = null, // Offences listed in CJA 2003 section 327, subsection 4A.
+    var cjaSection327Subsection4A: Boolean? = null, // Offences listed in CJA 2003 section 327, subsection 4A.
 
     @CreatedBy
     var createdByUserId: Long = 0,
