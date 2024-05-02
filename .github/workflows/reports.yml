@@ -54,3 +54,23 @@ jobs:
           app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
           app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
           app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+
+  manage-offences-new:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
+        with:
+          title: Offence added
+          summary: The following offences were updated from the Manage Offences service.
+          event_name: OffenceCodeCreated
+          project_name: manage-offences-and-delius
+          column1_header: "Offence Code"
+          column1_value: offenceCode
+          column2_header: Home Office Code
+          column2_value: homeOfficeCode
+          slack_channel: topic-probation-offence-codes
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}

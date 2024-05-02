@@ -4,9 +4,10 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.delius.NsiSubType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.NsiSubType
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.service.OpdService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -45,8 +46,15 @@ fun HmppsDomainEvent.override() = OpdAssessment.Override.of(additionalInformatio
 fun HmppsDomainEvent.assessmentResult() =
     OpdAssessment.Result.of(additionalInformation["opdResult"] as String, override())
 
+fun PersonReference.nomisId(): String? = findNomsNumber() ?: identifiers.firstOrNull { it.type == "nomisId" }?.value
+
 fun HmppsDomainEvent.opdAssessment() =
-    OpdAssessment(personReference.findCrn(), personReference.findNomsNumber(), assessmentDate(), assessmentResult())
+    OpdAssessment(
+        personReference.findCrn()?.ifEmpty { null },
+        personReference.nomisId()?.ifEmpty { null },
+        assessmentDate(),
+        assessmentResult()
+    )
 
 data class OpdAssessment(
     val crn: String?,

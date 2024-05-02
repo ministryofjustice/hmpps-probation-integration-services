@@ -2,7 +2,7 @@
   "Type": "Notification",
   "MessageId": "f39059e7-a62d-4157-929a-fb049015c993",
   "TopicArn": "arn:aws:sns:eu-west-2:000000000000:hmpps-domain",
-  "Message": "{\"eventType\":\"opd.produced\",\"version\":\"2\",\"description\":\"OPD Assessment\",\"occurredAt\":\"2023-10-31T13:42:25+01:00\",\"detailUrl\":null,\"additionalInformation\":{\"dateCompleted\":\"2023-10-31T13:42:25+01:00\", \"opdResult\":\"SCREEN OUT\", \"opdScreenOutOverride\": \"YES\"},\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A0001BC\"}]}}",
+  "Message": "{\"eventType\":\"opd.produced\",\"version\":\"2\",\"description\":\"OPD Assessment\",\"occurredAt\":\"2023-10-31T13:42:25+01:00\",\"detailUrl\":null,\"additionalInformation\":{\"dateCompleted\":\"2023-10-31T13:42:25+01:00\", \"opdResult\":\"SCREEN OUT\", \"opdScreenOutOverride\": \"YES\"},\"personReference\":{\"identifiers\":[{\"type\":\"nomisId\",\"value\":\"A0001BC\"}]}}",
   "Timestamp": "2023-10-31T13:42:25Z",
   "MessageAttributes": {
     "eventType": {

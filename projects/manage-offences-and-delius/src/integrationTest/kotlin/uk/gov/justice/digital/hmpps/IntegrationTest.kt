@@ -1,8 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.atMost
 import org.mockito.kotlin.verify
@@ -51,7 +50,11 @@ internal class IntegrationTest {
     }
 
     private fun verify() {
-        verify(telemetryService, atMost(2)).trackEvent("OffenceCodeUpdated", mapOf("offenceCode" to "AB06001"), mapOf())
+        verify(telemetryService, atMost(2)).trackEvent(
+            "OffenceCodeUpdated",
+            mapOf("offenceCode" to "AB06001", "homeOfficeCode" to "09155"),
+            mapOf()
+        )
 
         val referenceOffence = offenceRepository.findOffenceByCode("09155")
         assertNotNull(referenceOffence)
