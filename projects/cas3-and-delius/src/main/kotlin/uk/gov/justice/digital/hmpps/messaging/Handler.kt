@@ -68,7 +68,7 @@ class Handler(
             "accommodation.cas3.person.departed" -> {
                 val person = personRepository.getByCrn(event.crn())
                 val detail = cas3ApiClient.getPersonDeparted(event.url())
-                contactService.createOrUpdateContact(event.crn(), person) {
+                contactService.createOrUpdateContact(event.crn(), person, event.occurredAt) {
                     detail
                 }
                 addressService.endMainCAS3Address(person, detail.eventDetails.departedAt)

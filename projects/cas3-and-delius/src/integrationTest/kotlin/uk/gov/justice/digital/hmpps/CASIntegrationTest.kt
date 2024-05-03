@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
@@ -24,6 +23,8 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
@@ -188,7 +189,7 @@ internal class CASIntegrationTest {
     @Order(7)
     fun `person departed message is processed correctly`() {
         val eventName = "person-departed"
-        val event = prepEvent(eventName, wireMockServer.port())
+        val event: Notification<HmppsDomainEvent> = prepEvent(eventName, wireMockServer.port())
         val eventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-$eventName")
         val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now().minusSeconds(3))
         wireMockServer.stubFor(
@@ -208,7 +209,7 @@ internal class CASIntegrationTest {
 
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
         assertThat(contact!!.type.code, equalTo("EADP"))
-        assertThat(contact.date, equalTo(eventDetails.eventDetails.departedAt.toLocalDate()))
+        assertThat(contact.date, equalTo(event.message.occurredAt.toLocalDate()))
 
         val person = personRepository.findByCrn(event.message.crn())
         val address = addressRepository.findAll().filter { it.personId == person?.id }[0]

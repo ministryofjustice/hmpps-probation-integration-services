@@ -29,9 +29,10 @@ class ContactService(
     fun <T : Cas3Event> createOrUpdateContact(
         crn: String,
         person: Person? = null,
+        occurredAt: ZonedDateTime? = null,
         replaceNotes: Boolean = true,
         extraInfo: String? = null,
-        getEvent: () -> EventDetails<T>
+        getEvent: () -> EventDetails<T>,
     ) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
         val event = getEvent()
         val personId = person?.id ?: personRepository.getByCrn(crn).id
@@ -59,7 +60,7 @@ class ContactService(
         } else {
             contactRepository.save(
                 newContact(
-                    event.occurredAt(),
+                    occurredAt ?: event.occurredAt(),
                     personId,
                     event.eventDetails.contactTypeCode,
                     event.eventDetails.urn,
