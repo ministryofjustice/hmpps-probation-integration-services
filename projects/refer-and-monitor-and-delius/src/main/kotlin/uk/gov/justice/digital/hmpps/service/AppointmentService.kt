@@ -195,7 +195,7 @@ class AppointmentService(
             appointment.addNotes(uao.notes)
         }
 
-       uao.outcome.applyTo(appointment)
+        uao.outcome.applyTo(appointment)
     }
 
     private fun handleNonCompliance(appointment: Contact) {
