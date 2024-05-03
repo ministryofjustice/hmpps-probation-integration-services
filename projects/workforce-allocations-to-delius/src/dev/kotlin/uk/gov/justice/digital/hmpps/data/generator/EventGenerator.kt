@@ -9,6 +9,7 @@ object EventGenerator {
     val NEW = generate(eventNumber = "2")
     val HISTORIC = generate(eventNumber = "3")
     val DELETED = generate(eventNumber = "1", softDeleted = true)
+    val HAS_INITIAL_ALLOCATION = generate(eventNumber = "4")
     val INACTIVE = generate(eventNumber = "99", active = false)
 
     val CASE_VIEW = forCaseView()

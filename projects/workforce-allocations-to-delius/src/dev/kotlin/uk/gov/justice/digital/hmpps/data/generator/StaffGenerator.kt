@@ -21,6 +21,11 @@ object StaffGenerator {
         "John",
         "Smith"
     )
+    val ALLOCATED = generateStaff(
+        "TEST01",
+        "John",
+        "Smith"
+    )
     val STAFF_WITH_USER = generateStaffWithUser(
         "${TeamGenerator.ALLOCATION_TEAM.code}1",
         "Joe",
