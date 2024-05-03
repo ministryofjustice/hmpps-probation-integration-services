@@ -96,10 +96,12 @@ class AppointmentService(
         val replacement = appointment.replaceIfRescheduled(
             mergeAppointment.urn,
             mergeAppointment.start,
-            mergeAppointment.end
+            mergeAppointment.end,
+            mergeAppointment.countsTowardsRar
         )?.addNotes(mergeAppointment.notes)
         replacement?.also {
             appointment.outcome = outcomeRepository.getByCode(Code.RESCHEDULED_SERVICE_REQUEST.value)
+            appointment.rarActivity = false
             contactRepository.save(it)
         }
 
@@ -109,6 +111,10 @@ class AppointmentService(
     fun Outcome.applyTo(appointment: Contact): Long {
         val outcome = outcomeRepository.getByCode(attendanceOutcome(this).value)
         appointment.outcome = outcome
+
+        if (!sessionHappened) {
+            appointment.rarActivity = false
+        }
 
         if (outcome.compliantAcceptable == false) {
             handleNonCompliance(appointment)
@@ -185,18 +191,11 @@ class AppointmentService(
                     .asReason()
             )
 
-        val outcome = outcomeRepository.getByCode(attendanceOutcome(uao.outcome).value)
-        appointment.outcome = outcome
         if (appointment.notes?.contains(uao.notes) != true) {
             appointment.addNotes(uao.notes)
         }
 
-        if (outcome.compliantAcceptable == false) {
-            handleNonCompliance(appointment)
-        }
-
-        contactRepository.saveAndFlush(appointment)
-        nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount = contactRepository.countNsiRar(appointment.nsiId)
+       uao.outcome.applyTo(appointment)
     }
 
     private fun handleNonCompliance(appointment: Contact) {
