@@ -29,7 +29,7 @@ class SentenceService(
         val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
 
         return SentenceOverview(
-            name = person.toName(),
+            personSummary = person.toSummary(),
             sentences = activeEvents.map {
                 val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
                 val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)

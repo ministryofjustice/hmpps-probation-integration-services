@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrder
 import uk.gov.justice.digital.hmpps.api.model.sentence.PreviousOrderHistory
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -33,7 +34,7 @@ class OrderIntegrationTest {
     fun `no previous orders`() {
         val response = mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}/previous-orders")
+                MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/previous-orders")
                     .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)

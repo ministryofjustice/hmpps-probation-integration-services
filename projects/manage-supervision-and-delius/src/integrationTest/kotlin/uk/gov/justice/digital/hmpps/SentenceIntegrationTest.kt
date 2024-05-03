@@ -8,13 +8,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.EVENT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
+import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -28,12 +29,12 @@ class SentenceIntegrationTest {
     @Test
     fun `no active sentences`() {
         val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}").withToken())
+            .perform(MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            Name("Caroline", "Louise", "Bloggs"), listOf(), ProbationHistory(0, null, 0, 0)
+            PersonDetailsGenerator.PERSONAL_DETAILS.toSummary(), listOf(), ProbationHistory(0, null, 0, 0)
         )
 
         assertEquals(expected, response)
@@ -47,7 +48,7 @@ class SentenceIntegrationTest {
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            Name("Forename", "Middle1", "Surname"),
+            PersonGenerator.OVERVIEW.toSummary(),
             listOf(
                 Sentence(
                     OffenceDetails(
