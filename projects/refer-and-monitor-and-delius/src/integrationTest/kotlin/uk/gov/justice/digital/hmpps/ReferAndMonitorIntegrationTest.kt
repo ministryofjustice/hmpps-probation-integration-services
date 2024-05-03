@@ -243,6 +243,7 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
         assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
         assertThat(appointment.hoursCredited, equalTo(null))
+        assertThat(appointment.rarActivity, equalTo(false))
 
         verify(telemetryService).trackEvent(
             "SessionAppointmentSubmitted",
