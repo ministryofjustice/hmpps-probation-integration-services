@@ -36,7 +36,7 @@ internal class PersonalDetailsControllerTest {
         personSummary = PersonSummary(
             Name(forename = "TestName", middleName = null, surname = "TestSurname"), pnc = "Test PNC",
             crn = "CRN",
-            dateOfBirth = LocalDate.now(), offenderId = 1L, gender = "Male"
+            dateOfBirth = LocalDate.now(), offenderId = 1L
         )
     }
 
