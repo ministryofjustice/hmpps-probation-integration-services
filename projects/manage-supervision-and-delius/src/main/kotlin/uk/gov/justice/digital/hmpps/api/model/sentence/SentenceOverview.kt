@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.api.model.sentence
 
-import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 
 data class SentenceOverview(
-    val name: Name,
+    val personSummary: PersonSummary,
     val sentences: List<Sentence>,
     val probationHistory: ProbationHistory,
 )

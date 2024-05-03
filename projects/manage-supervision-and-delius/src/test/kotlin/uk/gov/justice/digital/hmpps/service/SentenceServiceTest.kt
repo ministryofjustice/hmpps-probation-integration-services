@@ -7,7 +7,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
-import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
@@ -64,7 +63,10 @@ class SentenceServiceTest {
         )
 
         val expected =
-            SentenceOverview(Name("Forename", "Middle1", "Surname"), listOf(), ProbationHistory(0, null, 0, 0))
+            SentenceOverview(
+                PersonGenerator.OVERVIEW.toSummary(),
+                listOf(), ProbationHistory(0, null, 0, 0)
+            )
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
         assertEquals(expected, response)
@@ -176,7 +178,7 @@ class SentenceServiceTest {
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
-            Name("Forename", "Middle1", "Surname"),
+            PersonGenerator.OVERVIEW.toSummary(),
             listOf(
                 Sentence(
                     OffenceDetails(
