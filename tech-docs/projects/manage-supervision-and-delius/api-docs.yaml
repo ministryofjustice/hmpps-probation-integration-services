@@ -79,7 +79,7 @@ paths:
     get:
       tags:
       - Sentence
-      summary: Display additinal offence details
+      summary: Display additional offence details
       operationId: getAdditionalOffenceDetails
       parameters:
       - name: crn
@@ -99,6 +99,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Offences'
+  /sentence/{crn}/contacts:
+    get:
+      tags:
+      - Sentence
+      summary: Display contacts
+      operationId: getContacts
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalContact'
   /schedule/{crn}/upcoming:
     get:
       tags:
@@ -808,6 +827,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offence'
+    Contact:
+      required:
+      - name
+      - probationDeliveryUnit
+      - provider
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        telephoneNumber:
+          type: string
+        provider:
+          type: string
+        probationDeliveryUnit:
+          type: string
+        team:
+          type: string
+        allocatedUntil:
+          type: string
+          format: date
+    ProfessionalContact:
+      required:
+      - contacts
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contact'
     Activity:
       required:
       - documents

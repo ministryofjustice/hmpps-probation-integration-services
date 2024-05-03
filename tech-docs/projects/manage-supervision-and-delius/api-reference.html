@@ -110,6 +110,9 @@
         <a href="./api-reference.html#sentence-crn-offences-eventnumber"><span>/sentence/{crn}/offences/{eventNumber}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#sentence-crn-contacts"><span>/sentence/{crn}/contacts</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schedule-crn-upcoming"><span>/schedule/{crn}/upcoming</span></a>
       </li>
       <li>
@@ -496,7 +499,7 @@
 
 <h3 id="sentence-crn-offences-eventnumber-get">get</h3>
 
-  <p><em>Display additinal offence details</em></p>
+  <p><em>Display additional offence details</em></p>
 
 
 
@@ -569,6 +572,83 @@
 </td>
 <td>
 <a href='#schema-offences'>Offences</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="sentence-crn-contacts">/sentence/{crn}/contacts</h2>
+
+<h3 id="sentence-crn-contacts-get">get</h3>
+
+  <p><em>Display contacts</em></p>
+
+
+
+
+<h4 id="sentence-crn-contacts-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="sentence-crn-contacts-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "contacts": [
+    {
+      "name": "string",
+      "email": "string",
+      "telephoneNumber": "string",
+      "provider": "string",
+      "probationDeliveryUnit": "string",
+      "team": "string",
+      "allocatedUntil": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-professionalcontact'>ProfessionalContact</a>
 </td>
 </tr>
 
@@ -4017,6 +4097,120 @@
 <td></td>
 <td>
   <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-contact">Contact</h3>
+
+
+<table class='schema-contact'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationDeliveryUnit</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>allocatedUntil</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-professionalcontact">ProfessionalContact</h3>
+
+
+<table class='schema-professionalcontact'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>contacts</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-contact'>Contact</a>
 </td>
 </tr>
 
