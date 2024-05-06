@@ -330,10 +330,16 @@
 
 
 <pre><code>{
-  "name": {
-    "forename": "string",
-    "middleName": "string",
-    "surname": "string"
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
   },
   "sentences": [
     {
@@ -3667,6 +3673,68 @@
 </tbody>
 </table>
 
+<h3 id="schema-personsummary">PersonSummary</h3>
+
+
+<table class='schema-personsummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pnc</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-probationhistory">ProbationHistory</h3>
 
 
@@ -3955,12 +4023,12 @@
 <tbody>
 
 <tr>
-<td>name</td>
+<td>personSummary</td>
 <td>object</td>
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-name'>Name</a>
+  <a href='#schema-personsummary'>PersonSummary</a>
 </td>
 </tr>
 
@@ -4764,68 +4832,6 @@
 <td>telephoneNumber</td>
 <td>string</td>
 <td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personsummary">PersonSummary</h3>
-
-
-<table class='schema-personsummary'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>offenderId</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pnc</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>dateOfBirth</td>
-<td>string</td>
-<td>true</td>
 <td></td>
 <td>
   

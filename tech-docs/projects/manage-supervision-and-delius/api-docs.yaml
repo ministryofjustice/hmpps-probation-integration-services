@@ -683,6 +683,26 @@ components:
         breaches:
           type: integer
           format: int32
+    PersonSummary:
+      required:
+      - crn
+      - dateOfBirth
+      - name
+      - offenderId
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        crn:
+          type: string
+        offenderId:
+          type: integer
+          format: int64
+        pnc:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
     ProbationHistory:
       required:
       - numberOfProfessionalContacts
@@ -775,13 +795,13 @@ components:
             $ref: '#/components/schemas/CourtDocument'
     SentenceOverview:
       required:
-      - name
+      - personSummary
       - probationHistory
       - sentences
       type: object
       properties:
-        name:
-          $ref: '#/components/schemas/Name'
+        personSummary:
+          $ref: '#/components/schemas/PersonSummary'
         sentences:
           type: array
           items:
@@ -1002,26 +1022,6 @@ components:
           type: string
         telephoneNumber:
           type: string
-    PersonSummary:
-      required:
-      - crn
-      - dateOfBirth
-      - name
-      - offenderId
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/Name'
-        crn:
-          type: string
-        offenderId:
-          type: integer
-          format: int64
-        pnc:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
     Schedule:
       required:
       - appointments
