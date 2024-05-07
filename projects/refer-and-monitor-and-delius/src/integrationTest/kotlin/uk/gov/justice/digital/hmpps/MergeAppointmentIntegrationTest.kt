@@ -144,6 +144,7 @@ internal class MergeAppointmentIntegrationTest {
             contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.previousUrn!!)!!
         assertThat(existing.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST.value))
         assertFalse(existing.attended!!)
+        assertThat(existing.rarActivity, equalTo(false))
 
         val replacement = assertDoesNotThrow {
             contactRepository.findByPersonCrnAndExternalReference(
@@ -179,7 +180,7 @@ internal class MergeAppointmentIntegrationTest {
             30,
             "Appointment Notes",
             "DEFAULT",
-            false,
+            true,
             Outcome(Attended.YES, true, null, false),
             null,
             appointmentId,
@@ -202,11 +203,13 @@ internal class MergeAppointmentIntegrationTest {
         assertNotNull(replacement.outcome)
         assertThat(replacement.attended, equalTo(true))
         assertThat(replacement.hoursCredited, equalTo(0.5))
+        assertThat(replacement.rarActivity, equalTo(true))
 
         val previousAppt =
             contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.previousUrn!!)!!
         assertThat(previousAppt.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST.value))
         assertFalse(previousAppt.attended!!)
+        assertThat(previousAppt.rarActivity, equalTo(false))
     }
 
     @Test
@@ -269,6 +272,7 @@ internal class MergeAppointmentIntegrationTest {
         assertNotNull(appointment.outcome)
         assertThat(appointment.attended, equalTo(true))
         assertNull(appointment.hoursCredited)
+        assertThat(appointment.rarActivity, equalTo(false))
     }
 
     @Test
