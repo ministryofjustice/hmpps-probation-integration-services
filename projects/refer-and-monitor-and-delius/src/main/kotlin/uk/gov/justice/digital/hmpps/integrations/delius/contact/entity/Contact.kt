@@ -159,7 +159,8 @@ class Contact(
     fun replaceIfRescheduled(
         externalReference: String,
         startTime: ZonedDateTime,
-        endTime: ZonedDateTime
+        endTime: ZonedDateTime,
+        countsTowardsRar: Boolean
     ): Contact? =
         if (startTime.hasChanged(this.startTime) || endTime.hasChanged(this.endTime)) {
             Contact(
@@ -174,7 +175,7 @@ class Contact(
                 teamId = teamId,
                 staffId = staffId,
                 locationId = locationId,
-                rarActivity = rarActivity,
+                rarActivity = countsTowardsRar,
                 externalReference = externalReference
             )
         } else {

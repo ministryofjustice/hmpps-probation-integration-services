@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.Contact
 import uk.gov.justice.digital.hmpps.api.model.sentence.ProfessionalContact
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -52,13 +53,13 @@ class ContactIntegrationTest {
 
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn}/contacts")
+                MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/contacts")
                     .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andExpect { result: MvcResult ->
                 assertEquals(
-                    "Offender Manager records with crn of ${PersonGenerator.OFFENDER_WITHOUT_EVENTS.crn} not found",
+                    "Offender Manager records with crn of ${PersonDetailsGenerator.PERSONAL_DETAILS.crn} not found",
                     result.resolvedException!!.message
                 )
             }
