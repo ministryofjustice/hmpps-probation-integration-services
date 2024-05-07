@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import java.time.LocalDate
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 @Entity
 @Table(name = "approved_premises_referral")
@@ -33,8 +32,8 @@ class Referral(
     val approvedPremisesId: Long?,
 
     val referralDate: LocalDate,
-    expectedArrivalDate: LocalDate?,
-    expectedDepartureDate: LocalDate?,
+    var expectedArrivalDate: LocalDate?,
+    var expectedDepartureDate: LocalDate?,
     val decisionDate: ZonedDateTime?,
     @Lob
     val referralNotes: String?,
@@ -51,7 +50,7 @@ class Referral(
     val sourceTypeId: Long,
 
     @Column(name = "referral_decision_id")
-    val decisionId: Long,
+    var decisionId: Long,
     @Column(name = "decision_by_team_id")
     val decisionTeamId: Long,
     @Column(name = "decision_by_staff_id")
@@ -97,30 +96,6 @@ class Referral(
     @Column(name = "approved_premises_referral_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_referral_id_seq")
     val id: Long = 0
-
-    var expectedArrivalDate: LocalDate? = expectedArrivalDate
-        set(value) {
-            field = value
-            reservationStartDate = value
-            reservationLength = calculateReservationLength()
-        }
-    var expectedDepartureDate: LocalDate? = expectedDepartureDate
-        set(value) {
-            field = value
-            reservationLength = calculateReservationLength()
-        }
-
-    var reservationStartDate: LocalDate? = expectedArrivalDate
-        private set
-
-    var reservationLength: Long? = calculateReservationLength()
-        private set
-
-    private fun calculateReservationLength() = if (expectedArrivalDate != null && expectedDepartureDate != null) {
-        ChronoUnit.DAYS.between(expectedArrivalDate, expectedDepartureDate)
-    } else {
-        null
-    }
 
     @Column(columnDefinition = "number")
     var softDeleted: Boolean = false

@@ -111,6 +111,7 @@ class ReferralService(
         referral.apply {
             expectedArrivalDate = details.arrivalOn
             expectedDepartureDate = details.departureOn
+            decisionId = referenceDataRepository.acceptedDeferredAdmission().id
         }
     }
 
