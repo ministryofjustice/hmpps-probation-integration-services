@@ -171,7 +171,7 @@ internal class CASIntegrationTest {
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         assertThat(contact!!.type.code, equalTo("EAAR"))
-        assertThat(contact.date, equalTo(eventDetails.eventDetails.arrivedAt.toLocalDate()))
+        assertThat(contact.date, equalTo(event.message.occurredAt.toLocalDate()))
         assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
         assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
 
