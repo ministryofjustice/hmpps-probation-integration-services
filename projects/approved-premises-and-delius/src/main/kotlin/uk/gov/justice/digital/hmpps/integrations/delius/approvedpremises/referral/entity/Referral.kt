@@ -50,7 +50,7 @@ class Referral(
     val sourceTypeId: Long,
 
     @Column(name = "referral_decision_id")
-    val decisionId: Long,
+    var decisionId: Long,
     @Column(name = "decision_by_team_id")
     val decisionTeamId: Long,
     @Column(name = "decision_by_staff_id")
