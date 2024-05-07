@@ -45,7 +45,7 @@ jobs:
           VALIDATE_XML: true
           VALIDATE_YAML: true
           LINTER_RULES_PATH: /
-          FILTER_REGEX_EXCLUDE: .+templates/.+yml # yamlint doesn't like Helm templating
+          FILTER_REGEX_EXCLUDE: .*templates/.*.ya?ml
           GITHUB_ACTIONS_CONFIG_FILE: .github/actionlint.yml
           GITHUB_ACTIONS_COMMAND_ARGS: -ignore=SC.+:info:.+
           GITHUB_TOKEN: ${{ github.token }}

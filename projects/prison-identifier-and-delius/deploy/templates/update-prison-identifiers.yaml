@@ -16,6 +16,14 @@ spec:
           containers:
             - name: update-prison-identifiers
               image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-identifier-and-delius:{{ .Values.version }}"
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
               resources:
                 requests:
                   memory: "1Gi"

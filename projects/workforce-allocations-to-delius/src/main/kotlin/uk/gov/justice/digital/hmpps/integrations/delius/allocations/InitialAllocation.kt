@@ -90,5 +90,5 @@ interface InitialAllocationRepository : JpaRepository<Person, Long> {
         """,
         nativeQuery = true
     )
-    fun findAllInitialAllocations(startDate: LocalDate = LocalDate.ofYearDay(2020, 1)): List<InitialAllocation>
+    fun findAllInitialAllocations(startDate: LocalDate = LocalDate.ofYearDay(2024, 1)): List<InitialAllocation>
 }

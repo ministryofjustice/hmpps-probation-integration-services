@@ -27,7 +27,7 @@ class InitialAllocationIntegrationTest {
                 content().string(
                     """
                     crn,eventNumber,sentenceType,allocatedBy,allocationDate,endDate,officerCode,teamCode,teamDescription,providerCode,providerDescription,pduCode,pduDescription
-                    X123456,4,None,"HMPPS Allocations",01/07/2022,,"TEST01 ",N03AAA,"Description for N03AAA",N02,"NPS North East",PDU1,"Some PDU"
+                    X123456,4,None,"HMPPS Allocations",07/05/2024,,"TEST01 ",N03AAA,"Description for N03AAA",N02,"NPS North East",PDU1,"Some PDU"
                     
                     """.trimIndent()
                 )

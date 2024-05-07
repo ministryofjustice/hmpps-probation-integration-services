@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.entity.toTeam
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -20,13 +21,13 @@ object OrderManagerGenerator {
         staff = StaffGenerator.STAFF_FOR_INACTIVE_EVENT
     )
     var INITIAL_ALLOCATION = generate(
-        startDateTime = ManagerGenerator.START_DATE_TIME,
+        startDateTime = ZonedDateTime.of(2024, 5, 7, 12, 0, 0, 0, EuropeLondon),
         eventId = EventGenerator.HAS_INITIAL_ALLOCATION.id,
         staff = StaffGenerator.ALLOCATED,
         team = TeamGenerator.TEAM_IN_LAU.toTeam()
     )
     var UNALLOCATED = generate(
-        startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(7),
+        startDateTime = ZonedDateTime.of(2024, 5, 1, 12, 0, 0, 0, EuropeLondon),
         eventId = EventGenerator.HAS_INITIAL_ALLOCATION.id,
         team = TeamGenerator.TEAM_IN_LAU.toTeam()
     ).also {

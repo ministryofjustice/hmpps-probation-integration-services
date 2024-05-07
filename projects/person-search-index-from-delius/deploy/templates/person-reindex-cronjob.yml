@@ -12,7 +12,15 @@ spec:
           serviceAccountName: person-search-index-from-delius
           containers:
             - name: person-reindex
-              image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius:{{ .Values.version }}
+              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius:{{ .Values.version }}"
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
               resources:
                 requests:
                   memory: 2Gi

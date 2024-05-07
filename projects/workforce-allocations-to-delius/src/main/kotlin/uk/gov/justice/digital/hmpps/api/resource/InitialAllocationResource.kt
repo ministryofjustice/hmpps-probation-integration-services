@@ -13,7 +13,7 @@ class InitialAllocationResource(
     private val initialAllocationRepository: InitialAllocationRepository
 ) {
     @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
-    @Operation(summary = "A report of all allocations created by either the Manage a Workforce Allocation tool or Delius, since 2020.")
+    @Operation(summary = "A report of all allocations created by either the Manage a Workforce Allocation tool or Delius, since the start of 2024.")
     @GetMapping("/initial-allocations.csv", produces = ["text/csv"])
     fun getInitialAllocations(): String = csvMapper
         .writer(csvMapper.schemaFor(InitialAllocation::class.java).withHeader())

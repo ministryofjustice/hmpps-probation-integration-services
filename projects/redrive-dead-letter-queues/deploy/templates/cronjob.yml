@@ -13,6 +13,14 @@ spec:
           containers:
             - name: dlq-redrive
               image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/redrive-dead-letter-queues:{{ .Values.version }}"
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
               resources:
                 requests:
                   memory: 100Mi
