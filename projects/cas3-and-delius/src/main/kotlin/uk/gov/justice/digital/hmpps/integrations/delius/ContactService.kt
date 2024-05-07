@@ -47,8 +47,8 @@ class ContactService(
                         event.eventDetails.noteText
                     ).joinToString(System.lineSeparator())
                 }
-                existing.date = event.timestamp.toLocalDate()
-                existing.startTime = event.timestamp
+                existing.date = event.occurredAt().toLocalDate()
+                existing.startTime = event.occurredAt()
                 contactRepository.save(existing)
             } else {
                 telemetryService.trackEvent(
