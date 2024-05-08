@@ -6,21 +6,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.ADD_EVENT_ALLOCATION
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.ADD_PERSON_ALLOCATION
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.CREATE_COMPONENT_TRANSFER
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementAdditionalMainCategoryGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementMainCategoryGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.repository.*
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
@@ -48,7 +37,8 @@ class AllocationsDataLoader(
     private val caseViewDataLoader: CaseViewDataLoader,
     private val registerTypeRepository: RegisterTypeRepository,
     private val limitedAccessDataLoader: LimitedAccessDataLoader,
-    private val registrationDataLoader: RegistrationDataLoader
+    private val registrationDataLoader: RegistrationDataLoader,
+    private val existingAllocationsDataLoader: ExistingAllocationsDataLoader,
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -142,5 +132,6 @@ class AllocationsDataLoader(
         caseViewDataLoader.loadData()
         limitedAccessDataLoader.loadData()
         registrationDataLoader.loadData()
+        existingAllocationsDataLoader.loadData()
     }
 }
