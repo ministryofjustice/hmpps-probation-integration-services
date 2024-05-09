@@ -9,11 +9,11 @@ data class Detail(
     val crn: String,
     val nomisId: String?,
     val pncNumber: String?,
-    val ldu: String,
-    val probationArea: String,
-    val offenderManager: Name,
+    val offenderManager: Manager,
+    val activeProbationManagedSentence: Boolean,
+    val currentlyInPrison: Boolean,
     val mainOffence: String? = null,
-    val religion: String? = null,
+    val profile: Profile? = null,
     val keyDates: List<KeyDate> = listOf(),
     val releaseDate: LocalDate? = null,
     val releaseReason: String? = null,
@@ -28,6 +28,29 @@ data class Name(
     val forename: String,
     val middleName: String?,
     val surname: String
+)
+
+data class Manager(
+    val name: Name,
+    val team: Team,
+    val provider: Provider
+)
+
+data class Provider(
+    val code: String,
+    val description: String
+)
+
+data class Ldu(val code: String, val name: String)
+
+data class Team(
+    val code: String,
+    val localDeliveryUnit: Ldu
+)
+
+data class Profile(
+    val nationality: String?,
+    val religion: String?
 )
 
 data class KeyDate(

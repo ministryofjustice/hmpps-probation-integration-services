@@ -1,15 +1,10 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
@@ -62,4 +57,22 @@ class KeyDate(
 
 interface CustodyRepository : JpaRepository<Custody, Long> {
     fun getCustodyByDisposalId(disposalId: Long): Custody?
+
+    @Query(
+        """
+            select count(c) from Custody c
+            join Disposal d on d.id = c.disposalId and d.active = true and d.softDeleted = false 
+            where d.event.convictionEventPerson.id = :personId
+            and c.status.code = 'D'
+        """
+    )
+    fun isInCustodyCount(personId: Long): Int?
 }
+
+fun CustodyRepository.isInCustody(personId: Long) = (isInCustodyCount(personId) ?: 0) > 0
+
+//Active event with active disposal -> non deleted custody record
+//custody status
+/*
+    IN_CUSTODY("D"),
+ */

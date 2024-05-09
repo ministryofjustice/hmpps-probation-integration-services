@@ -7,13 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
-import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NSIGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -54,6 +48,7 @@ class DataLoader(
             ConvictionEventGenerator.DISPOSAL,
             DetailsGenerator.INSTITUTION,
             DetailsGenerator.RELIGION,
+            DetailsGenerator.NATIONALITY,
             DetailsGenerator.PERSON,
             DetailsGenerator.DEFAULT_PA,
             DetailsGenerator.DISTRICT,

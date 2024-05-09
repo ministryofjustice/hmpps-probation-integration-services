@@ -13,8 +13,8 @@ object KeyDateGenerator {
     )
     val CUSTODY_STATUS = ReferenceData(
         IdGenerator.getAndIncrement(),
-        "ABC",
-        "StatusDescription"
+        "D",
+        "In Custody"
     )
     val CUSTODY = Custody(
         IdGenerator.getAndIncrement(),
