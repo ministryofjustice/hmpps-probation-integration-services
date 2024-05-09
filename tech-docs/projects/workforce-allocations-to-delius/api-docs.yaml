@@ -304,6 +304,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StreamingResponseBody'
+  /initial-allocations.csv:
+    get:
+      tags:
+      - initial-allocation-resource
+      summary: "A report of all allocations created by either the Manage a Workforce\
+        \ Allocation tool or Delius, since the start of 2024."
+      operationId: getInitialAllocations
+      responses:
+        "200":
+          description: OK
+          content:
+            text/csv:
+              schema:
+                type: string
   /allocation-demand/{crn}/{eventNumber}/probation-record:
     get:
       tags:
