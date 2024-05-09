@@ -124,13 +124,14 @@ class SentenceService(
 
     fun getUnpaidWorkTime(requirementType: String, eventId: Long, eventNumber: String): String? {
         if (requirementType.equals("W", true)) {
-            val durationInMinutes = upwAppointmentRepository.calculateUnpaidTimeWorked(eventId, eventNumber)
-            val durationInHours = durationInMinutes / 60
-
-            return if (durationInHours > 1) {
-                "$durationInHours hours completed"
-            } else {
-                "$durationInMinutes minutes completed"
+            val durationInMinutes: Long? = upwAppointmentRepository.calculateUnpaidTimeWorked(eventId, eventNumber)
+            durationInMinutes?.let {
+                val durationInHours = it / 60
+                return if (durationInHours > 1) {
+                    "$durationInHours hours completed"
+                } else {
+                    "$durationInMinutes minutes completed"
+                }
             }
         }
 
