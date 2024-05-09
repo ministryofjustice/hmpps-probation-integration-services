@@ -102,7 +102,7 @@ class SentenceIntegrationTest {
                     listOf()
                 )
             ),
-            ProbationHistory(2, LocalDate.now().minusDays(7), 2, 1)
+            ProbationHistory(2, LocalDate.now().minusDays(7), 2, 2)
         )
 
         assertEquals(expected, response)
