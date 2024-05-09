@@ -58,7 +58,7 @@ class SentenceServiceTest {
         whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(
             listOf()
         )
-        whenever(offenderManagerRepository.countOffenderManagersByPersonAndEndDateIsNotNull(PersonGenerator.OVERVIEW)).thenReturn(
+        whenever(offenderManagerRepository.countOffenderManagersByPerson(PersonGenerator.OVERVIEW)).thenReturn(
             0
         )
 

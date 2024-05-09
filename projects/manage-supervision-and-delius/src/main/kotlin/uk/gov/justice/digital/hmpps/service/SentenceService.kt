@@ -39,7 +39,7 @@ class SentenceService(
                 inactiveEvents.count(),
                 getMostRecentTerminatedDateFromInactiveEvents(inactiveEvents),
                 inactiveEvents.count { it.inBreach },
-                offenderManagerRepository.countOffenderManagersByPersonAndEndDateIsNotNull(person)
+                offenderManagerRepository.countOffenderManagersByPerson(person)
             )
         )
     }
