@@ -2,18 +2,10 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.controller.IdentifierType
-import uk.gov.justice.digital.hmpps.entity.ConvictionEventRepository
-import uk.gov.justice.digital.hmpps.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.entity.DetailReleaseRepository
-import uk.gov.justice.digital.hmpps.entity.DetailRepository
-import uk.gov.justice.digital.hmpps.entity.NsiRepository
-import uk.gov.justice.digital.hmpps.entity.findByCrn
-import uk.gov.justice.digital.hmpps.entity.findByNomsNumber
-import uk.gov.justice.digital.hmpps.entity.getLatestConviction
-import uk.gov.justice.digital.hmpps.model.Detail
+import uk.gov.justice.digital.hmpps.entity.*
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.model.KeyDate
-import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.name
+import uk.gov.justice.digital.hmpps.model.Team
 import java.time.LocalDate
 
 @Service
@@ -29,6 +21,7 @@ class DetailService(
             IdentifierType.CRN -> detailRepository.findByCrn(value)
             IdentifierType.NOMS -> detailRepository.findByNomsNumber(value)
         }
+        val currentlyInPrison = custodyRepository.isInCustody(p.id)
         val c = convictionEventRepository.getLatestConviction(p.id)
         var mainOffence = ""
         var releaseLocation: String? = null
@@ -62,11 +55,21 @@ class DetailService(
             p.crn,
             p.nomsNumber,
             p.pncNumber,
-            personManager.team.district.description,
-            personManager.team.probationArea.description,
-            Name(personManager.staff.forename, personManager.staff.middleName, personManager.staff.surname),
+            Manager(
+                name = Name(personManager.staff.forename, personManager.staff.middleName, personManager.staff.surname),
+                team = Team(
+                    code = personManager.team.code,
+                    localDeliveryUnit = Ldu(
+                        code = personManager.team.district.code,
+                        name = personManager.team.district.description
+                    )
+                ),
+                provider = Provider(personManager.probationArea.code, personManager.probationArea.description)
+            ),
+            p.currentDisposal,
+            currentlyInPrison,
             mainOffence,
-            p.religion?.description,
+            p.toProfile(),
             keyDates,
             releaseDate,
             releaseReason,
@@ -78,3 +81,10 @@ class DetailService(
         )
     }
 }
+
+fun DetailPerson.toProfile() = if (nationality?.description != null || religion?.description != null) {
+    Profile(nationality?.description, religion?.description)
+} else {
+    null
+}
+

@@ -1,13 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
@@ -38,6 +31,10 @@ class DetailPerson(
     @JoinColumn(name = "religion_id")
     val religion: ReferenceData?,
 
+    @ManyToOne
+    @JoinColumn(name = "nationality_id")
+    val nationality: ReferenceData?,
+
     @OneToMany(mappedBy = "person")
     val personManager: List<PersonManager>,
 
@@ -55,6 +52,9 @@ class DetailPerson(
 
     @Column(name = "third_name", length = 35)
     val thirdName: String? = null,
+
+    @Column(name = "current_disposal", columnDefinition = "number")
+    val currentDisposal: Boolean,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -74,8 +74,9 @@ class PersonManager(
     @JoinColumn(name = "offender_id")
     val person: DetailPerson,
 
-    @Column(name = "probation_area_id")
-    val providerId: Long,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id", nullable = false)
+    val probationArea: DetailProbationArea,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
@@ -120,7 +121,7 @@ class Team(
     val probationArea: DetailProbationArea,
 
     @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "district_id")
     val district: DetailDistrict
 
 )

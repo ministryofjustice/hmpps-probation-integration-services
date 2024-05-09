@@ -12,10 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NSIGenerator
-import uk.gov.justice.digital.hmpps.model.Detail
-import uk.gov.justice.digital.hmpps.model.KeyDate
-import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.name
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -49,11 +46,28 @@ internal class DetailsIntegrationTest {
         DetailsGenerator.PERSON.crn,
         DetailsGenerator.PERSON.nomsNumber,
         DetailsGenerator.PERSON.pncNumber,
-        DetailsGenerator.DISTRICT.description,
-        DetailsGenerator.DEFAULT_PA.description,
-        Name(DetailsGenerator.STAFF.forename, DetailsGenerator.STAFF.middleName, DetailsGenerator.STAFF.surname),
+        Manager(
+            name = Name(
+                DetailsGenerator.STAFF.forename,
+                DetailsGenerator.STAFF.middleName,
+                DetailsGenerator.STAFF.surname
+            ),
+            team = Team(
+                code = DetailsGenerator.TEAM.code,
+                localDeliveryUnit = Ldu(
+                    code = DetailsGenerator.DISTRICT.code,
+                    name = DetailsGenerator.DISTRICT.description
+                )
+            ),
+            provider = Provider(
+                code = DetailsGenerator.DEFAULT_PA.code,
+                description = DetailsGenerator.DEFAULT_PA.description
+            )
+        ),
+        true,
+        true,
         ConvictionEventGenerator.OFFENCE_MAIN_TYPE.description,
-        DetailsGenerator.PERSON.religion?.description,
+        Profile(DetailsGenerator.PERSON.nationality?.description, DetailsGenerator.PERSON.religion?.description),
         listOf(
             KeyDate(
                 KeyDateGenerator.SED_KEYDATE.code,
