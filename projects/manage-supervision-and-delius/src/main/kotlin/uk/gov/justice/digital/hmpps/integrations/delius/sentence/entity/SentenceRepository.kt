@@ -46,5 +46,24 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
     fun findOffenderManagersByPersonOrderByEndDateDesc(person: Person): List<OffenderManager>
 }
 
+interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
+
+    @Query(
+        """
+            SELECT sum(duration) FROM (
+                SELECT o.CRN, ua.START_TIME, ua.END_TIME, ua.MINUTES_CREDITED AS duration
+                FROM UPW_APPOINTMENT ua
+                JOIN OFFENDER o 
+                ON o.OFFENDER_ID = ua.OFFENDER_ID 
+                JOIN EVENT e 
+                ON e.OFFENDER_ID = o.OFFENDER_ID 
+                WHERE e.EVENT_ID = :id
+                AND e.EVENT_NUMBER = :eventNumber
+                AND ua.ATTENDED = 'Y'
+                AND ua.SOFT_DELETED = 0)
+        """, nativeQuery = true
+    )
+    fun calculateUnpaidTimeWorked(id: Long, eventNumber: String): Long
+}
 
 

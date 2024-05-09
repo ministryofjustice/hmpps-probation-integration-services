@@ -22,7 +22,8 @@ class SentenceService(
     private val personRepository: PersonRepository,
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
-    private val offenderManagerRepository: OffenderManagerRepository
+    private val offenderManagerRepository: OffenderManagerRepository,
+    private val upwAppointmentRepository: UpwAppointmentRepository
 ) {
     fun getEvents(crn: String): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -62,7 +63,8 @@ class SentenceService(
                 additionalSentences.map { it.toAdditionalSentence() }
             ),
             order = disposal?.toOrder(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).map { it.toRequirement() },
+            requirements = requirementRepository.getRequirements(id, eventNumber)
+                .map { it.toRequirement(id, eventNumber) },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() }
         )
 
@@ -75,8 +77,11 @@ class SentenceService(
     fun Disposal.toOrder() =
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
-    fun RequirementDetails.toRequirement(): Requirement {
+    fun RequirementDetails.toRequirement(eventId: Long, eventNumber: String): Requirement {
         val rar = getRar(id, code)
+
+        val unpaidWorkTime = getUnpaidWorkTime(code, eventId, eventNumber)
+
 
         val requirement = Requirement(
             code,
@@ -88,6 +93,7 @@ class SentenceService(
             populateRequirementDescription(description, codeDescription, rar),
             length,
             lengthUnitValue,
+            unpaidWorkTime,
             notes,
             rar
         )
@@ -111,6 +117,21 @@ class SentenceService(
             val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
             val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
             return Rar(completed = completedDays, scheduled = scheduledDays)
+        }
+
+        return null
+    }
+
+    fun getUnpaidWorkTime(requirementType: String, eventId: Long, eventNumber: String): String? {
+        if (requirementType.equals("W", true)) {
+            val durationInMinutes = upwAppointmentRepository.calculateUnpaidTimeWorked(eventId, eventNumber)
+            val durationInHours = durationInMinutes / 60
+
+            return if (durationInHours > 1) {
+                "$durationInHours hours completed"
+            } else {
+                "$durationInMinutes minutes completed"
+            }
         }
 
         return null

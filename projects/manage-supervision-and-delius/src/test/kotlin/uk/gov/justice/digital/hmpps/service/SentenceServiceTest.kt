@@ -10,6 +10,7 @@ import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
+import uk.gov.justice.digital.hmpps.api.model.sentence.AdditionalSentence
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
@@ -18,10 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -47,6 +45,9 @@ class SentenceServiceTest {
 
     @Mock
     lateinit var offenderManagerRepository: OffenderManagerRepository
+
+    @Mock
+    lateinit var upwAppointmentRepository: UpwAppointmentRepository
 
     @InjectMocks
     lateinit var service: SentenceService
@@ -80,6 +81,7 @@ class SentenceServiceTest {
         verifyNoInteractions(additionalSentenceRepository)
         verifyNoInteractions(requirementRepository)
         verifyNoInteractions(documentRepository)
+        verifyNoInteractions(upwAppointmentRepository)
     }
 
     @Test
@@ -211,6 +213,7 @@ class SentenceServiceTest {
                             "${requirement1._description} - ${requirement1._codeDescription}",
                             requirement1._length,
                             requirement1.lengthUnitValue,
+                            null,
                             requirement1._notes,
                             null
                         ),
@@ -224,6 +227,7 @@ class SentenceServiceTest {
                             "3 days RAR, 1 completed",
                             requirement2._length,
                             requirement2.lengthUnitValue,
+                            null,
                             requirement2._notes,
                             Rar(1, 2, 3)
                         ),
@@ -237,6 +241,7 @@ class SentenceServiceTest {
                             requirement3._description,
                             requirement3._length,
                             requirement3.lengthUnitValue,
+                            null,
                             requirement3._notes,
                             null
                         )
