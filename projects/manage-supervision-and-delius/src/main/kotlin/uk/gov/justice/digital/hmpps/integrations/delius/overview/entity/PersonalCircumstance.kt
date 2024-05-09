@@ -8,7 +8,6 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 
@@ -27,7 +26,7 @@ class PersonalCircumstance(
     @ManyToOne
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "circumstance_type_id")
-    val type: ReferenceData,
+    val type: PersonalCircumstanceType,
 
     @ManyToOne
     @Fetch(FetchMode.JOIN)
@@ -86,4 +85,19 @@ class PersonalCircumstanceSubType(
 
     @Column(name = "code_description")
     val description: String,
+)
+
+@Entity
+@Table(name = "r_circumstance_type")
+@Immutable
+class PersonalCircumstanceType(
+    @Id
+    @Column(name = "circumstance_type_id")
+    val id: Long,
+
+    @Column(name = "code_value")
+    val code: String,
+
+    @Column(name = "code_description")
+    val description: String
 )
