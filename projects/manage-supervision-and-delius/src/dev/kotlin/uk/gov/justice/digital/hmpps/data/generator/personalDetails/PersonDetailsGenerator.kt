@@ -40,10 +40,10 @@ object PersonDetailsGenerator {
 
     val DISABILITY_1_RD = ReferenceData(IdGenerator.getAndIncrement(), "D20", "Some Illness")
     val DISABILITY_2_RD = ReferenceData(IdGenerator.getAndIncrement(), "D20", "Blind")
-    val PERSONAL_CIRCUMSTANCE_1_RD = ReferenceData(IdGenerator.getAndIncrement(), "E02", "Employed")
+    val PERSONAL_CIRCUMSTANCE_1_RD = PersonalCircumstanceType(IdGenerator.getAndIncrement(), "E02", "Employed")
     val PERSONAL_CIRCUMSTANCE_SUBTYPE_1 =
         PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), "Full-time employed (30 or more hours per week")
-    val PERSONAL_CIRCUMSTANCE_2_RD = ReferenceData(IdGenerator.getAndIncrement(), "A20", "Owns house")
+    val PERSONAL_CIRCUMSTANCE_2_RD = PersonalCircumstanceType(IdGenerator.getAndIncrement(), "A20", "Owns house")
     val PERSONAL_CIRCUMSTANCE_SUBTYPE_2 = PersonalCircumstanceSubType(IdGenerator.getAndIncrement(), "Has children")
     val PROVISION_1_RD = ReferenceData(IdGenerator.getAndIncrement(), "BB01", "Braille")
     val PROVISION_2_RD = ReferenceData(IdGenerator.getAndIncrement(), "BC20", "Lots of breaks")
