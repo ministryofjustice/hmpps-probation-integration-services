@@ -6,5 +6,9 @@ generic-service:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/oauth/token
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/.well-known/jwks.json
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
     INTEGRATIONS_ALFRESCO_URL: https://alfresco.probation.service.justice.gov.uk/alfresco/service/noms-spg/
+
+initial-allocations-report:
+  enabled: true
+  schedule: "30 7 1 * *" # The first of the month at 7:30am
+  channel_id: C035YK9FFK4 # topic-pi-workforce-allocation

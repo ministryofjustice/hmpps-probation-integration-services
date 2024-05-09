@@ -1,0 +1,85 @@
+{{- $config := index .Values "initial-allocations-report" | default dict -}}
+{{- if $config.enabled | default false -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: initial-allocations-report-script
+data:
+  script.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    date=$(date +%Y-%m-%d)
+    filename=initial-allocations-$date.csv
+
+    echo Getting HMPPS Auth token...
+    hmpps_auth_token=$(curl -fsSL -XPOST -u "$CLIENT_ID:$CLIENT_SECRET" '{{ index .Values "generic-service" "env" "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI" }}?grant_type=client_credentials' | jq -r .access_token)
+    echo Downloading report...
+    curl -fsSL -H "Authorization: Bearer $hmpps_auth_token" https://{{ index .Values "generic-service" "ingress" "host" }}/initial-allocations.csv > "/tmp/$filename"
+    echo Downloaded report with $(wc -l < "/tmp/$filename") rows
+
+    echo Starting file upload...
+    file_details=$(curl -fsSL -XPOST -F "token=$SLACK_TOKEN" -F "filename=$filename" -F 'snippet_type=csv' -F "length=$(wc -c < "/tmp/$filename")" https://slack.com/api/files.getUploadURLExternal)
+    echo Got file upload details: "$file_details"
+    file_id=$(echo "$file_details" | jq -r .file_id)
+    upload_url=$(echo "$file_details" | jq -r .upload_url)
+    echo Uploading file...
+    curl -fsSL -F "file=@/tmp/$filename" "$upload_url"
+    echo Sending message...
+    curl -fsSL -F "token=$SLACK_TOKEN" -F "initial_comment=Initial Allocations Report ($(date '+%d/%m/%Y'))" -F "files=[{\"id\":\"$file_id\"}]" -F "channel_id={{ index .Values "initial-allocations-report" "channel_id" }}" https://slack.com/api/files.completeUploadExternal
+    echo Uploaded report to Slack
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: initial-allocations-report
+spec:
+  schedule: {{ index .Values "initial-allocations-report" "schedule" }}
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: workforce-allocations-to-delius
+          volumes:
+            - name: script-volume
+              configMap:
+                name: initial-allocations-report-script
+          containers:
+            - name: generate-report
+              image: "ghcr.io/ministryofjustice/hmpps-devops-tools:latest"
+              command: [ "bash", "/script.sh" ]
+              volumeMounts:
+                - name: script-volume
+                  mountPath: /script.sh
+                  subPath: script.sh
+              env:
+                - name: CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: workforce-allocations-to-delius-client-credentials
+                      key: CLIENT_ID
+                      optional: false
+                - name: CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: workforce-allocations-to-delius-client-credentials
+                      key: CLIENT_SECRET
+                      optional: false
+                - name: SLACK_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: slack-bot
+                      key: TOKEN
+                      optional: false
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
+          restartPolicy: Never
+{{- end -}}
