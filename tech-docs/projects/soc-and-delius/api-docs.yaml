@@ -166,13 +166,13 @@ components:
             $ref: '#/components/schemas/ProbationArea'
     Detail:
       required:
+      - activeProbationManagedSentence
       - crn
+      - currentlyInPrison
       - dateOfBirth
       - keyDates
-      - ldu
       - name
       - offenderManager
-      - probationArea
       type: object
       properties:
         name:
@@ -186,16 +186,16 @@ components:
           type: string
         pncNumber:
           type: string
-        ldu:
-          type: string
-        probationArea:
-          type: string
         offenderManager:
-          $ref: '#/components/schemas/Name'
+          $ref: '#/components/schemas/Manager'
+        activeProbationManagedSentence:
+          type: boolean
+        currentlyInPrison:
+          type: boolean
         mainOffence:
           type: string
-        religion:
-          type: string
+        profile:
+          $ref: '#/components/schemas/Profile'
         keyDates:
           type: array
           items:
@@ -232,6 +232,29 @@ components:
         data:
           type: string
           format: date
+    Ldu:
+      required:
+      - code
+      - name
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+    Manager:
+      required:
+      - name
+      - provider
+      - team
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        team:
+          $ref: '#/components/schemas/Team'
+        provider:
+          $ref: '#/components/schemas/Provider'
     Name:
       required:
       - forename
@@ -244,6 +267,33 @@ components:
           type: string
         surname:
           type: string
+    Profile:
+      type: object
+      properties:
+        nationality:
+          type: string
+        religion:
+          type: string
+    Provider:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    Team:
+      required:
+      - code
+      - localDeliveryUnit
+      type: object
+      properties:
+        code:
+          type: string
+        localDeliveryUnit:
+          $ref: '#/components/schemas/Ldu'
     CourtAppearance:
       required:
       - appearanceDate

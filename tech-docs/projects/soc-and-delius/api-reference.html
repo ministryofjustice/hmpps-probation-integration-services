@@ -288,15 +288,31 @@
   "crn": "string",
   "nomisId": "string",
   "pncNumber": "string",
-  "ldu": "string",
-  "probationArea": "string",
   "offenderManager": {
-    "forename": "string",
-    "middleName": "string",
-    "surname": "string"
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "team": {
+      "code": "string",
+      "localDeliveryUnit": {
+        "code": "string",
+        "name": "string"
+      }
+    },
+    "provider": {
+      "code": "string",
+      "description": "string"
+    }
   },
+  "activeProbationManagedSentence": "boolean",
+  "currentlyInPrison": "boolean",
   "mainOffence": "string",
-  "religion": "string",
+  "profile": {
+    "nationality": "string",
+    "religion": "string"
+  },
   "keyDates": [
     {
       "code": "string",
@@ -707,32 +723,32 @@
 </tr>
 
 <tr>
-<td>ldu</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>probationArea</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
 <td>offenderManager</td>
 <td>object</td>
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-name'>Name</a>
+  <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+<tr>
+<td>activeProbationManagedSentence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentlyInPrison</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
@@ -747,12 +763,12 @@
 </tr>
 
 <tr>
-<td>religion</td>
-<td>string</td>
+<td>profile</td>
+<td>object</td>
 <td>false</td>
 <td></td>
 <td>
-  
+  <a href='#schema-profile'>Profile</a>
 </td>
 </tr>
 
@@ -881,6 +897,80 @@
 </tbody>
 </table>
 
+<h3 id="schema-ldu">Ldu</h3>
+
+
+<table class='schema-ldu'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-manager">Manager</h3>
+
+
+<table class='schema-manager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-name">Name</h3>
 
 
@@ -917,6 +1007,102 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-profile">Profile</h3>
+
+
+<table class='schema-profile'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>nationality</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>religion</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localDeliveryUnit</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-ldu'>Ldu</a>
 </td>
 </tr>
 
