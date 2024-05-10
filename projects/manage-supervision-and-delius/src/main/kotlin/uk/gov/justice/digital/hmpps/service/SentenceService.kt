@@ -128,47 +128,36 @@ class SentenceService(
                 val minuteCompleted = "minute $completed"
                 val minutesCompleted = "minutes $completed"
 
-                return when (duration.toHoursPart()) {
-                    0 -> {
-                        when (duration.toMinutesPart()) {
-                            1 -> {
-                                "${duration.toMinutesPart()} " + minuteCompleted
-                            }
-
-                            else -> "${duration.toMinutesPart()} " + minutesCompleted
-                        }
-                    }
+                val unpaidWorkHours = when (duration.toHoursPart()) {
+                    0 -> ""
 
                     1 -> {
-                        when (duration.toMinutesPart()) {
-                            0 -> {
-                                "${duration.toHoursPart()} $hour $completed"
-                            }
 
-                            1 -> {
-                                "${duration.toHoursPart()} $hour and ${duration.toMinutesPart()} $minuteCompleted"
-                            }
-
-                            else -> "${duration.toHoursPart()} $hour and ${duration.toMinutesPart()} $minutesCompleted"
-                        }
+                        "${duration.toHoursPart()} $hour"
                     }
 
                     else -> {
-                        when (duration.toMinutesPart()) {
-                            0 -> {
-                                "${duration.toHoursPart()} $hours $completed"
-                            }
-
-                            1 -> {
-                                "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minuteCompleted"
-                            }
-
-                            else -> {
-                                "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minutesCompleted"
-                            }
-                        }
+                        "${duration.toHoursPart()} $hours"
                     }
                 }
+
+                val unpaidWorkMinutes = when (duration.toMinutesPart()) {
+                    0 -> ""
+
+                    1 -> "${duration.toMinutesPart()} $minuteCompleted"
+
+                    else -> "${duration.toMinutesPart()} $minutesCompleted"
+                }
+
+                when (unpaidWorkMinutes) {
+                    "" -> return "$unpaidWorkHours $completed"
+                }
+
+                when (unpaidWorkHours) {
+                    "" -> return unpaidWorkMinutes
+                }
+
+                return "$unpaidWorkHours and $unpaidWorkMinutes"
             }
         }
 
