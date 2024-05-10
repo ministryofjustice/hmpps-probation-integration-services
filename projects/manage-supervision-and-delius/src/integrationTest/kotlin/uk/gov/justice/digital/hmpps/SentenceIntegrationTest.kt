@@ -82,6 +82,20 @@ class SentenceIntegrationTest {
                             null,
                             "my notes",
                             Rar(completed = 1, scheduled = 0, totalDays = 1)
+                        ),
+                        Requirement(
+                            "W",
+                            LocalDate.now().minusDays(1),
+                            LocalDate.now(),
+                            LocalDate.now().minusDays(2),
+                            LocalDate.now().minusDays(3),
+                            null,
+                            "Unpaid Work - Intensive",
+                            12,
+                            null,
+                            "0 minutes completed",
+                            "my notes",
+                            null
                         )
                     ),
                     listOf(
