@@ -34,8 +34,8 @@ internal class CaseloadControllerTest {
             caseload = listOf(CASELOAD_PERSON_1.toStaffCase()),
             staff = Name(forename = USER.staff!!.forename, surname = USER.staff!!.surname)
         )
-        whenever(userService.getUserCaseload(username)).thenReturn(expectedResponse)
-        val res = controller.getUserCaseload(username)
+        whenever(userService.getUserCaseload(username, PageRequest.of(0, 10))).thenReturn(expectedResponse)
+        val res = controller.getUserCaseload(username, 0, 10)
         assertThat(res, equalTo(expectedResponse))
     }
 
@@ -75,19 +75,6 @@ internal class CaseloadControllerTest {
         )
         whenever(userService.getTeamStaff(teamCode)).thenReturn(expectedResponse)
         val res = controller.getTeamStaff(teamCode)
-        assertThat(res, equalTo(expectedResponse))
-    }
-
-    @Test
-    fun `calls get caseload for staff code `() {
-        val staffCode = "staffCode"
-        val expectedResponse = StaffCaseload(
-            provider = USER.staff?.provider?.description,
-            caseload = listOf(CASELOAD_PERSON_1.toStaffCase()),
-            staff = Name(forename = USER.staff!!.forename, surname = USER.staff!!.surname)
-        )
-        whenever(userService.getStaffCaseload(staffCode)).thenReturn(expectedResponse)
-        val res = controller.getStaffCaseload(staffCode)
         assertThat(res, equalTo(expectedResponse))
     }
 }

@@ -242,7 +242,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """
         select c from Contact c
         where c.personId = :personId
-        order by c.date, c.startTime desc 
+        order by c.date desc, c.startTime desc 
     """
     )
     fun findByPersonId(personId: Long): List<Contact>

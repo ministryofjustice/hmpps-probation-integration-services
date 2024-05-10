@@ -15,7 +15,11 @@ class CaseloadController(private val userService: UserService) {
 
     @GetMapping("/user/{username}")
     @Operation(summary = "Gets caseloads for the user")
-    fun getUserCaseload(@PathVariable username: String) = userService.getUserCaseload(username)
+    fun getUserCaseload(
+        @PathVariable username: String,
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "10") size: Int
+    ) = userService.getUserCaseload(username, PageRequest.of(page, size))
 
     @GetMapping("/user/{username}/teams")
     @Operation(summary = "Gets the users teams")
@@ -33,8 +37,4 @@ class CaseloadController(private val userService: UserService) {
     @GetMapping("/team/{teamCode}/staff")
     @Operation(summary = "Gets the staff within the team")
     fun getTeamStaff(@PathVariable teamCode: String) = userService.getTeamStaff(teamCode)
-
-    @GetMapping("/staff/{staffCode}")
-    @Operation(summary = "Gets the caseload for a staff code ")
-    fun getStaffCaseload(@PathVariable staffCode: String) = userService.getStaffCaseload(staffCode)
 }
