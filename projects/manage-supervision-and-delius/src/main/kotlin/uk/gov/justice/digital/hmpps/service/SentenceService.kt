@@ -125,11 +125,48 @@ class SentenceService(
             val durationInMinutes: Long = upwAppointmentRepository.calculateUnpaidTimeWorked(eventId, eventNumber)
             durationInMinutes.let {
                 val duration = Duration.ofMinutes(it)
+                val completed = "completed"
+                val hour = "hour"
+                val hours = "hours"
+                val minuteCompleted = "minute $completed"
+                val minutesCompleted = "minutes $completed"
 
-                return if (duration.toHoursPart() > 1) {
-                    "${duration.toHoursPart()} hours and ${duration.toMinutesPart()} minutes completed"
-                } else {
-                    "$durationInMinutes minutes completed"
+                return when (duration.toHoursPart()) {
+                    0 -> {
+                        when (duration.toMinutesPart()) {
+                            1 -> {
+                                "${duration.toMinutesPart()} " + minuteCompleted
+                            }
+
+                            else -> "${duration.toMinutesPart()} " + minutesCompleted
+                        }
+                    }
+
+                    1 -> {
+                        when (duration.toMinutesPart()) {
+                            0 -> {
+                                "${duration.toHoursPart()} $hour $completed"
+                            }
+
+                            else -> "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minuteCompleted"
+                        }
+                    }
+
+                    else -> {
+                        when (duration.toMinutesPart()) {
+                            0 -> {
+                                "${duration.toHoursPart()} $hours $completed"
+                            }
+
+                            1 -> {
+                                "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minuteCompleted"
+                            }
+
+                            else -> {
+                                "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minutesCompleted"
+                            }
+                        }
+                    }
                 }
             }
         }
