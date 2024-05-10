@@ -130,14 +130,9 @@ class SentenceService(
                 val unpaidWorkHours = when (duration.toHoursPart()) {
                     0 -> ""
 
-                    1 -> {
+                    1 -> "${duration.toHoursPart()} $hour"
 
-                        "${duration.toHoursPart()} $hour"
-                    }
-
-                    else -> {
-                        "${duration.toHoursPart()} $hours"
-                    }
+                    else -> "${duration.toHoursPart()} $hours"
                 }
 
                 val unpaidWorkMinutes = when (duration.toMinutesPart()) {
