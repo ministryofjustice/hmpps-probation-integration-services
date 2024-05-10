@@ -13,5 +13,4 @@ object UnpaidWorkApptGenerator {
 //    val APPT3 = UpwAppointment(IdGenerator.getAndIncrement(), 37, "N", 0, PersonGenerator.OVERVIEW.id)
 //    val APPT4 = UpwAppointment(IdGenerator.getAndIncrement(), 60, "Y", 0, PersonGenerator.PERSON_2.id)
 
-
 }

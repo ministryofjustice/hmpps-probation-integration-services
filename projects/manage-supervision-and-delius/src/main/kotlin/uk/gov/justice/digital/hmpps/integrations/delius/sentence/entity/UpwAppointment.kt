@@ -56,5 +56,4 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
         """, nativeQuery = true
     )
     fun calculateUnpaidTimeWorked(id: Long): Long
-
 }
