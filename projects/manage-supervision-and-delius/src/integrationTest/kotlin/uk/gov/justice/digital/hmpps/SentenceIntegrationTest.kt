@@ -93,7 +93,7 @@ class SentenceIntegrationTest {
                             "Unpaid Work - Intensive",
                             12,
                             null,
-                            "7 minutes completed",
+                            "3 minutes completed",
                             "my notes",
                             null
                         )

@@ -151,10 +151,8 @@ class DataLoader(
             PersonGenerator.BREACH_PREVIOUS_ORDER_1,
             PersonGenerator.BREACH_PREVIOUS_ORDER_2,
             PersonGenerator.BREACH_ON_ACTIVE_ORDER,
-            UnpaidWorkApptGenerator.APPT1,
-            UnpaidWorkApptGenerator.APPT2,
-            UnpaidWorkApptGenerator.APPT3,
-            UnpaidWorkApptGenerator.APPT4,
+            UnpaidWorkApptGenerator.UNPAID_WORK_DETAILS,
+            UnpaidWorkApptGenerator.APPT1
         )
 
         personalDetailsData()

@@ -177,7 +177,7 @@ class SentenceServiceTest {
             )
         )
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.id, event.eventNumber)).thenReturn(3936)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.id)).thenReturn(3936)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -259,7 +259,7 @@ class SentenceServiceTest {
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
         verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)
-        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.id, event.eventNumber)
+        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.id)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)

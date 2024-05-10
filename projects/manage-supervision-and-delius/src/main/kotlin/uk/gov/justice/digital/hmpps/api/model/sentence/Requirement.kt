@@ -13,7 +13,7 @@ data class Requirement(
     val description: String,
     val length: Long?,
     val lengthUnitValue: String?,
-    val progress: String?,
+    val unpaidWorkProgress: String?,
     val notes: String?,
     val rar: Rar? = null
 )
