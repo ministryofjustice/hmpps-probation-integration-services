@@ -177,6 +177,8 @@ class SentenceServiceTest {
             )
         )
 
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.id, event.eventNumber)).thenReturn(3936)
+
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
         val expected = SentenceOverview(
@@ -213,7 +215,7 @@ class SentenceServiceTest {
                             "${requirement1._description} - ${requirement1._codeDescription}",
                             requirement1._length,
                             requirement1.lengthUnitValue,
-                            "0 minutes completed",
+                            "17 hours and 36 minutes completed",
                             requirement1._notes,
                             null
                         ),

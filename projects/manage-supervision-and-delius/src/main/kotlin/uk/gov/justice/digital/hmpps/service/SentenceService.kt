@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.Duration
 import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
@@ -123,9 +124,10 @@ class SentenceService(
         if (requirementType.equals("W", true)) {
             val durationInMinutes: Long = upwAppointmentRepository.calculateUnpaidTimeWorked(eventId, eventNumber)
             durationInMinutes.let {
-                val durationInHours = it / 60
-                return if (durationInHours > 1) {
-                    "$durationInHours hours completed"
+                val duration = Duration.ofMinutes(it)
+
+                return if (duration.toHoursPart() > 1) {
+                    "${duration.toHoursPart()} hours and ${duration.toMinutesPart()} minutes completed"
                 } else {
                     "$durationInMinutes minutes completed"
                 }
