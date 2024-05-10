@@ -80,9 +80,6 @@ class SentenceService(
     fun RequirementDetails.toRequirement(eventId: Long, eventNumber: String): Requirement {
         val rar = getRar(id, code)
 
-        val unpaidWorkTime = getUnpaidWorkTime(code, eventId, eventNumber)
-
-
         val requirement = Requirement(
             code,
             expectedStartDate,
@@ -93,7 +90,7 @@ class SentenceService(
             populateRequirementDescription(description, codeDescription, rar),
             length,
             lengthUnitValue,
-            unpaidWorkTime,
+            getUnpaidWorkTime(code, eventId, eventNumber),
             notes,
             rar
         )

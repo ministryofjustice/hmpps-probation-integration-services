@@ -108,7 +108,7 @@ class SentenceServiceTest {
             "Expired (Normal)",
             12,
             "Weeks",
-            "G",
+            "W",
             "Drug Rehabilitation",
             "Medium Intensity",
             "new requirement"
@@ -213,7 +213,7 @@ class SentenceServiceTest {
                             "${requirement1._description} - ${requirement1._codeDescription}",
                             requirement1._length,
                             requirement1.lengthUnitValue,
-                            null,
+                            "0 minutes completed",
                             requirement1._notes,
                             null
                         ),
@@ -257,11 +257,13 @@ class SentenceServiceTest {
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
         verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)
+        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.id, event.eventNumber)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
         verifyNoMoreInteractions(courtAppearanceRepository)
         verifyNoMoreInteractions(documentRepository)
+        verifyNoMoreInteractions(upwAppointmentRepository)
     }
 
     data class RequirementDetails(
