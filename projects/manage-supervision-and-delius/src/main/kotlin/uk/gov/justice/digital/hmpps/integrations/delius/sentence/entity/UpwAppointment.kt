@@ -41,19 +41,23 @@ class UpwDetails(
 
 interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
 
+    //    @Query(
+//        """
+//        SELECT NVL(sum(ua.MINUTES_CREDITED), 0)
+//        FROM UPW_APPOINTMENT ua
+//        JOIN UPW_DETAILS ud
+//        ON ud.UPW_DETAILS_ID = ua.UPW_DETAILS_ID
+//        AND ud.SOFT_DELETED = 0
+//        JOIN DISPOSAL d
+//        ON d.DISPOSAL_ID = ud.DISPOSAL_ID
+//        WHERE d.EVENT_ID = :id
+//        AND ua.ATTENDED = 'Y'
+//        AND ua.SOFT_DELETED = 0
+//        """, nativeQuery = true
+//    )
     @Query(
-        """
-        SELECT NVL(sum(ua.MINUTES_CREDITED), 0) 
-        FROM UPW_APPOINTMENT ua 
-        JOIN UPW_DETAILS ud 
-        ON ud.UPW_DETAILS_ID = ua.UPW_DETAILS_ID 
-        AND ud.SOFT_DELETED = 0
-        JOIN DISPOSAL d 
-        ON d.DISPOSAL_ID = ud.DISPOSAL_ID 
-        WHERE d.EVENT_ID = :id
-        AND ua.ATTENDED = 'Y'
-        AND ua.SOFT_DELETED = 0
-        """, nativeQuery = true
+        "SELECT SUM(u.minutesCredited) " +
+            "FROM UpwAppointment u"
     )
     fun calculateUnpaidTimeWorked(id: Long): Long
 
