@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
@@ -72,8 +71,6 @@ class SentenceService(
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
 
-    fun Person.toName() =
-        Name(forename, secondName, surname)
 
     fun Disposal.toOrder() =
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
@@ -148,7 +145,11 @@ class SentenceService(
                                 "${duration.toHoursPart()} $hour $completed"
                             }
 
-                            else -> "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minuteCompleted"
+                            1 -> {
+                                "${duration.toHoursPart()} $hour and ${duration.toMinutesPart()} $minuteCompleted"
+                            }
+
+                            else -> "${duration.toHoursPart()} $hour and ${duration.toMinutesPart()} $minutesCompleted"
                         }
                     }
 
