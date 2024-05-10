@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -87,6 +89,9 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @EntityGraph(value = "person-with-ref-data")
     override fun findById(id: Long): Optional<Person>
+
+    @EntityGraph(value = "person-with-ref-data")
+    override fun findAll(pageable: Pageable): Page<Person>
 }
 
 fun PersonRepository.getByCrn(crn: String): Person =
