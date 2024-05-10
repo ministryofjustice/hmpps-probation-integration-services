@@ -14,9 +14,8 @@ import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
 import javax.naming.directory.BasicAttributes
 
-private const val ldapBase = "ou=Users"
 fun LdapQueryBuilder.byUsername(username: String): LdapQuery =
-    base(ldapBase).searchScope(SearchScope.ONELEVEL).where("cn").`is`(username)
+    searchScope(SearchScope.ONELEVEL).where("cn").`is`(username)
 
 @WithSpan
 inline fun <reified T> LdapTemplate.findByUsername(@SpanAttribute username: String) =
@@ -29,7 +28,6 @@ fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) = findAttr
 fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanAttribute attribute: String) = search(
     query()
         .attributes(attribute)
-        .base(ldapBase)
         .searchScope(SearchScope.ONELEVEL)
         .where("objectclass").`is`("inetOrgPerson")
         .and("objectclass").`is`("top")
@@ -41,7 +39,7 @@ fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanA
 fun LdapTemplate.getRoles(@SpanAttribute username: String) = search(
     query()
         .attributes("cn")
-        .base(LdapNameBuilder.newInstance(ldapBase).add("cn", username).build())
+        .base(LdapNameBuilder.newInstance().add("cn", username).build())
         .searchScope(SearchScope.ONELEVEL)
         .where("objectclass").`is`("NDRole")
         .or("objectclass").`is`("NDRoleAssociation"),
@@ -66,7 +64,7 @@ fun LdapTemplate.removeRole(@SpanAttribute username: String, @SpanAttribute role
     unbind(role.context(username))
 
 private fun DeliusRole.context(username: String? = null) =
-    LdapNameBuilder.newInstance(ldapBase)
+    LdapNameBuilder.newInstance()
         .add("cn", username ?: "ndRoleCatalogue")
         .add("cn", name)
         .build()

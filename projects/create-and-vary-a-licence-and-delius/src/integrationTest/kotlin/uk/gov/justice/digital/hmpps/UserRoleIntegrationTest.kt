@@ -33,12 +33,12 @@ internal class UserRoleIntegrationTest {
             .andExpect(status().is2xxSuccessful)
 
         val res = ldapTemplate.lookupContext(
-            LdapNameBuilder.newInstance("ou=Users")
+            LdapNameBuilder.newInstance()
                 .add("cn", "john-smith")
                 .add("cn", DeliusRole.LHDCBT002.name)
                 .build()
         )
-        assertThat(res.dn.toString(), equalTo("cn=LHDCBT002,cn=john-smith,ou=Users"))
+        assertThat(res.dn.toString(), equalTo("cn=LHDCBT002,cn=john-smith"))
     }
 
     @Order(2)
@@ -49,7 +49,7 @@ internal class UserRoleIntegrationTest {
 
         val res = assertThrows<NameNotFoundException> {
             ldapTemplate.lookupContext(
-                LdapNameBuilder.newInstance("ou=Users")
+                LdapNameBuilder.newInstance()
                     .add("cn", "john-smith")
                     .add("cn", DeliusRole.LHDCBT002.name)
                     .build()

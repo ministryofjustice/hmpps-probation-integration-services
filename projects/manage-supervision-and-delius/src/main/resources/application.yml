@@ -18,7 +18,7 @@ spring:
             drop_tables: false
   threads.virtual.enabled: true
   ldap:
-    base: dc=moj,dc=com
+    base: ou=Users,dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
 
