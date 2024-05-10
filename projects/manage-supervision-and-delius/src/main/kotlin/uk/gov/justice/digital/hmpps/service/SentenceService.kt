@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.Duration
 import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
@@ -22,7 +23,8 @@ class SentenceService(
     private val personRepository: PersonRepository,
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
-    private val offenderManagerRepository: OffenderManagerRepository
+    private val offenderManagerRepository: OffenderManagerRepository,
+    private val upwAppointmentRepository: UpwAppointmentRepository
 ) {
     fun getEvents(crn: String): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -62,7 +64,8 @@ class SentenceService(
                 additionalSentences.map { it.toAdditionalSentence() }
             ),
             order = disposal?.toOrder(),
-            requirements = requirementRepository.getRequirements(id, eventNumber).map { it.toRequirement() },
+            requirements = requirementRepository.getRequirements(id, eventNumber)
+                .map { it.toRequirement(id, eventNumber) },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() }
         )
 
@@ -75,7 +78,7 @@ class SentenceService(
     fun Disposal.toOrder() =
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
-    fun RequirementDetails.toRequirement(): Requirement {
+    fun RequirementDetails.toRequirement(eventId: Long, eventNumber: String): Requirement {
         val rar = getRar(id, code)
 
         val requirement = Requirement(
@@ -88,6 +91,7 @@ class SentenceService(
             populateRequirementDescription(description, codeDescription, rar),
             length,
             lengthUnitValue,
+            getUnpaidWorkTime(code, eventId, eventNumber),
             notes,
             rar
         )
@@ -111,6 +115,60 @@ class SentenceService(
             val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
             val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
             return Rar(completed = completedDays, scheduled = scheduledDays)
+        }
+
+        return null
+    }
+
+    fun getUnpaidWorkTime(requirementType: String, eventId: Long, eventNumber: String): String? {
+        if (requirementType.equals("W", true)) {
+            val durationInMinutes: Long = upwAppointmentRepository.calculateUnpaidTimeWorked(eventId)
+            durationInMinutes.let {
+                val duration = Duration.ofMinutes(it)
+                val completed = "completed"
+                val hour = "hour"
+                val hours = "hours"
+                val minuteCompleted = "minute $completed"
+                val minutesCompleted = "minutes $completed"
+
+                return when (duration.toHoursPart()) {
+                    0 -> {
+                        when (duration.toMinutesPart()) {
+                            1 -> {
+                                "${duration.toMinutesPart()} " + minuteCompleted
+                            }
+
+                            else -> "${duration.toMinutesPart()} " + minutesCompleted
+                        }
+                    }
+
+                    1 -> {
+                        when (duration.toMinutesPart()) {
+                            0 -> {
+                                "${duration.toHoursPart()} $hour $completed"
+                            }
+
+                            else -> "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minuteCompleted"
+                        }
+                    }
+
+                    else -> {
+                        when (duration.toMinutesPart()) {
+                            0 -> {
+                                "${duration.toHoursPart()} $hours $completed"
+                            }
+
+                            1 -> {
+                                "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minuteCompleted"
+                            }
+
+                            else -> {
+                                "${duration.toHoursPart()} $hours and ${duration.toMinutesPart()} $minutesCompleted"
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         return null
