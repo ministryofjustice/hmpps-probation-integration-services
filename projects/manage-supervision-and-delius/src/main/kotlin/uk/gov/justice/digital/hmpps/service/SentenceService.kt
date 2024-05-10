@@ -71,7 +71,6 @@ class SentenceService(
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
 
-
     fun Disposal.toOrder() =
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
