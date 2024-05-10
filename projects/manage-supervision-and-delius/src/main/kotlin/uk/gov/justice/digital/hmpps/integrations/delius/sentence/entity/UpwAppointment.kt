@@ -28,7 +28,7 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
 
     @Query(
         """
-            SELECT sum(duration) FROM (
+            SELECT nvl(sum(duration), 0) FROM (
                 SELECT ua.MINUTES_CREDITED AS duration
                 FROM UPW_APPOINTMENT ua
                 JOIN OFFENDER o 
@@ -41,5 +41,5 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
                 AND ua.SOFT_DELETED = 0)
         """, nativeQuery = true
     )
-    fun calculateUnpaidTimeWorked(id: Long, eventNumber: String): Long?
+    fun calculateUnpaidTimeWorked(id: Long, eventNumber: String): Long
 }

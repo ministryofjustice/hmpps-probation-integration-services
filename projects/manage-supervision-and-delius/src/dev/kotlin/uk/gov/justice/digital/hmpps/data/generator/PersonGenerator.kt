@@ -126,7 +126,13 @@ object PersonGenerator {
     val MAIN_CAT_F_SUB_ID = IdGenerator.getAndIncrement();
     val MAIN_CAT_F_TYPE = ReferenceData(MAIN_CAT_F_SUB_ID, "G03", "High Intensity")
     val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main", 1)
-    val REQUIREMENT = generateRequirement(ACTIVE_ORDER, MAIN_CAT_F_SUB_ID)
+    val REQUIREMENT = generateRequirement(ACTIVE_ORDER, MAIN_CAT_F_SUB_ID, mainCategory = MAIN_CAT_F)
+
+    val MAIN_CAT_W_SUB_ID = IdGenerator.getAndIncrement();
+    val MAIN_CAT_W_TYPE = ReferenceData(MAIN_CAT_W_SUB_ID, "W02", "Intensive")
+    val MAIN_CAT_W = RequirementMainCategory(IdGenerator.getAndIncrement(), "W", "Unpaid Work", 1107)
+    val REQUIREMENT_UNPAID_WORK = generateRequirement(ACTIVE_ORDER, MAIN_CAT_W_SUB_ID, mainCategory = MAIN_CAT_W)
+
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
         ContactGenerator.APPT_CT_1,
@@ -314,7 +320,7 @@ object PersonGenerator {
         subCategoryId: Long,
         length: Long = 12,
         notes: String? = "my notes",
-        mainCategory: RequirementMainCategory = MAIN_CAT_F,
+        mainCategory: RequirementMainCategory,
         active: Boolean = true,
         softDeleted: Boolean = false,
         expectedStartDate: LocalDate? = LocalDate.now().minusDays(1),
