@@ -45,6 +45,16 @@ class LdapTemplateExtensionsTest {
     }
 
     @Test
+    fun `get roles`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenReturn(listOf("ROLE1", "ROLE2", null))
+
+        val roles = ldapTemplate.getRoles("test")
+
+        assertThat(roles, equalTo(listOf("ROLE1", "ROLE2")))
+    }
+
+    @Test
     fun `add role successfully`() {
         whenever(ldapTemplate.lookupContext(any<LdapName>()))
             .thenReturn(dirContextOperations)
