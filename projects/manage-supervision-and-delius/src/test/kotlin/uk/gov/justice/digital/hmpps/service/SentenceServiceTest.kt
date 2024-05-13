@@ -52,7 +52,7 @@ class SentenceServiceTest {
     @InjectMocks
     lateinit var service: SentenceService
 
-    private val event1 = PersonGenerator.generateEvent(
+    private val event = PersonGenerator.generateEvent(
         person = PersonGenerator.OVERVIEW,
         active = true,
         inBreach = true,
@@ -113,17 +113,6 @@ class SentenceServiceTest {
 
     @Test
     fun `recent active sentences`() {
-
-        val event = PersonGenerator.generateEvent(
-            person = PersonGenerator.OVERVIEW,
-            active = true,
-            inBreach = true,
-            disposal = PersonGenerator.ACTIVE_ORDER,
-            eventNumber = "123457",
-            mainOffence = PersonGenerator.MAIN_OFFENCE_1,
-            notes = "overview",
-            additionalOffences = listOf(PersonGenerator.ADDITIONAL_OFFENCE_1)
-        )
 
         val requirement1 = RequirementDetails(
             1,
@@ -204,7 +193,8 @@ class SentenceServiceTest {
             )
         )
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.id)).thenReturn(3936)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(20)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(3936)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -272,7 +262,8 @@ class SentenceServiceTest {
                             null
                         )
                     ),
-                    listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event"))
+                    listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
+                    "17 hours and 36 minutes completed (of 20 hours)"
                 )
             ),
             ProbationHistory(0, null, 0, 0)
@@ -283,12 +274,14 @@ class SentenceServiceTest {
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
         verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)
-//        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.id)
+        verify(requirementRepository, times(1)).sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)
+        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.disposal!!.id)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
         verifyNoMoreInteractions(courtAppearanceRepository)
         verifyNoMoreInteractions(documentRepository)
+        verifyNoMoreInteractions(requirementRepository)
         verifyNoMoreInteractions(upwAppointmentRepository)
     }
 
@@ -297,31 +290,20 @@ class SentenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event1))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1))
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(1)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(1)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = Requirement(
-            requirement1._code,
-            requirement1._expectedStartDate,
-            requirement1._startDate,
-            requirement1._expectedEndDate,
-            requirement1._terminationDate,
-            requirement1._terminationReason,
-            "${requirement1._description} - ${requirement1._codeDescription}",
-            requirement1._length,
-            requirement1.lengthUnitValue,
-            requirement1._notes,
-            null
-        )
+        val expected = "1 minute completed (of 1 hour)"
 
 
-        assertEquals(expected, response.sentences[0].requirements[0])
+        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
 
     @Test
@@ -329,30 +311,19 @@ class SentenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event1))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1))
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(2)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(2)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = Requirement(
-            requirement1._code,
-            requirement1._expectedStartDate,
-            requirement1._startDate,
-            requirement1._expectedEndDate,
-            requirement1._terminationDate,
-            requirement1._terminationReason,
-            "${requirement1._description} - ${requirement1._codeDescription}",
-            requirement1._length,
-            requirement1.lengthUnitValue,
-            requirement1._notes,
-            null
-        )
+        val expected = "2 minutes completed (of 2 hours)"
 
-        assertEquals(expected, response.sentences[0].requirements[0])
+        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
 
     @Test
@@ -360,12 +331,13 @@ class SentenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event1))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1))
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(60)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(60)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -391,30 +363,19 @@ class SentenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event1))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1))
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(61)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(61)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = Requirement(
-            requirement1._code,
-            requirement1._expectedStartDate,
-            requirement1._startDate,
-            requirement1._expectedEndDate,
-            requirement1._terminationDate,
-            requirement1._terminationReason,
-            "${requirement1._description} - ${requirement1._codeDescription}",
-            requirement1._length,
-            requirement1.lengthUnitValue,
-            requirement1._notes,
-            null
-        )
+        val expected = "1 hour and 1 minute completed (of 2 hours)"
 
-        assertEquals(expected, response.sentences[0].requirements[0])
+        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
 
     @Test
@@ -422,30 +383,19 @@ class SentenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event1))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1))
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(62)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(62)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = Requirement(
-            requirement1._code,
-            requirement1._expectedStartDate,
-            requirement1._startDate,
-            requirement1._expectedEndDate,
-            requirement1._terminationDate,
-            requirement1._terminationReason,
-            "${requirement1._description} - ${requirement1._codeDescription}",
-            requirement1._length,
-            requirement1.lengthUnitValue,
-            requirement1._notes,
-            null
-        )
+        val expected = "1 hour and 2 minutes completed (of 2 hours)"
 
-        assertEquals(expected, response.sentences[0].requirements[0])
+        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
 
     @Test
@@ -453,12 +403,13 @@ class SentenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event1))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1))
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(120)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(120)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -484,30 +435,19 @@ class SentenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event1))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1))
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(121)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(3)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(121)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = Requirement(
-            requirement1._code,
-            requirement1._expectedStartDate,
-            requirement1._startDate,
-            requirement1._expectedEndDate,
-            requirement1._terminationDate,
-            requirement1._terminationReason,
-            "${requirement1._description} - ${requirement1._codeDescription}",
-            requirement1._length,
-            requirement1.lengthUnitValue,
-            requirement1._notes,
-            null
-        )
+        val expected = "2 hours and 1 minute completed (of 3 hours)"
 
-        assertEquals(expected, response.sentences[0].requirements[0])
+        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
 
     @Test
@@ -515,30 +455,19 @@ class SentenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
-        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event1))
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
 
-        whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1))
 
-//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(122)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(3)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(122)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = Requirement(
-            requirement1._code,
-            requirement1._expectedStartDate,
-            requirement1._startDate,
-            requirement1._expectedEndDate,
-            requirement1._terminationDate,
-            requirement1._terminationReason,
-            "${requirement1._description} - ${requirement1._codeDescription}",
-            requirement1._length,
-            requirement1.lengthUnitValue,
-            requirement1._notes,
-            null
-        )
+        val expected = "2 hours and 2 minutes completed (of 3 hours)"
 
-        assertEquals(expected, response.sentences[0].requirements[0])
+        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
 
     data class RequirementDetails(

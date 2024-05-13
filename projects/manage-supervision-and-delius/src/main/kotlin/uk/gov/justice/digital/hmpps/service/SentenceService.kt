@@ -65,7 +65,8 @@ class SentenceService(
             order = disposal?.toOrder(),
             requirements = requirementRepository.getRequirements(id, eventNumber)
                 .map { it.toRequirement(id, eventNumber) },
-            courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() }
+            courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
+            disposal?.id?.let { getUnpaidWorkTime(it) }
         )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
@@ -115,9 +116,19 @@ class SentenceService(
         return null
     }
 
-    fun getUnpaidWorkTime(requirementType: String, eventId: Long, eventNumber: String): String? {
-        if (requirementType.equals("W", true)) {
-            val durationInMinutes: Long = upwAppointmentRepository.calculateUnpaidTimeWorked(eventId)
+    fun getUnpaidWorkTime(disposalId: Long): String? {
+        val totalHoursOrdered = requirementRepository.sumTotalUnpaidWorkHoursByDisposal(disposalId)
+
+        if (totalHoursOrdered == 0L) {
+            return null
+        }
+
+        val totalMessage = when (totalHoursOrdered) {
+            1L -> "(of $totalHoursOrdered hour)"
+            else -> "(of $totalHoursOrdered hours)"
+        }
+
+        val durationInMinutes: Long = upwAppointmentRepository.calculateUnpaidTimeWorked(disposalId)
             durationInMinutes.let {
                 val duration = Duration.ofMinutes(it)
                 val completed = "completed"
@@ -142,13 +153,10 @@ class SentenceService(
                     else -> "${duration.toMinutesPart()} $minutesCompleted"
                 }
 
-                unpaidWorkHours ?: return unpaidWorkMinutes
-                unpaidWorkMinutes ?: return "$unpaidWorkHours $completed"
-                return "$unpaidWorkHours and $unpaidWorkMinutes"
+                unpaidWorkHours ?: return "$unpaidWorkMinutes $totalMessage"
+                unpaidWorkMinutes ?: return "$unpaidWorkHours $completed $totalMessage"
+                return "$unpaidWorkHours and $unpaidWorkMinutes $totalMessage"
             }
-        }
-
-        return null
     }
 
     fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)

@@ -43,7 +43,10 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
 
     @Query(
         "SELECT SUM(u.minutesCredited) " +
-            "FROM UpwAppointment u"
+            "FROM UpwAppointment u " +
+            "JOIN  u.upwDetails upd " +
+            "JOIN  upd.disposal d " +
+            "WHERE d.id = :id"
     )
     fun calculateUnpaidTimeWorked(id: Long): Long
 }
