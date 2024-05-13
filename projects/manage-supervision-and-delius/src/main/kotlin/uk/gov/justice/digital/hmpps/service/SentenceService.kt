@@ -153,6 +153,7 @@ class SentenceService(
                     else -> "${duration.toMinutesPart()} $minutesCompleted"
                 }
 
+                unpaidWorkHours ?: unpaidWorkMinutes ?: return "no time completed $totalMessage"
                 unpaidWorkHours ?: return "$unpaidWorkMinutes $totalMessage"
                 unpaidWorkMinutes ?: return "$unpaidWorkHours $completed $totalMessage"
                 return "$unpaidWorkHours and $unpaidWorkMinutes $totalMessage"

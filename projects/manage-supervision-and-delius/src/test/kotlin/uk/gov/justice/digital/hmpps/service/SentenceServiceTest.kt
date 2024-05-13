@@ -286,6 +286,27 @@ class SentenceServiceTest {
     }
 
     @Test
+    fun `unpaid work 0 time recorded`() {
+
+        whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
+
+        whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
+
+        whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
+            .thenReturn(listOf(requirement1))
+
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
+        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(0)
+
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+
+        val expected = "no time completed (of 1 hour)"
+
+
+        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
+    }
+
+    @Test
     fun `unpaid work one minute`() {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
