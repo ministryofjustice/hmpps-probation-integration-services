@@ -79,7 +79,6 @@ class SentenceIntegrationTest {
                             "1 days RAR, 1 completed",
                             12,
                             null,
-                            null,
                             "my notes",
                             Rar(completed = 1, scheduled = 0, totalDays = 1)
                         ),
@@ -93,7 +92,6 @@ class SentenceIntegrationTest {
                             "Unpaid Work - Intensive",
                             12,
                             null,
-                            "3 minutes completed",
                             "my notes",
                             null
                         )

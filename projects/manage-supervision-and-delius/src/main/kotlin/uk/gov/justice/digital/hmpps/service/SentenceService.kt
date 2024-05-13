@@ -87,7 +87,6 @@ class SentenceService(
             populateRequirementDescription(description, codeDescription, rar),
             length,
             lengthUnitValue,
-            getUnpaidWorkTime(code, eventId, eventNumber),
             notes,
             rar
         )

@@ -204,7 +204,7 @@ class SentenceServiceTest {
             )
         )
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.id)).thenReturn(3936)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.id)).thenReturn(3936)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -242,7 +242,6 @@ class SentenceServiceTest {
                             "${requirement1._description} - ${requirement1._codeDescription}",
                             requirement1._length,
                             requirement1.lengthUnitValue,
-                            "17 hours and 36 minutes completed",
                             requirement1._notes,
                             null
                         ),
@@ -256,7 +255,6 @@ class SentenceServiceTest {
                             "3 days RAR, 1 completed",
                             requirement2._length,
                             requirement2.lengthUnitValue,
-                            null,
                             requirement2._notes,
                             Rar(1, 2, 3)
                         ),
@@ -270,7 +268,6 @@ class SentenceServiceTest {
                             requirement3._description,
                             requirement3._length,
                             requirement3.lengthUnitValue,
-                            null,
                             requirement3._notes,
                             null
                         )
@@ -286,7 +283,7 @@ class SentenceServiceTest {
         verify(additionalSentenceRepository, times(1)).getAllByEventId(event.id)
         verify(courtAppearanceRepository, times(1)).getFirstCourtAppearanceByEventIdOrderByDate(event.id)
         verify(documentRepository, times(1)).getCourtDocuments(event.id, event.eventNumber)
-        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.id)
+//        verify(upwAppointmentRepository, times(1)).calculateUnpaidTimeWorked(event.id)
 
         verifyNoMoreInteractions(eventRepository)
         verifyNoMoreInteractions(additionalSentenceRepository)
@@ -305,7 +302,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
             .thenReturn(listOf(requirement1))
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(1)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(1)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -319,7 +316,6 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            "1 minute completed",
             requirement1._notes,
             null
         )
@@ -338,7 +334,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
             .thenReturn(listOf(requirement1))
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(2)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(2)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -352,7 +348,6 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            "2 minutes completed",
             requirement1._notes,
             null
         )
@@ -370,7 +365,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
             .thenReturn(listOf(requirement1))
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(60)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(60)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -384,7 +379,6 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            "1 hour completed",
             requirement1._notes,
             null
         )
@@ -402,7 +396,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
             .thenReturn(listOf(requirement1))
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(61)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(61)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -416,7 +410,6 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            "1 hour and 1 minute completed",
             requirement1._notes,
             null
         )
@@ -434,7 +427,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
             .thenReturn(listOf(requirement1))
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(62)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(62)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -448,7 +441,6 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            "1 hour and 2 minutes completed",
             requirement1._notes,
             null
         )
@@ -466,7 +458,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
             .thenReturn(listOf(requirement1))
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(120)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(120)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -480,7 +472,6 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            "2 hours completed",
             requirement1._notes,
             null
         )
@@ -498,7 +489,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
             .thenReturn(listOf(requirement1))
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(121)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(121)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -512,7 +503,6 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            "2 hours and 1 minute completed",
             requirement1._notes,
             null
         )
@@ -530,7 +520,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event1.id, event1.eventNumber))
             .thenReturn(listOf(requirement1))
 
-        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(122)
+//        whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event1.id)).thenReturn(122)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -544,7 +534,6 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            "2 hours and 2 minutes completed",
             requirement1._notes,
             null
         )
