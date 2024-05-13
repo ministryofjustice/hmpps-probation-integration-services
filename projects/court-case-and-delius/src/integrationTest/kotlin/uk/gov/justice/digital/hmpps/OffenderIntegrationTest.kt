@@ -38,38 +38,66 @@ internal class OffenderIntegrationTest {
         assertThat(detailResponse.preferredName, equalTo("Other name"))
         assertThat(detailResponse.softDeleted, equalTo(false))
         assertThat(detailResponse.activeProbationManagedSentence, equalTo(true))
-        assertThat(detailResponse.contactDetails.phoneNumbers, equalTo(
-            listOf( PhoneNumber(
-            PersonGenerator.CURRENTLY_MANAGED.telephoneNumber,
-            PhoneTypes.TELEPHONE.name),PhoneNumber(
-                PersonGenerator.CURRENTLY_MANAGED.mobileNumber,
-                PhoneTypes.MOBILE.name))))
+        assertThat(
+            detailResponse.contactDetails.phoneNumbers, equalTo(
+                listOf(
+                    PhoneNumber(
+                        PersonGenerator.CURRENTLY_MANAGED.telephoneNumber,
+                        PhoneTypes.TELEPHONE.name
+                    ), PhoneNumber(
+                        PersonGenerator.CURRENTLY_MANAGED.mobileNumber,
+                        PhoneTypes.MOBILE.name
+                    )
+                )
+            )
+        )
         assertThat(detailResponse.contactDetails.allowSMS, equalTo(true))
         assertThat(detailResponse.contactDetails.emailAddresses, equalTo(listOf("test@test.none")))
         assertThat(detailResponse.currentDisposal, equalTo("1"))
         assertThat(detailResponse.currentExclusion, equalTo(false))
         assertThat(detailResponse.currentRestriction, equalTo(false))
-        assertThat(detailResponse.dateOfBirth, equalTo(LocalDate.of(1977,8,12)))
+        assertThat(detailResponse.dateOfBirth, equalTo(LocalDate.of(1977, 8, 12)))
         assertThat(detailResponse.firstName, equalTo("TestForename"))
         assertThat(detailResponse.middleNames, equalTo(listOf("MiddleName", "OtherMiddleName")))
         assertThat(detailResponse.offenderId, equalTo(PersonGenerator.CURRENTLY_MANAGED.id))
         assertThat(detailResponse.offenderProfile.genderIdentity, equalTo("Some gender identity"))
-        assertThat(detailResponse.offenderProfile.selfDescribedGenderIdentity, equalTo("Some self described gender identity"))
-        assertThat(detailResponse.offenderProfile.selfDescribedGenderIdentity, equalTo("Some self described gender identity"))
-        assertThat(detailResponse.offenderProfile.disabilities[0].disabilityType.description, equalTo(DISABILITY_TYPE_1.description))
+        assertThat(
+            detailResponse.offenderProfile.selfDescribedGenderIdentity,
+            equalTo("Some self described gender identity")
+        )
+        assertThat(
+            detailResponse.offenderProfile.selfDescribedGenderIdentity,
+            equalTo("Some self described gender identity")
+        )
+        assertThat(
+            detailResponse.offenderProfile.disabilities[0].disabilityType.description,
+            equalTo(DISABILITY_TYPE_1.description)
+        )
         assertThat(detailResponse.offenderProfile.ethnicity, equalTo("Some ethnicity"))
         assertThat(detailResponse.offenderProfile.immigrationStatus, equalTo("Some immigration status"))
         assertThat(detailResponse.offenderProfile.nationality, equalTo("British"))
         assertThat(detailResponse.offenderProfile.offenderDetails, equalTo("Some details"))
-        assertThat(detailResponse.offenderProfile.offenderLanguages, equalTo(
-            OffenderLanguages(
-                languageConcerns = "A concern",
-                primaryLanguage = "English",
-                requiresInterpreter = false)))
-        assertThat(detailResponse.offenderProfile.previousConviction, equalTo(PreviousConviction(
-            convictionDate = PREVIOUS_CONVICTION_DOC.createdAt.toLocalDate(),
-            detail = ImmutableMap.of("documentName", PREVIOUS_CONVICTION_DOC.name))))
-        assertThat(detailResponse.offenderProfile.provisions[0].provisionType.description, equalTo(PROVISION_TYPE_1.description))
+        assertThat(
+            detailResponse.offenderProfile.offenderLanguages, equalTo(
+                OffenderLanguages(
+                    languageConcerns = "A concern",
+                    primaryLanguage = "English",
+                    requiresInterpreter = false
+                )
+            )
+        )
+        assertThat(
+            detailResponse.offenderProfile.previousConviction, equalTo(
+                PreviousConviction(
+                    convictionDate = PREVIOUS_CONVICTION_DOC.createdAt.toLocalDate(),
+                    detail = ImmutableMap.of("documentName", PREVIOUS_CONVICTION_DOC.name)
+                )
+            )
+        )
+        assertThat(
+            detailResponse.offenderProfile.provisions[0].provisionType.description,
+            equalTo(PROVISION_TYPE_1.description)
+        )
         assertThat(detailResponse.offenderProfile.religion, equalTo(RELIGION.description))
         assertThat(detailResponse.offenderProfile.remandStatus, equalTo("Remand Status"))
         assertThat(detailResponse.offenderProfile.riskColour, equalTo("RED"))
@@ -89,7 +117,7 @@ internal class OffenderIntegrationTest {
 
     @Test
     fun `API call probation record not found`() {
-         mockMvc
+        mockMvc
             .perform(get("/probation-case/A123456").withToken())
             .andExpect(status().isNotFound)
     }
