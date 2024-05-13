@@ -46,7 +46,8 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
             "FROM UpwAppointment u " +
             "JOIN  u.upwDetails upd " +
             "JOIN  upd.disposal d " +
-            "WHERE d.id = :id"
+            "WHERE d.id = :id " +
+            "AND u.softDeleted = 0 "
     )
     fun calculateUnpaidTimeWorked(id: Long): Long
 }
