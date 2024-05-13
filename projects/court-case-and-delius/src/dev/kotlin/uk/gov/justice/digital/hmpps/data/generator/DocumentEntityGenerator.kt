@@ -22,7 +22,7 @@ object DocumentEntityGenerator {
 
     val R_INSTITUTION = Institution(IdGenerator.getAndIncrement(), "test", false)
 
-    fun generateDocument(personId: Long, primaryKeyId: Long, type: String, tableName: String) =
+    fun generateDocument(personId: Long, primaryKeyId: Long?, type: String, tableName: String?) =
         DocumentEntity(
             IdGenerator.getAndIncrement(),
             personId,
@@ -31,6 +31,7 @@ object DocumentEntityGenerator {
             "filename.txt",
             type,
             tableName,
-            ZonedDateTime.now()
+            ZonedDateTime.now(),
+            lastUpdated = ZonedDateTime.now()
         )
 }

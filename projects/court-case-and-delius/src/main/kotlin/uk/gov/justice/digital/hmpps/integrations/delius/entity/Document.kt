@@ -7,6 +7,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import java.time.Instant
 import java.time.ZonedDateTime
 
@@ -25,7 +26,7 @@ class DocumentEntity(
     val alfrescoId: String,
 
     @Column
-    val primaryKeyId: Long,
+    val primaryKeyId: Long?,
 
     @Column(name = "document_name")
     val name: String,
@@ -34,7 +35,7 @@ class DocumentEntity(
     val type: String,
 
     @Column
-    val tableName: String,
+    val tableName: String?,
 
     @Column(name = "created_datetime")
     val createdAt: ZonedDateTime,
@@ -44,6 +45,9 @@ class DocumentEntity(
 
     @Column
     val lastUpdatedUserId: Long = 0,
+
+    @Column(name = "last_saved")
+    val lastUpdated: ZonedDateTime,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -80,6 +84,18 @@ fun Document.typeDescription() = when (tableName) {
 }
 
 interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
+
+    @Query(
+        """
+            select d from DocumentEntity d 
+            where d.personId = :personId
+            and d.type = :type
+            and d.softDeleted = false
+            order by d.lastUpdated desc
+        """
+    )
+    fun findByPersonIdAndType(personId: Long, type: String): List<DocumentEntity>
+
     @Query(
         """
         select document.alfresco_document_id as "alfrescoId",
@@ -177,3 +193,6 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
     @Query("select d.name from DocumentEntity d where d.alfrescoId = :alfrescoId")
     fun findNameByAlfrescoId(alfrescoId: String): String?
 }
+
+fun DocumentRepository.getPreviousConviction(personId: Long) =
+    findByPersonIdAndType(personId, DocumentType.PREVIOUS_CONVICTION.name).firstOrNull()
