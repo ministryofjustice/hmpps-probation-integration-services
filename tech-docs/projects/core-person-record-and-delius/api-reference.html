@@ -101,6 +101,9 @@
         <a href="./api-reference.html#probation-cases-identifier"><span>/probation-cases/{identifier}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#all-probation-cases"><span>/all-probation-cases</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -240,6 +243,158 @@
 </td>
 <td>
 <a href='#schema-persondetail'>PersonDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="all-probation-cases">/all-probation-cases</h2>
+
+<h3 id="all-probation-cases-get">get</h3>
+
+
+
+
+<h4 id="all-probation-cases-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>pageable</td>
+<td>query</td>
+<td>object</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="all-probation-cases-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "totalPages": "integer",
+  "totalElements": "integer",
+  "size": "integer",
+  "content": [
+    {
+      "identifiers": {
+        "deliusId": "integer",
+        "crn": "string",
+        "nomsId": "string",
+        "prisonerNumber": "string",
+        "pnc": "string",
+        "cro": "string",
+        "ni": "string"
+      },
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string",
+        "previousSurname": "string",
+        "preferred": "string"
+      },
+      "dateOfBirth": "string",
+      "title": {
+        "code": "string",
+        "description": "string"
+      },
+      "gender": {
+        "code": "string",
+        "description": "string"
+      },
+      "nationality": {
+        "code": "string",
+        "description": "string"
+      },
+      "ethnicity": {
+        "code": "string",
+        "description": "string"
+      },
+      "ethnicityDescription": "string",
+      "contactDetails": {
+        "telephone": "string",
+        "mobile": "string",
+        "email": "string"
+      },
+      "aliases": [
+        {
+          "name": {
+            "forename": "string",
+            "middleName": "string",
+            "surname": "string",
+            "previousSurname": "string",
+            "preferred": "string"
+          },
+          "dateOfBirth": "string"
+        }
+      ],
+      "addresses": [
+        {
+          "postcode": "string"
+        }
+      ]
+    }
+  ],
+  "number": "integer",
+  "sort": [
+    {
+      "direction": "string",
+      "nullHandling": "string",
+      "ascending": "boolean",
+      "property": "string",
+      "ignoreCase": "boolean"
+    }
+  ],
+  "numberOfElements": "integer",
+  "pageable": {
+    "offset": "integer",
+    "sort": [
+      {
+        "direction": "string",
+        "nullHandling": "string",
+        "ascending": "boolean",
+        "property": "string",
+        "ignoreCase": "boolean"
+      }
+    ],
+    "pageNumber": "integer",
+    "pageSize": "integer",
+    "paged": "boolean",
+    "unpaged": "boolean"
+  },
+  "first": "boolean",
+  "last": "boolean",
+  "empty": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-pagepersondetail'>PagePersonDetail</a>
 </td>
 </tr>
 
@@ -639,6 +794,304 @@
 <td></td>
 <td>
   <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pageable">Pageable</h3>
+
+
+<table class='schema-pageable'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sort</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pagepersondetail">PagePersonDetail</h3>
+
+
+<table class='schema-pagepersondetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>totalPages</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalElements</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>content</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-persondetail'>PersonDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>number</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sort</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sortobject'>SortObject</a>
+</td>
+</tr>
+
+<tr>
+<td>numberOfElements</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pageable</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-pageableobject'>PageableObject</a>
+</td>
+</tr>
+
+<tr>
+<td>first</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>last</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>empty</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pageableobject">PageableObject</h3>
+
+
+<table class='schema-pageableobject'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>offset</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sort</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sortobject'>SortObject</a>
+</td>
+</tr>
+
+<tr>
+<td>pageNumber</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pageSize</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>paged</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unpaged</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sortobject">SortObject</h3>
+
+
+<table class='schema-sortobject'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>direction</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nullHandling</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ascending</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>property</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ignoreCase</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
