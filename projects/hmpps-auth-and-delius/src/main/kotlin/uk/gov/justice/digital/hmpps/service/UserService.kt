@@ -29,7 +29,6 @@ class UserService(
 
     fun getUsersByEmail(email: String) = ldapTemplate.find(
         query()
-            .base("ou=Users")
             .searchScope(SearchScope.ONELEVEL)
             .where("mail").`is`(email),
         LdapUser::class.java

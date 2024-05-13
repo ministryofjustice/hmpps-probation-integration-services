@@ -30,7 +30,6 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
             val filter = it.map { username -> EqualsFilter("cn", username) }.fold(OrFilter()) { a, b -> a.or(b) }
             val query = LdapQueryBuilder.query()
                 .attributes("mail")
-                .base("ou=Users")
                 .searchScope(SearchScope.ONELEVEL)
                 .filter(filter)
             ldapTemplate.find(query, LdapUser::class.java)

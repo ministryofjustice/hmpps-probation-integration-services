@@ -1,8 +1,3 @@
-dn: dc=moj,dc=com
-dc: moj
-objectclass: top
-objectclass: domain
-
 dn: ou=Users,dc=moj,dc=com
 ou: Users
 objectclass: top

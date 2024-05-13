@@ -1,18 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.referral.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 
 @Immutable
 @Entity
 @Table(name = "rqmnt")
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0")
 class Requirement(
 
     @Column(name = "offender_id")
