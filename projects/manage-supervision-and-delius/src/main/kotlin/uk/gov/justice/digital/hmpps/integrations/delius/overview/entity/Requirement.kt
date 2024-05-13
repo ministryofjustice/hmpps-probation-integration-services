@@ -158,18 +158,26 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
     )
     fun getRequirements(id: Long, eventNumber: String): List<RequirementDetails>
 
+    //    @Query(
+//        """
+//            SELECT 	sum(r."LENGTH")
+//            FROM rqmnt r
+//            JOIN r_rqmnt_type_main_category rrtmc
+//            ON r.rqmnt_type_main_category_id = rrtmc.rqmnt_type_main_category_id
+//            JOIN disposal d
+//            ON r.disposal_id = d.disposal_id
+//            WHERE r.DISPOSAL_ID = :id
+//            AND d.soft_deleted = 0
+//            AND rrtmc.CODE  = 'W'
+//        """, nativeQuery = true
+//    )
     @Query(
-        """
-            SELECT 	sum(r."LENGTH")
-            FROM rqmnt r
-            JOIN r_rqmnt_type_main_category rrtmc
-            ON r.rqmnt_type_main_category_id = rrtmc.rqmnt_type_main_category_id
-            JOIN disposal d
-            ON r.disposal_id = d.disposal_id
-            WHERE r.DISPOSAL_ID = :id
-            AND d.soft_deleted = 0
-            AND rrtmc.CODE  = 'W'
-        """, nativeQuery = true
+        "SELECT SUM(r.length) " +
+            "FROM Requirement r " +
+            "JOIN  r.mainCategory mc " +
+            "JOIN  r.disposal " +
+            "WHERE r.disposal.id = :id " +
+            "AND mc.code = 'W'"
     )
     fun sumTotalUnpaidWorkHoursByDisposal(id: Long): Long
 }
