@@ -7,11 +7,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.DirContextOperations
 import org.springframework.ldap.core.LdapTemplate
@@ -30,7 +26,7 @@ class LdapTemplateExtensionsTest {
 
     @Test
     fun `find by username`() {
-        val expected = LdapUser(LdapName("cn=test,ou=Users"), "test", "test@example.com")
+        val expected = LdapUser(LdapName("cn=test"), "test", "test@example.com")
         whenever(ldapTemplate.find(any(), eq(LdapUser::class.java))).thenReturn(listOf(expected))
 
         val user = ldapTemplate.findByUsername<LdapUser>("test")
@@ -46,6 +42,16 @@ class LdapTemplateExtensionsTest {
         val email = ldapTemplate.findEmailByUsername("test")
 
         assertThat(email, equalTo("test@example.com"))
+    }
+
+    @Test
+    fun `get roles`() {
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenReturn(listOf("ROLE1", "ROLE2", null))
+
+        val roles = ldapTemplate.getRoles("test")
+
+        assertThat(roles, equalTo(listOf("ROLE1", "ROLE2")))
     }
 
     @Test
@@ -68,7 +74,7 @@ class LdapTemplateExtensionsTest {
         val attributeCapture = argumentCaptor<Attributes>()
         verify(ldapTemplate).rebind(nameCapture.capture(), eq(null), attributeCapture.capture())
 
-        assertThat(nameCapture.firstValue.toString(), equalTo("cn=ROLE1,cn=john-smith,ou=Users"))
+        assertThat(nameCapture.firstValue.toString(), equalTo("cn=ROLE1,cn=john-smith"))
         assertThat(attributeCapture.firstValue["cn"].toString(), equalTo("cn: ROLE1"))
         assertThat(
             attributeCapture.firstValue["objectclass"].toString(),
@@ -109,6 +115,6 @@ class LdapTemplateExtensionsTest {
         val nameCapture = argumentCaptor<LdapName>()
         verify(ldapTemplate).unbind(nameCapture.capture())
 
-        assertThat(nameCapture.firstValue.toString(), equalTo("cn=ROLE1,cn=john-smith,ou=Users"))
+        assertThat(nameCapture.firstValue.toString(), equalTo("cn=ROLE1,cn=john-smith"))
     }
 }

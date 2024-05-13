@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.http.MediaType
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
+import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -73,10 +74,8 @@ internal class AuthenticationIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(json)
 
-    private fun currentPassword() =
-        ldapTemplate.search(
-            "ou=Users",
-            "cn=test.user",
-            AttributesMapper { String(it["userPassword"].get() as ByteArray) })
-            .toList().single()
+    private fun currentPassword() = ldapTemplate.search(
+        query().where("cn").`is`("test.user"),
+        AttributesMapper { String(it["userPassword"].get() as ByteArray) }
+    ).toList().single()
 }
