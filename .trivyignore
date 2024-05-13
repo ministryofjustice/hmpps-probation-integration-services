@@ -1,6 +1,0 @@
-# Reason: The git plugin is only used for reading git metadata, not cloning repos.
-#         A pull request has been raised to bump the jgit version (https://github.com/n0mer/gradle-git-properties/pull/231),
-#         however the last commit to that repo was in 2022 - so it's unlikely to be merged.
-# Package: org.eclipse.jgit:org.eclipse.jgit:4.5.0.201609210915-r
-#          (used by Gradle plugin: com.gorylenko.gradle-git-properties)
-CVE-2023-4759 exp:2024-06-01
