@@ -64,7 +64,7 @@ class SentenceService(
             ),
             order = disposal?.toOrder(),
             requirements = requirementRepository.getRequirements(id, eventNumber)
-                .map { it.toRequirement(id, eventNumber) },
+                .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
             disposal?.id?.let { getUnpaidWorkTime(it) }
         )
@@ -75,7 +75,7 @@ class SentenceService(
     fun Disposal.toOrder() =
         Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
 
-    fun RequirementDetails.toRequirement(eventId: Long, eventNumber: String): Requirement {
+    fun RequirementDetails.toRequirement(): Requirement {
         val rar = getRar(id, code)
 
         val requirement = Requirement(
