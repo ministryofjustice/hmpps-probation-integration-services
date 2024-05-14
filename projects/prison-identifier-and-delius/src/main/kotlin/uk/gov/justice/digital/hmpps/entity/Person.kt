@@ -114,7 +114,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
         and e.softDeleted = false
         and e.active = true
         and c.softDeleted = false
-        and c.prisonerNumber is null
     """
     )
     fun findSentencedByCrn(crn: String): List<SentencedPerson>

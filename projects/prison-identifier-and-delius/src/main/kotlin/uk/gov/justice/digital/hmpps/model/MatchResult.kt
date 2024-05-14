@@ -29,7 +29,7 @@ sealed interface MatchResult {
     ) : MatchResult
 }
 
-fun TelemetryService.logResult(result: MatchResult, dryRun: Boolean) {
+fun TelemetryService.logResult(result: MatchResult, dryRun: Boolean = false) {
     trackEvent(
         result.name(),
         mapOf("reason" to result.reason, "dryRun" to dryRun.toString())

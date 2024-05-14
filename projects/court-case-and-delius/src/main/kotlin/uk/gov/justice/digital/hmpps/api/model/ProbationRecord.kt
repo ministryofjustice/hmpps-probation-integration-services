@@ -127,7 +127,8 @@ enum class DocumentType(val description: String) {
     NSI_DOCUMENT("Non Statutory Intervention related document"),
     PERSONAL_CIRCUMSTANCE_DOCUMENT("Personal circumstance related document"),
     UPW_APPOINTMENT_DOCUMENT("Unpaid work appointment document"),
-    CONTACT_DOCUMENT("Contact related document")
+    CONTACT_DOCUMENT("Contact related document"),
+    PREVIOUS_CONVICTION("Previous conviction document")
 }
 
 class Breach(

@@ -19,7 +19,7 @@ class PrisonMatchingService(
     private val notifier: Notifier,
     private val objectMapper: ObjectMapper,
 ) {
-    fun matchAndUpdateIdentifiers(crn: String, dryRun: Boolean): MatchResult {
+    fun matchAndUpdateIdentifiers(crn: String, dryRun: Boolean = false): MatchResult {
         val matchResult = findMatchingPrisonRecord(crn)
         if (!dryRun && matchResult is Success) {
             with(matchResult) {
