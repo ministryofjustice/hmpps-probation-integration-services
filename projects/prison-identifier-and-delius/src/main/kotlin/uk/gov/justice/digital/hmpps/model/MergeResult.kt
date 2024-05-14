@@ -15,7 +15,7 @@ sealed interface MergeResult {
         MergeResult
 }
 
-fun TelemetryService.logResult(result: MergeResult, dryRun: Boolean) {
+fun TelemetryService.logResult(result: MergeResult, dryRun: Boolean = false) {
     trackEvent(
         result.name(),
         mapOf("reason" to result.reason, "dryRun" to dryRun.toString())
