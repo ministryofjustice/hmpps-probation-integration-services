@@ -8,21 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
-import uk.gov.justice.digital.hmpps.data.generator.BoroughGenerator
-import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CourtCaseNoteGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DistrictGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DocumentEntityGenerator
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LDUGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
@@ -58,10 +44,7 @@ class DataLoader(
             SentenceGenerator.ADDITIONAL_OFFENCE,
             BusinessInteractionGenerator.UPDATE_CONTACT,
             ContactTypeGenerator.CONTACT_TYPE,
-            PersonGenerator.NEW_TO_PROBATION,
-            PersonGenerator.CURRENTLY_MANAGED,
-            PersonGenerator.PREVIOUSLY_MANAGED,
-            PersonGenerator.NO_SENTENCE,
+
             ReferenceDataGenerator.DISPOSAL_TYPE,
             ReferenceDataGenerator.LENGTH_UNITS,
             ReferenceDataGenerator.TERMINATION_REASON,
@@ -76,7 +59,29 @@ class DataLoader(
             ReferenceDataGenerator.NSI_BREACH_OUTCOME,
             ReferenceDataGenerator.PSS_MAIN_CAT,
             ReferenceDataGenerator.PSS_SUB_CAT,
-            ReferenceDataGenerator.COURT_REPORT_TYPE
+            ReferenceDataGenerator.COURT_REPORT_TYPE,
+            ReferenceDataGenerator.GENDER_MALE,
+            ReferenceDataGenerator.PROVISION_TYPE_1,
+            ReferenceDataGenerator.PROVISION_CATEGORY_1,
+            ReferenceDataGenerator.DISABILITY_TYPE_1,
+            ReferenceDataGenerator.DISABILITY_CONDITION_1,
+            ReferenceDataGenerator.GENDER_IDENTITY,
+            ReferenceDataGenerator.ETHNICITY,
+            ReferenceDataGenerator.IMMIGRATION_STATUS,
+            ReferenceDataGenerator.NATIONALITY,
+            ReferenceDataGenerator.LANGUAGE_ENG,
+            ReferenceDataGenerator.RELIGION,
+            ReferenceDataGenerator.SECOND_NATIONALITY,
+            ReferenceDataGenerator.SEXUAL_ORIENTATION,
+            ReferenceDataGenerator.TITLE,
+            PersonGenerator.PARTITION_AREA,
+            PersonGenerator.NEW_TO_PROBATION,
+            PersonGenerator.CURRENTLY_MANAGED,
+            PersonGenerator.PREVIOUSLY_MANAGED,
+            PersonGenerator.NO_SENTENCE,
+            PersonGenerator.PROVISION_1,
+            PersonGenerator.DISABILITY_1,
+            PersonGenerator.PREVIOUS_CONVICTION_DOC
         )
 
         em.saveAll(StaffGenerator.ALLOCATED, StaffGenerator.UNALLOCATED)
