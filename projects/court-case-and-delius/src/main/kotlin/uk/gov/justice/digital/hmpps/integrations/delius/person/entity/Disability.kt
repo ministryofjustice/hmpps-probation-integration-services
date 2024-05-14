@@ -5,7 +5,6 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
-import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -37,10 +36,6 @@ class Disability(
     @Column(name = "last_updated_datetime")
     val lastUpdated: ZonedDateTime,
 
-//    @ManyToOne
-//    @JoinColumn(name = "last_updated_user_id")
-//    val lastUpdatedUser: User,
-
     @Column(name = "notes", columnDefinition = "clob")
     val notes: String? = null,
 
@@ -50,7 +45,3 @@ class Disability(
     val softDeleted: Boolean = false,
 
     )
-
-interface DisabilityRepository : JpaRepository<Disability, Long> {
-    fun findByPersonId(personId: Long): List<Disability>
-}
