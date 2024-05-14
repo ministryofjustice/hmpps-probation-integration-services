@@ -193,7 +193,7 @@ class SentenceServiceTest {
             )
         )
 
-        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(20)
+        whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(70)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(3936)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
@@ -263,7 +263,7 @@ class SentenceServiceTest {
                         )
                     ),
                     listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
-                    "17 hours and 36 minutes completed (of 20 hours)"
+                    "65 hours 36 minutes completed (of 70 hours)"
                 )
             ),
             ProbationHistory(0, null, 0, 0)
@@ -300,7 +300,7 @@ class SentenceServiceTest {
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = "no time completed (of 1 hour)"
+        val expected = "0 minutes completed (of 1 hour)"
 
 
         assertEquals(expected, response.sentences[0].unpaidWorkProgress)
@@ -394,7 +394,7 @@ class SentenceServiceTest {
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = "1 hour and 1 minute completed (of 2 hours)"
+        val expected = "1 hour 1 minute completed (of 2 hours)"
 
         assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
@@ -414,7 +414,7 @@ class SentenceServiceTest {
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = "1 hour and 2 minutes completed (of 2 hours)"
+        val expected = "1 hour 2 minutes completed (of 2 hours)"
 
         assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
@@ -466,7 +466,7 @@ class SentenceServiceTest {
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = "2 hours and 1 minute completed (of 3 hours)"
+        val expected = "2 hours 1 minute completed (of 3 hours)"
 
         assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }
@@ -486,7 +486,7 @@ class SentenceServiceTest {
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
-        val expected = "2 hours and 2 minutes completed (of 3 hours)"
+        val expected = "2 hours 2 minutes completed (of 3 hours)"
 
         assertEquals(expected, response.sentences[0].unpaidWorkProgress)
     }

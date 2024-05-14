@@ -159,12 +159,14 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
     fun getRequirements(id: Long, eventNumber: String): List<RequirementDetails>
 
     @Query(
-        "SELECT SUM(r.length) " +
-            "FROM Requirement r " +
-            "JOIN  r.mainCategory mc " +
-            "JOIN  r.disposal " +
-            "WHERE r.disposal.id = :id " +
-            "AND mc.code = 'W'"
+        """
+            SELECT SUM(r.length) 
+            FROM Requirement r 
+            JOIN  r.mainCategory mc 
+            JOIN  r.disposal 
+            WHERE r.disposal.id = :id 
+            AND mc.code = 'W' 
+        """
     )
     fun sumTotalUnpaidWorkHoursByDisposal(id: Long): Long
 }

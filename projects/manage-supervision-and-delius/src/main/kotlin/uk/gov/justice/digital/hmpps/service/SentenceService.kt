@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.D
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.Duration
 import java.time.LocalDate
+import kotlin.time.toKotlinDuration
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
 @Service
@@ -123,41 +124,24 @@ class SentenceService(
             return null
         }
 
-        val totalMessage = when (totalHoursOrdered) {
-            1L -> "(of $totalHoursOrdered hour)"
-            else -> "(of $totalHoursOrdered hours)"
-        }
-
         val durationInMinutes: Long = upwAppointmentRepository.calculateUnpaidTimeWorked(disposalId)
-        durationInMinutes.let {
-            val duration = Duration.ofMinutes(it)
-            val completed = "completed"
-            val hour = "hour"
-            val hours = "hours"
-            val minuteCompleted = "minute $completed"
-            val minutesCompleted = "minutes $completed"
 
-            val unpaidWorkHours = when (duration.toHoursPart()) {
-                0 -> null
+        return getUnpaidWorkTime(totalHoursOrdered, durationInMinutes)
+    }
 
-                1 -> "${duration.toHoursPart()} $hour"
+    fun getUnpaidWorkTime(hoursOrdered: Long, minutesCredited: Long): String {
+        val totalMessage = hoursOrdered
+            .let { " (of $hoursOrdered hour${if (hoursOrdered != 1L) "s" else ""})" }
 
-                else -> "${duration.toHoursPart()} $hours"
+        val creditedMessage = Duration.ofMinutes(minutesCredited).toKotlinDuration()
+            .toComponents { hours, minutes, _, _ ->
+                when {
+                    hours == 0L -> "$minutes minute${if (minutes != 1) "s" else ""} completed"
+                    minutes == 0 -> "$hours hour${if (hours != 1L) "s" else ""} completed"
+                    else -> "$hours hour${if (hours != 1L) "s" else ""} $minutes minute${if (minutes != 1) "s" else ""} completed"
+                }
             }
-
-            val unpaidWorkMinutes = when (duration.toMinutesPart()) {
-                0 -> null
-
-                1 -> "${duration.toMinutesPart()} $minuteCompleted"
-
-                else -> "${duration.toMinutesPart()} $minutesCompleted"
-            }
-
-            unpaidWorkHours ?: unpaidWorkMinutes ?: return "no time completed (of 1 hour)"
-            unpaidWorkHours ?: return "$unpaidWorkMinutes $totalMessage"
-            unpaidWorkMinutes ?: return "$unpaidWorkHours $completed $totalMessage"
-            return "$unpaidWorkHours and $unpaidWorkMinutes $totalMessage"
-        }
+        return "$creditedMessage$totalMessage"
     }
 
     fun CourtDocumentDetails.toCourtDocument(): CourtDocument = CourtDocument(id, lastSaved, documentName)
