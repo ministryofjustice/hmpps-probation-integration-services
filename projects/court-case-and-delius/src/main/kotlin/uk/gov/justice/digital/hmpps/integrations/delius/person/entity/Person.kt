@@ -146,7 +146,7 @@ class Person(
     @Column(name = "current_highest_risk_colour")
     val currentHighestRiskColour: String? = null,
 
-    @Column(name = "offender_details")
+    @Column(name = "offender_details", columnDefinition = "clob")
     val offenderDetails: String? = null,
 
     @ManyToOne
