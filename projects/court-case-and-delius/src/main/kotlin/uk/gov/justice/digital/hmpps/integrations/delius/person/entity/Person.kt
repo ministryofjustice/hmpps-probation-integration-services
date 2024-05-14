@@ -29,13 +29,13 @@ class Person(
     @Column(name = "cro_number")
     val croNumber: String? = null,
 
-    @Column(name = "noms_number")
+    @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsNumber: String? = null,
 
     @Column(name = "immigration_number")
     val immigrationNumber: String? = null,
 
-    @Column(name = "ni_number")
+    @Column(name = "ni_number", columnDefinition = "char(9)")
     val niNumber: String? = null,
 
     @Column(name = "most_recent_prisoner_number")
@@ -146,7 +146,7 @@ class Person(
     @Column(name = "current_highest_risk_colour")
     val currentHighestRiskColour: String? = null,
 
-    @Column(name = "offender_details")
+    @Column(name = "offender_details", columnDefinition = "clob")
     val offenderDetails: String? = null,
 
     @ManyToOne
