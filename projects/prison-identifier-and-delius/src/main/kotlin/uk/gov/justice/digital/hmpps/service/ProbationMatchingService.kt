@@ -21,7 +21,7 @@ class ProbationMatchingService(
     private val notifier: Notifier,
     private val objectMapper: ObjectMapper,
 ) {
-    fun matchAndUpdateIdentifiers(nomsNumber: String, dryRun: Boolean): MatchResult {
+    fun matchAndUpdateIdentifiers(nomsNumber: String, dryRun: Boolean = false): MatchResult {
         val matchResult = findMatchingProbationRecord(nomsNumber)
         if (!dryRun && matchResult is Success) {
             with(matchResult) {
@@ -32,7 +32,7 @@ class ProbationMatchingService(
         return matchResult
     }
 
-    fun replaceIdentifiers(oldNomsNumber: String, newNomsNumber: String, dryRun: Boolean): MergeResult {
+    fun replaceIdentifiers(oldNomsNumber: String, newNomsNumber: String, dryRun: Boolean = false): MergeResult {
         personRepository.findAllByNomsNumber(newNomsNumber).joinToString { it.crn }.takeIf { it.isNotEmpty() }?.let {
             return MergeResult.Ignored("NOMS number $newNomsNumber is already assigned to $it")
         }

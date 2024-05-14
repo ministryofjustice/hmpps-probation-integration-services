@@ -1,39 +1,24 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.Breach
-import uk.gov.justice.digital.hmpps.api.model.Conviction
-import uk.gov.justice.digital.hmpps.api.model.CourtReport
-import uk.gov.justice.digital.hmpps.api.model.DocumentType
-import uk.gov.justice.digital.hmpps.api.model.KeyValue
+import software.amazon.awssdk.utils.ImmutableMap
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.api.model.LicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.Offence
-import uk.gov.justice.digital.hmpps.api.model.OffenderDocumentDetail
-import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
-import uk.gov.justice.digital.hmpps.api.model.PssRequirement
-import uk.gov.justice.digital.hmpps.api.model.ReportAuthor
 import uk.gov.justice.digital.hmpps.api.model.Requirement
-import uk.gov.justice.digital.hmpps.api.model.Sentence
-import uk.gov.justice.digital.hmpps.api.model.keyValueOf
-import uk.gov.justice.digital.hmpps.api.model.toOffenderManager
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Document
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.typeDescription
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReportRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdditionalOffenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceConditionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.PersonManagerRepository
+import java.time.LocalDate
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Disability as DisabilityEntity
 
 @Service
 class OffenderService(
@@ -49,14 +34,11 @@ class OffenderService(
     private val pssRequirementRepository: PssRequirementRepository,
     private val courtReportRepository: CourtReportRepository
 ) {
-    fun getProbationRecord(crn: String): ProbationRecord {
-        val person =
-            personRepository.findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("Person", "crn", crn)
-        val personManager =
-            personManagerRepository.findActiveManager(person.id) ?: throw NotFoundException("PersonManager", "crn", crn)
-        val documents = documentRepository.getPersonAndEventDocuments(person.id)
-        val convictions = getConvictions(person, documents)
-        return ProbationRecord(crn, listOf(personManager.toOffenderManager()), convictions)
+
+    fun getOffenderDetail(crn: String): OffenderDetailSummary {
+        val person = personRepository.getPerson(crn)
+        val previousConviction = documentRepository.getPreviousConviction(person.id)
+        return person.toOffenderDetail(previousConviction)
     }
 
     private fun getOffences(event: Event): List<Offence> {
@@ -169,6 +151,99 @@ class OffenderService(
             listOf()
         }
 }
+
+fun DisabilityEntity.isActive(): Boolean {
+    if (startDate.isAfter(LocalDate.now())) {
+        return false
+    }
+    return finishDate == null || finishDate.isAfter(LocalDate.now())
+}
+
+fun Person.toOffenderDetail(previousConviction: DocumentEntity?) = OffenderDetailSummary(
+    preferredName = preferredName,
+    activeProbationManagedSentence = currentDisposal,
+    contactDetails = ContactDetails(
+        allowSMS = allowSms,
+        emailAddresses = listOfNotNull(emailAddress),
+        phoneNumbers = listOf(
+            PhoneNumber(telephoneNumber, PhoneTypes.TELEPHONE.name),
+            PhoneNumber(mobileNumber, PhoneTypes.MOBILE.name)
+        )
+    ),
+    currentDisposal = if (currentDisposal) "1" else "0",
+    currentExclusion = currentExclusion,
+    currentRestriction = currentRestriction,
+    dateOfBirth = dateOfBirth,
+    firstName = forename,
+    middleNames = listOfNotNull(secondName, thirdName),
+    surname = surname,
+    gender = gender.description,
+    offenderId = id,
+    offenderProfile = OffenderProfile(
+        genderIdentity = genderIdentity?.description,
+        selfDescribedGenderIdentity = genderIdentityDescription ?: genderIdentity?.description,
+        disabilities = disabilities.sortedByDescending { it.startDate }.map {
+            Disability(
+                lastUpdatedDateTime = it.lastUpdated,
+                disabilityCondition = KeyValue(it.condition.code, it.condition.description),
+                disabilityId = it.id,
+                disabilityType = KeyValue(it.type.code, it.type.description),
+                endDate = it.finishDate,
+                isActive = it.isActive(),
+                notes = it.notes,
+                provisions = emptyList(),
+                startDate = it.startDate
+            )
+        },
+        ethnicity = ethnicity?.description,
+        immigrationStatus = immigrationStatus?.description,
+        nationality = nationality?.description,
+        offenderDetails = offenderDetails,
+        offenderLanguages = OffenderLanguages(
+            languageConcerns = languageConcerns,
+            primaryLanguage = language?.description,
+            requiresInterpreter = requiresInterpreter,
+            otherLanguages = emptyList()
+        ),
+        previousConviction = previousConviction?.lastUpdated.let {
+            previousConviction?.createdAt?.toLocalDate()
+                ?.let { it1 ->
+                    PreviousConviction(
+                        convictionDate = it1,
+                        detail = ImmutableMap.of("documentName", previousConviction.name)
+                    )
+                }
+        },
+        provisions = provisions.sortedByDescending { it.startDate }.map {
+            Provision(
+                category = it.category?.let { cat -> KeyValue(cat.code, cat.description) },
+                finishDate = it.finishDate,
+                notes = it.notes,
+                provisionId = it.id,
+                provisionType = KeyValue(it.type.code, it.type.description),
+                startDate = it.startDate
+            )
+        },
+        religion = religion?.description,
+        remandStatus = currentRemandStatus,
+        riskColour = currentHighestRiskColour,
+        sexualOrientation = sexualOrientation?.description,
+        secondaryNationality = secondNationality?.description
+    ),
+    otherIds = OtherIds(
+        crn = crn,
+        croNumber = croNumber,
+        immigrationNumber = immigrationNumber,
+        mostRecentPrisonerNumber = mostRecentPrisonerNumber,
+        niNumber = niNumber,
+        nomsNumber = nomsNumber,
+        pncNumber = pnc
+    ),
+    partitionArea = partitionArea.area,
+    previousSurname = previousSurname,
+    softDeleted = softDeleted,
+    title = title?.description
+)
 
 fun Disposal.sentenceOf() = Sentence(
     disposalType.description,

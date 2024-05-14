@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -17,7 +16,6 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val probationMatchingService: ProbationMatchingService,
     private val prisonMatchingService: PrisonMatchingService,
-    @Value("\${messaging.consumer.dry-run:false}") private val messagingDryRun: Boolean
 ) : NotificationHandler<Any> {
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
@@ -33,12 +31,12 @@ class Handler(
 
                 "prison-offender-events.prisoner.sentence-dates-changed",
                 "prison-offender-events.prisoner.imprisonment-status-changed" -> probationMatchingService
-                    .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findNomsNumber()), messagingDryRun)
-                    .also { telemetryService.logResult(it, messagingDryRun) }
+                    .matchAndUpdateIdentifiers(checkNotNull(message.personReference.findNomsNumber()))
+                    .also { telemetryService.logResult(it) }
 
                 "prison-offender-events.prisoner.merged" -> probationMatchingService
-                    .replaceIdentifiers(message.oldNoms, message.newNoms, messagingDryRun)
-                    .also { telemetryService.logResult(it, messagingDryRun) }
+                    .replaceIdentifiers(message.oldNoms, message.newNoms)
+                    .also { telemetryService.logResult(it) }
 
                 else -> throw IllegalArgumentException("Unexpected domain event type: ${notification.eventType}")
             }
@@ -47,8 +45,8 @@ class Handler(
                 "OFFENDER_DETAILS_CHANGED", // changes to name, date of birth, identifiers in Delius
                 "SENTENCE_CHANGED",         // changes to sentence status and dates in Delius
                 -> prisonMatchingService
-                    .matchAndUpdateIdentifiers(message.crn, messagingDryRun)
-                    .also { telemetryService.logResult(it, messagingDryRun) }
+                    .matchAndUpdateIdentifiers(message.crn)
+                    .also { telemetryService.logResult(it) }
 
                 else -> throw IllegalArgumentException("Unexpected offender event type: ${notification.eventType}")
             }

@@ -91,4 +91,88 @@ object ReferenceDataGenerator {
         "court report",
         IdGenerator.getAndIncrement()
     )
+
+    val GENDER_MALE = ReferenceData(
+        "MALE",
+        "Male",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PROVISION_TYPE_1 = ReferenceData(
+        "PROV1",
+        "Provision type 1",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PROVISION_CATEGORY_1 = ReferenceData(
+        "PROV1",
+        "Provision type 1",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DISABILITY_TYPE_1 = ReferenceData(
+        "DIS1",
+        "Disability type 1",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DISABILITY_CONDITION_1 = ReferenceData(
+        "DISCON1",
+        "Disability Condition 1",
+        IdGenerator.getAndIncrement()
+    )
+
+    val GENDER_IDENTITY = ReferenceData(
+        "GEN",
+        "Some gender identity",
+        IdGenerator.getAndIncrement()
+    )
+
+    val ETHNICITY = ReferenceData(
+        "ETH",
+        "Some ethnicity",
+        IdGenerator.getAndIncrement()
+    )
+
+    val IMMIGRATION_STATUS = ReferenceData(
+        "ETH",
+        "Some immigration status",
+        IdGenerator.getAndIncrement()
+    )
+
+    val NATIONALITY = ReferenceData(
+        "BRIT",
+        "British",
+        IdGenerator.getAndIncrement()
+    )
+
+    val LANGUAGE_ENG = ReferenceData(
+        "ENG",
+        "English",
+        IdGenerator.getAndIncrement()
+    )
+
+    val RELIGION = ReferenceData(
+        "REL",
+        "A Relgion",
+        IdGenerator.getAndIncrement()
+    )
+
+    val SECOND_NATIONALITY = ReferenceData(
+        "FRE",
+        "French",
+        IdGenerator.getAndIncrement()
+    )
+
+    val SEXUAL_ORIENTATION = ReferenceData(
+        "SO",
+        "A sexual orientation",
+        IdGenerator.getAndIncrement()
+    )
+
+    val TITLE = ReferenceData(
+        "MR",
+        "Mr",
+        IdGenerator.getAndIncrement()
+    )
 }
