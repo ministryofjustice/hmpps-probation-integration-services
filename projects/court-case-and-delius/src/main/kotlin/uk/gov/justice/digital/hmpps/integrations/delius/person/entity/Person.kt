@@ -29,7 +29,7 @@ class Person(
     @Column(name = "cro_number")
     val croNumber: String? = null,
 
-    @Column(name = "noms_number")
+    @Column(name = "noms_number", columnDefinition = "char(9)")
     val nomsNumber: String? = null,
 
     @Column(name = "immigration_number")
