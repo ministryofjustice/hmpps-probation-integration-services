@@ -35,7 +35,7 @@ class Person(
     @Column(name = "immigration_number")
     val immigrationNumber: String? = null,
 
-    @Column(name = "ni_number",  columnDefinition = "char(9)")
+    @Column(name = "ni_number", columnDefinition = "char(9)")
     val niNumber: String? = null,
 
     @Column(name = "most_recent_prisoner_number")
