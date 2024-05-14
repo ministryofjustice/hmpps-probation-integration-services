@@ -46,6 +46,9 @@ class PrisonMatchingService(
         val matchingCustodies = matchedPrisoner.sentenceStartDate
             ?.let { person.custodiesWithSentenceDateCloseTo(it) } ?: emptyList()
         val matchingCustody = matchingCustodies.singleOrNull()
+        val matchingPerson = matchingCustodies.map { it.disposal.event.person }.distinctBy { it.crn }.singleOrNull()
+        if (matchingPerson == null)
+            return NoMatch("No single match found in prison system", prisonerMatches.telemetry())
 
         return Success(
             identifiers, person, matchingCustody, prisonerMatches.telemetry() + mapOf(

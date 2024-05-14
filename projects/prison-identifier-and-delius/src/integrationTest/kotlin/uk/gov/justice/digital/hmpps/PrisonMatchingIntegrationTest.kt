@@ -62,7 +62,7 @@ internal class PrisonMatchingIntegrationTest {
 
     @Test
     @Order(2)
-    fun `single match with existing noms number`() {
+    fun `no match with existing noms number if no custodial sentence in Delius`() {
         val crn = PersonGenerator.PERSON_WITH_NOMS.crn
 
         mockMvc
@@ -70,17 +70,10 @@ internal class PrisonMatchingIntegrationTest {
             .andExpect(status().is2xxSuccessful)
 
         verify(telemetryService, timeout(5000)).trackEvent(
-            "MatchResultSuccess", mapOf(
-                "reason" to "Matched CRN A000001 to NOMS number E1234XS",
+            "MatchResultNoMatch", mapOf(
+                "reason" to "No single match found in prison system",
                 "crn" to "A000001",
                 "potentialMatches" to """[{"nomsNumber":"E1234XS"}]""",
-                "existingNomsNumber" to "E1234XS",
-                "matchedNomsNumber" to "E1234XS",
-                "nomsNumberChanged" to "false",
-                "matchedBookingNumber" to "76543A",
-                "bookingNumberChanged" to "false",
-                "totalCustodialEvents" to "1",
-                "matchingCustodialEvents" to "0",
                 "dryRun" to "true"
             )
         )
