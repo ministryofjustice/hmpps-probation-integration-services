@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "1.9.24"
     kotlin("plugin.spring") version "1.9.23" apply false
     kotlin("plugin.jpa") version "1.9.23" apply false
     kotlin("kapt") version "1.9.23" apply false
