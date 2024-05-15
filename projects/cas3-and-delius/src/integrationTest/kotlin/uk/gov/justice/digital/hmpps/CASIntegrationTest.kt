@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
@@ -177,11 +176,12 @@ internal class CASIntegrationTest {
         val person = personRepository.findByCrn(event.message.crn())
         val address = addressRepository.findMainAddress(person!!.id)
 
+        // And the address is updated (and whitespace is trimmed from address fields)
         assertThat(address!!.type.code, equalTo("A17"))
-        assertThat(address.town, equalTo(eventDetails.eventDetails.premises.town))
-        assertThat(address.streetName, equalTo(eventDetails.eventDetails.premises.addressLine1))
-        assertThat(address.county, equalTo(eventDetails.eventDetails.premises.region))
-        assertThat(address.postcode, equalTo(eventDetails.eventDetails.premises.postcode))
+        assertThat(address.town, equalTo("Bimbly Town"))
+        assertThat(address.streetName, equalTo("12 Church Street"))
+        assertThat(address.county, equalTo("Bibbinghammcshireshire"))
+        assertThat(address.postcode, equalTo("BB1 1BB"))
     }
 
     @Test

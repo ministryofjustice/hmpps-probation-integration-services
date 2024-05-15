@@ -3,16 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.PersonArrived
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.AddressTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.cas3AddressType
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByIdForUpdate
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.mainAddressStatus
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.previousAddressStatus
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -34,12 +25,12 @@ class AddressService(
         if (currentMain?.type?.code == AddressTypeCode.CAS3.code) {
             val addressLines = details.premises.addressLines
             currentMain.apply {
-                buildingName = addressLines.buildingName
-                streetName = addressLines.streetName
-                district = addressLines.district
-                town = details.premises.town
-                county = details.premises.region
-                postcode = details.premises.postcode
+                buildingName = addressLines.buildingName?.trim()
+                streetName = addressLines.streetName.trim()
+                district = addressLines.district?.trim()
+                town = details.premises.town?.trim()
+                county = details.premises.region.trim()
+                postcode = details.premises.postcode.trim()
                 startDate = details.arrivedAt.toLocalDate()
             }
         }
@@ -74,12 +65,12 @@ class AddressService(
             person.id,
             referenceDataRepository.cas3AddressType(),
             referenceDataRepository.mainAddressStatus(),
-            buildingName = addressLines.buildingName,
-            streetName = addressLines.streetName,
-            district = addressLines.district,
-            town = details.premises.town,
-            county = details.premises.region,
-            postcode = details.premises.postcode,
+            buildingName = addressLines.buildingName?.trim(),
+            streetName = addressLines.streetName.trim(),
+            district = addressLines.district?.trim(),
+            town = details.premises.town?.trim(),
+            county = details.premises.region.trim(),
+            postcode = details.premises.postcode.trim(),
             startDate = details.arrivedAt.toLocalDate()
         )
     }
