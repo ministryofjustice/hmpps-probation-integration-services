@@ -793,6 +793,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CourtDocument'
+        unpaidWorkProgress:
+          type: string
     SentenceOverview:
       required:
       - personSummary

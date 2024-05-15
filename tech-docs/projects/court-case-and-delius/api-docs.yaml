@@ -18,7 +18,7 @@ paths:
     get:
       tags:
       - probation-record-resource
-      operationId: probationRecord
+      operationId: getOffenderDetailSummary
       parameters:
       - name: crn
         in: path
@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProbationRecord'
+                $ref: '#/components/schemas/OffenderDetailSummary'
   /probation-case/{crn}/status:
     get:
       tags:
@@ -52,95 +52,57 @@ paths:
                 $ref: '#/components/schemas/ProbationStatusDetail'
 components:
   schemas:
-    Breach:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        started:
-          type: string
-          format: date
-        statusDate:
-          type: string
-          format: date
-    Conviction:
+    ContactDetails:
       required:
-      - active
-      - awaitingPsr
-      - breaches
-      - courtReports
-      - documents
-      - inBreach
-      - licenceConditions
-      - offences
-      - pssRequirements
-      - requirements
+      - emailAddresses
+      - phoneNumbers
       type: object
       properties:
-        active:
+        allowSMS:
           type: boolean
-        inBreach:
-          type: boolean
-        awaitingPsr:
-          type: boolean
-        convictionDate:
-          type: string
-          format: date
-        offences:
+        emailAddresses:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
-        sentence:
-          $ref: '#/components/schemas/Sentence'
-        custodialType:
-          $ref: '#/components/schemas/KeyValue'
-        documents:
+            type: string
+        phoneNumbers:
           type: array
           items:
-            $ref: '#/components/schemas/OffenderDocumentDetail'
-        breaches:
-          type: array
-          items:
-            $ref: '#/components/schemas/Breach'
-        requirements:
-          type: array
-          items:
-            $ref: '#/components/schemas/Requirement'
-        pssRequirements:
-          type: array
-          items:
-            $ref: '#/components/schemas/PssRequirement'
-        licenceConditions:
-          type: array
-          items:
-            $ref: '#/components/schemas/LicenceCondition'
-        courtReports:
-          type: array
-          items:
-            $ref: '#/components/schemas/CourtReport'
-    CourtReport:
+            $ref: '#/components/schemas/PhoneNumber'
+    Disability:
       required:
-      - requestedDate
-      - requiredDate
+      - disabilityCondition
+      - disabilityId
+      - disabilityType
+      - isActive
+      - lastUpdatedDateTime
+      - provisions
+      - startDate
       type: object
       properties:
-        requestedDate:
+        lastUpdatedDateTime:
           type: string
-          format: date
-        requiredDate:
-          type: string
-          format: date
-        completedDate:
-          type: string
-          format: date
-        courtReportType:
+          format: date-time
+        disabilityCondition:
           $ref: '#/components/schemas/KeyValue'
-        deliveredCourtReportType:
+        disabilityId:
+          type: integer
+          format: int64
+        disabilityType:
           $ref: '#/components/schemas/KeyValue'
-        author:
-          $ref: '#/components/schemas/ReportAuthor'
+        endDate:
+          type: string
+          format: date
+        isActive:
+          type: boolean
+        notes:
+          type: string
+        provisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provision'
+        startDate:
+          type: string
+          format: date
     KeyValue:
       required:
       - code
@@ -151,209 +113,186 @@ components:
           type: string
         description:
           type: string
-    LicenceCondition:
+    OffenderDetailSummary:
       required:
-      - active
+      - activeProbationManagedSentence
+      - contactDetails
+      - currentDisposal
+      - currentExclusion
+      - currentRestriction
+      - dateOfBirth
+      - firstName
+      - gender
+      - middleNames
+      - offenderId
+      - offenderProfile
+      - otherIds
+      - partitionArea
+      - softDeleted
+      - surname
       type: object
       properties:
-        description:
+        preferredName:
           type: string
-        subTypeDescription:
+        activeProbationManagedSentence:
+          type: boolean
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        currentDisposal:
           type: string
-        startDate:
+        currentExclusion:
+          type: boolean
+        currentRestriction:
+          type: boolean
+        dateOfBirth:
           type: string
           format: date
+        firstName:
+          type: string
+        gender:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+        offenderId:
+          type: integer
+          format: int64
+        offenderProfile:
+          $ref: '#/components/schemas/OffenderProfile'
+        otherIds:
+          $ref: '#/components/schemas/OtherIds'
+        partitionArea:
+          type: string
+        previousSurname:
+          type: string
+        softDeleted:
+          type: boolean
+        surname:
+          type: string
+        title:
+          type: string
+    OffenderLanguages:
+      required:
+      - otherLanguages
+      type: object
+      properties:
+        languageConcerns:
+          type: string
+        otherLanguages:
+          type: array
+          items:
+            type: string
+        primaryLanguage:
+          type: string
+        requiresInterpreter:
+          type: boolean
+    OffenderProfile:
+      required:
+      - disabilities
+      - offenderLanguages
+      - provisions
+      type: object
+      properties:
+        genderIdentity:
+          type: string
+        selfDescribedGenderIdentity:
+          type: string
+        disabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Disability'
+        ethnicity:
+          type: string
+        immigrationStatus:
+          type: string
+        nationality:
+          type: string
         notes:
           type: string
-        active:
-          type: boolean
-    Offence:
+        offenderDetails:
+          type: string
+        offenderLanguages:
+          $ref: '#/components/schemas/OffenderLanguages'
+        previousConviction:
+          $ref: '#/components/schemas/PreviousConviction'
+        provisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provision'
+        religion:
+          type: string
+        remandStatus:
+          type: string
+        riskColour:
+          type: string
+        secondaryNationality:
+          type: string
+        sexualOrientation:
+          type: string
+    OtherIds:
       required:
-      - description
-      - main
-      type: object
-      properties:
-        description:
-          type: string
-        main:
-          type: boolean
-        offenceDate:
-          type: string
-          format: date
-    OffenderDocumentDetail:
-      required:
-      - documentName
-      - type
-      type: object
-      properties:
-        documentName:
-          type: string
-        author:
-          type: string
-        type:
-          type: string
-          enum:
-          - OFFENDER_DOCUMENT
-          - CONVICTION_DOCUMENT
-          - CPSPACK_DOCUMENT
-          - PRECONS_DOCUMENT
-          - COURT_REPORT_DOCUMENT
-          - INSTITUTION_REPORT_DOCUMENT
-          - ADDRESS_ASSESSMENT_DOCUMENT
-          - APPROVED_PREMISES_REFERRAL_DOCUMENT
-          - ASSESSMENT_DOCUMENT
-          - CASE_ALLOCATION_DOCUMENT
-          - PERSONAL_CONTACT_DOCUMENT
-          - REFERRAL_DOCUMENT
-          - NSI_DOCUMENT
-          - PERSONAL_CIRCUMSTANCE_DOCUMENT
-          - UPW_APPOINTMENT_DOCUMENT
-          - CONTACT_DOCUMENT
-        extendedDescription:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        subType:
-          $ref: '#/components/schemas/KeyValue'
-    OffenderManager:
-      required:
-      - active
-      - allocatedDate
-      - provider
-      - staff
-      - team
-      type: object
-      properties:
-        staff:
-          $ref: '#/components/schemas/Staff'
-        allocatedDate:
-          type: string
-          format: date
-        team:
-          $ref: '#/components/schemas/Team'
-        provider:
-          type: string
-        active:
-          type: boolean
-    ProbationRecord:
-      required:
-      - convictions
       - crn
-      - offenderManagers
       type: object
       properties:
         crn:
           type: string
-        offenderManagers:
-          type: array
-          items:
-            $ref: '#/components/schemas/OffenderManager'
-        convictions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Conviction'
-    PssRequirement:
-      type: object
-      properties:
-        description:
+        croNumber:
           type: string
-        subTypeDescription:
+        immigrationNumber:
           type: string
-    ReportAuthor:
+        mostRecentPrisonerNumber:
+          type: string
+        niNumber:
+          type: string
+        nomsNumber:
+          type: string
+        pncNumber:
+          type: string
+    PhoneNumber:
       required:
-      - unallocated
+      - type
       type: object
       properties:
-        unallocated:
-          type: boolean
-        forenames:
+        number:
           type: string
-        surname:
+        type:
           type: string
-    Requirement:
+    PreviousConviction:
       required:
-      - active
+      - convictionDate
+      - detail
       type: object
       properties:
-        commencementDate:
+        convictionDate:
           type: string
           format: date
-        terminationDate:
+        detail:
+          type: object
+          additionalProperties:
+            type: string
+    Provision:
+      required:
+      - provisionId
+      - provisionType
+      - startDate
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/KeyValue'
+        finishDate:
           type: string
           format: date
-        expectedStartDate:
+        notes:
           type: string
-          format: date
-        expectedEndDate:
-          type: string
-          format: date
-        active:
-          type: boolean
-        requirementTypeMainCategory:
-          $ref: '#/components/schemas/KeyValue'
-        requirementTypeSubCategory:
-          $ref: '#/components/schemas/KeyValue'
-        adRequirementTypeMainCategory:
-          $ref: '#/components/schemas/KeyValue'
-        adRequirementTypeSubCategory:
-          $ref: '#/components/schemas/KeyValue'
-        terminationReason:
-          $ref: '#/components/schemas/KeyValue'
-        length:
+        provisionId:
           type: integer
           format: int64
-    Sentence:
-      required:
-      - description
-      type: object
-      properties:
-        description:
-          type: string
-        length:
-          type: integer
-          format: int64
-        lengthUnits:
-          type: string
-        lengthInDays:
-          type: integer
-          format: int64
-        terminationDate:
-          type: string
-          format: date
+        provisionType:
+          $ref: '#/components/schemas/KeyValue'
         startDate:
           type: string
           format: date
-        endDate:
-          type: string
-          format: date
-        terminationReason:
-          type: string
-    Staff:
-      required:
-      - forenames
-      - surname
-      type: object
-      properties:
-        forenames:
-          type: string
-        surname:
-          type: string
-    Team:
-      required:
-      - description
-      - district
-      - localDeliveryUnit
-      type: object
-      properties:
-        description:
-          type: string
-        telephone:
-          type: string
-        localDeliveryUnit:
-          type: string
-        district:
-          type: string
     ProbationStatusDetail:
       required:
       - awaitingPsr
