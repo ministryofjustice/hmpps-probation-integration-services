@@ -43,7 +43,7 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
 
     @Query(
         """
-            SELECT SUM(u.minutesCredited) 
+            SELECT COALESCE(SUM(u.minutesCredited), 0)
             FROM UpwAppointment u 
             JOIN  u.upwDetails upd 
             JOIN  upd.disposal d 

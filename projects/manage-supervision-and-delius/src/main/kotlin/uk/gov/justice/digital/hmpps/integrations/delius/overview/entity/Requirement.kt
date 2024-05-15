@@ -160,7 +160,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
 
     @Query(
         """
-            SELECT SUM(r.length) 
+            SELECT COALESCE(SUM(r.length), 0) 
             FROM Requirement r 
             JOIN  r.mainCategory mc 
             JOIN  r.disposal 
