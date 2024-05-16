@@ -1,6 +1,11 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
+import uk.gov.justice.digital.hmpps.data.generator.AreaGenerator.PARTITION_AREA
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_ADDRESS_STATUS
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_ADDRESS_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_ALLOCATION_REASON
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_TIER
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DISABILITY_CONDITION_1
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DISABILITY_TYPE_1
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.ETHNICITY
@@ -20,7 +25,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object PersonGenerator {
-    val PARTITION_AREA = PartitionArea(IdGenerator.getAndIncrement(), "Partition Area")
+
     val NEW_TO_PROBATION = generate("N123456")
     val CURRENTLY_MANAGED = generate("C123456", currentDisposal = true)
     val PREVIOUSLY_MANAGED = generate("P123456")
@@ -34,6 +39,9 @@ object PersonGenerator {
         DocumentType.PREVIOUS_CONVICTION.name,
         null
     )
+
+    val ADDRESS = generateAddress(CURRENTLY_MANAGED.id, false)
+    val ALIAS = generatePersonAlias(CURRENTLY_MANAGED)
 
     fun generate(
         crn: String,
@@ -81,17 +89,41 @@ object PersonGenerator {
             immigrationNumber = "IMA123",
             mostRecentPrisonerNumber = "PRS123",
             previousSurname = "Previous",
-            title = TITLE
+            title = TITLE,
+            offenderManagers = emptyList(),
+            restrictionMessage = "restrictionMessage",
+            exclusionMessage = "exclusionMessage",
+            currentTier = DEFAULT_TIER
         )
 
     fun generatePersonManager(person: Person) =
         PersonManager(
-            IdGenerator.getAndIncrement(),
-            person,
-            TeamGenerator.DEFAULT,
-            StaffGenerator.ALLOCATED,
-            ProviderGenerator.DEFAULT,
-            ZonedDateTime.now()
+            id = IdGenerator.getAndIncrement(),
+            trustProviderFlag = false,
+            person = person,
+            team = TeamGenerator.DEFAULT,
+            staff = StaffGenerator.ALLOCATED,
+            provider = ProviderGenerator.DEFAULT,
+            date = ZonedDateTime.now(),
+            allocationReason = DEFAULT_ALLOCATION_REASON,
+            officer = StaffGenerator.OFFICER,
+            partitionArea = PARTITION_AREA,
+            startDate = LocalDate.now().minusDays(2),
+            staffEmployeeId = StaffGenerator.ALLOCATED.id,
+            providerEmployee = ProviderEmployeeGenerator.PROVIDER_EMPLOYEE
+        )
+
+    fun generatePersonAlias(person: Person) =
+        OffenderAlias(
+            aliasID = IdGenerator.getAndIncrement(),
+            personId = person.id,
+            dateOfBirth = LocalDate.of(1968, 1, 1),
+            firstName = "Bob",
+            secondName = "Reg",
+            thirdName = "Xavier",
+            surname = "Potts",
+            gender = GENDER_MALE,
+            softDeleted = false
         )
 
     fun generateProvision(personId: Long, end: LocalDate?) = Provision(
@@ -114,5 +146,26 @@ object PersonGenerator {
         condition = DISABILITY_CONDITION_1,
         notes = null,
         finishDate = end,
+    )
+
+    fun generateAddress(personId: Long, softDeleted: Boolean) = PersonAddress(
+        id = IdGenerator.getAndIncrement(),
+        personId = personId,
+        type = DEFAULT_ADDRESS_TYPE,
+        status = DEFAULT_ADDRESS_STATUS,
+        streetName = "A Street",
+        town = "A town",
+        county = "A county",
+        postcode = "NE209XL",
+        telephoneNumber = "089876765",
+        buildingName = "The building",
+        district = "A District",
+        addressNumber = "20",
+        noFixedAbode = false,
+        typeVerified = true,
+        startDate = LocalDate.now().minusDays(1),
+        endDate = null,
+        softDeleted = false,
+        createdDatetime = ZonedDateTime.now().minusDays(1),
     )
 }

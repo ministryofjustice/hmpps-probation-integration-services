@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -112,10 +114,13 @@ class Person(
     val currentRemandStatus: String? = null,
 
     @OneToMany(mappedBy = "personId")
-    val disabilities: Set<Disability> = emptySet(),
+    val disabilities: List<Disability> = emptyList(),
 
     @OneToMany(mappedBy = "personId")
-    val provisions: Set<Provision> = emptySet(),
+    val offenderAliases: List<OffenderAlias> = emptyList(),
+
+    @OneToMany(mappedBy = "personId")
+    val provisions: List<Provision> = emptyList(),
 
     @ManyToOne
     @JoinColumn(name = "ethnicity_id")
@@ -132,6 +137,17 @@ class Person(
     @ManyToOne
     @JoinColumn(name = "immigration_status_id")
     val immigrationStatus: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "current_tier")
+    val currentTier: ReferenceData? = null,
+
+    @OneToMany(mappedBy = "personId", fetch = FetchType.LAZY)
+    val addresses: List<PersonAddress> = emptyList(),
+
+    @OneToMany
+    @JoinColumn(name = "offender_id")
+    val offenderManagers: List<PersonManager>,
 
     @Column(name = "allow_sms")
     @Convert(converter = YesNoConverter::class)
@@ -153,9 +169,124 @@ class Person(
     @JoinColumn(name = "partition_area_id")
     val partitionArea: PartitionArea,
 
+    @Column(name = "exclusion_message")
+    val exclusionMessage: String? = null,
+
+    @Column(name = "restriction_message")
+    val restrictionMessage: String? = null,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 
+)
+
+@Immutable
+@Entity
+@Table(name = "alias")
+@SQLRestriction("soft_deleted = 0")
+class OffenderAlias(
+
+    @Id
+    @Column(name = "alias_id")
+    val aliasID: Long,
+
+    @Column(name = "offender_id")
+    val personId: Long,
+
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
+
+    @Column(name = "first_name")
+    val firstName: String,
+
+    @Column(name = "second_name")
+    val secondName: String? = null,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    val surname: String,
+
+    @Column(name = "third_name")
+    val thirdName: String? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData
+)
+
+@Entity
+@Table(name = "offender_address")
+@SQLRestriction("soft_deleted = 0")
+class PersonAddress(
+    @Id
+    @Column(name = "offender_address_id")
+    val id: Long,
+
+    @Column(name = "offender_id")
+    val personId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "address_type_id")
+    val type: ReferenceData,
+
+    @ManyToOne
+    @JoinColumn(name = "address_status_id")
+    val status: ReferenceData,
+
+    val streetName: String?,
+
+    @Column(name = "town_city")
+    val town: String?,
+
+    val county: String?,
+    val postcode: String?,
+    val telephoneNumber: String? = null,
+    val buildingName: String? = null,
+    val district: String? = null,
+    val addressNumber: String? = null,
+
+    @Convert(converter = YesNoConverter::class)
+    val noFixedAbode: Boolean? = false,
+
+    @Convert(converter = YesNoConverter::class)
+    val typeVerified: Boolean? = false,
+
+    @Column(name = "notes", columnDefinition = "clob")
+    val notes: String? = null,
+
+    val startDate: LocalDate = LocalDate.now(),
+    val endDate: LocalDate? = null,
+
+    @Column(updatable = false, columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    val createdDatetime: ZonedDateTime = ZonedDateTime.now(),
+    val createdByUserId: Long = 0,
+    val lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedUserId: Long = 0,
+
+    @OneToMany(mappedBy = "offenderAddressId")
+    val addressAssessments: List<AddressAssessment> = emptyList()
+)
+
+@Immutable
+@Entity
+@Table(name = "address_assessment")
+@SQLRestriction("soft_deleted = 0")
+class AddressAssessment(
+    @Id
+    @Column(name = "address_assessment_id")
+    val id: Long,
+
+    @Column(name = "offender_address_id")
+    val offenderAddressId: Long,
+
+    @Column(name = "assessment_date")
+    val assessmentDate: LocalDateTime,
+
+    @Column(name = "soft_deleted")
+    val softDeleted: Long
 )
 
 @Immutable
@@ -199,26 +330,20 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query(
         """
-            select p from Person p 
+            select p from Person p
             left join fetch p.ethnicity eth
             left join fetch p.nationality nat
             left join fetch p.gender gen
             left join fetch p.language lang
             left join fetch p.genderIdentity gi
             left join fetch p.immigrationStatus is
-            left join fetch p.provisions prov
-            left join fetch p.disabilities dis
             left join fetch p.secondNationality sn
             left join fetch p.sexualOrientation so
             left join fetch p.religion rel
             left join fetch p.partitionArea pa
             left join fetch p.title title
-            left join fetch prov.category pcat
-            left join fetch prov.type ptype
-            left join fetch dis.type dtype
-            left join fetch dis.condition dcond
             where p.crn = :crn
-            and p.softDeleted = false 
+            and p.softDeleted = false
         """
     )
     fun findByCrn(crn: String): Person?
