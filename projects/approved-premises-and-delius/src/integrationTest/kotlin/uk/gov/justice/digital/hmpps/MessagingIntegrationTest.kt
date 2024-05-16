@@ -448,6 +448,7 @@ internal class MessagingIntegrationTest {
         residenceRepository.findByReferralId(ref.id)?.also(residenceRepository::delete)
 
         preferredResidenceRepository.save(PreferredResidence(0, ref.id))
+        assertTrue(preferredResidenceRepository.existsByApprovedPremisesResidenceId(ref.id))
 
         channelManager.getChannel(queueName).publishAndWait(event)
 
@@ -475,5 +476,8 @@ internal class MessagingIntegrationTest {
             it.personId == contact.person.id && it.eventId == contact.eventId
         }
         assertNull(referral)
+
+        assertFalse(preferredResidenceRepository.existsByApprovedPremisesResidenceId(ref.id))
+
     }
 }
