@@ -478,6 +478,5 @@ internal class MessagingIntegrationTest {
         assertNull(referral)
 
         assertFalse(preferredResidenceRepository.existsByApprovedPremisesResidenceId(ref.id))
-
     }
 }
