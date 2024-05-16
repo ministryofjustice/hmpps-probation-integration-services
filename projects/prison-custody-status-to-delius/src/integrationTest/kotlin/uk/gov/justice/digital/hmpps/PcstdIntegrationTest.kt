@@ -4,9 +4,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.BookingGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
@@ -78,7 +75,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
         assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
-        assertThat(custody.locationChangeDate!!, isCloseTo(notification.message.occurredAt))
+        assertThat(custody.locationChangeDate!!, equalTo(notification.message.occurredAt.toLocalDate()))
 
         verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT)
 
@@ -242,7 +239,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
         assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
-        assertThat(custody.locationChangeDate!!, isCloseTo(notification.message.occurredAt))
+        assertThat(custody.locationChangeDate!!, equalTo(notification.message.occurredAt.toLocalDate()))
 
         verifyCustodyHistory(
             custody,
@@ -285,7 +282,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertTrue(custody.isInCustody())
         assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_SECURE_UNIT.code))
-        assertThat(custody.locationChangeDate!!, isCloseTo(notification.message.occurredAt))
+        assertThat(custody.locationChangeDate!!, equalTo(notification.message.occurredAt.toLocalDate()))
         assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
         assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
 
@@ -334,7 +331,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             custody.institution?.code,
             equalTo(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.OTHER_SECURE_UNIT]?.code)
         )
-        assertThat(custody.locationChangeDate!!, isCloseTo(notification.message.occurredAt))
+        assertThat(custody.locationChangeDate!!, equalTo(notification.message.occurredAt.toLocalDate()))
         assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
 
         verifyCustodyHistory(
