@@ -13,58 +13,19 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.check
 import org.mockito.kotlin.whenever
 import org.springframework.boot.context.event.ApplicationStartedEvent
-import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
-import uk.gov.justice.digital.hmpps.data.generator.AssessedByGenerator
-import uk.gov.justice.digital.hmpps.data.generator.BookedByGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventDetailsGenerator
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffMemberGenerator
-import uk.gov.justice.digital.hmpps.data.generator.SubmittedByGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.AssessedBy
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookedBy
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatus
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiType
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.TransferReason
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
@@ -156,6 +117,9 @@ internal class ApprovedPremisesServiceTest {
     lateinit var residenceRepository: ResidenceRepository
 
     @Mock
+    lateinit var preferredResidenceRepository: PreferredResidenceRepository
+
+    @Mock
     lateinit var eventRepository: EventRepository
 
     @Mock
@@ -199,6 +163,7 @@ internal class ApprovedPremisesServiceTest {
             staffRepository,
             referralRepository,
             residenceRepository,
+            preferredResidenceRepository,
             personRepository,
             eventRepository,
             registrationRepository,
