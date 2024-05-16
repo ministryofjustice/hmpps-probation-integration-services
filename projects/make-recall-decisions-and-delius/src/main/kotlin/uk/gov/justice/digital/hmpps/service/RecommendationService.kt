@@ -36,17 +36,42 @@ class RecommendationService(
         username: String,
         occurredAt: ZonedDateTime
     ) {
-        val contact = personRepository.getPerson(crn).addContact(
-            details,
-            date = occurredAt,
-            staff = staffRepository.getStaff(username),
-            type = contactTypeRepository.getByCode(ContactType.MANAGEMENT_OVERSIGHT_RECALL),
-            outcome = contactOutcomeRepository.getByCode(decision.code)
-        )
+        val contact = addContact(crn, decision, details, username, occurredAt, ContactType.MANAGEMENT_OVERSIGHT_RECALL)
         contactRepository.save(contact)
         telemetryService.trackEvent(
             "ManagementOversightCreated",
             mapOf("CRN" to crn, "username" to username, "decision" to decision.name)
+        )
+    }
+
+    fun consideration(
+        crn: String,
+        details: RecommendationDetails,
+        username: String,
+        occurredAt: ZonedDateTime
+    ) {
+        val contact = addContact(crn, null, details, username, occurredAt, ContactType.CONSIDERATION)
+        contactRepository.save(contact)
+        telemetryService.trackEvent(
+            "ConsiderationCreated",
+            mapOf("CRN" to crn, "username" to username)
+        )
+    }
+
+    private fun addContact(
+        crn: String,
+        decision: ManagementDecision? = null,
+        details: RecommendationDetails,
+        username: String,
+        occurredAt: ZonedDateTime,
+        contactType: String
+    ): Contact {
+        return personRepository.getPerson(crn).addContact(
+            details,
+            date = occurredAt,
+            staff = staffRepository.getStaff(username),
+            type = contactTypeRepository.getByCode(contactType),
+            outcome = decision?.let { contactOutcomeRepository.getByCode(it.code) }
         )
     }
 
