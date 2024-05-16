@@ -55,7 +55,7 @@ object EventGenerator {
             institution = institution,
             disposal = disposal,
             statusChangeDate = LocalDate.now().minusDays(1),
-            locationChangeDate = ZonedDateTime.now().minusDays(1)
+            locationChangeDate = LocalDate.now().minusDays(1)
         )
         disposal.custody = custody
         return event

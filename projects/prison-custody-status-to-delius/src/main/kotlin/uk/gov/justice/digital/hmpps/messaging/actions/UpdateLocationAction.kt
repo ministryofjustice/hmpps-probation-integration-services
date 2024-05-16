@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustody
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.messaging.*
+import java.time.ZonedDateTime
 
 @Component
 class UpdateLocationAction(
@@ -67,7 +68,7 @@ class UpdateLocationAction(
                         prisonerMovement.occurredAt
                     )
                 }
-                createLocationChangeContact(prisonerMovement, custody)
+                createLocationChangeContact(prisonerMovement, custody, prisonerMovement.occurredAt)
 
                 ActionResult.Success(ActionResult.Type.LocationUpdated, prisonerMovement.telemetryProperties())
             }
@@ -95,19 +96,19 @@ class UpdateLocationAction(
             else -> custody.institution
         }
 
-    private fun createLocationChangeContact(prisonerMovement: PrisonerMovement, custody: Custody) {
+    private fun createLocationChangeContact(prisonerMovement: PrisonerMovement, custody: Custody, date: ZonedDateTime) {
         if (prisonerMovement is PrisonerMovement.Received ||
             prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded()
         ) {
             val notes = """
             |Custodial Status: ${custody.status.description}
             |Custodial Establishment: ${custody.institution!!.description}
-            |Location Change Date: ${DeliusDateTimeFormatter.format(custody.locationChangeDate!!)}
+            |Location Change Date: ${DeliusDateTimeFormatter.format(date)}
             |-------------------------------
             """.trimMargin() +
                 if (prisonerMovement.type == PrisonerMovement.Type.TEMPORARY_ABSENCE_RETURN) eotlLocationChangeContactNotes else ""
             contactService.createContact(
-                ContactDetail(ContactType.Code.CHANGE_OF_INSTITUTION, custody.locationChangeDate!!, notes),
+                ContactDetail(ContactType.Code.CHANGE_OF_INSTITUTION, date, notes),
                 custody.disposal.event.person,
                 event = custody.disposal.event,
                 manager = custody.disposal.event.manager()
