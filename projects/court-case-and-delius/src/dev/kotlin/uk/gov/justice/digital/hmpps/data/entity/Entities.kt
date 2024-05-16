@@ -10,9 +10,6 @@ import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
 
 @Entity
-class AddressAssessment(@Id val addressAssessmentId: Long, val assessmentDate: LocalDate)
-
-@Entity
 class ApprovedPremisesReferral(
     @Id val approvedPremisesReferralId: Long,
     val referralDate: LocalDate,
