@@ -66,7 +66,7 @@ class RecommendationService(
         occurredAt: ZonedDateTime,
         contactType: String
     ): Contact {
-        return personRepository.getPerson(crn).addContact(
+        return personRepository.getPerson(crn).getContact(
             details,
             date = occurredAt,
             staff = staffRepository.getStaff(username),
@@ -81,7 +81,7 @@ class RecommendationService(
         username: String,
         occurredAt: ZonedDateTime
     ) {
-        val contact = personRepository.getPerson(crn).addContact(
+        val contact = personRepository.getPerson(crn).getContact(
             details,
             date = occurredAt,
             staff = staffRepository.findStaffByUsername(username),
@@ -91,7 +91,7 @@ class RecommendationService(
         telemetryService.trackEvent("RecommendationDeletionCreated", mapOf("CRN" to crn, "username" to username))
     }
 
-    private fun Person.addContact(
+    private fun Person.getContact(
         details: RecommendationDetails,
         staff: Staff?,
         date: ZonedDateTime,
