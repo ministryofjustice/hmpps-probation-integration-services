@@ -42,6 +42,7 @@ class ReferralService(
     private val staffRepository: StaffRepository,
     private val referralRepository: ReferralRepository,
     private val residenceRepository: ResidenceRepository,
+    private val preferredResidenceRepository: PreferredResidenceRepository,
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
     private val registrationRepository: RegistrationRepository,
@@ -119,6 +120,10 @@ class ReferralService(
         val person = personRepository.getByCrn(crn)
         val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
         val referral = findReferral(person, externalReference)?.also {
+            if (preferredResidenceRepository.existsByApprovedPremisesResidenceId(it.id)) {
+                preferredResidenceRepository.deleteByApprovedPremisesResidenceId(it.id)
+            }
+
             val residence = residenceRepository.findByReferralId(it.id)
             if (residence == null) referralRepository.delete(it)
             else throw IgnorableMessageException(
