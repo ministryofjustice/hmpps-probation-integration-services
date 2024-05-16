@@ -199,5 +199,4 @@ object ReferenceDataGenerator {
         "B2",
         IdGenerator.getAndIncrement()
     )
-
 }

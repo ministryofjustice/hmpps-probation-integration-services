@@ -4,8 +4,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
-
-
 data class OffenderDetailSummary(
     val preferredName: String?,
     val activeProbationManagedSentence: Boolean,
@@ -53,7 +51,6 @@ data class OffenderDetail(
     val title: String?
 )
 
-
 data class OffenderAlias(
     val id: Long,
     val dateOfBirth: LocalDate?,
@@ -98,12 +95,14 @@ data class Institution(
     val isPrivate: Boolean? = null,
     val nomsPrisonInstitutionCode: String? = null
 )
+
 data class ProbationArea(
     val probationAreaId: Long,
     val code: String,
     val description: String,
     val nps: Boolean
 )
+
 data class OffenderManager(
     val trustOfficer: Human,
     val staff: StaffHuman,
@@ -127,6 +126,7 @@ data class Team(
     val district: KeyValue,
     val borough: KeyValue
 )
+
 data class Address(
     val from: LocalDate? = null,
     val to: LocalDate? = null,
