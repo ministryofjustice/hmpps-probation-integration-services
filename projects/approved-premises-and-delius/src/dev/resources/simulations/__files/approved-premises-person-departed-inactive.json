@@ -1,0 +1,48 @@
+{
+  "id": "364145f9-0af8-488e-9901-b4c46cd9ba37-inactive",
+  "timestamp": "2022-11-30T14:53:44",
+  "eventType": "approved-premises.person.departed",
+  "eventDetails": {
+    "personReference": {
+      "crn": "A000002",
+      "noms": "A0002AA"
+    },
+    "deliusEventNumber": "6",
+    "applicationId": "484b8b5e-6c3b-4400-b200-425bbe410713",
+    "applicationUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713",
+    "bookingId": "14c80733-4b6d-4f35-b724-66955aac320c",
+    "premises": {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name": "Hope House",
+      "apCode": "NEHOPE1",
+      "legacyApCode": "Q001"
+    },
+    "departedAt": "2023-01-16T17:21:30",
+    "reason": "Absconded, still at large",
+    "legacyReasonCode": "N",
+    "destination": {
+      "premises": {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name": "Hope House",
+        "apCode": "NEHOPE1",
+        "legacyApCode": "Q061"
+      },
+      "moveOnCategory": {
+        "description": "B&B / Temp / Short-Term Housing",
+        "legacyMoveOnCategoryCode": "MC05",
+        "code": "ABC123"
+      },
+      "destinationProvider": {
+        "description": "Ext - North East Region",
+        "code": "XYZ456"
+      }
+    },
+    "keyWorker": {
+      "staffCode": "N54A001",
+      "staffIdentifier": 1501234567,
+      "forenames": "John",
+      "surname": "Smith",
+      "username": "JohnSmithNPS"
+    }
+  }
+}

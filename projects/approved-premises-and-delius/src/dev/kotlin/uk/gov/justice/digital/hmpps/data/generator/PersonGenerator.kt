@@ -13,9 +13,10 @@ import java.time.ZonedDateTime
 
 object PersonGenerator {
     val DEFAULT = generate(crn = "A000001")
+    val PERSON_INACTIVE_EVENT = generate(crn = "A000002")
     val EVENT = generateEvent("7", DEFAULT.id)
     val ANOTHER_EVENT = generateEvent("8", DEFAULT.id)
-
+    val INACTIVE_EVENT = generateEvent("6", PERSON_INACTIVE_EVENT.id, active = false)
     val PERSON_WITH_BOOKING = generate(crn = "B000001")
 
     fun generate(
