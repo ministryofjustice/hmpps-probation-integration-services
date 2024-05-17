@@ -14,11 +14,11 @@ class PreferredResidence(
     @Column(name = "approved_premises_preferred_id")
     val id: Long = 0,
 
-    val approvedPremisesResidenceId: Long
+    val approvedPremisesReferralId: Long
 )
 
 interface PreferredResidenceRepository : JpaRepository<PreferredResidence, Long> {
-    fun existsByApprovedPremisesResidenceId(approvedPremisesResidenceId: Long): Boolean
+    fun existsByApprovedPremisesReferralId(approvedPremisesReferralId: Long): Boolean
 
-    fun deleteByApprovedPremisesResidenceId(approvedPremisesResidenceId: Long)
+    fun deleteByApprovedPremisesReferralId(approvedPremisesReferralId: Long)
 }

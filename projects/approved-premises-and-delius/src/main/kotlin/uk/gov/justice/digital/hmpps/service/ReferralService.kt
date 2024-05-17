@@ -120,8 +120,8 @@ class ReferralService(
         val person = personRepository.getByCrn(crn)
         val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
         val referral = findReferral(person, externalReference)?.also {
-            if (preferredResidenceRepository.existsByApprovedPremisesResidenceId(it.id)) {
-                preferredResidenceRepository.deleteByApprovedPremisesResidenceId(it.id)
+            if (preferredResidenceRepository.existsByApprovedPremisesReferralId(it.id)) {
+                preferredResidenceRepository.deleteByApprovedPremisesReferralId(it.id)
             }
 
             val residence = residenceRepository.findByReferralId(it.id)
