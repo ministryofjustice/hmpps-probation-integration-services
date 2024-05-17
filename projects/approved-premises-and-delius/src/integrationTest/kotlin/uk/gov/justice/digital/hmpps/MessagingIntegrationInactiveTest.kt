@@ -232,8 +232,9 @@ internal class MessagingIntegrationInactiveTest {
         )
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
-        val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.PERSON_INACTIVE_EVENT.id }
-            .associateBy { it.id == AddressGenerator.INACTIVE_PERSON_ADDRESS.id }
+        val addresses =
+            personAddressRepository.findAll().filter { it.personId == PersonGenerator.PERSON_INACTIVE_EVENT.id }
+                .associateBy { it.id == AddressGenerator.INACTIVE_PERSON_ADDRESS.id }
         assertThat(addresses.size, equalTo(2))
         val previous = addresses[true]!!
         assertThat(previous.endDate, equalTo(details.arrivedAt.toLocalDate()))
@@ -292,7 +293,8 @@ internal class MessagingIntegrationInactiveTest {
         assertThat(nsi.active, equalTo(false))
         assertThat(nsi.outcome!!.code, equalTo("APRC"))
 
-        val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.PERSON_INACTIVE_EVENT.id }
+        val addresses =
+            personAddressRepository.findAll().filter { it.personId == PersonGenerator.PERSON_INACTIVE_EVENT.id }
         assertThat(addresses.size, equalTo(2))
         addresses.forEach {
             assertNotNull(it.endDate)
@@ -306,6 +308,4 @@ internal class MessagingIntegrationInactiveTest {
         assertThat(residence.departureReasonId, equalTo(ReferenceDataGenerator.ORDER_EXPIRED.id))
         assertThat(residence.moveOnCategoryId, equalTo(ReferenceDataGenerator.MC05.id))
     }
-
-
 }
