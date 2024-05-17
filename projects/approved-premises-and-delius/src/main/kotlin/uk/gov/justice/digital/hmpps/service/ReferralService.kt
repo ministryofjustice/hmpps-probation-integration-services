@@ -50,7 +50,7 @@ class ReferralService(
 ) {
     fun bookingMade(crn: String, details: BookingMade, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
-        val event = eventRepository.getActiveEvent(person.id, details.eventNumber)
+        val event = eventRepository.getEvent(person.id, details.eventNumber)
         val apTeam = teamRepository.getApprovedPremisesTeam(ap.code.code)
         val apStaff = staffRepository.getUnallocated(apTeam.code)
         val rTeam = teamRepository.getUnallocatedTeam(ap.probationArea.code)

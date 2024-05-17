@@ -293,7 +293,7 @@ internal class ApprovedPremisesServiceTest {
         val crn = personArrivedEvent.crn()
         val person = givenAPerson(crn)
         val manager = givenAPersonManager(person)
-        givenAnEvent(person, "11")
+        givenAnActiveEvent(person, "11")
         val staff = givenStaff()
         val approvedPremisesTeam = givenApprovedPremisesTeam()
         val details = givenPersonArrivedDetails(keyWorker = staff)
@@ -422,9 +422,16 @@ internal class ApprovedPremisesServiceTest {
         return manager
     }
 
+    private fun givenAnActiveEvent(person: Person, eventNumber: String): Event {
+        val event = PersonGenerator.generateEvent(eventNumber, person.id)
+        whenever(eventRepository.findByPersonIdAndNumber(person.id, eventNumber))
+            .thenReturn(event)
+        return event
+    }
+
     private fun givenAnEvent(person: Person, eventNumber: String): Event {
         val event = PersonGenerator.generateEvent(eventNumber, person.id)
-        whenever(eventRepository.findActiveByPersonIdAndNumber(person.id, eventNumber))
+        whenever(eventRepository.findByPersonIdAndNumber(person.id, eventNumber))
             .thenReturn(event)
         return event
     }

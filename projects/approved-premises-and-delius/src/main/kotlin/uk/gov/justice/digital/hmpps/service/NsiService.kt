@@ -6,20 +6,10 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getActiveEvent
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManager
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.TransferReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.getNsiTransferReason
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.referralCompleted
@@ -92,7 +82,7 @@ class NsiService(
                     ).joinToString(System.lineSeparator() + System.lineSeparator())
                 ),
                 person = person,
-                eventId = eventRepository.getActiveEvent(person.id, details.eventNumber).id,
+                eventId = eventRepository.getEvent(person.id, details.eventNumber).id,
                 staff = staff,
                 team = team,
                 probationAreaCode = ap.probationArea.code
@@ -118,7 +108,7 @@ class NsiService(
                 createAlert = false
             ),
             person = person,
-            eventId = eventRepository.getActiveEvent(person.id, details.eventNumber).id,
+            eventId = eventRepository.getEvent(person.id, details.eventNumber).id,
             team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode),
             staff = staffRepository.getByCode(details.keyWorker.staffCode),
             probationAreaCode = ap.probationArea.code
