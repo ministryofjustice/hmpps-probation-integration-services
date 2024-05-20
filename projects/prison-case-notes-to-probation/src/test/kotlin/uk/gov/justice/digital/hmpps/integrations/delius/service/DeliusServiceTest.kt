@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -55,6 +56,9 @@ class DeliusServiceTest {
 
     @Mock
     lateinit var caseNoteRelatedService: CaseNoteRelatedService
+
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
     @Mock
     lateinit var featureFlags: FeatureFlags
