@@ -45,16 +45,18 @@ class DeliusService(
     fun checkOCGMessages(caseNote: DeliusCaseNote): CaseNote? {
         val note = caseNote.newEntity()
 
-        if (note.description.equals("NOMIS Alert Security. Do not share with offender and OCG Nominal - Do not share made active.")) {
-            telemetryService.trackEvent(
-                "CaseNoteDoNotShare",
-                caseNote.properties()
-            )
+        return when {
+            note.description.equals("NOMIS Alert Security. Do not share with offender and OCG Nominal - Do not share made active.")  -> {
+                telemetryService.trackEvent(
+                    "CaseNoteDoNotShare",
+                    caseNote.properties()
+                )
 
-            return null
+                null
+            }
+
+            else -> note
         }
-
-        return note
     }
 
     private fun DeliusCaseNote.properties() = mapOf(
