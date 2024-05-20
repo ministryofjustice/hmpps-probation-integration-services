@@ -48,8 +48,8 @@ class DeliusService(
     fun checkOCGMessages(caseNote: DeliusCaseNote): CaseNote? {
         val note = caseNote.newEntity()
 
-        return when {
-            note.description.equals(ignoreMessage!!)  -> {
+        return when(note.description) {
+            ignoreMessage!!  -> {
                 telemetryService.trackEvent(
                     "CaseNoteDoNotShare",
                     caseNote.properties()
