@@ -39,8 +39,6 @@ management:
 logging.level:
   org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF
 
-ignore.message: NOMIS Alert Security. Do not share with offender and OCG Nominal - Do not share made active.
-
 ---
 # Shared dev/test config
 spring.config.activate.on-profile: [ "dev", "integration-test" ]

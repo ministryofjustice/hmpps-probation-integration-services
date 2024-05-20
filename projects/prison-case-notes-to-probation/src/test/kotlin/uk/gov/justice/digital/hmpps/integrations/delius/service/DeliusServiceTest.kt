@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -15,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
-import org.springframework.test.util.ReflectionTestUtils
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -30,7 +28,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -60,9 +57,6 @@ class DeliusServiceTest {
     lateinit var caseNoteRelatedService: CaseNoteRelatedService
 
     @Mock
-    lateinit var telemetryService: TelemetryService
-
-    @Mock
     lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
@@ -75,11 +69,6 @@ class DeliusServiceTest {
     private val probationArea = ProbationAreaGenerator.DEFAULT
     private val team = TeamGenerator.DEFAULT
     private val staff = StaffGenerator.DEFAULT
-
-    @BeforeEach
-    fun setup() {
-        ReflectionTestUtils.setField(deliusService, "ignoreMessage", "NOMIS ignore note")
-    }
 
     @Test
     fun `successfully merges with existing case note`() {
@@ -331,31 +320,6 @@ class DeliusServiceTest {
         deliusService.mergeCaseNote(deliusCaseNote)
 
         verify(caseNoteRepository).save(check { assertThat(it.description, equalTo(null)) })
-    }
-
-    @Test
-    fun `do not create a new case note for ocg alerts`() {
-        deliusCaseNote = deliusCaseNote.copy(
-            body = deliusCaseNote.body.copy(
-                type = "ALERT",
-                subType = "ACTIVE",
-                content = "ignore note",
-            )
-        )
-        givenNewCaseNote()
-
-        deliusService.mergeCaseNote(deliusCaseNote)
-
-        val expectedProperties = mapOf(
-            "nomisId" to "AA0001A",
-            "eventId" to "11111",
-            "type" to "ALERT",
-            "subType" to "ACTIVE",
-            "occurrence" to "20/07/2022 12:22:35",
-            "location" to "LEI"
-        )
-        verify(telemetryService, times(1)).trackEvent("CaseNoteDoNotShare", expectedProperties, mapOf())
-        verify(caseNoteRepository, times(0)).save(any())
     }
 
     private fun givenNewCaseNote(
