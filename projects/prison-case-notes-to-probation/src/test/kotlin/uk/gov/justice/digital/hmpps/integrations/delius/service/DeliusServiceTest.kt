@@ -356,7 +356,6 @@ class DeliusServiceTest {
         )
         verify(telemetryService, times(1)).trackEvent("CaseNoteDoNotShare", expectedProperties, mapOf())
         verify(caseNoteRepository, times(0)).save(any())
-
     }
 
     private fun givenNewCaseNote(

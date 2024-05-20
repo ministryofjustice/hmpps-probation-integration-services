@@ -48,8 +48,8 @@ class DeliusService(
     fun checkOCGMessages(caseNote: DeliusCaseNote): CaseNote? {
         val note = caseNote.newEntity()
 
-        return when(note.description) {
-            ignoreMessage!!  -> {
+        return when (note.description) {
+            ignoreMessage!! -> {
                 telemetryService.trackEvent(
                     "CaseNoteDoNotShare",
                     caseNote.properties()
@@ -70,8 +70,6 @@ class DeliusService(
         "occurrence" to DeliusDateTimeFormatter.format(body.contactTimeStamp),
         "location" to body.establishmentCode
     )
-
-
 
     private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {
         val last = lastModifiedDateTime.truncatedTo(ChronoUnit.SECONDS)
