@@ -25,6 +25,19 @@
         "status": 200,
         "bodyFileName": "deletion.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/mrd/recallConsideration/1"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "consideration-detail.json"
+      }
     }
   ]
 }

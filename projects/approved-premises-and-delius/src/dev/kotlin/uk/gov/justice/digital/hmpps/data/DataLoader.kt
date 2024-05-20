@@ -6,26 +6,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactOutcomeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NsiStatusGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NsiTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ANOTHER_EVENT
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferralGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
@@ -38,11 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
@@ -168,6 +146,7 @@ class DataLoader(
         staffRepository.save(personManagerStaff)
         val person = PersonGenerator.DEFAULT
         personRepository.save(person)
+        personRepository.save(PersonGenerator.PERSON_INACTIVE_EVENT)
         personManagerRepository.save(
             PersonManagerGenerator.generate(
                 person,
@@ -175,8 +154,20 @@ class DataLoader(
                 team = TeamGenerator.NON_APPROVED_PREMISES_TEAM
             )
         )
+
+        personManagerRepository.save(
+            PersonManagerGenerator.generate(
+                PersonGenerator.PERSON_INACTIVE_EVENT,
+                staff = personManagerStaff,
+                team = TeamGenerator.NON_APPROVED_PREMISES_TEAM
+            )
+        )
+
         AddressGenerator.PERSON_ADDRESS = personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
+        AddressGenerator.INACTIVE_PERSON_ADDRESS =
+            personAddressRepository.save(AddressGenerator.INACTIVE_PERSON_ADDRESS)
         eventRepository.save(PersonGenerator.EVENT)
+        eventRepository.save(PersonGenerator.INACTIVE_EVENT)
         registrationRepository.save(
             PersonGenerator.generateRegistration(
                 person,
@@ -199,6 +190,25 @@ class DataLoader(
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.NON_APPROVED_PREMISES_TEAM))
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.APPROVED_PREMISES_TEAM))
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.UNALLOCATED))
+
+        caseloadRepository.save(
+            CaseloadGenerator.generate(
+                PersonGenerator.PERSON_INACTIVE_EVENT,
+                TeamGenerator.NON_APPROVED_PREMISES_TEAM
+            )
+        )
+        caseloadRepository.save(
+            CaseloadGenerator.generate(
+                PersonGenerator.PERSON_INACTIVE_EVENT,
+                TeamGenerator.APPROVED_PREMISES_TEAM
+            )
+        )
+        caseloadRepository.save(
+            CaseloadGenerator.generate(
+                PersonGenerator.PERSON_INACTIVE_EVENT,
+                TeamGenerator.UNALLOCATED
+            )
+        )
 
         eventRepository.save(ANOTHER_EVENT)
         referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
