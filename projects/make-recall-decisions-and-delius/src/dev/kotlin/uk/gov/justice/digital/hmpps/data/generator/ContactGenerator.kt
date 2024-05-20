@@ -17,6 +17,8 @@ object ContactGenerator {
     val SYSTEM_GENERATED_TYPE = ContactType(IdGenerator.getAndIncrement(), "SG", "System-generated contact type", true)
     val AP_RESIDENCE_PLAN_PREPARED =
         ContactType(IdGenerator.getAndIncrement(), "APRAP5", "AP Residence Plan Prepared", false)
+    val CONSIDERATION =
+        ContactType(IdGenerator.getAndIncrement(), "C519", "Recall being considered - CaR", false)
 
     val DEFAULT = generate(notes = "default")
     val SYSTEM_GENERATED =

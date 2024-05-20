@@ -37,6 +37,13 @@ class Handler(
                 occurredAt = notification.message.occurredAt
             )
 
+            "prison-recall.recommendation.consideration" -> recommendationService.consideration(
+                crn = crn,
+                details = notification.details(),
+                username = notification.bookedByUsername(),
+                occurredAt = notification.message.occurredAt
+            )
+
             else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
         }
     }
