@@ -175,4 +175,28 @@ object ReferenceDataGenerator {
         "Mr",
         IdGenerator.getAndIncrement()
     )
+
+    val DEFAULT_ADDRESS_TYPE = ReferenceData(
+        "AT",
+        "Address Type",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DEFAULT_ADDRESS_STATUS = ReferenceData(
+        "AS",
+        "Address Status",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DEFAULT_ALLOCATION_REASON = ReferenceData(
+        "AR",
+        "Allocation Reason",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DEFAULT_TIER = ReferenceData(
+        "B2",
+        "B2",
+        IdGenerator.getAndIncrement()
+    )
 }
