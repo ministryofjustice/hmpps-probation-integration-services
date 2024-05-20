@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import jakarta.validation.Valid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +29,8 @@ class DeliusService(
     private val assignmentService: AssignmentService,
     private val relatedService: CaseNoteRelatedService,
     private val telemetryService: TelemetryService,
+    @Value("\${ignore.message}")
+    private val ignoreMessage: String?,
 ) : AuditableService(auditedInteractionService) {
     @Transactional
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) = audit(CASE_NOTES_MERGE) {
@@ -46,7 +49,7 @@ class DeliusService(
         val note = caseNote.newEntity()
 
         return when {
-            note.description.equals("NOMIS Alert Security. Do not share with offender and OCG Nominal - Do not share made active.")  -> {
+            note.description.equals(ignoreMessage!!)  -> {
                 telemetryService.trackEvent(
                     "CaseNoteDoNotShare",
                     caseNote.properties()
