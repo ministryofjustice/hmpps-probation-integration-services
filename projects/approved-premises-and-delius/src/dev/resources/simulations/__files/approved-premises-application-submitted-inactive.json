@@ -1,0 +1,50 @@
+{
+  "id": "364145f9-0af8-488e-9901-b4c46cd9ba37-inactive",
+  "timestamp": "2022-11-30T14:53:44",
+  "eventType": "approved-premises.application.submitted",
+  "eventDetails": {
+    "applicationId": "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+    "applicationUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/application/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+    "personReference": {
+      "crn": "A000002",
+      "noms": "A0002AA"
+    },
+    "deliusEventNumber": "6",
+    "mappaCategories": "M2",
+    "sentenceLengthInMonths": 57,
+    "offenceDescription": "Wounding or inflicting grievous bodily harm (inflicting bodily injury with or without weapon) (S20) - 00801",
+    "releaseType": "Release on Temporary Licence (ROTL)",
+    "age": 43,
+    "gender": "Male",
+    "targetLocation": "LS2",
+    "submittedAt": "2022-11-30T14:51:30",
+    "submittedBy": {
+      "staffMember": {
+        "staffCode": "N54A001",
+        "forenames": "John",
+        "surname": "Smith",
+        "username": "JohnSmithNPS"
+      },
+      "probationArea": {
+        "code": "N54",
+        "name": "North East Region"
+      },
+      "cru": {
+        "code": "N02",
+        "name": "NPS North East"
+      },
+      "team": {
+        "code": "N54NGH",
+        "name": "Gateshead 1"
+      },
+      "ldu": {
+        "code": "N54PPU",
+        "name": "Public Protection NE"
+      },
+      "region": {
+        "code": "NE",
+        "name": "North East"
+      }
+    }
+  }
+}
