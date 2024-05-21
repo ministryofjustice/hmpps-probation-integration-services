@@ -154,6 +154,25 @@ components:
           type: string
         description:
           type: string
+    Registration:
+      required:
+      - code
+      - description
+      - startDate
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date
+        reviewDate:
+          type: string
+          format: date
+        notes:
+          type: string
     Sentence:
       required:
       - custodial
@@ -208,6 +227,8 @@ components:
     SupervisionResponse:
       required:
       - communityManager
+      - dynamicRisks
+      - personStatus
       - supervisions
       type: object
       properties:
@@ -219,6 +240,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Supervision'
+        dynamicRisks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registration'
+        personStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registration'
     Team:
       required:
       - code
