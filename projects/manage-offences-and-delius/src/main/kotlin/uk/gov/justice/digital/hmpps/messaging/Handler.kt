@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.entity.DetailedOffence
 import uk.gov.justice.digital.hmpps.entity.OffenceRepository
 import uk.gov.justice.digital.hmpps.entity.ReferenceOffence
+import uk.gov.justice.digital.hmpps.entity.getByCode
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -34,37 +35,67 @@ class Handler(
     @Transactional
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
+
         val offence = manageOffencesClient.getOffence(notification.message.offenceCode)
+
+        val isNew = mergeDetailedOffence(offence)
         if (featureFlags.enabled(FF_CREATE_OFFENCE)) {
-            offence.createOrMerge()
+            mergeReferenceOffence(offence)
         }
-        val existingEntity = detailedOffenceRepository.findByCode(offence.code)
-        detailedOffenceRepository.save(existingEntity.mergeWith(offence.newEntity))
+
         telemetryService.trackEvent(
-            if (existingEntity == null) "OffenceCodeCreated" else "OffenceCodeUpdated",
-            mapOf(
+            if (isNew) "OffenceCodeCreated" else "OffenceCodeUpdated",
+            listOfNotNull(
                 "offenceCode" to offence.code,
-                "homeOfficeCode" to offence.homeOfficeCode
-            )
+                offence.homeOfficeCode?.let { "homeOfficeCode" to it }
+            ).toMap()
         )
     }
 
-    val Offence.newEntity
-        get() = DetailedOffence(
-            code = code,
-            description = description,
-            startDate = startDate,
-            endDate = endDate,
-            homeOfficeCode = homeOfficeStatsCode,
-            homeOfficeDescription = homeOfficeDescription,
-            legislation = legislation,
-            category = referenceDataRepository.findCourtCategory(offenceType)
-                ?: throw NotFoundException("Court category", "code", offenceType),
-            schedule15ViolentOffence = schedule15ViolentOffence,
-            schedule15SexualOffence = schedule15SexualOffence
-        )
+    private fun mergeDetailedOffence(offence: Offence): Boolean {
+        val existingEntity = detailedOffenceRepository.findByCode(offence.code)
+        detailedOffenceRepository.save(existingEntity.mergeWith(offence.toDetailedOffence()))
+        return existingEntity == null
+    }
 
-    fun DetailedOffence?.mergeWith(newEntity: DetailedOffence) = this?.apply {
+    private fun mergeReferenceOffence(offence: Offence) {
+        if (offence.homeOfficeCode == null) return
+        val existingEntity = offenceRepository.findByCode(offence.homeOfficeCode!!)
+        val highLevelOffence = offenceRepository.getByCode(offence.highLevelCode!!)
+        offenceRepository.save(existingEntity.mergeWith(offence.toReferenceOffence(highLevelOffence)))
+    }
+
+    private fun Offence.toDetailedOffence() = DetailedOffence(
+        code = code,
+        description = description,
+        startDate = startDate,
+        endDate = endDate,
+        homeOfficeCode = homeOfficeStatsCode,
+        homeOfficeDescription = homeOfficeDescription,
+        legislation = legislation,
+        category = referenceDataRepository.findCourtCategory(offenceType)
+            ?: throw NotFoundException("Court category", "code", offenceType),
+        schedule15ViolentOffence = schedule15ViolentOffence,
+        schedule15SexualOffence = schedule15SexualOffence
+    )
+
+    private fun Offence.toReferenceOffence(highLevelOffence: ReferenceOffence) = ReferenceOffence(
+        code = homeOfficeCode!!,
+        description = homeOfficeDescription!!,
+        mainCategoryCode = mainCategoryCode!!,
+        selectable = false,
+        mainCategoryDescription = highLevelOffence.description.take(200),
+        mainCategoryAbbreviation = highLevelOffence.description.take(50),
+        ogrsOffenceCategoryId = highLevelOffence.ogrsOffenceCategoryId,
+        subCategoryCode = subCategoryCode!!,
+        subCategoryDescription = "$homeOfficeDescription - $subCategoryCode".take(200),
+        form20Code = highLevelOffence.form20Code,
+        childAbduction = null,
+        schedule15ViolentOffence = schedule15ViolentOffence,
+        schedule15SexualOffence = schedule15SexualOffence
+    )
+
+    private fun DetailedOffence?.mergeWith(newEntity: DetailedOffence) = this?.apply {
         code = newEntity.code
         description = newEntity.description
         startDate = newEntity.startDate
@@ -75,51 +106,20 @@ class Handler(
         category = newEntity.category
     } ?: newEntity
 
-    private fun Offence.createOrMerge() {
-        if (homeOfficeStatsCode != null && homeOfficeDescription != null) {
-            val highLevelOffence = checkNotNull(offenceRepository.findOffenceByCode(highLevelCode!!)) {
-                "High Level Offence not found: $highLevelCode"
-            }
-
-            val offence = offenceRepository.findOffenceByCode(homeOfficeCode).mergeWith(asReference(highLevelOffence))
-            offenceRepository.save(offence)
-        }
-    }
+    private fun ReferenceOffence?.mergeWith(newEntity: ReferenceOffence) = this?.apply {
+        code = newEntity.code
+        description = newEntity.description
+        mainCategoryCode = newEntity.mainCategoryCode
+        mainCategoryDescription = newEntity.mainCategoryDescription
+        mainCategoryAbbreviation = newEntity.mainCategoryAbbreviation
+        ogrsOffenceCategoryId = newEntity.ogrsOffenceCategoryId
+        subCategoryCode = newEntity.subCategoryCode
+        subCategoryDescription = newEntity.subCategoryDescription
+        form20Code = newEntity.form20Code
+        schedule15SexualOffence = newEntity.schedule15SexualOffence
+        schedule15ViolentOffence = newEntity.schedule15ViolentOffence
+        childAbduction = newEntity.childAbduction
+    } ?: newEntity
 }
 
 val HmppsDomainEvent.offenceCode get() = additionalInformation["offenceCode"] as String
-
-val Offence.mainCategoryCode get() = homeOfficeStatsCode?.take(3)
-val Offence.subCategoryCode get() = homeOfficeStatsCode?.takeLast(2)
-val Offence.highLevelCode get() = mainCategoryCode?.let { it + "00" }
-val Offence.homeOfficeCode get() = mainCategoryCode + subCategoryCode
-fun Offence.asReference(highLevelOffence: ReferenceOffence) = ReferenceOffence(
-    code = homeOfficeCode,
-    description = homeOfficeDescription!!,
-    mainCategoryCode = mainCategoryCode!!,
-    selectable = false,
-    mainCategoryDescription = highLevelOffence.description.take(200),
-    mainCategoryAbbreviation = highLevelOffence.description.take(50),
-    ogrsOffenceCategoryId = highLevelOffence.ogrsOffenceCategoryId,
-    subCategoryCode = subCategoryCode!!,
-    subCategoryDescription = "$homeOfficeDescription - $subCategoryCode".take(200),
-    form20Code = highLevelOffence.form20Code,
-    childAbduction = null,
-    schedule15ViolentOffence = schedule15ViolentOffence,
-    schedule15SexualOffence = schedule15SexualOffence
-)
-
-fun ReferenceOffence?.mergeWith(referenceOffence: ReferenceOffence) = this?.apply {
-    code = referenceOffence.code
-    description = referenceOffence.description
-    mainCategoryCode = referenceOffence.mainCategoryCode
-    mainCategoryDescription = referenceOffence.mainCategoryDescription
-    mainCategoryAbbreviation = referenceOffence.mainCategoryAbbreviation
-    ogrsOffenceCategoryId = referenceOffence.ogrsOffenceCategoryId
-    subCategoryCode = referenceOffence.subCategoryCode
-    subCategoryDescription = referenceOffence.subCategoryDescription
-    form20Code = referenceOffence.form20Code
-    schedule15SexualOffence = referenceOffence.schedule15SexualOffence
-    schedule15ViolentOffence = referenceOffence.schedule15ViolentOffence
-    childAbduction = referenceOffence.childAbduction
-} ?: referenceOffence

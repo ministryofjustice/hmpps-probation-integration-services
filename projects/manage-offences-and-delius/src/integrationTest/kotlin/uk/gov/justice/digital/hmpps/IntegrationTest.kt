@@ -56,7 +56,7 @@ internal class IntegrationTest {
             mapOf()
         )
 
-        val referenceOffence = offenceRepository.findOffenceByCode("09155")
+        val referenceOffence = offenceRepository.findByCode("09155")
         assertNotNull(referenceOffence)
 
         assertThat(referenceOffence?.description).isEqualTo("Obstructing a person home office description")

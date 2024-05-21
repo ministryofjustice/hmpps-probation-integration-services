@@ -61,11 +61,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/app-insights-to-slack
         with:
-          title: Offence added
-          summary: The following offences were updated from the Manage Offences service.
+          title: New Offences
+          summary: The following offences were newly created in the [Manage Offences service](https://manage-offences.hmpps.service.justice.gov.uk) over the last 7 days.
           event_name: OffenceCodeCreated
           project_name: manage-offences-and-delius
-          column1_header: "Offence Code"
+          column1_header: Offence Code
           column1_value: offenceCode
           column2_header: Home Office Code
           column2_value: homeOfficeCode
