@@ -68,7 +68,7 @@ class RegisterType(
         const val WEAPONS_CODE = "WEAP" // Known to use/carry weapon
         const val LOW_ROSH_CODE = "RLRH" // Low risk of serious harm
         const val MED_ROSH_CODE = "RMRH" // Medium risk of serious harm
-        const val HIGH_ROSH_CODE = "HRSH" // High risk of serious harm
+        const val HIGH_ROSH_CODE = "RHRH" // High risk of serious harm
         const val VERY_HIGH_ROSH_CODE = "RVRH" // Very high risk of serious harm
         const val SERIOUS_FURTHER_OFFENCE_CODE = "ASFO" // Subject to SFO review/investigation
         const val WARRANT_SUMMONS_CODE = "WRSM" // Outstanding warrant or summons
