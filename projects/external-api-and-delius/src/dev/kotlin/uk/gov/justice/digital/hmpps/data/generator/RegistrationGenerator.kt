@@ -3,17 +3,21 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integration.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integration.delius.entity.RegisterType
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Registration
-import uk.gov.justice.digital.hmpps.service.Category
-import uk.gov.justice.digital.hmpps.service.Level
+import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationEntity
+import uk.gov.justice.digital.hmpps.model.Category
+import uk.gov.justice.digital.hmpps.model.Level
 import java.time.LocalDate
 
 object RegistrationGenerator {
+    val CHILD_CONCERNS_TYPE = generateType(RegisterType.CHILD_CONCERNS_CODE)
+    val CHILD_PROTECTION_TYPE = generateType(RegisterType.CHILD_PROTECTION_CODE)
+    val SERIOUS_FURTHER_OFFENCE_TYPE = generateType(RegisterType.SERIOUS_FURTHER_OFFENCE_CODE)
     val MAPPA_TYPE = generateType(RegisterType.MAPPA_CODE)
     val CATEGORIES = Category.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
     val LEVELS = Level.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
 
-    fun generateType(code: String, id: Long = IdGenerator.getAndIncrement()) = RegisterType(code, id)
+    fun generateType(code: String, id: Long = IdGenerator.getAndIncrement()) =
+        RegisterType(code, "Description for $code", id)
 
     fun generate(
         type: RegisterType = MAPPA_TYPE,
@@ -26,7 +30,7 @@ object RegistrationGenerator {
         deRegistered: Boolean = false,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Registration(person.id, type, category, level, date, reviewDate, notes, deRegistered, softDeleted, id)
+    ) = RegistrationEntity(person.id, type, category, level, date, reviewDate, notes, deRegistered, softDeleted, id)
 
     fun generateReferenceData(
         code: String,
