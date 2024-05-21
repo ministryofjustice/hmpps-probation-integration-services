@@ -1,0 +1,21 @@
+{
+  "eventType": "prison-recall.recommendation.consideration",
+  "version": 1,
+  "description": "Recall being considered",
+  "occurredAt": "2022-11-21T06:27:57.028Z",
+  "detailUrl": "http://localhost:{wiremock.port}/mrd/recallConsideration/1",
+  "additionalInformation": {
+    "recommendationUrl": "http://mrd.case.crn/overview",
+    "bookedBy": {
+      "username": "WithStaff"
+    }
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X000001"
+      }
+    ]
+  }
+}

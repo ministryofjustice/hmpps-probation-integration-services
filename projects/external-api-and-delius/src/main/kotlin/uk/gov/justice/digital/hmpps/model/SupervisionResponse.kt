@@ -3,7 +3,9 @@ package uk.gov.justice.digital.hmpps.model
 data class SupervisionResponse(
     val communityManager: Manager,
     val mappaDetail: MappaDetail?,
-    val supervisions: List<Supervision>
+    val supervisions: List<Supervision>,
+    val dynamicRisks: List<Registration>,
+    val personStatus: List<Registration>
 )
 
 data class Manager(

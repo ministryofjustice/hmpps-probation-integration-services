@@ -1,0 +1,18 @@
+{
+  "eventType": "approved-premises.person.departed",
+  "version": 1,
+  "description": "A person departed frm the Approved Premises",
+  "detailUrl": "http://localhost:{wiremock.port}/approved-premises-api/events/person-departed/364145f9-0af8-488e-9901-b4c46cd9ba37-inactive",
+  "occurredAt": "2022-12-04T10:42:43+00:00",
+  "additionalInformation": {
+    "applicationId": "364145f9-0af8-488e-9901-b4c46cd9ba37"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000002"
+      }
+    ]
+  }
+}

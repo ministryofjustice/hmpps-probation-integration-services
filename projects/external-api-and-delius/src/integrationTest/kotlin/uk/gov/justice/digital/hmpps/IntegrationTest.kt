@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -112,7 +111,12 @@ internal class IntegrationTest {
                                     }
                                 ]
                             }
-                        ]
+                        ],
+                        "dynamicRisks": [
+                            {"code": "RCCO", "description": "Description for RCCO", "startDate": "$start"},
+                            {"code": "RCPR", "description": "Description for RCPR", "startDate": "$start"}
+                        ],
+                        "personStatus": [{"code":"ASFO", "description": "Description for ASFO", "startDate": "$start"}]
                     }
                     """.trimIndent()
                 )

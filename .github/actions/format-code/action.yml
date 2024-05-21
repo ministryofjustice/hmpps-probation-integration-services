@@ -60,7 +60,7 @@ runs:
       env:
         mask: ${{ inputs.mask }}
 
-    - uses: planetscale/ghcommit-action@21a8cda29f55e5cc2cdae0cdbdd08e38dd148c25 # v0.2.9
+    - uses: planetscale/ghcommit-action@b662a9d7235a07e80d976152ed5afe41651c4973 # v0.2.9
       with:
         commit_message: ${{ inputs.commit_message }}
         repo: ${{ github.repository }}
