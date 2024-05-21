@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -55,11 +54,6 @@ internal class HandlerTest {
     @InjectMocks
     lateinit var handler: Handler
 
-    @BeforeEach
-    fun setup() {
-        whenever(featureFlags.enabled(FF_CREATE_OFFENCE)).thenReturn(false)
-    }
-
     @Test
     fun `missing reference data is thrown`() {
         val notification = Notification(ResourceLoader.event("offence-changed"))
@@ -72,6 +66,7 @@ internal class HandlerTest {
 
     @Test
     fun `offence is created`() {
+        whenever(featureFlags.enabled(FF_CREATE_OFFENCE)).thenReturn(false)
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
         whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(offence(offenceCode))
@@ -98,6 +93,7 @@ internal class HandlerTest {
 
     @Test
     fun `offence is updated`() {
+        whenever(featureFlags.enabled(FF_CREATE_OFFENCE)).thenReturn(false)
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
         whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(offence(notification.message.offenceCode))
