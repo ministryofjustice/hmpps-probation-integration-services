@@ -5,4 +5,4 @@ generic-service:
   env:
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/oauth/token
     SENTRY_ENVIRONMENT: prod
-    INTEGRATIONS_PRISON-API_URL: https://api.prison.service.justice.gov.uk
+    INTEGRATIONS_PRISON-API_URL: https://prison-api.prison.service.justice.gov.uk
