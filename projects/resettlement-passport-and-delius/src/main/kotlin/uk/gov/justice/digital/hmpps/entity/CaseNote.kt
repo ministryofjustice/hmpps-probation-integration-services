@@ -30,13 +30,13 @@ class CaseNote(
     val type: CaseNoteType,
 
     @Lob
-    var notes: String,
+    val notes: String,
 
     @Column(name = "contact_date")
-    var date: LocalDate,
+    val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    var startTime: ZonedDateTime,
+    val startTime: ZonedDateTime,
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
@@ -53,17 +53,17 @@ class CaseNote(
     val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
-    var createdByUserId: Long = 0,
+    val createdByUserId: Long = 0,
 
     @LastModifiedDate
-    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
+    val lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
-    var lastUpdatedUserId: Long = 0,
+    val lastUpdatedUserId: Long = 0,
 
     @Version
     @Column(name = "row_version")
-    var version: Long = 0,
+    val version: Long = 0,
 
     @Column(updatable = false)
     val partitionAreaId: Long = 0L,
@@ -71,8 +71,8 @@ class CaseNote(
     @Column(name = "event_id")
     val eventId: Long? = null,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false
+    @Column(updatable = false, columnDefinition = "number")
+    val softDeleted: Boolean = false
 )
 
 @Immutable

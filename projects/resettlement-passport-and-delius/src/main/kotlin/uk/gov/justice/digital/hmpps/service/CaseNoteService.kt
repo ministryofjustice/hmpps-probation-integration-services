@@ -15,7 +15,7 @@ class CaseNoteService(
     private val authorService: AuthorService,
 ) : AuditableService(auditedInteractionService) {
 
-    fun createContact(crn: String, createContact: CreateContact) {
+    fun createContact(crn: String, createContact: CreateContact) = audit(BusinessInteractionCode.ADD_CONTACT) {
         val person = personRepository.getByCrn(crn)
         val type = caseNoteTypeRepository.getCode(createContact.type.code)
         val authorDetails = authorService.authorDetails(createContact.author)
