@@ -74,9 +74,6 @@ class PersonManager(
     @Column(name = "allocation_date")
     val date: ZonedDateTime,
 
-    @Column(name = "start_date")
-    val startDate: LocalDate,
-
     @Column(name = "end_date")
     val endDate: LocalDate? = null,
 

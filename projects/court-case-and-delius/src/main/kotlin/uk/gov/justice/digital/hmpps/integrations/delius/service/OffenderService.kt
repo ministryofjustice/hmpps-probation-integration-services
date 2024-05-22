@@ -272,7 +272,7 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
             nps = it.provider.privateSector
         ),
         active = it.active,
-        fromDate = it.startDate,
+        fromDate = it.date.toLocalDate(),
         toDate = it.endDate,
         allocationReason = it.allocationReason.keyValueOf()
     )
