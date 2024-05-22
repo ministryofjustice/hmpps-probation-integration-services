@@ -32,6 +32,4 @@ class CaseNoteService(
         )
         caseNoteRepository.save(caseNote)
     }
-
-
 }
