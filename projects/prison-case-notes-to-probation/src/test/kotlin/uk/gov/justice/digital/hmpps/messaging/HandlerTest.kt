@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
@@ -99,8 +101,10 @@ internal class HandlerTest {
         verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
     }
 
-    @Test
-    fun `when ocg alert text has been sent`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["Alert Security. Do not share with offender and OCG Nominal - Do not share made active.",
+    "Alert Security. Do not share with offender and OCG Nominal - Do not share made inactive."])
+    fun `when ocg alert text has been sent`(text: String) {
         val prisonCaseNote = PrisonCaseNote(
             "1",
             1L,
@@ -110,7 +114,7 @@ internal class HandlerTest {
             creationDateTime = ZonedDateTime.now(),
             occurrenceDateTime = ZonedDateTime.now(),
             authorName = "bob",
-            text = "Alert Security. Do not share with offender and OCG Nominal - Do not share made active.",
+            text = text,
             amendments = listOf()
         )
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
