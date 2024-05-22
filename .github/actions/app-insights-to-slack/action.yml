@@ -73,7 +73,11 @@ runs:
           | where timestamp between (${{ inputs.time_range }})
           | where cloud_RoleName in ("${{ inputs.project_name }}")
           | where name in ("${{ steps.event_names.outputs.result }}")
-          | project customDimensions.${{ inputs.column1_value }}, iif(isempty(customDimensions.${{ inputs.column2_value }}), "n/a", customDimensions.${{ inputs.column2_value }}), itemId, timestamp
+          | project 
+              customDimensions.${{ inputs.column1_value }},
+              iif(isempty(customDimensions.${{ inputs.column2_value }}), "N/A", customDimensions.${{ inputs.column2_value }}),
+              itemId,
+              timestamp
           | order by tostring(customDimensions_${{ inputs.column1_value }}) asc
 
     - name: Transform results into Slack message
@@ -94,7 +98,7 @@ runs:
               {
                 "type": "section",
                 "text": {
-                  "type": "plain_text",
+                  "type": "mrkdwn",
                   "text": "${{ inputs.summary }}"
                 },
                 "fields": [

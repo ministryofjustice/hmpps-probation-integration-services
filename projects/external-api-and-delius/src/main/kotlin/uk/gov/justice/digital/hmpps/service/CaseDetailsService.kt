@@ -19,72 +19,84 @@ class CaseDetailsService(
     private val ldapTemplate: LdapTemplate
 ) {
     fun getSupervisions(crn: String): SupervisionResponse = with(comRepository.getForCrn(crn)) {
+        return SupervisionResponse(
+            communityManager = toCommunityManagerResponse(),
+            mappaDetail = registrationRepository.findMappa(person.id).toMappaResponse(),
+            supervisions = eventRepository.findByPersonIdOrderByConvictionDateDesc(person.id).toSupervisionResponse(),
+            dynamicRisks = registrationRepository.findDynamicRiskRegistrations(person.id).toRegistrationResponse(),
+            personStatus = registrationRepository.findPersonStatusRegistrations(person.id).toRegistrationResponse(),
+        )
+    }
+
+    private fun PersonManager.toCommunityManagerResponse(): Manager {
         staff.user?.apply {
             ldapTemplate.findByUsername<LdapUser>(username)?.let {
                 email = it.email
                 telephone = it.telephone
             }
         }
-        val supervisions = eventRepository.findByPersonIdOrderByConvictionDateDesc(person.id).map { event ->
-            Supervision(
-                number = event.number.toInt(),
-                active = event.active,
-                date = event.convictionDate,
-                sentence = event.disposal?.let { disposal ->
-                    Sentence(
-                        description = disposal.type.description,
-                        date = disposal.date,
-                        length = disposal.length?.toInt(),
-                        lengthUnits = disposal.lengthUnits?.let { LengthUnit.valueOf(it.description) },
-                        custodial = disposal.type.isCustodial()
-                    )
-                },
-                mainOffence = event.mainOffence.let { Offence.of(it.date, it.count, it.offence) },
-                additionalOffences = event.additionalOffences.map { Offence.of(it.date, it.count, it.offence) },
-                courtAppearances = event.courtAppearances.map {
-                    CourtAppearance(
-                        type = it.type.description,
-                        date = it.date,
-                        court = it.court.name,
-                        plea = it.plea?.description
-                    )
-                }
+        return Manager(
+            code = staff.code,
+            name = staff.name(),
+            username = staff.user?.username,
+            email = staff.user?.email,
+            telephoneNumber = staff.user?.telephone,
+            team = Team(
+                code = team.code,
+                description = team.description,
+                email = team.emailAddress,
+                telephoneNumber = team.telephone,
+                provider = Provider(provider.code, provider.description)
             )
-        }
-        val mappaDetail = registrationRepository.findMappa(person.id)?.let {
-            MappaDetail(
-                it.level?.code?.toMappaLevel(),
-                it.level?.description,
-                it.category?.code?.toMappaCategory(),
-                it.category?.description,
-                it.date,
-                it.reviewDate,
-                it.notes
-            )
-        }
-        return SupervisionResponse(asCom(), mappaDetail, supervisions)
+        )
+    }
+
+    private fun RegistrationEntity?.toMappaResponse() = this?.let {
+        MappaDetail(
+            level = it.level?.code?.toMappaLevel(),
+            levelDescription = it.level?.description,
+            category = it.category?.code?.toMappaCategory(),
+            categoryDescription = it.category?.description,
+            startDate = it.date,
+            reviewDate = it.reviewDate,
+            notes = it.notes
+        )
+    }
+
+    private fun List<RegistrationEntity>.toRegistrationResponse() = this.map {
+        Registration(
+            code = it.type.code,
+            description = it.type.description,
+            startDate = it.date,
+            reviewDate = it.reviewDate,
+            notes = it.notes
+        )
+    }
+
+    private fun List<Event>.toSupervisionResponse() = this.map { event ->
+        Supervision(
+            number = event.number.toInt(),
+            active = event.active,
+            date = event.convictionDate,
+            sentence = event.disposal?.let { disposal ->
+                Sentence(
+                    description = disposal.type.description,
+                    date = disposal.date,
+                    length = disposal.length?.toInt(),
+                    lengthUnits = disposal.lengthUnits?.let { LengthUnit.valueOf(it.description) },
+                    custodial = disposal.type.isCustodial()
+                )
+            },
+            mainOffence = event.mainOffence.let { Offence.of(it.date, it.count, it.offence) },
+            additionalOffences = event.additionalOffences.map { Offence.of(it.date, it.count, it.offence) },
+            courtAppearances = event.courtAppearances.map {
+                CourtAppearance(
+                    type = it.type.description,
+                    date = it.date,
+                    court = it.court.name,
+                    plea = it.plea?.description
+                )
+            }
+        )
     }
 }
-
-enum class Category(val number: Int) { X9(0), M1(1), M2(2), M3(3), M4(4) }
-enum class Level(val number: Int) { M0(0), M1(1), M2(2), M3(3) }
-
-private fun String.toMappaLevel() = Level.entries.find { it.name == this }?.number
-    ?: throw IllegalStateException("Unexpected MAPPA level: $this")
-
-private fun String.toMappaCategory() = Category.entries.find { it.name == this }?.number
-    ?: throw IllegalStateException("Unexpected MAPPA category: $this")
-
-private fun PersonManager.asCom() = Manager(
-    staff.code,
-    staff.name(),
-    staff.user?.username,
-    staff.user?.email,
-    staff.user?.telephone,
-    team.asModel(provider())
-)
-
-private fun PersonManager.provider() = Provider(provider.code, provider.description)
-
-private fun uk.gov.justice.digital.hmpps.integration.delius.entity.Team.asModel(provider: Provider) =
-    Team(code, description, emailAddress, telephone, provider)
