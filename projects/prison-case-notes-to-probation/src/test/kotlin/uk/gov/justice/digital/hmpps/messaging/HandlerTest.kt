@@ -102,8 +102,10 @@ internal class HandlerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["Alert Security. Do not share with offender and OCG Nominal - Do not share made active.",
-    "Alert Security. Do not share with offender and OCG Nominal - Do not share made inactive."])
+    @ValueSource(
+        strings = ["Alert Security. Do not share with offender and OCG Nominal - Do not share made active.",
+            "Alert Security. Do not share with offender and OCG Nominal - Do not share made inactive."]
+    )
     fun `when ocg alert text has been sent`(text: String) {
         val prisonCaseNote = PrisonCaseNote(
             "1",
