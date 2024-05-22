@@ -53,8 +53,9 @@ object PersonGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = PersonManager(person, team, staff, probationAreaId, softDeleted, active, id)
 
-    fun generateContactType(code: String, description: String ) = CaseNoteType(id = IdGenerator.getAndIncrement(),
+    fun generateContactType(code: String, description: String) = CaseNoteType(
+        id = IdGenerator.getAndIncrement(),
         code = code,
-        description = description)
-
+        description = description
+    )
 }
