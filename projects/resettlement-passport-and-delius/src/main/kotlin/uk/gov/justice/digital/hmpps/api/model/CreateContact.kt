@@ -7,16 +7,30 @@ import java.time.ZonedDateTime
 data class CreateContact(
     @Schema(
         type = "string",
-        example = "RP9",
-        description = "Nomis contact type. Must either RP9 or RP10"
+        example = "IMMEDIATE_NEEDS_REPORT",
+        description = "Nomis contact type. Must either IMMEDIATE_NEEDS_REPORT or PRE_RELEASE_REPORT"
     )
-    val type: Type,
+    val type: CaseNoteType,
     val dateTime: ZonedDateTime,
     @field:NotBlank
     val notes: String,
+
+    @NotBlank
+    val author: Author
 ) {
-    enum class Type {
-        RP9,
-        RP10,
+    enum class CaseNoteType(val code: String) {
+        IMMEDIATE_NEEDS_REPORT("RP9"),
+        PRE_RELEASE_REPORT("RP10"),
     }
 }
+
+data class Author(
+    @field:NotBlank
+    val prisonCode: String,
+
+    @field:NotBlank
+    val forename: String,
+
+    @field:NotBlank
+    val surname: String
+)

@@ -1,21 +1,24 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.ProbationArea
-import uk.gov.justice.digital.hmpps.entity.Staff
-import uk.gov.justice.digital.hmpps.entity.StaffUser
-import uk.gov.justice.digital.hmpps.entity.Team
+import uk.gov.justice.digital.hmpps.entity.*
 
 object ProviderGenerator {
+    val DEFAULT_INSTITUTION = generateNomisInstitution(code = "LDN")
+    val INSTITUTION_NO_TEAM = generateNomisInstitution(code = "MDL")
+
     val DEFAULT_AREA = generateProbationArea()
+    val AREA_NO_TEAM = generateProbationArea(code = "MDL", institution = INSTITUTION_NO_TEAM)
     val DEFAULT_TEAM = generateTeam("N03DEF")
-    val DEFAULT_STAFF = generateStaff("N03DEF1", "John", "Smith", "James")
-    val DEFAULT_STAFF_USER = generateStaffUser("john-smith", DEFAULT_STAFF)
+    val CSN_TEAM = generateTeam("LDNCSN")
+    var DEFAULT_STAFF = generateStaff("N03DEF1", "John", "Smith", "James", probationAreaId = DEFAULT_AREA.id)
+    var EXISTING_CSN_STAFF = generateStaff("LDNA001", "Terry", "Nutkins", "James", probationAreaId = DEFAULT_AREA.id)
 
     fun generateProbationArea(
         id: Long = IdGenerator.getAndIncrement(),
         code: String = "LDN",
-        description: String = "London"
-    ) = ProbationArea(id, code, description)
+        description: String = "London",
+        institution: Institution? = DEFAULT_INSTITUTION
+    ) = ProbationArea(id, code, description, institution)
 
     fun generateTeam(
         code: String,
@@ -28,12 +31,18 @@ object ProviderGenerator {
         forename: String,
         surname: String,
         middleName: String? = null,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Staff(code, forename, surname, middleName, null, id)
+        id: Long = IdGenerator.getAndIncrement(),
+        probationAreaId: Long
+    ) = Staff(code, forename, surname, middleName, null, probationAreaId, id)
 
     fun generateStaffUser(
         username: String,
         staff: Staff,
         id: Long = IdGenerator.getAndIncrement()
     ) = StaffUser(username, staff, id)
+
+    fun generateNomisInstitution(
+        id: Long = IdGenerator.getAndIncrement(),
+        code: String
+    ) = Institution(id, code)
 }

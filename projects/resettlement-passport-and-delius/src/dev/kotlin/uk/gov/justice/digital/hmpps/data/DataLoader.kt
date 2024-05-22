@@ -7,25 +7,21 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.api.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.entity.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.entity.Category
-import uk.gov.justice.digital.hmpps.entity.Level
-import uk.gov.justice.digital.hmpps.entity.Person
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
-import java.util.*
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
     private val auditUserRepository: AuditUserRepository,
-    private val em: EntityManager
+    private val em: EntityManager,
+    private val staffRepository: StaffRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -38,15 +34,20 @@ class DataLoader(
         BusinessInteractionCode.entries.forEach {
             em.persist(BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()))
         }
+        ProviderGenerator.DEFAULT_STAFF = staffRepository.save(ProviderGenerator.DEFAULT_STAFF)
+        ProviderGenerator.EXISTING_CSN_STAFF = staffRepository.save(ProviderGenerator.EXISTING_CSN_STAFF)
         em.saveAll(
             NSITypeGenerator.DTR,
             NSIStatusGenerator.INITIATED,
             ReferenceDataGenerator.ADDRESS_STATUS,
             ReferenceDataGenerator.DTR_SUB_TYPE,
+            ProviderGenerator.DEFAULT_INSTITUTION,
+            ProviderGenerator.INSTITUTION_NO_TEAM,
             ProviderGenerator.DEFAULT_AREA,
+            ProviderGenerator.AREA_NO_TEAM,
+            ProviderGenerator.CSN_TEAM,
             ProviderGenerator.DEFAULT_TEAM,
-            ProviderGenerator.DEFAULT_STAFF,
-            ProviderGenerator.DEFAULT_STAFF_USER,
+            ProviderGenerator.generateStaffUser("john-smith", ProviderGenerator.DEFAULT_STAFF),
             PersonGenerator.DEFAULT,
             PersonGenerator.DEFAULT_MANAGER,
             PersonGenerator.RP9_CONTACT_TYPE,

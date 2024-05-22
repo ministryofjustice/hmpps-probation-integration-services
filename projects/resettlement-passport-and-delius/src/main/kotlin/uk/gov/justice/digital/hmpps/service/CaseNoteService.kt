@@ -11,25 +11,27 @@ class CaseNoteService(
     auditedInteractionService: AuditedInteractionService,
     private val caseNoteRepository: CaseNoteRepository,
     private val personRepository: PersonRepository,
-    private val personManagerRepository: PersonManagerRepository,
-    private val caseNoteTypeRepository: CaseNoteTypeRepository
+    private val caseNoteTypeRepository: CaseNoteTypeRepository,
+    private val authorService: AuthorService,
 ) : AuditableService(auditedInteractionService) {
 
     fun createContact(crn: String, createContact: CreateContact) {
         val person = personRepository.getByCrn(crn)
-        val personManager = personManagerRepository.getByCrn(crn)
-        val type = caseNoteTypeRepository.getCode(createContact.type.name)
+        val type = caseNoteTypeRepository.getCode(createContact.type.code)
+        val authorDetails = authorService.authorDetails(createContact.author)
 
         val caseNote = CaseNote(
             person = person,
             date = createContact.dateTime.toLocalDate(),
             startTime = createContact.dateTime,
             notes = createContact.notes,
-            staff = personManager.staff,
-            probationAreaId = personManager.probationAreaId,
-            team = personManager.team,
+            staff = authorDetails.staff,
+            probationAreaId = authorDetails.probationArea.id,
+            team = authorDetails.team,
             type = type
         )
         caseNoteRepository.save(caseNote)
     }
+
+
 }
