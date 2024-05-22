@@ -4,15 +4,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.never
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
@@ -101,6 +98,33 @@ internal class HandlerTest {
 
         handler.handle(Notification(message = message))
         verify(deliusService, never()).mergeCaseNote(any())
+        verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = ["Alert Security. Do not share with offender and OCG Nominal - Do not share made active.",
+            "Alert Security. Do not share with offender and OCG Nominal - Do not share made inactive."]
+    )
+    fun `when ocg alert text has been sent`(text: String) {
+        val prisonCaseNote = PrisonCaseNote(
+            "1",
+            1L,
+            "1",
+            "type",
+            "subType",
+            creationDateTime = ZonedDateTime.now(),
+            occurrenceDateTime = ZonedDateTime.now(),
+            authorName = "bob",
+            text = text,
+            amendments = listOf()
+        )
+        val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
+        whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
+
+        handler.handle(Notification(message = message))
+        verify(deliusService, never()).mergeCaseNote(any())
+
         verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
     }
 
