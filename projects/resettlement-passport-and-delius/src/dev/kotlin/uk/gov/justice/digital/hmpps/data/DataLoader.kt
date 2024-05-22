@@ -49,6 +49,8 @@ class DataLoader(
             ProviderGenerator.DEFAULT_STAFF_USER,
             PersonGenerator.DEFAULT,
             PersonGenerator.DEFAULT_MANAGER,
+            PersonGenerator.RP9_CONTACT_TYPE,
+            PersonGenerator.RP10_CONTACT_TYPE,
             NSIGenerator.DEFAULT,
             NSIManagerGenerator.DEFAULT,
             AddressGenerator.DEFAULT,
