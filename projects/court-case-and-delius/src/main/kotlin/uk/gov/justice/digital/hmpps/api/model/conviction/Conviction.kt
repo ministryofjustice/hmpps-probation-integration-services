@@ -17,8 +17,11 @@ data class Conviction(
     val referralDate: LocalDate,
     val offences: List<Offence>,
     val sentence: Sentence,
-
-    )
+    val latestCourtAppearanceOutcome: KeyValue,
+    val custody: Custody,
+    val responsibleCourt: Court,
+    val courtAppearance: CourtAppearanceBasic
+)
 
 data class Offence(
     val offenceId: String,
@@ -92,3 +95,52 @@ data class AdditionalSentence(
     val length: Long,
     val notes: String,
 )
+
+data class Custody(
+    val bookingNumber: String,
+    val institution: Institution
+)
+
+data class Institution(
+    val institutionId: Long,
+    val isEstablishment: Boolean,
+    val code: String,
+    val description: String,
+    val institutionName: String,
+    val establishmentType: KeyValue,
+    val isPrivate: Boolean,
+    val nomsPrisonInstitutionCode: String
+)
+
+data class Court(
+    val courtId: Long,
+    val code: String,
+    val selectable: Boolean,
+    val courtName: String,
+    val telephoneNumber: String,
+    val fax: String,
+    val buildingName: String,
+    val street: String,
+    val locality: String,
+    val town: String,
+    val county: String,
+    val postcode: String,
+    val country: String,
+    val courtTypeId: Long,
+    val createdDatetime: LocalDateTime,
+    val lastUpdatedDatetime: LocalDateTime,
+    val probationAreaId: Long,
+    val secureEmailAddress: String,
+    val probationArea: KeyValue,
+    val courtType: KeyValue
+)
+
+data class CourtAppearanceBasic(
+    val courtAppearanceId: Long,
+    val appearanceDate: LocalDateTime,
+    val courtCode: String,
+    val courtName: String,
+    val appearanceType: KeyValue,
+    val crn: String
+)
+

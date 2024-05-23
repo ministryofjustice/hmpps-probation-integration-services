@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.integrations.delius.service.OffenderService
 
 @RestController
-@RequestMapping("probation-case/{crn}/convictions/{convictionId}")
+@RequestMapping("probation-case/{crn}/convictions")
 class ConvictionResource(private val offenderService: OffenderService) {
 
     @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
-    @GetMapping
+    @GetMapping("/{convictionId}")
     fun getConvictionForOffenderByCrnAndConvictionId(
         @PathVariable crn: String,
         @PathVariable convictionId: Long
