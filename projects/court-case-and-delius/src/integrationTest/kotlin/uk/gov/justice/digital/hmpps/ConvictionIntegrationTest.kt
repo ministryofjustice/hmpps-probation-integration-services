@@ -45,7 +45,12 @@ internal class ConvictionIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
-        val expectedResponse = Conviction(event.id, event.eventNumber)
+        val expectedResponse = Conviction(
+            event.id, event.eventNumber,
+            active = true,
+            inBreach = true,
+            convictionDate = event.convictionDate
+        )
         val response = mockMvc
             .perform(get("/probation-case/$crn/convictions/${event.id}").withToken())
             .andExpect(status().is2xxSuccessful)

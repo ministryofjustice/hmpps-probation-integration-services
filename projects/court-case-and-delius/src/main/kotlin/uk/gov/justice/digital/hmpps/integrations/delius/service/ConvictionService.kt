@@ -14,11 +14,10 @@ class ConvictionService(private val personRepository: PersonRepository, private 
         val person = personRepository.getPerson(crn)
         val event = eventRepository.findByPersonAndId(person, eventId)
 
-        val conviction = event?.toConviction()
+        return event?.toConviction()
             ?: throw NotFoundException("Conviction with ID $eventId for Offender with crn $crn not found")
-        return conviction
     }
 
-    fun Event.toConviction(): Conviction = Conviction(id, eventNumber)
+    fun Event.toConviction(): Conviction = Conviction(id, eventNumber, active, inBreach, convictionDate)
 }
 
