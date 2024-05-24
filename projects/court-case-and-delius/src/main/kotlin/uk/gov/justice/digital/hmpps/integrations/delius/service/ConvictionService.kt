@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.conviction.Conviction
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
@@ -14,6 +15,7 @@ class ConvictionService(private val personRepository: PersonRepository, private 
         val event = eventRepository.findByPersonAndId(person, eventId)
 
         val conviction = event?.toConviction()
+            ?: throw NotFoundException("Conviction with ID $eventId for Offender with crn $crn not found")
         return conviction
     }
 
