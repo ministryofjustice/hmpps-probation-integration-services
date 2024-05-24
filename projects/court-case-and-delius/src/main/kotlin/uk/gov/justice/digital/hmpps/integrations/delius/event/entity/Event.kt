@@ -23,6 +23,9 @@ class Event(
     @Column(name = "in_breach", columnDefinition = "number")
     val inBreach: Boolean,
 
+    @Column(name = "breach_end")
+    val breachEnd: LocalDate?,
+
     @Column(name = "conviction_date")
     val convictionDate: LocalDate,
 
@@ -41,6 +44,11 @@ class Event(
 
     @Column(name = "event_number")
     val eventNumber: String,
+
+    @Column(name = "ftc_count", nullable = false)
+    val failureToComplyCount: Long,
+
+    val referralDate: LocalDate,
 )
 
 interface EventRepository : JpaRepository<Event, Long> {

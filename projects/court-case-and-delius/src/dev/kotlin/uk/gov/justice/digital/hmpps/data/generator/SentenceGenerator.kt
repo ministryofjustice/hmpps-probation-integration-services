@@ -16,7 +16,12 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object SentenceGenerator {
-    val CURRENTLY_MANAGED = generateEvent(PersonGenerator.CURRENTLY_MANAGED, inBreach = true)
+    val CURRENTLY_MANAGED = generateEvent(
+        PersonGenerator.CURRENTLY_MANAGED,
+        LocalDate.now().minusDays(1),
+        inBreach = true,
+        LocalDate.now().minusMonths(3)
+    )
 
     fun generateSentence(
         event: Event,
@@ -52,11 +57,13 @@ object SentenceGenerator {
 
     fun generateEvent(
         person: Person,
+        referralDate: LocalDate,
         inBreach: Boolean = false,
+        breachDate: LocalDate? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Event(person, inBreach, LocalDate.now(), null, active, softDeleted, id, "1")
+    ) = Event(person, inBreach, breachDate, LocalDate.now(), null, active, softDeleted, id, "1", 2, referralDate)
 
     fun generateOrderManager(
         event: Event,

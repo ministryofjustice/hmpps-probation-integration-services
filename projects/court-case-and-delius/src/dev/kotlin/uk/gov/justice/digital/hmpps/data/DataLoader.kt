@@ -91,13 +91,13 @@ class DataLoader(
             PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED)
         )
 
-        val noSentenceEvent = SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE)
+        val noSentenceEvent = SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, LocalDate.now())
         val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
         val outcome = Outcome(Outcome.Code.AWAITING_PSR.value, IdGenerator.getAndIncrement())
         val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome)
         em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
 
-        val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION)
+        val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, LocalDate.now())
         val newSentence =
             SentenceGenerator.generateSentence(newEvent, ZonedDateTime.now(), ReferenceDataGenerator.DISPOSAL_TYPE)
         val newManager = SentenceGenerator.generateOrderManager(newEvent, StaffGenerator.UNALLOCATED)
@@ -146,7 +146,8 @@ class DataLoader(
             reportManager
         )
 
-        val preEvent = SentenceGenerator.generateEvent(PersonGenerator.PREVIOUSLY_MANAGED, active = false)
+        val preEvent =
+            SentenceGenerator.generateEvent(PersonGenerator.PREVIOUSLY_MANAGED, LocalDate.now(), active = false)
         val preSentence = SentenceGenerator.generateSentence(
             preEvent,
             ZonedDateTime.now(),

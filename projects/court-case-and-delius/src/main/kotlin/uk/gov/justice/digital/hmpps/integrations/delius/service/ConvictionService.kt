@@ -18,6 +18,7 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             ?: throw NotFoundException("Conviction with ID $eventId for Offender with crn $crn not found")
     }
 
-    fun Event.toConviction(): Conviction = Conviction(id, eventNumber, active, inBreach, convictionDate)
+    fun Event.toConviction(): Conviction =
+        Conviction(id, eventNumber, active, inBreach, failureToComplyCount, breachEnd, convictionDate, referralDate)
 }
 
