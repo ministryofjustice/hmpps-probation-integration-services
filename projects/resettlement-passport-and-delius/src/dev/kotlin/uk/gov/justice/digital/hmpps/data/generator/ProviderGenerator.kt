@@ -33,7 +33,7 @@ object ProviderGenerator {
         middleName: String? = null,
         id: Long = IdGenerator.getAndIncrement(),
         probationAreaId: Long
-    ) = Staff(code, forename, surname, middleName, null, probationAreaId, id)
+    ) = Staff(code, forename, surname, middleName, null, probationAreaId, id = id)
 
     fun generateStaffUser(
         username: String,

@@ -2,10 +2,16 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.time.ZonedDateTime
 
-@Immutable
+@EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "staff")
 class Staff(
@@ -22,7 +28,27 @@ class Staff(
     @OneToOne(mappedBy = "staff")
     val user: StaffUser? = null,
 
+    @Column(name = "probation_area_id")
     val probationAreaId: Long,
+
+    @CreatedDate
+    @Column(name = "created_datetime", updatable = false)
+    val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    val lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "private", columnDefinition = "NUMBER", nullable = false)
+    var privateStaff: Boolean = false,
+
+    @CreatedBy
+    @Column(name = "created_by_user_id", updatable = false)
+    var createdByUserId: Long = 0,
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastModifiedUserId: Long = 0,
 
     @Id
     @Column(name = "staff_id")
@@ -49,11 +75,6 @@ class StaffUser(
 )
 
 interface StaffRepository : JpaRepository<Staff, Long> {
-    fun findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
-        probationAreaId: Long,
-        forename: String,
-        surname: String
-    ): Staff?
 
     @Query(
         """
@@ -66,5 +87,3 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     )
     fun getLatestStaffReference(regex: String): String?
 }
-
-interface StaffTeamRepository : JpaRepository<StaffTeam, StaffTeamId>

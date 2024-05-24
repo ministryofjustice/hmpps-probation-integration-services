@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.*
+import uk.gov.justice.digital.hmpps.service.AssignmentService
 import java.time.temporal.ChronoUnit
 
 @Service

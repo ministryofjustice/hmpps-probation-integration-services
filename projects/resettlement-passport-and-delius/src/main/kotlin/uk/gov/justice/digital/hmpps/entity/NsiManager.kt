@@ -39,6 +39,7 @@ class NsiManager(
 
 @Entity
 @Immutable
+@Table(name = "probation_area")
 class ProbationArea(
     @Id
     @Column(name = "probation_area_id")
@@ -61,6 +62,7 @@ class ProbationArea(
 )
 
 @Entity
+@Table(name = "team")
 @Immutable
 class Team(
     @Id
@@ -73,10 +75,6 @@ class Team(
     @Column(name = "description")
     val description: String
 )
-
-interface TeamRepository : JpaRepository<Team, Long> {
-    fun findByCode(code: String): Team?
-}
 
 @Immutable
 @Entity
@@ -91,6 +89,8 @@ class Institution(
 
 )
 
+interface TeamRepository : JpaRepository<Team, Long>
+
 interface NsiManagerRepository : JpaRepository<NsiManager, Long> {
 
     @Query(
@@ -103,8 +103,4 @@ interface NsiManagerRepository : JpaRepository<NsiManager, Long> {
     """
     )
     fun getNSIManagerByNsi(nsiId: Long): NsiManager?
-}
-
-interface ProbationAreaRepository : JpaRepository<ProbationArea, Long> {
-    fun findByInstitutionNomisCode(nomisCode: String): ProbationArea?
 }

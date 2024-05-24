@@ -1,12 +1,12 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 
 @Immutable
-@Entity
+@Entity(name = "Provider")
 @Table(name = "probation_area")
-class ProbationArea(
+class Provider(
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
@@ -20,13 +20,13 @@ class ProbationArea(
         referencedColumnName = "institution_id",
         updatable = false
     )
-    val institution: Institution? = null
+    val institution: Prison? = null
 )
 
 @Immutable
-@Entity
+@Entity(name = "Prison")
 @Table(name = "r_institution")
-class Institution(
+class Prison(
     @Id
     @Column(name = "institution_id")
     val id: Long,

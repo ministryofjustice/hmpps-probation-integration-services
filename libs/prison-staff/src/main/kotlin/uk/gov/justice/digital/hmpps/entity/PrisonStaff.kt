@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedBy
@@ -6,13 +6,12 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
-@Entity
+@Entity(name = "PrisonStaff")
 @Table(name = "staff")
-class Staff(
+class PrisonStaff(
 
     @Id
     @Column(name = "staff_id")
@@ -32,19 +31,19 @@ class Staff(
     @Column(name = "probation_area_id")
     val probationAreaId: Long,
 
-    @Column(name = "private", columnDefinition = "NUMBER", nullable = false)
-    var privateStaff: Boolean = false,
-
     @Column(name = "start_date", updatable = false)
-    val startDate: LocalDate = LocalDate.now(),
+    val startDate: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedDate
     @Column(name = "created_datetime", updatable = false)
-    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+    val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
     @Column(name = "last_updated_datetime")
-    var lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
+    val lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "private", columnDefinition = "NUMBER", nullable = false)
+    var privateStaff: Boolean = false,
 
     @CreatedBy
     @Column(name = "created_by_user_id", updatable = false)
@@ -56,5 +55,7 @@ class Staff(
 
     @Version
     @Column(name = "row_version")
-    var version: Long = 0
-)
+    val version: Long = 0
+) {
+    fun isUnallocated() = code.endsWith("U")
+}

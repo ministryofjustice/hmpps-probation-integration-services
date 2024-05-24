@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.Id
-import jakarta.persistence.IdClass
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -16,6 +11,7 @@ import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
 @Entity
+@Table(name = "staff_team")
 @IdClass(StaffTeamId::class)
 class StaffTeam(
 

@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.of
 import org.junit.jupiter.params.provider.MethodSource
 import uk.gov.justice.digital.hmpps.integrations.delius.model.BcstPathway
-import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
+import uk.gov.justice.digital.hmpps.model.StaffName
 import java.time.ZonedDateTime
 
 class PrisonCaseNoteTest {

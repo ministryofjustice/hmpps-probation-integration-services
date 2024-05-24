@@ -1,22 +1,17 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.Id
-import jakarta.persistence.IdClass
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import org.springframework.data.jpa.repository.JpaRepository
 import java.io.Serializable
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
 @Entity
+@Table(name = "staff_team")
 @IdClass(StaffTeamId::class)
 class StaffTeam(
 

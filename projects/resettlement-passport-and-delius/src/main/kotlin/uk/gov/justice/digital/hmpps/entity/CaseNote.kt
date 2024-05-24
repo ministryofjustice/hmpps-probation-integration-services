@@ -38,13 +38,11 @@ class CaseNote(
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
 
-    @ManyToOne
-    @JoinColumn(name = "staff_id")
-    val staff: Staff,
+    @Column(name = "staff_id")
+    val staffId: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    val team: Team,
+    @Column(name = "team_id")
+    val teamId: Long,
 
     @Column(updatable = false)
     val probationAreaId: Long,
@@ -53,13 +51,13 @@ class CaseNote(
     val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
-    val createdByUserId: Long = 0,
+    var createdByUserId: Long = 0,
 
     @LastModifiedDate
     val lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
-    val lastUpdatedUserId: Long = 0,
+    var lastUpdatedUserId: Long = 0,
 
     @Version
     @Column(name = "row_version")

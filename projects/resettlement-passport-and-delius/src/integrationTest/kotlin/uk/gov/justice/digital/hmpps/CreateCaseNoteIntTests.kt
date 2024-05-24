@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -16,6 +15,8 @@ import uk.gov.justice.digital.hmpps.api.model.CreateContact
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_AREA
 import uk.gov.justice.digital.hmpps.entity.CaseNoteRepository
+import uk.gov.justice.digital.hmpps.entity.StaffRepository
+import uk.gov.justice.digital.hmpps.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -27,6 +28,12 @@ internal class CreateCaseNoteIntTests {
 
     @Autowired
     internal lateinit var caseNoteRepository: CaseNoteRepository
+
+    @Autowired
+    internal lateinit var staffRepository: StaffRepository
+
+    @Autowired
+    internal lateinit var teamRepository: TeamRepository
 
     @Test
     fun `create contact for RP9 when author does not exist`() {
@@ -55,12 +62,14 @@ internal class CreateCaseNoteIntTests {
             DEFAULT.id,
             CreateContact.CaseNoteType.IMMEDIATE_NEEDS_REPORT.code
         ).first()
+        val staff = staffRepository.findById(contact.staffId).get()
+        val team = teamRepository.findById(contact.teamId).get()
         assertThat(contact.notes, equalTo("Testing"))
         assertThat(contact.type.code, equalTo(CreateContact.CaseNoteType.IMMEDIATE_NEEDS_REPORT.code))
-        assertThat(contact.staff.forename, equalTo("John"))
-        assertThat(contact.staff.surname, equalTo("Brown"))
-        assertThat(contact.staff.code, equalTo("LDNA002"))
-        assertThat(contact.team.code, equalTo("LDNCSN"))
+        assertThat(staff.forename, equalTo("John"))
+        assertThat(staff.surname, equalTo("Brown"))
+        assertThat(staff.code, equalTo("LDNA002"))
+        assertThat(team.code, equalTo("LDNCSN"))
         assertThat(contact.probationAreaId, equalTo(DEFAULT_AREA.id))
     }
 
@@ -90,12 +99,14 @@ internal class CreateCaseNoteIntTests {
         val contact =
             caseNoteRepository.findByPersonIdAndTypeCode(DEFAULT.id, CreateContact.CaseNoteType.PRE_RELEASE_REPORT.code)
                 .first()
+        val staff = staffRepository.findById(contact.staffId).get()
+        val team = teamRepository.findById(contact.teamId).get()
         assertThat(contact.notes, equalTo("Testing"))
         assertThat(contact.type.code, equalTo(CreateContact.CaseNoteType.PRE_RELEASE_REPORT.code))
-        assertThat(contact.staff.forename, equalTo("Terry"))
-        assertThat(contact.staff.surname, equalTo("Nutkins"))
-        assertThat(contact.staff.code, equalTo("LDNA001"))
-        assertThat(contact.team.code, equalTo("LDNCSN"))
+        assertThat(staff.forename, equalTo("Terry"))
+        assertThat(staff.surname, equalTo("Nutkins"))
+        assertThat(staff.code, equalTo("LDNA001"))
+        assertThat(team.code, equalTo("LDNCSN"))
         assertThat(contact.probationAreaId, equalTo(DEFAULT_AREA.id))
     }
 
@@ -148,7 +159,7 @@ internal class CreateCaseNoteIntTests {
                 .withToken()
         ).andExpect(status().isBadRequest).andReturn().response.contentAsJson<ErrorResponse>()
 
-        assertThat(res.message, equalTo("Team not found for prison code: MDL"))
+        assertThat(res.message, equalTo("Team with code of MDLCSN not found"))
     }
 
     @Test
