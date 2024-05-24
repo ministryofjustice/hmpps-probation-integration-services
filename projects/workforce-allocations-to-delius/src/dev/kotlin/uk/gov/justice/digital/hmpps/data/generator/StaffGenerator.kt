@@ -42,6 +42,13 @@ object StaffGenerator {
         endDate = ZonedDateTime.now().minusDays(7)
     )
 
+    val SPO_STAFF = generateStaffWithUser(
+        "${TeamGenerator.ALLOCATION_TEAM.code}X",
+        "Joe",
+        "Bloggs",
+        listOf(TeamGenerator.ALLOCATION_TEAM)
+    )
+
     fun generateStaffWithUser(
         code: String,
         forename: String = "Test",

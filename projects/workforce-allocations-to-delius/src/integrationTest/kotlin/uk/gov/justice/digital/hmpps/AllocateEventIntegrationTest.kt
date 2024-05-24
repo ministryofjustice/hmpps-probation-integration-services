@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
@@ -48,7 +49,7 @@ class AllocateEventIntegrationTest {
     private lateinit var contactRepository: ContactRepository
 
     @Test
-    fun `allocate new order manager`() {
+    fun `allocate new order manager spoStaffCode present`() {
         val event = EventGenerator.NEW
         val existingManager = OrderManagerGenerator.NEW
 
@@ -57,7 +58,8 @@ class AllocateEventIntegrationTest {
             "new-event-allocation-body",
             existingManager,
             event,
-            1
+            1,
+            StaffGenerator.SPO_STAFF.id
         )
 
         verify(telemetryService).trackEvent(
@@ -73,7 +75,7 @@ class AllocateEventIntegrationTest {
     }
 
     @Test
-    fun `allocate historic order manager`() {
+    fun `allocate historic order manager with no spoStaffCode present`() {
         val event = EventGenerator.HISTORIC
 
         val firstOm = orderManagerRepository.save(
@@ -93,7 +95,8 @@ class AllocateEventIntegrationTest {
             "historic-event-allocation-body",
             firstOm,
             event,
-            2
+            2,
+            StaffGenerator.STAFF_WITH_USER.id
         )
 
         val insertedPm = orderManagerRepository.findActiveManagerAtDate(event.id, ZonedDateTime.now().minusDays(2))
@@ -116,7 +119,8 @@ class AllocateEventIntegrationTest {
         jsonFile: String,
         existingOm: OrderManager,
         event: Event,
-        originalOmCount: Int
+        originalOmCount: Int,
+        staffId: Long
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(allocationEvent)
@@ -133,6 +137,8 @@ class AllocateEventIntegrationTest {
             .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value }
 
         assertNotNull(cadeContact)
+
+        assertThat(cadeContact!!.staffId, equalTo(staffId))
 
         assertThat(
             cadeContact!!.isSensitive,
