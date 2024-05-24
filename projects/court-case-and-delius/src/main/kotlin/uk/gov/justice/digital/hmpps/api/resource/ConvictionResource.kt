@@ -5,16 +5,16 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.integrations.delius.service.OffenderService
+import uk.gov.justice.digital.hmpps.integrations.delius.service.ConvictionService
 
 @RestController
 @RequestMapping("probation-case/{crn}/convictions")
-class ConvictionResource(private val offenderService: OffenderService) {
+class ConvictionResource(private val convictionService: ConvictionService) {
 
     @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
     @GetMapping("/{convictionId}")
     fun getConvictionForOffenderByCrnAndConvictionId(
         @PathVariable crn: String,
         @PathVariable convictionId: Long
-    ) = offenderService.getOffenderDetail(crn)
+    ) = convictionService.getConvictionFor(crn, convictionId)
 }

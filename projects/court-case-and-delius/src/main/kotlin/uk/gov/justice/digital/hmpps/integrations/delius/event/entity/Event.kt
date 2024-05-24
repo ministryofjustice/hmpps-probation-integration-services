@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -43,12 +37,17 @@ class Event(
 
     @Id
     @Column(name = "event_id", nullable = false)
-    val id: Long
+    val id: Long,
+
+    @Column(name = "event_number")
+    val eventNumber: String,
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
 
     fun findAllByPerson(person: Person): List<Event>
+
+    fun findByPersonAndId(person: Person, id: Long): Event?
 
     @Query(
         """

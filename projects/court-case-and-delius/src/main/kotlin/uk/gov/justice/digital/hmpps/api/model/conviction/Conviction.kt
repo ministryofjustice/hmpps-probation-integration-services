@@ -8,19 +8,19 @@ import java.time.LocalDateTime
 data class Conviction(
     val convictionId: Long,
     val index: String,
-    val active: Boolean,
-    val inBreach: Boolean,
-    val failureToComplyCount: Long,
-    val breachEnd: LocalDate,
-    val awaitingPsr: Boolean,
-    val convictionDate: LocalDate,
-    val referralDate: LocalDate,
-    val offences: List<Offence>,
-    val sentence: Sentence,
-    val latestCourtAppearanceOutcome: KeyValue,
-    val custody: Custody,
-    val responsibleCourt: Court,
-    val courtAppearance: CourtAppearanceBasic
+//    val active: Boolean,
+//    val inBreach: Boolean,
+//    val failureToComplyCount: Long,
+//    val breachEnd: LocalDate,
+//    val awaitingPsr: Boolean,
+//    val convictionDate: LocalDate,
+//    val referralDate: LocalDate,
+//    val offences: List<Offence>,
+//    val sentence: Sentence,
+//    val latestCourtAppearanceOutcome: KeyValue,
+//    val custody: Custody,
+//    val responsibleCourt: Court,
+//    val courtAppearance: CourtAppearanceBasic
 )
 
 data class Offence(

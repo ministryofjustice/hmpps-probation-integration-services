@@ -5,13 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.en
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReport
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.ReportManager
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdditionalOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceCondition
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManager
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Requirement
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
@@ -22,6 +16,8 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object SentenceGenerator {
+    val CURRENTLY_MANAGED = generateEvent(PersonGenerator.CURRENTLY_MANAGED, inBreach = true)
+
     fun generateSentence(
         event: Event,
         startDate: ZonedDateTime,
@@ -60,7 +56,7 @@ object SentenceGenerator {
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Event(person, inBreach, LocalDate.now(), null, active, softDeleted, id)
+    ) = Event(person, inBreach, LocalDate.now(), null, active, softDeleted, id, "1")
 
     fun generateOrderManager(
         event: Event,
