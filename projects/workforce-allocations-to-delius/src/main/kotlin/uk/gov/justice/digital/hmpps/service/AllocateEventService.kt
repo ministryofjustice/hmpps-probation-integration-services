@@ -13,6 +13,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode.CASE_ORDER
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocation
 
 @Service
@@ -24,7 +26,8 @@ class AllocateEventService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val transferReasonRepository: TransferReasonRepository,
-    private val optimisationTables: OptimisationTables
+    private val optimisationTables: OptimisationTables,
+    private val staffRepository: StaffRepository
 ) : ManagerService<OrderManager>(auditedInteractionService, orderManagerRepository) {
 
     @Transactional
@@ -63,6 +66,10 @@ class AllocateEventService(
             val transferReason = transferReasonRepository.findByCode(CASE_ORDER.value)
                 ?: throw NotFoundException("Transfer Reason", "code", CASE_ORDER.value)
 
+            val spoStaff = if (allocationDetail.spoStaffCode != null)
+                staffRepository.findByCode(allocationDetail.spoStaffCode)
+                    ?: throw NotFoundException("SPO Staff", "code", allocationDetail.spoStaffCode) else null
+
             val newOrderManager = OrderManager(eventId = event.id, transferReasonId = transferReason.id).apply {
                 populate(allocationDetail.createdDate, ts, activeOrderManager)
             }
@@ -81,14 +88,19 @@ class AllocateEventService(
                 )
             )
 
-            createCadeContact(allocationDetail, event, newOrderManager)
+            createCadeContact(allocationDetail, event, newOrderManager, spoStaff)
 
             if (event.hasAccreditedProgrammeRequirement()) {
                 eventRepository.updateIaps(event.id)
             }
         }
 
-    fun createCadeContact(allocationDetail: EventAllocation, event: Event, orderManager: OrderManager) {
+    fun createCadeContact(
+        allocationDetail: EventAllocation,
+        event: Event,
+        orderManager: OrderManager,
+        spoStaff: Staff?
+    ) {
         contactRepository.save(
             Contact(
                 type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value),
@@ -97,7 +109,7 @@ class AllocateEventService(
                 date = orderManager.startDate.toLocalDate(),
                 startTime = orderManager.startDate,
                 teamId = orderManager.team.id,
-                staffId = orderManager.staff.id,
+                staffId = spoStaff?.id ?: orderManager.staff.id,
                 providerId = orderManager.provider.id,
                 notes = allocationDetail.notes,
                 isSensitive = allocationDetail.sensitive
