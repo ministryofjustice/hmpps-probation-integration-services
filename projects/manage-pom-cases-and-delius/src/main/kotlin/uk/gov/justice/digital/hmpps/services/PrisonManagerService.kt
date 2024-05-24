@@ -5,28 +5,23 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationArea
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.getByNomisCdeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.pomAllocationReason
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.PomAllocation
-import uk.gov.justice.digital.hmpps.retry.retry
+import uk.gov.justice.digital.hmpps.model.StaffName
+import uk.gov.justice.digital.hmpps.service.AssignmentService
 import java.time.ZonedDateTime
 
 @Service
 class PrisonManagerService(
     private val probationAreaRepository: ProbationAreaRepository,
     private val teamRepository: TeamRepository,
-    private val staffService: StaffService,
+    private val assignmentService: AssignmentService,
+    private val staffRepository: StaffRepository,
     private val prisonManagerRepository: PrisonManagerRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val contactService: ContactService,
@@ -41,7 +36,13 @@ class PrisonManagerService(
     ): PomAllocationResult {
         val probationArea = probationAreaRepository.getByNomisCdeCode(allocation.prison.code)
         val team = teamRepository.getByCode(probationArea.code + Team.POM_SUFFIX)
-        val staff = getStaff(probationArea, team, allocation.manager.name, allocationDate)
+        val staff = assignmentService.getStaff(
+            probationArea.id,
+            probationArea.code,
+            team.id,
+            allocation.manager.name.asStaffName(),
+            allocationDate
+        )
         personRepository.findForUpdate(personId)
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)
         val newEndDate = currentPom?.endDate
@@ -62,10 +63,10 @@ class PrisonManagerService(
         return if (currentPom?.isUnallocated() == false) {
             val probationArea = currentPom.probationArea
             val team = teamRepository.getByCode(probationArea.code + Team.UNALLOCATED_SUFFIX)
-            val staff = staffService.getStaffByCode(team.code + "U")
+            val staff = staffRepository.getByCode(team.code + "U")
             val newEndDate = currentPom.endDate
                 ?: prisonManagerRepository.findFirstManagerAfterDate(personId, deallocationDate).firstOrNull()?.date
-            val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff)!!
+            val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff.toPrisonStaff())!!
             prisonManagerRepository.saveAndFlush(currentPom)
             newPom.endDate = newEndDate
             prisonManagerRepository.save(newPom)
@@ -75,19 +76,7 @@ class PrisonManagerService(
         }
     }
 
-    private fun getStaff(
-        probationArea: ProbationArea,
-        team: Team,
-        staffName: Name,
-        allocationDate: ZonedDateTime
-    ): Staff {
-        val findStaff = { staffService.findStaff(probationArea.id, staffName) }
-        return retry(3) {
-            findStaff() ?: staffService.create(probationArea, team, staffName, allocationDate)
-        }
-    }
-
-    private fun PrisonManager.hasChanged(probationArea: ProbationArea, team: Team, staff: Staff) =
+    private fun PrisonManager.hasChanged(probationArea: ProbationArea, team: Team, staff: PrisonStaff) =
         this.probationArea.id != probationArea.id || this.team.id != team.id || this.staff.id != staff.id
 
     fun PrisonManager.allocationNotes() =
@@ -117,7 +106,7 @@ class PrisonManagerService(
         dateTime: ZonedDateTime,
         probationArea: ProbationArea,
         team: Team,
-        staff: Staff
+        staff: PrisonStaff
     ) = if (this?.hasChanged(probationArea, team, staff) != false) {
         val allocationReasonCode =
             when {
@@ -130,7 +119,7 @@ class PrisonManagerService(
             probationArea = probationArea,
             allocationReason = referenceDataRepository.pomAllocationReason(allocationReasonCode.value),
             date = dateTime,
-            staff = staff,
+            staff = staff.toStaff(),
             team = team,
             responsibleOfficers = mutableListOf()
         )
@@ -161,6 +150,13 @@ class PrisonManagerService(
     }
 }
 
+fun Name.asStaffName() = StaffName(forename, surname)
 enum class PomAllocationResult {
     PomAllocated, PomDeallocated, NoPomChange
 }
+
+fun PrisonStaff.toStaff() =
+    Staff(id = id, code = code, forename = forename, surname = surname, probationAreaId = probationAreaId)
+
+fun Staff.toPrisonStaff() =
+    PrisonStaff(id = id, code = code, forename = forename, surname = surname, probationAreaId = probationAreaId)

@@ -22,12 +22,12 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.repository.PrisonStaffRepository
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -49,7 +49,7 @@ internal class AllocationMessagingIntegrationTest {
     lateinit var telemetryService: TelemetryService
 
     @SpyBean
-    lateinit var staffRepository: StaffRepository
+    lateinit var staffRepository: PrisonStaffRepository
 
     @SpyBean
     lateinit var prisonManagerRepository: PrisonManagerRepository
@@ -87,7 +87,7 @@ internal class AllocationMessagingIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val captor = argumentCaptor<Staff>()
+        val captor = argumentCaptor<PrisonStaff>()
         verify(staffRepository).save(captor.capture())
         assertThat(captor.firstValue.forename, equalTo("John"))
         assertThat(captor.firstValue.surname, equalTo("Smith"))
@@ -128,7 +128,7 @@ internal class AllocationMessagingIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val captor = argumentCaptor<Staff>()
+        val captor = argumentCaptor<PrisonStaff>()
         verify(staffRepository).save(captor.capture())
         assertThat(captor.firstValue.forename, equalTo("James"))
         assertThat(captor.firstValue.surname, equalTo("Brown"))

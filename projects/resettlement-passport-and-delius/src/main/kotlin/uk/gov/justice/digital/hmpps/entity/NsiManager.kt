@@ -1,10 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -43,6 +39,7 @@ class NsiManager(
 
 @Entity
 @Immutable
+@Table(name = "probation_area")
 class ProbationArea(
     @Id
     @Column(name = "probation_area_id")
@@ -52,11 +49,20 @@ class ProbationArea(
     val code: String,
 
     @Column(name = "description")
-    val description: String
+    val description: String,
+
+    @OneToOne
+    @JoinColumn(
+        name = "institution_id",
+        referencedColumnName = "institution_id",
+        updatable = false
+    )
+    val institution: Institution? = null
 
 )
 
 @Entity
+@Table(name = "team")
 @Immutable
 class Team(
     @Id
@@ -69,6 +75,21 @@ class Team(
     @Column(name = "description")
     val description: String
 )
+
+@Immutable
+@Entity
+@Table(name = "r_institution")
+class Institution(
+    @Id
+    @Column(name = "institution_id")
+    val id: Long,
+
+    @Column(name = "nomis_cde_code")
+    val nomisCode: String
+
+)
+
+interface TeamRepository : JpaRepository<Team, Long>
 
 interface NsiManagerRepository : JpaRepository<NsiManager, Long> {
 

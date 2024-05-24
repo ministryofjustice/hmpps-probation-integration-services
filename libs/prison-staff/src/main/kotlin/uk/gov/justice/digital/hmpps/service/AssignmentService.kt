@@ -1,20 +1,19 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.service
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProbationArea
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Team
-import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
+import uk.gov.justice.digital.hmpps.model.StaffName
+import uk.gov.justice.digital.hmpps.repository.PrisonProbationAreaRepository
+import uk.gov.justice.digital.hmpps.repository.PrisonTeamRepository
 import uk.gov.justice.digital.hmpps.retry.retry
+import java.time.ZonedDateTime
 
 @Service
 class AssignmentService(
-    private val probationAreaRepository: ProbationAreaRepository,
-    private val teamRepository: TeamRepository,
+    private val probationAreaRepository: PrisonProbationAreaRepository,
+    private val teamRepository: PrisonTeamRepository,
     private val staffService: StaffService
 ) {
 
@@ -27,14 +26,20 @@ class AssignmentService(
             )
         val team = teamRepository.findByCode("${pa.code}CSN")
             ?: throw NotFoundException("Team", "code", "${pa.code}CSN")
-        val staff = getStaff(pa, team, staffName)
+        val staff = getStaff(pa.id, pa.code, team.id, staffName)
         return Triple(pa.id, team.id, staff.id)
     }
 
-    private fun getStaff(probationArea: ProbationArea, team: Team, staffName: StaffName): Staff {
-        val findStaff = { staffService.findStaff(probationArea.id, staffName) }
+    fun getStaff(
+        probationAreaId: Long,
+        probationAreaCode: String,
+        teamId: Long,
+        staffName: StaffName,
+        allocationDate: ZonedDateTime? = null
+    ): PrisonStaff {
+        val findStaff = { staffService.findStaff(probationAreaId, staffName) }
         return retry(3) {
-            findStaff() ?: staffService.create(probationArea, team, staffName)
+            findStaff() ?: staffService.create(probationAreaId, probationAreaCode, teamId, staffName, allocationDate)
         }
     }
 }

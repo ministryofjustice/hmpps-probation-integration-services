@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.service
+package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -11,25 +11,23 @@ import org.mockito.Mockito.any
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.StaffTeam
-import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffTeamRepository
+import uk.gov.justice.digital.hmpps.entity.PrisonStaff
+import uk.gov.justice.digital.hmpps.entity.PrisonStaffTeam
+import uk.gov.justice.digital.hmpps.model.StaffName
+import uk.gov.justice.digital.hmpps.repository.PrisonStaffRepository
+import uk.gov.justice.digital.hmpps.repository.PrisonStaffTeamRepository
 
 @ExtendWith(MockitoExtension::class)
 class StaffServiceTest {
 
     @Mock
-    lateinit var staffRepository: StaffRepository
+    lateinit var staffRepository: PrisonStaffRepository
 
     @Mock
     lateinit var officerCodeGenerator: OfficerCodeGenerator
 
     @Mock
-    lateinit var staffTeamRepository: StaffTeamRepository
+    lateinit var staffTeamRepository: PrisonStaffTeamRepository
 
     @InjectMocks
     lateinit var staffService: StaffService
@@ -42,17 +40,17 @@ class StaffServiceTest {
         val staffName = StaffName("forename", "surname")
 
         whenever(officerCodeGenerator.generateFor(probationArea.code)).thenReturn(newStaffCode)
-        whenever(staffRepository.save(any(Staff::class.java))).thenAnswer { it.arguments[0] }
+        whenever(staffRepository.save(any(PrisonStaff::class.java))).thenAnswer { it.arguments[0] }
 
-        val newStaff = staffService.create(probationArea, team, staffName)
+        val newStaff = staffService.create(probationArea.id, probationArea.code, team.id, staffName)
 
-        verify(staffRepository).save(any(Staff::class.java))
+        verify(staffRepository).save(any(PrisonStaff::class.java))
         assertThat(newStaff.forename, equalTo(staffName.forename))
         assertThat(newStaff.surname, equalTo(staffName.surname))
         assertThat(newStaff.probationAreaId, equalTo(probationArea.id))
         assertThat(newStaff.code, equalTo(newStaffCode))
 
-        val staffTeamCaptor = ArgumentCaptor.forClass(StaffTeam::class.java)
+        val staffTeamCaptor = ArgumentCaptor.forClass(PrisonStaffTeam::class.java)
         verify(staffTeamRepository).save(staffTeamCaptor.capture())
         assertThat(staffTeamCaptor.value.staffId, equalTo(newStaff.id))
         assertThat(staffTeamCaptor.value.teamId, equalTo(team.id))
