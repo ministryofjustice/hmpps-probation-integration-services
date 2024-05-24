@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -73,6 +74,9 @@ interface EventRepository : JpaRepository<Event, Long> {
     )
     fun awaitingPSR(eventId: Long): Int
 }
+
+fun EventRepository.getByPersonAndEventNumber(person: Person, eventId: Long) = findByPersonAndId(person, eventId)
+    ?: throw NotFoundException("Conviction with ID $eventId for Offender with crn ${person.crn} not found")
 
 @Entity
 @Immutable
