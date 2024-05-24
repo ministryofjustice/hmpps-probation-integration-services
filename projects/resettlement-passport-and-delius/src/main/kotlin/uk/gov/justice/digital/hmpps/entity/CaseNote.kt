@@ -54,6 +54,7 @@ class CaseNote(
     var createdByUserId: Long = 0,
 
     @LastModifiedDate
+    @Column(name = "last_updated_datetime")
     val lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
