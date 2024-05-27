@@ -14,6 +14,26 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /nomis-case-note/{crn}:
+    post:
+      tags:
+      - case-note-controller
+      operationId: createContact
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContact'
+        required: true
+      responses:
+        "201":
+          description: Created
   /appointments/{crn}:
     get:
       tags:
@@ -176,6 +196,38 @@ paths:
                 $ref: '#/components/schemas/DutyToReferNSI'
 components:
   schemas:
+    Author:
+      required:
+      - forename
+      - prisonCode
+      - surname
+      type: object
+      properties:
+        prisonCode:
+          type: string
+        forename:
+          type: string
+        surname:
+          type: string
+    CreateContact:
+      required:
+      - author
+      - dateTime
+      - notes
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: Nomis contact type. Must either IMMEDIATE_NEEDS_REPORT or PRE_RELEASE_REPORT
+          example: IMMEDIATE_NEEDS_REPORT
+        dateTime:
+          type: string
+          format: date-time
+        notes:
+          type: string
+        author:
+          $ref: '#/components/schemas/Author'
     CreateAppointment:
       required:
       - duration

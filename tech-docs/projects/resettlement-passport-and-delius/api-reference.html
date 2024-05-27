@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#nomis-case-note-crn"><span>/nomis-case-note/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#appointments-crn"><span>/appointments/{crn}</span></a>
       </li>
       <li>
@@ -145,6 +148,62 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="nomis-case-note-crn">/nomis-case-note/{crn}</h2>
+
+<h3 id="nomis-case-note-crn-post">post</h3>
+
+
+
+
+<h4 id="nomis-case-note-crn-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="nomis-case-note-crn-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>201</td>
+<td>
+<p>Created</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -703,6 +762,101 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-author">Author</h3>
+
+
+<table class='schema-author'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>prisonCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-createcontact">CreateContact</h3>
+
+
+<table class='schema-createcontact'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td><p>Nomis contact type. Must either IMMEDIATE<em>NEEDS</em>REPORT or PRE<em>RELEASE</em>REPORT</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateTime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>author</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-author'>Author</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-createappointment">CreateAppointment</h3>
 
 
