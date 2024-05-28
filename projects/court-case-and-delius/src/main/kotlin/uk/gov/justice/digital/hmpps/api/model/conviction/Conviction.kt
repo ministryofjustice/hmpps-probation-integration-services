@@ -27,13 +27,13 @@ data class Offence(
     val offenceId: Long,
     val mainOffence: Boolean,
     val detail: OffenceDetail,
-    val offenceDate: LocalDate,
-//    val offenceCount: Long,
-//    val tics: Long,
-//    val verdict: String,
-//    val offenderId: Long,
-//    val createdDatetime: LocalDateTime,
-//    val lastUpdatedDatetime: LocalDateTime,
+    val offenceDate: LocalDateTime,
+    val offenceCount: Long,
+    val tics: Long?,
+    val verdict: String?,
+    val offenderId: Long,
+    val createdDatetime: LocalDateTime,
+    val lastUpdatedDatetime: LocalDateTime,
 )
 
 data class OffenceDetail(

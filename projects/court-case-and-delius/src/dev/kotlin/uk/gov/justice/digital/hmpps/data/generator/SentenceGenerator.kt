@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Ps
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 object SentenceGenerator {
@@ -124,7 +125,16 @@ object SentenceGenerator {
             subCategoryDescription = "Sending unseaworthy ship to sea",
             form20Code = "2"
         )
-    val MAIN_OFFENCE_DEFAULT = generateMainOffence(CURRENTLY_MANAGED, MAIN_OFFENCE, LocalDate.now())
+    val MAIN_OFFENCE_DEFAULT =
+        generateMainOffence(
+            CURRENTLY_MANAGED,
+            MAIN_OFFENCE,
+            LocalDateTime.now(),
+            offenceCount = 1,
+            PersonGenerator.CURRENTLY_MANAGED.id,
+            LocalDateTime.now().minusDays(3),
+            LocalDateTime.now().plusDays(1)
+        )
 
     fun generateOffence(
         code: String,
@@ -160,15 +170,21 @@ object SentenceGenerator {
     fun generateMainOffence(
         event: Event,
         offence: Offence,
-        date: LocalDate,
+        date: LocalDateTime,
+        offenceCount: Long,
+        offenderId: Long,
+        created: LocalDateTime,
+        updated: LocalDateTime,
+        tics: Long? = null,
+        verdict: String? = null,
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false
-    ) = MainOffence(id, event, offence, date, softDeleted)
+    ) = MainOffence(id, event, offence, date, offenceCount, tics, verdict, offenderId, created, updated, softDeleted)
 
     fun generateAdditionalOffence(
         event: Event,
         offence: Offence,
-        date: LocalDate,
+        date: LocalDateTime,
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false
     ) = AdditionalOffence(event, offence, date, softDeleted, id)

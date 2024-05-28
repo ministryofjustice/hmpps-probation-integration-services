@@ -40,7 +40,19 @@ class ConvictionService(private val personRepository: PersonRepository, private 
         return mainOffence
     }
 
-    fun MainOffence.toOffence(): Offence = Offence(id, true, offence.toOffenceDetail(), date)
+    fun MainOffence.toOffence(): Offence =
+        Offence(
+            id,
+            mainOffence = true,
+            detail = offence.toOffenceDetail(),
+            offenceDate = date,
+            offenceCount = offenceCount,
+            tics = tics,
+            verdict = verdict,
+            offenderId = offenderId,
+            createdDatetime = created,
+            lastUpdatedDatetime = updated
+        )
 
     fun OffenceEntity.toOffenceDetail(): OffenceDetail =
         OffenceDetail(

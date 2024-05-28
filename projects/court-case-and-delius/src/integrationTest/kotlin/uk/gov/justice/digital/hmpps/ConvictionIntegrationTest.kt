@@ -65,7 +65,20 @@ internal class ConvictionIntegrationTest {
                 MAIN_OFFENCE.subCategoryAbbreviation,
                 MAIN_OFFENCE.cjitCode
             )
-        val expectedOffences = listOf(Offence(mainOffence.id, true, expectedOffenceDetail, mainOffence.date))
+        val expectedOffences = listOf(
+            Offence(
+                mainOffence.id,
+                mainOffence = true,
+                expectedOffenceDetail,
+                mainOffence.date,
+                mainOffence.offenceCount,
+                mainOffence.tics,
+                mainOffence.verdict,
+                mainOffence.offenderId,
+                mainOffence.created,
+                mainOffence.updated
+            )
+        )
         val expectedResponse = Conviction(
             event.id, event.eventNumber,
             event.active,

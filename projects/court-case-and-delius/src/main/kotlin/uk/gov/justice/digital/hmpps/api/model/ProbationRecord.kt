@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequireme
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class ProbationRecord(
@@ -93,7 +94,7 @@ data class Sentence(
 data class Offence(
     val description: String,
     val main: Boolean = false,
-    val offenceDate: LocalDate?
+    val offenceDate: LocalDateTime?
 )
 
 data class KeyValue(

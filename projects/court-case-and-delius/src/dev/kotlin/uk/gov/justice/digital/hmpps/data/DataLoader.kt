@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Component
@@ -120,7 +121,7 @@ class DataLoader(
         val additionalOffence = SentenceGenerator.generateAdditionalOffence(
             currentEvent,
             SentenceGenerator.ADDITIONAL_OFFENCE,
-            LocalDate.now()
+            LocalDateTime.now()
         )
         val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
