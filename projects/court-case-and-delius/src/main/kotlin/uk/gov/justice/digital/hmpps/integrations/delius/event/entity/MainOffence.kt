@@ -71,6 +71,14 @@ class AdditionalOffence(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
 
+    val offenceCount: Long? = null,
+
+    @Column(name = "created_datetime", nullable = false)
+    val created: LocalDateTime,
+
+    @Column(name = "last_updated_datetime", nullable = false)
+    val updated: LocalDateTime,
+
     @Id
     @Column(name = "additional_offence_id")
     val id: Long

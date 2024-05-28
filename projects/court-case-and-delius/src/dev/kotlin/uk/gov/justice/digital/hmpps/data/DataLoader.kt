@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Component
@@ -110,11 +109,7 @@ class DataLoader(
         val custody = SentenceGenerator.generateCustody(currentSentence, ReferenceDataGenerator.CUSTODIAL_STATUS)
         val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
-        val additionalOffence = SentenceGenerator.generateAdditionalOffence(
-            currentEvent,
-            SentenceGenerator.ADDITIONAL_OFFENCE,
-            LocalDateTime.now()
-        )
+        val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
         val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
         val breachNsi = SentenceGenerator.generateBreachNsi(disposal = currentSentence)

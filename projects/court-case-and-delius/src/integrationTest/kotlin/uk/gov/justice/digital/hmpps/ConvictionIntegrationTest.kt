@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.api.model.conviction.OffenceDetail
 import uk.gov.justice.digital.hmpps.api.model.conviction.Sentence
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.ADDITIONAL_OFFENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_SENTENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.MAIN_OFFENCE
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -51,8 +52,9 @@ internal class ConvictionIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
+        val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
 
-        val expectedOffenceDetail =
+        val expectedMainOffenceDetail =
             OffenceDetail(
                 MAIN_OFFENCE.code,
                 MAIN_OFFENCE.description,
@@ -67,11 +69,26 @@ internal class ConvictionIntegrationTest {
                 MAIN_OFFENCE.subCategoryAbbreviation,
                 MAIN_OFFENCE.cjitCode
             )
+        val expectedAdditionalOffenceDetail =
+            OffenceDetail(
+                ADDITIONAL_OFFENCE.code,
+                ADDITIONAL_OFFENCE.description,
+                ADDITIONAL_OFFENCE.abbreviation,
+                ADDITIONAL_OFFENCE.mainCategoryCode,
+                ADDITIONAL_OFFENCE.mainCategoryDescription,
+                ADDITIONAL_OFFENCE.mainCategoryAbbreviation,
+                ADDITIONAL_OFFENCE.ogrsOffenceCategory.description,
+                ADDITIONAL_OFFENCE.subCategoryCode,
+                ADDITIONAL_OFFENCE.subCategoryDescription,
+                ADDITIONAL_OFFENCE.form20Code,
+                ADDITIONAL_OFFENCE.subCategoryAbbreviation,
+                ADDITIONAL_OFFENCE.cjitCode
+            )
         val expectedOffences = listOf(
             Offence(
                 mainOffence.id,
                 mainOffence = true,
-                expectedOffenceDetail,
+                expectedMainOffenceDetail,
                 mainOffence.date,
                 mainOffence.offenceCount,
                 mainOffence.tics,
@@ -79,6 +96,18 @@ internal class ConvictionIntegrationTest {
                 mainOffence.offenderId,
                 mainOffence.created,
                 mainOffence.updated
+            ),
+            Offence(
+                additionalOffence.id,
+                mainOffence = false,
+                expectedAdditionalOffenceDetail,
+                additionalOffence.date,
+                additionalOffence.offenceCount,
+                tics = null,
+                verdict = null,
+                PersonGenerator.CURRENTLY_MANAGED.id,
+                additionalOffence.created,
+                additionalOffence.updated
             )
         )
         val expectedSentence = Sentence(

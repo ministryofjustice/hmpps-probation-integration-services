@@ -155,6 +155,14 @@ object SentenceGenerator {
             LocalDateTime.now().plusDays(1)
         )
 
+    val ADDITIONAL_OFFENCE_DEFAULT = generateAdditionalOffence(
+        CURRENTLY_MANAGED,
+        SentenceGenerator.ADDITIONAL_OFFENCE,
+        LocalDateTime.now(),
+        LocalDateTime.now().minusMonths(1),
+        LocalDateTime.now().plusMonths(1),
+    )
+
     fun generateOffence(
         code: String,
         description: String,
@@ -204,9 +212,12 @@ object SentenceGenerator {
         event: Event,
         offence: Offence,
         date: LocalDateTime,
+        created: LocalDateTime,
+        updated: LocalDateTime,
         id: Long = IdGenerator.getAndIncrement(),
-        softDeleted: Boolean = false
-    ) = AdditionalOffence(event, offence, date, softDeleted, id)
+        softDeleted: Boolean = false,
+        offenceCount: Long? = null,
+    ) = AdditionalOffence(event, offence, date, softDeleted, offenceCount, created, updated, id)
 
     fun generateRequirement(
         id: Long = IdGenerator.getAndIncrement(),

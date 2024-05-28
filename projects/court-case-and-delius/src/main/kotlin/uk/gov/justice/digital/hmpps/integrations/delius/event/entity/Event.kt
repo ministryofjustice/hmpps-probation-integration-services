@@ -54,6 +54,9 @@ class Event(
 
     @Column(name = "referral_date", nullable = false)
     val referralDate: LocalDate,
+
+    @OneToMany(mappedBy = "event")
+    val additionalOffences: List<AdditionalOffence> = emptyList(),
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
