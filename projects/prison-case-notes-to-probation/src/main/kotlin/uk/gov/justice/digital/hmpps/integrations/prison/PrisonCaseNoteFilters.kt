@@ -7,7 +7,10 @@ object PrisonCaseNoteFilters {
         },
         PrisonCaseNoteFilter("Prisoner being transferred") {
             it.locationId == "TRN"
-        }
+        },
+        PrisonCaseNoteFilter("Filtered due to data sharing restrictions") {
+            it.text?.contains("Do not share with offender and OCG Nominal") == true
+        },
     )
 }
 

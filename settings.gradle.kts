@@ -53,7 +53,8 @@ include(
     "libs:messaging",
     "libs:oauth-client",
     "libs:oauth-server",
-    "libs:limited-access"
+    "libs:limited-access",
+    "libs:prison-staff"
 )
 
 // load children from the "projects" directory (and drop the prefix)
@@ -86,7 +87,7 @@ dependencyResolutionManagement {
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-            library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
+            library("wiremock", "org.wiremock:wiremock-standalone:3.5.4")
             library("mapstruct", "org.mapstruct:mapstruct:1.5.5.Final")
             library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.5.Final")
             library("flipt", "io.flipt:flipt-java:1.1.1")
@@ -94,7 +95,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.develocity") version "3.17.2" }
+plugins { id("com.gradle.develocity") version "3.17.4" }
 develocity {
     buildScan {
         publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }

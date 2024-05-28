@@ -4,50 +4,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReportType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
-
-data class ProbationRecord(
-    val crn: String,
-    val offenderManagers: List<OffenderManager>,
-    val convictions: List<Conviction>
-)
-
-data class OffenderManager(
-    val staff: Staff,
-    val allocatedDate: LocalDate,
-    val team: Team,
-    val provider: String,
-    val active: Boolean
-)
-
-fun PersonManager.toOffenderManager() =
-    OffenderManager(staff.toStaff(), date.toLocalDate(), team.toTeam(), provider.description, true)
-
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.toStaff() =
-    Staff(listOfNotNull(forename, forename2).joinToString(" "), surname)
-
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() =
-    Team(description, telephone, ldu.description, district.description)
 
 fun ReferenceData.keyValueOf() = KeyValue(code, description)
 fun RequirementMainCategory.keyValueOf() = KeyValue(code, description)
 fun AdRequirementMainCategory.keyValueOf() = KeyValue(code, description)
 fun CourtReportType.keyValueOf() = KeyValue(code, description)
-
-data class Staff(
-    val forenames: String,
-    val surname: String
-)
-
-data class Team(
-    val description: String,
-    val telephone: String? = null,
-    val localDeliveryUnit: String,
-    val district: String
-)
 
 data class Conviction(
     val active: Boolean = false,

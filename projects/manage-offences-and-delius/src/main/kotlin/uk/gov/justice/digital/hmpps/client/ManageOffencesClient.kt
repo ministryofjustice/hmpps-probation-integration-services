@@ -20,6 +20,11 @@ data class Offence(
     val legislation: String? = null,
     val schedules: List<Schedule> = listOf(),
 ) {
+    val mainCategoryCode get() = homeOfficeStatsCode?.take(3)
+    val subCategoryCode get() = homeOfficeStatsCode?.takeLast(2)
+    val highLevelCode get() = mainCategoryCode?.let { it + "00" }
+    val homeOfficeCode get() = mainCategoryCode?.let { it + subCategoryCode }
+
     val schedule15ViolentOffence: Boolean =
         schedules.any { it.code == Schedule.FIFTEEN && it.partNumber == Schedule.VIOLENT_PART }
 

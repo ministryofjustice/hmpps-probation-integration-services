@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
+import uk.gov.justice.digital.hmpps.model.StaffName
 import java.time.ZonedDateTime
 
 data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody)
@@ -48,8 +49,6 @@ data class CaseNoteBody(
 }
 
 fun String.isAlertType() = this == "ALERT ACTIVE" || this == "ALERT INACTIVE"
-
-data class StaffName(@NotBlank val forename: String, @NotBlank val surname: String)
 
 enum class BcstPathway(val keyword: String) {
     ACCOMMODATION("Accommodation"),

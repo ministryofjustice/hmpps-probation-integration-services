@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
@@ -13,14 +11,10 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 class CvlHandler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
-    private val licenceActivatedHandler: LicenceActivatedHandler,
-    private val featureFlags: FeatureFlags
+    private val licenceActivatedHandler: LicenceActivatedHandler
 ) : NotificationHandler<HmppsDomainEvent> {
 
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        if (!featureFlags.enabled("cvl-licence-activated")) {
-            return
-        }
         val results =
             when (val eventType =
                 (notification.eventType ?: notification.message.eventType).let { DomainEventType.of(it) }) {

@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.PreferredResidence
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.PreferredResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -72,6 +74,9 @@ internal class MessagingIntegrationTest {
 
     @Autowired
     private lateinit var residenceRepository: ResidenceRepository
+
+    @Autowired
+    private lateinit var preferredResidenceRepository: PreferredResidenceRepository
 
     @Autowired
     private lateinit var staffRepository: StaffRepository
@@ -442,6 +447,9 @@ internal class MessagingIntegrationTest {
 
         residenceRepository.findByReferralId(ref.id)?.also(residenceRepository::delete)
 
+        preferredResidenceRepository.save(PreferredResidence(0, ref.id))
+        assertTrue(preferredResidenceRepository.existsByApprovedPremisesReferralId(ref.id))
+
         channelManager.getChannel(queueName).publishAndWait(event)
 
         verify(telemetryService).trackEvent("BookingCancelled", event.message.telemetryProperties())
@@ -468,5 +476,7 @@ internal class MessagingIntegrationTest {
             it.personId == contact.person.id && it.eventId == contact.eventId
         }
         assertNull(referral)
+
+        assertFalse(preferredResidenceRepository.existsByApprovedPremisesReferralId(ref.id))
     }
 }

@@ -32,7 +32,8 @@ class DataLoader(
             DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT,
             DocumentEntityGenerator.R_INSTITUTION,
-
+            AreaGenerator.PARTITION_AREA,
+            ProviderEmployeeGenerator.PROVIDER_EMPLOYEE,
             ProviderGenerator.DEFAULT,
             LDUGenerator.DEFAULT,
             BoroughGenerator.DEFAULT,
@@ -74,17 +75,22 @@ class DataLoader(
             ReferenceDataGenerator.SECOND_NATIONALITY,
             ReferenceDataGenerator.SEXUAL_ORIENTATION,
             ReferenceDataGenerator.TITLE,
-            PersonGenerator.PARTITION_AREA,
+            ReferenceDataGenerator.DEFAULT_ADDRESS_TYPE,
+            ReferenceDataGenerator.DEFAULT_ADDRESS_STATUS,
+            ReferenceDataGenerator.DEFAULT_ALLOCATION_REASON,
+            ReferenceDataGenerator.DEFAULT_TIER,
             PersonGenerator.NEW_TO_PROBATION,
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
             PersonGenerator.NO_SENTENCE,
             PersonGenerator.PROVISION_1,
             PersonGenerator.DISABILITY_1,
-            PersonGenerator.PREVIOUS_CONVICTION_DOC
+            PersonGenerator.PREVIOUS_CONVICTION_DOC,
+            PersonGenerator.ADDRESS,
+            PersonGenerator.ALIAS
         )
 
-        em.saveAll(StaffGenerator.ALLOCATED, StaffGenerator.UNALLOCATED)
+        em.saveAll(StaffGenerator.ALLOCATED, StaffGenerator.UNALLOCATED, StaffGenerator.OFFICER)
 
         em.saveAll(
             PersonGenerator.generatePersonManager(PersonGenerator.NEW_TO_PROBATION),

@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
-import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
+import uk.gov.justice.digital.hmpps.model.StaffName
 import java.time.ZonedDateTime
 
 const val UNKNOWN_LOCATION = "UNK"

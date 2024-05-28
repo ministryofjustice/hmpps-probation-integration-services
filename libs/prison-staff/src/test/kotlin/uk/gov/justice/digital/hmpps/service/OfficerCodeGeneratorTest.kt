@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.service
+package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
@@ -11,15 +11,14 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.exceptions.StaffCodeExhaustedException
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
+import uk.gov.justice.digital.hmpps.repository.PrisonStaffRepository
 
 @ExtendWith(MockitoExtension::class)
 class OfficerCodeGeneratorTest {
 
     @Mock
-    private lateinit var staffRepository: StaffRepository
+    private lateinit var staffRepository: PrisonStaffRepository
 
     @InjectMocks
     private lateinit var officerCodeGenerator: OfficerCodeGenerator

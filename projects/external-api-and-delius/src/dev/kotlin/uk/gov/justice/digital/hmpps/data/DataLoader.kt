@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.service.Category
-import uk.gov.justice.digital.hmpps.service.Level
+import uk.gov.justice.digital.hmpps.model.Category
+import uk.gov.justice.digital.hmpps.model.Level
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 
@@ -47,6 +47,12 @@ class DataLoader(
             persist(DataGenerator.EVENT.mainOffence)
             DataGenerator.EVENT.additionalOffences.forEach { persist(it) }
             DataGenerator.EVENT.courtAppearances.forEach { persist(it) }
+            persist(RegistrationGenerator.CHILD_CONCERNS_TYPE)
+            persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_CONCERNS_TYPE))
+            persist(RegistrationGenerator.CHILD_PROTECTION_TYPE)
+            persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_PROTECTION_TYPE))
+            persist(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE)
+            persist(RegistrationGenerator.generate(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE))
             persist(RegistrationGenerator.MAPPA_TYPE)
             RegistrationGenerator.CATEGORIES.values.forEach(::persist)
             RegistrationGenerator.LEVELS.values.forEach(::persist)

@@ -35,7 +35,13 @@ class OffenderService(
     private val courtReportRepository: CourtReportRepository
 ) {
 
-    fun getOffenderDetail(crn: String): OffenderDetailSummary {
+    fun getOffenderDetailSummary(crn: String): OffenderDetailSummary {
+        val person = personRepository.getPerson(crn)
+        val previousConviction = documentRepository.getPreviousConviction(person.id)
+        return person.toOffenderSummary(previousConviction)
+    }
+
+    fun getOffenderDetail(crn: String): OffenderDetail {
         val person = personRepository.getPerson(crn)
         val previousConviction = documentRepository.getPreviousConviction(person.id)
         return person.toOffenderDetail(previousConviction)
@@ -159,10 +165,10 @@ fun DisabilityEntity.isActive(): Boolean {
     return finishDate == null || finishDate.isAfter(LocalDate.now())
 }
 
-fun Person.toOffenderDetail(previousConviction: DocumentEntity?) = OffenderDetailSummary(
+fun Person.toOffenderSummary(previousConviction: DocumentEntity?) = OffenderDetailSummary(
     preferredName = preferredName,
     activeProbationManagedSentence = currentDisposal,
-    contactDetails = ContactDetails(
+    contactDetails = ContactDetailsSummary(
         allowSMS = allowSms,
         emailAddresses = listOfNotNull(emailAddress),
         phoneNumbers = listOf(
@@ -179,70 +185,185 @@ fun Person.toOffenderDetail(previousConviction: DocumentEntity?) = OffenderDetai
     surname = surname,
     gender = gender.description,
     offenderId = id,
-    offenderProfile = OffenderProfile(
-        genderIdentity = genderIdentity?.description,
-        selfDescribedGenderIdentity = genderIdentityDescription ?: genderIdentity?.description,
-        disabilities = disabilities.sortedByDescending { it.startDate }.map {
-            Disability(
-                lastUpdatedDateTime = it.lastUpdated,
-                disabilityCondition = KeyValue(it.condition.code, it.condition.description),
-                disabilityId = it.id,
-                disabilityType = KeyValue(it.type.code, it.type.description),
-                endDate = it.finishDate,
-                isActive = it.isActive(),
-                notes = it.notes,
-                provisions = emptyList(),
-                startDate = it.startDate
-            )
-        },
-        ethnicity = ethnicity?.description,
-        immigrationStatus = immigrationStatus?.description,
-        nationality = nationality?.description,
-        offenderDetails = offenderDetails,
-        offenderLanguages = OffenderLanguages(
-            languageConcerns = languageConcerns,
-            primaryLanguage = language?.description,
-            requiresInterpreter = requiresInterpreter,
-            otherLanguages = emptyList()
-        ),
-        previousConviction = previousConviction?.lastUpdated.let {
-            previousConviction?.createdAt?.toLocalDate()
-                ?.let { it1 ->
-                    PreviousConviction(
-                        convictionDate = it1,
-                        detail = ImmutableMap.of("documentName", previousConviction.name)
-                    )
-                }
-        },
-        provisions = provisions.sortedByDescending { it.startDate }.map {
-            Provision(
-                category = it.category?.let { cat -> KeyValue(cat.code, cat.description) },
-                finishDate = it.finishDate,
-                notes = it.notes,
-                provisionId = it.id,
-                provisionType = KeyValue(it.type.code, it.type.description),
-                startDate = it.startDate
-            )
-        },
-        religion = religion?.description,
-        remandStatus = currentRemandStatus,
-        riskColour = currentHighestRiskColour,
-        sexualOrientation = sexualOrientation?.description,
-        secondaryNationality = secondNationality?.description
-    ),
-    otherIds = OtherIds(
-        crn = crn,
-        croNumber = croNumber,
-        immigrationNumber = immigrationNumber,
-        mostRecentPrisonerNumber = mostRecentPrisonerNumber,
-        niNumber = niNumber,
-        nomsNumber = nomsNumber,
-        pncNumber = pnc
-    ),
+    offenderProfile = toProfile(previousConviction),
+    otherIds = toOtherIds(),
     partitionArea = partitionArea.area,
     previousSurname = previousSurname,
     softDeleted = softDeleted,
     title = title?.description
+)
+
+fun Person.toContactDetails() = ContactDetails(
+    allowSMS = allowSms,
+    emailAddresses = listOfNotNull(emailAddress),
+    phoneNumbers = listOf(
+        PhoneNumber(telephoneNumber, PhoneTypes.TELEPHONE.name),
+        PhoneNumber(mobileNumber, PhoneTypes.MOBILE.name)
+    ),
+    addresses = addresses.map { it ->
+        Address(
+            from = it.startDate,
+            to = it.endDate,
+            noFixedAbode = it.noFixedAbode,
+            notes = it.notes,
+            addressNumber = it.addressNumber,
+            buildingName = it.buildingName,
+            streetName = it.streetName,
+            district = it.district,
+            town = it.town,
+            county = it.county,
+            postcode = it.postcode,
+            telephoneNumber = it.telephoneNumber,
+            status = it.status.keyValueOf(),
+            type = it.type.keyValueOf(),
+            typeVerified = it.typeVerified,
+            latestAssessmentDate = it.addressAssessments.map { it.assessmentDate }.maxByOrNull { it },
+            createdDatetime = it.createdDatetime,
+            lastUpdatedDatetime = it.lastUpdatedDatetime
+        )
+    }
+)
+
+fun Person.toOtherIds() = OtherIds(
+    crn = crn,
+    croNumber = croNumber,
+    immigrationNumber = immigrationNumber,
+    mostRecentPrisonerNumber = mostRecentPrisonerNumber,
+    niNumber = niNumber,
+    nomsNumber = nomsNumber,
+    pncNumber = pnc
+)
+
+fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date }.map { it ->
+    OffenderManager(
+        trustOfficer = Human(
+            forenames = listOfNotNull(it.officer.forename, it.officer.forename2).joinToString(" "),
+            surname = it.officer.surname
+        ),
+        softDeleted = it.softDeleted,
+        partitionArea = it.partitionArea.area,
+        staff = StaffHuman(
+            code = it.staff.code,
+            forename = it.staff.forename,
+            surname = it.staff.surname,
+            isUnallocated = it.staff.isUnallocated()
+        ),
+        providerEmployee = it.providerEmployee.let { emp ->
+            emp?.surname?.let { surname ->
+                Human(
+                    forenames = listOfNotNull(emp.forename, emp.forename2).joinToString(" "),
+                    surname = surname
+                )
+            }
+        },
+        team = Team(
+            code = it.team.code,
+            description = it.team.description,
+            telephone = it.team.telephone,
+            emailAddress = it.team.emailAddress,
+            localDeliveryUnit = KeyValue(it.team.ldu.code, it.team.ldu.description),
+            district = KeyValue(it.team.district.code, it.team.district.description),
+            borough = KeyValue(it.team.district.borough.code, it.team.district.borough.code)
+        ),
+        probationArea = ProbationArea(
+            probationAreaId = it.provider.id,
+            code = it.provider.code,
+            description = it.provider.description,
+            nps = it.provider.privateSector
+        ),
+        active = it.active,
+        fromDate = it.date.toLocalDate(),
+        toDate = it.endDate,
+        allocationReason = it.allocationReason.keyValueOf()
+    )
+}
+
+fun Person.toOffenderDetail(previousConviction: DocumentEntity?) = OffenderDetail(
+    preferredName = preferredName,
+    activeProbationManagedSentence = currentDisposal,
+    contactDetails = toContactDetails(),
+    offenderAliases = offenderAliases.map {
+        OffenderAlias(
+            id = it.aliasID,
+            dateOfBirth = it.dateOfBirth,
+            firstName = it.firstName,
+            middleNames = listOfNotNull(it.secondName, it.thirdName),
+            surname = it.surname,
+            gender = it.gender.description
+        )
+    },
+    currentDisposal = if (currentDisposal) "1" else "0",
+    currentExclusion = currentExclusion,
+    exclusionMessage = exclusionMessage,
+    restrictionMessage = restrictionMessage,
+    currentRestriction = currentRestriction,
+    dateOfBirth = dateOfBirth,
+    firstName = forename,
+    middleNames = listOfNotNull(secondName, thirdName),
+    surname = surname,
+    gender = gender.description,
+    offenderId = id,
+    offenderProfile = toProfile(previousConviction),
+    otherIds = toOtherIds(),
+    offenderManagers = toOffenderManagers(),
+    partitionArea = partitionArea.area,
+    previousSurname = previousSurname,
+    softDeleted = softDeleted,
+    title = title?.description,
+    currentTier = currentTier?.description
+)
+
+fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
+    genderIdentity = genderIdentity?.description,
+    selfDescribedGenderIdentity = genderIdentityDescription ?: genderIdentity?.description,
+    disabilities = disabilities.sortedByDescending { it.startDate }.map {
+        Disability(
+            lastUpdatedDateTime = it.lastUpdated,
+            disabilityCondition = KeyValue(it.condition.code, it.condition.description),
+            disabilityId = it.id,
+            disabilityType = KeyValue(it.type.code, it.type.description),
+            endDate = it.finishDate,
+            isActive = it.isActive(),
+            notes = it.notes,
+            provisions = emptyList(),
+            startDate = it.startDate
+        )
+    },
+    ethnicity = ethnicity?.description,
+    immigrationStatus = immigrationStatus?.description,
+    nationality = nationality?.description,
+    offenderDetails = offenderDetails,
+    offenderLanguages = OffenderLanguages(
+        languageConcerns = languageConcerns,
+        primaryLanguage = language?.description,
+        requiresInterpreter = requiresInterpreter,
+        otherLanguages = emptyList()
+    ),
+    previousConviction = previousConviction?.lastUpdated.let {
+        previousConviction?.createdAt?.toLocalDate()
+            ?.let { it1 ->
+                PreviousConviction(
+                    convictionDate = it1,
+                    detail = ImmutableMap.of("documentName", previousConviction.name)
+                )
+            }
+    },
+    provisions = provisions.sortedByDescending { it.startDate }.map {
+        Provision(
+            category = it.category?.let { cat -> KeyValue(cat.code, cat.description) },
+            finishDate = it.finishDate,
+            notes = it.notes,
+            provisionId = it.id,
+            provisionType = KeyValue(it.type.code, it.type.description),
+            startDate = it.startDate
+        )
+    },
+    religion = religion?.description,
+    remandStatus = currentRemandStatus,
+    riskColour = currentHighestRiskColour,
+    sexualOrientation = sexualOrientation?.description,
+    secondaryNationality = secondNationality?.description
+
 )
 
 fun Disposal.sentenceOf() = Sentence(

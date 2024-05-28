@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.service
+package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -11,24 +11,24 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.entity.Prison
+import uk.gov.justice.digital.hmpps.entity.PrisonStaff
+import uk.gov.justice.digital.hmpps.entity.PrisonTeam
+import uk.gov.justice.digital.hmpps.entity.Provider
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
-import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
+import uk.gov.justice.digital.hmpps.model.StaffName
+import uk.gov.justice.digital.hmpps.repository.PrisonProbationAreaRepository
+import uk.gov.justice.digital.hmpps.repository.PrisonTeamRepository
 
 @ExtendWith(MockitoExtension::class)
 class AssignmentServiceTest {
 
     @Mock
-    lateinit var probationAreaRepository: ProbationAreaRepository
+    lateinit var probationAreaRepository: PrisonProbationAreaRepository
 
     @Mock
-    lateinit var teamRepository: TeamRepository
+    lateinit var teamRepository: PrisonTeamRepository
 
     @Mock
     lateinit var staffService: StaffService
@@ -47,25 +47,25 @@ class AssignmentServiceTest {
 
     @Test
     fun `unable to find probation area`() {
-        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId)).thenReturn(
+        whenever(probationAreaRepository.findByInstitutionNomisCode("LEI")).thenReturn(
             null
         )
         val ex = assertThrows<NotFoundException> {
-            assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
+            assignmentService.findAssignment("LEI", staffName)
         }
         assertThat(
             ex.message,
-            equalTo("Probation Area not found for NOMIS institution: ${PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId}")
+            equalTo("Probation Area not found for NOMIS institution: LEI")
         )
     }
 
     @Test
     fun `unable to find team`() {
-        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode("LEI"))
             .thenReturn(ProbationAreaGenerator.DEFAULT)
         whenever(teamRepository.findByCode(TeamGenerator.DEFAULT.code)).thenReturn(null)
         val ex = assertThrows<NotFoundException> {
-            assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
+            assignmentService.findAssignment("LEI", staffName)
         }
         assertThat(
             ex.message,
@@ -79,12 +79,12 @@ class AssignmentServiceTest {
         val team = TeamGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
 
-        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode("LEI"))
             .thenReturn(probationArea)
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
         whenever(staffService.findStaff(probationArea.id, staffName)).thenReturn(staff)
 
-        val res = assignmentService.findAssignment(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId, staffName)
+        val res = assignmentService.findAssignment("LEI", staffName)
 
         verify(staffService).findStaff(probationArea.id, staffName)
         assertThat(res.first, equalTo(probationArea.id))
@@ -97,18 +97,23 @@ class AssignmentServiceTest {
         val probationArea = ProbationAreaGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
         val newStaffCode = "C12A001"
-        val newStaff = StaffGenerator.generate(newStaffCode, staffName.forename, staffName.surname)
+        val newStaff = PrisonStaff(
+            code = newStaffCode,
+            forename = staffName.forename,
+            surname = staffName.surname,
+            probationAreaId = probationArea.id
+        )
 
-        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode("LEI"))
             .thenReturn(probationArea)
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
         whenever(staffService.findStaff(probationArea.id, staffName)).thenReturn(null)
-        whenever(staffService.create(probationArea, team, staffName))
+        whenever(staffService.create(probationArea.id, probationArea.code, team.id, staffName, null))
             .thenReturn(newStaff)
 
-        val res = assignmentService.findAssignment(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId, staffName)
+        val res = assignmentService.findAssignment("LEI", staffName)
 
-        verify(staffService).create(probationArea, team, staffName)
+        verify(staffService).create(probationArea.id, probationArea.code, team.id, staffName)
         assertThat(res.first, equalTo(probationArea.id))
         assertThat(res.second, equalTo(team.id))
         assertThat(res.third, equalTo(newStaff.id))
@@ -119,20 +124,25 @@ class AssignmentServiceTest {
         val probationArea = ProbationAreaGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
         val newStaffCode = "C12A001"
-        val newStaff = StaffGenerator.generate(newStaffCode, staffName.forename, staffName.surname)
+        val newStaff = PrisonStaff(
+            code = newStaffCode,
+            forename = staffName.forename,
+            surname = staffName.surname,
+            probationAreaId = probationArea.id
+        )
 
-        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode("LEI"))
             .thenReturn(probationArea)
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
         whenever(staffService.findStaff(probationArea.id, staffName))
             .thenReturn(null)
             .thenReturn(newStaff)
-        whenever(staffService.create(probationArea, team, staffName))
+        whenever(staffService.create(probationArea.id, probationArea.code, team.id, staffName))
             .thenThrow(RuntimeException())
 
-        val res = assignmentService.findAssignment(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId, staffName)
+        val res = assignmentService.findAssignment("LEI", staffName)
 
-        verify(staffService).create(probationArea, team, staffName)
+        verify(staffService).create(probationArea.id, probationArea.code, team.id, staffName)
         verify(staffService, times(2)).findStaff(probationArea.id, staffName)
         assertThat(res.first, equalTo(probationArea.id))
         assertThat(res.second, equalTo(team.id))
@@ -144,19 +154,42 @@ class AssignmentServiceTest {
         val probationArea = ProbationAreaGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
 
-        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode("LEI"))
             .thenReturn(probationArea)
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
         whenever(staffService.findStaff(probationArea.id, staffName))
             .thenReturn(null)
-        whenever(staffService.create(probationArea, team, staffName))
+        whenever(staffService.create(probationArea.id, probationArea.code, team.id, staffName))
             .thenThrow(NotFoundException("Staff not found"))
 
         assertThrows<NotFoundException> {
             assignmentService.findAssignment(
-                PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId,
+                "LEI",
                 staffName
             )
         }
     }
 }
+
+object ProbationAreaGenerator {
+    val DEFAULT = Provider(
+        1,
+        "PA1",
+        Prison(2, "LEI")
+    )
+}
+
+object TeamGenerator {
+    val DEFAULT = PrisonTeam(3, "${ProbationAreaGenerator.DEFAULT.code}CSN")
+}
+
+object StaffGenerator {
+    val DEFAULT = PrisonStaff(
+        4,
+        "Bob",
+        "Smith",
+        "${ProbationAreaGenerator.DEFAULT.code}A999",
+        ProbationAreaGenerator.DEFAULT.id
+    )
+}
+

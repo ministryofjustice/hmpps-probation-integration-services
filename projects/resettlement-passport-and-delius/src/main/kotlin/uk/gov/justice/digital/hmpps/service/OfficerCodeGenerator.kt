@@ -1,8 +1,8 @@
-package uk.gov.justice.digital.hmpps.services
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.integrations.delius.exceptions.StaffCodeExhaustedException
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
+import uk.gov.justice.digital.hmpps.entity.StaffRepository
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 
 @Component
 class OfficerCodeGenerator(private val staffRepository: StaffRepository) {
@@ -10,7 +10,7 @@ class OfficerCodeGenerator(private val staffRepository: StaffRepository) {
 
     fun generateFor(probationAreaCode: String, index: Int = 0): String {
         if (index == alphabet.size) {
-            throw StaffCodeExhaustedException(probationAreaCode)
+            throw InvalidRequestException("Cannot generate another staff id for probationAreaCode ${probationAreaCode}")
         }
         val prefix = probationAreaCode.substring(0, 3) + alphabet[index]
         val latest = staffRepository.getLatestStaffReference("^$prefix\\d{3}$")

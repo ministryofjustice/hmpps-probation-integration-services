@@ -10,10 +10,12 @@ database:
       - nsi_manager
       - approved_premises_referral
       - approved_premises_residence
+      - approved_premises_preferred
 
     sequences:
       - ap_referral_id_seq
       - ap_residence_id_seq
+      - ap_preferred_id_seq
 
   audit:
     username: ApprovedPremisesAndDelius
