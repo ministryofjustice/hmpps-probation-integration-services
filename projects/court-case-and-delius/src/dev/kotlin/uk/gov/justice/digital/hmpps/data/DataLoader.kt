@@ -106,15 +106,7 @@ class DataLoader(
         em.saveAll(newEvent, newSentence, newManager)
 
         val currentEvent = SentenceGenerator.CURRENTLY_MANAGED
-        val currentSentence =
-            SentenceGenerator.generateSentence(
-                currentEvent,
-                ZonedDateTime.now(),
-                ReferenceDataGenerator.DISPOSAL_TYPE,
-                entryLength = 12,
-                entryLengthUnits = ReferenceDataGenerator.LENGTH_UNITS,
-                lengthInDays = 99
-            )
+        val currentSentence = SentenceGenerator.CURRENT_SENTENCE
         val custody = SentenceGenerator.generateCustody(currentSentence, ReferenceDataGenerator.CUSTODIAL_STATUS)
         val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT

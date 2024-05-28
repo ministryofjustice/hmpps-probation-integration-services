@@ -1,18 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -55,6 +50,18 @@ class Disposal(
 
     @Column(name = "upw", columnDefinition = "number")
     val upw: Boolean = false,
+
+    val effectiveLength: Long? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "entry_length_2_units_id")
+    val entryLength2Unit: ReferenceData? = null,
+
+    val length2: Long? = null,
+
+    val length: Long? = null,
+
+    val enteredSentenceEndDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,

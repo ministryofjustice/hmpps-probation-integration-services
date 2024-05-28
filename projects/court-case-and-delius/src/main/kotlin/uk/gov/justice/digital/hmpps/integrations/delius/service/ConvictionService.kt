@@ -4,10 +4,12 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.conviction.Conviction
 import uk.gov.justice.digital.hmpps.api.model.conviction.Offence
 import uk.gov.justice.digital.hmpps.api.model.conviction.OffenceDetail
+import uk.gov.justice.digital.hmpps.api.model.conviction.Sentence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByPersonAndEventNumber
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence as OffenceEntity
@@ -32,7 +34,8 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             eventRepository.awaitingPSR(id) == 1,
             convictionDate,
             referralDate,
-            toOffences()
+            toOffences(),
+            disposal?.toSentence()
         )
 
     fun Event.toOffences(): List<Offence> {
@@ -68,6 +71,20 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             form20Code,
             subCategoryAbbreviation,
             cjitCode
+        )
+
+    fun Disposal.toSentence(): Sentence =
+        Sentence(
+            id,
+            disposalType.description,
+            entryLength,
+            entryLengthUnit?.description,
+            length2,
+            entryLength2Unit?.description,
+            length,
+            effectiveLength,
+            lengthInDays,
+            enteredSentenceEndDate
         )
 }
 

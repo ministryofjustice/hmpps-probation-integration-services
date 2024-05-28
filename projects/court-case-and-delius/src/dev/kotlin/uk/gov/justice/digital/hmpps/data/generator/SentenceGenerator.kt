@@ -24,6 +24,15 @@ object SentenceGenerator {
         breachDate = LocalDate.now().minusMonths(3)
     )
 
+    val CURRENT_SENTENCE = generateSentence(
+        CURRENTLY_MANAGED,
+        ZonedDateTime.now(),
+        ReferenceDataGenerator.DISPOSAL_TYPE,
+        entryLength = 12,
+        entryLengthUnits = ReferenceDataGenerator.LENGTH_UNITS,
+        lengthInDays = 99
+    )
+
     fun generateSentence(
         event: Event,
         startDate: ZonedDateTime,
@@ -36,6 +45,11 @@ object SentenceGenerator {
         lengthInDays: Long? = null,
         terminationReason: ReferenceData? = null,
         upw: Boolean = true,
+        effectiveLength: Long? = null,
+        entryLengthUnits2: ReferenceData? = null,
+        length2: Long? = null,
+        length: Long? = null,
+        enteredSentenceEndDate: LocalDate? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
@@ -51,6 +65,11 @@ object SentenceGenerator {
         lengthInDays,
         terminationReason,
         upw,
+        effectiveLength,
+        entryLengthUnits2,
+        length2,
+        length,
+        enteredSentenceEndDate,
         active,
         softDeleted,
         id

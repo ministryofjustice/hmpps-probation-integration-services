@@ -14,8 +14,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.conviction.Conviction
 import uk.gov.justice.digital.hmpps.api.model.conviction.Offence
 import uk.gov.justice.digital.hmpps.api.model.conviction.OffenceDetail
+import uk.gov.justice.digital.hmpps.api.model.conviction.Sentence
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_SENTENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.MAIN_OFFENCE
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -79,6 +81,18 @@ internal class ConvictionIntegrationTest {
                 mainOffence.updated
             )
         )
+        val expectedSentence = Sentence(
+            CURRENT_SENTENCE.id,
+            CURRENT_SENTENCE.disposalType.description,
+            CURRENT_SENTENCE.entryLength,
+            CURRENT_SENTENCE.entryLengthUnit?.description,
+            CURRENT_SENTENCE.length2,
+            CURRENT_SENTENCE.entryLength2Unit?.description,
+            CURRENT_SENTENCE.length,
+            CURRENT_SENTENCE.effectiveLength,
+            CURRENT_SENTENCE.lengthInDays,
+            CURRENT_SENTENCE.enteredSentenceEndDate
+        )
         val expectedResponse = Conviction(
             event.id, event.eventNumber,
             event.active,
@@ -88,7 +102,8 @@ internal class ConvictionIntegrationTest {
             false,
             event.convictionDate,
             event.referralDate,
-            expectedOffences
+            expectedOffences,
+            expectedSentence
         )
 
         val response = mockMvc
