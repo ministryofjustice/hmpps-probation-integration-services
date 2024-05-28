@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -76,5 +70,12 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-    val description: String
+
+    @Column(nullable = false)
+    val code: String,
+
+    @Column(nullable = false)
+    val description: String,
+
+    val abbreviation: String?
 )

@@ -21,11 +21,14 @@ class Event(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
+    @OneToOne(mappedBy = "event")
+    val mainOffence: MainOffence? = null,
+
     @Column(name = "in_breach", columnDefinition = "number")
     val inBreach: Boolean,
 
     @Column(name = "breach_end")
-    val breachEnd: LocalDate?,
+    val breachEnd: LocalDate? = null,
 
     @Column(name = "conviction_date")
     val convictionDate: LocalDate,
@@ -49,6 +52,7 @@ class Event(
     @Column(name = "ftc_count", nullable = false)
     val failureToComplyCount: Long,
 
+    @Column(name = "referral_date", nullable = false)
     val referralDate: LocalDate,
 )
 

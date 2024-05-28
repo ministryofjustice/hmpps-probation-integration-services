@@ -15,7 +15,7 @@ data class Conviction(
 //    val awaitingPsr: Boolean,
     val convictionDate: LocalDate,
     val referralDate: LocalDate,
-//    val offences: List<Offence>,
+    val offences: List<Offence>,
 //    val sentence: Sentence,
 //    val latestCourtAppearanceOutcome: KeyValue,
 //    val custody: Custody,
@@ -24,31 +24,31 @@ data class Conviction(
 )
 
 data class Offence(
-    val offenceId: String,
+    val offenceId: Long,
     val mainOffence: Boolean,
     val detail: OffenceDetail,
-    val offenceDate: LocalDateTime,
-    val offenceCount: Long,
-    val tics: Long,
-    val verdict: String,
-    val offenderId: Long,
-    val createdDatetime: LocalDateTime,
-    val lastUpdatedDatetime: LocalDateTime,
+    val offenceDate: LocalDate,
+//    val offenceCount: Long,
+//    val tics: Long,
+//    val verdict: String,
+//    val offenderId: Long,
+//    val createdDatetime: LocalDateTime,
+//    val lastUpdatedDatetime: LocalDateTime,
 )
 
 data class OffenceDetail(
     val code: String,
     val description: String,
-    val abbreviation: String,
-    val mainCategoryCode: String,
-    val mainCategoryDescription: String,
-    val mainCategoryAbbreviation: String,
-    val ogrsOffenceCategory: String,
-    val subCategoryCode: String,
-    val subCategoryDescription: String,
-    val form20Code: String,
-    val subCategoryAbbreviation: String,
-    val cjitCode: String
+    val abbreviation: String?,
+//    val mainCategoryCode: String,
+//    val mainCategoryDescription: String,
+//    val mainCategoryAbbreviation: String,
+//    val ogrsOffenceCategory: String,
+//    val subCategoryCode: String,
+//    val subCategoryDescription: String,
+//    val form20Code: String,
+//    val subCategoryAbbreviation: String,
+//    val cjitCode: String
 )
 
 data class Sentence(

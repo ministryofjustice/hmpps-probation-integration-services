@@ -29,7 +29,6 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
-
             DocumentEntityGenerator.COURT,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT,
@@ -91,13 +90,14 @@ class DataLoader(
             PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED)
         )
 
-        val noSentenceEvent = SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, LocalDate.now())
+        val noSentenceEvent =
+            SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
         val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
         val outcome = Outcome(Outcome.Code.AWAITING_PSR.value, IdGenerator.getAndIncrement())
         val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome)
         em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
 
-        val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, LocalDate.now())
+        val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
         val newSentence =
             SentenceGenerator.generateSentence(newEvent, ZonedDateTime.now(), ReferenceDataGenerator.DISPOSAL_TYPE)
         val newManager = SentenceGenerator.generateOrderManager(newEvent, StaffGenerator.UNALLOCATED)
@@ -115,8 +115,7 @@ class DataLoader(
             )
         val custody = SentenceGenerator.generateCustody(currentSentence, ReferenceDataGenerator.CUSTODIAL_STATUS)
         val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
-        val mainOffence =
-            SentenceGenerator.generateMainOffence(currentEvent, SentenceGenerator.MAIN_OFFENCE, LocalDate.now())
+        val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
         val additionalOffence = SentenceGenerator.generateAdditionalOffence(
             currentEvent,
             SentenceGenerator.ADDITIONAL_OFFENCE,
@@ -147,7 +146,11 @@ class DataLoader(
         )
 
         val preEvent =
-            SentenceGenerator.generateEvent(PersonGenerator.PREVIOUSLY_MANAGED, LocalDate.now(), active = false)
+            SentenceGenerator.generateEvent(
+                PersonGenerator.PREVIOUSLY_MANAGED,
+                referralDate = LocalDate.now(),
+                active = false
+            )
         val preSentence = SentenceGenerator.generateSentence(
             preEvent,
             ZonedDateTime.now(),

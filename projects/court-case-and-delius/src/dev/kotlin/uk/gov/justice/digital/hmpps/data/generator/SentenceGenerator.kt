@@ -18,9 +18,9 @@ import java.time.ZonedDateTime
 object SentenceGenerator {
     val CURRENTLY_MANAGED = generateEvent(
         PersonGenerator.CURRENTLY_MANAGED,
-        LocalDate.now().minusDays(1),
+        referralDate = LocalDate.now().minusDays(1),
         inBreach = true,
-        LocalDate.now().minusMonths(3)
+        breachDate = LocalDate.now().minusMonths(3)
     )
 
     fun generateSentence(
@@ -57,13 +57,27 @@ object SentenceGenerator {
 
     fun generateEvent(
         person: Person,
+        mainOffence: MainOffence? = null,
         referralDate: LocalDate,
         inBreach: Boolean = false,
         breachDate: LocalDate? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Event(person, inBreach, breachDate, LocalDate.now(), null, active, softDeleted, id, "1", 2, referralDate)
+    ) = Event(
+        person,
+        mainOffence,
+        inBreach,
+        breachDate,
+        LocalDate.now(),
+        null,
+        active,
+        softDeleted,
+        id,
+        "1",
+        2,
+        referralDate
+    )
 
     fun generateOrderManager(
         event: Event,
@@ -86,12 +100,16 @@ object SentenceGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = Custody(disposal, custodialStatus, id = id)
 
-    val MAIN_OFFENCE = SentenceGenerator.generateOffence("Main Offence")
-    val ADDITIONAL_OFFENCE = SentenceGenerator.generateOffence("Additional Offence")
+    val MAIN_OFFENCE = generateOffence("00303", "Main Offence")
+    val ADDITIONAL_OFFENCE = generateOffence("00701", "Additional Offence")
+    val MAIN_OFFENCE_DEFAULT = generateMainOffence(CURRENTLY_MANAGED, MAIN_OFFENCE, LocalDate.now())
+
     fun generateOffence(
+        code: String,
         description: String,
+        abbreviation: String? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Offence(id, description)
+    ) = Offence(id, code, description, abbreviation)
 
     fun generateMainOffence(
         event: Event,
