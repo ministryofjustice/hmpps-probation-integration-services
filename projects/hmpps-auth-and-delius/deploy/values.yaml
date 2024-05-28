@@ -1,5 +1,6 @@
 # Common values
 generic-service:
+  productId: HMPPS518
   nameOverride: hmpps-auth-and-delius
 
   image:

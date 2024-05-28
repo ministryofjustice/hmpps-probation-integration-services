@@ -1,0 +1,156 @@
+name: Service catalogue
+# Add projects to the HMPPS Service Catalogue
+
+on:
+  workflow_dispatch:
+    inputs:
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - 'All'
+          - '["accredited-programmes-and-oasys"]'
+          - '["approved-premises-and-delius"]'
+          - '["approved-premises-and-oasys"]'
+          - '["arns-and-delius"]'
+          - '["assessment-summary-and-delius"]'
+          - '["cas2-and-delius"]'
+          - '["cas3-and-delius"]'
+          - '["core-person-record-and-delius"]'
+          - '["court-case-and-delius"]'
+          - '["create-and-vary-a-licence-and-delius"]'
+          - '["custody-key-dates-and-delius"]'
+          - '["domain-events-and-delius"]'
+          - '["dps-and-delius"]'
+          - '["effective-proposal-framework-and-delius"]'
+          - '["external-api-and-delius"]'
+          - '["hdc-licences-and-delius"]'
+          - '["hmpps-auth-and-delius"]'
+          - '["make-recall-decisions-and-delius"]'
+          - '["manage-offences-and-delius"]'
+          - '["manage-pom-cases-and-delius"]'
+          - '["manage-supervision-and-delius"]'
+          - '["manage-supervision-and-oasys"]'
+          - '["oasys-and-delius"]'
+          - '["offender-events-and-delius"]'
+          - '["opd-and-delius"]'
+          - '["pathfinder-and-delius"]'
+          - '["person-search-index-from-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["prison-education-and-delius"]'
+          - '["prison-identifier-and-delius"]'
+          - '["prisoner-profile-and-delius"]'
+          - '["probation-search-and-delius"]'
+          - '["refer-and-monitor-and-delius"]'
+          - '["resettlement-passport-and-delius"]'
+          - '["risk-assessment-scores-to-delius"]'
+          - '["sentence-plan-and-delius"]'
+          - '["sentence-plan-and-oasys"]'
+          - '["soc-and-delius"]'
+          - '["tier-to-delius"]'
+          - '["unpaid-work-and-delius"]'
+          - '["workforce-allocations-to-delius"]'
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+  push:
+    branches:
+      - main
+    paths:
+      - 'projects/**/deploy'
+
+jobs:
+  get-projects:
+    outputs:
+      projects: ${{ steps.output.outputs.projects }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: check-changes
+        if: github.event_name == 'push'
+        uses: ./.github/actions/check-changes
+        with:
+          filters: |
+            projects:
+              - 'projects/**/deploy'
+      - name: Get projects - changed
+        if: github.event_name == 'push'
+        run: echo "projects=$PROJECTS" | tee -a "$GITHUB_ENV"
+        env:
+          PROJECTS: ${{ steps.check-changes.outputs.projects }}
+      - name: Get projects - all
+        if: github.event_name == 'workflow_dispatch' && inputs.projects == 'All'
+        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
+      - name: Get projects - selected
+        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
+        run: echo 'projects=${{ inputs.projects }}' | tee -a "$GITHUB_ENV"
+      - id: output
+        run: echo 'projects=${{ env.projects }}' | tee -a "$GITHUB_OUTPUT"
+
+  update-catalogue:
+    runs-on: ubuntu-latest
+    needs: get-projects
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Get environment details
+        id: environments
+        run: |
+          environments=[]
+          for env in dev preprod prod; do
+            values_file="projects/$PROJECT_NAME/deploy/values-$env.yml"
+            if [ -f "$values_file" ] && [ $(yq '.enabled' "$values_file" | sed 's/^null$/true/') = "true" ] && [ -n $(yq '.generic-service.ingress.host' "$values_file") ]; then 
+              url=$(yq '.generic-service.ingress.host' "$values_file")
+              health_path=$(yq '.generic-service.livenessProbe.httpGet.path // "/health"' "projects/$PROJECT_NAME/deploy/values.yaml")
+              environments=$(echo "$environments" | jq -c '. += [{
+                "name": $name,
+                "type": $name,
+                "url": ("https://" + $url),
+                "health_path": $health_path,
+                "namespace": ("hmpps-probation-integration-services-" + $name)
+              }]' --arg name "$env" --arg url "$url" --arg health_path "$health_path")
+            fi
+          done
+          echo "environments=$environments" | tee -a "$GITHUB_OUTPUT"
+        env:
+          PROJECT_NAME: ${{ matrix.project }}
+
+      - name: Update catalogue
+        run: |
+          ./script/start-service-pod.sh
+          PROJECT_TITLE="$(awk 'BEGIN {RS=""; FS="\n"} !/^[#\/]/ {gsub("\n", " ", $0); sub(/\. .*/, "."); print; exit}' "projects/$PROJECT_NAME/README.md")" # First line of the project's README.md
+          kubectl cp ./script/update-service-catalogue.sh "$POD_NAME:/tmp/update-service-catalogue.sh"
+          kubectl exec "$POD_NAME" -- env \
+            PROJECT_NAME="$PROJECT_NAME" \
+            PROJECT_TITLE="$PROJECT_TITLE" \
+            ENVIRONMENTS="$ENVIRONMENTS" \
+            SERVICE_CATALOGUE_API_KEY="$SERVICE_CATALOGUE_API_KEY" \
+          /tmp/update-service-catalogue.sh
+        env:
+          NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          POD_NAME: sc-${{ matrix.project }}
+          PROJECT_NAME: ${{ matrix.project }}
+          ENVIRONMENTS: ${{ steps.environments.outputs.environments }}
+          SERVICE_CATALOGUE_API_KEY: ${{ secrets.SERVICE_CATALOGUE_API_KEY }}
+
+      - name: Delete pod
+        if: always()
+        run: kubectl delete pod "$POD_NAME" || true
+        env:
+          POD_NAME: sc-${{ matrix.project }}

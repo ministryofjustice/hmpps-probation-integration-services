@@ -38,6 +38,8 @@ management:
     exposure.include: [ "health", "info" ]
   endpoint.health.show-details: always
 
+info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/185
+
 ---
 # Shared dev/test config
 spring.config.activate.on-profile: [ "dev", "integration-test" ]
@@ -72,7 +74,9 @@ spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
 
 ---
 spring.config.activate.on-profile: oracle
-spring.datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
+spring.datasource:
+  url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
+  jpa.hibernate.ddl-auto: create
 
 ---
 spring.config.activate.on-profile: delius-db
