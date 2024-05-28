@@ -72,6 +72,7 @@ internal class ConvictionIntegrationTest {
             event.inBreach,
             2,
             event.breachEnd,
+            false,
             event.convictionDate,
             event.referralDate,
             expectedOffences

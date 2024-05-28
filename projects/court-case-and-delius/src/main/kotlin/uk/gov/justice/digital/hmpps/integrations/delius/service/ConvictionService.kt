@@ -29,6 +29,7 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             inBreach,
             failureToComplyCount,
             breachEnd,
+            eventRepository.awaitingPSR(id) == 1,
             convictionDate,
             referralDate,
             toOffences()
