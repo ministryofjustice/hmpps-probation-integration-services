@@ -11,10 +11,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.Conviction
 import uk.gov.justice.digital.hmpps.api.model.conviction.Offence
 import uk.gov.justice.digital.hmpps.api.model.conviction.OffenceDetail
 import uk.gov.justice.digital.hmpps.api.model.conviction.Sentence
+import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.ADDITIONAL_OFFENCE
@@ -122,6 +124,7 @@ internal class ConvictionIntegrationTest {
             CURRENT_SENTENCE.lengthInDays,
             CURRENT_SENTENCE.enteredSentenceEndDate,
             CURRENT_SENTENCE.startDate,
+            sentenceType = KeyValue(CURFEW_ORDER.sentenceType, CURFEW_ORDER.description)
         )
         val expectedResponse = Conviction(
             event.id, event.eventNumber,

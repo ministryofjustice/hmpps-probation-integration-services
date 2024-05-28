@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -27,7 +28,7 @@ object SentenceGenerator {
     val CURRENT_SENTENCE = generateSentence(
         CURRENTLY_MANAGED,
         LocalDate.now(),
-        ReferenceDataGenerator.DISPOSAL_TYPE,
+        DisposalTypeGenerator.CURFEW_ORDER,
         entryLength = 12,
         entryLengthUnits = ReferenceDataGenerator.LENGTH_UNITS,
         lengthInDays = 99
@@ -36,7 +37,7 @@ object SentenceGenerator {
     fun generateSentence(
         event: Event,
         startDate: LocalDate,
-        disposalType: ReferenceData,
+        disposalType: DisposalType,
         custody: Custody? = null,
         endDate: ZonedDateTime? = null,
         terminationDate: LocalDate? = null,

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.Conviction
 import uk.gov.justice.digital.hmpps.api.model.conviction.Offence
 import uk.gov.justice.digital.hmpps.api.model.conviction.OffenceDetail
@@ -99,7 +100,8 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             enteredSentenceEndDate,
             startDate,
             terminationDate,
-            terminationReason?.description
+            terminationReason?.description,
+            KeyValue(disposalType.sentenceType, disposalType.description)
         )
 }
 

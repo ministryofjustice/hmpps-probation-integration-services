@@ -25,8 +25,8 @@ class Disposal(
     val startDate: LocalDate,
 
     @ManyToOne
-    @JoinColumn(name = "disposal_type_id")
-    val disposalType: ReferenceData,
+    @JoinColumn(name = "disposal_type_id", nullable = false)
+    val disposalType: DisposalType,
 
     @Column(name = "notional_end_date")
     val endDate: ZonedDateTime? = null,
@@ -84,6 +84,19 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
     )
     fun getByCrn(crn: String): List<Disposal>
 }
+
+@Entity
+@Immutable
+class DisposalType(
+
+    @Id
+    @Column(name = "disposal_type_id")
+    val id: Long,
+
+    val description: String,
+
+    val sentenceType: String,
+)
 
 @Entity
 @Immutable

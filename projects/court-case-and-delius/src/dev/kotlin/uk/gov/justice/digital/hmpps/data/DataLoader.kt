@@ -44,6 +44,7 @@ class DataLoader(
             BusinessInteractionGenerator.UPDATE_CONTACT,
             ContactTypeGenerator.CONTACT_TYPE,
 
+            DisposalTypeGenerator.CURFEW_ORDER,
             ReferenceDataGenerator.DISPOSAL_TYPE,
             ReferenceDataGenerator.LENGTH_UNITS,
             ReferenceDataGenerator.TERMINATION_REASON,
@@ -99,7 +100,7 @@ class DataLoader(
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
         val newSentence =
-            SentenceGenerator.generateSentence(newEvent, LocalDate.now(), ReferenceDataGenerator.DISPOSAL_TYPE)
+            SentenceGenerator.generateSentence(newEvent, LocalDate.now(), DisposalTypeGenerator.CURFEW_ORDER)
         val newManager = SentenceGenerator.generateOrderManager(newEvent, StaffGenerator.UNALLOCATED)
         em.saveAll(newEvent, newSentence, newManager)
 
@@ -142,7 +143,7 @@ class DataLoader(
         val preSentence = SentenceGenerator.generateSentence(
             preEvent,
             LocalDate.now(),
-            ReferenceDataGenerator.DISPOSAL_TYPE,
+            DisposalTypeGenerator.CURFEW_ORDER,
             terminationDate = LocalDate.now().minusDays(7),
             active = false
         )
