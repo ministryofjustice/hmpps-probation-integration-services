@@ -121,6 +121,7 @@ class DataLoader(
         em.saveAll(
             currentEvent,
             currentSentence,
+            UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1,
             currentManager,
             custody,
             mainOffence,

@@ -70,6 +70,9 @@ class Disposal(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
 
+    @OneToOne(mappedBy = "disposal")
+    val unpaidWorkDetails: UpwDetails? = null,
+
     @Id
     @Column(name = "disposal_id")
     val id: Long
@@ -85,6 +88,21 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
     )
     fun getByCrn(crn: String): List<Disposal>
 }
+
+@Entity(name = "conviction_upw_details")
+@Immutable
+class UpwDetails(
+    @Id
+    @Column(name = "upw_details_id")
+    val id: Long,
+
+    @OneToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
+
+    val upwLengthMinutes: Long
+
+)
 
 @Entity
 @Immutable

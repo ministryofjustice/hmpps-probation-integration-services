@@ -7,10 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.en
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.ReportManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.DisposalType
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirement
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
@@ -53,6 +50,7 @@ object SentenceGenerator {
         enteredSentenceEndDate: LocalDate? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
+        unpaidWorkDetails: UpwDetails? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Disposal(
         event,
@@ -73,6 +71,7 @@ object SentenceGenerator {
         enteredSentenceEndDate,
         active,
         softDeleted,
+        unpaidWorkDetails,
         id
     )
 

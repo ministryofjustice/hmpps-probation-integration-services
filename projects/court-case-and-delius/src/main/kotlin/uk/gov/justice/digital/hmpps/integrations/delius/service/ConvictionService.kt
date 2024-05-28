@@ -2,12 +2,10 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
-import uk.gov.justice.digital.hmpps.api.model.conviction.Conviction
-import uk.gov.justice.digital.hmpps.api.model.conviction.Offence
-import uk.gov.justice.digital.hmpps.api.model.conviction.OffenceDetail
-import uk.gov.justice.digital.hmpps.api.model.conviction.Sentence
+import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.UpwDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence as OffenceEntity
@@ -98,6 +96,7 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             effectiveLength,
             lengthInDays,
             enteredSentenceEndDate,
+            unpaidWorkDetails?.toUnpaidWork(),
             startDate,
             terminationDate,
             terminationReason?.description,
@@ -106,5 +105,7 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             disposalType.cja2003Order,
             disposalType.legacyOrder
         )
+
+    fun UpwDetails.toUnpaidWork(): UnpaidWork = UnpaidWork(upwLengthMinutes)
 }
 

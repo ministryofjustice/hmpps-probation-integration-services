@@ -62,7 +62,7 @@ data class Sentence(
     val effectiveLength: Long?,
     val lengthInDays: Long?,
     val expectedSentenceEndDate: LocalDate?,
-//    val unpaidWork: UnpaidWork,
+    val unpaidWork: UnpaidWork?,
     val startDate: LocalDate,
     val terminationDate: LocalDate? = null,
     val terminationReason: String? = null,
@@ -75,9 +75,9 @@ data class Sentence(
 
 data class UnpaidWork(
     val minutesOrdered: Long,
-    val minutesCompleted: Long,
-    val appointments: Appointments,
-    val status: String
+//    val minutesCompleted: Long,
+//    val appointments: Appointments,
+//    val status: String
 )
 
 class Appointments(

@@ -12,16 +12,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
-import uk.gov.justice.digital.hmpps.api.model.conviction.Conviction
-import uk.gov.justice.digital.hmpps.api.model.conviction.Offence
-import uk.gov.justice.digital.hmpps.api.model.conviction.OffenceDetail
-import uk.gov.justice.digital.hmpps.api.model.conviction.Sentence
+import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.ADDITIONAL_OFFENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_SENTENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.MAIN_OFFENCE
+import uk.gov.justice.digital.hmpps.data.generator.UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -123,6 +121,7 @@ internal class ConvictionIntegrationTest {
             CURRENT_SENTENCE.effectiveLength,
             CURRENT_SENTENCE.lengthInDays,
             CURRENT_SENTENCE.enteredSentenceEndDate,
+            UnpaidWork(UNPAID_WORK_DETAILS_1.upwLengthMinutes),
             CURRENT_SENTENCE.startDate,
             sentenceType = KeyValue(CURFEW_ORDER.sentenceType, CURFEW_ORDER.description),
             failureToComplyLimit = CURFEW_ORDER.failureToComplyLimit,
