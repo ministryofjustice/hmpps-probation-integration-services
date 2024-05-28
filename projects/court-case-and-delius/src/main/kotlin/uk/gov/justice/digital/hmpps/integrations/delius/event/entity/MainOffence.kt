@@ -100,33 +100,26 @@ class Offence(
     @ManyToOne
     val ogrsOffenceCategory: ReferenceData,
 
-    @Column(nullable = false)
     val code: String,
 
-    @Column(nullable = false)
     val description: String,
 
-    val abbreviation: String?,
+    val abbreviation: String? = null,
 
-    @Column(nullable = false)
     val mainCategoryCode: String,
 
-    @Column(nullable = false)
     val mainCategoryDescription: String,
 
-    @Column(nullable = false)
     val mainCategoryAbbreviation: String,
 
-    @Column(nullable = false)
     val subCategoryCode: String,
 
-    @Column(nullable = false)
     val subCategoryDescription: String,
 
-    val form20Code: String?,
+    val form20Code: String? = null,
 
-    val subCategoryAbbreviation: String?,
+    val subCategoryAbbreviation: String? = null,
 
-    val cjitCode: String?
+    val cjitCode: String? = null
 
 )

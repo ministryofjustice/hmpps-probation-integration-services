@@ -26,7 +26,7 @@ object SentenceGenerator {
 
     val CURRENT_SENTENCE = generateSentence(
         CURRENTLY_MANAGED,
-        ZonedDateTime.now(),
+        LocalDate.now(),
         ReferenceDataGenerator.DISPOSAL_TYPE,
         entryLength = 12,
         entryLengthUnits = ReferenceDataGenerator.LENGTH_UNITS,
@@ -35,11 +35,11 @@ object SentenceGenerator {
 
     fun generateSentence(
         event: Event,
-        startDate: ZonedDateTime,
+        startDate: LocalDate,
         disposalType: ReferenceData,
         custody: Custody? = null,
         endDate: ZonedDateTime? = null,
-        terminationDate: ZonedDateTime? = null,
+        terminationDate: LocalDate? = null,
         entryLength: Long? = null,
         entryLengthUnits: ReferenceData? = null,
         lengthInDays: Long? = null,

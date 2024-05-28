@@ -22,7 +22,7 @@ class Disposal(
     val custody: Custody?,
 
     @Column(name = "disposal_date")
-    val startDate: ZonedDateTime,
+    val startDate: LocalDate,
 
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
@@ -32,7 +32,7 @@ class Disposal(
     val endDate: ZonedDateTime? = null,
 
     @Column
-    val terminationDate: ZonedDateTime? = null,
+    val terminationDate: LocalDate? = null,
 
     @Column(name = "entry_length")
     val entryLength: Long? = null,

@@ -96,7 +96,10 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             length,
             effectiveLength,
             lengthInDays,
-            enteredSentenceEndDate
+            enteredSentenceEndDate,
+            startDate,
+            terminationDate,
+            terminationReason?.description
         )
 }
 

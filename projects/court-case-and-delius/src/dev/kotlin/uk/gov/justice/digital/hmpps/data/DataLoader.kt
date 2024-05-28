@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -100,7 +99,7 @@ class DataLoader(
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
         val newSentence =
-            SentenceGenerator.generateSentence(newEvent, ZonedDateTime.now(), ReferenceDataGenerator.DISPOSAL_TYPE)
+            SentenceGenerator.generateSentence(newEvent, LocalDate.now(), ReferenceDataGenerator.DISPOSAL_TYPE)
         val newManager = SentenceGenerator.generateOrderManager(newEvent, StaffGenerator.UNALLOCATED)
         em.saveAll(newEvent, newSentence, newManager)
 
@@ -142,9 +141,9 @@ class DataLoader(
             )
         val preSentence = SentenceGenerator.generateSentence(
             preEvent,
-            ZonedDateTime.now(),
+            LocalDate.now(),
             ReferenceDataGenerator.DISPOSAL_TYPE,
-            terminationDate = ZonedDateTime.now().minusDays(7),
+            terminationDate = LocalDate.now().minusDays(7),
             active = false
         )
         val preManager = SentenceGenerator.generateOrderManager(preEvent, StaffGenerator.ALLOCATED)

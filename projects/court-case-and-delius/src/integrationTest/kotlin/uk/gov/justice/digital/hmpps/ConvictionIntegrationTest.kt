@@ -120,7 +120,8 @@ internal class ConvictionIntegrationTest {
             CURRENT_SENTENCE.length,
             CURRENT_SENTENCE.effectiveLength,
             CURRENT_SENTENCE.lengthInDays,
-            CURRENT_SENTENCE.enteredSentenceEndDate
+            CURRENT_SENTENCE.enteredSentenceEndDate,
+            CURRENT_SENTENCE.startDate,
         )
         val expectedResponse = Conviction(
             event.id, event.eventNumber,
