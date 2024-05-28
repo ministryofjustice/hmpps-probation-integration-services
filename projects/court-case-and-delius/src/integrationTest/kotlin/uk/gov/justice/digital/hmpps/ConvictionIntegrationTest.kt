@@ -124,7 +124,10 @@ internal class ConvictionIntegrationTest {
             CURRENT_SENTENCE.lengthInDays,
             CURRENT_SENTENCE.enteredSentenceEndDate,
             CURRENT_SENTENCE.startDate,
-            sentenceType = KeyValue(CURFEW_ORDER.sentenceType, CURFEW_ORDER.description)
+            sentenceType = KeyValue(CURFEW_ORDER.sentenceType, CURFEW_ORDER.description),
+            failureToComplyLimit = CURFEW_ORDER.failureToComplyLimit,
+            cja2003Order = CURFEW_ORDER.cja2003Order,
+            legacyOrder = CURFEW_ORDER.legacyOrder
         )
         val expectedResponse = Conviction(
             event.id, event.eventNumber,

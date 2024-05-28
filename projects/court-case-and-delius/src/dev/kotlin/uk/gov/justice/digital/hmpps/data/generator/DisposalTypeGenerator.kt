@@ -4,5 +4,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Di
 
 object DisposalTypeGenerator {
 
-    val CURFEW_ORDER = DisposalType(IdGenerator.getAndIncrement(), "Curfew Order", "SP")
+    val CURFEW_ORDER =
+        DisposalType(IdGenerator.getAndIncrement(), "Curfew Order", "SP", cja2003Order = false, legacyOrder = true, 2)
 }

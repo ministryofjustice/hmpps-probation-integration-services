@@ -68,9 +68,9 @@ data class Sentence(
     val terminationReason: String? = null,
     val sentenceType: KeyValue,
 //    val additionalSentences: List<AdditionalSentence>,
-//    val failureToComplyLimit: Long,
-//    val cja2003Order: Boolean,
-//    val legacyOrder: Boolean,
+    val failureToComplyLimit: Long?,
+    val cja2003Order: Boolean,
+    val legacyOrder: Boolean,
 )
 
 data class UnpaidWork(

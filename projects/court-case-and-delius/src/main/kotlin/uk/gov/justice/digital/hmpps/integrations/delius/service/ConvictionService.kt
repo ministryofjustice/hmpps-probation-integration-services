@@ -101,7 +101,10 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             startDate,
             terminationDate,
             terminationReason?.description,
-            KeyValue(disposalType.sentenceType, disposalType.description)
+            KeyValue(disposalType.sentenceType, disposalType.description),
+            disposalType.failureToComplyLimit,
+            disposalType.cja2003Order,
+            disposalType.legacyOrder
         )
 }
 

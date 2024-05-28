@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
@@ -96,6 +97,19 @@ class DisposalType(
     val description: String,
 
     val sentenceType: String,
+
+    @Column(name = "cja2003")
+    @Convert(converter = YesNoConverter::class)
+    val cja2003Order: Boolean = false,
+
+    @Column(name = "pre_cja2003")
+    @Convert(converter = YesNoConverter::class)
+    val legacyOrder: Boolean = false,
+
+    @Column(name = "ftc_limit")
+    val failureToComplyLimit: Long? = null
+
+
 )
 
 @Entity
