@@ -51,7 +51,20 @@ internal class ConvictionIntegrationTest {
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
 
         val expectedOffenceDetail =
-            OffenceDetail(MAIN_OFFENCE.code, MAIN_OFFENCE.description, MAIN_OFFENCE.abbreviation)
+            OffenceDetail(
+                MAIN_OFFENCE.code,
+                MAIN_OFFENCE.description,
+                MAIN_OFFENCE.abbreviation,
+                MAIN_OFFENCE.mainCategoryCode,
+                MAIN_OFFENCE.mainCategoryDescription,
+                MAIN_OFFENCE.mainCategoryAbbreviation,
+                MAIN_OFFENCE.ogrsOffenceCategory.description,
+                MAIN_OFFENCE.subCategoryCode,
+                MAIN_OFFENCE.subCategoryDescription,
+                MAIN_OFFENCE.form20Code,
+                MAIN_OFFENCE.subCategoryAbbreviation,
+                MAIN_OFFENCE.cjitCode
+            )
         val expectedOffences = listOf(Offence(mainOffence.id, true, expectedOffenceDetail, mainOffence.date))
         val expectedResponse = Conviction(
             event.id, event.eventNumber,

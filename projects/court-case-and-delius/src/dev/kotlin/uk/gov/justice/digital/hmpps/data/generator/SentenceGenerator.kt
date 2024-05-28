@@ -100,16 +100,62 @@ object SentenceGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = Custody(disposal, custodialStatus, id = id)
 
-    val MAIN_OFFENCE = generateOffence("00303", "Main Offence")
-    val ADDITIONAL_OFFENCE = generateOffence("00701", "Additional Offence")
+    val MAIN_OFFENCE =
+        generateOffence(
+            code = "00303",
+            description = "Main Offence",
+            offenceCategory = ReferenceDataGenerator.VIOLENCE,
+            mainCategoryCode = "003",
+            mainCategoryDescription = "Threats, conspiracy, or incitement to murder",
+            mainCategoryAbbreviation = "Threats, conspiracy, or incitement to murder",
+            subCategoryCode = "03",
+            subCategoryDescription = "Assisting offender by impeding his apprehension or prosecution in a case of murder",
+            form20Code = "21"
+        )
+    val ADDITIONAL_OFFENCE =
+        generateOffence(
+            code = "00701",
+            description = "Additional Offence",
+            offenceCategory = ReferenceDataGenerator.VIOLENCE,
+            mainCategoryCode = "007",
+            mainCategoryDescription = "Endangering life at sea",
+            mainCategoryAbbreviation = "Endangering life at sea",
+            subCategoryCode = "01",
+            subCategoryDescription = "Sending unseaworthy ship to sea",
+            form20Code = "2"
+        )
     val MAIN_OFFENCE_DEFAULT = generateMainOffence(CURRENTLY_MANAGED, MAIN_OFFENCE, LocalDate.now())
 
     fun generateOffence(
         code: String,
         description: String,
+        offenceCategory: ReferenceData,
+        mainCategoryCode: String,
+        mainCategoryDescription: String,
+        mainCategoryAbbreviation: String,
+        subCategoryCode: String,
+        subCategoryDescription: String,
         abbreviation: String? = null,
+        form20Code: String? = null,
+        subCategoryAbbreviation: String? = null,
+        cjitCode: String? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Offence(id, code, description, abbreviation)
+    ) =
+        Offence(
+            id,
+            offenceCategory,
+            code,
+            description,
+            abbreviation,
+            mainCategoryCode,
+            mainCategoryDescription,
+            mainCategoryAbbreviation,
+            subCategoryCode,
+            subCategoryDescription,
+            form20Code,
+            subCategoryAbbreviation,
+            cjitCode
+        )
 
     fun generateMainOffence(
         event: Event,

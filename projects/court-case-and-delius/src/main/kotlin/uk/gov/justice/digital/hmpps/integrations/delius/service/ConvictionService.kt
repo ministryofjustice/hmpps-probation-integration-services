@@ -41,6 +41,20 @@ class ConvictionService(private val personRepository: PersonRepository, private 
 
     fun MainOffence.toOffence(): Offence = Offence(id, true, offence.toOffenceDetail(), date)
 
-    fun OffenceEntity.toOffenceDetail(): OffenceDetail = OffenceDetail(code, description, abbreviation)
+    fun OffenceEntity.toOffenceDetail(): OffenceDetail =
+        OffenceDetail(
+            code,
+            description,
+            abbreviation,
+            mainCategoryCode,
+            mainCategoryDescription,
+            mainCategoryAbbreviation,
+            ogrsOffenceCategory.description,
+            subCategoryCode,
+            subCategoryDescription,
+            form20Code,
+            subCategoryAbbreviation,
+            cjitCode
+        )
 }
 

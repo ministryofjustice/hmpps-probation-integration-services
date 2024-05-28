@@ -40,15 +40,15 @@ data class OffenceDetail(
     val code: String,
     val description: String,
     val abbreviation: String?,
-//    val mainCategoryCode: String,
-//    val mainCategoryDescription: String,
-//    val mainCategoryAbbreviation: String,
-//    val ogrsOffenceCategory: String,
-//    val subCategoryCode: String,
-//    val subCategoryDescription: String,
-//    val form20Code: String,
-//    val subCategoryAbbreviation: String,
-//    val cjitCode: String
+    val mainCategoryCode: String,
+    val mainCategoryDescription: String,
+    val mainCategoryAbbreviation: String,
+    val ogrsOffenceCategory: String,
+    val subCategoryCode: String,
+    val subCategoryDescription: String,
+    val form20Code: String?,
+    val subCategoryAbbreviation: String?,
+    val cjitCode: String?
 )
 
 data class Sentence(

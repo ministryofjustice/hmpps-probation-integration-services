@@ -175,4 +175,10 @@ object ReferenceDataGenerator {
         "Mr",
         IdGenerator.getAndIncrement()
     )
+
+    val VIOLENCE = ReferenceData(
+        "VI",
+        "Violence",
+        IdGenerator.getAndIncrement()
+    )
 }

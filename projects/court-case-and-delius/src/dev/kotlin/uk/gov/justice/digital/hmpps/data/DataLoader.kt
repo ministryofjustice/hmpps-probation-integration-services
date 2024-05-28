@@ -39,6 +39,7 @@ class DataLoader(
             BoroughGenerator.DEFAULT,
             DistrictGenerator.DEFAULT,
             TeamGenerator.DEFAULT,
+            ReferenceDataGenerator.VIOLENCE,
             SentenceGenerator.MAIN_OFFENCE,
             SentenceGenerator.ADDITIONAL_OFFENCE,
             BusinessInteractionGenerator.UPDATE_CONTACT,
