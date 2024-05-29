@@ -5,7 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -25,7 +25,7 @@ class MainOffence(
     val offence: Offence,
 
     @Column(name = "offence_date", nullable = false)
-    val date: LocalDateTime,
+    val date: LocalDate,
 
     @Column(nullable = false)
     val offenceCount: Long,
@@ -38,10 +38,10 @@ class MainOffence(
     val offenderId: Long,
 
     @Column(name = "created_datetime", nullable = false)
-    val created: LocalDateTime,
+    val created: LocalDate,
 
     @Column(name = "last_updated_datetime", nullable = false)
-    val updated: LocalDateTime,
+    val updated: LocalDate,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
@@ -66,7 +66,7 @@ class AdditionalOffence(
     val offence: Offence,
 
     @Column(name = "offence_date")
-    val date: LocalDateTime?,
+    val date: LocalDate?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
@@ -74,10 +74,10 @@ class AdditionalOffence(
     val offenceCount: Long? = null,
 
     @Column(name = "created_datetime", nullable = false)
-    val created: LocalDateTime,
+    val created: LocalDate,
 
     @Column(name = "last_updated_datetime", nullable = false)
-    val updated: LocalDateTime,
+    val updated: LocalDate,
 
     @Id
     @Column(name = "additional_offence_id")

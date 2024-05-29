@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 object SentenceGenerator {
@@ -148,19 +147,19 @@ object SentenceGenerator {
         generateMainOffence(
             CURRENTLY_MANAGED,
             MAIN_OFFENCE,
-            LocalDateTime.now(),
+            LocalDate.now(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
-            LocalDateTime.now().minusDays(3),
-            LocalDateTime.now().plusDays(1)
+            LocalDate.now().minusDays(3),
+            LocalDate.now().plusDays(1)
         )
 
     val ADDITIONAL_OFFENCE_DEFAULT = generateAdditionalOffence(
         CURRENTLY_MANAGED,
         SentenceGenerator.ADDITIONAL_OFFENCE,
-        LocalDateTime.now(),
-        LocalDateTime.now().minusMonths(1),
-        LocalDateTime.now().plusMonths(1),
+        LocalDate.now(),
+        LocalDate.now().minusMonths(1),
+        LocalDate.now().plusMonths(1),
     )
 
     fun generateOffence(
@@ -197,11 +196,11 @@ object SentenceGenerator {
     fun generateMainOffence(
         event: Event,
         offence: Offence,
-        date: LocalDateTime,
+        date: LocalDate,
         offenceCount: Long,
         offenderId: Long,
-        created: LocalDateTime,
-        updated: LocalDateTime,
+        created: LocalDate,
+        updated: LocalDate,
         tics: Long? = null,
         verdict: String? = null,
         id: Long = IdGenerator.getAndIncrement(),
@@ -211,9 +210,9 @@ object SentenceGenerator {
     fun generateAdditionalOffence(
         event: Event,
         offence: Offence,
-        date: LocalDateTime,
-        created: LocalDateTime,
-        updated: LocalDateTime,
+        date: LocalDate,
+        created: LocalDate,
+        updated: LocalDate,
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false,
         offenceCount: Long? = null,

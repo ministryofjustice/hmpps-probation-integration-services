@@ -5,13 +5,18 @@ import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.UpwAppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.UpwDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence as OffenceEntity
 
 @Service
-class ConvictionService(private val personRepository: PersonRepository, private val eventRepository: EventRepository) {
+class ConvictionService(
+    private val personRepository: PersonRepository,
+    private val eventRepository: EventRepository,
+    private val upwAppointmentRepository: UpwAppointmentRepository
+) {
     fun getConvictionFor(crn: String, eventId: Long): Conviction? {
         val person = personRepository.getPerson(crn)
         val event = eventRepository.getByPersonAndEventNumber(person, eventId)
@@ -96,7 +101,7 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             effectiveLength,
             lengthInDays,
             enteredSentenceEndDate,
-            unpaidWorkDetails?.toUnpaidWork(),
+            unpaidWorkDetails?.toUnpaidWork(id),
             startDate,
             terminationDate,
             terminationReason?.description,
@@ -106,6 +111,7 @@ class ConvictionService(private val personRepository: PersonRepository, private 
             disposalType.legacyOrder
         )
 
-    fun UpwDetails.toUnpaidWork(): UnpaidWork = UnpaidWork(upwLengthMinutes)
+    fun UpwDetails.toUnpaidWork(disposalId: Long): UnpaidWork =
+        UnpaidWork(upwLengthMinutes, upwAppointmentRepository.calculateUnpaidTimeWorked(disposalId))
 }
 

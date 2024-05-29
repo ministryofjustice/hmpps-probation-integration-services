@@ -104,6 +104,39 @@ class UpwDetails(
 
 )
 
+@Entity(name = "conviction_upw_appointment")
+@Immutable
+class UpwAppointment(
+    @Id
+    @Column(name = "upw_appointment_id")
+    val id: Long,
+
+    val minutesCredited: Long?,
+
+    @Column(columnDefinition = "char(1)")
+    val attended: String?,
+
+    val softDeleted: Long,
+
+    @JoinColumn(name = "upw_details_id")
+    @ManyToOne
+    val upwDetails: UpwDetails,
+)
+
+interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
+
+    @Query(
+        """
+            SELECT COALESCE(SUM(u.minutesCredited), 0)
+            FROM conviction_upw_appointment u 
+            JOIN  u.upwDetails upd 
+            JOIN  upd.disposal d 
+            WHERE d.id = :id
+         """
+    )
+    fun calculateUnpaidTimeWorked(id: Long): Long
+}
+
 @Entity
 @Immutable
 class DisposalType(
