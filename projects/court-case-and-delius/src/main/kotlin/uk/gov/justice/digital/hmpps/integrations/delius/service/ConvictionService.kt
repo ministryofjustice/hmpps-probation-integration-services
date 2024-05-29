@@ -39,13 +39,20 @@ class ConvictionService(
             convictionDate,
             referralDate,
             toOffences(),
-            disposal?.toSentence(id)
+            disposal?.toSentence(id),
+            toLatestCourtAppearanceOutcome()
         )
 
     fun Event.toOffences(): List<Offence> {
         val mainOffence = listOf(mainOffence!!.toOffence())
         val additionalOffences = additionalOffences.map { it.toOffence() }
         return mainOffence + additionalOffences
+    }
+
+    fun Event.toLatestCourtAppearanceOutcome(): KeyValue? {
+        courtAppearances.maxByOrNull { it.appearanceDate }
+            ?.let { return KeyValue(it.outcome.code, it.outcome.description) }
+            ?: return null
     }
 
     fun MainOffence.toOffence(): Offence =

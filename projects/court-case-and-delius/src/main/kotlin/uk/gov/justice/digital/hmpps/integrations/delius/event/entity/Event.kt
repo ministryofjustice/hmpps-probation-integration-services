@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -57,6 +58,10 @@ class Event(
 
     @OneToMany(mappedBy = "event")
     val additionalOffences: List<AdditionalOffence> = emptyList(),
+
+    @OneToMany(mappedBy = "event")
+    val courtAppearances: List<CourtAppearance> = emptyList(),
+
 )
 
 interface EventRepository : JpaRepository<Event, Long> {

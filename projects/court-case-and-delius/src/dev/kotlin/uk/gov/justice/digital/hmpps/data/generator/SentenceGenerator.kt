@@ -110,9 +110,10 @@ object SentenceGenerator {
     fun generateCourtAppearance(
         event: Event,
         outcome: Outcome,
+        appearanceDate: LocalDateTime,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = CourtAppearance(event, outcome, DocumentEntityGenerator.COURT.courtId, softDeleted, id)
+    ) = CourtAppearance(event, outcome, DocumentEntityGenerator.COURT.courtId, appearanceDate, softDeleted, id)
 
     fun generateCustody(
         disposal: Disposal,

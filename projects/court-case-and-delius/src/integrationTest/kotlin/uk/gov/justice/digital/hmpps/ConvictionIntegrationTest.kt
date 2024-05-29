@@ -153,7 +153,8 @@ internal class ConvictionIntegrationTest {
             event.convictionDate,
             event.referralDate,
             expectedOffences,
-            expectedSentence
+            expectedSentence,
+            KeyValue("101", "Adjourned - Pre-Sentence Report")
         )
 
         val response = mockMvc

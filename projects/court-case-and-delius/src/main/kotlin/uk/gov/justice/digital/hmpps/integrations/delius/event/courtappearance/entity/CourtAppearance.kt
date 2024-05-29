@@ -1,13 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -15,6 +8,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 @Immutable
@@ -31,6 +25,8 @@ class CourtAppearance(
 
     @Column(name = "court_id")
     val courtId: Long,
+
+    val appearanceDate: LocalDateTime,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     var softDeleted: Boolean,
@@ -59,12 +55,15 @@ class Outcome(
     @Column(name = "code_value")
     val code: String,
 
+    @Column(name = "code_description")
+    val description: String,
+
     @Id
     @Column(name = "standard_reference_list_id")
     val id: Long
 ) {
-    enum class Code(val value: String) {
-        AWAITING_PSR("101")
+    enum class Code(val value: String, val description: String) {
+        AWAITING_PSR("101", "Adjourned - Pre-Sentence Report")
     }
 }
 

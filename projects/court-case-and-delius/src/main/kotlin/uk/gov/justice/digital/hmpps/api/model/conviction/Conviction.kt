@@ -17,7 +17,7 @@ data class Conviction(
     val referralDate: LocalDate,
     val offences: List<Offence>,
     val sentence: Sentence?,
-//    val latestCourtAppearanceOutcome: KeyValue,
+    val latestCourtAppearanceOutcome: KeyValue?,
 //    val custody: Custody,
 //    val responsibleCourt: Court,
 //    val courtAppearance: CourtAppearanceBasic
