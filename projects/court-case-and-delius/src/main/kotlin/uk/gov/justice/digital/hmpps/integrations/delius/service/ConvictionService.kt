@@ -4,18 +4,21 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.AdditionalSentenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.UpwAppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.UpwDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence as OffenceEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.AdditionalSentence as AdditionalSentenceEntity
 
 @Service
 class ConvictionService(
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
-    private val upwAppointmentRepository: UpwAppointmentRepository
+    private val upwAppointmentRepository: UpwAppointmentRepository,
+    private val additionalSentenceRepository: AdditionalSentenceRepository
 ) {
     fun getConvictionFor(crn: String, eventId: Long): Conviction? {
         val person = personRepository.getPerson(crn)
@@ -36,7 +39,7 @@ class ConvictionService(
             convictionDate,
             referralDate,
             toOffences(),
-            disposal?.toSentence()
+            disposal?.toSentence(id)
         )
 
     fun Event.toOffences(): List<Offence> {
@@ -89,7 +92,7 @@ class ConvictionService(
             cjitCode
         )
 
-    fun Disposal.toSentence(): Sentence =
+    fun Disposal.toSentence(eventId: Long): Sentence =
         Sentence(
             id,
             disposalType.description,
@@ -106,6 +109,7 @@ class ConvictionService(
             terminationDate,
             terminationReason?.description,
             KeyValue(disposalType.sentenceType, disposalType.description),
+            additionalSentenceRepository.getAllByEventId(eventId).map { it.toAdditionalSentence() },
             disposalType.failureToComplyLimit,
             disposalType.cja2003Order,
             disposalType.legacyOrder
@@ -127,5 +131,8 @@ class ConvictionService(
             status.description
         )
     }
+
+    fun AdditionalSentenceEntity.toAdditionalSentence(): AdditionalSentence =
+        AdditionalSentence(id, KeyValue(type.code, type.description), amount, length, notes)
 }
 

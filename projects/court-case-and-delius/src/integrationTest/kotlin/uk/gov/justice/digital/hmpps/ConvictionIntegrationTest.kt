@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
+import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -129,6 +130,15 @@ internal class ConvictionIntegrationTest {
             ),
             CURRENT_SENTENCE.startDate,
             sentenceType = KeyValue(CURFEW_ORDER.sentenceType, CURFEW_ORDER.description),
+            additionalSentences = listOf(
+                AdditionalSentence(
+                    SENTENCE_DISQ.id,
+                    KeyValue(SENTENCE_DISQ.type.code, SENTENCE_DISQ.type.description),
+                    SENTENCE_DISQ.amount,
+                    SENTENCE_DISQ.length,
+                    SENTENCE_DISQ.notes
+                )
+            ),
             failureToComplyLimit = CURFEW_ORDER.failureToComplyLimit,
             cja2003Order = CURFEW_ORDER.cja2003Order,
             legacyOrder = CURFEW_ORDER.legacyOrder

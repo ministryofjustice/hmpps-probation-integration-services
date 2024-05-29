@@ -79,6 +79,7 @@ class DataLoader(
             ReferenceDataGenerator.DEFAULT_ADDRESS_STATUS,
             ReferenceDataGenerator.DEFAULT_ALLOCATION_REASON,
             ReferenceDataGenerator.DEFAULT_TIER,
+            ReferenceDataGenerator.REF_DISQ,
             PersonGenerator.NEW_TO_PROBATION,
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
@@ -127,6 +128,7 @@ class DataLoader(
         em.saveAll(
             currentEvent,
             currentSentence,
+            AdditionalSentenceGenerator.SENTENCE_DISQ,
             ReferenceDataGenerator.HOURS_WORKED,
             UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1,
             UnpaidWorkGenerator.APPT1,

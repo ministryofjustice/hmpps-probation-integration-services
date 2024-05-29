@@ -67,7 +67,7 @@ data class Sentence(
     val terminationDate: LocalDate? = null,
     val terminationReason: String? = null,
     val sentenceType: KeyValue,
-//    val additionalSentences: List<AdditionalSentence>,
+    val additionalSentences: List<AdditionalSentence>,
     val failureToComplyLimit: Long?,
     val cja2003Order: Boolean,
     val legacyOrder: Boolean,
@@ -91,9 +91,9 @@ data class Appointments(
 data class AdditionalSentence(
     val additionalSentenceId: Long,
     val type: KeyValue,
-    val amount: BigDecimal,
-    val length: Long,
-    val notes: String,
+    val amount: BigDecimal?,
+    val length: Long?,
+    val notes: String?,
 )
 
 data class Custody(

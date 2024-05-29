@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -285,4 +286,38 @@ class PssRequirementSubCat(
 interface CustodyRepository : JpaRepository<Custody, Long>
 interface PssRequirementRepository : JpaRepository<PssRequirement, Long> {
     fun findAllByCustodyId(custodyId: Long): List<PssRequirement>
+}
+
+@Immutable
+@Entity
+@Table(name = "additional_sentence")
+@SQLRestriction("soft_deleted = 0")
+class AdditionalSentence(
+    @Id
+    @Column(name = "additional_sentence_id")
+    val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
+    val event: Event,
+
+    @ManyToOne
+    @JoinColumn(name = "additional_sentence_type_id", nullable = false)
+    val type: ReferenceData,
+
+    @Column(name = "amount")
+    val amount: BigDecimal? = null,
+
+    @Column(name = "length")
+    val length: Long? = null,
+
+    @Column(name = "notes", columnDefinition = "clob")
+    val notes: String? = null,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false,
+)
+
+interface AdditionalSentenceRepository : JpaRepository<AdditionalSentence, Long> {
+    fun getAllByEventId(id: Long): List<AdditionalSentence>
 }

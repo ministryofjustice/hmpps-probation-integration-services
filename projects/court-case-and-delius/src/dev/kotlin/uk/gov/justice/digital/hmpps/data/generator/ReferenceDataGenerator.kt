@@ -188,6 +188,12 @@ object ReferenceDataGenerator {
         IdGenerator.getAndIncrement()
     )
 
+    val REF_DISQ = ReferenceData(
+        "DISQ",
+        "Disqualified from Driving",
+        IdGenerator.getAndIncrement()
+    )
+
     val DEFAULT_ADDRESS_TYPE = ReferenceData(
         "AT",
         "Address Type",
