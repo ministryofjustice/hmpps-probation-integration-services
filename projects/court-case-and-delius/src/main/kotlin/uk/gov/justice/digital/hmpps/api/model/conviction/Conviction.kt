@@ -76,11 +76,11 @@ data class Sentence(
 data class UnpaidWork(
     val minutesOrdered: Long,
     val minutesCompleted: Long,
-//    val appointments: Appointments,
+    val appointments: Appointments,
 //    val status: String
 )
 
-class Appointments(
+data class Appointments(
     val total: Long,
     val attended: Long,
     val acceptableAbsences: Long,

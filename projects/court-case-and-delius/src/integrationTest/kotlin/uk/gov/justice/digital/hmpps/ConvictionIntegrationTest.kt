@@ -121,7 +121,7 @@ internal class ConvictionIntegrationTest {
             CURRENT_SENTENCE.effectiveLength,
             CURRENT_SENTENCE.lengthInDays,
             CURRENT_SENTENCE.enteredSentenceEndDate,
-            UnpaidWork(UNPAID_WORK_DETAILS_1.upwLengthMinutes, 0),
+            UnpaidWork(UNPAID_WORK_DETAILS_1.upwLengthMinutes, 7, Appointments(7, 3, 2, 1, 1)),
             CURRENT_SENTENCE.startDate,
             sentenceType = KeyValue(CURFEW_ORDER.sentenceType, CURFEW_ORDER.description),
             failureToComplyLimit = CURFEW_ORDER.failureToComplyLimit,

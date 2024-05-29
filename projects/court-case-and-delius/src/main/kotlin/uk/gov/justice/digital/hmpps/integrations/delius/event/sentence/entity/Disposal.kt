@@ -100,8 +100,7 @@ class UpwDetails(
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
 
-    val upwLengthMinutes: Long
-
+    val upwLengthMinutes: Long,
 )
 
 @Entity(name = "conviction_upw_appointment")
@@ -116,6 +115,9 @@ class UpwAppointment(
     @Column(columnDefinition = "char(1)")
     val attended: String?,
 
+    @Column(columnDefinition = "char(1)")
+    val complied: String?,
+
     val softDeleted: Long,
 
     @JoinColumn(name = "upw_details_id")
@@ -127,15 +129,58 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
 
     @Query(
         """
-            SELECT COALESCE(SUM(u.minutesCredited), 0)
+            SELECT COALESCE(SUM(u.minutesCredited), 0) as value, "sum_minutes" as type
             FROM conviction_upw_appointment u 
             JOIN  u.upwDetails upd 
             JOIN  upd.disposal d 
             WHERE d.id = :id
+            UNION 
+            SELECT count(u.id) as value, "total_appointments" as type
+            FROM conviction_upw_appointment u 
+            JOIN  u.upwDetails upd 
+            JOIN  upd.disposal d 
+            WHERE d.id = :id
+            UNION 
+            SELECT count(u.id) as value, "attended" as type
+            FROM conviction_upw_appointment u 
+            JOIN  u.upwDetails upd 
+            JOIN  upd.disposal d 
+            WHERE d.id = :id
+            AND u.attended = 'Y'
+            UNION 
+            SELECT count(u.id) as value, "acceptable_absence" as type
+            FROM conviction_upw_appointment u 
+            JOIN  u.upwDetails upd 
+            JOIN  upd.disposal d 
+            WHERE d.id = :id
+            AND u.attended = 'N'
+            AND u.complied = 'Y'
+            UNION 
+            SELECT count(u.id) as value, "unacceptable_absence" as type
+            FROM conviction_upw_appointment u 
+            JOIN  u.upwDetails upd 
+            JOIN  upd.disposal d 
+            WHERE d.id = :id
+            AND u.attended = 'N'
+            AND u.complied = 'N'  
+            UNION 
+            SELECT count(u.id) as value, "no_outcome_recorded" as type
+            FROM conviction_upw_appointment u 
+            JOIN  u.upwDetails upd 
+            JOIN  upd.disposal d 
+            WHERE d.id = :id
+            AND u.attended IS NULL 
+            AND u.complied IS NULL                 
          """
     )
-    fun calculateUnpaidTimeWorked(id: Long): Long
+    fun getUnpaidTimeWorked(id: Long): List<UnpaidData>
 }
+
+interface UnpaidData {
+    val value: Long
+    val type: String
+}
+
 
 @Entity
 @Immutable

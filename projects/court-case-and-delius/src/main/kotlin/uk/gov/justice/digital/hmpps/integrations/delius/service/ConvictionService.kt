@@ -111,7 +111,20 @@ class ConvictionService(
             disposalType.legacyOrder
         )
 
-    fun UpwDetails.toUnpaidWork(disposalId: Long): UnpaidWork =
-        UnpaidWork(upwLengthMinutes, upwAppointmentRepository.calculateUnpaidTimeWorked(disposalId))
+    fun UpwDetails.toUnpaidWork(disposalId: Long): UnpaidWork {
+        val unpaidWorkItems = upwAppointmentRepository.getUnpaidTimeWorked(disposalId)
+        val minutesCompleted = unpaidWorkItems.find { it.type == "sum_minutes" }!!.value
+        val totalAppointments = unpaidWorkItems.find { it.type == "total_appointments" }!!.value
+        val attended = unpaidWorkItems.find { it.type == "attended" }!!.value
+        val acceptableAbsence = unpaidWorkItems.find { it.type == "acceptable_absence" }!!.value
+        val unacceptableAbsence = unpaidWorkItems.find { it.type == "unacceptable_absence" }!!.value
+        val noOutcomeRecorded = unpaidWorkItems.find { it.type == "no_outcome_recorded" }!!.value
+
+        return UnpaidWork(
+            upwLengthMinutes,
+            minutesCompleted,
+            Appointments(totalAppointments, attended, acceptableAbsence, unacceptableAbsence, noOutcomeRecorded)
+        )
+    }
 }
 
