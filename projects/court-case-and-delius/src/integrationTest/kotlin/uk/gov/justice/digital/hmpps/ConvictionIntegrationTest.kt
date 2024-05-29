@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.ADDITIONAL_OFFENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_SENTENCE
@@ -121,7 +122,11 @@ internal class ConvictionIntegrationTest {
             CURRENT_SENTENCE.effectiveLength,
             CURRENT_SENTENCE.lengthInDays,
             CURRENT_SENTENCE.enteredSentenceEndDate,
-            UnpaidWork(UNPAID_WORK_DETAILS_1.upwLengthMinutes, 7, Appointments(7, 3, 2, 1, 1)),
+            UnpaidWork(
+                UNPAID_WORK_DETAILS_1.upwLengthMinutes, 7,
+                Appointments(7, 3, 2, 1, 1),
+                ReferenceDataGenerator.HOURS_WORKED.description
+            ),
             CURRENT_SENTENCE.startDate,
             sentenceType = KeyValue(CURFEW_ORDER.sentenceType, CURFEW_ORDER.description),
             failureToComplyLimit = CURFEW_ORDER.failureToComplyLimit,

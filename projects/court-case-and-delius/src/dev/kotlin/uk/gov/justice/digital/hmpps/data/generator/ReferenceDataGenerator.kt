@@ -181,7 +181,13 @@ object ReferenceDataGenerator {
         "Violence",
         IdGenerator.getAndIncrement()
     )
-    
+
+    val HOURS_WORKED = ReferenceData(
+        "HC",
+        "Hours Completed",
+        IdGenerator.getAndIncrement()
+    )
+
     val DEFAULT_ADDRESS_TYPE = ReferenceData(
         "AT",
         "Address Type",

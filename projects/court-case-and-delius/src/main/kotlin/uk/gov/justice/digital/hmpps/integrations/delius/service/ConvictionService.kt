@@ -123,7 +123,8 @@ class ConvictionService(
         return UnpaidWork(
             upwLengthMinutes,
             minutesCompleted,
-            Appointments(totalAppointments, attended, acceptableAbsence, unacceptableAbsence, noOutcomeRecorded)
+            Appointments(totalAppointments, attended, acceptableAbsence, unacceptableAbsence, noOutcomeRecorded),
+            status.description
         )
     }
 }

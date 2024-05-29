@@ -101,6 +101,10 @@ class UpwDetails(
     val disposal: Disposal,
 
     val upwLengthMinutes: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "upw_status_id")
+    val status: ReferenceData
 )
 
 @Entity(name = "conviction_upw_appointment")

@@ -6,7 +6,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Up
 
 object UnpaidWorkGenerator {
 
-    val UNPAID_WORK_DETAILS_1 = UpwDetails(IdGenerator.getAndIncrement(), CURRENT_SENTENCE, 0)
+    val UNPAID_WORK_DETAILS_1 =
+        UpwDetails(IdGenerator.getAndIncrement(), CURRENT_SENTENCE, 0, ReferenceDataGenerator.HOURS_WORKED)
 
     val APPT1 = UpwAppointment(IdGenerator.getAndIncrement(), 3, "Y", "Y", 0, UNPAID_WORK_DETAILS_1)
     val APPT2 = UpwAppointment(IdGenerator.getAndIncrement(), 4, "Y", "Y", 1, UNPAID_WORK_DETAILS_1)

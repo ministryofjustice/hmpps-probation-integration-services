@@ -127,6 +127,7 @@ class DataLoader(
         em.saveAll(
             currentEvent,
             currentSentence,
+            ReferenceDataGenerator.HOURS_WORKED,
             UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1,
             UnpaidWorkGenerator.APPT1,
             UnpaidWorkGenerator.APPT2,

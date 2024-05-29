@@ -77,7 +77,7 @@ data class UnpaidWork(
     val minutesOrdered: Long,
     val minutesCompleted: Long,
     val appointments: Appointments,
-//    val status: String
+    val status: String
 )
 
 data class Appointments(
