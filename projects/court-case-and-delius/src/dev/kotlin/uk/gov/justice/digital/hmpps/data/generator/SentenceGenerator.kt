@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 object SentenceGenerator {
@@ -150,7 +151,7 @@ object SentenceGenerator {
             LocalDate.now(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
-            LocalDate.now().minusDays(3),
+            LocalDateTime.now().minusDays(3),
             LocalDate.now().plusDays(1)
         )
 
@@ -158,7 +159,7 @@ object SentenceGenerator {
         CURRENTLY_MANAGED,
         SentenceGenerator.ADDITIONAL_OFFENCE,
         LocalDate.now(),
-        LocalDate.now().minusMonths(1),
+        LocalDateTime.now().minusMonths(1),
         LocalDate.now().plusMonths(1),
     )
 
@@ -199,7 +200,7 @@ object SentenceGenerator {
         date: LocalDate,
         offenceCount: Long,
         offenderId: Long,
-        created: LocalDate,
+        created: LocalDateTime,
         updated: LocalDate,
         tics: Long? = null,
         verdict: String? = null,
@@ -211,7 +212,7 @@ object SentenceGenerator {
         event: Event,
         offence: Offence,
         date: LocalDate,
-        created: LocalDate,
+        created: LocalDateTime,
         updated: LocalDate,
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false,

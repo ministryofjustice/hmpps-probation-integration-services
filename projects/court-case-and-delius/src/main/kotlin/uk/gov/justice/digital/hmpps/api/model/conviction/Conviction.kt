@@ -32,7 +32,7 @@ data class Offence(
     val tics: Long?,
     val verdict: String?,
     val offenderId: Long,
-    val createdDatetime: LocalDate,
+    val createdDatetime: LocalDateTime,
     val lastUpdatedDatetime: LocalDate,
 )
 
