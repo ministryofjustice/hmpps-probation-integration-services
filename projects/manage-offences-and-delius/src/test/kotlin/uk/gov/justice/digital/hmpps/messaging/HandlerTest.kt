@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.check
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -119,12 +120,46 @@ internal class HandlerTest {
         )
     }
 
-    private fun offence(code: String) = Offence(
+    @Test
+    fun `home office codes of 22222 are ignored`() {
+        whenever(manageOffencesClient.getOffence(any())).thenReturn(offence(homeOfficeCode = "222/22"))
+
+        handler.handle(Notification(ResourceLoader.event("offence-changed")))
+
+        verify(telemetryService).trackEvent(
+            "OffenceCodeIgnored",
+            mapOf(
+                "offenceCode" to "AB12345",
+                "homeOfficeCode" to "22222",
+                "reason" to "Home Office Code is 'Not Known'"
+            ),
+            mapOf()
+        )
+    }
+
+    @Test
+    fun `cjs codes ending with a number of 500 or above are ignored`() {
+        whenever(manageOffencesClient.getOffence(any())).thenReturn(offence(code = "AB12500"))
+
+        handler.handle(Notification(ResourceLoader.event("offence-changed")))
+
+        verify(telemetryService).trackEvent(
+            "OffenceCodeIgnored",
+            mapOf(
+                "offenceCode" to "AB12500",
+                "homeOfficeCode" to "01234",
+                "reason" to "CJS Code suffix is 500 or above"
+            ),
+            mapOf()
+        )
+    }
+
+    private fun offence(code: String = "AB12345", homeOfficeCode: String = "012/34") = Offence(
         code = code,
         description = "some offence",
         offenceType = COURT_CATEGORY.code,
         startDate = LocalDate.now(),
-        homeOfficeStatsCode = "012/34",
+        homeOfficeStatsCode = homeOfficeCode,
         homeOfficeDescription = "Some Offence Description",
     )
 }
