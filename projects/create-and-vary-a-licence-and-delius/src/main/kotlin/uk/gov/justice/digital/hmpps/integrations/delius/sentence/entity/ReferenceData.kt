@@ -20,8 +20,8 @@ class LicenceConditionCategory(
     val id: Long
 ) {
     companion object {
-        val STANDARD_CATEGORY_CODE = "SL1"
-        val BESPOKE_CATEGORY_CODE = "BESP"
+        const val STANDARD_CATEGORY_CODE = "SL1"
+        const val BESPOKE_CATEGORY_CODE = "BESP"
     }
 }
 
@@ -44,10 +44,10 @@ class ReferenceData(
     val id: Long
 ) {
     companion object {
-        val STANDARD_SUB_CATEGORY_CODE = "SL1"
-        val BESPOKE_SUB_CATEGORY_CODE = "NSTT9"
-        val INITIAL_ALLOCATION_CODE = "IN1"
-        val SENTENCE_EXPIRY_CODE = "SED"
+        const val STANDARD_SUB_CATEGORY_CODE = "SL1"
+        const val BESPOKE_SUB_CATEGORY_CODE = "NSTT9"
+        const val INITIAL_ALLOCATION_CODE = "IN1"
+        const val SENTENCE_EXPIRY_CODE = "SED"
     }
 }
 
@@ -64,8 +64,8 @@ class Dataset(
     val id: Long
 ) {
     companion object {
-        val SUB_CATEGORY_CODE = "LICENCE CONDITION SUB CATEGORY"
-        val LM_ALLOCATION_REASON = "LM ALLOCATION REASON"
+        const val SUB_CATEGORY_CODE = "LICENCE CONDITION SUB CATEGORY"
+        const val LM_ALLOCATION_REASON = "LM ALLOCATION REASON"
     }
 }
 
@@ -80,7 +80,7 @@ class TransferReason(
     val id: Long
 ) {
     companion object {
-        val DEFAULT_CODE = "COMPONENT"
+        const val DEFAULT_CODE = "COMPONENT"
     }
 }
 
