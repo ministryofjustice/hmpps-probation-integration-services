@@ -97,7 +97,6 @@ jobs:
       fail-fast: false
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
-    environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
 
@@ -115,7 +114,7 @@ jobs:
           environments=[]
           for env in dev preprod prod; do
             values_file="projects/$PROJECT_NAME/deploy/values-$env.yml"
-            if [ -f "$values_file" ] && [ $(yq '.enabled' "$values_file" | sed 's/^null$/true/') = "true" ] && [ -n $(yq '.generic-service.ingress.host' "$values_file") ]; then 
+            if [ -f "$values_file" ] && [ "$(yq '.enabled' "$values_file" | sed 's/^null$/true/')" = "true" ] && [ -n "$(yq '.generic-service.ingress.host' "$values_file")" ]; then 
               url=$(yq '.generic-service.ingress.host' "$values_file")
               health_path=$(yq '.generic-service.livenessProbe.httpGet.path // "/health"' "projects/$PROJECT_NAME/deploy/values.yaml")
               environments=$(echo "$environments" | jq -c '. += [{
