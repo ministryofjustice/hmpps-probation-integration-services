@@ -122,6 +122,7 @@ jobs:
                 "type": $name,
                 "url": ("https://" + $url),
                 "health_path": $health_path,
+                "info_path": "/info",
                 "namespace": ("hmpps-probation-integration-services-" + $name)
               }]' --arg name "$env" --arg url "$url" --arg health_path "$health_path")
             fi
