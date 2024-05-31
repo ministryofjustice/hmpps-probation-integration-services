@@ -34,7 +34,11 @@ class DataLoader(
             PersonGenerator.MIN_PERSON,
             PersonGenerator.FULL_PERSON,
             *PersonGenerator.FULL_PERSON_ALIASES.toTypedArray(),
-            *PersonGenerator.FULL_PERSON_ADDRESSES.toTypedArray()
+            *PersonGenerator.FULL_PERSON_ADDRESSES.toTypedArray(),
+            *PersonGenerator.FULL_PERSON_EXCLUSIONS.map { it.user }.toTypedArray(),
+            *PersonGenerator.FULL_PERSON_EXCLUSIONS.toTypedArray(),
+            *PersonGenerator.FULL_PERSON_RESTRICTIONS.map { it.user }.toTypedArray(),
+            *PersonGenerator.FULL_PERSON_RESTRICTIONS.toTypedArray(),
         )
     }
 
