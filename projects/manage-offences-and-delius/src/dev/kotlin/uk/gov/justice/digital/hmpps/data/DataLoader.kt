@@ -28,8 +28,8 @@ class DataLoader(
         with(entityManager) {
             merge(DataGenerator.COURT_CATEGORY_SET)
             merge(DataGenerator.COURT_CATEGORY)
-            merge(DataGenerator.EXISTING_OFFENCE)
-            merge(DataGenerator.HL_OFFENCE)
+            merge(DataGenerator.EXISTING_DETAILED_OFFENCE)
+            merge(DataGenerator.HIGH_LEVEL_OFFENCE)
         }
     }
 }

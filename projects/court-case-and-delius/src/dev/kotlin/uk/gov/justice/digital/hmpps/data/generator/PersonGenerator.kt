@@ -104,11 +104,10 @@ object PersonGenerator {
             team = TeamGenerator.DEFAULT,
             staff = StaffGenerator.ALLOCATED,
             provider = ProviderGenerator.DEFAULT,
-            date = ZonedDateTime.now(),
+            date = ZonedDateTime.now().minusDays(2),
             allocationReason = DEFAULT_ALLOCATION_REASON,
             officer = StaffGenerator.OFFICER,
             partitionArea = PARTITION_AREA,
-            startDate = LocalDate.now().minusDays(2),
             staffEmployeeId = StaffGenerator.ALLOCATED.id,
             providerEmployee = ProviderEmployeeGenerator.PROVIDER_EMPLOYEE
         )
@@ -165,7 +164,7 @@ object PersonGenerator {
         typeVerified = true,
         startDate = LocalDate.now().minusDays(1),
         endDate = null,
-        softDeleted = false,
+        softDeleted = softDeleted,
         createdDatetime = ZonedDateTime.now().minusDays(1),
     )
 }

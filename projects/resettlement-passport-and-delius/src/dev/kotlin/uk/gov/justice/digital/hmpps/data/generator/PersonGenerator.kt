@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.PersonManager
-import uk.gov.justice.digital.hmpps.entity.Staff
-import uk.gov.justice.digital.hmpps.entity.Team
+import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 
 object PersonGenerator {
@@ -20,6 +17,8 @@ object PersonGenerator {
     val DEFAULT_MANAGER = generateManager(DEFAULT)
     val CREATE_APPOINTMENT = generate("C123456", null, "James", "Brown", LocalDate.of(1990, 5, 12))
 
+    val RP9_CONTACT_TYPE = generateContactType("RP9", "RP9")
+    val RP10_CONTACT_TYPE = generateContactType("RP10", "RP10")
     fun generate(
         crn: String,
         noms: String? = null,
@@ -53,4 +52,10 @@ object PersonGenerator {
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = PersonManager(person, team, staff, probationAreaId, softDeleted, active, id)
+
+    fun generateContactType(code: String, description: String) = CaseNoteType(
+        id = IdGenerator.getAndIncrement(),
+        code = code,
+        description = description
+    )
 }

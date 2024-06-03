@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.LimitedAccess
+import uk.gov.justice.digital.hmpps.api.model.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integration.delius.entity.Alias
 import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddress
@@ -32,8 +34,16 @@ internal class CorePersonIntegrationTest {
 
     val minPerson = PersonGenerator.MIN_PERSON.detail(listOf(), listOf())
     val fullPerson = PersonGenerator.FULL_PERSON.detail(
-        PersonGenerator.FULL_PERSON_ALIASES.map(Alias::asModel),
-        PersonGenerator.FULL_PERSON_ADDRESSES.mapNotNull(PersonAddress::asAddress)
+        aliases = PersonGenerator.FULL_PERSON_ALIASES.map(Alias::asModel),
+        addresses = PersonGenerator.FULL_PERSON_ADDRESSES.mapNotNull(PersonAddress::asAddress),
+        exclusions = LimitedAccess(
+            message = "This case is excluded because ...",
+            users = listOf(LimitedAccessUser("SomeUser1"))
+        ),
+        restrictions = LimitedAccess(
+            message = "This case is restricted because ...",
+            users = listOf(LimitedAccessUser("SomeUser2"), LimitedAccessUser("FutureEndDatedUser"))
+        ),
     )
 
     @Test

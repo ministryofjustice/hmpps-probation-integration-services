@@ -1,5 +1,8 @@
 # Prison Identifier and Delius
 
+Service that supports matching NOMIS person records to Delius person records using the basic personal details and the
+recorded sentence dates.
+
 ## Business Need
 
 HMPPS has a number of systems each holding information about a person's interaction with different aspects of the justice system. These systems have been set up and managed over a long period of time resulting in different identifiers being used for a person in each. In order to integrate these independent systems we must match the person records using the information held in each. To achieve this for NOMIS (NOMS Number) and Delius (CRN) we query the two systems and determine that likely matches based on the data. Once we have a likely match we can link the records by adding the NOMS Number to the person record in the Delius database. When this link is in place the two systems can be integrated in other ways to support case management as the person moves through different stages of HMPPS supervision.

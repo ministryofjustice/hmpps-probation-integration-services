@@ -1,4 +1,5 @@
 generic-service:
+  productId: HMPPS518
   nameOverride: domain-events-and-delius
   serviceAccountName: domain-events-and-delius
   replicaCount: 1

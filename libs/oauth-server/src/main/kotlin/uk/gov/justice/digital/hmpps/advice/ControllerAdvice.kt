@@ -1,13 +1,12 @@
 package uk.gov.justice.digital.hmpps.advice
 
-import org.springframework.http.HttpStatus.BAD_REQUEST
-import org.springframework.http.HttpStatus.CONFLICT
-import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @RestControllerAdvice(basePackages = ["uk.gov.justice.digital.hmpps"])
@@ -32,4 +31,9 @@ class ControllerAdvice {
                 fields = e.bindingResult.fieldErrors.map { FieldError(it.code, it.defaultMessage, it.field) }
             )
         )
+
+    @ExceptionHandler(InvalidRequestException::class)
+    fun handleInvalidRequest(e: InvalidRequestException) = ResponseEntity
+        .status(BAD_REQUEST)
+        .body(ErrorResponse(status = BAD_REQUEST.value(), message = e.message))
 }

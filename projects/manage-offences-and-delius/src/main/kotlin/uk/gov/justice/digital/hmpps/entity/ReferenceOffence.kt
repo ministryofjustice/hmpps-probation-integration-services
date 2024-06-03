@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
@@ -79,5 +80,8 @@ class ReferenceOffence(
 }
 
 interface OffenceRepository : JpaRepository<ReferenceOffence, Long> {
-    fun findOffenceByCode(code: String): ReferenceOffence?
+    fun findByCode(code: String): ReferenceOffence?
 }
+
+fun OffenceRepository.getByCode(code: String) =
+    findByCode(code) ?: throw NotFoundException("High-level offence", "code", code)

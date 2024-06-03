@@ -74,6 +74,8 @@ data class Person(
     val ethnicity: ReferenceData?,
 
     val ethnicityDescription: String?,
+    val exclusionMessage: String?,
+    val restrictionMessage: String?,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,

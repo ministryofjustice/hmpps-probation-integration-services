@@ -1,11 +1,11 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.service
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.exceptions.StaffCodeExhaustedException
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
+import uk.gov.justice.digital.hmpps.repository.PrisonStaffRepository
 
 @Component
-class OfficerCodeGenerator(private val staffRepository: StaffRepository) {
+class OfficerCodeGenerator(private val staffRepository: PrisonStaffRepository) {
     private val alphabet = ('A'..'Z').toList()
 
     fun generateFor(probationAreaCode: String, index: Int = 0): String {
