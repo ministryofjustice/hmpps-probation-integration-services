@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.client.Offence
+import uk.gov.justice.digital.hmpps.config.IgnoredOffence.Companion.IGNORED_OFFENCES
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.entity.DetailedOffence
 import uk.gov.justice.digital.hmpps.entity.OffenceRepository
@@ -38,18 +39,17 @@ class Handler(
 
         val offence = manageOffencesClient.getOffence(notification.message.offenceCode)
 
+        IGNORED_OFFENCES.firstOrNull { it.matches(offence) }?.let {
+            telemetryService.trackEvent("OffenceCodeIgnored", offence.telemetry + mapOf("reason" to it.reason))
+            return
+        }
+
         val isNew = mergeDetailedOffence(offence)
         if (featureFlags.enabled(FF_CREATE_OFFENCE)) {
             mergeReferenceOffence(offence)
         }
 
-        telemetryService.trackEvent(
-            if (isNew) "OffenceCodeCreated" else "OffenceCodeUpdated",
-            listOfNotNull(
-                "offenceCode" to offence.code,
-                offence.homeOfficeCode?.let { "homeOfficeCode" to it }
-            ).toMap()
-        )
+        telemetryService.trackEvent(if (isNew) "OffenceCodeCreated" else "OffenceCodeUpdated", offence.telemetry)
     }
 
     private fun mergeDetailedOffence(offence: Offence): Boolean {
@@ -123,3 +123,9 @@ class Handler(
 }
 
 val HmppsDomainEvent.offenceCode get() = additionalInformation["offenceCode"] as String
+
+val Offence.telemetry
+    get() = listOfNotNull(
+        "offenceCode" to code,
+        homeOfficeCode?.let { "homeOfficeCode" to it }
+    ).toMap()
