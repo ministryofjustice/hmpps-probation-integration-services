@@ -87,7 +87,7 @@ dependencyResolutionManagement {
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-            library("wiremock", "org.wiremock:wiremock-standalone:3.5.4")
+            library("wiremock", "org.wiremock:wiremock-standalone:3.6.0")
             library("flipt", "io.flipt:flipt-java:1.1.1")
         }
     }

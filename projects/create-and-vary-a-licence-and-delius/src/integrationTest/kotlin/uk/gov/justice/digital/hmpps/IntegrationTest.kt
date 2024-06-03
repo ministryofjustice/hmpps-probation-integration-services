@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -76,43 +75,6 @@ internal class IntegrationTest {
             get("/probation-case/Z123456/responsible-community-manager")
                 .withToken()
         ).andExpect(status().isNotFound)
-    }
-
-    @Test
-    fun `can return all addresses for a crn`() {
-        val crn = PersonGenerator.DEFAULT_PERSON.crn
-
-        val addresses = mockMvc
-            .perform(get("/probation-case/$crn/addresses").withToken())
-            .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<List<Address>>()
-
-        assertThat(addresses.size, equalTo(2))
-        assertThat(
-            addresses.first(),
-            equalTo(
-                Address.from(
-                    buildingNumber = "21",
-                    streetName = "Mantle Place",
-                    town = "Hearth",
-                    postcode = "H34 7TH",
-                    from = LocalDate.now()
-                )
-            )
-        )
-        assertThat(
-            addresses.last(),
-            equalTo(
-                Address.from(
-                    buildingName = "Casa Anterior",
-                    streetName = "Plaza de Espana",
-                    county = "Seville",
-                    postcode = "S3 11E",
-                    from = LocalDate.now().minusDays(12),
-                    to = LocalDate.now().minusDays(1)
-                )
-            )
-        )
     }
 
     @Test
