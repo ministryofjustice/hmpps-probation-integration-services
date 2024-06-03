@@ -31,6 +31,26 @@ object SentenceGenerator {
         lengthInDays = 99
     )
 
+    val CURRENT_CUSTODY = generateCustody(
+        CURRENT_SENTENCE,
+        ReferenceDataGenerator.CUSTODIAL_STATUS,
+        "FD1234",
+        InstitutionGenerator.WSIHMP
+    )
+
+    val CONDITIONAL_RELEASE_KEY_DATE = generateKeyDates(LocalDate.now(), CURRENT_CUSTODY, ReferenceDataGenerator.ACR)
+    val LED_KEY_DATE = generateKeyDates(LocalDate.now().plusDays(1), CURRENT_CUSTODY, ReferenceDataGenerator.LED)
+    val HDC_KEY_DATE = generateKeyDates(LocalDate.now().plusDays(2), CURRENT_CUSTODY, ReferenceDataGenerator.HDE)
+    val PAROLE_KEY_DATE = generateKeyDates(LocalDate.now().plusDays(3), CURRENT_CUSTODY, ReferenceDataGenerator.PED)
+    val SENTENCE_KEY_DATE = generateKeyDates(LocalDate.now().plusDays(4), CURRENT_CUSTODY, ReferenceDataGenerator.SED)
+    val EXPECTED_RELEASE_KEY_DATE =
+        generateKeyDates(LocalDate.now().plusDays(5), CURRENT_CUSTODY, ReferenceDataGenerator.EXP)
+    val SUPERVISION_KEY_DATE =
+        generateKeyDates(LocalDate.now().plusDays(6), CURRENT_CUSTODY, ReferenceDataGenerator.PSSED)
+    val HANDOVER_START_KEY_DATE =
+        generateKeyDates(LocalDate.now().plusDays(7), CURRENT_CUSTODY, ReferenceDataGenerator.POM1)
+    val HANDOVER_KEY_DATE = generateKeyDates(LocalDate.now().plusDays(8), CURRENT_CUSTODY, ReferenceDataGenerator.POM2)
+
     fun generateSentence(
         event: Event,
         startDate: LocalDate,
@@ -285,4 +305,7 @@ object SentenceGenerator {
             softDeleted = false,
             id = id
         )
+
+    fun generateKeyDates(date: LocalDate, custody: Custody, keyDateType: ReferenceData) =
+        KeyDate(IdGenerator.getAndIncrement(), date, custody, keyDateType)
 }

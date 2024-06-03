@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.MAIN_OFFENC
 import uk.gov.justice.digital.hmpps.data.generator.UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -167,6 +168,17 @@ internal class ConvictionIntegrationTest {
                     KeyValue(WSIHMP.establishmentType.code, WSIHMP.establishmentType.description),
                     WSIHMP.private,
                     WSIHMP.nomisCdeCode
+                ),
+                CustodyRelatedKeyDates(
+                    LocalDate.now(),
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(2),
+                    LocalDate.now().plusDays(3),
+                    LocalDate.now().plusDays(4),
+                    LocalDate.now().plusDays(5),
+                    LocalDate.now().plusDays(6),
+                    LocalDate.now().plusDays(7),
+                    LocalDate.now().plusDays(8),
                 )
             )
         )

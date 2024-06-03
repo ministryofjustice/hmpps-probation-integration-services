@@ -81,6 +81,15 @@ class DataLoader(
             ReferenceDataGenerator.DEFAULT_TIER,
             ReferenceDataGenerator.REF_DISQ,
             ReferenceDataGenerator.PRISON,
+            ReferenceDataGenerator.ACR,
+            ReferenceDataGenerator.EXP,
+            ReferenceDataGenerator.HDE,
+            ReferenceDataGenerator.LED,
+            ReferenceDataGenerator.PED,
+            ReferenceDataGenerator.PSSED,
+            ReferenceDataGenerator.POM1,
+            ReferenceDataGenerator.POM2,
+            ReferenceDataGenerator.SED,
             PersonGenerator.NEW_TO_PROBATION,
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
@@ -119,12 +128,7 @@ class DataLoader(
 
         val currentEvent = SentenceGenerator.CURRENTLY_MANAGED
         val currentSentence = SentenceGenerator.CURRENT_SENTENCE
-        val custody = SentenceGenerator.generateCustody(
-            currentSentence,
-            ReferenceDataGenerator.CUSTODIAL_STATUS,
-            "FD1234",
-            InstitutionGenerator.WSIHMP
-        )
+        val custody = SentenceGenerator.CURRENT_CUSTODY
         val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
         val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
@@ -156,6 +160,15 @@ class DataLoader(
             currentManager,
             InstitutionGenerator.WSIHMP,
             custody,
+            SentenceGenerator.CONDITIONAL_RELEASE_KEY_DATE,
+            SentenceGenerator.LED_KEY_DATE,
+            SentenceGenerator.HDC_KEY_DATE,
+            SentenceGenerator.PAROLE_KEY_DATE,
+            SentenceGenerator.SENTENCE_KEY_DATE,
+            SentenceGenerator.EXPECTED_RELEASE_KEY_DATE,
+            SentenceGenerator.SUPERVISION_KEY_DATE,
+            SentenceGenerator.HANDOVER_START_KEY_DATE,
+            SentenceGenerator.HANDOVER_KEY_DATE,
             mainOffence,
             additionalOffence,
             requirement,

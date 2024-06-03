@@ -99,7 +99,7 @@ data class AdditionalSentence(
 data class Custody(
     val bookingNumber: String,
     val institution: Institution,
-//    val keyDates: CustodyRelatedKeyDates,
+    val keyDates: CustodyRelatedKeyDates,
 //    val status: KeyValue,
 //    val sentenceStartDate: LocalDate
 )
@@ -116,15 +116,15 @@ data class Institution(
 )
 
 data class CustodyRelatedKeyDates(
-    val conditionalReleaseDate: LocalDate,
-    val licenceExpiryDate: LocalDate,
-    val hdcEligibilityDate: LocalDate,
-    val paroleEligibilityDate: LocalDate,
-    val sentenceExpiryDate: LocalDate,
-    val expectedReleaseDate: LocalDate,
-    val postSentenceSupervisionEndDate: LocalDate,
-    val expectedPrisonOffenderManagerHandoverStartDate: LocalDate,
-    val expectedPrisonOffenderManagerHandoverDate: LocalDate,
+    val conditionalReleaseDate: LocalDate?,
+    val licenceExpiryDate: LocalDate?,
+    val hdcEligibilityDate: LocalDate?,
+    val paroleEligibilityDate: LocalDate?,
+    val sentenceExpiryDate: LocalDate?,
+    val expectedReleaseDate: LocalDate?,
+    val postSentenceSupervisionEndDate: LocalDate?,
+    val expectedPrisonOffenderManagerHandoverStartDate: LocalDate?,
+    val expectedPrisonOffenderManagerHandoverDate: LocalDate?,
 )
 
 data class Court(

@@ -237,6 +237,9 @@ class Custody(
     )
     val institution: Institution,
 
+    @OneToMany(mappedBy = "custody")
+    val keyDates: List<KeyDate> = listOf(),
+
     @Id
     @Column(name = "custody_id")
     val id: Long

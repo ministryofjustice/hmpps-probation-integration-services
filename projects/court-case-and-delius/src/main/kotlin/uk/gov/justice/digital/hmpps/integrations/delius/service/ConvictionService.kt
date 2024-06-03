@@ -4,10 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.AdditionalSentenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.UpwAppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.UpwDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence as OffenceEntity
@@ -145,7 +142,8 @@ class ConvictionService(
     fun AdditionalSentenceEntity.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(id, KeyValue(type.code, type.description), amount, length, notes)
 
-    fun CustodyEntity.toCustody(): Custody = Custody(prisonerNumber, institution.toInstitution())
+    fun CustodyEntity.toCustody(): Custody =
+        Custody(prisonerNumber, institution.toInstitution(), populateKeyDates(keyDates))
 
     fun InstitutionEntity.toInstitution(): Institution =
         Institution(
@@ -158,5 +156,48 @@ class ConvictionService(
             nomisCdeCode
         )
 
+    fun populateKeyDates(keyDates: List<KeyDate>): CustodyRelatedKeyDates {
+        val conditionalReleaseDate =
+            keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }
+        val licenceExpiryDate = keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.LICENCE_EXPIRY_DATE.code }
+        val hdcEligibilityDate = keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.HDC_EXPECTED_DATE.code }
+        val paroleEligibilityDate =
+            keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.PAROLE_ELIGIBILITY_DATE.code }
+        val sentenceExpiryDate = keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.SENTENCE_EXPIRY_DATE.code }
+        val expectedReleaseDate =
+            keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.EXPECTED_RELEASE_DATE.code }
+        val postSentenceSupervisionEndDate =
+            keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.POST_SENTENCE_SUPERVISION_END_DATE.code }
+        val expectedPrisonOffenderManagerHandoverStartDate =
+            keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.POM_HANDOVER_START_DATE.code }
+        val expectedPrisonOffenderManagerHandoverDate =
+            keyDates.firstOrNull { it.keyDateType.code == KeyDateTypes.RO_HANDOVER_DATE.code }
+
+        return CustodyRelatedKeyDates(
+            conditionalReleaseDate?.keyDate,
+            licenceExpiryDate?.keyDate,
+            hdcEligibilityDate?.keyDate,
+            paroleEligibilityDate?.keyDate,
+            sentenceExpiryDate?.keyDate,
+            expectedReleaseDate?.keyDate,
+            postSentenceSupervisionEndDate?.keyDate,
+            expectedPrisonOffenderManagerHandoverStartDate?.keyDate,
+            expectedPrisonOffenderManagerHandoverDate?.keyDate,
+        )
+    }
+
 }
+
+enum class KeyDateTypes(val code: String) {
+    AUTOMATIC_CONDITIONAL_RELEASE_DATE("ACR"),
+    EXPECTED_RELEASE_DATE("EXP"),
+    HDC_EXPECTED_DATE("HDE"),
+    PAROLE_ELIGIBILITY_DATE("PED"),
+    POST_SENTENCE_SUPERVISION_END_DATE("PSSED"),
+    POM_HANDOVER_START_DATE("POM1"),
+    RO_HANDOVER_DATE("POM2"),
+    LICENCE_EXPIRY_DATE("LED"),
+    SENTENCE_EXPIRY_DATE("SED")
+}
+
 
