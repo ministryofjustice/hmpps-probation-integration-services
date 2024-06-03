@@ -179,7 +179,12 @@ internal class ConvictionIntegrationTest {
                     LocalDate.now().plusDays(6),
                     LocalDate.now().plusDays(7),
                     LocalDate.now().plusDays(8),
-                )
+                ),
+                KeyValue(
+                    ReferenceDataGenerator.CUSTODIAL_STATUS.code,
+                    ReferenceDataGenerator.CUSTODIAL_STATUS.description
+                ),
+                LocalDate.now()
             )
         )
 

@@ -100,8 +100,8 @@ data class Custody(
     val bookingNumber: String,
     val institution: Institution,
     val keyDates: CustodyRelatedKeyDates,
-//    val status: KeyValue,
-//    val sentenceStartDate: LocalDate
+    val status: KeyValue,
+    val sentenceStartDate: LocalDate
 )
 
 data class Institution(

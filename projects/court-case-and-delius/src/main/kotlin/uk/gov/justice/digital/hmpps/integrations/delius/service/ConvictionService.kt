@@ -143,7 +143,13 @@ class ConvictionService(
         AdditionalSentence(id, KeyValue(type.code, type.description), amount, length, notes)
 
     fun CustodyEntity.toCustody(): Custody =
-        Custody(prisonerNumber, institution.toInstitution(), populateKeyDates(keyDates))
+        Custody(
+            prisonerNumber,
+            institution.toInstitution(),
+            populateKeyDates(keyDates),
+            KeyValue(status.code, status.description),
+            disposal.startDate
+        )
 
     fun InstitutionEntity.toInstitution(): Institution =
         Institution(
