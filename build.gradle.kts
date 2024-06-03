@@ -11,7 +11,6 @@ plugins {
     kotlin("jvm") version "2.0.0"
     kotlin("plugin.spring") version "2.0.0" apply false
     kotlin("plugin.jpa") version "2.0.0" apply false
-    kotlin("kapt") version "2.0.0" apply false
     id("org.springframework.boot") version "3.2.5" apply false
     id("io.spring.dependency-management") version "1.1.5" apply false
     id("com.gorylenko.gradle-git-properties") version "2.4.2" apply false
@@ -62,7 +61,6 @@ subprojects {
     apply { plugin("org.springframework.boot") }
     apply { plugin("io.spring.dependency-management") }
     apply { plugin("org.jetbrains.kotlin.jvm") }
-    apply { plugin("org.jetbrains.kotlin.kapt") }
     apply { plugin("org.jetbrains.kotlin.plugin.jpa") }
     apply { plugin("org.jetbrains.kotlin.plugin.spring") }
     apply { plugin("jacoco") }
