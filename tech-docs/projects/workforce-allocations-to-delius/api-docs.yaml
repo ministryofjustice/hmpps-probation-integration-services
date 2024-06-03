@@ -317,7 +317,7 @@ paths:
           content:
             text/csv:
               schema:
-                type: string
+                $ref: '#/components/schemas/StreamingResponseBody'
   /allocation-demand/{crn}/{eventNumber}/probation-record:
     get:
       tags:
