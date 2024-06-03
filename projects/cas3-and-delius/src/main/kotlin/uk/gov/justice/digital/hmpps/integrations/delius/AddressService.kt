@@ -39,6 +39,10 @@ class AddressService(
     fun endMainAddress(person: Person, endDate: LocalDate) {
         val personForUpdate = personRepository.getByIdForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
+
+        if (currentMain?.startDate?.isAfter(endDate) == true) {
+            throw IllegalArgumentException("Cannot end address. The address start date is after the new end date ")
+        }
         currentMain?.apply {
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
@@ -49,6 +53,11 @@ class AddressService(
     fun endMainCAS3Address(person: Person, endDate: ZonedDateTime) {
         val personForUpdate = personRepository.getByIdForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
+
+        if (currentMain?.startDate?.isAfter(endDate.toLocalDate()) == true) {
+            throw IllegalArgumentException("Cannot end address. The address start date is after the new end date ")
+        }
+
         currentMain?.apply {
             if (currentMain.type.code == AddressTypeCode.CAS3.code) {
                 val previousStatus = referenceDataRepository.previousAddressStatus()

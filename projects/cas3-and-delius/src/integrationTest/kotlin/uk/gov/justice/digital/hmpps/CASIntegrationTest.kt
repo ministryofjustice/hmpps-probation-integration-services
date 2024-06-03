@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -322,5 +323,59 @@ internal class CASIntegrationTest {
             contact!!.notes,
             equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
         )
+    }
+
+    @Test
+    fun `person arrived with existing start date later than the arrived date`() {
+        val eventName = "person-arrived-invalid-date"
+        val event = prepEvent(eventName, wireMockServer.port())
+        val person = personRepository.findByCrn(PersonGenerator.PERSON_2_CRN.crn)
+        val existingMainAddress = addressRepository.findMainAddress(person!!.id)
+        val eventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-$eventName")
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now(EuropeLondon))
+        wireMockServer.stubFor(
+            get(urlEqualTo("/cas3-api/events/person-arrived/12346"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(eventDetailsCopy))
+                )
+        )
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        Mockito.verify(telemetryService).notificationReceived(event)
+
+        val mainAddress = addressRepository.findMainAddress(person.id)
+        assertThat(mainAddress?.startDate, equalTo(existingMainAddress?.startDate))
+    }
+
+    @Test
+    fun `person departed with existing start date later than the departed date`() {
+        val eventName = "person-departed-invalid-date"
+        val event = prepEvent(eventName, wireMockServer.port())
+        val person = personRepository.findByCrn(PersonGenerator.PERSON_2_CRN.crn)
+        val existingMainAddress = addressRepository.findMainAddress(person!!.id)
+        val eventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-$eventName")
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now(EuropeLondon))
+        wireMockServer.stubFor(
+            get(urlEqualTo("/cas3-api/events/person-departed/12347"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(eventDetailsCopy))
+                )
+        )
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        Mockito.verify(telemetryService).notificationReceived(event)
+
+        val mainAddress = addressRepository.findMainAddress(person.id)
+        assertThat(mainAddress?.startDate, equalTo(existingMainAddress?.startDate))
     }
 }

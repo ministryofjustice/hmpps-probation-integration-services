@@ -30,6 +30,7 @@ class DataLoader(
             AddressRDGenerator.CAS3_ADDRESS_TYPE,
             AddressRDGenerator.MAIN_ADDRESS_STATUS,
             AddressRDGenerator.PREV_ADDRESS_STATUS,
+            AddressRDGenerator.MAIN_ADDRESS_TYPE,
             BusinessInteractionGenerator.UPDATE_CONTACT,
             ContactTypeGenerator.EARS_CONTACT_TYPE,
             ContactTypeGenerator.EACA_CONTACT_TYPE,
@@ -38,7 +39,10 @@ class DataLoader(
             ContactTypeGenerator.EAAR_CONTACT_TYPE,
             ContactTypeGenerator.EADP_CONTACT_TYPE,
             PersonGenerator.PERSON_CRN,
-            PersonGenerator.generatePersonManager(PersonGenerator.PERSON_CRN)
+            PersonGenerator.PERSON_2_CRN,
+            AddressGenerator.PERSON_2_ADDRESS,
+            PersonGenerator.generatePersonManager(PersonGenerator.PERSON_CRN),
+            PersonGenerator.generatePersonManager(PersonGenerator.PERSON_2_CRN)
         )
         saveProviderDetails()
     }
