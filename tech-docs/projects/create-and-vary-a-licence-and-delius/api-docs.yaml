@@ -159,26 +159,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Manager'
-  /probation-case/{crn}/addresses:
-    get:
-      tags:
-      - probation-case-resource
-      operationId: findAddresses
-      parameters:
-      - name: crn
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Address'
 components:
   schemas:
     Name:
@@ -372,31 +352,6 @@ components:
           type: string
         description:
           type: string
-    Address:
-      required:
-      - from
-      type: object
-      properties:
-        buildingName:
-          type: string
-        buildingNumber:
-          type: string
-        streetName:
-          type: string
-        district:
-          type: string
-        town:
-          type: string
-        county:
-          type: string
-        postcode:
-          type: string
-        from:
-          type: string
-          format: date
-        to:
-          type: string
-          format: date
   securitySchemes:
     hmpps-auth-token:
       type: http

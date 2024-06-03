@@ -165,6 +165,8 @@
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
             <h1 id="refer-and-monitor-and-delius">Refer and Monitor and Delius</h1>
+<p>Service that supports creating and managing the referral of a person on probation to a CRS intervention, by providing
+Delius information and listening to domain events to create Contacts and NSIs in Delius.</p>
 <h2 id="business-need">Business Need</h2>
 <p><em>Refer and Monitor an Intervention</em> has a tightly coupled relationship with <em>Delius</em> due to activity managed in both systems being important for workflows in the other. <em>Refer and Monitor an Intervention</em> depends on information managed in <em>Delius</em> for it&rsquo;s primary function of creating and managing CRS referrals. There is also a requirement to write information back to <em>Delius</em> when various activities are recorded in <em>Refer and Monitor an Intervention</em>. Where possible the interaction between the two services is managed asynchronously via domain events but there are workflows in <em>Refer and Monitor an Intervention</em> that have runtime dependency on successful creation of entities in <em>Delius</em>. In these cases the cross-service interaction is via synchronous API calls.</p>
 <h2 id="data-dependencies">Data Dependencies</h2>
