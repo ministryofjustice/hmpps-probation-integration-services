@@ -217,4 +217,10 @@ object ReferenceDataGenerator {
         "B2",
         IdGenerator.getAndIncrement()
     )
+
+    val PRISON = ReferenceData(
+        "E",
+        "prison",
+        IdGenerator.getAndIncrement()
+    )
 }

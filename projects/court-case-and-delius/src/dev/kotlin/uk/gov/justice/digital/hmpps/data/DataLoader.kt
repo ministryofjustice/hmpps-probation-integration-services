@@ -32,7 +32,6 @@ class DataLoader(
             DocumentEntityGenerator.COURT,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT,
-            DocumentEntityGenerator.R_INSTITUTION,
             AreaGenerator.PARTITION_AREA,
             ProviderEmployeeGenerator.PROVIDER_EMPLOYEE,
             ProviderGenerator.DEFAULT,
@@ -81,6 +80,7 @@ class DataLoader(
             ReferenceDataGenerator.DEFAULT_ALLOCATION_REASON,
             ReferenceDataGenerator.DEFAULT_TIER,
             ReferenceDataGenerator.REF_DISQ,
+            ReferenceDataGenerator.PRISON,
             PersonGenerator.NEW_TO_PROBATION,
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
@@ -119,7 +119,12 @@ class DataLoader(
 
         val currentEvent = SentenceGenerator.CURRENTLY_MANAGED
         val currentSentence = SentenceGenerator.CURRENT_SENTENCE
-        val custody = SentenceGenerator.generateCustody(currentSentence, ReferenceDataGenerator.CUSTODIAL_STATUS)
+        val custody = SentenceGenerator.generateCustody(
+            currentSentence,
+            ReferenceDataGenerator.CUSTODIAL_STATUS,
+            "FD1234",
+            InstitutionGenerator.WSIHMP
+        )
         val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
         val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
@@ -149,6 +154,7 @@ class DataLoader(
             UnpaidWorkGenerator.APPT6,
             UnpaidWorkGenerator.APPT7,
             currentManager,
+            InstitutionGenerator.WSIHMP,
             custody,
             mainOffence,
             additionalOffence,

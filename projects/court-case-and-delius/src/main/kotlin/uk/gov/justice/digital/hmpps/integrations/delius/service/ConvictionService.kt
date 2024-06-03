@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence as OffenceEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.AdditionalSentence as AdditionalSentenceEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody as CustodyEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Institution as InstitutionEntity
 
 @Service
 class ConvictionService(
@@ -40,7 +42,8 @@ class ConvictionService(
             referralDate,
             toOffences(),
             disposal?.toSentence(id),
-            toLatestCourtAppearanceOutcome()
+            toLatestCourtAppearanceOutcome(),
+            disposal?.custody?.toCustody()
         )
 
     fun Event.toOffences(): List<Offence> {
@@ -141,5 +144,19 @@ class ConvictionService(
 
     fun AdditionalSentenceEntity.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(id, KeyValue(type.code, type.description), amount, length, notes)
+
+    fun CustodyEntity.toCustody(): Custody = Custody(prisonerNumber, institution.toInstitution())
+
+    fun InstitutionEntity.toInstitution(): Institution =
+        Institution(
+            id.institutionId,
+            id.establishment,
+            code, description,
+            institutionName,
+            KeyValue(establishmentType.code, establishmentType.description),
+            private,
+            nomisCdeCode
+        )
+
 }
 

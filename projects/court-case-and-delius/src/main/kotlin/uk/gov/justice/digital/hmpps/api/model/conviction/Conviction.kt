@@ -18,7 +18,7 @@ data class Conviction(
     val offences: List<Offence>,
     val sentence: Sentence?,
     val latestCourtAppearanceOutcome: KeyValue?,
-//    val custody: Custody,
+    val custody: Custody? = null,
 //    val responsibleCourt: Court,
 //    val courtAppearance: CourtAppearanceBasic
 )
@@ -98,7 +98,10 @@ data class AdditionalSentence(
 
 data class Custody(
     val bookingNumber: String,
-    val institution: Institution
+    val institution: Institution,
+//    val keyDates: CustodyRelatedKeyDates,
+//    val status: KeyValue,
+//    val sentenceStartDate: LocalDate
 )
 
 data class Institution(
@@ -108,8 +111,20 @@ data class Institution(
     val description: String,
     val institutionName: String,
     val establishmentType: KeyValue,
-    val isPrivate: Boolean,
-    val nomsPrisonInstitutionCode: String
+    val isPrivate: Boolean?,
+    val nomsPrisonInstitutionCode: String?
+)
+
+data class CustodyRelatedKeyDates(
+    val conditionalReleaseDate: LocalDate,
+    val licenceExpiryDate: LocalDate,
+    val hdcEligibilityDate: LocalDate,
+    val paroleEligibilityDate: LocalDate,
+    val sentenceExpiryDate: LocalDate,
+    val expectedReleaseDate: LocalDate,
+    val postSentenceSupervisionEndDate: LocalDate,
+    val expectedPrisonOffenderManagerHandoverStartDate: LocalDate,
+    val expectedPrisonOffenderManagerHandoverDate: LocalDate,
 )
 
 data class Court(

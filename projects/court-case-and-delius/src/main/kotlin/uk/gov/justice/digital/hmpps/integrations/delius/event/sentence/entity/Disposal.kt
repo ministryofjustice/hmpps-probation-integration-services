@@ -228,6 +228,15 @@ class Custody(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
 
+    val prisonerNumber: String,
+
+    @ManyToOne
+    @JoinColumns(
+        JoinColumn(name = "institution_id", referencedColumnName = "institution_id"),
+        JoinColumn(name = "establishment", referencedColumnName = "establishment")
+    )
+    val institution: Institution,
+
     @Id
     @Column(name = "custody_id")
     val id: Long

@@ -118,8 +118,10 @@ object SentenceGenerator {
     fun generateCustody(
         disposal: Disposal,
         custodialStatus: ReferenceData,
+        prisonerNumber: String,
+        institution: Institution,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Custody(disposal, custodialStatus, id = id)
+    ) = Custody(disposal, custodialStatus, prisonerNumber = prisonerNumber, institution = institution, id = id)
 
     val MAIN_OFFENCE =
         generateOffence(

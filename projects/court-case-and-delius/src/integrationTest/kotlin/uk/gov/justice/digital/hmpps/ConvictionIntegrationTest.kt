@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
+import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator.WSIHMP
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
@@ -154,7 +155,20 @@ internal class ConvictionIntegrationTest {
             event.referralDate,
             expectedOffences,
             expectedSentence,
-            KeyValue("101", "Adjourned - Pre-Sentence Report")
+            KeyValue("101", "Adjourned - Pre-Sentence Report"),
+            Custody(
+                "FD1234",
+                Institution(
+                    WSIHMP.id.institutionId,
+                    WSIHMP.id.establishment,
+                    WSIHMP.code,
+                    WSIHMP.description,
+                    WSIHMP.institutionName,
+                    KeyValue(WSIHMP.establishmentType.code, WSIHMP.establishmentType.description),
+                    WSIHMP.private,
+                    WSIHMP.nomisCdeCode
+                )
+            )
         )
 
         val response = mockMvc
