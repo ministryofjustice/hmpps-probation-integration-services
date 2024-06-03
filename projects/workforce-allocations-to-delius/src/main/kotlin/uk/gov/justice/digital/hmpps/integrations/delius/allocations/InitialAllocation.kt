@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
+import java.util.stream.Stream
 
 @JsonPropertyOrder(
     "crn",
@@ -90,5 +91,5 @@ interface InitialAllocationRepository : JpaRepository<Person, Long> {
         """,
         nativeQuery = true
     )
-    fun findAllInitialAllocations(startDate: LocalDate = LocalDate.ofYearDay(2024, 1)): List<InitialAllocation>
+    fun findAllInitialAllocations(startDate: LocalDate = LocalDate.ofYearDay(2024, 1)): Stream<InitialAllocation>
 }
