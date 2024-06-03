@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 const val FF_CREATE_OFFENCE = "manage-offences-create-offence"
+const val FF_UPDATE_OFFENCE = "manage-offences-update-offence"
 
 @Component
 class Handler(
@@ -61,6 +62,7 @@ class Handler(
     private fun mergeReferenceOffence(offence: Offence) {
         if (offence.homeOfficeCode == null) return
         val existingEntity = offenceRepository.findByCode(offence.homeOfficeCode!!)
+        if (existingEntity != null && !featureFlags.enabled(FF_UPDATE_OFFENCE)) return
         val highLevelOffence = offenceRepository.getByCode(offence.highLevelCode!!)
         offenceRepository.save(existingEntity.mergeWith(offence.toReferenceOffence(highLevelOffence)))
     }
@@ -81,7 +83,7 @@ class Handler(
 
     private fun Offence.toReferenceOffence(highLevelOffence: ReferenceOffence) = ReferenceOffence(
         code = homeOfficeCode!!,
-        description = homeOfficeDescription!!,
+        description = "$homeOfficeDescription - $homeOfficeCode",
         mainCategoryCode = mainCategoryCode!!,
         selectable = false,
         mainCategoryDescription = highLevelOffence.description.take(200),

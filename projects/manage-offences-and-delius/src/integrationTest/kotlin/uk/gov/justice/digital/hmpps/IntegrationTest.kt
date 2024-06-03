@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.entity.OffenceRepository
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.FF_CREATE_OFFENCE
+import uk.gov.justice.digital.hmpps.messaging.FF_UPDATE_OFFENCE
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -38,6 +39,7 @@ internal class IntegrationTest {
     @Test
     fun `update offence code`() {
         whenever(featureFlags.enabled(FF_CREATE_OFFENCE)).thenReturn(true)
+        whenever(featureFlags.enabled(FF_UPDATE_OFFENCE)).thenReturn(true)
         val notification = Notification(ResourceLoader.event("offence-changed"))
 
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -59,7 +61,7 @@ internal class IntegrationTest {
         val referenceOffence = offenceRepository.findByCode("09155")
         assertNotNull(referenceOffence)
 
-        assertThat(referenceOffence?.description).isEqualTo("Obstructing a person home office description")
+        assertThat(referenceOffence?.description).isEqualTo("Obstructing a person home office description - 09155")
         assertThat(referenceOffence?.mainCategoryCode).isEqualTo("091")
         assertThat(referenceOffence?.subCategoryCode).isEqualTo("55")
         assertThat(referenceOffence?.schedule15ViolentOffence).isEqualTo(true)

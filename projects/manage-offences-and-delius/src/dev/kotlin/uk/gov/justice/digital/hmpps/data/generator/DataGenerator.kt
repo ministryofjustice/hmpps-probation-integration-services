@@ -7,15 +7,10 @@ import uk.gov.justice.digital.hmpps.entity.ReferenceOffence
 import java.time.LocalDate
 
 object DataGenerator {
-    val HL_OFFENCE = generateReferenceOffence(
-        code = "09100",
-        mainCategoryCode = "091",
-        subCategoryCode = "00",
-        ogrsOffenceCategoryId = 298456347L
-    )
     val COURT_CATEGORY_SET = ReferenceDataSet(IdGenerator.getAndIncrement(), "COURT CATEGORY")
     val COURT_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "CS", "Summary Non-motoring", COURT_CATEGORY_SET)
-    val EXISTING_OFFENCE = DetailedOffence(
+
+    val EXISTING_DETAILED_OFFENCE = DetailedOffence(
         id = IdGenerator.getAndIncrement(),
         code = "AB06001",
         description = "Obstruct person acting in execution of the regulations - 09155",
@@ -25,6 +20,19 @@ object DataGenerator {
         legislation = "N/A",
         startDate = LocalDate.of(2006, 5, 12),
         endDate = null
+    )
+
+    val HIGH_LEVEL_OFFENCE = generateReferenceOffence(
+        code = "09100",
+        mainCategoryCode = "091",
+        subCategoryCode = "00",
+        ogrsOffenceCategoryId = 1L
+    )
+    val EXISTING_OFFENCE = generateReferenceOffence(
+        code = "09155",
+        mainCategoryCode = "091",
+        subCategoryCode = "55",
+        ogrsOffenceCategoryId = 2L
     )
 
     fun generateReferenceOffence(
