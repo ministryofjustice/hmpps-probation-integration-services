@@ -1,5 +1,6 @@
 ---
 generic-service:
+  productId: HMPPS518
   nameOverride: ingress-test
 
   replicaCount: 2

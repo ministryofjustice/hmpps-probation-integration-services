@@ -1,5 +1,8 @@
 # Refer and Monitor and Delius
 
+Service that supports creating and managing the referral of a person on probation to a CRS intervention, by providing
+Delius information and listening to domain events to create Contacts and NSIs in Delius.
+
 ## Business Need
 
 _Refer and Monitor an Intervention_ has a tightly coupled relationship with _Delius_ due to activity managed in both systems being important for workflows in the other. _Refer and Monitor an Intervention_ depends on information managed in _Delius_ for it's primary function of creating and managing CRS referrals. There is also a requirement to write information back to _Delius_ when various activities are recorded in _Refer and Monitor an Intervention_. Where possible the interaction between the two services is managed asynchronously via domain events but there are workflows in _Refer and Monitor an Intervention_ that have runtime dependency on successful creation of entities in _Delius_. In these cases the cross-service interaction is via synchronous API calls.

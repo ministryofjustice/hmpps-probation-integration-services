@@ -1,4 +1,5 @@
 generic-service:
+  productId: HMPPS518
   nameOverride: cas3-and-delius
   serviceAccountName: cas3-and-delius
 

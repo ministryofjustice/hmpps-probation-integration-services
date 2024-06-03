@@ -1,5 +1,6 @@
 # Common values
 generic-service:
+  productId: HMPPS518
   nameOverride: create-and-vary-a-licence-and-delius
   serviceAccountName: create-and-vary-a-licence-and-delius
 
