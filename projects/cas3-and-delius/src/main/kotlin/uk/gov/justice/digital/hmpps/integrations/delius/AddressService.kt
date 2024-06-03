@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
@@ -40,9 +41,8 @@ class AddressService(
         val personForUpdate = personRepository.getByIdForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
 
-        if (currentMain?.startDate?.isAfter(endDate) == true) {
-            throw IllegalArgumentException("Cannot end address. The address start date is after the new end date ")
-        }
+        checkAddressDates(currentMain?.startDate, endDate)
+
         currentMain?.apply {
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
@@ -54,9 +54,7 @@ class AddressService(
         val personForUpdate = personRepository.getByIdForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
 
-        if (currentMain?.startDate?.isAfter(endDate.toLocalDate()) == true) {
-            throw IllegalArgumentException("Cannot end address. The address start date is after the new end date ")
-        }
+        checkAddressDates(currentMain?.startDate, endDate.toLocalDate())
 
         currentMain?.apply {
             if (currentMain.type.code == AddressTypeCode.CAS3.code) {
@@ -82,5 +80,16 @@ class AddressService(
             postcode = details.premises.postcode.trim(),
             startDate = details.arrivedAt.toLocalDate()
         )
+    }
+
+    private fun checkAddressDates(startDate: LocalDate?, endDate: LocalDate?) {
+        if (startDate?.isAfter(endDate) == true) {
+            throw IgnorableMessageException(
+                "Cannot end address. The address start date is after the new end date", mapOf(
+                    "startDate" to startDate.toString(),
+                    "endDate" to endDate.toString()
+                )
+            )
+        }
     }
 }

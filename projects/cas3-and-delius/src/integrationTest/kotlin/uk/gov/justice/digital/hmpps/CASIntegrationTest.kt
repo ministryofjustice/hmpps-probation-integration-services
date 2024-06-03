@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
+import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
@@ -348,8 +349,19 @@ internal class CASIntegrationTest {
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
 
+        Mockito.verify(telemetryService).trackEvent(
+            "Cas3FailureReport",
+            event.message.telemetryProperties() + mapOf(
+                "crn" to PersonGenerator.PERSON_2_CRN.crn,
+                "startDate" to "2023-12-12",
+                "endDate" to "2023-11-29",
+                "reason" to "Cannot end address. The address start date is after the new end date"
+            )
+        )
+
+        // Address has not changed
         val mainAddress = addressRepository.findMainAddress(person.id)
-        assertThat(mainAddress?.startDate, equalTo(existingMainAddress?.startDate))
+        assertThat(mainAddress?.endDate, equalTo(existingMainAddress?.endDate))
     }
 
     @Test
@@ -375,7 +387,18 @@ internal class CASIntegrationTest {
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
 
+        Mockito.verify(telemetryService).trackEvent(
+            "Cas3FailureReport",
+            event.message.telemetryProperties() + mapOf(
+                "crn" to PersonGenerator.PERSON_2_CRN.crn,
+                "startDate" to "2023-12-12",
+                "endDate" to "2023-11-30",
+                "reason" to "Cannot end address. The address start date is after the new end date"
+            )
+        )
+
+        //Address has not changed
         val mainAddress = addressRepository.findMainAddress(person.id)
-        assertThat(mainAddress?.startDate, equalTo(existingMainAddress?.startDate))
+        assertThat(mainAddress?.endDate, equalTo(existingMainAddress?.endDate))
     }
 }

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.AddressService
 import uk.gov.justice.digital.hmpps.integrations.delius.ContactService
@@ -26,90 +27,98 @@ class Handler(
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val event = notification.message
-        when (event.eventType) {
-            "accommodation.cas3.referral.submitted" -> {
-                contactService.createOrUpdateContact(event.crn()) {
-                    cas3ApiClient.getApplicationSubmittedDetails(event.url())
+        try {
+            when (event.eventType) {
+                "accommodation.cas3.referral.submitted" -> {
+                    contactService.createOrUpdateContact(event.crn()) {
+                        cas3ApiClient.getApplicationSubmittedDetails(event.url())
+                    }
+                    telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
                 }
-                telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
-            }
 
-            "accommodation.cas3.booking.cancelled" -> {
-                contactService.createOrUpdateContact(event.crn()) {
-                    cas3ApiClient.getBookingCancelledDetails(event.url())
+                "accommodation.cas3.booking.cancelled" -> {
+                    contactService.createOrUpdateContact(event.crn()) {
+                        cas3ApiClient.getBookingCancelledDetails(event.url())
+                    }
+                    telemetryService.trackEvent("BookingCancelled", event.telemetryProperties())
                 }
-                telemetryService.trackEvent("BookingCancelled", event.telemetryProperties())
-            }
 
-            "accommodation.cas3.booking.confirmed" -> {
-                contactService.createOrUpdateContact(event.crn()) {
-                    cas3ApiClient.getBookingConfirmedDetails(event.url())
+                "accommodation.cas3.booking.confirmed" -> {
+                    contactService.createOrUpdateContact(event.crn()) {
+                        cas3ApiClient.getBookingConfirmedDetails(event.url())
+                    }
+                    telemetryService.trackEvent("BookingConfirmed", event.telemetryProperties())
                 }
-                telemetryService.trackEvent("BookingConfirmed", event.telemetryProperties())
-            }
 
-            "accommodation.cas3.booking.provisionally-made" -> {
-                contactService.createOrUpdateContact(event.crn()) {
-                    cas3ApiClient.getBookingProvisionallyMade(event.url())
+                "accommodation.cas3.booking.provisionally-made" -> {
+                    contactService.createOrUpdateContact(event.crn()) {
+                        cas3ApiClient.getBookingProvisionallyMade(event.url())
+                    }
+                    telemetryService.trackEvent("BookingProvisionallyMade", event.telemetryProperties())
                 }
-                telemetryService.trackEvent("BookingProvisionallyMade", event.telemetryProperties())
-            }
 
-            "accommodation.cas3.person.arrived" -> {
-                val person = personRepository.getByCrn(event.crn())
-                val detail = cas3ApiClient.getPersonArrived(event.url())
-                contactService.createOrUpdateContact(event.crn(), person) {
-                    detail
+                "accommodation.cas3.person.arrived" -> {
+                    val person = personRepository.getByCrn(event.crn())
+                    val detail = cas3ApiClient.getPersonArrived(event.url())
+                    contactService.createOrUpdateContact(event.crn(), person) {
+                        detail
+                    }
+                    addressService.updateMainAddress(person, detail.eventDetails)
+                    telemetryService.trackEvent("PersonArrived", event.telemetryProperties())
                 }
-                addressService.updateMainAddress(person, detail.eventDetails)
-                telemetryService.trackEvent("PersonArrived", event.telemetryProperties())
-            }
 
-            "accommodation.cas3.person.departed" -> {
-                val person = personRepository.getByCrn(event.crn())
-                val detail = cas3ApiClient.getPersonDeparted(event.url())
-                contactService.createOrUpdateContact(event.crn(), person) {
-                    detail
+                "accommodation.cas3.person.departed" -> {
+                    val person = personRepository.getByCrn(event.crn())
+                    val detail = cas3ApiClient.getPersonDeparted(event.url())
+                    contactService.createOrUpdateContact(event.crn(), person) {
+                        detail
+                    }
+                    addressService.endMainCAS3Address(person, detail.eventDetails.departedAt)
+                    telemetryService.trackEvent("PersonDeparted", event.telemetryProperties())
                 }
-                addressService.endMainCAS3Address(person, detail.eventDetails.departedAt)
-                telemetryService.trackEvent("PersonDeparted", event.telemetryProperties())
-            }
 
-            "accommodation.cas3.person.arrived.updated" -> {
-                val person = personRepository.getByCrn(event.crn())
-                val detail = cas3ApiClient.getPersonArrived(event.url())
-                contactService.createOrUpdateContact(
-                    event.crn(),
-                    replaceNotes = false,
-                    extraInfo = "Address details were updated: ${DeliusDateTimeFormatter.format(detail.timestamp)}"
-                ) { detail }
-                addressService.updateCas3Address(person, detail.eventDetails)
-                telemetryService.trackEvent("PersonArrivedUpdated", event.telemetryProperties())
-            }
-
-            "accommodation.cas3.person.departed.updated" -> {
-                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
-                    cas3ApiClient.getPersonDeparted(event.url())
+                "accommodation.cas3.person.arrived.updated" -> {
+                    val person = personRepository.getByCrn(event.crn())
+                    val detail = cas3ApiClient.getPersonArrived(event.url())
+                    contactService.createOrUpdateContact(
+                        event.crn(),
+                        replaceNotes = false,
+                        extraInfo = "Address details were updated: ${DeliusDateTimeFormatter.format(detail.timestamp)}"
+                    ) { detail }
+                    addressService.updateCas3Address(person, detail.eventDetails)
+                    telemetryService.trackEvent("PersonArrivedUpdated", event.telemetryProperties())
                 }
-                telemetryService.trackEvent("PersonDepartedUpdated", event.telemetryProperties())
-            }
 
-            "accommodation.cas3.booking.cancelled.updated" -> {
-                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
-                    cas3ApiClient.getBookingCancelledDetails(event.url())
+                "accommodation.cas3.person.departed.updated" -> {
+                    contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
+                        cas3ApiClient.getPersonDeparted(event.url())
+                    }
+                    telemetryService.trackEvent("PersonDepartedUpdated", event.telemetryProperties())
                 }
-                telemetryService.trackEvent("BookingCancelledUpdated", event.telemetryProperties())
-            }
 
-            else -> throw IllegalArgumentException("Unexpected event type ${event.eventType}")
+                "accommodation.cas3.booking.cancelled.updated" -> {
+                    contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
+                        cas3ApiClient.getBookingCancelledDetails(event.url())
+                    }
+                    telemetryService.trackEvent("BookingCancelledUpdated", event.telemetryProperties())
+                }
+
+                else -> throw IgnorableMessageException("Unexpected Event Type", mapOf("eventType" to event.eventType))
+            }
+        } catch (ime: IgnorableMessageException) {
+            telemetryService.trackEvent(
+                "Cas3FailureReport",
+                event.telemetryProperties() + ime.additionalProperties + ("reason" to ime.message)
+            )
         }
     }
-
-    fun HmppsDomainEvent.telemetryProperties() = mapOf(
-        "occurredAt" to occurredAt.toString(),
-        "crn" to crn()
-    )
 }
+
+fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
+    "occurredAt" to occurredAt.toString(),
+    "crn" to crn(),
+    detailUrl?.let { "detailUrl" to it }
+).toMap()
 
 fun HmppsDomainEvent.crn(): String = personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN")
 
