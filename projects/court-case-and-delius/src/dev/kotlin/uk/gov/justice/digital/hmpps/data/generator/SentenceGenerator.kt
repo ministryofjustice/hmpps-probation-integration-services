@@ -10,7 +10,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import java.time.*
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 object SentenceGenerator {
 
@@ -199,7 +202,7 @@ object SentenceGenerator {
             LocalDate.now(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
-            ZonedDateTime.of(LocalDateTime.now().minusDays(3), ZoneId.of("Europe/London")),
+            ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, TIME_ZONE),
             LocalDate.now().plusDays(1)
         )
 
@@ -207,7 +210,7 @@ object SentenceGenerator {
         CURRENTLY_MANAGED,
         ADDITIONAL_OFFENCE,
         LocalDate.now(),
-        ZonedDateTime.of(LocalDateTime.now().minusMonths(1), ZoneId.of("Europe/London")),
+        ZonedDateTime.of(LocalDate.now().minusMonths(1), LocalTime.NOON, TIME_ZONE),
         LocalDate.now().plusMonths(1),
     )
 
