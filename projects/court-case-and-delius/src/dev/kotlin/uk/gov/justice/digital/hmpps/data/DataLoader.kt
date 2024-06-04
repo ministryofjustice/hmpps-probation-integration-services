@@ -9,9 +9,10 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Component
@@ -91,6 +92,7 @@ class DataLoader(
             ReferenceDataGenerator.POM2,
             ReferenceDataGenerator.SED,
             ReferenceDataGenerator.CRN,
+            ReferenceDataGenerator.TRIAL,
             CourtGenerator.PROBATIONARE_AREA,
             CourtGenerator.BHAM,
             PersonGenerator.NEW_TO_PROBATION,
@@ -114,13 +116,8 @@ class DataLoader(
         val noSentenceEvent =
             SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
         val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
-        val outcome = Outcome(
-            Outcome.Code.AWAITING_PSR.value,
-            Outcome.Code.AWAITING_PSR.description,
-            IdGenerator.getAndIncrement()
-        )
-        val courtAppearance =
-            SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, ZonedDateTime.now().toLocalDateTime())
+        val outcome = SentenceGenerator.OUTCOME
+        val courtAppearance = SentenceGenerator.COURT_APPEARANCE
         em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
@@ -142,7 +139,7 @@ class DataLoader(
         val currentCourtAppearance = SentenceGenerator.generateCourtAppearance(
             currentEvent,
             outcome,
-            ZonedDateTime.now().minusDays(1).toLocalDateTime()
+            ZonedDateTime.of(LocalDateTime.now().minusDays(1), ZoneId.of("Europe/London"))
         )
         val currentCourtReport = SentenceGenerator.generateCourtReport(currentCourtAppearance)
         val reportManager = SentenceGenerator.generateCourtReportManager(currentCourtReport)

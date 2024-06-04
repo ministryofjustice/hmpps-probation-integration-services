@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.ADDITIONAL_OFFENCE
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.COURT_APPEARANCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_SENTENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.MAIN_OFFENCE
 import uk.gov.justice.digital.hmpps.data.generator.UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1
@@ -208,6 +209,14 @@ internal class ConvictionIntegrationTest {
                 BHAM.secureEmailAddress,
                 KeyValue(BHAM.probationArea.code, BHAM.probationArea.description),
                 KeyValue(BHAM.courtType.code, BHAM.courtType.description)
+            ),
+            CourtAppearanceBasic(
+                COURT_APPEARANCE.id,
+                COURT_APPEARANCE.appearanceDate,
+                COURT_APPEARANCE.court.code,
+                COURT_APPEARANCE.court.courtName,
+                KeyValue(COURT_APPEARANCE.appearanceType.code, COURT_APPEARANCE.appearanceType.description),
+                COURT_APPEARANCE.person.crn
             )
         )
 

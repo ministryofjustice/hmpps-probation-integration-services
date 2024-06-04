@@ -10,12 +10,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 
 object SentenceGenerator {
+
+    val TIME_ZONE = ZoneId.of("Europe/London")
+
     val CURRENTLY_MANAGED = generateEvent(
         PersonGenerator.CURRENTLY_MANAGED,
         referralDate = LocalDate.now().minusDays(1),
@@ -38,6 +38,18 @@ object SentenceGenerator {
         ReferenceDataGenerator.CUSTODIAL_STATUS,
         "FD1234",
         InstitutionGenerator.WSIHMP
+    )
+
+    val OUTCOME = Outcome(
+        Outcome.Code.AWAITING_PSR.value,
+        Outcome.Code.AWAITING_PSR.description,
+        IdGenerator.getAndIncrement()
+    )
+
+    val COURT_APPEARANCE = generateCourtAppearance(
+        CURRENTLY_MANAGED,
+        OUTCOME,
+        ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, TIME_ZONE)
     )
 
     val CONDITIONAL_RELEASE_KEY_DATE = generateKeyDates(LocalDate.now(), CURRENT_CUSTODY, ReferenceDataGenerator.ACR)
@@ -134,10 +146,19 @@ object SentenceGenerator {
     fun generateCourtAppearance(
         event: Event,
         outcome: Outcome,
-        appearanceDate: LocalDateTime,
+        appearanceDate: ZonedDateTime,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = CourtAppearance(event, outcome, DocumentEntityGenerator.COURT.courtId, appearanceDate, softDeleted, id)
+    ) = CourtAppearance(
+        event,
+        outcome,
+        appearanceDate,
+        softDeleted,
+        ReferenceDataGenerator.TRIAL,
+        CourtGenerator.BHAM,
+        PersonGenerator.CURRENTLY_MANAGED,
+        id
+    )
 
     fun generateCustody(
         disposal: Disposal,

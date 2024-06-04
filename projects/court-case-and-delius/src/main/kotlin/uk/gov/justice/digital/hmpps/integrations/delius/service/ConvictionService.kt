@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
@@ -42,7 +43,8 @@ class ConvictionService(
             disposal?.toSentence(id),
             toLatestCourtAppearanceOutcome(),
             disposal?.custody?.toCustody(),
-            court?.toCourt()
+            court?.toCourt(),
+            toLatestOrSentencingCourtAppearanceOf()
         )
 
     fun Event.toOffences(): List<Offence> {
@@ -56,6 +58,22 @@ class ConvictionService(
             ?.let { return KeyValue(it.outcome.code, it.outcome.description) }
             ?: return null
     }
+
+    fun Event.toLatestOrSentencingCourtAppearanceOf(): CourtAppearanceBasic? {
+        return courtAppearances.filter { it.isSentenceing() }.maxByOrNull { it.appearanceDate }
+            ?.let { return it.toCourtAppearanceBasic() }
+            ?: courtAppearances.maxByOrNull { it.appearanceDate }?.let { return it.toCourtAppearanceBasic() }
+    }
+
+    fun CourtAppearance.toCourtAppearanceBasic(): CourtAppearanceBasic =
+        CourtAppearanceBasic(
+            id,
+            appearanceDate,
+            court.code,
+            court.courtName,
+            KeyValue(appearanceType.code, appearanceType.description),
+            person.crn
+        )
 
     fun MainOffence.toOffence(): Offence =
         Offence(

@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.api.model.conviction
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class Conviction(
@@ -21,7 +20,7 @@ data class Conviction(
     val latestCourtAppearanceOutcome: KeyValue?,
     val custody: Custody? = null,
     val responsibleCourt: Court?,
-//    val courtAppearance: CourtAppearanceBasic
+    val courtAppearance: CourtAppearanceBasic?
 )
 
 data class Offence(
@@ -153,9 +152,9 @@ data class Court(
 
 data class CourtAppearanceBasic(
     val courtAppearanceId: Long,
-    val appearanceDate: LocalDateTime,
+    val appearanceDate: ZonedDateTime,
     val courtCode: String,
-    val courtName: String,
+    val courtName: String?,
     val appearanceType: KeyValue,
     val crn: String
 )

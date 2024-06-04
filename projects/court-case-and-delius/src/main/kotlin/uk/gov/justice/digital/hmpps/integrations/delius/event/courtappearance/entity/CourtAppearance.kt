@@ -5,10 +5,13 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -23,18 +26,31 @@ class CourtAppearance(
     @JoinColumn(name = "outcome_id")
     val outcome: Outcome,
 
-    @Column(name = "court_id")
-    val courtId: Long,
-
-    val appearanceDate: LocalDateTime,
+    val appearanceDate: ZonedDateTime,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
-    var softDeleted: Boolean,
+    val softDeleted: Boolean,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appearance_type_id")
+    val appearanceType: ReferenceData,
+
+    @ManyToOne
+    @JoinColumn(name = "court_id")
+    val court: Court,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "offender_id")
+    val person: Person,
 
     @Id
     @Column(name = "court_appearance_id")
     val id: Long
-)
+) {
+    fun isSentenceing(): Boolean {
+        return appearanceType.code == "S"
+    }
+}
 
 interface CourtReportRepository : JpaRepository<CourtReport, Long> {
 

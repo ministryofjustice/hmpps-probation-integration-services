@@ -283,4 +283,10 @@ object ReferenceDataGenerator {
         "Crown Court",
         IdGenerator.getAndIncrement()
     )
+
+    val TRIAL = ReferenceData(
+        code = "T",
+        "Trial/Adjournment",
+        IdGenerator.getAndIncrement()
+    )
 }
