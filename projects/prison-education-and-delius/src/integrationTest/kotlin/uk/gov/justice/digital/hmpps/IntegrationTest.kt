@@ -28,4 +28,19 @@ internal class IntegrationTest {
             .andExpect(jsonPath("lastName", equalTo("User")))
             .andExpect(jsonPath("email", equalTo("test@example.com")))
     }
+
+    @Test
+    fun `get main address`() {
+        mockMvc
+            .perform(get("/probation-case/${PERSON.prisonerId}/main-address").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("buildingName", equalTo("Building Name")))
+            .andExpect(jsonPath("addressNumber", equalTo("123")))
+            .andExpect(jsonPath("streetName", equalTo("Street Name")))
+            .andExpect(jsonPath("district", equalTo("District")))
+            .andExpect(jsonPath("town", equalTo("Town City")))
+            .andExpect(jsonPath("county", equalTo("County")))
+            .andExpect(jsonPath("postcode", equalTo("AA1 1AA")))
+            .andExpect(jsonPath("noFixedAbode", equalTo(false)))
+    }
 }
