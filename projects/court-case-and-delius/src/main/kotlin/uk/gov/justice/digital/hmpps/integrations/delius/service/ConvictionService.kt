@@ -143,18 +143,18 @@ class ConvictionService(
         )
 
     fun UpwDetails.toUnpaidWork(disposalId: Long): UnpaidWork {
-        val unpaidWorkItems = upwAppointmentRepository.getUnpaidTimeWorked(disposalId)
-        val minutesCompleted = unpaidWorkItems.find { it.type == "sum_minutes" }!!.value
-        val totalAppointments = unpaidWorkItems.find { it.type == "total_appointments" }!!.value
-        val attended = unpaidWorkItems.find { it.type == "attended" }!!.value
-        val acceptableAbsence = unpaidWorkItems.find { it.type == "acceptable_absence" }!!.value
-        val unacceptableAbsence = unpaidWorkItems.find { it.type == "unacceptable_absence" }!!.value
-        val noOutcomeRecorded = unpaidWorkItems.find { it.type == "no_outcome_recorded" }!!.value
+        val unpaidWork = upwAppointmentRepository.getUnpaidTimeWorked(disposalId)
 
         return UnpaidWork(
             upwLengthMinutes,
-            minutesCompleted,
-            Appointments(totalAppointments, attended, acceptableAbsence, unacceptableAbsence, noOutcomeRecorded),
+            unpaidWork.sumMinutes,
+            Appointments(
+                unpaidWork.totalAppointments,
+                unpaidWork.attended,
+                unpaidWork.acceptableAbsence,
+                unpaidWork.unacceptableAbsence,
+                unpaidWork.noOutcomeRecorded
+            ),
             status.description
         )
     }

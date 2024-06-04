@@ -2,7 +2,8 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -32,8 +33,8 @@ object CourtGenerator {
         "B4 7NA",
         "England",
         ReferenceDataGenerator.CRN.id,
-        ZonedDateTime.of(LocalDateTime.now().minusDays(7), ZoneId.of("Europe/London")),
-        ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/London")),
+        ZonedDateTime.of(LocalDate.now().minusDays(7), LocalTime.NOON, ZoneId.of("Europe/London")),
+        ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
         PROBATIONARE_AREA.id,
         null,
         PROBATIONARE_AREA,

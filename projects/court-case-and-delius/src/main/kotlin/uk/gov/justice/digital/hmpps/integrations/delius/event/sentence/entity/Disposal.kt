@@ -134,64 +134,19 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
 
     @Query(
         """
-            SELECT COALESCE(SUM(u.minutesCredited), 0) as value, "sum_minutes" as type
-            FROM conviction_upw_appointment u 
-            JOIN  u.upwDetails upd 
-            JOIN  upd.disposal d 
-            WHERE d.id = :id
-            UNION 
-            SELECT count(u.id) as value, "total_appointments" as type
-            FROM conviction_upw_appointment u 
-            JOIN  u.upwDetails upd 
-            JOIN  upd.disposal d 
-            WHERE d.id = :id
-            UNION 
-            SELECT count(u.id) as value, "attended" as type
-            FROM conviction_upw_appointment u 
-            JOIN  u.upwDetails upd 
-            JOIN  upd.disposal d 
-            WHERE d.id = :id
-            AND u.attended = 'Y'
-            UNION 
-            SELECT count(u.id) as value, "acceptable_absence" as type
-            FROM conviction_upw_appointment u 
-            JOIN  u.upwDetails upd 
-            JOIN  upd.disposal d 
-            WHERE d.id = :id
-            AND u.attended = 'N'
-            AND u.complied = 'Y'
-            UNION 
-            SELECT count(u.id) as value, "unacceptable_absence" as type
-            FROM conviction_upw_appointment u 
-            JOIN  u.upwDetails upd 
-            JOIN  upd.disposal d 
-            WHERE d.id = :id
-            AND u.attended = 'N'
-            AND u.complied = 'N'  
-            UNION 
-            SELECT count(u.id) as value, "no_outcome_recorded" as type
-            FROM conviction_upw_appointment u 
-            JOIN  u.upwDetails upd 
-            JOIN  upd.disposal d 
-            WHERE d.id = :id
-            AND u.attended IS NULL 
-            AND u.complied IS NULL                 
-         """
-    )
-    fun getUnpaidTimeWorked(id: Long): List<UnpaidData>
-
-    @Query(
-        """
-            SELECT COALESCE(SUM(u.minutesCredited), 0) AS sum_minutes,
-            COUNT (u.id) AS total_appointments,
-            COUNT (CASE WHEN u.attended = 'Y' THEN 1 END) AS attended
+            SELECT COALESCE(SUM(u.minutesCredited), 0) AS sumMinutes,
+            COUNT (u.id) AS totalAppointments,
+            COUNT (CASE WHEN u.attended = 'Y' THEN 1 END) AS attended,
+            COUNT (CASE WHEN u.attended = 'N' AND u.complied = 'Y' THEN 1 END) AS acceptableAbsence,
+            COUNT (CASE WHEN u.attended = 'N' AND u.complied = 'N' THEN 1 END) AS unacceptableAbsence,
+            COUNT (CASE WHEN u.attended IS NULL AND u.complied is NULL THEN 1 END) AS noOutcomeRecorded
             FROM conviction_upw_appointment u 
             JOIN  u.upwDetails upd 
             JOIN  upd.disposal d 
             WHERE d.id = :id           
         """
     )
-    fun getUnpaid(id: Long): Unpaid
+    fun getUnpaidTimeWorked(id: Long): Unpaid
 }
 
 interface Unpaid {
@@ -202,11 +157,6 @@ interface Unpaid {
     val unacceptableAbsence: Long
     val noOutcomeRecorded: Long
 }
-interface UnpaidData {
-    val value: Long
-    val type: String
-}
-
 
 @Entity
 @Immutable
