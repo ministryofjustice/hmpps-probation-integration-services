@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 
 object SentenceGenerator {
 
-    val TIME_ZONE = ZoneId.of("Europe/London")
+    private val TIME_ZONE = ZoneId.of("Europe/London")
 
     val CURRENTLY_MANAGED = generateEvent(
         PersonGenerator.CURRENTLY_MANAGED,
