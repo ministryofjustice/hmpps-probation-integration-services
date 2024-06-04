@@ -226,8 +226,8 @@ internal class ConvictionIntegrationTest {
             .andDo(print())
             .andReturn().response.contentAsJson<Conviction>()
 
-        assertEquals(expectedResponse.courtAppearance?.appearanceDate, response.courtAppearance?.appearanceDate)
         assertEquals(expectedResponse.courtAppearance, response.courtAppearance)
+        assertEquals(expectedResponse.responsibleCourt, response.responsibleCourt)
 //        assertEquals(expectedResponse, response)
     }
 }

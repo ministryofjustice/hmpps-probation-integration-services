@@ -179,8 +179,29 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
          """
     )
     fun getUnpaidTimeWorked(id: Long): List<UnpaidData>
+
+    @Query(
+        """
+            SELECT COALESCE(SUM(u.minutesCredited), 0) AS sum_minutes,
+            COUNT (u.id) AS total_appointments,
+            COUNT (CASE WHEN u.attended = 'Y' THEN 1 END) AS attended
+            FROM conviction_upw_appointment u 
+            JOIN  u.upwDetails upd 
+            JOIN  upd.disposal d 
+            WHERE d.id = :id           
+        """
+    )
+    fun getUnpaid(id: Long): Unpaid
 }
 
+interface Unpaid {
+    val sumMinutes: Long
+    val totalAppointments: Long
+    val attended: Long
+    val acceptableAbsence: Long
+    val unacceptableAbsence: Long
+    val noOutcomeRecorded: Long
+}
 interface UnpaidData {
     val value: Long
     val type: String
