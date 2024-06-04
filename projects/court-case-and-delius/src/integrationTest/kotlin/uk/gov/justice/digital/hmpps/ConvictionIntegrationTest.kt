@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
+import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.BHAM
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator.WSIHMP
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -185,6 +186,28 @@ internal class ConvictionIntegrationTest {
                     ReferenceDataGenerator.CUSTODIAL_STATUS.description
                 ),
                 LocalDate.now()
+            ),
+            Court(
+                BHAM.id,
+                BHAM.code,
+                BHAM.selectable,
+                BHAM.courtName,
+                BHAM.telephoneNumber,
+                BHAM.faxNumber,
+                BHAM.buildingName,
+                BHAM.street,
+                BHAM.locality,
+                BHAM.town,
+                BHAM.county,
+                BHAM.postcode,
+                BHAM.country,
+                BHAM.courtTypeId,
+                BHAM.createdDatetime,
+                BHAM.lastUpdatedDatetime,
+                BHAM.probationAreaId,
+                BHAM.secureEmailAddress,
+                KeyValue(BHAM.probationArea.code, BHAM.probationArea.description),
+                KeyValue(BHAM.courtType.code, BHAM.courtType.description)
             )
         )
 

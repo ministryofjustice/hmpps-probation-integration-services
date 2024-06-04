@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 object SentenceGenerator {
@@ -19,7 +20,8 @@ object SentenceGenerator {
         PersonGenerator.CURRENTLY_MANAGED,
         referralDate = LocalDate.now().minusDays(1),
         inBreach = true,
-        breachDate = LocalDate.now().minusMonths(3)
+        breachDate = LocalDate.now().minusMonths(3),
+        court = CourtGenerator.BHAM
     )
 
     val CURRENT_SENTENCE = generateSentence(
@@ -101,6 +103,7 @@ object SentenceGenerator {
         referralDate: LocalDate,
         inBreach: Boolean = false,
         breachDate: LocalDate? = null,
+        court: Court? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
@@ -116,7 +119,8 @@ object SentenceGenerator {
         id,
         "1",
         2,
-        referralDate
+        referralDate,
+        court = court
     )
 
     fun generateOrderManager(
@@ -174,15 +178,15 @@ object SentenceGenerator {
             LocalDate.now(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
-            LocalDateTime.now().minusDays(3),
+            ZonedDateTime.of(LocalDateTime.now().minusDays(3), ZoneId.of("Europe/London")),
             LocalDate.now().plusDays(1)
         )
 
     val ADDITIONAL_OFFENCE_DEFAULT = generateAdditionalOffence(
         CURRENTLY_MANAGED,
-        SentenceGenerator.ADDITIONAL_OFFENCE,
+        ADDITIONAL_OFFENCE,
         LocalDate.now(),
-        LocalDateTime.now().minusMonths(1),
+        ZonedDateTime.of(LocalDateTime.now().minusMonths(1), ZoneId.of("Europe/London")),
         LocalDate.now().plusMonths(1),
     )
 
@@ -223,7 +227,7 @@ object SentenceGenerator {
         date: LocalDate,
         offenceCount: Long,
         offenderId: Long,
-        created: LocalDateTime,
+        created: ZonedDateTime,
         updated: LocalDate,
         tics: Long? = null,
         verdict: String? = null,
@@ -235,7 +239,7 @@ object SentenceGenerator {
         event: Event,
         offence: Offence,
         date: LocalDate,
-        created: LocalDateTime,
+        created: ZonedDateTime,
         updated: LocalDate,
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false,

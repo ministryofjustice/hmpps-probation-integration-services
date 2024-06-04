@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 data class Conviction(
     val convictionId: Long,
@@ -19,7 +20,7 @@ data class Conviction(
     val sentence: Sentence?,
     val latestCourtAppearanceOutcome: KeyValue?,
     val custody: Custody? = null,
-//    val responsibleCourt: Court,
+    val responsibleCourt: Court?,
 //    val courtAppearance: CourtAppearanceBasic
 )
 
@@ -32,7 +33,7 @@ data class Offence(
     val tics: Long?,
     val verdict: String?,
     val offenderId: Long,
-    val createdDatetime: LocalDateTime,
+    val createdDatetime: ZonedDateTime,
     val lastUpdatedDatetime: LocalDate,
 )
 
@@ -131,21 +132,21 @@ data class Court(
     val courtId: Long,
     val code: String,
     val selectable: Boolean,
-    val courtName: String,
-    val telephoneNumber: String,
-    val fax: String,
+    val courtName: String?,
+    val telephoneNumber: String?,
+    val fax: String?,
     val buildingName: String,
-    val street: String,
-    val locality: String,
-    val town: String,
-    val county: String,
-    val postcode: String,
-    val country: String,
+    val street: String?,
+    val locality: String?,
+    val town: String?,
+    val county: String?,
+    val postcode: String?,
+    val country: String?,
     val courtTypeId: Long,
-    val createdDatetime: LocalDateTime,
-    val lastUpdatedDatetime: LocalDateTime,
+    val createdDatetime: ZonedDateTime,
+    val lastUpdatedDatetime: ZonedDateTime,
     val probationAreaId: Long,
-    val secureEmailAddress: String,
+    val secureEmailAddress: String?,
     val probationArea: KeyValue,
     val courtType: KeyValue
 )

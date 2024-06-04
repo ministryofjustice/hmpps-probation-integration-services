@@ -277,4 +277,10 @@ object ReferenceDataGenerator {
         "Sentence Expiry Date",
         IdGenerator.getAndIncrement()
     )
+
+    val CRN = ReferenceData(
+        "CRN",
+        "Crown Court",
+        IdGenerator.getAndIncrement()
+    )
 }
