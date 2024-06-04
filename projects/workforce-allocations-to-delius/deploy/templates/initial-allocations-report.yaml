@@ -18,7 +18,7 @@ data:
     echo Downloaded report with $(wc -l < "/tmp/$filename") rows
 
     echo Starting file upload...
-    file_details=$(curl -fsSL -XPOST -F "token=$SLACK_TOKEN" -F "filename=$filename" -F 'snippet_type=csv' -F "length=$(wc -c < "/tmp/$filename")" https://slack.com/api/files.getUploadURLExternal)
+    file_details=$(curl -fsSL -XPOST -F "token=$SLACK_TOKEN" -F "filename=$filename" -F "length=$(wc -c < "/tmp/$filename")" https://slack.com/api/files.getUploadURLExternal)
     echo Got file upload details: "$file_details"
     file_id=$(echo "$file_details" | jq -r .file_id)
     upload_url=$(echo "$file_details" | jq -r .upload_url)
