@@ -1,5 +1,5 @@
 import com.gorylenko.GenerateGitPropertiesTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
 import org.springframework.boot.gradle.tasks.buildinfo.BuildInfo
 import org.springframework.boot.gradle.tasks.bundling.BootJar
@@ -8,10 +8,9 @@ import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
-    kotlin("jvm") version "1.9.24"
-    kotlin("plugin.spring") version "1.9.24" apply false
-    kotlin("plugin.jpa") version "1.9.24" apply false
-    kotlin("kapt") version "1.9.24" apply false
+    kotlin("jvm") version "2.0.0"
+    kotlin("plugin.spring") version "2.0.0" apply false
+    kotlin("plugin.jpa") version "2.0.0" apply false
     id("org.springframework.boot") version "3.2.5" apply false
     id("io.spring.dependency-management") version "1.1.5" apply false
     id("com.gorylenko.gradle-git-properties") version "2.4.2" apply false
@@ -40,16 +39,20 @@ allprojects {
         mavenCentral()
     }
 
+    apply {
+        plugin("org.jetbrains.kotlin.jvm")
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+            freeCompilerArgs.add("-Xjsr305=strict") // to make use of Spring's null-safety annotations
+        }
+    }
+
     tasks {
         withType<JavaCompile> {
             sourceCompatibility = "21"
-        }
-
-        withType<KotlinCompile> {
-            kotlinOptions {
-                freeCompilerArgs = listOf("-Xjsr305=strict")
-                jvmTarget = "21"
-            }
         }
 
         withType<BootJar> {
@@ -59,19 +62,20 @@ allprojects {
 }
 
 subprojects {
-    apply { plugin("org.springframework.boot") }
-    apply { plugin("io.spring.dependency-management") }
-    apply { plugin("org.jetbrains.kotlin.jvm") }
-    apply { plugin("org.jetbrains.kotlin.kapt") }
-    apply { plugin("org.jetbrains.kotlin.plugin.jpa") }
-    apply { plugin("org.jetbrains.kotlin.plugin.spring") }
-    apply { plugin("jacoco") }
-    apply { plugin("test-report-aggregation") }
-    apply { plugin("jacoco-report-aggregation") }
-    apply { plugin("org.sonarqube") }
-    apply { plugin("com.gorylenko.gradle-git-properties") }
-    apply { plugin(JibConfigPlugin::class.java) }
-    apply { plugin(ClassPathPlugin::class.java) }
+    apply {
+        plugin("org.springframework.boot")
+        plugin("io.spring.dependency-management")
+        plugin("org.jetbrains.kotlin.jvm")
+        plugin("org.jetbrains.kotlin.plugin.jpa")
+        plugin("org.jetbrains.kotlin.plugin.spring")
+        plugin("jacoco")
+        plugin("test-report-aggregation")
+        plugin("jacoco-report-aggregation")
+        plugin("org.sonarqube")
+        plugin("com.gorylenko.gradle-git-properties")
+        plugin(JibConfigPlugin::class.java)
+        plugin(ClassPathPlugin::class.java)
+    }
 
     tasks {
         withType<BootRun> {

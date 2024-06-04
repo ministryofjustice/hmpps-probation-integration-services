@@ -5,6 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### Kotlin 2.0 ###
+.kotlin
+
 ### STS ###
 .apt_generated
 .classpath
