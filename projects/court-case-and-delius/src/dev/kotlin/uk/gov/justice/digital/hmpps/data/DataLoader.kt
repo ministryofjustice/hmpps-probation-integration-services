@@ -11,8 +11,6 @@ import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Component
@@ -117,7 +115,7 @@ class DataLoader(
             SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
         val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
         val outcome = SentenceGenerator.OUTCOME
-        val courtAppearance = SentenceGenerator.COURT_APPEARANCE
+        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, ZonedDateTime.now())
         em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
@@ -136,11 +134,7 @@ class DataLoader(
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
         val breachNsi = SentenceGenerator.generateBreachNsi(disposal = currentSentence)
         val pssRequirement = SentenceGenerator.generatePssRequirement(custody.id)
-        val currentCourtAppearance = SentenceGenerator.generateCourtAppearance(
-            currentEvent,
-            outcome,
-            ZonedDateTime.of(LocalDateTime.now().minusDays(1), ZoneId.of("Europe/London"))
-        )
+        val currentCourtAppearance = SentenceGenerator.COURT_APPEARANCE
         val currentCourtReport = SentenceGenerator.generateCourtReport(currentCourtAppearance)
         val reportManager = SentenceGenerator.generateCourtReportManager(currentCourtReport)
 
