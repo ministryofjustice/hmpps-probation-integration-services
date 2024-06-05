@@ -10,7 +10,9 @@ import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 class PersonService(
     private val personRepository: PersonRepository,
     private val aliasRepository: AliasRepository,
-    private val addressRepository: AddressRepository
+    private val addressRepository: AddressRepository,
+    private val exclusionRepository: ExclusionRepository,
+    private val restrictionRepository: RestrictionRepository,
 ) {
     fun getPersonDetail(crn: String): PersonDetail = personRepository.getByCrn(crn).withDetail()
 
@@ -19,9 +21,10 @@ class PersonService(
     fun getAllPersonDetails(pageable: Pageable): Page<PersonDetail> =
         personRepository.findAll(pageable).map { it.withDetail() }
 
-    private fun Person.withDetail(): PersonDetail =
-        detail(
-            aliasRepository.findByPersonId(id).map(Alias::asModel),
-            addressRepository.mainAddresses(id).mapNotNull(PersonAddress::asAddress)
-        )
+    private fun Person.withDetail() = this.detail(
+        aliases = aliasRepository.findByPersonId(id).map(Alias::asModel),
+        addresses = addressRepository.mainAddresses(id).mapNotNull(PersonAddress::asAddress),
+        exclusions = exclusionRepository.findByPersonId(id).exclusionsAsLimitedAccess(exclusionMessage),
+        restrictions = restrictionRepository.findByPersonId(id).restrictionsAsLimitedAccess(restrictionMessage),
+    )
 }

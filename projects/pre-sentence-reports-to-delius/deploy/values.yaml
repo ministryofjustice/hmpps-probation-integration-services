@@ -1,4 +1,5 @@
 generic-service:
+  productId: HMPPS518
   nameOverride: pre-sentence-reports-to-delius
   serviceAccountName: pre-sentence-reports-to-delius
 

@@ -61,6 +61,7 @@ internal class ConvictionsIntegrationTest {
             Conviction(
                 ConvictionEventGenerator.DEFAULT_EVENT.id,
                 ConvictionEventGenerator.DEFAULT_EVENT.convictionDate,
+                ConvictionEventGenerator.DEFAULT_EVENT.referralDate,
                 ConvictionEventGenerator.DISPOSAL_TYPE.description,
                 listOf(
                     Offence(
@@ -100,6 +101,7 @@ internal class ConvictionsIntegrationTest {
         val inactiveConviction = Conviction(
             ConvictionEventGenerator.INACTIVE_EVENT.id,
             ConvictionEventGenerator.INACTIVE_EVENT.convictionDate,
+            ConvictionEventGenerator.INACTIVE_EVENT.referralDate,
             "unknown",
             listOf(),
             null

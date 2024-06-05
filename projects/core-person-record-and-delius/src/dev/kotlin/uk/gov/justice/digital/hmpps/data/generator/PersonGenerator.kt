@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Alias
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddress
-import uk.gov.justice.digital.hmpps.integration.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 object PersonGenerator {
     val ETHNICITY = generateReferenceData("ETH")
@@ -16,27 +14,29 @@ object PersonGenerator {
     val MIN_PERSON =
         generatePerson("M123456", firstname = "Isabelle", surname = "Necessary", dob = LocalDate.of(1990, 3, 5))
     val FULL_PERSON = generatePerson(
-        "F123456",
-        "A3349EX",
-        "2011/0593710D",
-        "89861/11W",
-        "FJ123456W",
-        "94600E",
-        "Frederick",
-        "Paul",
-        "Bernard",
-        "Johnson",
-        LocalDate.of(1975, 7, 15),
-        "No Previous",
-        "Freddy",
-        "0191 755 4789",
-        "07895746789",
-        "fred@gmail.com",
-        TITLE,
-        GENDER,
-        NATIONALITY,
-        ETHNICITY,
-        "Description of ethnicity"
+        crn = "F123456",
+        nomsId = "A3349EX",
+        pnc = "2011/0593710D",
+        cro = "89861/11W",
+        niNumber = "FJ123456W",
+        prisonerNumber = "94600E",
+        firstname = "Frederick",
+        secondName = "Paul",
+        thirdName = "Bernard",
+        surname = "Johnson",
+        dob = LocalDate.of(1975, 7, 15),
+        previousSurname = "No Previous",
+        preferredName = "Freddy",
+        telephoneNumber = "0191 755 4789",
+        mobileNumber = "07895746789",
+        emailAddress = "fred@gmail.com",
+        title = TITLE,
+        gender = GENDER,
+        nationality = NATIONALITY,
+        ethnicity = ETHNICITY,
+        ethnicityDescription = "Description of ethnicity",
+        exclusionMessage = "This case is excluded because ...",
+        restrictionMessage = "This case is restricted because ..."
     )
 
     val FULL_PERSON_ALIASES = listOf(
@@ -47,6 +47,16 @@ object PersonGenerator {
 
     val FULL_PERSON_ADDRESSES = listOf(
         generateAddress(FULL_PERSON.id, MAIN_ADDRESS, "PC1 1TS", LocalDate.now().minusDays(30))
+    )
+
+    val FULL_PERSON_EXCLUSIONS = listOf(
+        generateExclusion(FULL_PERSON.id, "SomeUser1"),
+        generateExclusion(FULL_PERSON.id, "PastEndDatedUser", LocalDateTime.now().minusDays(30)),
+    )
+
+    val FULL_PERSON_RESTRICTIONS = listOf(
+        generateRestriction(FULL_PERSON.id, "SomeUser2"),
+        generateRestriction(FULL_PERSON.id, "FutureEndDatedUser", LocalDateTime.now().plusDays(30)),
     )
 
     fun generateReferenceData(
@@ -77,32 +87,36 @@ object PersonGenerator {
         nationality: ReferenceData? = null,
         ethnicity: ReferenceData? = null,
         ethnicityDescription: String? = null,
+        exclusionMessage: String? = null,
+        restrictionMessage: String? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Person(
-        crn,
-        nomsId,
-        pnc,
-        cro,
-        niNumber,
-        prisonerNumber,
-        firstname,
-        secondName,
-        thirdName,
-        surname,
-        dob,
-        previousSurname,
-        preferredName,
-        telephoneNumber,
-        mobileNumber,
-        emailAddress,
-        title,
-        gender,
-        nationality,
-        ethnicity,
-        ethnicityDescription,
-        softDeleted,
-        id
+        crn = crn,
+        nomsId = nomsId,
+        pnc = pnc,
+        cro = cro,
+        niNumber = niNumber,
+        prisonerNumber = prisonerNumber,
+        firstName = firstname,
+        secondName = secondName,
+        thirdName = thirdName,
+        surname = surname,
+        dob = dob,
+        previousSurname = previousSurname,
+        preferredName = preferredName,
+        telephoneNumber = telephoneNumber,
+        mobileNumber = mobileNumber,
+        emailAddress = emailAddress,
+        title = title,
+        gender = gender,
+        nationality = nationality,
+        ethnicity = ethnicity,
+        ethnicityDescription = ethnicityDescription,
+        exclusionMessage = exclusionMessage,
+        restrictionMessage = restrictionMessage,
+        softDeleted = softDeleted,
+        id = id,
     )
 
     fun generateAlias(
@@ -125,4 +139,18 @@ object PersonGenerator {
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = PersonAddress(personId, status, postcode, startDate, endDate, softDeleted, id)
+
+    private fun generateExclusion(
+        personId: Long,
+        username: String,
+        endDate: LocalDateTime? = null,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Exclusion(personId, LimitedAccessUser(username, IdGenerator.getAndIncrement()), endDate, id)
+
+    private fun generateRestriction(
+        personId: Long,
+        username: String,
+        endDate: LocalDateTime? = null,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Restriction(personId, LimitedAccessUser(username, IdGenerator.getAndIncrement()), endDate, id)
 }

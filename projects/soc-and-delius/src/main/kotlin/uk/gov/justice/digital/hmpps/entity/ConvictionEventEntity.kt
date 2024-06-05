@@ -1,13 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
@@ -25,6 +18,8 @@ class ConvictionEventEntity(
     val id: Long,
 
     val convictionDate: LocalDate?,
+
+    val referralDate: LocalDate,
 
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)

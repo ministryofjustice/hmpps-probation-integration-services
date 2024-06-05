@@ -5,6 +5,7 @@ import java.time.LocalDate
 data class Conviction(
     val convictionId: Long,
     val convictionDate: LocalDate?,
+    val referralDate: LocalDate,
     val outcome: String,
     val offences: List<Offence>,
     val sentence: Sentence?
