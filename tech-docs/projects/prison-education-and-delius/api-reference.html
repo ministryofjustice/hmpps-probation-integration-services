@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#probation-case-prisonerid-main-address"><span>/probation-case/{prisonerId}/main-address</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-case-prisonerid-community-manager"><span>/probation-case/{prisonerId}/community-manager</span></a>
       </li>
       <li>
@@ -130,6 +133,80 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="probation-case-prisonerid-main-address">/probation-case/{prisonerId}/main-address</h2>
+
+<h3 id="probation-case-prisonerid-main-address-get">get</h3>
+
+  <p><em>Get the current main address for a probation case</em></p>
+
+
+  <p>Accepts the prisoner identifier (NOMS number) and returns the 
+            current main address linked to the probation case.
+            <p>Requires <code>PROBATION_API__PRISON_EDUCATION__CASE_DETAIL</code>.</p>
+
+
+
+
+<h4 id="probation-case-prisonerid-main-address-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>prisonerId</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-prisonerid-main-address-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "buildingName": "string",
+  "addressNumber": "string",
+  "streetName": "string",
+  "district": "string",
+  "town": "string",
+  "county": "string",
+  "postcode": "string",
+  "noFixedAbode": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-addressresponse'>AddressResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -197,24 +274,6 @@
 </td>
 </tr>
 
-<tr>
-<td>404</td>
-<td>
-<p>No probation case found with the given prisoner identifier. This could mean the Prison and Probation cases have not been linked yet.</p>
-
-
-
-<pre><code>{
-  "status": 404,
-  "message": "Person with prisonerId of A0000AA not found"
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-errorresponse'>ErrorResponse</a>
-</td>
-</tr>
-
 </tbody>
 </table>
 
@@ -223,27 +282,17 @@
 
 
 <h2 id="schemas">Schemas</h2>
-<h3 id="schema-errorresponse">ErrorResponse</h3>
+<h3 id="schema-addressresponse">AddressResponse</h3>
 
 
-<table class='schema-errorresponse'>
+<table class='schema-addressresponse'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>status</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>message</td>
+<td>buildingName</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -253,29 +302,7 @@
 </tr>
 
 <tr>
-<td>fields</td>
-<td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-fielderror'>FieldError</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-fielderror">FieldError</h3>
-
-
-<table class='schema-fielderror'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>type</td>
+<td>addressNumber</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -285,7 +312,7 @@
 </tr>
 
 <tr>
-<td>message</td>
+<td>streetName</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -295,8 +322,48 @@
 </tr>
 
 <tr>
-<td>field</td>
+<td>district</td>
 <td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>noFixedAbode</td>
+<td>boolean</td>
 <td>false</td>
 <td></td>
 <td>

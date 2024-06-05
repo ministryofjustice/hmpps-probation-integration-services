@@ -346,12 +346,16 @@ components:
       - convictionId
       - offences
       - outcome
+      - referralDate
       type: object
       properties:
         convictionId:
           type: integer
           format: int64
         convictionDate:
+          type: string
+          format: date
+        referralDate:
           type: string
           format: date
         outcome:

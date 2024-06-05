@@ -14,6 +14,29 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /probation-case/{prisonerId}/main-address:
+    get:
+      tags:
+      - api-controller
+      summary: Get the current main address for a probation case
+      description: "Accepts the prisoner identifier (NOMS number) and returns the\
+        \ \n            current main address linked to the probation case.\n     \
+        \       <p>Requires `PROBATION_API__PRISON_EDUCATION__CASE_DETAIL`.\n    \
+        \    "
+      operationId: getMainAddress
+      parameters:
+      - name: prisonerId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressResponse'
   /probation-case/{prisonerId}/community-manager:
     get:
       tags:
@@ -37,41 +60,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommunityManagerResponse'
-        "404":
-          description: No probation case found with the given prisoner identifier.
-            This could mean the Prison and Probation cases have not been linked yet.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                status: 404
-                message: Person with prisonerId of A0000AA not found
 components:
   schemas:
-    ErrorResponse:
-      required:
-      - status
+    AddressResponse:
       type: object
       properties:
-        status:
-          type: integer
-          format: int32
-        message:
+        buildingName:
           type: string
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldError'
-    FieldError:
-      type: object
-      properties:
-        type:
+        addressNumber:
           type: string
-        message:
+        streetName:
           type: string
-        field:
+        district:
           type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        noFixedAbode:
+          type: boolean
     CommunityManagerResponse:
       required:
       - firstName
