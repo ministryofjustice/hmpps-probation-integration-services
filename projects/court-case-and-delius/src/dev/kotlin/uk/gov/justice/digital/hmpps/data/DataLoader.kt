@@ -9,9 +9,10 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Component
@@ -29,11 +30,9 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
-
             DocumentEntityGenerator.COURT,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT,
-            DocumentEntityGenerator.R_INSTITUTION,
             AreaGenerator.PARTITION_AREA,
             ProviderEmployeeGenerator.PROVIDER_EMPLOYEE,
             ProviderGenerator.DEFAULT,
@@ -41,11 +40,13 @@ class DataLoader(
             BoroughGenerator.DEFAULT,
             DistrictGenerator.DEFAULT,
             TeamGenerator.DEFAULT,
+            ReferenceDataGenerator.VIOLENCE,
             SentenceGenerator.MAIN_OFFENCE,
             SentenceGenerator.ADDITIONAL_OFFENCE,
             BusinessInteractionGenerator.UPDATE_CONTACT,
             ContactTypeGenerator.CONTACT_TYPE,
 
+            DisposalTypeGenerator.CURFEW_ORDER,
             ReferenceDataGenerator.DISPOSAL_TYPE,
             ReferenceDataGenerator.LENGTH_UNITS,
             ReferenceDataGenerator.TERMINATION_REASON,
@@ -79,6 +80,21 @@ class DataLoader(
             ReferenceDataGenerator.DEFAULT_ADDRESS_STATUS,
             ReferenceDataGenerator.DEFAULT_ALLOCATION_REASON,
             ReferenceDataGenerator.DEFAULT_TIER,
+            ReferenceDataGenerator.REF_DISQ,
+            ReferenceDataGenerator.PRISON,
+            ReferenceDataGenerator.ACR,
+            ReferenceDataGenerator.EXP,
+            ReferenceDataGenerator.HDE,
+            ReferenceDataGenerator.LED,
+            ReferenceDataGenerator.PED,
+            ReferenceDataGenerator.PSSED,
+            ReferenceDataGenerator.POM1,
+            ReferenceDataGenerator.POM2,
+            ReferenceDataGenerator.SED,
+            ReferenceDataGenerator.CRN,
+            ReferenceDataGenerator.TRIAL,
+            CourtGenerator.PROBATIONARE_AREA,
+            CourtGenerator.BHAM,
             PersonGenerator.NEW_TO_PROBATION,
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
@@ -97,50 +113,72 @@ class DataLoader(
             PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED)
         )
 
-        val noSentenceEvent = SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE)
-        val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
-        val outcome = Outcome(Outcome.Code.AWAITING_PSR.value, IdGenerator.getAndIncrement())
-        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome)
+        val noSentenceEvent =
+            SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
+        val noSentenceManager =
+            SentenceGenerator.generateOrderManager(
+                noSentenceEvent,
+                StaffGenerator.UNALLOCATED,
+                CourtGenerator.PROBATIONARE_AREA,
+                ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, ZoneId.of("Europe/London"))
+            )
+        val outcome = SentenceGenerator.OUTCOME
+        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, ZonedDateTime.now())
         em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
 
-        val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION)
+        val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
         val newSentence =
-            SentenceGenerator.generateSentence(newEvent, ZonedDateTime.now(), ReferenceDataGenerator.DISPOSAL_TYPE)
-        val newManager = SentenceGenerator.generateOrderManager(newEvent, StaffGenerator.UNALLOCATED)
+            SentenceGenerator.generateSentence(newEvent, LocalDate.now(), DisposalTypeGenerator.CURFEW_ORDER)
+        val newManager =
+            SentenceGenerator.generateOrderManager(
+                newEvent,
+                StaffGenerator.UNALLOCATED,
+                CourtGenerator.PROBATIONARE_AREA,
+                ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
+            )
         em.saveAll(newEvent, newSentence, newManager)
 
-        val currentEvent = SentenceGenerator.generateEvent(PersonGenerator.CURRENTLY_MANAGED, inBreach = true)
-        val currentSentence =
-            SentenceGenerator.generateSentence(
-                currentEvent,
-                ZonedDateTime.now(),
-                ReferenceDataGenerator.DISPOSAL_TYPE,
-                entryLength = 12,
-                entryLengthUnits = ReferenceDataGenerator.LENGTH_UNITS,
-                lengthInDays = 99
-            )
-        val custody = SentenceGenerator.generateCustody(currentSentence, ReferenceDataGenerator.CUSTODIAL_STATUS)
-        val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
-        val mainOffence =
-            SentenceGenerator.generateMainOffence(currentEvent, SentenceGenerator.MAIN_OFFENCE, LocalDate.now())
-        val additionalOffence = SentenceGenerator.generateAdditionalOffence(
-            currentEvent,
-            SentenceGenerator.ADDITIONAL_OFFENCE,
-            LocalDate.now()
-        )
+        val currentEvent = SentenceGenerator.CURRENTLY_MANAGED
+        val currentSentence = SentenceGenerator.CURRENT_SENTENCE
+        val custody = SentenceGenerator.CURRENT_CUSTODY
+        val currentManager = SentenceGenerator.CURRENT_ORDER_MANAGER
+        val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
+        val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
         val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
         val breachNsi = SentenceGenerator.generateBreachNsi(disposal = currentSentence)
         val pssRequirement = SentenceGenerator.generatePssRequirement(custody.id)
-        val currentCourtAppearance = SentenceGenerator.generateCourtAppearance(currentEvent, outcome)
+        val currentCourtAppearance = SentenceGenerator.COURT_APPEARANCE
         val currentCourtReport = SentenceGenerator.generateCourtReport(currentCourtAppearance)
         val reportManager = SentenceGenerator.generateCourtReportManager(currentCourtReport)
 
         em.saveAll(
             currentEvent,
             currentSentence,
+            AdditionalSentenceGenerator.SENTENCE_DISQ,
+            ReferenceDataGenerator.HOURS_WORKED,
+            UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1,
+            UnpaidWorkGenerator.APPT1,
+            UnpaidWorkGenerator.APPT2,
+            UnpaidWorkGenerator.APPT3,
+            UnpaidWorkGenerator.APPT4,
+            UnpaidWorkGenerator.APPT5,
+            UnpaidWorkGenerator.APPT6,
+            UnpaidWorkGenerator.APPT7,
             currentManager,
+            InstitutionGenerator.WSIHMP,
             custody,
+            SentenceGenerator.CONDITIONAL_RELEASE_KEY_DATE,
+            SentenceGenerator.LED_KEY_DATE,
+            SentenceGenerator.HDC_KEY_DATE,
+            SentenceGenerator.PAROLE_KEY_DATE,
+            SentenceGenerator.SENTENCE_KEY_DATE,
+            SentenceGenerator.EXPECTED_RELEASE_KEY_DATE,
+            SentenceGenerator.SUPERVISION_KEY_DATE,
+            SentenceGenerator.HANDOVER_START_KEY_DATE,
+            SentenceGenerator.HANDOVER_KEY_DATE,
             mainOffence,
             additionalOffence,
             requirement,
@@ -152,15 +190,27 @@ class DataLoader(
             reportManager
         )
 
-        val preEvent = SentenceGenerator.generateEvent(PersonGenerator.PREVIOUSLY_MANAGED, active = false)
+        val preEvent =
+            SentenceGenerator.generateEvent(
+                PersonGenerator.PREVIOUSLY_MANAGED,
+                referralDate = LocalDate.now(),
+                active = false
+            )
         val preSentence = SentenceGenerator.generateSentence(
             preEvent,
-            ZonedDateTime.now(),
-            ReferenceDataGenerator.DISPOSAL_TYPE,
-            terminationDate = ZonedDateTime.now().minusDays(7),
+            LocalDate.now(),
+            DisposalTypeGenerator.CURFEW_ORDER,
+            terminationDate = LocalDate.now().minusDays(7),
             active = false
         )
-        val preManager = SentenceGenerator.generateOrderManager(preEvent, StaffGenerator.ALLOCATED)
+        val preManager =
+            SentenceGenerator.generateOrderManager(
+                preEvent,
+                StaffGenerator.ALLOCATED,
+                CourtGenerator.PROBATIONARE_AREA,
+                ZonedDateTime.of(LocalDate.now().minusDays(7), LocalTime.NOON, ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDate.now().minusDays(10), LocalTime.NOON, ZoneId.of("Europe/London"))
+            )
         em.saveAll(preEvent, preSentence, preManager)
 
         em.merge(CourtCaseNoteGenerator.CASE_NOTE)

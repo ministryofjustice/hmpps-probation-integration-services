@@ -371,8 +371,8 @@ fun Disposal.sentenceOf() = Sentence(
     entryLength,
     entryLengthUnit?.description,
     lengthInDays,
-    terminationDate?.toLocalDate(),
-    startDate.toLocalDate(),
+    terminationDate,
+    startDate,
     endDate?.toLocalDate(),
     terminationReason?.description
 )
