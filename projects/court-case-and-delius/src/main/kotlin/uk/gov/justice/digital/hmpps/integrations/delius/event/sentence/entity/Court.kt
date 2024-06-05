@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Probatio
 import java.time.ZonedDateTime
 
 @Entity(name = "conviction_court")
+@Table(name = "court")
 @Immutable
 class Court(
     @Id
@@ -17,7 +18,7 @@ class Court(
     val code: String,
 
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean,
+    val selectable: Boolean?,
 
     val courtName: String?,
 
