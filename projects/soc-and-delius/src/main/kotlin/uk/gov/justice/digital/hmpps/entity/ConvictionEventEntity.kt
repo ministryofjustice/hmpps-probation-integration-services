@@ -188,7 +188,6 @@ class ConvictionCourtAppearanceEntity(
     val softDeleted: Boolean = false
 )
 
-
 interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long> {
     @Query(
         """
