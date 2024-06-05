@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import java.time.ZonedDateTime
 
-@Entity(name = "conviction_court")
+@Entity
 @Table(name = "court")
 @Immutable
 class Court(

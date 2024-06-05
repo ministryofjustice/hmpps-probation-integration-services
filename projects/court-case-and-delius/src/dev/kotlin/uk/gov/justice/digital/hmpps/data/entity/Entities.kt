@@ -27,9 +27,6 @@ class AssessmentType(@Id val assessmentTypeId: Long, val description: String)
 class CaseAllocation(@Id val caseAllocationId: Long, val eventId: Long)
 
 @Entity
-class Court(@Column(name = "court_id") @Id val courtId: Long, val courtName: String)
-
-@Entity
 class InstitutionalReport(
     @Id
     val institutionalReportId: Long,
