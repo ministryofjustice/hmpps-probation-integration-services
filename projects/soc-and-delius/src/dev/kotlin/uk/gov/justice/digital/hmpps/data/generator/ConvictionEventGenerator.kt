@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.DEFAULT_OUTCOME
 import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 
@@ -52,6 +53,12 @@ object ConvictionEventGenerator {
         IdGenerator.getAndIncrement(),
         DISPOSAL_TYPE,
         DEFAULT_EVENT,
+        LocalDate.now()
+    )
+    val COURT_APPEARANCE = ConvictionCourtAppearanceEntity(
+        IdGenerator.getAndIncrement(),
+        DEFAULT_EVENT,
+        DEFAULT_OUTCOME,
         LocalDate.now()
     )
 
