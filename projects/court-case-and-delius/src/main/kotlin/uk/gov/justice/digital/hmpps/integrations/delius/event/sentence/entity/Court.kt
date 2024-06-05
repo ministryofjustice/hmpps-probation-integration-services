@@ -18,7 +18,7 @@ class Court(
     val code: String,
 
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean?,
+    val selectable: Boolean,
 
     val courtName: String?,
 

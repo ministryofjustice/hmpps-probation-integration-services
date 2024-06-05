@@ -131,7 +131,7 @@ data class CustodyRelatedKeyDates(
 data class Court(
     val courtId: Long,
     val code: String,
-    val selectable: Boolean?,
+    val selectable: Boolean,
     val courtName: String?,
     val telephoneNumber: String?,
     val fax: String?,
