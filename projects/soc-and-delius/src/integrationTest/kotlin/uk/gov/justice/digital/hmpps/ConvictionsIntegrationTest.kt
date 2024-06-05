@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
@@ -63,6 +64,7 @@ internal class ConvictionsIntegrationTest {
                 ConvictionEventGenerator.DEFAULT_EVENT.convictionDate,
                 ConvictionEventGenerator.DEFAULT_EVENT.referralDate,
                 ConvictionEventGenerator.DISPOSAL_TYPE.description,
+                CourtAppearanceGenerator.DEFAULT_OUTCOME.description,
                 listOf(
                     Offence(
                         ConvictionEventGenerator.MAIN_OFFENCE.id,
@@ -102,6 +104,7 @@ internal class ConvictionsIntegrationTest {
             ConvictionEventGenerator.INACTIVE_EVENT.id,
             ConvictionEventGenerator.INACTIVE_EVENT.convictionDate,
             ConvictionEventGenerator.INACTIVE_EVENT.referralDate,
+            "unknown",
             "unknown",
             listOf(),
             null
