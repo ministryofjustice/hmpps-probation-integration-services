@@ -20,7 +20,8 @@ data class Conviction(
     val latestCourtAppearanceOutcome: KeyValue?,
     val custody: Custody? = null,
     val responsibleCourt: Court?,
-    val courtAppearance: CourtAppearanceBasic?
+    val courtAppearance: CourtAppearanceBasic?,
+    val orderManagers: List<OrderManager>?
 )
 
 data class Offence(
@@ -33,7 +34,7 @@ data class Offence(
     val verdict: String?,
     val offenderId: Long,
     val createdDatetime: ZonedDateTime,
-    val lastUpdatedDatetime: LocalDate,
+    val lastUpdatedDatetime: ZonedDateTime,
 )
 
 data class OffenceDetail(
@@ -157,5 +158,18 @@ data class CourtAppearanceBasic(
     val courtName: String?,
     val appearanceType: KeyValue,
     val crn: String
+)
+
+data class OrderManager(
+    val probationAreaId: Long,
+    val teamId: Long?,
+    val officerId: Long,
+    val name: String?,
+    val staffCode: String?,
+    val dateStartOfAllocation: ZonedDateTime,
+    val dateEndOfAllocation: ZonedDateTime,
+    val gradeCode: String?,
+    val teamCode: String?,
+    val probationAreaCode: String
 )
 

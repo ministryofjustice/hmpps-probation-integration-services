@@ -10,8 +10,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.en
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -63,6 +66,9 @@ class Event(
     @OneToMany(mappedBy = "event")
     val courtAppearances: List<CourtAppearance> = emptyList(),
 
+    @OneToMany(mappedBy = "event")
+    val orderManagers: List<OrderManager> = emptyList(),
+
     @ManyToOne
     @JoinColumn(name = "court_id")
     val court: Court?,
@@ -107,10 +113,22 @@ class OrderManager(
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
-    val staff: Staff,
+    val staff: Staff?,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val probationArea: ProbationAreaEntity,
+
+    @OneToOne
+    @JoinColumn(name = "allocation_team_id")
+    val team: Team?,
+
+    val allocationDate: ZonedDateTime,
+
+    val endDate: ZonedDateTime,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,

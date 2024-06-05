@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.BHAM
+import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.PROBATIONARE_AREA
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator.WSIHMP
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -22,8 +23,10 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.ADDITIONAL_OFFENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.COURT_APPEARANCE
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_ORDER_MANAGER
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_SENTENCE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.MAIN_OFFENCE
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.ALLOCATED
 import uk.gov.justice.digital.hmpps.data.generator.UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -217,6 +220,20 @@ internal class ConvictionIntegrationTest {
                 COURT_APPEARANCE.court.courtName,
                 KeyValue(COURT_APPEARANCE.appearanceType.code, COURT_APPEARANCE.appearanceType.description),
                 COURT_APPEARANCE.person.crn
+            ),
+            listOf(
+                OrderManager(
+                    PROBATIONARE_AREA.id,
+                    null,
+                    CURRENT_ORDER_MANAGER.id,
+                    ALLOCATED.getName(),
+                    ALLOCATED.code,
+                    CURRENT_ORDER_MANAGER.allocationDate,
+                    CURRENT_ORDER_MANAGER.endDate,
+                    null,
+                    null,
+                    PROBATIONARE_AREA.code
+                )
             )
         )
 

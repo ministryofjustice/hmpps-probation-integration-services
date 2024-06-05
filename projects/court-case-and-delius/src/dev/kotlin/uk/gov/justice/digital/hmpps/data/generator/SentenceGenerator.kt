@@ -9,7 +9,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -53,6 +55,14 @@ object SentenceGenerator {
         CURRENTLY_MANAGED,
         OUTCOME,
         ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, TIME_ZONE)
+    )
+
+    val CURRENT_ORDER_MANAGER = SentenceGenerator.generateOrderManager(
+        CURRENTLY_MANAGED,
+        StaffGenerator.ALLOCATED,
+        CourtGenerator.PROBATIONARE_AREA,
+        ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
+        ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
     )
 
     val CONDITIONAL_RELEASE_KEY_DATE = generateKeyDates(LocalDate.now(), CURRENT_CUSTODY, ReferenceDataGenerator.ACR)
@@ -140,11 +150,15 @@ object SentenceGenerator {
 
     fun generateOrderManager(
         event: Event,
-        staff: Staff,
+        staff: Staff? = null,
+        probationArea: ProbationAreaEntity,
+        allocatedDate: ZonedDateTime,
+        endDate: ZonedDateTime,
+        team: Team? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = OrderManager(event, staff, active, softDeleted, id)
+    ) = OrderManager(event, staff, active, probationArea, team, allocatedDate, endDate, softDeleted, id)
 
     fun generateCourtAppearance(
         event: Event,
@@ -203,7 +217,7 @@ object SentenceGenerator {
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
             ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, TIME_ZONE),
-            LocalDate.now().plusDays(1)
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, TIME_ZONE),
         )
 
     val ADDITIONAL_OFFENCE_DEFAULT = generateAdditionalOffence(
@@ -211,7 +225,7 @@ object SentenceGenerator {
         ADDITIONAL_OFFENCE,
         LocalDate.now(),
         ZonedDateTime.of(LocalDate.now().minusMonths(1), LocalTime.NOON, TIME_ZONE),
-        LocalDate.now().plusMonths(1),
+        ZonedDateTime.of(LocalDate.now().plusMonths(1), LocalTime.NOON, TIME_ZONE),
     )
 
     fun generateOffence(
@@ -252,7 +266,7 @@ object SentenceGenerator {
         offenceCount: Long,
         offenderId: Long,
         created: ZonedDateTime,
-        updated: LocalDate,
+        updated: ZonedDateTime,
         tics: Long? = null,
         verdict: String? = null,
         id: Long = IdGenerator.getAndIncrement(),
@@ -264,7 +278,7 @@ object SentenceGenerator {
         offence: Offence,
         date: LocalDate,
         created: ZonedDateTime,
-        updated: LocalDate,
+        updated: ZonedDateTime,
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false,
         offenceCount: Long? = null,

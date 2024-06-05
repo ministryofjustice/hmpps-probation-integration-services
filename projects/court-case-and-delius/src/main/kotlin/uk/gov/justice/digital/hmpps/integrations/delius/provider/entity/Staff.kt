@@ -1,12 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 
 @Immutable
 @Entity
@@ -25,12 +21,23 @@ class Staff(
     @Column
     val surname: String,
 
+    @ManyToOne
+    @JoinColumn(name = "staff_grade_id")
+    val grade: ReferenceData?,
+
     @Id
     @Column(name = "staff_id")
     val id: Long
 ) {
     fun isUnallocated(): Boolean {
         return code.endsWith("U")
+    }
+
+    fun getName(): String {
+        return when {
+            forename2 == null -> "$forename $surname"
+            else -> "$forename $forename2 $surname"
+        }
     }
 }
 

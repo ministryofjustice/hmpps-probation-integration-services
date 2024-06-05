@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence as OffenceEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManager as OrderManagerEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.AdditionalSentence as AdditionalSentenceEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court as CourtEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody as CustodyEntity
@@ -44,7 +45,8 @@ class ConvictionService(
             toLatestCourtAppearanceOutcome(),
             disposal?.custody?.toCustody(),
             court?.toCourt(),
-            toLatestOrSentencingCourtAppearanceOf()
+            toLatestOrSentencingCourtAppearanceOf(),
+            orderManagers.map { it.toOrderManager() }
         )
 
     fun Event.toOffences(): List<Offence> {
@@ -235,6 +237,19 @@ class ConvictionService(
         KeyValue(courtType.code, courtType.description),
     )
 
+    fun OrderManagerEntity.toOrderManager(): OrderManager =
+        OrderManager(
+            probationArea.id,
+            team?.id,
+            id,
+            staff?.getName(),
+            staff?.code,
+            allocationDate,
+            endDate,
+            staff?.grade?.code,
+            team?.code,
+            probationArea.code
+        )
 }
 
 enum class KeyDateTypes(val code: String) {

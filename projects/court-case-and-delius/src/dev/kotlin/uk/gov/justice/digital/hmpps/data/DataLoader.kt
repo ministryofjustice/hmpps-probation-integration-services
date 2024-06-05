@@ -11,6 +11,8 @@ import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Component
@@ -113,7 +115,14 @@ class DataLoader(
 
         val noSentenceEvent =
             SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
-        val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
+        val noSentenceManager =
+            SentenceGenerator.generateOrderManager(
+                noSentenceEvent,
+                StaffGenerator.UNALLOCATED,
+                CourtGenerator.PROBATIONARE_AREA,
+                ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, ZoneId.of("Europe/London"))
+            )
         val outcome = SentenceGenerator.OUTCOME
         val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, ZonedDateTime.now())
         em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
@@ -121,13 +130,20 @@ class DataLoader(
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
         val newSentence =
             SentenceGenerator.generateSentence(newEvent, LocalDate.now(), DisposalTypeGenerator.CURFEW_ORDER)
-        val newManager = SentenceGenerator.generateOrderManager(newEvent, StaffGenerator.UNALLOCATED)
+        val newManager =
+            SentenceGenerator.generateOrderManager(
+                newEvent,
+                StaffGenerator.UNALLOCATED,
+                CourtGenerator.PROBATIONARE_AREA,
+                ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
+            )
         em.saveAll(newEvent, newSentence, newManager)
 
         val currentEvent = SentenceGenerator.CURRENTLY_MANAGED
         val currentSentence = SentenceGenerator.CURRENT_SENTENCE
         val custody = SentenceGenerator.CURRENT_CUSTODY
-        val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
+        val currentManager = SentenceGenerator.CURRENT_ORDER_MANAGER
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
         val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
         val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
@@ -187,7 +203,14 @@ class DataLoader(
             terminationDate = LocalDate.now().minusDays(7),
             active = false
         )
-        val preManager = SentenceGenerator.generateOrderManager(preEvent, StaffGenerator.ALLOCATED)
+        val preManager =
+            SentenceGenerator.generateOrderManager(
+                preEvent,
+                StaffGenerator.ALLOCATED,
+                CourtGenerator.PROBATIONARE_AREA,
+                ZonedDateTime.of(LocalDate.now().minusDays(7), LocalTime.NOON, ZoneId.of("Europe/London")),
+                ZonedDateTime.of(LocalDate.now().minusDays(10), LocalTime.NOON, ZoneId.of("Europe/London"))
+            )
         em.saveAll(preEvent, preSentence, preManager)
 
         em.merge(CourtCaseNoteGenerator.CASE_NOTE)

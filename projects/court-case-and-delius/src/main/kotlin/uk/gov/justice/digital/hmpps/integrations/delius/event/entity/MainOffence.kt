@@ -42,7 +42,7 @@ class MainOffence(
     val created: ZonedDateTime,
 
     @Column(name = "last_updated_datetime", nullable = false)
-    val updated: LocalDate,
+    val updated: ZonedDateTime,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
@@ -78,7 +78,7 @@ class AdditionalOffence(
     val created: ZonedDateTime,
 
     @Column(name = "last_updated_datetime", nullable = false)
-    val updated: LocalDate,
+    val updated: ZonedDateTime,
 
     @Id
     @Column(name = "additional_offence_id")
