@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -163,6 +164,30 @@ class Offence(
     val mainCategoryDescription: String,
 )
 
+@Entity
+@Immutable
+@Table(name = "court_appearance")
+@SQLRestriction("soft_deleted = 0")
+class ConvictionCourtAppearanceEntity(
+    @Id
+    @Column(name = "court_appearance_id")
+    val id: Long,
+
+    @JoinColumn(name = "event_id")
+    @ManyToOne
+    val convictionEventEntity: ConvictionEventEntity,
+
+    @ManyToOne
+    @JoinColumn(name = "outcome_id")
+    val outcome: ReferenceData,
+
+    @Column(name = "appearance_date")
+    val appearanceDate: LocalDate,
+
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    val softDeleted: Boolean = false
+)
+
 interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long> {
     @Query(
         """
@@ -214,6 +239,15 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         ]
     )
     fun getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(nomsNumber: String): List<ConvictionEventEntity>
+
+    @Query(
+        """
+        select ca.outcome.description from ConvictionCourtAppearanceEntity ca
+        where ca.convictionEventEntity.id = :eventId
+        order by ca.appearanceDate desc
+        """
+    )
+    fun findLatestCourtAppearanceOutcome(eventId: Long, pageRequest: PageRequest = PageRequest.of(0, 1)): String?
 }
 
 fun ConvictionEventRepository.getLatestConviction(personId: Long) =

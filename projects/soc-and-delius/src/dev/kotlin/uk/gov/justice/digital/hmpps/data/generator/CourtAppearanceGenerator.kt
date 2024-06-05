@@ -1,10 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.Court
-import uk.gov.justice.digital.hmpps.entity.CourtAppearanceEntity
-import uk.gov.justice.digital.hmpps.entity.CourtAppearanceEventEntity
-import uk.gov.justice.digital.hmpps.entity.CourtAppearancePerson
-import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 
 object CourtAppearanceGenerator {
@@ -25,6 +21,11 @@ object CourtAppearanceGenerator {
         IdGenerator.getAndIncrement(),
         "T",
         "Trial/Adjournment"
+    )
+    val DEFAULT_OUTCOME = ReferenceData(
+        IdGenerator.getAndIncrement(),
+        "505",
+        "Breach - Continued/Fine"
     )
     val DEFAULT_CA = CourtAppearanceEntity(
         LocalDate.now(),
