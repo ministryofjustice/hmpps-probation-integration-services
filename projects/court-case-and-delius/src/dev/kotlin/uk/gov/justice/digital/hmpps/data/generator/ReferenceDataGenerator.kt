@@ -211,7 +211,7 @@ object ReferenceDataGenerator {
         "Allocation Reason",
         IdGenerator.getAndIncrement()
     )
-    
+
     val DEFAULT_TIER = ReferenceData(
         "B2",
         "B2",

@@ -181,7 +181,6 @@ class DisposalType(
     @Column(name = "ftc_limit")
     val failureToComplyLimit: Long? = null
 
-
 )
 
 @Entity
