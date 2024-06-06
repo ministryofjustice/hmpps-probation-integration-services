@@ -163,6 +163,7 @@ interface Unpaid {
 }
 
 @Entity
+@Table(name = "r_disposal_type")
 @Immutable
 class DisposalType(
 
