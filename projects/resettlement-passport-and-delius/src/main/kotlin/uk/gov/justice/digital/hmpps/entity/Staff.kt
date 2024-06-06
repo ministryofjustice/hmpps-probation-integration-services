@@ -50,6 +50,10 @@ class Staff(
     @Column(name = "last_updated_user_id")
     var lastModifiedUserId: Long = 0,
 
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
+
     @Id
     @Column(name = "staff_id")
     @SequenceGenerator(name = "staff_id_seq", sequenceName = "staff_id_seq", allocationSize = 1)
