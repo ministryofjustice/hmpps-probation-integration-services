@@ -109,6 +109,7 @@ class UpwDetails(
 )
 
 @Entity(name = "conviction_upw_appointment")
+@Table(name = "upw_appointment")
 @Immutable
 class UpwAppointment(
     @Id
