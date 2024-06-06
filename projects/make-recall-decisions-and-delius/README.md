@@ -38,6 +38,7 @@ separate events.
 |--------------------------------|--------------------|-----------------------------------------------------|
 | Recommendation Process Started | HMPPS Domain Event | "prison-recall.recommendation.started"              |
 | Management Oversight of Recall | HMPPS Domain Event | "prison-recall.recommendation.management-oversight" |
+| Recall being considered        | HMPPS Domain Event | "prison-recall.recommendation.consideration" |
 
 ## Authorisation
 

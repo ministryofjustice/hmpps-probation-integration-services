@@ -71,7 +71,7 @@ object CaseloadGenerator {
         roleCode = Caseload.CaseloadRole.ORDER_SUPERVISOR.value
     )
 
-    val MANAGED_OFFENDER = generateManagedOffender(CASELOAD_ROLE_OM_1, STAFF1, ProviderGenerator.DEFAULT_TEAM)
+    val MANAGED_OFFENDER = generateManagedOffender(CASELOAD_ROLE_OM_1, STAFF1, DEFAULT_TEAM)
 
     fun generateCaseload(
         staff: Staff,

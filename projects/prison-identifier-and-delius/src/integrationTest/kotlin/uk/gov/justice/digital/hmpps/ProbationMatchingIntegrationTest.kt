@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.common.ContentTypes.APPLICATION_JSON
 import com.github.tomakehurst.wiremock.common.ContentTypes.CONTENT_TYPE
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +24,6 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@TestPropertySource(properties = ["messaging.consumer.dry-run=true"])
 internal class ProbationMatchingIntegrationTest {
 
     @Value("\${messaging.consumer.queue}")
@@ -55,11 +55,12 @@ internal class ProbationMatchingIntegrationTest {
 
         verify(telemetryService).trackEvent(
             "MatchResultIgnored",
-            mapOf("reason" to "No active booking", "dryRun" to "true")
+            mapOf("reason" to "No active booking", "dryRun" to "false")
         )
     }
 
     @Test
+    @Order(1)
     fun `prisoner received updates identifiers`() {
         withMatchResponse("probation-search-single-result.json")
 
@@ -69,7 +70,7 @@ internal class ProbationMatchingIntegrationTest {
         verify(telemetryService).trackEvent(
             "MatchResultSuccess", mapOf(
                 "reason" to "Matched CRN A000001 to NOMS number A0001AA and custody ${custodyId("A000001")} to 00001A",
-                "dryRun" to "true",
+                "dryRun" to "false",
                 "nomsNumber" to "A0001AA",
                 "bookingNo" to "00001A",
                 "matchedBy" to "ALL_SUPPLIED",
@@ -89,6 +90,7 @@ internal class ProbationMatchingIntegrationTest {
     }
 
     @Test
+    @Order(2)
     fun `multiple matches are refined by sentence date`() {
         withMatchResponse("probation-search-multiple-results.json")
 
@@ -98,16 +100,17 @@ internal class ProbationMatchingIntegrationTest {
         verify(telemetryService).trackEvent(
             "MatchResultSuccess", mapOf(
                 "reason" to "Matched CRN A000001 to NOMS number A0001AA and custody ${custodyId("A000001")} to 00001A",
-                "dryRun" to "true",
+                "dryRun" to "false",
                 "nomsNumber" to "A0001AA",
                 "bookingNo" to "00001A",
                 "matchedBy" to "ALL_SUPPLIED",
                 "potentialMatches" to """[{"crn":"A000002"},{"crn":"A000001"}]""",
-                "existingNomsNumber" to "E1234XS",
+                "existingNomsNumber" to "A0001AA",
                 "matchedNomsNumber" to "A0001AA",
-                "nomsNumberChanged" to "true",
+                "nomsNumberChanged" to "false",
+                "existingBookingNumber" to "00001A",
                 "matchedBookingNumber" to "00001A",
-                "bookingNumberChanged" to "true",
+                "bookingNumberChanged" to "false",
                 "custody" to "${custodyId("A000001")}",
                 "sentenceDateInDelius" to "2022-11-11",
                 "sentenceDateInNomis" to "2022-11-11",
@@ -127,7 +130,7 @@ internal class ProbationMatchingIntegrationTest {
         verify(telemetryService).trackEvent(
             "MatchResultNoMatch", mapOf(
                 "reason" to "No single match found in probation system",
-                "dryRun" to "true",
+                "dryRun" to "false",
                 "nomsNumber" to "A0001AA",
                 "bookingNo" to "00001A",
                 "matchedBy" to "NONE",
@@ -152,7 +155,7 @@ internal class ProbationMatchingIntegrationTest {
         verify(telemetryService).trackEvent(
             "MatchResultNoMatch", mapOf(
                 "reason" to "No single match found in probation system",
-                "dryRun" to "true",
+                "dryRun" to "false",
                 "nomsNumber" to "A0001AA",
                 "bookingNo" to "00001A",
                 "matchedBy" to "ALL_SUPPLIED",

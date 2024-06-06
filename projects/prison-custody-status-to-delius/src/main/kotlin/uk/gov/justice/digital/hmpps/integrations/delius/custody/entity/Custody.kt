@@ -50,7 +50,7 @@ class Custody(
     var statusChangeDate: LocalDate,
 
     @Column
-    var locationChangeDate: ZonedDateTime?,
+    var locationChangeDate: LocalDate?,
 
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,
@@ -90,7 +90,7 @@ class Custody(
         null
     } else {
         this.institution = institution
-        this.locationChangeDate = dateTime
+        this.locationChangeDate = dateTime.toLocalDate()
         CustodyHistory(
             date = dateTime,
             type = historyType(),

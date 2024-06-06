@@ -6,13 +6,13 @@ import org.springframework.ldap.odm.annotations.Entry
 import org.springframework.ldap.odm.annotations.Id
 import javax.naming.Name
 
-@Entry(objectClasses = ["inetOrgPerson", "top"], base = "ou=Users")
+@Entry(objectClasses = ["inetOrgPerson", "top"])
 class LdapUserDetails(
     @Id
     val dn: Name,
 
     @Attribute(name = "cn")
-    @DnAttribute(value = "cn", index = 1)
+    @DnAttribute(value = "cn", index = 0)
     val username: String,
 
     @Attribute(name = "sn")

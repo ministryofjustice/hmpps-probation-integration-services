@@ -13,6 +13,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
             where r.personId = :personId
             and r.disposalId = :disposalId
             and r.mainCategory.code = :type
+            and r.active = true
         """
     )
     fun findForPersonAndEvent(

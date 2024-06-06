@@ -1,12 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.AdditionalOffence
-import uk.gov.justice.digital.hmpps.entity.ConvictionEventEntity
-import uk.gov.justice.digital.hmpps.entity.ConvictionEventPerson
-import uk.gov.justice.digital.hmpps.entity.Disposal
-import uk.gov.justice.digital.hmpps.entity.DisposalType
-import uk.gov.justice.digital.hmpps.entity.MainOffence
-import uk.gov.justice.digital.hmpps.entity.Offence
+import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.DEFAULT_OUTCOME
+import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 
 object ConvictionEventGenerator {
@@ -30,11 +25,13 @@ object ConvictionEventGenerator {
     val DEFAULT_EVENT = ConvictionEventEntity(
         IdGenerator.getAndIncrement(),
         LocalDate.now().minusDays(1),
+        LocalDate.now().minusDays(2),
         PERSON
     )
     val INACTIVE_EVENT = ConvictionEventEntity(
         IdGenerator.getAndIncrement(),
         LocalDate.now(),
+        LocalDate.now().minusDays(1),
         PERSON,
         active = false
     )
@@ -58,6 +55,12 @@ object ConvictionEventGenerator {
         DEFAULT_EVENT,
         LocalDate.now()
     )
+    val COURT_APPEARANCE = ConvictionCourtAppearanceEntity(
+        IdGenerator.getAndIncrement(),
+        DEFAULT_EVENT,
+        DEFAULT_OUTCOME,
+        LocalDate.now()
+    )
 
     val PERSON_2 = ConvictionEventPerson(
         IdGenerator.getAndIncrement(),
@@ -66,6 +69,7 @@ object ConvictionEventGenerator {
     )
     val EVENT_2 = ConvictionEventEntity(
         IdGenerator.getAndIncrement(),
+        LocalDate.now(),
         LocalDate.now(),
         PERSON_2
     )

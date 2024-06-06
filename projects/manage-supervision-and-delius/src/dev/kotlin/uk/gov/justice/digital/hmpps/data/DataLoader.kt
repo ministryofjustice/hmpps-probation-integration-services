@@ -130,7 +130,9 @@ class DataLoader(
             PersonGenerator.ADD_OFF_2,
             PersonGenerator.ADDITIONAL_OFFENCE_2,
             PersonGenerator.MAIN_CAT_F,
+            PersonGenerator.MAIN_CAT_W,
             PersonGenerator.REQUIREMENT,
+            PersonGenerator.REQUIREMENT_UNPAID_WORK,
             PersonGenerator.REQUIREMENT_CONTACT_1,
             PersonGenerator.REQUIREMENT_CONTACT_2,
             PersonGenerator.REGISTER_TYPE_1,
@@ -143,11 +145,15 @@ class DataLoader(
             PersonGenerator.REGISTRATION_REVIEW_3,
             PersonGenerator.DEREGISTRATION_1,
             PersonGenerator.MAIN_CAT_F_TYPE,
+            PersonGenerator.MAIN_CAT_W_TYPE,
             PersonGenerator.NSI_BREACH_TYPE,
             PersonGenerator.NSI_STATUS,
             PersonGenerator.BREACH_PREVIOUS_ORDER_1,
             PersonGenerator.BREACH_PREVIOUS_ORDER_2,
-            PersonGenerator.BREACH_ON_ACTIVE_ORDER
+            PersonGenerator.BREACH_ON_ACTIVE_ORDER,
+            UnpaidWorkApptGenerator.UNPAID_WORK_DETAILS_1,
+            UnpaidWorkApptGenerator.APPT1,
+            UnpaidWorkApptGenerator.APPT2,
         )
 
         personalDetailsData()

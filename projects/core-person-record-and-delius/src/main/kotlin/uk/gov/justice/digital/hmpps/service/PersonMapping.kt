@@ -1,22 +1,29 @@
 package uk.gov.justice.digital.hmpps.service
 
 import uk.gov.justice.digital.hmpps.api.model.*
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddress
-import uk.gov.justice.digital.hmpps.integration.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.api.model.Alias
+import uk.gov.justice.digital.hmpps.api.model.LimitedAccessUser
+import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 
-fun Person.detail(aliases: List<Alias>, addresses: List<Address>) = PersonDetail(
-    identifiers(),
-    name(),
-    dob,
-    title?.asCodeDescription(),
-    gender?.asCodeDescription(),
-    nationality?.asCodeDescription(),
-    ethnicity?.asCodeDescription(),
-    ethnicityDescription,
-    contactDetails(),
-    aliases,
-    addresses
+fun Person.detail(
+    aliases: List<Alias>,
+    addresses: List<Address>,
+    exclusions: LimitedAccess? = null,
+    restrictions: LimitedAccess? = null,
+) = PersonDetail(
+    identifiers = identifiers(),
+    name = name(),
+    dateOfBirth = dob,
+    title = title?.asCodeDescription(),
+    gender = gender?.asCodeDescription(),
+    nationality = nationality?.asCodeDescription(),
+    ethnicity = ethnicity?.asCodeDescription(),
+    ethnicityDescription = ethnicityDescription,
+    contactDetails = contactDetails(),
+    aliases = aliases,
+    addresses = addresses,
+    excludedFrom = exclusions,
+    restrictedTo = restrictions,
 )
 
 fun Person.identifiers() =
@@ -46,3 +53,16 @@ fun uk.gov.justice.digital.hmpps.integration.delius.entity.Alias.asModel() = Ali
 
 fun PersonAddress.asAddress() = postcode?.let { Address(it) }
 
+fun List<Exclusion>.exclusionsAsLimitedAccess(message: String?) = if (isNotEmpty()) {
+    LimitedAccess(
+        message = message,
+        users = map { LimitedAccessUser(it.user.username) }
+    )
+} else null
+
+fun List<Restriction>.restrictionsAsLimitedAccess(message: String?) = if (isNotEmpty()) {
+    LimitedAccess(
+        message = message,
+        users = map { LimitedAccessUser(it.user.username) }
+    )
+} else null

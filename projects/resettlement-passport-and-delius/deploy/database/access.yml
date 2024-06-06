@@ -6,6 +6,8 @@ database:
       - audited_interaction
       - contact
       - contact_alert
+      - staff
+      - staff_team
 
   audit:
     username: ResettlementPassportAndDelius

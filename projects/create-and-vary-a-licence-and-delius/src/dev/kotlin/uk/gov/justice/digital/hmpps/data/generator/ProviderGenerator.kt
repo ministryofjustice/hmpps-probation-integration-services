@@ -100,42 +100,6 @@ object ProviderGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = Team(code, description, telephone, emailAddress, district, addresses, startDate, endDate, id)
 
-    fun generateOfficeAddress(
-        officeLocation: OfficeLocation,
-        ldu: District
-    ) = OfficeAddress(
-        officeLocation.description,
-        officeLocation.buildingName,
-        officeLocation.buildingNumber,
-        officeLocation.streetName,
-        officeLocation.district,
-        officeLocation.townCity,
-        officeLocation.county,
-        officeLocation.postcode,
-        ldu.description,
-        officeLocation.telephoneNumber,
-        officeLocation.startDate,
-        officeLocation.endDate
-    )
-
-    fun generateLocation(location: OfficeLocation, ldu: District) =
-        OfficeLocation(
-            location.code,
-            location.description,
-            location.buildingName,
-            location.buildingNumber,
-            location.streetName,
-            location.district,
-            location.townCity,
-            location.county,
-            location.postcode,
-            location.telephoneNumber,
-            location.startDate,
-            location.endDate,
-            ldu,
-            location.id
-        )
-
     fun generateLocation(
         code: String,
         description: String,

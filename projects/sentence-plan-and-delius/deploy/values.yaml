@@ -1,5 +1,6 @@
 # Common values
 generic-service:
+  productId: HMPPS518
   nameOverride: sentence-plan-and-delius
 
   image:

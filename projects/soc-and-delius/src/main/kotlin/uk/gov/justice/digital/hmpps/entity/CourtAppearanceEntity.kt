@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -105,7 +100,7 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
         where ca.appearanceDate >= :dateFrom
         and ca.courtAppearanceEventEntity.courtAppearancePerson.crn = :crn
         order by ca.appearanceDate desc
-    """
+        """
     )
     fun findMostRecentCourtAppearancesByCrn(dateFrom: LocalDate, crn: String): List<CourtAppearanceEntity>
 
@@ -115,7 +110,7 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
         where ca.appearanceDate >= :dateFrom
         and ca.courtAppearanceEventEntity.courtAppearancePerson.nomsNumber = :nomsNumber
         order by ca.appearanceDate desc
-    """
+        """
     )
     fun findMostRecentCourtAppearancesByNomsNumber(dateFrom: LocalDate, nomsNumber: String): List<CourtAppearanceEntity>
 }

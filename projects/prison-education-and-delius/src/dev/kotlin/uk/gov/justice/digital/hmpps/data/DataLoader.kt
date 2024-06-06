@@ -30,6 +30,8 @@ class DataLoader(
             persist(DataGenerator.STAFF_WITH_USER)
             persist(DataGenerator.STAFF_WITH_USER.user)
             persist(DataGenerator.COMMUNITY_MANAGER_WITH_USER)
+            persist(DataGenerator.MAIN_ADDRESS_TYPE)
+            persist(DataGenerator.MAIN_ADDRESS)
         }
     }
 }

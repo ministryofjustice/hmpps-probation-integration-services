@@ -57,15 +57,6 @@ class DataLoader(
 
         val person = PersonGenerator.generatePerson("N123456").also(entityManager::persist)
         PersonGenerator.generateManager(person).also(entityManager::persist)
-        entityManager.persistAll(
-            AddressGenerator.ADDRESS_STATUS_MAIN,
-            AddressGenerator.ADDRESS_STATUS_PREVIOUS,
-            AddressGenerator.ADDRESS_STATUS_OTHER,
-            AddressGenerator.ADDRESS_MAIN,
-            AddressGenerator.ADDRESS_PREVIOUS,
-            AddressGenerator.ADDRESS_OTHER,
-            AddressGenerator.ADDRESS_DELETED
-        )
 
         createForAddingLicenceConditions()
 

@@ -16,6 +16,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/approved-premises-api/events/application-submitted/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080-inactive"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-application-submitted-inactive.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPath": "/approved-premises-api/events/application-assessed/484b8b5e-6c3b-4400-b200-425bbe410713"
       },
       "response": {
@@ -24,6 +37,19 @@
         },
         "status": 200,
         "bodyFileName": "approved-premises-application-assessed.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/application-assessed/484b8b5e-6c3b-4400-b200-425bbe410713-inactive"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-application-assessed-inactive.json"
       }
     },
     {
@@ -50,6 +76,19 @@
         },
         "status": 200,
         "bodyFileName": "approved-premises-booking-made.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/booking-made/364145f9-0af8-488e-9901-b4c46cd9ba37-inactive"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-booking-made-inactive.json"
       }
     },
     {
@@ -107,6 +146,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/approved-premises-api/events/person-arrived/364145f9-0af8-488e-9901-b4c46cd9ba37-inactive"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-person-arrived-inactive.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPath": "/approved-premises-api/events/person-departed/364145f9-0af8-488e-9901-b4c46cd9ba37"
       },
       "response": {
@@ -115,6 +167,19 @@
         },
         "status": 200,
         "bodyFileName": "approved-premises-person-departed.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/person-departed/364145f9-0af8-488e-9901-b4c46cd9ba37-inactive"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-person-departed-inactive.json"
       }
     }
   ]

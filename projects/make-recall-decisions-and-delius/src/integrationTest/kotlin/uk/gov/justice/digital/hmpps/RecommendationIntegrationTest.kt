@@ -75,6 +75,27 @@ internal class RecommendationIntegrationTest {
     }
 
     @Test
+    fun `considering a recall`() {
+        val notification = prepEvent("consideration", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val person = PersonGenerator.RECOMMENDATION_STARTED
+        val contact = getContact(person.id)
+        assertNotNull(contact!!)
+        assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
+        assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
+        assertThat(contact.staffId, equalTo(UserGenerator.WITH_STAFF.staff!!.id))
+        assertThat(
+            contact.notes,
+            equalTo("I am considering recalling Mr Z because he bridges the licence conditions xyz………")
+        )
+        assertThat(contact.isSensitive, equalTo(true))
+        assertThat(contact.type.code, equalTo("C519"))
+        assertThat(contact.outcome, equalTo(null))
+        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+    }
+
+    @Test
     fun `recommendation deleted`() {
         val notification = prepEvent("recommendation-deleted", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)

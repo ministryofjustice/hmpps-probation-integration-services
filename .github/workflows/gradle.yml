@@ -32,7 +32,7 @@ jobs:
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
-      - uses: gradle-update/update-gradle-wrapper-action@v1
+      - uses: gradle-update/update-gradle-wrapper-action@0407394b9d173dfc9cf5695f9f560fef6d61a5fe # v1
         with:
           labels: dependencies
           repo-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -41,6 +41,6 @@ jobs:
           if [ "$(git branch --show-current)" != main ]; then
             git config --local user.name probation-integration-bot
             git config --local user.email probation-integration-team@digital.justice.gov.uk
-            git commit --amend --reset-author --no-edit
+            git rebase --exec 'git commit --amend --reset-author --no-edit' "HEAD~$(find . -type f -name gradlew | wc -l)"
             git push --set-upstream origin "$(git branch --show-current)" --force
           fi

@@ -13,7 +13,9 @@ data class PersonDetail(
     val ethnicityDescription: String?,
     val contactDetails: ContactDetails?,
     val aliases: List<Alias>,
-    val addresses: List<Address>
+    val addresses: List<Address>,
+    val excludedFrom: LimitedAccess?,
+    val restrictedTo: LimitedAccess?,
 )
 
 data class Identifiers(

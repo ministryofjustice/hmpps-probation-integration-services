@@ -55,7 +55,7 @@ object EventGenerator {
             institution = institution,
             disposal = disposal,
             statusChangeDate = LocalDate.now().minusDays(1),
-            locationChangeDate = ZonedDateTime.now().minusDays(1)
+            locationChangeDate = LocalDate.now().minusDays(1)
         )
         disposal.custody = custody
         return event
@@ -66,7 +66,7 @@ object EventGenerator {
         institution: Institution?,
         custodialStatusCode: CustodialStatusCode = CustodialStatusCode.RELEASED_ON_LICENCE,
         lengthInDays: Long = 365,
-        releaseDate: ZonedDateTime = ZonedDateTime.now().minusMonths(6),
+        releaseDate: ZonedDateTime = NotificationGenerator.PRISONER_RECEIVED.message.occurredAt.minusMonths(6),
         releaseType: ReleaseTypeCode = ReleaseTypeCode.ADULT_LICENCE
     ): Event {
         val event = custodialEvent(person, institution, custodialStatusCode, lengthInDays = lengthInDays)

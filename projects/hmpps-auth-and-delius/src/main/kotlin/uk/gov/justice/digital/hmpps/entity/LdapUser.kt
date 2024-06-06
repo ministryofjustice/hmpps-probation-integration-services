@@ -1,22 +1,18 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import org.springframework.ldap.odm.annotations.Attribute
-import org.springframework.ldap.odm.annotations.DnAttribute
-import org.springframework.ldap.odm.annotations.Entry
-import org.springframework.ldap.odm.annotations.Id
-import org.springframework.ldap.odm.annotations.Transient
+import org.springframework.ldap.odm.annotations.*
 import java.time.LocalDate
 import java.time.LocalDate.now
 import java.time.format.DateTimeFormatter.ofPattern
 import javax.naming.Name
 
-@Entry(objectClasses = ["inetOrgPerson", "top"], base = "ou=Users")
+@Entry(objectClasses = ["inetOrgPerson", "top"])
 class LdapUser(
     @Id
     val dn: Name,
 
     @Attribute(name = "cn")
-    @DnAttribute(value = "cn", index = 1)
+    @DnAttribute(value = "cn", index = 0)
     val username: String,
 
     @Attribute(name = "givenName")

@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -28,6 +29,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocation
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
@@ -57,6 +59,9 @@ internal class AllocateEventServiceTest {
 
     @Mock
     private lateinit var optimisationTables: OptimisationTables
+
+    @Mock
+    private lateinit var staffRepository: StaffRepository
 
     @InjectMocks
     private lateinit var allocateEventService: AllocateEventService
@@ -182,6 +187,31 @@ internal class AllocateEventServiceTest {
             allocateEventService.createEventAllocation(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail
+            )
+        }
+    }
+
+    @Test
+    fun `when spo staff code not found exception thrown`() {
+        val event = EventGenerator.generate()
+        val spoStaffCode = "NOTFOUND"
+        whenever(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+                PersonGenerator.DEFAULT.crn,
+                allocationDetail.eventNumber.toString()
+            )
+        ).thenReturn(event)
+        whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
+            .thenReturn(OrderManagerGenerator.DEFAULT)
+        whenever(eventRepository.countPendingTransfers(event.id)).thenReturn(0)
+        whenever(transferReasonRepository.findByCode(TransferReasonCode.CASE_ORDER.value)).thenReturn(
+            TransferReasonGenerator.CASE_ORDER
+        )
+        whenever(staffRepository.findByCode(spoStaffCode)).thenReturn(null)
+        assertThrows<NotFoundException> {
+            allocateEventService.createEventAllocation(
+                PersonGenerator.DEFAULT.crn,
+                allocationDetail.copy(spoStaffCode = spoStaffCode)
             )
         }
     }

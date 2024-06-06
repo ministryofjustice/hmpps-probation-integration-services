@@ -1,5 +1,6 @@
 # Common values
 generic-service:
+  productId: HMPPS518
   nameOverride: manage-pom-cases-and-delius
   serviceAccountName: manage-pom-cases-and-delius
 

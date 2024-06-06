@@ -19,7 +19,7 @@ class PrisonMatchingService(
     private val notifier: Notifier,
     private val objectMapper: ObjectMapper,
 ) {
-    fun matchAndUpdateIdentifiers(crn: String, dryRun: Boolean): MatchResult {
+    fun matchAndUpdateIdentifiers(crn: String, dryRun: Boolean = false): MatchResult {
         val matchResult = findMatchingPrisonRecord(crn)
         if (!dryRun && matchResult is Success) {
             with(matchResult) {
@@ -46,6 +46,9 @@ class PrisonMatchingService(
         val matchingCustodies = matchedPrisoner.sentenceStartDate
             ?.let { person.custodiesWithSentenceDateCloseTo(it) } ?: emptyList()
         val matchingCustody = matchingCustodies.singleOrNull()
+        val matchingPerson = matchingCustodies.map { it.disposal.event.person }.distinctBy { it.crn }.singleOrNull()
+        if (matchingPerson == null)
+            return NoMatch("No single match found in prison system", prisonerMatches.telemetry())
 
         return Success(
             identifiers, person, matchingCustody, prisonerMatches.telemetry() + mapOf(

@@ -157,6 +157,18 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         """, nativeQuery = true
     )
     fun getRequirements(id: Long, eventNumber: String): List<RequirementDetails>
+
+    @Query(
+        """
+            SELECT COALESCE(SUM(r.length), 0) 
+            FROM Requirement r 
+            JOIN  r.mainCategory mc 
+            JOIN  r.disposal 
+            WHERE r.disposal.id = :id 
+            AND mc.code = 'W' 
+        """
+    )
+    fun sumTotalUnpaidWorkHoursByDisposal(id: Long): Long
 }
 
 fun RequirementRepository.getRar(disposalId: Long): Rar {

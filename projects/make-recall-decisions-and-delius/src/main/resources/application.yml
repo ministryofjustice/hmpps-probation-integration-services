@@ -17,7 +17,7 @@ spring:
             create_tables: false
             drop_tables: false
   ldap:
-    base: dc=moj,dc=com
+    base: ou=Users,dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
   security.oauth2.client:
@@ -43,6 +43,8 @@ management:
     base-path: /
     exposure.include: [ "health", "info" ]
   endpoint.health.show-details: always
+
+info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/185
 
 ---
 # Shared dev/test config

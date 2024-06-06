@@ -1,20 +1,20 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -26,8 +26,14 @@ class Event(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
+    @OneToOne(mappedBy = "event")
+    val mainOffence: MainOffence? = null,
+
     @Column(name = "in_breach", columnDefinition = "number")
     val inBreach: Boolean,
+
+    @Column(name = "breach_end")
+    val breachEnd: LocalDate? = null,
 
     @Column(name = "conviction_date")
     val convictionDate: LocalDate,
@@ -43,12 +49,37 @@ class Event(
 
     @Id
     @Column(name = "event_id", nullable = false)
-    val id: Long
-)
+    val id: Long,
+
+    @Column(name = "event_number")
+    val eventNumber: String,
+
+    @Column(name = "ftc_count", nullable = false)
+    val failureToComplyCount: Long,
+
+    @Column(name = "referral_date", nullable = false)
+    val referralDate: LocalDate,
+
+    @OneToMany(mappedBy = "event")
+    val additionalOffences: List<AdditionalOffence> = emptyList(),
+
+    @OneToMany(mappedBy = "event")
+    val courtAppearances: List<CourtAppearance> = emptyList(),
+
+    @OneToMany(mappedBy = "event")
+    val orderManagers: List<OrderManager> = emptyList(),
+
+    @ManyToOne
+    @JoinColumn(name = "court_id")
+    val court: Court?,
+
+    )
 
 interface EventRepository : JpaRepository<Event, Long> {
 
     fun findAllByPerson(person: Person): List<Event>
+
+    fun findByPersonAndId(person: Person, id: Long): Event?
 
     @Query(
         """
@@ -67,6 +98,9 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun awaitingPSR(eventId: Long): Int
 }
 
+fun EventRepository.getByPersonAndEventNumber(person: Person, eventId: Long) = findByPersonAndId(person, eventId)
+    ?: throw NotFoundException("Conviction with ID $eventId for Offender with crn ${person.crn} not found")
+
 @Entity
 @Immutable
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
@@ -79,10 +113,22 @@ class OrderManager(
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
-    val staff: Staff,
+    val staff: Staff?,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val probationArea: ProbationAreaEntity,
+
+    @OneToOne
+    @JoinColumn(name = "allocation_team_id")
+    val team: Team?,
+
+    val allocationDate: ZonedDateTime,
+
+    val endDate: ZonedDateTime,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,

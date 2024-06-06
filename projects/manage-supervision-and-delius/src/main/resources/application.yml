@@ -18,7 +18,7 @@ spring:
             drop_tables: false
   threads.virtual.enabled: true
   ldap:
-    base: dc=moj,dc=com
+    base: ou=Users,dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
 
@@ -33,6 +33,8 @@ management:
     base-path: /
     exposure.include: [ "health", "info" ]
   endpoint.health.show-details: always
+
+info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/185
 
 ---
 # Shared dev/test config

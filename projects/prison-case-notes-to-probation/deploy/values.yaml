@@ -2,6 +2,7 @@
 # Values here are the same across all environments
 # An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
 generic-service:
+  productId: HMPPS518
   nameOverride: prison-case-notes-to-probation
   serviceAccountName: prison-case-notes-to-probation
 

@@ -2,17 +2,11 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.controller.IdentifierType
-import uk.gov.justice.digital.hmpps.entity.ConvictionEventRepository
-import uk.gov.justice.digital.hmpps.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.entity.Disposal
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.KeyDate
-import uk.gov.justice.digital.hmpps.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.model.Conviction
-import uk.gov.justice.digital.hmpps.model.ConvictionsContainer
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.model.Custody
-import uk.gov.justice.digital.hmpps.model.CustodyStatus
 import uk.gov.justice.digital.hmpps.model.Offence
-import uk.gov.justice.digital.hmpps.model.Sentence
 
 @Service
 class ConvictionService(
@@ -65,7 +59,9 @@ class ConvictionService(
                 Conviction(
                     convictionEventEntity.id,
                     convictionEventEntity.convictionDate,
+                    convictionEventEntity.referralDate,
                     convictionEventEntity.disposal?.type?.description ?: "unknown",
+                    convictionEventRepository.findLatestCourtAppearanceOutcome(convictionEventEntity.id) ?: "unknown",
                     offences,
                     convictionEventEntity.disposal?.asModel(custody)
                 )

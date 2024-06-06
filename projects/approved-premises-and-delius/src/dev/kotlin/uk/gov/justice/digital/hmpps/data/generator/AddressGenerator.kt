@@ -12,6 +12,15 @@ object AddressGenerator {
         town = "Some Place",
         postcode = "MB01 3TD"
     )
+
+    var INACTIVE_PERSON_ADDRESS = generatePersonAddress(
+        personId = PersonGenerator.PERSON_INACTIVE_EVENT.id,
+        addressNumber = "12",
+        streetName = "Tulip Drive",
+        town = "Some Place",
+        postcode = "MB01 3TD"
+    )
+
     val Q001 = generateAddress("", "1", "Promise Street", "", "Make Believe", "", "MB01 1PS", "01234567890")
     val Q002 = generateAddress("", "2", "Future Street", "", "Make Believe", "", "MB02 2PS", "01234567891")
 

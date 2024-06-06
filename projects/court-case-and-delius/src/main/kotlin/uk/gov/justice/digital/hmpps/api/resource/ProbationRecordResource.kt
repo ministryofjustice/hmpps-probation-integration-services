@@ -13,7 +13,13 @@ class ProbationRecordResource(private val offenderService: OffenderService) {
 
     @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
     @GetMapping
-    fun probationRecord(
+    fun getOffenderDetailSummary(
         @PathVariable crn: String
-    ) = offenderService.getProbationRecord(crn)
+    ) = offenderService.getOffenderDetailSummary(crn)
+
+    @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
+    @GetMapping("/all")
+    fun getOffenderDetail(
+        @PathVariable crn: String
+    ) = offenderService.getOffenderDetail(crn)
 }

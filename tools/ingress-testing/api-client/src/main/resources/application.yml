@@ -5,3 +5,5 @@ management:
     base-path: /
     exposure.include: [ "health", "info" ]
   endpoint.health.show-details: always
+
+info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/185

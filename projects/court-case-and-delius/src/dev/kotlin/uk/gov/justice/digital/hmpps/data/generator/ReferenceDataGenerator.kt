@@ -91,4 +91,202 @@ object ReferenceDataGenerator {
         "court report",
         IdGenerator.getAndIncrement()
     )
+
+    val GENDER_MALE = ReferenceData(
+        "MALE",
+        "Male",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PROVISION_TYPE_1 = ReferenceData(
+        "PROV1",
+        "Provision type 1",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PROVISION_CATEGORY_1 = ReferenceData(
+        "PROV1",
+        "Provision type 1",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DISABILITY_TYPE_1 = ReferenceData(
+        "DIS1",
+        "Disability type 1",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DISABILITY_CONDITION_1 = ReferenceData(
+        "DISCON1",
+        "Disability Condition 1",
+        IdGenerator.getAndIncrement()
+    )
+
+    val GENDER_IDENTITY = ReferenceData(
+        "GEN",
+        "Some gender identity",
+        IdGenerator.getAndIncrement()
+    )
+
+    val ETHNICITY = ReferenceData(
+        "ETH",
+        "Some ethnicity",
+        IdGenerator.getAndIncrement()
+    )
+
+    val IMMIGRATION_STATUS = ReferenceData(
+        "ETH",
+        "Some immigration status",
+        IdGenerator.getAndIncrement()
+    )
+
+    val NATIONALITY = ReferenceData(
+        "BRIT",
+        "British",
+        IdGenerator.getAndIncrement()
+    )
+
+    val LANGUAGE_ENG = ReferenceData(
+        "ENG",
+        "English",
+        IdGenerator.getAndIncrement()
+    )
+
+    val RELIGION = ReferenceData(
+        "REL",
+        "A Relgion",
+        IdGenerator.getAndIncrement()
+    )
+
+    val SECOND_NATIONALITY = ReferenceData(
+        "FRE",
+        "French",
+        IdGenerator.getAndIncrement()
+    )
+
+    val SEXUAL_ORIENTATION = ReferenceData(
+        "SO",
+        "A sexual orientation",
+        IdGenerator.getAndIncrement()
+    )
+
+    val TITLE = ReferenceData(
+        "MR",
+        "Mr",
+        IdGenerator.getAndIncrement()
+    )
+
+    val VIOLENCE = ReferenceData(
+        "VI",
+        "Violence",
+        IdGenerator.getAndIncrement()
+    )
+
+    val HOURS_WORKED = ReferenceData(
+        "HC",
+        "Hours Completed",
+        IdGenerator.getAndIncrement()
+    )
+
+    val REF_DISQ = ReferenceData(
+        "DISQ",
+        "Disqualified from Driving",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DEFAULT_ADDRESS_TYPE = ReferenceData(
+        "AT",
+        "Address Type",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DEFAULT_ADDRESS_STATUS = ReferenceData(
+        "AS",
+        "Address Status",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DEFAULT_ALLOCATION_REASON = ReferenceData(
+        "AR",
+        "Allocation Reason",
+        IdGenerator.getAndIncrement()
+    )
+
+    val DEFAULT_TIER = ReferenceData(
+        "B2",
+        "B2",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PRISON = ReferenceData(
+        "E",
+        "prison",
+        IdGenerator.getAndIncrement()
+    )
+
+    val ACR = ReferenceData(
+        "ACR",
+        "Auto-Conditional Release Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val EXP = ReferenceData(
+        "EXP",
+        "Expected Release Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val HDE = ReferenceData(
+        "HDE",
+        "HDC Expected Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val LED = ReferenceData(
+        "LED",
+        "Licence Expiry Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PED = ReferenceData(
+        "PED",
+        "Parole Eligibility Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PSSED = ReferenceData(
+        "PSSED",
+        "Post-Sentence Supervision End Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val POM1 = ReferenceData(
+        "POM1",
+        "POM Handover Expected Start Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val POM2 = ReferenceData(
+        "POM2",
+        "RO responsibility handover from POM to OM Expected Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val SED = ReferenceData(
+        "SED",
+        "Sentence Expiry Date",
+        IdGenerator.getAndIncrement()
+    )
+
+    val CRN = ReferenceData(
+        "CRN",
+        "Crown Court",
+        IdGenerator.getAndIncrement()
+    )
+
+    val TRIAL = ReferenceData(
+        code = "T",
+        "Trial/Adjournment",
+        IdGenerator.getAndIncrement()
+    )
 }
