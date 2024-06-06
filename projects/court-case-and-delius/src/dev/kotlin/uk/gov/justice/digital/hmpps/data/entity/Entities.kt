@@ -56,9 +56,6 @@ class Referral(@Id val referralId: Long, val referralTypeId: Long, val referralD
 class ReferralType(@Id val referralTypeId: Long, val description: String)
 
 @Entity
-class UpwDetails(@Id val upwDetailsId: Long, val disposalId: Long)
-
-@Entity
 class UpwProject(@Id val upwProjectId: Long, val name: String)
 
 @Entity
