@@ -30,7 +30,6 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
-            DocumentEntityGenerator.COURT,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT,
             AreaGenerator.PARTITION_AREA,

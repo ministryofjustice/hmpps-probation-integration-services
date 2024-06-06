@@ -101,22 +101,26 @@ class Offence(
     @ManyToOne
     val ogrsOffenceCategory: ReferenceData,
 
+    @Column(columnDefinition = "char(5)")
     val code: String,
 
     val description: String,
 
     val abbreviation: String? = null,
 
+    @Column(columnDefinition = "char(3)")
     val mainCategoryCode: String,
 
     val mainCategoryDescription: String,
 
     val mainCategoryAbbreviation: String,
 
+    @Column(columnDefinition = "char(2)")
     val subCategoryCode: String,
 
     val subCategoryDescription: String,
 
+    @Column(name = "form_20_code")
     val form20Code: String? = null,
 
     val subCategoryAbbreviation: String? = null,

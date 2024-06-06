@@ -59,10 +59,12 @@ class Disposal(
     @JoinColumn(name = "entry_length_2_units_id")
     val entryLength2Unit: ReferenceData? = null,
 
+    @Column(name = "length_2")
     val length2: Long? = null,
 
     val length: Long? = null,
 
+    @Column(name = "entered_notional_end_date")
     val enteredSentenceEndDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
@@ -90,7 +92,8 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun getByCrn(crn: String): List<Disposal>
 }
 
-@Entity(name = "conviction_upw_details")
+@Entity
+@Table(name = "upw_details")
 @Immutable
 class UpwDetails(
     @Id
@@ -108,7 +111,8 @@ class UpwDetails(
     val status: ReferenceData
 )
 
-@Entity(name = "conviction_upw_appointment")
+@Entity
+@Table(name = "upw_appointment")
 @Immutable
 class UpwAppointment(
     @Id
@@ -140,7 +144,7 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
             COUNT (CASE WHEN u.attended = 'N' AND u.complied = 'Y' THEN 1 END) AS acceptableAbsence,
             COUNT (CASE WHEN u.attended = 'N' AND u.complied = 'N' THEN 1 END) AS unacceptableAbsence,
             COUNT (CASE WHEN u.attended IS NULL AND u.complied is NULL THEN 1 END) AS noOutcomeRecorded
-            FROM conviction_upw_appointment u 
+            FROM UpwAppointment u 
             JOIN  u.upwDetails upd 
             JOIN  upd.disposal d 
             WHERE d.id = :id           
@@ -159,6 +163,7 @@ interface Unpaid {
 }
 
 @Entity
+@Table(name = "r_disposal_type")
 @Immutable
 class DisposalType(
 

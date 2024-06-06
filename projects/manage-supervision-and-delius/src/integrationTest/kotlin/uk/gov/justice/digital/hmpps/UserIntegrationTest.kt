@@ -120,18 +120,4 @@ internal class UserIntegrationTest {
         assertThat(res.caseload[1].crn, equalTo(PERSONAL_DETAILS.crn))
         assertThat(res.caseload[1].caseName, equalTo(PERSONAL_DETAILS.name()))
     }
-
-    @Test
-    fun `case load for a staffcode`() {
-
-        val person = USER_1
-        val res = mockMvc
-            .perform(get("/caseload/staff/${person.staff?.code?.trim()}").withToken())
-            .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<StaffCaseload>()
-
-        assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
-        assertThat(res.caseload[0].crn, equalTo(PERSONAL_DETAILS.crn))
-        assertThat(res.caseload[0].caseName, equalTo(PERSONAL_DETAILS.name()))
-    }
 }

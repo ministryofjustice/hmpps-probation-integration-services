@@ -18,12 +18,14 @@ class UserService(
 ) {
 
     @Transactional
-    fun getUserCaseload(username: String): StaffCaseload {
+    fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {
         val user = userRepository.getUser(username)
-        val caseload = caseloadRepository.findByStaffCode(user.staff!!.code)
+        val caseload = caseloadRepository.findByStaffCode(user.staff!!.code, pageable)
         return StaffCaseload(
+            totalElements = caseload.totalElements.toInt(),
+            totalPages = caseload.totalPages,
             provider = user.staff.provider.description,
-            caseload = caseload.map { it.toStaffCase() },
+            caseload = caseload.content.map { it.toStaffCase() },
             staff = Name(forename = user.staff.forename, surname = user.staff.surname)
         )
     }
@@ -39,17 +41,6 @@ class UserService(
             provider = team.provider.description,
             caseload = caseload.content.map { it.toTeamCase() },
             team = Team(description = team.description, team.code)
-        )
-    }
-
-    @Transactional
-    fun getStaffCaseload(staffCode: String): StaffCaseload {
-        val staff = staffRepository.getStaff(staffCode)
-        val caseload = caseloadRepository.findByStaffCode(staff.code)
-        return StaffCaseload(
-            provider = staff.provider.description,
-            caseload = caseload.map { it.toStaffCase() },
-            staff = Name(forename = staff.forename, surname = staff.surname)
         )
     }
 

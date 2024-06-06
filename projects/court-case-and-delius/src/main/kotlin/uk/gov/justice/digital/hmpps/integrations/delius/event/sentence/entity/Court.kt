@@ -7,13 +7,15 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import java.time.ZonedDateTime
 
-@Entity(name = "conviction_court")
+@Entity
+@Table(name = "court")
 @Immutable
 class Court(
     @Id
     @Column(name = "court_id")
     val id: Long,
 
+    @Column(columnDefinition = "char(6)")
     val code: String,
 
     @Convert(converter = YesNoConverter::class)
@@ -23,6 +25,7 @@ class Court(
 
     val telephoneNumber: String?,
 
+    @Column(name = "fax")
     val faxNumber: String?,
 
     val buildingName: String,

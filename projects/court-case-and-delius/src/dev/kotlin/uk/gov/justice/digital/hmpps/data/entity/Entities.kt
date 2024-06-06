@@ -27,9 +27,6 @@ class AssessmentType(@Id val assessmentTypeId: Long, val description: String)
 class CaseAllocation(@Id val caseAllocationId: Long, val eventId: Long)
 
 @Entity
-class Court(@Id val courtId: Long, val courtName: String)
-
-@Entity
 class InstitutionalReport(
     @Id
     val institutionalReportId: Long,
@@ -57,17 +54,6 @@ class Referral(@Id val referralId: Long, val referralTypeId: Long, val referralD
 @Entity
 @Table(name = "r_referral_type")
 class ReferralType(@Id val referralTypeId: Long, val description: String)
-
-@Entity
-class UpwAppointment(
-    @Id val upwAppointmentId: Long,
-    val upwDetailsId: Long,
-    val upwProjectId: Long,
-    val appointmentDate: LocalDate
-)
-
-@Entity
-class UpwDetails(@Id val upwDetailsId: Long, val disposalId: Long)
 
 @Entity
 class UpwProject(@Id val upwProjectId: Long, val name: String)
