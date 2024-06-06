@@ -25,6 +25,7 @@ class Court(
 
     val telephoneNumber: String?,
 
+    @Column(name = "fax")
     val faxNumber: String?,
 
     val buildingName: String,
