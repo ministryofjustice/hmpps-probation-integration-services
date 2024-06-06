@@ -30,6 +30,8 @@ internal class CaseloadControllerTest {
     fun `calls get user case load function `() {
         val username = "username"
         val expectedResponse = StaffCaseload(
+            totalPages = 1,
+            totalElements = 1,
             provider = USER.staff?.provider?.description,
             caseload = listOf(CASELOAD_PERSON_1.toStaffCase()),
             staff = Name(forename = USER.staff!!.forename, surname = USER.staff!!.surname)

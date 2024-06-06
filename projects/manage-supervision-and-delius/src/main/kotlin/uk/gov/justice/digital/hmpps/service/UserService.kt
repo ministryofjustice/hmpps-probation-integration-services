@@ -22,6 +22,8 @@ class UserService(
         val user = userRepository.getUser(username)
         val caseload = caseloadRepository.findByStaffCode(user.staff!!.code, pageable)
         return StaffCaseload(
+            totalElements = caseload.totalElements.toInt(),
+            totalPages = caseload.totalPages,
             provider = user.staff.provider.description,
             caseload = caseload.content.map { it.toStaffCase() },
             staff = Name(forename = user.staff.forename, surname = user.staff.surname)

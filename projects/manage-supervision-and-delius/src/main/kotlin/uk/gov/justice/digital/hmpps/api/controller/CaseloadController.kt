@@ -18,7 +18,7 @@ class CaseloadController(private val userService: UserService) {
     fun getUserCaseload(
         @PathVariable username: String,
         @RequestParam(required = false, defaultValue = "0") page: Int,
-        @RequestParam(required = false, defaultValue = "10") size: Int
+        @RequestParam(required = false, defaultValue = "100") size: Int
     ) = userService.getUserCaseload(username, PageRequest.of(page, size))
 
     @GetMapping("/user/{username}/teams")
