@@ -63,6 +63,7 @@ class Disposal(
 
     val length: Long? = null,
 
+    @Column(name = "entered_notional_end_date")
     val enteredSentenceEndDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
