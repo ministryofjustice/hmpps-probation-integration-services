@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.entity.Court
-import uk.gov.justice.digital.hmpps.data.entity.Institution
+//import uk.gov.justice.digital.hmpps.data.entity.Institution
 import uk.gov.justice.digital.hmpps.data.entity.InstitutionalReport
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
@@ -20,7 +20,7 @@ object DocumentEntityGenerator {
         dateRequested = LocalDate.of(2000, 1, 2)
     )
 
-    val R_INSTITUTION = Institution(IdGenerator.getAndIncrement(), "test", false)
+//    val R_INSTITUTION = Institution(IdGenerator.getAndIncrement(), "test", false)
 
     fun generateDocument(personId: Long, primaryKeyId: Long?, type: String, tableName: String?) =
         DocumentEntity(

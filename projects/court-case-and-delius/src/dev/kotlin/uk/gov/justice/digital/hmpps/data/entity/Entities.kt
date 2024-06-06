@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import org.hibernate.annotations.Immutable
+import jakarta.persistence.*
 import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
 
@@ -87,18 +82,3 @@ class User(
     val surname: String
 )
 
-@Entity
-@Immutable
-@Table(name = "r_institution")
-class Institution(
-    @Id
-    @Column(name = "institution_id")
-    val id: Long,
-
-    @Column(name = "institution_name")
-    val name: String,
-
-    @Column
-    @Convert(converter = YesNoConverter::class)
-    val establishment: Boolean
-)

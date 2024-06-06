@@ -1,16 +1,12 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -29,8 +25,24 @@ class MainOffence(
     @JoinColumn(name = "offence_id")
     val offence: Offence,
 
-    @Column(name = "offence_date")
+    @Column(name = "offence_date", nullable = false)
     val date: LocalDate,
+
+    @Column(nullable = false)
+    val offenceCount: Long,
+
+    val tics: Long?,
+
+    val verdict: String?,
+
+    @Column(nullable = false)
+    val offenderId: Long,
+
+    @Column(name = "created_datetime", nullable = false)
+    val created: ZonedDateTime,
+
+    @Column(name = "last_updated_datetime", nullable = false)
+    val updated: ZonedDateTime,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
@@ -60,6 +72,14 @@ class AdditionalOffence(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
 
+    val offenceCount: Long? = null,
+
+    @Column(name = "created_datetime", nullable = false)
+    val created: ZonedDateTime,
+
+    @Column(name = "last_updated_datetime", nullable = false)
+    val updated: ZonedDateTime,
+
     @Id
     @Column(name = "additional_offence_id")
     val id: Long
@@ -76,5 +96,31 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-    val description: String
+
+    @JoinColumn(name = "ogrs_offence_category_id", nullable = false)
+    @ManyToOne
+    val ogrsOffenceCategory: ReferenceData,
+
+    val code: String,
+
+    val description: String,
+
+    val abbreviation: String? = null,
+
+    val mainCategoryCode: String,
+
+    val mainCategoryDescription: String,
+
+    val mainCategoryAbbreviation: String,
+
+    val subCategoryCode: String,
+
+    val subCategoryDescription: String,
+
+    val form20Code: String? = null,
+
+    val subCategoryAbbreviation: String? = null,
+
+    val cjitCode: String? = null
+
 )
