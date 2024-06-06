@@ -230,7 +230,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         where c.staff.code = :staffCode
     """
     )
-    fun findByStaffCode(staffCode: String): List<Caseload>
+    fun findByStaffCode(staffCode: String, pageable: Pageable): Page<Caseload>
 
     @Query(
         """

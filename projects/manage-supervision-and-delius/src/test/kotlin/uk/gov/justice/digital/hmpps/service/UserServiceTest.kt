@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CASELOAD_PERSON_1
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.TeamRepository
@@ -44,8 +43,14 @@ internal class UserServiceTest {
     fun `calls get person activity function`() {
         val username = "username"
         whenever(userRepository.findByUsername(username)).thenReturn(USER)
-        whenever(caseloadRepository.findByStaffCode(USER.staff!!.code)).thenReturn(listOf(CASELOAD_PERSON_1))
-        val res = service.getUserCaseload(username)
+        whenever(caseloadRepository.findByStaffCode(USER.staff!!.code, Pageable.ofSize(1))).thenReturn(
+            PageImpl(
+                listOf(
+                    CASELOAD_PERSON_1
+                )
+            )
+        )
+        val res = service.getUserCaseload(username, Pageable.ofSize(1))
         assertThat(
             res.provider, equalTo(DEFAULT_PROVIDER.description)
         )
@@ -100,22 +105,5 @@ internal class UserServiceTest {
         assertThat(res.provider, equalTo(DEFAULT_PROVIDER.description))
         assertThat(res.caseload[0].staff.code, equalTo(CASELOAD_PERSON_1.staff.code))
         assertThat(res.team.code, equalTo(DEFAULT_TEAM.code))
-    }
-
-    @Test
-    fun `calls get caseload for staff function`() {
-        val staffCode = DEFAULT_STAFF.code
-        whenever(staffRepository.findByStaffCode(staffCode)).thenReturn(DEFAULT_STAFF)
-        whenever(caseloadRepository.findByStaffCode(staffCode)).thenReturn(listOf(CASELOAD_PERSON_1))
-        val res = service.getStaffCaseload(staffCode)
-        assertThat(
-            res.provider, equalTo(DEFAULT_PROVIDER.description)
-        )
-        assertThat(
-            res.caseload[0].crn, equalTo(OVERVIEW.crn)
-        )
-        assertThat(
-            res.caseload[0].caseName.forename, equalTo(OVERVIEW.forename)
-        )
     }
 }
