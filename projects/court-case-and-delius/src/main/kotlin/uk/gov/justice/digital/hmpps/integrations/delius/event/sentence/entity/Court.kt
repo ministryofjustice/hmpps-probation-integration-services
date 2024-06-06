@@ -15,6 +15,7 @@ class Court(
     @Column(name = "court_id")
     val id: Long,
 
+    @Column(columnDefinition = "char(6)")
     val code: String,
 
     @Convert(converter = YesNoConverter::class)
