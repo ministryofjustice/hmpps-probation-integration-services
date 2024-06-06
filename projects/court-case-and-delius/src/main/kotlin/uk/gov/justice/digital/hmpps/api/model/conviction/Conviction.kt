@@ -98,7 +98,7 @@ data class AdditionalSentence(
 )
 
 data class Custody(
-    val bookingNumber: String,
+    val bookingNumber: String?,
     val institution: Institution,
     val keyDates: CustodyRelatedKeyDates,
     val status: KeyValue,
