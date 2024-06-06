@@ -344,6 +344,7 @@ components:
     Conviction:
       required:
       - convictionId
+      - latestCourtAppearanceOutcome
       - offences
       - outcome
       - referralDate
@@ -359,6 +360,8 @@ components:
           type: string
           format: date
         outcome:
+          type: string
+        latestCourtAppearanceOutcome:
           type: string
         offences:
           type: array

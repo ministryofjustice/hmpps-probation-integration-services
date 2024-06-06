@@ -50,6 +50,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProbationStatusDetail'
+  /probation-case/{crn}/convictions/{convictionId}:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getConvictionForOffenderByCrnAndConvictionId
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conviction'
   /probation-case/{crn}/all:
     get:
       tags:
@@ -335,6 +359,447 @@ components:
           type: boolean
         awaitingPsr:
           type: boolean
+    AdditionalSentence:
+      required:
+      - additionalSentenceId
+      - type
+      type: object
+      properties:
+        additionalSentenceId:
+          type: integer
+          format: int64
+        type:
+          $ref: '#/components/schemas/KeyValue'
+        amount:
+          type: number
+        length:
+          type: integer
+          format: int64
+        notes:
+          type: string
+    Appointments:
+      required:
+      - acceptableAbsences
+      - attended
+      - noOutcomeRecorded
+      - total
+      - unacceptableAbsences
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        attended:
+          type: integer
+          format: int64
+        acceptableAbsences:
+          type: integer
+          format: int64
+        unacceptableAbsences:
+          type: integer
+          format: int64
+        noOutcomeRecorded:
+          type: integer
+          format: int64
+    Conviction:
+      required:
+      - active
+      - awaitingPsr
+      - convictionDate
+      - convictionId
+      - failureToComplyCount
+      - inBreach
+      - index
+      - offences
+      - referralDate
+      type: object
+      properties:
+        convictionId:
+          type: integer
+          format: int64
+        index:
+          type: string
+        active:
+          type: boolean
+        inBreach:
+          type: boolean
+        failureToComplyCount:
+          type: integer
+          format: int64
+        breachEnd:
+          type: string
+          format: date
+        awaitingPsr:
+          type: boolean
+        convictionDate:
+          type: string
+          format: date
+        referralDate:
+          type: string
+          format: date
+        offences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offence'
+        sentence:
+          $ref: '#/components/schemas/Sentence'
+        latestCourtAppearanceOutcome:
+          $ref: '#/components/schemas/KeyValue'
+        custody:
+          $ref: '#/components/schemas/Custody'
+        responsibleCourt:
+          $ref: '#/components/schemas/Court'
+        courtAppearance:
+          $ref: '#/components/schemas/CourtAppearanceBasic'
+        orderManagers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderManager'
+    Court:
+      required:
+      - buildingName
+      - code
+      - courtId
+      - courtType
+      - courtTypeId
+      - createdDatetime
+      - lastUpdatedDatetime
+      - probationArea
+      - probationAreaId
+      - selectable
+      type: object
+      properties:
+        courtId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        selectable:
+          type: boolean
+        courtName:
+          type: string
+        telephoneNumber:
+          type: string
+        fax:
+          type: string
+        buildingName:
+          type: string
+        street:
+          type: string
+        locality:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        country:
+          type: string
+        courtTypeId:
+          type: integer
+          format: int64
+        createdDatetime:
+          type: string
+          format: date-time
+        lastUpdatedDatetime:
+          type: string
+          format: date-time
+        probationAreaId:
+          type: integer
+          format: int64
+        secureEmailAddress:
+          type: string
+        probationArea:
+          $ref: '#/components/schemas/KeyValue'
+        courtType:
+          $ref: '#/components/schemas/KeyValue'
+    CourtAppearanceBasic:
+      required:
+      - appearanceDate
+      - appearanceType
+      - courtAppearanceId
+      - courtCode
+      - crn
+      type: object
+      properties:
+        courtAppearanceId:
+          type: integer
+          format: int64
+        appearanceDate:
+          type: string
+          format: date-time
+        courtCode:
+          type: string
+        courtName:
+          type: string
+        appearanceType:
+          $ref: '#/components/schemas/KeyValue'
+        crn:
+          type: string
+    Custody:
+      required:
+      - bookingNumber
+      - institution
+      - keyDates
+      - sentenceStartDate
+      - status
+      type: object
+      properties:
+        bookingNumber:
+          type: string
+        institution:
+          $ref: '#/components/schemas/Institution'
+        keyDates:
+          $ref: '#/components/schemas/CustodyRelatedKeyDates'
+        status:
+          $ref: '#/components/schemas/KeyValue'
+        sentenceStartDate:
+          type: string
+          format: date
+    CustodyRelatedKeyDates:
+      type: object
+      properties:
+        conditionalReleaseDate:
+          type: string
+          format: date
+        licenceExpiryDate:
+          type: string
+          format: date
+        hdcEligibilityDate:
+          type: string
+          format: date
+        paroleEligibilityDate:
+          type: string
+          format: date
+        sentenceExpiryDate:
+          type: string
+          format: date
+        expectedReleaseDate:
+          type: string
+          format: date
+        postSentenceSupervisionEndDate:
+          type: string
+          format: date
+        expectedPrisonOffenderManagerHandoverStartDate:
+          type: string
+          format: date
+        expectedPrisonOffenderManagerHandoverDate:
+          type: string
+          format: date
+    Institution:
+      required:
+      - code
+      - description
+      - establishmentType
+      - institutionId
+      - institutionName
+      - isEstablishment
+      type: object
+      properties:
+        institutionId:
+          type: integer
+          format: int64
+        isEstablishment:
+          type: boolean
+        code:
+          type: string
+        description:
+          type: string
+        institutionName:
+          type: string
+        establishmentType:
+          $ref: '#/components/schemas/KeyValue'
+        isPrivate:
+          type: boolean
+        nomsPrisonInstitutionCode:
+          type: string
+    Offence:
+      required:
+      - createdDatetime
+      - detail
+      - lastUpdatedDatetime
+      - mainOffence
+      - offenceId
+      - offenderId
+      type: object
+      properties:
+        offenceId:
+          type: integer
+          format: int64
+        mainOffence:
+          type: boolean
+        detail:
+          $ref: '#/components/schemas/OffenceDetail'
+        offenceDate:
+          type: string
+          format: date
+        offenceCount:
+          type: integer
+          format: int64
+        tics:
+          type: integer
+          format: int64
+        verdict:
+          type: string
+        offenderId:
+          type: integer
+          format: int64
+        createdDatetime:
+          type: string
+          format: date-time
+        lastUpdatedDatetime:
+          type: string
+          format: date-time
+    OffenceDetail:
+      required:
+      - code
+      - description
+      - mainCategoryAbbreviation
+      - mainCategoryCode
+      - mainCategoryDescription
+      - ogrsOffenceCategory
+      - subCategoryCode
+      - subCategoryDescription
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        abbreviation:
+          type: string
+        mainCategoryCode:
+          type: string
+        mainCategoryDescription:
+          type: string
+        mainCategoryAbbreviation:
+          type: string
+        ogrsOffenceCategory:
+          type: string
+        subCategoryCode:
+          type: string
+        subCategoryDescription:
+          type: string
+        form20Code:
+          type: string
+        subCategoryAbbreviation:
+          type: string
+        cjitCode:
+          type: string
+    OrderManager:
+      required:
+      - dateEndOfAllocation
+      - dateStartOfAllocation
+      - officerId
+      - probationAreaCode
+      - probationAreaId
+      type: object
+      properties:
+        probationAreaId:
+          type: integer
+          format: int64
+        teamId:
+          type: integer
+          format: int64
+        officerId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        staffCode:
+          type: string
+        dateStartOfAllocation:
+          type: string
+          format: date-time
+        dateEndOfAllocation:
+          type: string
+          format: date-time
+        gradeCode:
+          type: string
+        teamCode:
+          type: string
+        probationAreaCode:
+          type: string
+    Sentence:
+      required:
+      - additionalSentences
+      - cja2003Order
+      - description
+      - legacyOrder
+      - sentenceId
+      - sentenceType
+      - startDate
+      type: object
+      properties:
+        sentenceId:
+          type: integer
+          format: int64
+        description:
+          type: string
+        originalLength:
+          type: integer
+          format: int64
+        originalLengthUnits:
+          type: string
+        secondLength:
+          type: integer
+          format: int64
+        secondLengthUnits:
+          type: string
+        defaultLength:
+          type: integer
+          format: int64
+        effectiveLength:
+          type: integer
+          format: int64
+        lengthInDays:
+          type: integer
+          format: int64
+        expectedSentenceEndDate:
+          type: string
+          format: date
+        unpaidWork:
+          $ref: '#/components/schemas/UnpaidWork'
+        startDate:
+          type: string
+          format: date
+        terminationDate:
+          type: string
+          format: date
+        terminationReason:
+          type: string
+        sentenceType:
+          $ref: '#/components/schemas/KeyValue'
+        additionalSentences:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdditionalSentence'
+        failureToComplyLimit:
+          type: integer
+          format: int64
+        cja2003Order:
+          type: boolean
+        legacyOrder:
+          type: boolean
+    UnpaidWork:
+      required:
+      - appointments
+      - minutesCompleted
+      - minutesOrdered
+      - status
+      type: object
+      properties:
+        minutesOrdered:
+          type: integer
+          format: int64
+        minutesCompleted:
+          type: integer
+          format: int64
+        appointments:
+          $ref: '#/components/schemas/Appointments'
+        status:
+          type: string
     Address:
       type: object
       properties:
