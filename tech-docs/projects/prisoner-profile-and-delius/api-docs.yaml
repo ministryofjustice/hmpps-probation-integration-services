@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Manager'
+                $ref: "#/components/schemas/Manager"
   /probation-cases/{nomisId}/documents:
     get:
       tags:
@@ -55,7 +55,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProbationDocumentsResponse'
+                $ref: "#/components/schemas/ProbationDocumentsResponse"
   /document/{id}:
     get:
       tags:
@@ -74,7 +74,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
 components:
   schemas:
     Manager:
@@ -88,9 +88,9 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         team:
-          $ref: '#/components/schemas/Team'
+          $ref: "#/components/schemas/Team"
         email:
           type: string
         telephone:
@@ -141,7 +141,7 @@ components:
         documents:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
         institutionName:
           type: string
     Document:
@@ -175,15 +175,15 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         documents:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
         convictions:
           type: array
           items:
-            $ref: '#/components/schemas/Conviction'
+            $ref: "#/components/schemas/Conviction"
     StreamingResponseBody:
       type: object
   securitySchemes:

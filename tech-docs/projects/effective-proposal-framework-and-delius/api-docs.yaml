@@ -44,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseDetails'
+                $ref: "#/components/schemas/CaseDetails"
         "404":
           description: "A case with the provided CRN does not exist in Delius.\n \
             \                   Note: this could be the result of a merge or a deletion.\n\
@@ -52,7 +52,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseDetails'
+                $ref: "#/components/schemas/CaseDetails"
 components:
   schemas:
     Appearance:
@@ -65,7 +65,7 @@ components:
           type: string
           format: date
         court:
-          $ref: '#/components/schemas/Court'
+          $ref: "#/components/schemas/Court"
     CaseDetails:
       required:
       - age
@@ -77,18 +77,18 @@ components:
         nomsId:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
         gender:
           type: string
         courtAppearance:
-          $ref: '#/components/schemas/Appearance'
+          $ref: "#/components/schemas/Appearance"
         sentence:
-          $ref: '#/components/schemas/Sentence'
+          $ref: "#/components/schemas/Sentence"
         responsibleProvider:
-          $ref: '#/components/schemas/Provider'
+          $ref: "#/components/schemas/Provider"
         ogrsScore:
           type: integer
           format: int64

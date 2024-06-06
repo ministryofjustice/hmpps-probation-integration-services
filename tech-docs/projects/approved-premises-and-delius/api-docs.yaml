@@ -40,7 +40,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
     post:
       tags:
       - user-controller
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
   /probation-cases/summaries:
     get:
       tags:
@@ -89,7 +89,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseSummaries'
+                $ref: "#/components/schemas/CaseSummaries"
     post:
       tags:
       - case-controller
@@ -110,7 +110,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseSummaries'
+                $ref: "#/components/schemas/CaseSummaries"
   /teams/managingCase/{crn}:
     get:
       tags:
@@ -142,7 +142,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TeamCodeResponse'
+                $ref: "#/components/schemas/TeamCodeResponse"
   /staff/{userName}:
     get:
       tags:
@@ -163,7 +163,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaffDetail'
+                $ref: "#/components/schemas/StaffDetail"
   /probation-cases/{crn}/details:
     get:
       tags:
@@ -181,7 +181,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseDetail'
+                $ref: "#/components/schemas/CaseDetail"
   /probation-case/{crn}/referrals:
     get:
       tags:
@@ -199,7 +199,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExistingReferrals'
+                $ref: "#/components/schemas/ExistingReferrals"
   /probation-case/{crn}/referrals/{bookingId}:
     get:
       tags:
@@ -222,7 +222,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReferralDetail'
+                $ref: "#/components/schemas/ReferralDetail"
   /documents/{crn}/{id}:
     get:
       tags:
@@ -246,7 +246,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
   /documents/{crn}/all:
     get:
       tags:
@@ -271,7 +271,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/APDocument'
+                  $ref: "#/components/schemas/APDocument"
   /approved-premises/{code}/staff:
     get:
       tags:
@@ -302,14 +302,14 @@ paths:
         in: query
         required: false
         schema:
-          $ref: '#/components/schemas/Pageable'
+          $ref: "#/components/schemas/Pageable"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageStaffResponse'
+                $ref: "#/components/schemas/PageStaffResponse"
 components:
   schemas:
     CaseAccess:
@@ -337,7 +337,7 @@ components:
         access:
           type: array
           items:
-            $ref: '#/components/schemas/CaseAccess'
+            $ref: "#/components/schemas/CaseAccess"
     CaseSummaries:
       required:
       - cases
@@ -346,7 +346,7 @@ components:
         cases:
           type: array
           items:
-            $ref: '#/components/schemas/CaseSummary'
+            $ref: "#/components/schemas/CaseSummary"
     CaseSummary:
       required:
       - crn
@@ -364,16 +364,16 @@ components:
         pnc:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
         gender:
           type: string
         profile:
-          $ref: '#/components/schemas/Profile'
+          $ref: "#/components/schemas/Profile"
         manager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
         currentExclusion:
           type: boolean
         currentRestriction:
@@ -394,7 +394,7 @@ components:
       type: object
       properties:
         team:
-          $ref: '#/components/schemas/Team'
+          $ref: "#/components/schemas/Team"
     Name:
       required:
       - forename
@@ -433,7 +433,7 @@ components:
         name:
           type: string
         ldu:
-          $ref: '#/components/schemas/Ldu'
+          $ref: "#/components/schemas/Ldu"
     TeamCodeResponse:
       required:
       - teamCodes
@@ -465,7 +465,7 @@ components:
         username:
           type: string
         name:
-          $ref: '#/components/schemas/PersonName'
+          $ref: "#/components/schemas/PersonName"
         code:
           type: string
     CaseDetail:
@@ -478,17 +478,17 @@ components:
       type: object
       properties:
         case:
-          $ref: '#/components/schemas/CaseSummary'
+          $ref: "#/components/schemas/CaseSummary"
         offences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
         registrations:
           type: array
           items:
-            $ref: '#/components/schemas/Registration'
+            $ref: "#/components/schemas/Registration"
         mappaDetail:
-          $ref: '#/components/schemas/MappaDetail'
+          $ref: "#/components/schemas/MappaDetail"
         careLeaver:
           type: boolean
         veteran:
@@ -567,7 +567,7 @@ components:
           type: string
           format: date-time
         approvedPremises:
-          $ref: '#/components/schemas/ApprovedPremises'
+          $ref: "#/components/schemas/ApprovedPremises"
     ApprovedPremises:
       required:
       - description
@@ -586,14 +586,14 @@ components:
         referrals:
           type: array
           items:
-            $ref: '#/components/schemas/ApReferral'
+            $ref: "#/components/schemas/ApReferral"
     ReferralDetail:
       required:
       - referral
       type: object
       properties:
         referral:
-          $ref: '#/components/schemas/ApReferral'
+          $ref: "#/components/schemas/ApReferral"
         arrivedAt:
           type: string
           format: date-time
@@ -660,19 +660,19 @@ components:
         content:
           type: array
           items:
-            $ref: '#/components/schemas/StaffResponse'
+            $ref: "#/components/schemas/StaffResponse"
         number:
           type: integer
           format: int32
         sort:
           type: array
           items:
-            $ref: '#/components/schemas/SortObject'
+            $ref: "#/components/schemas/SortObject"
         numberOfElements:
           type: integer
           format: int32
         pageable:
-          $ref: '#/components/schemas/PageableObject'
+          $ref: "#/components/schemas/PageableObject"
         first:
           type: boolean
         last:
@@ -688,15 +688,15 @@ components:
         sort:
           type: array
           items:
-            $ref: '#/components/schemas/SortObject'
+            $ref: "#/components/schemas/SortObject"
+        paged:
+          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
-        paged:
-          type: boolean
         unpaged:
           type: boolean
     SortObject:
@@ -732,9 +732,9 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/PersonName'
+          $ref: "#/components/schemas/PersonName"
         grade:
-          $ref: '#/components/schemas/StaffGrade'
+          $ref: "#/components/schemas/StaffGrade"
         keyWorker:
           type: boolean
   securitySchemes:

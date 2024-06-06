@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonDetail'
+                $ref: "#/components/schemas/PersonDetail"
   /all-probation-cases:
     get:
       tags:
@@ -42,14 +42,14 @@ paths:
         in: query
         required: true
         schema:
-          $ref: '#/components/schemas/Pageable'
+          $ref: "#/components/schemas/Pageable"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagePersonDetail'
+                $ref: "#/components/schemas/PagePersonDetail"
 components:
   schemas:
     Address:
@@ -66,7 +66,7 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
@@ -120,7 +120,7 @@ components:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/LimitedAccessUser'
+            $ref: "#/components/schemas/LimitedAccessUser"
     LimitedAccessUser:
       required:
       - username
@@ -154,36 +154,36 @@ components:
       type: object
       properties:
         identifiers:
-          $ref: '#/components/schemas/Identifiers'
+          $ref: "#/components/schemas/Identifiers"
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
         title:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         gender:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         nationality:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         ethnicity:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         ethnicityDescription:
           type: string
         contactDetails:
-          $ref: '#/components/schemas/ContactDetails'
+          $ref: "#/components/schemas/ContactDetails"
         aliases:
           type: array
           items:
-            $ref: '#/components/schemas/Alias'
+            $ref: "#/components/schemas/Alias"
         addresses:
           type: array
           items:
-            $ref: '#/components/schemas/Address'
+            $ref: "#/components/schemas/Address"
         excludedFrom:
-          $ref: '#/components/schemas/LimitedAccess'
+          $ref: "#/components/schemas/LimitedAccess"
         restrictedTo:
-          $ref: '#/components/schemas/LimitedAccess'
+          $ref: "#/components/schemas/LimitedAccess"
     Pageable:
       type: object
       properties:
@@ -214,23 +214,23 @@ components:
         content:
           type: array
           items:
-            $ref: '#/components/schemas/PersonDetail'
+            $ref: "#/components/schemas/PersonDetail"
         number:
           type: integer
           format: int32
         sort:
           type: array
           items:
-            $ref: '#/components/schemas/SortObject'
-        first:
-          type: boolean
-        last:
-          type: boolean
+            $ref: "#/components/schemas/SortObject"
         numberOfElements:
           type: integer
           format: int32
         pageable:
-          $ref: '#/components/schemas/PageableObject'
+          $ref: "#/components/schemas/PageableObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     PageableObject:
@@ -242,15 +242,15 @@ components:
         sort:
           type: array
           items:
-            $ref: '#/components/schemas/SortObject'
+            $ref: "#/components/schemas/SortObject"
+        paged:
+          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
-        paged:
-          type: boolean
         unpaged:
           type: boolean
     SortObject:

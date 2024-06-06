@@ -60,7 +60,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BatchRequest'
+              $ref: "#/components/schemas/BatchRequest"
         required: true
       responses:
         "200":
@@ -70,7 +70,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Detail'
+                  $ref: "#/components/schemas/Detail"
   /court-appearances:
     post:
       tags:
@@ -80,7 +80,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BatchRequest'
+              $ref: "#/components/schemas/BatchRequest"
         required: true
       responses:
         "200":
@@ -88,7 +88,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CourtAppearancesContainer'
+                $ref: "#/components/schemas/CourtAppearancesContainer"
   /convictions:
     post:
       tags:
@@ -98,7 +98,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BatchRequest'
+              $ref: "#/components/schemas/BatchRequest"
         required: true
       responses:
         "200":
@@ -106,7 +106,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConvictionsContainer'
+                $ref: "#/components/schemas/ConvictionsContainer"
   /probation-areas:
     get:
       tags:
@@ -118,7 +118,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProbationAreaContainer'
+                $ref: "#/components/schemas/ProbationAreaContainer"
 components:
   schemas:
     BatchRequest:
@@ -144,7 +144,7 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
@@ -159,7 +159,7 @@ components:
         probationArea:
           type: string
         offenderManager:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         mainOffence:
           type: string
         religion:
@@ -167,7 +167,7 @@ components:
         keyDates:
           type: array
           items:
-            $ref: '#/components/schemas/KeyDate'
+            $ref: "#/components/schemas/KeyDate"
         releaseDate:
           type: string
           format: date
@@ -212,7 +212,7 @@ components:
           type: string
           format: date
         type:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         courtCode:
           type: string
         courtName:
@@ -227,7 +227,7 @@ components:
         courtAppearances:
           type: array
           items:
-            $ref: '#/components/schemas/CourtAppearance'
+            $ref: "#/components/schemas/CourtAppearance"
     Type:
       required:
       - code
@@ -252,7 +252,7 @@ components:
         offences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
     ConvictionsContainer:
       required:
       - personConvictions
@@ -261,7 +261,7 @@ components:
         personConvictions:
           type: array
           items:
-            $ref: '#/components/schemas/PersonConviction'
+            $ref: "#/components/schemas/PersonConviction"
     Offence:
       required:
       - description
@@ -283,7 +283,7 @@ components:
         convictions:
           type: array
           items:
-            $ref: '#/components/schemas/Conviction'
+            $ref: "#/components/schemas/Conviction"
     LocalDeliveryUnit:
       required:
       - code
@@ -308,7 +308,7 @@ components:
         localDeliveryUnits:
           type: array
           items:
-            $ref: '#/components/schemas/LocalDeliveryUnit'
+            $ref: "#/components/schemas/LocalDeliveryUnit"
     ProbationAreaContainer:
       required:
       - probationAreas
@@ -317,7 +317,7 @@ components:
         probationAreas:
           type: array
           items:
-            $ref: '#/components/schemas/ProbationArea'
+            $ref: "#/components/schemas/ProbationArea"
   securitySchemes:
     hmpps-auth-token:
       type: http

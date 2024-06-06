@@ -74,7 +74,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetails'
+                $ref: "#/components/schemas/UserDetails"
   /staff:
     get:
       tags:
@@ -98,7 +98,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Staff'
+                $ref: "#/components/schemas/Staff"
       deprecated: true
   /staff/{code}:
     get:
@@ -117,7 +117,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Staff'
+                $ref: "#/components/schemas/Staff"
   /staff/{code}/managedPrisonerIds:
     get:
       tags:
@@ -151,7 +151,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Provider'
+                  $ref: "#/components/schemas/Provider"
   /providers/{providerCode}/localAdminUnits/{lauCode}:
     get:
       tags:
@@ -174,7 +174,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LocalAdminUnitWithTeams'
+                $ref: "#/components/schemas/LocalAdminUnitWithTeams"
   /providers/{code}:
     get:
       tags:
@@ -192,7 +192,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProviderWithLaus'
+                $ref: "#/components/schemas/ProviderWithLaus"
   /managedPrisonerIds:
     get:
       tags:
@@ -232,7 +232,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CommunityManager'
+                $ref: "#/components/schemas/CommunityManager"
 components:
   schemas:
     UserDetails:
@@ -294,11 +294,11 @@ components:
           type: integer
           format: int64
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         teams:
           type: array
           items:
-            $ref: '#/components/schemas/TeamDetails'
+            $ref: "#/components/schemas/TeamDetails"
         username:
           type: string
         email:
@@ -320,9 +320,9 @@ components:
         emailAddress:
           type: string
         probationDeliveryUnit:
-          $ref: '#/components/schemas/ProbationDeliveryUnit'
+          $ref: "#/components/schemas/ProbationDeliveryUnit"
         localAdminUnit:
-          $ref: '#/components/schemas/LocalAdminUnit'
+          $ref: "#/components/schemas/LocalAdminUnit"
     Provider:
       required:
       - code
@@ -347,7 +347,7 @@ components:
         teams:
           type: array
           items:
-            $ref: '#/components/schemas/Team'
+            $ref: "#/components/schemas/Team"
     Team:
       required:
       - code
@@ -372,7 +372,7 @@ components:
         localAdminUnits:
           type: array
           items:
-            $ref: '#/components/schemas/LocalAdminUnit'
+            $ref: "#/components/schemas/LocalAdminUnit"
     CommunityManager:
       required:
       - code
@@ -390,13 +390,13 @@ components:
           type: integer
           format: int64
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         team:
-          $ref: '#/components/schemas/Team'
+          $ref: "#/components/schemas/Team"
         localAdminUnit:
-          $ref: '#/components/schemas/LocalAdminUnit'
+          $ref: "#/components/schemas/LocalAdminUnit"
         provider:
-          $ref: '#/components/schemas/Provider'
+          $ref: "#/components/schemas/Provider"
         isUnallocated:
           type: boolean
   securitySchemes:

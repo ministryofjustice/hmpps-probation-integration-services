@@ -23,7 +23,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ContactSearchAuditRequest'
+              $ref: "#/components/schemas/ContactSearchAuditRequest"
         required: true
       responses:
         "201":
@@ -39,11 +39,11 @@ components:
       type: object
       properties:
         search:
-          $ref: '#/components/schemas/ContactSearchRequest'
+          $ref: "#/components/schemas/ContactSearchRequest"
         username:
           type: string
         pagination:
-          $ref: '#/components/schemas/PageRequest'
+          $ref: "#/components/schemas/PageRequest"
         dateTime:
           type: string
           format: date-time

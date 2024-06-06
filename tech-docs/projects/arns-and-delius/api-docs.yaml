@@ -40,7 +40,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
     post:
       tags:
       - user-resource
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
 components:
   schemas:
     CaseAccess:
@@ -95,7 +95,7 @@ components:
         access:
           type: array
           items:
-            $ref: '#/components/schemas/CaseAccess'
+            $ref: "#/components/schemas/CaseAccess"
   securitySchemes:
     hmpps-auth-token:
       type: http

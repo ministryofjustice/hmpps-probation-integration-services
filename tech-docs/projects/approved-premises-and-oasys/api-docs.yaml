@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoshDetails'
+                $ref: "#/components/schemas/RoshDetails"
   /rosh-summary/{crn}:
     get:
       tags:
@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoshSummaryDetails'
+                $ref: "#/components/schemas/RoshSummaryDetails"
   /risk-to-the-individual/{crn}:
     get:
       tags:
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RiskToTheIndividualDetails'
+                $ref: "#/components/schemas/RiskToTheIndividualDetails"
   /risk-management-plan/{crn}:
     get:
       tags:
@@ -85,7 +85,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RiskManagementPlanDetails'
+                $ref: "#/components/schemas/RiskManagementPlanDetails"
   /risk-assessment/{crn}:
     get:
       tags:
@@ -103,7 +103,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RiskAssessmentDetails'
+                $ref: "#/components/schemas/RiskAssessmentDetails"
   /offence-details/{crn}:
     get:
       tags:
@@ -121,7 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OffenceDetails'
+                $ref: "#/components/schemas/OffenceDetails"
   /needs-details/{crn}:
     get:
       tags:
@@ -139,7 +139,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NeedsDetails'
+                $ref: "#/components/schemas/NeedsDetails"
   /latest-assessment/{crn}:
     get:
       tags:
@@ -157,7 +157,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OasysTimelineAssessment'
+                $ref: "#/components/schemas/OasysTimelineAssessment"
   /health-details/{crn}:
     get:
       tags:
@@ -175,7 +175,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthDetails'
+                $ref: "#/components/schemas/HealthDetails"
 components:
   schemas:
     Rosh:
@@ -280,7 +280,7 @@ components:
           type: string
           format: date-time
         rosh:
-          $ref: '#/components/schemas/Rosh'
+          $ref: "#/components/schemas/Rosh"
     RoshSummary:
       type: object
       properties:
@@ -330,7 +330,7 @@ components:
           type: string
           format: date-time
         roshSummary:
-          $ref: '#/components/schemas/RoshSummary'
+          $ref: "#/components/schemas/RoshSummary"
     RiskToTheIndividual:
       type: object
       properties:
@@ -398,7 +398,7 @@ components:
           type: string
           format: date-time
         riskToTheIndividual:
-          $ref: '#/components/schemas/RiskToTheIndividual'
+          $ref: "#/components/schemas/RiskToTheIndividual"
     RiskManagementPlan:
       type: object
       properties:
@@ -454,7 +454,7 @@ components:
           type: string
           format: date-time
         riskManagementPlan:
-          $ref: '#/components/schemas/RiskManagementPlan'
+          $ref: "#/components/schemas/RiskManagementPlan"
     RiskAssessment:
       type: object
       properties:
@@ -522,7 +522,7 @@ components:
           type: string
           format: date-time
         riskAssessment:
-          $ref: '#/components/schemas/RiskAssessment'
+          $ref: "#/components/schemas/RiskAssessment"
     Offence:
       type: object
       properties:
@@ -579,7 +579,7 @@ components:
           type: string
           format: date-time
         offence:
-          $ref: '#/components/schemas/Offence'
+          $ref: "#/components/schemas/Offence"
     LinksToHarm:
       type: object
       properties:
@@ -686,11 +686,11 @@ components:
           type: string
           format: date-time
         needs:
-          $ref: '#/components/schemas/Needs'
+          $ref: "#/components/schemas/Needs"
         linksToHarm:
-          $ref: '#/components/schemas/LinksToHarm'
+          $ref: "#/components/schemas/LinksToHarm"
         linksToReOffending:
-          $ref: '#/components/schemas/LinksToReOffending'
+          $ref: "#/components/schemas/LinksToReOffending"
     OasysTimelineAssessment:
       required:
       - assessmentPk
@@ -728,37 +728,37 @@ components:
         generalHeathSpecify:
           type: string
         healthIssues:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         drugsMisuse:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         chaoticLifestyle:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         religiousOrCulturalRequirements:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         transportDifficulties:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         employmentCommitments:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         educationCommitments:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         childCareAndCarers:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         disability:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         psychiatricPsychologicalRequirements:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         levelOfMotivation:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         learningDifficulties:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         literacyProblems:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         poorCommunicationSkills:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         needForInterpreter:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
         alcoholMisuse:
-          $ref: '#/components/schemas/HealthDetail'
+          $ref: "#/components/schemas/HealthDetail"
     HealthDetail:
       type: object
       properties:
@@ -804,7 +804,7 @@ components:
           type: string
           format: date-time
         health:
-          $ref: '#/components/schemas/Health'
+          $ref: "#/components/schemas/Health"
   securitySchemes:
     hmpps-auth-token:
       type: http

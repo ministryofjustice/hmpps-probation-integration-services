@@ -40,7 +40,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
     post:
       tags:
       - user-resource
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
   /probation-case/{crn}/referrals:
     put:
       tags:
@@ -83,7 +83,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReferralStarted'
+              $ref: "#/components/schemas/ReferralStarted"
         required: true
       responses:
         "204":
@@ -109,7 +109,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MergeAppointment'
+              $ref: "#/components/schemas/MergeAppointment"
         required: true
       responses:
         "200":
@@ -138,7 +138,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ManagedCases'
+                $ref: "#/components/schemas/ManagedCases"
   /users/{username}/details:
     get:
       tags:
@@ -156,7 +156,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetail'
+                $ref: "#/components/schemas/UserDetail"
   /probation-delivery-units:
     get:
       tags:
@@ -170,7 +170,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DeliveryUnit'
+                  $ref: "#/components/schemas/DeliveryUnit"
   /probation-case/{crn}/responsible-officer:
     get:
       tags:
@@ -188,7 +188,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponsibleOfficer'
+                $ref: "#/components/schemas/ResponsibleOfficer"
   /probation-case/{crn}/identifiers:
     get:
       tags:
@@ -206,7 +206,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseIdentifier'
+                $ref: "#/components/schemas/CaseIdentifier"
   /probation-case/{crn}/details:
     get:
       tags:
@@ -224,7 +224,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseDetail'
+                $ref: "#/components/schemas/CaseDetail"
   /probation-case/{crn}/convictions:
     get:
       tags:
@@ -242,7 +242,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseConvictions'
+                $ref: "#/components/schemas/CaseConvictions"
   /probation-case/{crn}/convictions/{id}:
     get:
       tags:
@@ -266,7 +266,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseConviction'
+                $ref: "#/components/schemas/CaseConviction"
   /office-locations:
     get:
       tags:
@@ -280,7 +280,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OfficeLocation'
+                  $ref: "#/components/schemas/OfficeLocation"
 components:
   schemas:
     CaseAccess:
@@ -308,7 +308,7 @@ components:
         access:
           type: array
           items:
-            $ref: '#/components/schemas/CaseAccess'
+            $ref: "#/components/schemas/CaseAccess"
     ReferralStarted:
       required:
       - contractType
@@ -369,7 +369,7 @@ components:
         countsTowardsRar:
           type: boolean
         outcome:
-          $ref: '#/components/schemas/Outcome'
+          $ref: "#/components/schemas/Outcome"
         sentenceId:
           type: integer
           format: int64
@@ -444,7 +444,7 @@ components:
         managedCases:
           type: array
           items:
-            $ref: '#/components/schemas/CaseIdentifier'
+            $ref: "#/components/schemas/CaseIdentifier"
     Name:
       required:
       - forename
@@ -464,7 +464,7 @@ components:
         username:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         email:
           type: string
     DeliveryUnit:
@@ -479,7 +479,7 @@ components:
         description:
           type: string
         region:
-          $ref: '#/components/schemas/Region'
+          $ref: "#/components/schemas/Region"
     Region:
       required:
       - code
@@ -521,7 +521,7 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         username:
           type: string
         email:
@@ -531,13 +531,13 @@ components:
         responsibleOfficer:
           type: boolean
         pdu:
-          $ref: '#/components/schemas/Pdu'
+          $ref: "#/components/schemas/Pdu"
         team:
-          $ref: '#/components/schemas/Team'
+          $ref: "#/components/schemas/Team"
         officeLocations:
           type: array
           items:
-            $ref: '#/components/schemas/OfficeLocation'
+            $ref: "#/components/schemas/OfficeLocation"
         unallocated:
           type: boolean
     OfficeLocation:
@@ -552,11 +552,11 @@ components:
         description:
           type: string
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         telephoneNumber:
           type: string
         provider:
-          $ref: '#/components/schemas/Provider'
+          $ref: "#/components/schemas/Provider"
     Pdu:
       required:
       - code
@@ -583,9 +583,9 @@ components:
       type: object
       properties:
         communityManager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
         prisonManager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
     Team:
       required:
       - code
@@ -611,16 +611,16 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
         gender:
           type: string
         profile:
-          $ref: '#/components/schemas/Profile'
+          $ref: "#/components/schemas/Profile"
         contactDetails:
-          $ref: '#/components/schemas/ContactDetails'
+          $ref: "#/components/schemas/ContactDetails"
     ContactDetails:
       required:
       - noFixedAbode
@@ -629,7 +629,7 @@ components:
         noFixedAbode:
           type: boolean
         mainAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         emailAddress:
           type: string
         telephoneNumber:
@@ -663,7 +663,7 @@ components:
         disabilities:
           type: array
           items:
-            $ref: '#/components/schemas/Disability'
+            $ref: "#/components/schemas/Disability"
     CaseConvictions:
       required:
       - caseDetail
@@ -671,11 +671,11 @@ components:
       type: object
       properties:
         caseDetail:
-          $ref: '#/components/schemas/CaseDetail'
+          $ref: "#/components/schemas/CaseDetail"
         convictions:
           type: array
           items:
-            $ref: '#/components/schemas/Conviction'
+            $ref: "#/components/schemas/Conviction"
     Conviction:
       required:
       - active
@@ -691,9 +691,9 @@ components:
           type: string
           format: date
         sentence:
-          $ref: '#/components/schemas/Sentence'
+          $ref: "#/components/schemas/Sentence"
         mainOffence:
-          $ref: '#/components/schemas/Offence'
+          $ref: "#/components/schemas/Offence"
         active:
           type: boolean
     Offence:
@@ -723,9 +723,9 @@ components:
       type: object
       properties:
         caseDetail:
-          $ref: '#/components/schemas/CaseDetail'
+          $ref: "#/components/schemas/CaseDetail"
         conviction:
-          $ref: '#/components/schemas/Conviction'
+          $ref: "#/components/schemas/Conviction"
   securitySchemes:
     hmpps-auth-token:
       type: http

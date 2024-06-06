@@ -36,7 +36,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SupervisionResponse'
+                $ref: "#/components/schemas/SupervisionResponse"
 components:
   schemas:
     CourtAppearance:
@@ -66,7 +66,7 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         username:
           type: string
         email:
@@ -74,7 +74,7 @@ components:
         telephoneNumber:
           type: string
         team:
-          $ref: '#/components/schemas/Team'
+          $ref: "#/components/schemas/Team"
         allocated:
           type: boolean
     MappaDetail:
@@ -127,9 +127,9 @@ components:
         description:
           type: string
         mainCategory:
-          $ref: '#/components/schemas/OffenceCategory'
+          $ref: "#/components/schemas/OffenceCategory"
         subCategory:
-          $ref: '#/components/schemas/OffenceCategory'
+          $ref: "#/components/schemas/OffenceCategory"
         schedule15SexualOffence:
           type: boolean
         schedule15ViolentOffence:
@@ -213,17 +213,17 @@ components:
           type: string
           format: date
         sentence:
-          $ref: '#/components/schemas/Sentence'
+          $ref: "#/components/schemas/Sentence"
         mainOffence:
-          $ref: '#/components/schemas/Offence'
+          $ref: "#/components/schemas/Offence"
         additionalOffences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
         courtAppearances:
           type: array
           items:
-            $ref: '#/components/schemas/CourtAppearance'
+            $ref: "#/components/schemas/CourtAppearance"
     SupervisionResponse:
       required:
       - communityManager
@@ -233,21 +233,21 @@ components:
       type: object
       properties:
         communityManager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
         mappaDetail:
-          $ref: '#/components/schemas/MappaDetail'
+          $ref: "#/components/schemas/MappaDetail"
         supervisions:
           type: array
           items:
-            $ref: '#/components/schemas/Supervision'
+            $ref: "#/components/schemas/Supervision"
         dynamicRisks:
           type: array
           items:
-            $ref: '#/components/schemas/Registration'
+            $ref: "#/components/schemas/Registration"
         personStatus:
           type: array
           items:
-            $ref: '#/components/schemas/Registration'
+            $ref: "#/components/schemas/Registration"
     Team:
       required:
       - code
@@ -264,7 +264,7 @@ components:
         telephoneNumber:
           type: string
         provider:
-          $ref: '#/components/schemas/Provider'
+          $ref: "#/components/schemas/Provider"
   securitySchemes:
     hmpps-auth-token:
       type: http

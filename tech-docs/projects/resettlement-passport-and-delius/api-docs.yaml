@@ -29,7 +29,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateContact'
+              $ref: "#/components/schemas/CreateContact"
         required: true
       responses:
         "201":
@@ -75,7 +75,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultSetAppointment'
+                $ref: "#/components/schemas/ResultSetAppointment"
     post:
       tags:
       - appointment-controller
@@ -90,7 +90,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateAppointment'
+              $ref: "#/components/schemas/CreateAppointment"
         required: true
       responses:
         "201":
@@ -112,7 +112,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseIdentifiers'
+                $ref: "#/components/schemas/CaseIdentifiers"
   /probation-cases/{crn}:
     get:
       tags:
@@ -130,7 +130,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonDetail'
+                $ref: "#/components/schemas/PersonDetail"
   /probation-cases/{crn}/mappa:
     get:
       tags:
@@ -148,7 +148,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MappaDetail'
+                $ref: "#/components/schemas/MappaDetail"
   /probation-cases/{crn}/community-manager:
     get:
       tags:
@@ -166,7 +166,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Manager'
+                $ref: "#/components/schemas/Manager"
   /duty-to-refer-nsi/{value}:
     get:
       tags:
@@ -193,7 +193,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DutyToReferNSI'
+                $ref: "#/components/schemas/DutyToReferNSI"
 components:
   schemas:
     Author:
@@ -227,7 +227,7 @@ components:
         notes:
           type: string
         author:
-          $ref: '#/components/schemas/Author'
+          $ref: "#/components/schemas/Author"
     CreateAppointment:
       required:
       - duration
@@ -296,12 +296,12 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
         contactDetails:
-          $ref: '#/components/schemas/ContactDetails'
+          $ref: "#/components/schemas/ContactDetails"
     MappaDetail:
       required:
       - startDate
@@ -329,7 +329,7 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         unallocated:
           type: boolean
     DutyToReferNSI:
@@ -349,7 +349,7 @@ components:
         team:
           type: string
         officer:
-          $ref: '#/components/schemas/Officer'
+          $ref: "#/components/schemas/Officer"
         status:
           type: string
         startDateTime:
@@ -358,7 +358,7 @@ components:
         notes:
           type: string
         mainAddress:
-          $ref: '#/components/schemas/MainAddress'
+          $ref: "#/components/schemas/MainAddress"
     MainAddress:
       type: object
       properties:
@@ -417,7 +417,7 @@ components:
       type: object
       properties:
         type:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         dateTime:
           type: string
           format: date-time
@@ -427,13 +427,13 @@ components:
           format: duration
           example: PT30M
         staff:
-          $ref: '#/components/schemas/Staff'
+          $ref: "#/components/schemas/Staff"
         location:
-          $ref: '#/components/schemas/Location'
+          $ref: "#/components/schemas/Location"
         description:
           type: string
         outcome:
-          $ref: '#/components/schemas/Outcome'
+          $ref: "#/components/schemas/Outcome"
     Location:
       required:
       - code
@@ -445,7 +445,7 @@ components:
         description:
           type: string
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         telephoneNumber:
           type: string
     Outcome:
@@ -470,7 +470,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Appointment'
+            $ref: "#/components/schemas/Appointment"
         totalElements:
           type: integer
           format: int64
@@ -492,7 +492,7 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         email:
           type: string
         telephone:

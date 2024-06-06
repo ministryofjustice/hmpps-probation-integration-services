@@ -37,7 +37,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/JsonNode'
+                $ref: "#/components/schemas/JsonNode"
   /assessments/timeline/{nomsId}:
     get:
       tags:
@@ -55,7 +55,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/Timeline'
+                $ref: "#/components/schemas/Timeline"
 components:
   schemas:
     JsonNode:
@@ -89,7 +89,7 @@ components:
         timeline:
           type: array
           items:
-            $ref: '#/components/schemas/AssessmentSummary'
+            $ref: "#/components/schemas/AssessmentSummary"
   securitySchemes:
     hmpps-auth-token:
       type: http

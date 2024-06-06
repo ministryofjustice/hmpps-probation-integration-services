@@ -39,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PreSentenceReportContext'
+                $ref: "#/components/schemas/PreSentenceReportContext"
 components:
   schemas:
     Address:
@@ -72,7 +72,7 @@ components:
         name:
           type: string
         localJusticeArea:
-          $ref: '#/components/schemas/LocalJusticeArea'
+          $ref: "#/components/schemas/LocalJusticeArea"
     LocalJusticeArea:
       required:
       - name
@@ -111,22 +111,22 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
         pnc:
           type: string
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         mainOffence:
-          $ref: '#/components/schemas/Offence'
+          $ref: "#/components/schemas/Offence"
         otherOffences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
         court:
-          $ref: '#/components/schemas/Court'
+          $ref: "#/components/schemas/Court"
   securitySchemes:
     hmpps-auth-token:
       type: http

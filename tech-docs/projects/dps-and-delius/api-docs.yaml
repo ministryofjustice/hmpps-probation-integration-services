@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
   /case/{nomisId}/documents:
     get:
       tags:
@@ -56,7 +56,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProbationDocumentsResponse'
+                $ref: "#/components/schemas/ProbationDocumentsResponse"
 components:
   schemas:
     StreamingResponseBody:
@@ -81,7 +81,7 @@ components:
         documents:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
         institutionName:
           type: string
     Document:
@@ -127,15 +127,15 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         documents:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
         convictions:
           type: array
           items:
-            $ref: '#/components/schemas/Conviction'
+            $ref: "#/components/schemas/Conviction"
   securitySchemes:
     hmpps-auth-token:
       type: http

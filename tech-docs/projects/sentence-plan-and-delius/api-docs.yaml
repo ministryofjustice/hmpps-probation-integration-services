@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseDetails'
+                $ref: "#/components/schemas/CaseDetails"
   /case-details/{crn}/first-appointment-date:
     get:
       tags:
@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FirstAppointment'
+                $ref: "#/components/schemas/FirstAppointment"
 components:
   schemas:
     CaseDetails:
@@ -62,7 +62,7 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         crn:
           type: string
         tier:
@@ -75,7 +75,7 @@ components:
         region:
           type: string
         keyWorker:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
         inCustody:
           type: boolean
     Manager:
@@ -84,7 +84,7 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         unallocated:
           type: boolean
     Name:

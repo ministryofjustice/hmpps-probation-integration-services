@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetails'
+                $ref: "#/components/schemas/UserDetails"
   /user/{username}/access/{crn}:
     get:
       tags:
@@ -62,7 +62,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
   /provider:
     get:
       tags:
@@ -77,7 +77,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Provider'
+                  $ref: "#/components/schemas/Provider"
   /provider/{code}:
     get:
       tags:
@@ -96,7 +96,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Provider'
+                $ref: "#/components/schemas/Provider"
   /document/{crn}/{id}:
     get:
       tags:
@@ -120,7 +120,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
   /case-summary/{crn}/recommendation-model:
     get:
       tags:
@@ -142,7 +142,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RecommendationModel'
+                $ref: "#/components/schemas/RecommendationModel"
   /case-summary/{crn}/personal-details:
     get:
       tags:
@@ -161,7 +161,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonalDetails'
+                $ref: "#/components/schemas/PersonalDetails"
   /case-summary/{crn}/overview:
     get:
       tags:
@@ -181,7 +181,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Overview'
+                $ref: "#/components/schemas/Overview"
   /case-summary/{crn}/mappa-and-rosh-history:
     get:
       tags:
@@ -204,7 +204,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MappaAndRoshHistory'
+                $ref: "#/components/schemas/MappaAndRoshHistory"
   /case-summary/{crn}/licence-conditions:
     get:
       tags:
@@ -225,7 +225,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LicenceConditions'
+                $ref: "#/components/schemas/LicenceConditions"
   /case-summary/{crn}/contact-history:
     get:
       tags:
@@ -287,7 +287,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ContactHistory'
+                $ref: "#/components/schemas/ContactHistory"
   /ap-residence-plan-document/{crn}:
     get:
       tags:
@@ -306,7 +306,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Document'
+                $ref: "#/components/schemas/Document"
 components:
   schemas:
     Name:
@@ -338,13 +338,13 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         username:
           type: string
         email:
           type: string
         homeArea:
-          $ref: '#/components/schemas/Provider'
+          $ref: "#/components/schemas/Provider"
         staffCode:
           type: string
     UserAccess:
@@ -392,13 +392,13 @@ components:
         number:
           type: string
         sentence:
-          $ref: '#/components/schemas/Sentence'
+          $ref: "#/components/schemas/Sentence"
         mainOffence:
-          $ref: '#/components/schemas/Offence'
+          $ref: "#/components/schemas/Offence"
         additionalOffences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
     ConvictionDetails:
       required:
       - additionalOffences
@@ -409,13 +409,13 @@ components:
         number:
           type: string
         sentence:
-          $ref: '#/components/schemas/ExtendedSentence'
+          $ref: "#/components/schemas/ExtendedSentence"
         mainOffence:
-          $ref: '#/components/schemas/Offence'
+          $ref: "#/components/schemas/Offence"
         additionalOffences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
     ExtendedSentence:
       required:
       - description
@@ -503,9 +503,9 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         identifiers:
-          $ref: '#/components/schemas/Identifiers'
+          $ref: "#/components/schemas/Identifiers"
         dateOfBirth:
           type: string
           format: date
@@ -523,23 +523,23 @@ components:
       type: object
       properties:
         personalDetails:
-          $ref: '#/components/schemas/PersonalDetailsOverview'
+          $ref: "#/components/schemas/PersonalDetailsOverview"
         mainAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         lastRelease:
-          $ref: '#/components/schemas/Release'
+          $ref: "#/components/schemas/Release"
         lastReleasedFromInstitution:
-          $ref: '#/components/schemas/Institution'
+          $ref: "#/components/schemas/Institution"
         mappa:
-          $ref: '#/components/schemas/Mappa'
+          $ref: "#/components/schemas/Mappa"
         activeConvictions:
           type: array
           items:
-            $ref: '#/components/schemas/Conviction'
+            $ref: "#/components/schemas/Conviction"
         activeCustodialConvictions:
           type: array
           items:
-            $ref: '#/components/schemas/ConvictionDetails'
+            $ref: "#/components/schemas/ConvictionDetails"
     Release:
       required:
       - releaseDate
@@ -585,22 +585,22 @@ components:
         staffCode:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         provider:
-          $ref: '#/components/schemas/Provider'
+          $ref: "#/components/schemas/Provider"
         team:
-          $ref: '#/components/schemas/Team'
+          $ref: "#/components/schemas/Team"
     PersonalDetails:
       required:
       - personalDetails
       type: object
       properties:
         personalDetails:
-          $ref: '#/components/schemas/PersonalDetailsOverview'
+          $ref: "#/components/schemas/PersonalDetailsOverview"
         mainAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         communityManager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
     Team:
       required:
       - code
@@ -626,17 +626,17 @@ components:
       type: object
       properties:
         personalDetails:
-          $ref: '#/components/schemas/PersonalDetailsOverview'
+          $ref: "#/components/schemas/PersonalDetailsOverview"
         registerFlags:
           type: array
           items:
             type: string
         lastRelease:
-          $ref: '#/components/schemas/Release'
+          $ref: "#/components/schemas/Release"
         activeConvictions:
           type: array
           items:
-            $ref: '#/components/schemas/Conviction'
+            $ref: "#/components/schemas/Conviction"
     MappaAndRoshHistory:
       required:
       - personalDetails
@@ -644,13 +644,13 @@ components:
       type: object
       properties:
         personalDetails:
-          $ref: '#/components/schemas/PersonalDetailsOverview'
+          $ref: "#/components/schemas/PersonalDetailsOverview"
         mappa:
-          $ref: '#/components/schemas/Mappa'
+          $ref: "#/components/schemas/Mappa"
         roshHistory:
           type: array
           items:
-            $ref: '#/components/schemas/Rosh'
+            $ref: "#/components/schemas/Rosh"
     Rosh:
       required:
       - active
@@ -681,17 +681,17 @@ components:
         number:
           type: string
         sentence:
-          $ref: '#/components/schemas/Sentence'
+          $ref: "#/components/schemas/Sentence"
         mainOffence:
-          $ref: '#/components/schemas/Offence'
+          $ref: "#/components/schemas/Offence"
         additionalOffences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
         licenceConditions:
           type: array
           items:
-            $ref: '#/components/schemas/LicenceCondition'
+            $ref: "#/components/schemas/LicenceCondition"
     LicenceCondition:
       required:
       - mainCategory
@@ -702,9 +702,9 @@ components:
           type: string
           format: date
         mainCategory:
-          $ref: '#/components/schemas/LicenceConditionCategory'
+          $ref: "#/components/schemas/LicenceConditionCategory"
         subCategory:
-          $ref: '#/components/schemas/LicenceConditionCategory'
+          $ref: "#/components/schemas/LicenceConditionCategory"
         notes:
           type: string
     LicenceConditionCategory:
@@ -724,11 +724,11 @@ components:
       type: object
       properties:
         personalDetails:
-          $ref: '#/components/schemas/PersonalDetailsOverview'
+          $ref: "#/components/schemas/PersonalDetailsOverview"
         activeConvictions:
           type: array
           items:
-            $ref: '#/components/schemas/ConvictionWithLicenceConditions'
+            $ref: "#/components/schemas/ConvictionWithLicenceConditions"
     Contact:
       required:
       - documents
@@ -741,7 +741,7 @@ components:
         documents:
           type: array
           items:
-            $ref: '#/components/schemas/DocumentReference'
+            $ref: "#/components/schemas/DocumentReference"
         enforcementAction:
           type: string
         notes:
@@ -754,7 +754,7 @@ components:
           type: string
           format: date-time
         type:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
     ContactHistory:
       required:
       - contacts
@@ -763,13 +763,13 @@ components:
       type: object
       properties:
         personalDetails:
-          $ref: '#/components/schemas/PersonalDetailsOverview'
+          $ref: "#/components/schemas/PersonalDetailsOverview"
         contacts:
           type: array
           items:
-            $ref: '#/components/schemas/Contact'
+            $ref: "#/components/schemas/Contact"
         summary:
-          $ref: '#/components/schemas/ContactSummary'
+          $ref: "#/components/schemas/ContactSummary"
     ContactSummary:
       required:
       - hits
@@ -780,7 +780,7 @@ components:
         types:
           type: array
           items:
-            $ref: '#/components/schemas/ContactTypeSummary'
+            $ref: "#/components/schemas/ContactTypeSummary"
         hits:
           type: integer
           format: int32

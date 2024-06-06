@@ -37,7 +37,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProbationRecord'
+                $ref: "#/components/schemas/ProbationRecord"
         "404":
           description: |-
             No probation case found with the given identifier.
@@ -46,7 +46,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     ErrorResponse:
@@ -62,7 +62,7 @@ components:
         fields:
           type: array
           items:
-            $ref: '#/components/schemas/FieldError'
+            $ref: "#/components/schemas/FieldError"
     FieldError:
       type: object
       properties:
@@ -88,11 +88,11 @@ components:
       type: object
       properties:
         team:
-          $ref: '#/components/schemas/Team'
+          $ref: "#/components/schemas/Team"
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         email:
           type: string
     Name:
@@ -125,7 +125,7 @@ components:
           - ENHANCED
           - NORMAL
         manager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
         mappaLevel:
           type: integer
           format: int32
@@ -142,7 +142,7 @@ components:
         description:
           type: string
         localDeliveryUnit:
-          $ref: '#/components/schemas/LocalDeliveryUnit'
+          $ref: "#/components/schemas/LocalDeliveryUnit"
   securitySchemes:
     hmpps-auth-token:
       type: http

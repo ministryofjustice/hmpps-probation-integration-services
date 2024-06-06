@@ -30,7 +30,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PasswordChangeRequest'
+              $ref: "#/components/schemas/PasswordChangeRequest"
         required: true
       responses:
         "200":
@@ -47,7 +47,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticationRequest'
+              $ref: "#/components/schemas/AuthenticationRequest"
         required: true
       responses:
         "200":
@@ -82,7 +82,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserDetails'
+                  $ref: "#/components/schemas/UserDetails"
   /user/{username}:
     get:
       tags:
@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetails'
+                $ref: "#/components/schemas/UserDetails"
   /user/details/{userId}:
     get:
       tags:
@@ -121,7 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetails'
+                $ref: "#/components/schemas/UserDetails"
 components:
   schemas:
     PasswordChangeRequest:

@@ -51,7 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
     post:
       tags:
       - user-resource
@@ -89,7 +89,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAccess'
+                $ref: "#/components/schemas/UserAccess"
   /staff/{code}/active-cases:
     post:
       tags:
@@ -123,7 +123,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ActiveCasesResponse'
+                $ref: "#/components/schemas/ActiveCasesResponse"
   /allocation/details:
     post:
       tags:
@@ -138,7 +138,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AllocationDetailRequests'
+              $ref: "#/components/schemas/AllocationDetailRequests"
         required: true
       responses:
         "200":
@@ -146,7 +146,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationDetails'
+                $ref: "#/components/schemas/AllocationDetails"
   /allocation-demand:
     post:
       tags:
@@ -162,7 +162,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AllocationDemandRequest'
+              $ref: "#/components/schemas/AllocationDemandRequest"
         required: true
       responses:
         "200":
@@ -170,7 +170,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationDemandResponse'
+                $ref: "#/components/schemas/AllocationDemandResponse"
   /staff/{code}/officer-view:
     get:
       tags:
@@ -196,7 +196,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfficerView'
+                $ref: "#/components/schemas/OfficerView"
   /registrations/{crn}/flags:
     get:
       tags:
@@ -214,7 +214,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RiskSummary'
+                $ref: "#/components/schemas/RiskSummary"
   /person/{value}:
     get:
       tags:
@@ -246,7 +246,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Person'
+                $ref: "#/components/schemas/Person"
   /offenders/{crn}/documents:
     get:
       tags:
@@ -274,7 +274,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PersonDocument'
+                  $ref: "#/components/schemas/PersonDocument"
   /offenders/{crn}/documents/{id}:
     get:
       tags:
@@ -303,7 +303,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
   /initial-allocations.csv:
     get:
       tags:
@@ -317,7 +317,7 @@ paths:
           content:
             text/csv:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
   /allocation-demand/{crn}/{eventNumber}/probation-record:
     get:
       tags:
@@ -347,7 +347,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProbationRecord'
+                $ref: "#/components/schemas/ProbationRecord"
   /allocation-demand/{crn}/{eventNumber}/case-view:
     get:
       tags:
@@ -378,7 +378,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseView'
+                $ref: "#/components/schemas/CaseView"
   /allocation-demand/{crn}/{eventNumber}/allocation:
     get:
       tags:
@@ -416,7 +416,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationDemandStaffResponse'
+                $ref: "#/components/schemas/AllocationDemandStaffResponse"
   /allocation-demand/{crn}/unallocated-events:
     get:
       tags:
@@ -442,7 +442,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnallocatedEventsResponse'
+                $ref: "#/components/schemas/UnallocatedEventsResponse"
   /allocation-demand/{crn}/risk:
     get:
       tags:
@@ -466,7 +466,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RiskRecord'
+                $ref: "#/components/schemas/RiskRecord"
   /allocation-demand/impact:
     get:
       tags:
@@ -494,7 +494,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationImpact'
+                $ref: "#/components/schemas/AllocationImpact"
   /allocation-demand/choose-practitioner:
     get:
       tags:
@@ -526,7 +526,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChoosePractitionerResponse'
+                $ref: "#/components/schemas/ChoosePractitionerResponse"
   /allocation-completed/order-manager:
     get:
       tags:
@@ -550,7 +550,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Manager'
+                $ref: "#/components/schemas/Manager"
   /allocation-completed/details:
     get:
       tags:
@@ -584,7 +584,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllocationCompletedResponse'
+                $ref: "#/components/schemas/AllocationCompletedResponse"
 components:
   schemas:
     CaseAccess:
@@ -612,7 +612,7 @@ components:
         access:
           type: array
           items:
-            $ref: '#/components/schemas/CaseAccess'
+            $ref: "#/components/schemas/CaseAccess"
     ActiveCasesResponse:
       required:
       - cases
@@ -623,7 +623,7 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         grade:
           type: string
         email:
@@ -631,7 +631,7 @@ components:
         cases:
           type: array
           items:
-            $ref: '#/components/schemas/Case'
+            $ref: "#/components/schemas/Case"
     Case:
       required:
       - crn
@@ -642,7 +642,7 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         type:
           type: string
     Name:
@@ -675,7 +675,7 @@ components:
         cases:
           type: array
           items:
-            $ref: '#/components/schemas/AllocationDetailRequest'
+            $ref: "#/components/schemas/AllocationDetailRequest"
     AllocationDetails:
       required:
       - cases
@@ -684,16 +684,16 @@ components:
         cases:
           type: array
           items:
-            $ref: '#/components/schemas/AllocationImpact'
+            $ref: "#/components/schemas/AllocationImpact"
     AllocationImpact:
       type: object
       properties:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         staff:
-          $ref: '#/components/schemas/StaffMember'
+          $ref: "#/components/schemas/StaffMember"
     StaffMember:
       required:
       - code
@@ -703,7 +703,7 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         email:
           type: string
         grade:
@@ -718,7 +718,7 @@ components:
           minItems: 0
           type: array
           items:
-            $ref: '#/components/schemas/AllocationRequest'
+            $ref: "#/components/schemas/AllocationRequest"
     AllocationRequest:
       required:
       - crn
@@ -739,7 +739,7 @@ components:
         cases:
           type: array
           items:
-            $ref: '#/components/schemas/AllocationResponse'
+            $ref: "#/components/schemas/AllocationResponse"
     AllocationResponse:
       required:
       - court
@@ -753,15 +753,15 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         event:
-          $ref: '#/components/schemas/Event'
+          $ref: "#/components/schemas/Event"
         sentence:
-          $ref: '#/components/schemas/Sentence'
+          $ref: "#/components/schemas/Sentence"
         initialAppointment:
-          $ref: '#/components/schemas/InitialAppointment'
+          $ref: "#/components/schemas/InitialAppointment"
         court:
-          $ref: '#/components/schemas/NamedCourt'
+          $ref: "#/components/schemas/NamedCourt"
         type:
           type: string
           enum:
@@ -770,9 +770,9 @@ components:
           - COMMUNITY
           - UNKNOWN
         probationStatus:
-          $ref: '#/components/schemas/ProbationStatus'
+          $ref: "#/components/schemas/ProbationStatus"
         communityPersonManager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
         handoverDate:
           type: string
           format: date
@@ -784,7 +784,7 @@ components:
         number:
           type: string
         manager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
     InitialAppointment:
       required:
       - date
@@ -795,7 +795,7 @@ components:
           type: string
           format: date
         staff:
-          $ref: '#/components/schemas/StaffMember'
+          $ref: "#/components/schemas/StaffMember"
     Manager:
       required:
       - allocated
@@ -807,7 +807,7 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         teamCode:
           type: string
         grade:
@@ -862,7 +862,7 @@ components:
         code:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         grade:
           type: string
         email:
@@ -902,15 +902,15 @@ components:
       type: object
       properties:
         selfHarm:
-          $ref: '#/components/schemas/RiskItem'
+          $ref: "#/components/schemas/RiskItem"
         alerts:
-          $ref: '#/components/schemas/RiskItem'
+          $ref: "#/components/schemas/RiskItem"
         safeguarding:
-          $ref: '#/components/schemas/RiskItem'
+          $ref: "#/components/schemas/RiskItem"
         information:
-          $ref: '#/components/schemas/RiskItem'
+          $ref: "#/components/schemas/RiskItem"
         publicProtection:
-          $ref: '#/components/schemas/RiskItem'
+          $ref: "#/components/schemas/RiskItem"
     Person:
       required:
       - crn
@@ -921,7 +921,7 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         type:
           type: string
           enum:
@@ -957,7 +957,7 @@ components:
         name:
           type: string
         relatedTo:
-          $ref: '#/components/schemas/RelatedTo'
+          $ref: "#/components/schemas/RelatedTo"
         dateSaved:
           type: string
           format: date-time
@@ -999,7 +999,7 @@ components:
         name:
           type: string
         event:
-          $ref: '#/components/schemas/DocumentEvent'
+          $ref: "#/components/schemas/DocumentEvent"
         description:
           type: string
     StreamingResponseBody:
@@ -1011,13 +1011,13 @@ components:
       type: object
       properties:
         sentence:
-          $ref: '#/components/schemas/PrSentence'
+          $ref: "#/components/schemas/PrSentence"
         offences:
           type: array
           items:
-            $ref: '#/components/schemas/PrOffence'
+            $ref: "#/components/schemas/PrOffence"
         manager:
-          $ref: '#/components/schemas/StaffMember'
+          $ref: "#/components/schemas/StaffMember"
     PrOffence:
       required:
       - description
@@ -1057,17 +1057,17 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         event:
-          $ref: '#/components/schemas/Event'
+          $ref: "#/components/schemas/Event"
         activeEvents:
           type: array
           items:
-            $ref: '#/components/schemas/PrEvent'
+            $ref: "#/components/schemas/PrEvent"
         inactiveEvents:
           type: array
           items:
-            $ref: '#/components/schemas/PrEvent'
+            $ref: "#/components/schemas/PrEvent"
     CaseView:
       required:
       - age
@@ -1079,7 +1079,7 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
@@ -1088,23 +1088,23 @@ components:
         pncNumber:
           type: string
         mainAddress:
-          $ref: '#/components/schemas/CvAddress'
+          $ref: "#/components/schemas/CvAddress"
         sentence:
-          $ref: '#/components/schemas/CvSentence'
+          $ref: "#/components/schemas/CvSentence"
         offences:
           type: array
           items:
-            $ref: '#/components/schemas/CvOffence'
+            $ref: "#/components/schemas/CvOffence"
         requirements:
           type: array
           items:
-            $ref: '#/components/schemas/CvRequirement'
+            $ref: "#/components/schemas/CvRequirement"
         cpsPack:
-          $ref: '#/components/schemas/CvDocument'
+          $ref: "#/components/schemas/CvDocument"
         preConvictionDocument:
-          $ref: '#/components/schemas/CvDocument'
+          $ref: "#/components/schemas/CvDocument"
         courtReport:
-          $ref: '#/components/schemas/CvDocument'
+          $ref: "#/components/schemas/CvDocument"
         age:
           type: integer
           format: int32
@@ -1230,27 +1230,27 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         staff:
-          $ref: '#/components/schemas/StaffMember'
+          $ref: "#/components/schemas/StaffMember"
         allocatingStaff:
-          $ref: '#/components/schemas/StaffMember'
+          $ref: "#/components/schemas/StaffMember"
         initialAppointment:
-          $ref: '#/components/schemas/InitialAppointment'
+          $ref: "#/components/schemas/InitialAppointment"
         ogrs:
-          $ref: '#/components/schemas/RiskOGRS'
+          $ref: "#/components/schemas/RiskOGRS"
         sentence:
-          $ref: '#/components/schemas/AllocationDemandSentence'
+          $ref: "#/components/schemas/AllocationDemandSentence"
         court:
-          $ref: '#/components/schemas/Court'
+          $ref: "#/components/schemas/Court"
         offences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
         activeRequirements:
           type: array
           items:
-            $ref: '#/components/schemas/Requirement'
+            $ref: "#/components/schemas/Requirement"
     Court:
       required:
       - appearanceDate
@@ -1291,7 +1291,7 @@ components:
           type: integer
           format: int64
         manager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
         isUnpaidWork:
           type: boolean
     RiskOGRS:
@@ -1329,11 +1329,11 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         activeEvents:
           type: array
           items:
-            $ref: '#/components/schemas/ActiveEvent'
+            $ref: "#/components/schemas/ActiveEvent"
     RegistrationFlag:
       required:
       - description
@@ -1352,17 +1352,17 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         activeRegistrations:
           type: array
           items:
-            $ref: '#/components/schemas/RiskRegistration'
+            $ref: "#/components/schemas/RiskRegistration"
         inactiveRegistrations:
           type: array
           items:
-            $ref: '#/components/schemas/RiskRegistration'
+            $ref: "#/components/schemas/RiskRegistration"
         ogrs:
-          $ref: '#/components/schemas/RiskOGRS'
+          $ref: "#/components/schemas/RiskOGRS"
     RiskRegistration:
       required:
       - description
@@ -1380,7 +1380,7 @@ components:
         notes:
           type: string
         flag:
-          $ref: '#/components/schemas/RegistrationFlag'
+          $ref: "#/components/schemas/RegistrationFlag"
     ChoosePractitionerResponse:
       required:
       - crn
@@ -1392,17 +1392,17 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         probationStatus:
-          $ref: '#/components/schemas/ProbationStatus'
+          $ref: "#/components/schemas/ProbationStatus"
         communityPersonManager:
-          $ref: '#/components/schemas/Manager'
+          $ref: "#/components/schemas/Manager"
         teams:
           type: object
           additionalProperties:
             type: array
             items:
-              $ref: '#/components/schemas/StaffMember'
+              $ref: "#/components/schemas/StaffMember"
     AllocationCompletedResponse:
       required:
       - crn
@@ -1414,9 +1414,9 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         event:
-          $ref: '#/components/schemas/Event'
+          $ref: "#/components/schemas/Event"
         type:
           type: string
           enum:
@@ -1425,9 +1425,9 @@ components:
           - COMMUNITY
           - UNKNOWN
         initialAppointment:
-          $ref: '#/components/schemas/InitialAppointment'
+          $ref: "#/components/schemas/InitialAppointment"
         staff:
-          $ref: '#/components/schemas/StaffMember'
+          $ref: "#/components/schemas/StaffMember"
   securitySchemes:
     hmpps-auth-token:
       type: http

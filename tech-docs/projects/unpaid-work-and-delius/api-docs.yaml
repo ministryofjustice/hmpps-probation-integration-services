@@ -43,7 +43,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseDetails'
+                $ref: "#/components/schemas/CaseDetails"
   /case-data/{crn}/personal-details:
     get:
       tags:
@@ -70,7 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonalDetails'
+                $ref: "#/components/schemas/PersonalDetails"
 components:
   schemas:
     Address:
@@ -97,7 +97,7 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
@@ -111,7 +111,7 @@ components:
         crn:
           type: string
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
@@ -126,52 +126,52 @@ components:
         aliases:
           type: array
           items:
-            $ref: '#/components/schemas/Alias'
+            $ref: "#/components/schemas/Alias"
         emailAddress:
           type: string
         phoneNumbers:
           type: array
           items:
-            $ref: '#/components/schemas/PhoneNumber'
+            $ref: "#/components/schemas/PhoneNumber"
         mainAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         ethnicity:
           type: string
         disabilities:
           type: array
           items:
-            $ref: '#/components/schemas/Disability'
+            $ref: "#/components/schemas/Disability"
         provisions:
           type: array
           items:
-            $ref: '#/components/schemas/Provision'
+            $ref: "#/components/schemas/Provision"
         language:
-          $ref: '#/components/schemas/Language'
+          $ref: "#/components/schemas/Language"
         personalCircumstances:
           type: array
           items:
-            $ref: '#/components/schemas/PersonalCircumstance'
+            $ref: "#/components/schemas/PersonalCircumstance"
         personalContacts:
           type: array
           items:
-            $ref: '#/components/schemas/PersonalContact'
+            $ref: "#/components/schemas/PersonalContact"
         mappaRegistration:
-          $ref: '#/components/schemas/MappaRegistration'
+          $ref: "#/components/schemas/MappaRegistration"
         registerFlags:
           type: array
           items:
-            $ref: '#/components/schemas/RegisterFlag'
+            $ref: "#/components/schemas/RegisterFlag"
         sentence:
-          $ref: '#/components/schemas/Sentence'
+          $ref: "#/components/schemas/Sentence"
     Disability:
       required:
       - type
       type: object
       properties:
         type:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         condition:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         notes:
           type: string
     Language:
@@ -191,9 +191,9 @@ components:
       type: object
       properties:
         category:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         subCategory:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
     MappaRegistration:
       required:
       - category
@@ -205,9 +205,9 @@ components:
           type: string
           format: date
         level:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         category:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
     Name:
       required:
       - forename
@@ -227,9 +227,9 @@ components:
       type: object
       properties:
         type:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         subType:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         notes:
           type: string
         evidenced:
@@ -244,15 +244,15 @@ components:
         relationship:
           type: string
         relationshipType:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         telephoneNumber:
           type: string
         mobileNumber:
           type: string
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
     PhoneNumber:
       required:
       - number
@@ -269,9 +269,9 @@ components:
       type: object
       properties:
         type:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         category:
-          $ref: '#/components/schemas/Type'
+          $ref: "#/components/schemas/Type"
         notes:
           type: string
     RegisterFlag:
@@ -296,7 +296,7 @@ components:
           type: string
           format: date
         mainOffence:
-          $ref: '#/components/schemas/MainOffence'
+          $ref: "#/components/schemas/MainOffence"
     Type:
       required:
       - code
@@ -319,11 +319,11 @@ components:
         personalCircumstances:
           type: array
           items:
-            $ref: '#/components/schemas/PersonalCircumstance'
+            $ref: "#/components/schemas/PersonalCircumstance"
         personalContacts:
           type: array
           items:
-            $ref: '#/components/schemas/PersonalContact'
+            $ref: "#/components/schemas/PersonalContact"
   securitySchemes:
     hmpps-auth-token:
       type: http

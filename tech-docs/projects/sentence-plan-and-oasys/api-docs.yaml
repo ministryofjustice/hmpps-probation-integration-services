@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Needs'
+                $ref: "#/components/schemas/Needs"
 components:
   schemas:
     Need:
@@ -52,7 +52,7 @@ components:
         criminogenicNeeds:
           type: array
           items:
-            $ref: '#/components/schemas/Need'
+            $ref: "#/components/schemas/Need"
   securitySchemes:
     hmpps-auth-token:
       type: http

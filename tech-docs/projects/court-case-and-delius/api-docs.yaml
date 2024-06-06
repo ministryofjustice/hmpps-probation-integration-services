@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OffenderDetailSummary'
+                $ref: "#/components/schemas/OffenderDetailSummary"
   /probation-case/{crn}/status:
     get:
       tags:
@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProbationStatusDetail'
+                $ref: "#/components/schemas/ProbationStatusDetail"
   /probation-case/{crn}/convictions/{convictionId}:
     get:
       tags:
@@ -73,7 +73,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Conviction'
+                $ref: "#/components/schemas/Conviction"
   /probation-case/{crn}/all:
     get:
       tags:
@@ -91,7 +91,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OffenderDetail'
+                $ref: "#/components/schemas/OffenderDetail"
 components:
   schemas:
     ContactDetailsSummary:
@@ -109,7 +109,7 @@ components:
         phoneNumbers:
           type: array
           items:
-            $ref: '#/components/schemas/PhoneNumber'
+            $ref: "#/components/schemas/PhoneNumber"
     Disability:
       required:
       - disabilityCondition
@@ -125,12 +125,12 @@ components:
           type: string
           format: date-time
         disabilityCondition:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         disabilityId:
           type: integer
           format: int64
         disabilityType:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         endDate:
           type: string
           format: date
@@ -141,7 +141,7 @@ components:
         provisions:
           type: array
           items:
-            $ref: '#/components/schemas/Provision'
+            $ref: "#/components/schemas/Provision"
         startDate:
           type: string
           format: date
@@ -179,7 +179,7 @@ components:
         activeProbationManagedSentence:
           type: boolean
         contactDetails:
-          $ref: '#/components/schemas/ContactDetailsSummary'
+          $ref: "#/components/schemas/ContactDetailsSummary"
         currentDisposal:
           type: string
         currentExclusion:
@@ -201,9 +201,9 @@ components:
           type: integer
           format: int64
         offenderProfile:
-          $ref: '#/components/schemas/OffenderProfile'
+          $ref: "#/components/schemas/OffenderProfile"
         otherIds:
-          $ref: '#/components/schemas/OtherIds'
+          $ref: "#/components/schemas/OtherIds"
         partitionArea:
           type: string
         previousSurname:
@@ -243,7 +243,7 @@ components:
         disabilities:
           type: array
           items:
-            $ref: '#/components/schemas/Disability'
+            $ref: "#/components/schemas/Disability"
         ethnicity:
           type: string
         immigrationStatus:
@@ -255,13 +255,13 @@ components:
         offenderDetails:
           type: string
         offenderLanguages:
-          $ref: '#/components/schemas/OffenderLanguages'
+          $ref: "#/components/schemas/OffenderLanguages"
         previousConviction:
-          $ref: '#/components/schemas/PreviousConviction'
+          $ref: "#/components/schemas/PreviousConviction"
         provisions:
           type: array
           items:
-            $ref: '#/components/schemas/Provision'
+            $ref: "#/components/schemas/Provision"
         religion:
           type: string
         remandStatus:
@@ -321,7 +321,7 @@ components:
       type: object
       properties:
         category:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         finishDate:
           type: string
           format: date
@@ -331,7 +331,7 @@ components:
           type: integer
           format: int64
         provisionType:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         startDate:
           type: string
           format: date
@@ -369,7 +369,7 @@ components:
           type: integer
           format: int64
         type:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         amount:
           type: number
         length:
@@ -440,21 +440,21 @@ components:
         offences:
           type: array
           items:
-            $ref: '#/components/schemas/Offence'
+            $ref: "#/components/schemas/Offence"
         sentence:
-          $ref: '#/components/schemas/Sentence'
+          $ref: "#/components/schemas/Sentence"
         latestCourtAppearanceOutcome:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         custody:
-          $ref: '#/components/schemas/Custody'
+          $ref: "#/components/schemas/Custody"
         responsibleCourt:
-          $ref: '#/components/schemas/Court'
+          $ref: "#/components/schemas/Court"
         courtAppearance:
-          $ref: '#/components/schemas/CourtAppearanceBasic'
+          $ref: "#/components/schemas/CourtAppearanceBasic"
         orderManagers:
           type: array
           items:
-            $ref: '#/components/schemas/OrderManager'
+            $ref: "#/components/schemas/OrderManager"
     Court:
       required:
       - buildingName
@@ -511,9 +511,9 @@ components:
         secureEmailAddress:
           type: string
         probationArea:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         courtType:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
     CourtAppearanceBasic:
       required:
       - appearanceDate
@@ -534,7 +534,7 @@ components:
         courtName:
           type: string
         appearanceType:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         crn:
           type: string
     Custody:
@@ -549,11 +549,11 @@ components:
         bookingNumber:
           type: string
         institution:
-          $ref: '#/components/schemas/Institution'
+          $ref: "#/components/schemas/Institution"
         keyDates:
-          $ref: '#/components/schemas/CustodyRelatedKeyDates'
+          $ref: "#/components/schemas/CustodyRelatedKeyDates"
         status:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         sentenceStartDate:
           type: string
           format: date
@@ -609,7 +609,7 @@ components:
         institutionName:
           type: string
         establishmentType:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         isPrivate:
           type: boolean
         nomsPrisonInstitutionCode:
@@ -630,7 +630,7 @@ components:
         mainOffence:
           type: boolean
         detail:
-          $ref: '#/components/schemas/OffenceDetail'
+          $ref: "#/components/schemas/OffenceDetail"
         offenceDate:
           type: string
           format: date
@@ -760,7 +760,7 @@ components:
           type: string
           format: date
         unpaidWork:
-          $ref: '#/components/schemas/UnpaidWork'
+          $ref: "#/components/schemas/UnpaidWork"
         startDate:
           type: string
           format: date
@@ -770,11 +770,11 @@ components:
         terminationReason:
           type: string
         sentenceType:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         additionalSentences:
           type: array
           items:
-            $ref: '#/components/schemas/AdditionalSentence'
+            $ref: "#/components/schemas/AdditionalSentence"
         failureToComplyLimit:
           type: integer
           format: int64
@@ -797,7 +797,7 @@ components:
           type: integer
           format: int64
         appointments:
-          $ref: '#/components/schemas/Appointments'
+          $ref: "#/components/schemas/Appointments"
         status:
           type: string
     Address:
@@ -830,9 +830,9 @@ components:
         telephoneNumber:
           type: string
         status:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         type:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         typeVerified:
           type: boolean
         latestAssessmentDate:
@@ -860,11 +860,11 @@ components:
         phoneNumbers:
           type: array
           items:
-            $ref: '#/components/schemas/PhoneNumber'
+            $ref: "#/components/schemas/PhoneNumber"
         addresses:
           type: array
           items:
-            $ref: '#/components/schemas/Address'
+            $ref: "#/components/schemas/Address"
     Human:
       required:
       - forenames
@@ -926,7 +926,7 @@ components:
         activeProbationManagedSentence:
           type: boolean
         contactDetails:
-          $ref: '#/components/schemas/ContactDetails'
+          $ref: "#/components/schemas/ContactDetails"
         currentDisposal:
           type: string
         currentExclusion:
@@ -952,17 +952,17 @@ components:
           type: integer
           format: int64
         offenderProfile:
-          $ref: '#/components/schemas/OffenderProfile'
+          $ref: "#/components/schemas/OffenderProfile"
         offenderAliases:
           type: array
           items:
-            $ref: '#/components/schemas/OffenderAlias'
+            $ref: "#/components/schemas/OffenderAlias"
         offenderManagers:
           type: array
           items:
-            $ref: '#/components/schemas/OffenderManager'
+            $ref: "#/components/schemas/OffenderManager"
         otherIds:
-          $ref: '#/components/schemas/OtherIds'
+          $ref: "#/components/schemas/OtherIds"
         partitionArea:
           type: string
         currentTier:
@@ -988,19 +988,19 @@ components:
       type: object
       properties:
         trustOfficer:
-          $ref: '#/components/schemas/Human'
+          $ref: "#/components/schemas/Human"
         staff:
-          $ref: '#/components/schemas/StaffHuman'
+          $ref: "#/components/schemas/StaffHuman"
         providerEmployee:
-          $ref: '#/components/schemas/Human'
+          $ref: "#/components/schemas/Human"
         partitionArea:
           type: string
         softDeleted:
           type: boolean
         team:
-          $ref: '#/components/schemas/Team'
+          $ref: "#/components/schemas/Team"
         probationArea:
-          $ref: '#/components/schemas/ProbationArea'
+          $ref: "#/components/schemas/ProbationArea"
         fromDate:
           type: string
           format: date
@@ -1010,7 +1010,7 @@ components:
         active:
           type: boolean
         allocationReason:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
     ProbationArea:
       required:
       - code
@@ -1062,11 +1062,11 @@ components:
         emailAddress:
           type: string
         localDeliveryUnit:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         district:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
         borough:
-          $ref: '#/components/schemas/KeyValue'
+          $ref: "#/components/schemas/KeyValue"
   securitySchemes:
     hmpps-auth-token:
       type: http

@@ -36,7 +36,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AddressResponse'
+                $ref: "#/components/schemas/AddressResponse"
   /probation-case/{prisonerId}/community-manager:
     get:
       tags:
@@ -59,7 +59,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CommunityManagerResponse'
+                $ref: "#/components/schemas/CommunityManagerResponse"
 components:
   schemas:
     AddressResponse:

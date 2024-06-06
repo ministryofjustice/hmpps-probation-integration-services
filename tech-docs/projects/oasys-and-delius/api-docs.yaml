@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseDetails'
+                $ref: "#/components/schemas/CaseDetails"
   /probation-cases/{crn}/release:
     get:
       tags:
@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReleaseRecall'
+                $ref: "#/components/schemas/ReleaseRecall"
   /probation-cases/{crn}/registrations:
     get:
       tags:
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Registrations'
+                $ref: "#/components/schemas/Registrations"
 components:
   schemas:
     Address:
@@ -98,13 +98,13 @@ components:
       type: object
       properties:
         identifiers:
-          $ref: '#/components/schemas/Identifiers'
+          $ref: "#/components/schemas/Identifiers"
         person:
-          $ref: '#/components/schemas/Person'
+          $ref: "#/components/schemas/Person"
         profile:
-          $ref: '#/components/schemas/Profile'
+          $ref: "#/components/schemas/Profile"
         contactDetails:
-          $ref: '#/components/schemas/ContactDetails'
+          $ref: "#/components/schemas/ContactDetails"
     CodeDescription:
       required:
       - code
@@ -119,7 +119,7 @@ components:
       type: object
       properties:
         mainAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         emailAddress:
           type: string
         telephoneNumber:
@@ -161,21 +161,21 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         dateOfBirth:
           type: string
           format: date
         gender:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
     Profile:
       type: object
       properties:
         language:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         ethnicity:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         religion:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
     Institution:
       required:
       - code
@@ -196,7 +196,7 @@ components:
         institutionName:
           type: string
         establishmentType:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         isPrivate:
           type: boolean
         nomsPrisonInstitutionCode:
@@ -211,7 +211,7 @@ components:
           type: string
           format: date
         reason:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         notes:
           type: string
     Release:
@@ -226,16 +226,16 @@ components:
         notes:
           type: string
         institution:
-          $ref: '#/components/schemas/Institution'
+          $ref: "#/components/schemas/Institution"
         reason:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
     ReleaseRecall:
       type: object
       properties:
         lastRelease:
-          $ref: '#/components/schemas/Release'
+          $ref: "#/components/schemas/Release"
         lastRecall:
-          $ref: '#/components/schemas/Recall'
+          $ref: "#/components/schemas/Recall"
     Officer:
       required:
       - code
@@ -273,9 +273,9 @@ components:
           type: integer
           format: int64
         register:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         type:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         riskColour:
           type: string
         startDate:
@@ -290,15 +290,15 @@ components:
         notes:
           type: string
         registeringTeam:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         registeringOfficer:
-          $ref: '#/components/schemas/Officer'
+          $ref: "#/components/schemas/Officer"
         registeringProbationArea:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         registerLevel:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         registerCategory:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         warnUser:
           type: boolean
         active:
@@ -306,7 +306,7 @@ components:
         registrationReviews:
           type: array
           items:
-            $ref: '#/components/schemas/Review'
+            $ref: "#/components/schemas/Review"
     Registrations:
       required:
       - registrations
@@ -315,7 +315,7 @@ components:
         registrations:
           type: array
           items:
-            $ref: '#/components/schemas/Registration'
+            $ref: "#/components/schemas/Registration"
     Review:
       required:
       - completed
@@ -333,9 +333,9 @@ components:
         notes:
           type: string
         reviewingTeam:
-          $ref: '#/components/schemas/CodeDescription'
+          $ref: "#/components/schemas/CodeDescription"
         reviewingOfficer:
-          $ref: '#/components/schemas/Officer'
+          $ref: "#/components/schemas/Officer"
         completed:
           type: boolean
   securitySchemes:
