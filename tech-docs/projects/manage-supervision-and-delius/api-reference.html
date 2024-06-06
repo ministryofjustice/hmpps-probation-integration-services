@@ -170,9 +170,6 @@
         <a href="./api-reference.html#caseload-team-teamcode-staff"><span>/caseload/team/{teamCode}/staff</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#caseload-staff-staffcode"><span>/caseload/staff/{staffCode}</span></a>
-      </li>
-      <li>
         <a href="./api-reference.html#activity-crn"><span>/activity/{crn}</span></a>
       </li>
       <li>
@@ -2729,6 +2726,26 @@
 </td>
 </tr>
 
+<tr>
+<td>page</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -2750,6 +2767,8 @@
 
 
 <pre><code>{
+  "totalPages": "integer",
+  "totalElements": "integer",
   "provider": "string",
   "staff": {
     "forename": "string",
@@ -3017,83 +3036,6 @@
 </td>
 <td>
 <a href='#schema-teamstaff'>TeamStaff</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="caseload-staff-staffcode">/caseload/staff/{staffCode}</h2>
-
-<h3 id="caseload-staff-staffcode-get">get</h3>
-
-  <p><em>Gets the caseload for a staff code </em></p>
-
-
-
-
-<h4 id="caseload-staff-staffcode-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>staffCode</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="caseload-staff-staffcode-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "provider": "string",
-  "staff": {
-    "forename": "string",
-    "middleName": "string",
-    "surname": "string"
-  },
-  "caseload": [
-    {
-      "caseName": {
-        "forename": "string",
-        "middleName": "string",
-        "surname": "string"
-      },
-      "crn": "string"
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-staffcaseload'>StaffCaseload</a>
 </td>
 </tr>
 
@@ -6832,6 +6774,26 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>totalPages</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalElements</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>provider</td>
