@@ -167,7 +167,7 @@ data class OrderManager(
     val name: String?,
     val staffCode: String?,
     val dateStartOfAllocation: ZonedDateTime,
-    val dateEndOfAllocation: ZonedDateTime,
+    val dateEndOfAllocation: ZonedDateTime?,
     val gradeCode: String?,
     val teamCode: String?,
     val probationAreaCode: String

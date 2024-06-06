@@ -128,7 +128,7 @@ class OrderManager(
 
     val allocationDate: ZonedDateTime,
 
-    val endDate: ZonedDateTime,
+    val endDate: ZonedDateTime?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
