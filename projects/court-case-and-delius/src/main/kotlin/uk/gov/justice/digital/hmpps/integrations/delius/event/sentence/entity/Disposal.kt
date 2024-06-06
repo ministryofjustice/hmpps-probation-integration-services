@@ -59,6 +59,7 @@ class Disposal(
     @JoinColumn(name = "entry_length_2_units_id")
     val entryLength2Unit: ReferenceData? = null,
 
+    @Column(name = "length_2")
     val length2: Long? = null,
 
     val length: Long? = null,
