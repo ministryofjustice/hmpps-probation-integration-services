@@ -29,6 +29,9 @@ spring:
           token-uri: http://localhost:${wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__PSR__CONTEXT
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: PreSentenceService
@@ -55,9 +58,6 @@ spring:
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__PSR__CONTEXT
 
 messaging.consumer.queue: pre-sentence-report-events
 

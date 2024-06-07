@@ -43,7 +43,7 @@ class AuthenticationController(private val ldapTemplate: LdapTemplate) {
             ),
             ApiResponse(
                 responseCode = "403",
-                description = "Client role required: `ROLE_DELIUS_USER_AUTH`",
+                description = "Client role required: `DELIUS_USER_AUTH`",
                 content = [Content(mediaType = "text/plain")]
             )
         ]

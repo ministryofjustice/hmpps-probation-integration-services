@@ -22,6 +22,10 @@ spring:
       java.naming.ldap.derefAliases: never
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL
+  - PROBATION_API__RESETTLEMENT_PASSPORT__APPOINTMENT_RW
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: ResettlementPassportAndDelius # Should match value in [deploy/database/access.yml].
@@ -47,10 +51,6 @@ spring:
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL
-  - ROLE_PROBATION_API__RESETTLEMENT_PASSPORT__APPOINTMENT_RW
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

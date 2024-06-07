@@ -22,6 +22,11 @@ spring:
       java.naming.ldap.derefAliases: never
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__HMPPS_AUTH__AUTHENTICATE
+  - PROBATION_API__HMPPS_AUTH__PASSWORD__RW
+  - PROBATION_API__HMPPS_AUTH__USER_DETAILS
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: HmppsAuthAndDelius # Should match value in [deploy/database/access.yml].
@@ -49,11 +54,6 @@ spring:
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__HMPPS_AUTH__AUTHENTICATE
-  - ROLE_PROBATION_API__HMPPS_AUTH__PASSWORD__RW
-  - ROLE_PROBATION_API__HMPPS_AUTH__USER_DETAILS
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

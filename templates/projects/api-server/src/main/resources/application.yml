@@ -18,6 +18,9 @@ spring:
             drop_tables: false
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - EXAMPLE
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: $SERVICE_NAME_CAMELCASE # Should match value in [deploy/database/access.yml].
@@ -42,9 +45,6 @@ spring:
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_EXAMPLE
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

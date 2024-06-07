@@ -4,13 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandResponse
 import uk.gov.justice.digital.hmpps.service.AllocationDemandService
@@ -46,7 +40,7 @@ class AllocationDemandResource(
             )
         }
 
-    @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
+    @PreAuthorize("hasAnyRole('ALLOCATION_CONTEXT','PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = "List of summary probation case details with probation practioner details",
         description = """Summary information on the probation case provided in the request along

@@ -18,6 +18,9 @@ spring:
             drop_tables: false
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__OASYS__CASE_DETAIL
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: OasysAndDelius # Should match value in [deploy/database/access.yml].
@@ -41,9 +44,6 @@ spring:
 
 seed.database: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__OASYS__CASE_DETAIL
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

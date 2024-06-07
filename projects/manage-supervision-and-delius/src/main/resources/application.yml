@@ -22,6 +22,9 @@ spring:
     base-environment:
       java.naming.ldap.derefAliases: never
 
+oauth2.roles:
+  - PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: ManageSupervisionAndDelius # Should match value in [deploy/database/access.yml].
@@ -50,9 +53,6 @@ seed.database: true
 
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

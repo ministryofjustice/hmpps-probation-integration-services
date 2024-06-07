@@ -28,6 +28,9 @@ spring:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__PRISON_IDENTIFIER__UPDATE
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: PrisonIdentifierAndDelius # Should match value in [deploy/database/access.yml].
@@ -57,9 +60,6 @@ messaging:
 
 seed.database: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__PRISON_IDENTIFIER__UPDATE
 
 integrations:
   prison-api.url: http://localhost:${wiremock.port}/prison-api

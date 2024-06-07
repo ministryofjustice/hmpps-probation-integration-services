@@ -17,6 +17,10 @@ spring:
             create_tables: false
             drop_tables: false
   threads.virtual.enabled: true
+
+oauth2.roles:
+  - PROBATION_API__ARNS__USER_ACCESS
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: ArnsAndDelius # Should match value in [deploy/database/access.yml].
@@ -41,8 +45,6 @@ spring:
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-jwt.authorities:
-  - ROLE_PROBATION_API__ARNS__USER_ACCESS
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

@@ -18,6 +18,9 @@ spring:
             drop_tables: false
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__CORE_PERSON__CASE_DETAIL
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: CorePersonRecordAndDelius # Should match value in [deploy/database/access.yml].
@@ -40,9 +43,6 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 
 seed.database: true
-
-jwt.authorities:
-  - ROLE_PROBATION_API__CORE_PERSON__CASE_DETAIL
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
