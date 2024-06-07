@@ -5,6 +5,9 @@ spring:
     default-property-inclusion: non_empty
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__SENTENCE_PLAN__CASE_DETAIL
+
 springdoc.default-produces-media-type: application/json
 
 management:
@@ -23,9 +26,6 @@ server.shutdown: immediate
 
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__SENTENCE_PLAN__CASE_DETAIL
 
 ords:
   client-id: sentence-plan-and-oasys

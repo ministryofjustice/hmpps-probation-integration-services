@@ -32,6 +32,10 @@ spring:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__CVL__USER_ROLES__RW
+  - PROBATION_API__CVL__CASE_DETAIL
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: CreateAndVaryALicenceAndDelius # Should match value in [deploy/database/access.yml].
@@ -58,10 +62,6 @@ spring:
 
 seed.database: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__CVL__USER_ROLES__RW
-  - ROLE_PROBATION_API__CVL__CASE_DETAIL
 
 oauth2:
   client-id: create-and-vary-a-licence-and-delius

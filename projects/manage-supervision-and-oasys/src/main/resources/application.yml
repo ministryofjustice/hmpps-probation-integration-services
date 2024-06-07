@@ -15,6 +15,9 @@ spring:
         token-uri: ${integrations.ords.url}/oauth/token
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - EXAMPLE
+
 springdoc.default-produces-media-type: application/json
 
 management:
@@ -32,9 +35,6 @@ spring.config.activate.on-profile: [ "dev", "integration-test" ]
 server.shutdown: immediate
 
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_EXAMPLE
 
 integrations:
   ords:

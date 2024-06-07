@@ -32,6 +32,9 @@ spring:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: ReferAndMonitorAndDelius # Should match value in [deploy/database/access.yml].
@@ -57,9 +60,6 @@ spring:
 
 seed.database: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-jwt.authorities:
-  - ROLE_PROBATION_API__REFER_AND_MONITOR__CASE_DETAIL__RW
 
 messaging.consumer.queue: message-queue
 

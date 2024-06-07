@@ -18,8 +18,10 @@ spring:
             drop_tables: false
   threads.virtual.enabled: true
 
-springdoc.default-produces-media-type: application/json
+oauth2.roles:
+  - PROBATION_API__DOMAIN_EVENTS__ENGAGEMENT
 
+springdoc.default-produces-media-type: application/json
 
 delius.db.username: DomainEventsAndDelius # Should match value in [deploy/database/access.yml].
 
@@ -42,9 +44,6 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 
 seed.database: true
-
-jwt.authorities:
-  - ROLE_PROBATION_API__DOMAIN_EVENTS__ENGAGEMENT
 
 poller.fixed-delay: 2000
 
