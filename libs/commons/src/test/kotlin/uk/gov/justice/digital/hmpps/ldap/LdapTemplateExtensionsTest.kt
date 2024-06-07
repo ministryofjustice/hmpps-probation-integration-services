@@ -58,8 +58,8 @@ class LdapTemplateExtensionsTest {
     fun `add role successfully`() {
         whenever(ldapTemplate.lookupContext(any<LdapName>()))
             .thenReturn(dirContextOperations)
-        whenever(dirContextOperations.getDn())
-            .thenReturn(LdapName("cn=ROLE1,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com"))
+        whenever(dirContextOperations.nameInNamespace)
+            .thenReturn("cn=ROLE1,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com")
 
         ldapTemplate.addRole(
             "john-smith",
@@ -70,16 +70,16 @@ class LdapTemplateExtensionsTest {
             }
         )
 
-        val nameCapture = argumentCaptor<LdapName>()
-        val attributeCapture = argumentCaptor<Attributes>()
-        verify(ldapTemplate).rebind(nameCapture.capture(), eq(null), attributeCapture.capture())
-
-        assertThat(nameCapture.firstValue.toString(), equalTo("cn=ROLE1,cn=john-smith"))
-        assertThat(attributeCapture.firstValue["cn"].toString(), equalTo("cn: ROLE1"))
-        assertThat(
-            attributeCapture.firstValue["objectclass"].toString(),
-            equalTo("objectclass: NDRoleAssociation, alias, top")
-        )
+        verify(ldapTemplate).rebind(check<LdapName> {
+            assertThat(it.toString(), equalTo("cn=ROLE1,cn=john-smith"))
+        }, eq(null), check<Attributes> {
+            assertThat(it["cn"].toString(), equalTo("cn: ROLE1"))
+            assertThat(
+                it["aliasedObjectName"].toString(),
+                equalTo("aliasedObjectName: cn=ROLE1,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com")
+            )
+            assertThat(it["objectclass"].toString(), equalTo("objectclass: NDRoleAssociation, alias, top"))
+        })
     }
 
     @Test
@@ -112,9 +112,8 @@ class LdapTemplateExtensionsTest {
             }
         )
 
-        val nameCapture = argumentCaptor<LdapName>()
-        verify(ldapTemplate).unbind(nameCapture.capture())
-
-        assertThat(nameCapture.firstValue.toString(), equalTo("cn=ROLE1,cn=john-smith"))
+        verify(ldapTemplate).unbind(check<LdapName> {
+            assertThat(it.toString(), equalTo("cn=ROLE1,cn=john-smith"))
+        })
     }
 }

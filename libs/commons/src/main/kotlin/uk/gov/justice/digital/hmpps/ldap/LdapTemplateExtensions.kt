@@ -51,7 +51,7 @@ fun LdapTemplate.addRole(@SpanAttribute username: String, @SpanAttribute role: D
     val roleContext = lookupContext(role.context())
         ?: throw NotFoundException("NDeliusRole of ${role.name} not found")
     val attributes: Attributes = BasicAttributes(true).apply {
-        put(roleContext.dn.asAttribute("aliasedObjectName"))
+        put(roleContext.nameInNamespace.asAttribute("aliasedObjectName"))
         put(role.name.asAttribute("cn"))
         put(listOf("NDRoleAssociation", "alias", "top").asAttribute("objectclass"))
     }
