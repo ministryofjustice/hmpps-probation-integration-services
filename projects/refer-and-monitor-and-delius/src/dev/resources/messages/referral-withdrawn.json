@@ -1,0 +1,14 @@
+{
+  "Type": "Notification",
+  "MessageId": "aa2c2828-167f-529b-8e19-78535a2fb85c",
+  "TopicArn": "arn:aws:sns:eu-west-2:000000000000:example",
+  "Message": "{\"eventType\":\"intervention.referral.ended\",\"version\":1,\"description\":\"Referral Ended\",\"detailUrl\":\"http://localhost:{wiremock.port}/sent-referral/f56c5f7c-632f-4cad-a1b3-693541cb5f22\",\"occurredAt\":\"2023-02-23T15:55:21.1065440Z\",\"additionalInformation\":{\"deliveryState\": \"CANCELLED\",\"withdrawalCode\": \"NSI1\",\"referralId\":\"f56c5f7c-632f-4cad-a1b3-693541cb5f22\",\"referralURN\":\"urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080\",\"referralProbationUserURL\":\"https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/details\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"T140223\"}]}}",
+  "Timestamp": "2023-02-23T15:55:20.306Z",
+  "SignatureVersion": "1",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "intervention.referral.ended"
+    }
+  }
+}

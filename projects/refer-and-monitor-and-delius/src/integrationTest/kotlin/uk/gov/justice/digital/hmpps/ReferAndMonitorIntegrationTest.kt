@@ -4,12 +4,10 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
@@ -28,7 +27,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
@@ -64,6 +62,14 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Autowired
     lateinit var eventRepository: EventRepository
+
+    @MockBean
+    lateinit var featureFlags: FeatureFlags
+
+    @BeforeEach
+    fun setup() {
+        whenever(featureFlags.enabled("referral-withdrawal-reason")).thenReturn(true)
+    }
 
     @Test
     @Order(1)
@@ -255,8 +261,8 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Test
     @Order(5)
-    fun `referral end submitted`() {
-        val nsi = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
+    fun `referral withdrawn`() {
+        val nsi = nsiRepository.findById(NsiGenerator.WITHDRAWN.id).orElseThrow()
         assertThat(nsi.status.code, equalTo(NsiStatus.Code.IN_PROGRESS.value))
         assertNull(nsi.actualEndDate)
         assertNull(nsi.outcome)
@@ -274,19 +280,19 @@ internal class ReferAndMonitorIntegrationTest {
         )
 
         val notification = prepNotification(
-            notification("referral-prematurely-ended"),
+            notification("referral-withdrawn"),
             wireMockServer.port()
         )
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val saved = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
+        val saved = nsiRepository.findById(NsiGenerator.WITHDRAWN.id).orElseThrow()
         assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
         assertThat(
             saved.actualEndDate!!.withZoneSameInstant(EuropeLondon),
             isCloseTo(ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon))
         )
-        assertThat(saved.outcome?.code, equalTo(ReferralEndType.PREMATURELY_ENDED.outcome))
+        assertThat(saved.outcome?.code, equalTo("NSI1"))
         assertFalse(saved.active)
 
         val sh = statusHistoryRepo.findAll().firstOrNull { it.nsiId == nsi.id }
@@ -309,7 +315,8 @@ internal class ReferAndMonitorIntegrationTest {
                 "referralId" to "f56c5f7c-632f-4cad-a1b3-693541cb5f22",
                 "referralUrn" to "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
                 "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
-                "endType" to "PREMATURELY_ENDED"
+                "endType" to "CANCELLED",
+                "withdrawalCode" to "NSI1",
             )
         )
     }

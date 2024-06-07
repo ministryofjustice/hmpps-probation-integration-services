@@ -109,7 +109,7 @@ class DataLoader(
         nsiStatusRepository.saveAll(listOf(NsiGenerator.INPROG_STATUS, NsiGenerator.COMP_STATUS))
 
         datasetRepository.saveAll(ReferenceDataGenerator.allDatasets() + NsiGenerator.NSI_OUTCOME_DS)
-        referenceDataRepository.saveAll(ReferenceDataGenerator.allReferenceData() + NsiGenerator.OUTCOMES.values)
+        referenceDataRepository.saveAll(ReferenceDataGenerator.allReferenceData() + NsiGenerator.OUTCOMES.values + NsiGenerator.WITHDRAWN_OUTCOMES.values)
 
         mainCatRepository.save(SentenceGenerator.MAIN_CAT_F)
 
@@ -203,8 +203,8 @@ class DataLoader(
         requirementRepository.save(SentenceGenerator.generateRequirement(SentenceGenerator.SENTENCE_WITHOUT_NSI))
 
         val rfn = requirementRepository.save(SentenceGenerator.generateRequirement(SentenceGenerator.SENTENCE_WITH_NSI))
-        val nsi = NsiGenerator.END_PREMATURELY
-        NsiGenerator.END_PREMATURELY = nsiRepository.save(
+        val nsi = NsiGenerator.WITHDRAWN
+        NsiGenerator.WITHDRAWN = nsiRepository.save(
             NsiGenerator.generate(
                 nsi.type,
                 externalReference = nsi.externalReference,
@@ -227,7 +227,7 @@ class DataLoader(
 
         nsiManagerRepository.saveAll(
             listOf(
-                NsiGenerator.generateManager(NsiGenerator.END_PREMATURELY),
+                NsiGenerator.generateManager(NsiGenerator.WITHDRAWN),
                 NsiGenerator.generateManager(NsiGenerator.NO_APPOINTMENTS)
             )
         )
@@ -238,7 +238,7 @@ class DataLoader(
                 crsA.type,
                 date = crsA.date,
                 notes = crsA.notes,
-                nsi = NsiGenerator.END_PREMATURELY,
+                nsi = NsiGenerator.WITHDRAWN,
                 rarActivity = crsA.rarActivity
             )
         )
@@ -249,7 +249,7 @@ class DataLoader(
                 crsB.type,
                 date = crsB.date,
                 notes = crsB.notes,
-                nsi = NsiGenerator.END_PREMATURELY,
+                nsi = NsiGenerator.WITHDRAWN,
                 rarActivity = crsB.rarActivity,
                 externalReference = crsB.externalReference
             )
@@ -261,7 +261,7 @@ class DataLoader(
                 crsC.type,
                 date = crsC.date,
                 notes = crsC.notes,
-                nsi = NsiGenerator.END_PREMATURELY,
+                nsi = NsiGenerator.WITHDRAWN,
                 rarActivity = crsC.rarActivity
             )
         )
@@ -272,7 +272,7 @@ class DataLoader(
                 crsD.type,
                 date = crsD.date,
                 notes = crsD.notes,
-                nsi = NsiGenerator.END_PREMATURELY,
+                nsi = NsiGenerator.WITHDRAWN,
                 rarActivity = crsD.rarActivity,
                 externalReference = crsD.externalReference
             )
