@@ -13,7 +13,7 @@ data class Conviction(
     val failureToComplyCount: Long,
     val breachEnd: LocalDate?,
     val awaitingPsr: Boolean = false,
-    val convictionDate: LocalDate,
+    val convictionDate: LocalDate?,
     val referralDate: LocalDate,
     val offences: List<Offence>,
     val sentence: Sentence?,
@@ -98,7 +98,7 @@ data class AdditionalSentence(
 )
 
 data class Custody(
-    val bookingNumber: String,
+    val bookingNumber: String?,
     val institution: Institution,
     val keyDates: CustodyRelatedKeyDates,
     val status: KeyValue,
@@ -167,7 +167,7 @@ data class OrderManager(
     val name: String?,
     val staffCode: String?,
     val dateStartOfAllocation: ZonedDateTime,
-    val dateEndOfAllocation: ZonedDateTime,
+    val dateEndOfAllocation: ZonedDateTime?,
     val gradeCode: String?,
     val teamCode: String?,
     val probationAreaCode: String

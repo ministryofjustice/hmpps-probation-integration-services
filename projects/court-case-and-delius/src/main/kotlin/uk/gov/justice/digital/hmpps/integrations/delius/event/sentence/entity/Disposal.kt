@@ -203,7 +203,7 @@ class Custody(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
 
-    val prisonerNumber: String,
+    val prisonerNumber: String?,
 
     @ManyToOne
     @JoinColumns(

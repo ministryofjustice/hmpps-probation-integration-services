@@ -36,7 +36,7 @@ class Event(
     val breachEnd: LocalDate? = null,
 
     @Column(name = "conviction_date")
-    val convictionDate: LocalDate,
+    val convictionDate: LocalDate?,
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
@@ -128,7 +128,7 @@ class OrderManager(
 
     val allocationDate: ZonedDateTime,
 
-    val endDate: ZonedDateTime,
+    val endDate: ZonedDateTime?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
