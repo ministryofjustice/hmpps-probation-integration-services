@@ -24,6 +24,7 @@ const val FF_CREATE_OFFENCE = "manage-offences-create-offence"
 const val FF_UPDATE_OFFENCE = "manage-offences-update-offence"
 
 @Component
+@Transactional
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
@@ -33,8 +34,6 @@ class Handler(
     private val referenceDataRepository: ReferenceDataRepository,
     private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
-
-    @Transactional
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
 
