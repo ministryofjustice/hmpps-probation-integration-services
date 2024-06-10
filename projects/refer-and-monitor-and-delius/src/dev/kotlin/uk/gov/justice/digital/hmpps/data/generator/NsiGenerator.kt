@@ -15,7 +15,8 @@ import java.time.ZonedDateTime
 
 object NsiGenerator {
     val NSI_OUTCOME_DS = Dataset(Dataset.Code.NSI_OUTCOME.value, IdGenerator.getAndIncrement())
-    val OUTCOMES = ReferralEndType.values().map { generateOutcome(it.outcome) }.associateBy { it.code }
+    val OUTCOMES = ReferralEndType.entries.map { generateOutcome(it.outcome) }.associateBy { it.code }
+    val WITHDRAWN_OUTCOMES = (1..13).map { generateOutcome("NSI$it") }.associateBy { it.code }
     val TYPES = ContractTypeNsiType.MAPPING.values.map { generateType(it) }.associateBy { it.code }
     val INPROG_STATUS = generateStatus(
         NsiStatus.Code.IN_PROGRESS.value,
@@ -26,7 +27,7 @@ object NsiGenerator {
         ContactGenerator.TYPES[ContactType.Code.COMPLETED.value]!!.id
     )
 
-    var END_PREMATURELY = generate(
+    var WITHDRAWN = generate(
         TYPES.values.first(),
         externalReference = "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
         eventId = SentenceGenerator.EVENT_WITH_NSI.id,

@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -13,9 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_COMMENCED
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_REFERRAL
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_TERMINATED
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.nsiOutcome
@@ -40,7 +39,8 @@ class NsiService(
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
-    private val createNsi: CreateNsi
+    private val createNsi: CreateNsi,
+    private val featureFlags: FeatureFlags,
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -77,7 +77,10 @@ class NsiService(
     fun terminateNsi(termination: NsiTermination) = audit(MANAGE_NSI) { audit ->
         val nsi = findNsi(termination)
         val status = nsiStatusRepository.getByCode(END.value)
-        val outcome = nsiOutcomeRepository.nsiOutcome(termination.endType.outcome)
+        val outcomeCode = termination.withdrawalCode
+            .takeIf { it.isNotEmpty() && featureFlags.enabled("referral-withdrawal-reason") }
+            ?: termination.endType.outcome
+        val outcome = nsiOutcomeRepository.nsiOutcome(outcomeCode)
 
         audit["offenderId"] = nsi.person.id
         audit["nsiId"] = nsi.id

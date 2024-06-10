@@ -58,7 +58,7 @@ object ContactGenerator {
             |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
             |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/f56c5f7c-632f-4cad-a1b3-693541cb5f22/progress
         """.trimMargin(),
-        nsi = NsiGenerator.END_PREMATURELY,
+        nsi = NsiGenerator.WITHDRAWN,
         rarActivity = true
     )
 
@@ -69,7 +69,7 @@ object ContactGenerator {
             |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
             |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/f56c5f7c-632f-4cad-a1b3-693541cb5f22/progress
         """.trimMargin(),
-        nsi = NsiGenerator.END_PREMATURELY,
+        nsi = NsiGenerator.WITHDRAWN,
         rarActivity = true,
         externalReference = "urn:hmpps:interventions-appointment:48911ad2-1213-4bd3-8312-3824dc29f131"
     )
@@ -81,7 +81,7 @@ object ContactGenerator {
             |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
             |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/89a3f79c-f12b-43de-9616-77ae19813cfe/progress
         """.trimMargin(),
-        nsi = NsiGenerator.END_PREMATURELY,
+        nsi = NsiGenerator.WITHDRAWN,
         rarActivity = true
     )
 
@@ -92,7 +92,7 @@ object ContactGenerator {
             |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
             |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/b408f920-a6e8-49c6-877d-6f1fa9309032/progress
         """.trimMargin(),
-        nsi = NsiGenerator.END_PREMATURELY,
+        nsi = NsiGenerator.WITHDRAWN,
         rarActivity = true,
         externalReference = "urn:hmpps:interventions-appointment:c8801fa4-4487-4b38-9169-efabd4be98c9"
     )

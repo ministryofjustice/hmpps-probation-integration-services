@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
@@ -61,6 +62,9 @@ internal class RepositoryExtensionMethodTests {
     @Mock
     lateinit var telemetryService: TelemetryService
 
+    @Mock
+    lateinit var featureFlags: FeatureFlags
+
     @InjectMocks
     lateinit var nsiService: NsiService
 
@@ -75,6 +79,7 @@ internal class RepositoryExtensionMethodTests {
             ZonedDateTime.now().minusDays(1),
             ZonedDateTime.now(),
             ReferralEndType.CANCELLED,
+            "",
             "Notes",
             ZonedDateTime.now(),
             "End Of Service Report Submitted"
@@ -85,7 +90,7 @@ internal class RepositoryExtensionMethodTests {
     @Test
     fun `nsi type not found causes failure`() {
         val person = PersonGenerator.DEFAULT
-        val nsi = NsiGenerator.END_PREMATURELY
+        val nsi = NsiGenerator.WITHDRAWN
         whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
 
         val ex = assertThrows<NotFoundException> {
@@ -97,6 +102,7 @@ internal class RepositoryExtensionMethodTests {
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
+                    "",
                     "Notes",
                     ZonedDateTime.now(),
                     "End Of Service Report Submitted"
@@ -110,7 +116,7 @@ internal class RepositoryExtensionMethodTests {
     @Test
     fun `nsi outcome not found causes failure`() {
         val person = PersonGenerator.DEFAULT
-        val nsi = NsiGenerator.END_PREMATURELY
+        val nsi = NsiGenerator.WITHDRAWN
         whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
         whenever(nsiStatusRepository.findByCode(NsiStatus.Code.END.value)).thenReturn(NsiGenerator.COMP_STATUS)
 
@@ -123,6 +129,7 @@ internal class RepositoryExtensionMethodTests {
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
+                    "",
                     "Notes",
                     ZonedDateTime.now(),
                     "End Of Service Report Submitted"
