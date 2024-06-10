@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
 
 @Component
+@Transactional
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
@@ -24,7 +25,6 @@ class Handler(
     private val cas3ApiClient: Cas3ApiClient,
     private val personRepository: PersonRepository
 ) : NotificationHandler<HmppsDomainEvent> {
-    @Transactional
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val event = notification.message
