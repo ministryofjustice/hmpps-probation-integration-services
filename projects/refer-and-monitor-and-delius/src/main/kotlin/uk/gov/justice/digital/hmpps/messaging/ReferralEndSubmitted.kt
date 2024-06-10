@@ -41,19 +41,19 @@ class ReferralEndSubmitted(
 
         Success(
             ReferralEnded,
-            mapOf(
+            listOfNotNull(
                 "crn" to event.personReference.findCrn()!!,
                 "referralUrn" to event.referralUrn(),
                 "endDate" to sentReferral.endDate.toString(),
                 "endType" to termination.endType.toString(),
-                "withdrawalCode" to termination.withdrawalCode
-            )
+                termination.withdrawalCode?.let { "withdrawalCode" to it }
+            ).toMap()
         )
     }
 }
 
 fun HmppsDomainEvent.deliveryState() = additionalInformation["deliveryState"] as String
-fun HmppsDomainEvent.withdrawalCode() = additionalInformation["withdrawalCode"] as String
+fun HmppsDomainEvent.withdrawalCode() = (additionalInformation["withdrawalCode"] as String?)?.takeIf { it.isNotEmpty() }
 fun HmppsDomainEvent.referralUrn() = additionalInformation["referralURN"] as String
 fun HmppsDomainEvent.referralUiUrl() = additionalInformation["referralProbationUserURL"] as String
 
@@ -107,7 +107,7 @@ data class NsiTermination(
     val startDate: ZonedDateTime,
     val endDate: ZonedDateTime,
     val endType: ReferralEndType,
-    val withdrawalCode: String,
+    val withdrawalCode: String?,
     val notes: String,
     val notificationDateTime: ZonedDateTime?,
     val notificationNotes: String
