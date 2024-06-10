@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.ACCEPTED_DECISION
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.AUTO_TRANSFER_REASON
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
@@ -42,6 +43,8 @@ object ReferenceDataGenerator {
     val LC_REJECTED_DECISION = generate("R", ACCEPTED_DECISION)
     val LC_REJECTED_REASON = generate("TWR", LICENCE_AREA_TRANSFER_REJECTION_REASON)
 
+    val AUTO_TRANSFER = generate("AUT", AUTO_TRANSFER_REASON)
+
     fun generate(
         code: String,
         dataset: ReferenceDataSet,
@@ -57,6 +60,7 @@ object ReferenceDataSetGenerator {
     val TRANSFER_STATUS = generate("TRANSFER STATUS")
     val ACCEPTED_DECISION = generate("ACCEPTED DECISION")
     val LICENCE_AREA_TRANSFER_REJECTION_REASON = generate("LICENCE AREA TRANSFER REJECTION REASON")
+    val AUTO_TRANSFER_REASON = generate("Automatic Transfer")
 
     fun generate(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(id, name)
 }
