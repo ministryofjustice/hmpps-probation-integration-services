@@ -155,7 +155,7 @@ jobs:
         run: find . -name '*.jar' | zip -r package.zip -@
 
       - name: Upload to Veracode
-        uses: veracode/veracode-uploadandscan-action@0.2.6
+        uses: veracode/veracode-uploadandscan-action@0.2.7
         with:
           appname: hmpps-probation-integration-services
           createprofile: false
