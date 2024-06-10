@@ -44,12 +44,12 @@ class Staff(
     @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
 
-    @ManyToMany
     @JoinTable(
         name = "staff_team",
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
+    @ManyToMany(fetch = FetchType.EAGER)
     val teams: List<Team>,
 
     @Id

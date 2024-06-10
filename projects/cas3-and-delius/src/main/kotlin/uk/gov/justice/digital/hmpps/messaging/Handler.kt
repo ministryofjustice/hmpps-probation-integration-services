@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
@@ -23,6 +24,7 @@ class Handler(
     private val cas3ApiClient: Cas3ApiClient,
     private val personRepository: PersonRepository
 ) : NotificationHandler<HmppsDomainEvent> {
+    @Transactional
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val event = notification.message
@@ -111,6 +113,6 @@ class Handler(
     )
 }
 
-fun HmppsDomainEvent.crn(): String = personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN")
+fun HmppsDomainEvent.crn(): String = requireNotNull(personReference.findCrn()) { "Missing CRN" }
 
-fun HmppsDomainEvent.url(): URI = URI.create(detailUrl ?: throw IllegalArgumentException("Missing detail url"))
+fun HmppsDomainEvent.url(): URI = URI.create(requireNotNull(detailUrl) { "Missing detail url" })
