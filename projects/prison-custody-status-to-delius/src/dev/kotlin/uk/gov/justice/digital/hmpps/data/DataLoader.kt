@@ -152,7 +152,18 @@ class DataLoader(
             InstitutionGenerator.MOVED_TO_POM.probationArea!!,
             false
         )
-        prisonManagerRepository.save(prisonManager)
+        val prisonManager1 = PrisonManager(
+            IdGenerator.getAndIncrement(),
+            0,
+            PersonGenerator.MATCHABLE_WITH_POM.id,
+            ZonedDateTime.of(2023, 2, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
+            ReferenceDataGenerator.AUTO_TRANSFER,
+            StaffGenerator.UNALLOCATED,
+            teamBir,
+            InstitutionGenerator.MOVED_TO_POM.probationArea!!,
+            false
+        )
+        prisonManagerRepository.saveAll(listOf(prisonManager, prisonManager1))
         staffRepository.save(StaffGenerator.unallocated(team))
         staffRepository.save(StaffGenerator.unallocated(teamBir))
         institutionRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values)
