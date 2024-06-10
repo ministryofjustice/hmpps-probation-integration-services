@@ -405,7 +405,6 @@ components:
       required:
       - active
       - awaitingPsr
-      - convictionDate
       - convictionId
       - failureToComplyCount
       - inBreach
@@ -539,7 +538,6 @@ components:
           type: string
     Custody:
       required:
-      - bookingNumber
       - institution
       - keyDates
       - sentenceStartDate
@@ -689,7 +687,6 @@ components:
           type: string
     OrderManager:
       required:
-      - dateEndOfAllocation
       - dateStartOfAllocation
       - officerId
       - probationAreaCode
