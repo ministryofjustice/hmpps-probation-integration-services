@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.service.NsiService
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class ReferralEndSubmittedTest {
@@ -108,6 +108,8 @@ internal class ReferralEndSubmittedTest {
             ),
             ZonedDateTime.now().minusDays(1),
             endRequestedAt,
+            null,
+            null,
             null,
             null
         )

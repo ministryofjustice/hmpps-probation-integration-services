@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.messaging.ReferralWithdrawalNsiOutcome
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
@@ -292,7 +293,7 @@ internal class ReferAndMonitorIntegrationTest {
             saved.actualEndDate!!.withZoneSameInstant(EuropeLondon),
             isCloseTo(ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon))
         )
-        assertThat(saved.outcome?.code, equalTo("NSI1"))
+        assertThat(saved.outcome?.code, equalTo(ReferralWithdrawalNsiOutcome.NSI7.name))
         assertFalse(saved.active)
 
         val sh = statusHistoryRepo.findAll().firstOrNull { it.nsiId == nsi.id }
@@ -316,7 +317,7 @@ internal class ReferAndMonitorIntegrationTest {
                 "referralUrn" to "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
                 "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
                 "endType" to "CANCELLED",
-                "withdrawalCode" to "NSI1",
+                "withdrawalOutcome" to "NSI7",
             )
         )
     }

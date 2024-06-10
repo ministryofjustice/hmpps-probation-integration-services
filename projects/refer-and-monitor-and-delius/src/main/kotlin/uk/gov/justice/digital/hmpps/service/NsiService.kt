@@ -77,7 +77,8 @@ class NsiService(
     fun terminateNsi(termination: NsiTermination) = audit(MANAGE_NSI) { audit ->
         val nsi = findNsi(termination)
         val status = nsiStatusRepository.getByCode(END.value)
-        val outcomeCode = termination.withdrawalCode.takeIf { featureFlags.enabled("referral-withdrawal-reason") }
+        val outcomeCode = termination.withdrawalOutcome?.name
+            ?.takeIf { featureFlags.enabled("referral-withdrawal-reason") }
             ?: termination.endType.outcome
         val outcome = nsiOutcomeRepository.nsiOutcome(outcomeCode)
 

@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiManag
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiType
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
+import uk.gov.justice.digital.hmpps.messaging.ReferralWithdrawalNsiOutcome
 import uk.gov.justice.digital.hmpps.service.ContractTypeNsiType
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -16,7 +17,8 @@ import java.time.ZonedDateTime
 object NsiGenerator {
     val NSI_OUTCOME_DS = Dataset(Dataset.Code.NSI_OUTCOME.value, IdGenerator.getAndIncrement())
     val OUTCOMES = ReferralEndType.entries.map { generateOutcome(it.outcome) }.associateBy { it.code }
-    val WITHDRAWN_OUTCOMES = (1..13).map { generateOutcome("NSI$it") }.associateBy { it.code }
+    val WITHDRAWN_OUTCOMES =
+        ReferralWithdrawalNsiOutcome.entries.map { generateOutcome(it.name, it.description) }.associateBy { it.code }
     val TYPES = ContractTypeNsiType.MAPPING.values.map { generateType(it) }.associateBy { it.code }
     val INPROG_STATUS = generateStatus(
         NsiStatus.Code.IN_PROGRESS.value,

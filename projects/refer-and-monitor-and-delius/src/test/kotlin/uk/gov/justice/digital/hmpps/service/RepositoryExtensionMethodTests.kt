@@ -79,7 +79,7 @@ internal class RepositoryExtensionMethodTests {
             ZonedDateTime.now().minusDays(1),
             ZonedDateTime.now(),
             ReferralEndType.CANCELLED,
-            "",
+            null,
             "Notes",
             ZonedDateTime.now(),
             "End Of Service Report Submitted"
@@ -102,7 +102,7 @@ internal class RepositoryExtensionMethodTests {
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
-                    "",
+                    null,
                     "Notes",
                     ZonedDateTime.now(),
                     "End Of Service Report Submitted"
@@ -129,7 +129,7 @@ internal class RepositoryExtensionMethodTests {
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
-                    "",
+                    null,
                     "Notes",
                     ZonedDateTime.now(),
                     "End Of Service Report Submitted"
