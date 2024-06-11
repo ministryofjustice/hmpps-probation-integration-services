@@ -8,6 +8,7 @@ object PersonGenerator {
     val RECALLABLE = generate(NotificationGenerator.PRISONER_RECEIVED.nomsId())
     val DIED = generate(NotificationGenerator.PRISONER_DIED.nomsId())
     val MATCHABLE = generate(NotificationGenerator.PRISONER_MATCHED.nomsId())
+    val MATCHABLE_WITH_POM = generate(NotificationGenerator.PRISONER_MATCHED_WITH_POM.nomsId())
     val NEW_CUSTODY = generate(NotificationGenerator.PRISONER_NEW_CUSTODY.nomsId())
     val RECALLED = generate(NotificationGenerator.PRISONER_RECALLED.nomsId())
     val HOSPITAL_RELEASED = generate(NotificationGenerator.PRISONER_HOSPITAL_RELEASED.nomsId())

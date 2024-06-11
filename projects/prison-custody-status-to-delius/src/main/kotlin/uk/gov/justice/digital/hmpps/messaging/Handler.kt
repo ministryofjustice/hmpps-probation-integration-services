@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -16,6 +17,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @Component
+@Transactional(noRollbackFor = [IgnorableMessageException::class])
 class Handler(
     configContainer: PrisonerMovementConfigs,
     private val featureFlags: FeatureFlags,
