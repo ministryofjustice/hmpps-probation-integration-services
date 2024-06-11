@@ -40,7 +40,7 @@ class StaffService(
     }
 
     fun getStaffByUsername(username: String) =
-        staffRepository.findByUserUsername(username)?.toStaffDetail() ?: throw NotFoundException(
+        staffRepository.findByUsername(username)?.toStaffDetail() ?: throw NotFoundException(
             "Staff",
             "username",
             username
