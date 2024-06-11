@@ -13,5 +13,5 @@ generic-service:
 
 bulk-update:
   enabled: true
-  dry-run: true
+  dry-run: false
   schedule: 0 7 * * 1
