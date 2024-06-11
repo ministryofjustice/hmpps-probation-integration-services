@@ -130,17 +130,18 @@ class DataLoader(
             listOf(
                 InstitutionGenerator.DEFAULT,
                 InstitutionGenerator.MOVED_TO,
-                InstitutionGenerator.MOVED_TO_POM
+                InstitutionGenerator.MOVED_TO_WITH_POM
             )
         )
         probationAreaRepository.saveAll(
             listOf(
                 InstitutionGenerator.DEFAULT.probationArea!!,
-                InstitutionGenerator.MOVED_TO_POM.probationArea!!
+                InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!
             )
         )
         val team = teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.DEFAULT.probationArea!!))
-        val teamBir = teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.MOVED_TO_POM.probationArea!!))
+        val teamBir =
+            teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!))
         val prisonManager = PrisonManager(
             IdGenerator.getAndIncrement(),
             0,
@@ -149,7 +150,7 @@ class DataLoader(
             ReferenceDataGenerator.AUTO_TRANSFER,
             StaffGenerator.UNALLOCATED,
             teamBir,
-            InstitutionGenerator.MOVED_TO_POM.probationArea!!,
+            InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!,
             false
         )
         val prisonManager1 = PrisonManager(
@@ -160,7 +161,7 @@ class DataLoader(
             ReferenceDataGenerator.AUTO_TRANSFER,
             StaffGenerator.UNALLOCATED,
             teamBir,
-            InstitutionGenerator.MOVED_TO_POM.probationArea!!,
+            InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!,
             false
         )
         prisonManagerRepository.saveAll(listOf(prisonManager, prisonManager1))
