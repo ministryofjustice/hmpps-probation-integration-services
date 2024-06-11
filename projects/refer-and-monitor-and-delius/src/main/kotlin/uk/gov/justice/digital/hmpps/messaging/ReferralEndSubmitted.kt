@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.DomainEventType.ReferralEnded
 import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Success
+import uk.gov.justice.digital.hmpps.messaging.ReferralWithdrawalNsiOutcome.*
+import uk.gov.justice.digital.hmpps.messaging.ReferralWithdrawalState.PRE_ICA_WITHDRAWAL
 import uk.gov.justice.digital.hmpps.service.NsiService
 import java.net.URI
 import java.time.ZonedDateTime
@@ -32,7 +34,7 @@ class ReferralEndSubmitted(
             sentReferral.endDate
                 ?: throw IllegalStateException("No End Date for Termination: ${event.referralUrn()} => ${event.personReference.findCrn()}"),
             ReferralEndType.valueOf(event.deliveryState()),
-            event.withdrawalCode(),
+            sentReferral.withdrawalCode?.toOutcome(sentReferral.withdrawalState),
             sentReferral.notes(event.referralUiUrl()),
             sentReferral.endOfServiceReport?.submittedAt,
             sentReferral.notificationNotes(event.referralUiUrl())
@@ -46,14 +48,13 @@ class ReferralEndSubmitted(
                 "referralUrn" to event.referralUrn(),
                 "endDate" to sentReferral.endDate.toString(),
                 "endType" to termination.endType.toString(),
-                termination.withdrawalCode?.let { "withdrawalCode" to it }
+                termination.withdrawalOutcome?.let { "withdrawalOutcome" to it.name },
             ).toMap()
         )
     }
 }
 
 fun HmppsDomainEvent.deliveryState() = additionalInformation["deliveryState"] as String
-fun HmppsDomainEvent.withdrawalCode() = (additionalInformation["withdrawalCode"] as String?)?.takeIf { it.isNotEmpty() }
 fun HmppsDomainEvent.referralUrn() = additionalInformation["referralURN"] as String
 fun HmppsDomainEvent.referralUiUrl() = additionalInformation["referralProbationUserURL"] as String
 
@@ -64,7 +65,9 @@ data class SentReferral(
     val sentAt: ZonedDateTime,
     val endRequestedAt: ZonedDateTime?,
     val concludedAt: ZonedDateTime?,
-    val endOfServiceReport: EndOfServiceReport?
+    val endOfServiceReport: EndOfServiceReport?,
+    val withdrawalState: ReferralWithdrawalState?,
+    val withdrawalCode: ReferralWithdrawalReason?,
 ) {
     val endDate = concludedAt ?: endRequestedAt
     fun notes(uiUrl: String) =
@@ -98,6 +101,61 @@ enum class ReferralEndType(val outcome: String) {
     COMPLETED("CRS03")
 }
 
+enum class ReferralWithdrawalState {
+    PRE_ICA_WITHDRAWAL,
+    POST_ICA_WITHDRAWAL,
+    POST_ICA_CLOSE_REFERRAL_EARLY,
+}
+
+enum class ReferralWithdrawalReason(
+    val description: String,
+    private val preIcaOutcome: ReferralWithdrawalNsiOutcome,
+    private val postIcaOutcome: ReferralWithdrawalNsiOutcome = preIcaOutcome
+) {
+    // Problem with referral
+    INE("Ineligible Referral", NSI1),
+    MIS("Mistaken or duplicate referral", NSI2),
+
+    // User related
+    NOT("Not engaged", NSI11, NSI12),
+    NEE("Needs met through another route", NSI7, NSI8),
+    MOV("Moved out of service area", NSI5, NSI6),
+    WOR("Work or caring responsibilities", NSI3, NSi4),
+    USE("User died", NSI5, NSI6),
+
+    // Sentence / custody related
+    ACQ("Acquitted on appeal", NSI5, NSI6),
+    RET("Returned to custody", NSI5, NSI6),
+    SER("Sentence revoked", NSI5, NSI6),
+    SEE("Sentence expired", NSI9, NSI10),
+    EAR("Intervention has been completed", NSI13),
+
+    // Other
+    ANO("Another reason", CRS01);
+
+    fun toOutcome(withdrawalState: ReferralWithdrawalState?): ReferralWithdrawalNsiOutcome {
+        val state = requireNotNull(withdrawalState) { "Withdrawal state not provided" }
+        return if (state == PRE_ICA_WITHDRAWAL) preIcaOutcome else postIcaOutcome
+    }
+}
+
+enum class ReferralWithdrawalNsiOutcome(val description: String) {
+    NSI1("Ineligible referral"),
+    NSI2("Mistaken referral (inc Duplicate)"),
+    NSI3("Did not start (Work, Caring Commitments, Long-term Sickness)"),
+    NSi4("Started - Not finished (Work,Caring Commitments or Long-Term Sickness)"), // Note: intentional typo (NSI4 -> NSi4) to match Delius data
+    NSI5("Did not start – Changed Circumstances"),
+    NSI6("Started - Not finished (Changed Circumstances)"),
+    NSI7("Did not start - Needs met through another route"),
+    NSI8("Started - not finished (Needs met through another route)"),
+    NSI9("Did not start - Sentence Expired"),
+    NSI10("Started - Not finished (Sentence Expired)"),
+    NSI11("Did not start – Disengaged"),
+    NSI12("Started - Not finished (Disengaged)"),
+    NSI13("Completed"),
+    CRS01("Cancelled"),
+}
+
 data class EndOfServiceReport(val submittedAt: ZonedDateTime?)
 
 data class NsiTermination(
@@ -107,7 +165,7 @@ data class NsiTermination(
     val startDate: ZonedDateTime,
     val endDate: ZonedDateTime,
     val endType: ReferralEndType,
-    val withdrawalCode: String?,
+    val withdrawalOutcome: ReferralWithdrawalNsiOutcome?,
     val notes: String,
     val notificationDateTime: ZonedDateTime?,
     val notificationNotes: String

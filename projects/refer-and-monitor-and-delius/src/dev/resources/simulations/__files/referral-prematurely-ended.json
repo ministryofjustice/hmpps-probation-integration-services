@@ -36,5 +36,7 @@
       "authSource": "string",
       "userId": "string"
     }
-  }
+  },
+  "withdrawalCode": "NEE",
+  "withdrawalState": "PRE_ICA_WITHDRAWAL"
 }
