@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
@@ -34,6 +36,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.StaffReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.user.AuditUser
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Component
@@ -60,7 +63,8 @@ class DataLoader(
     private val teamRepository: TeamRepository,
     private val probationAreaRepository: ProbationAreaRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
-    private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository
+    private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository,
+    private val prisonManagerRepository: PrisonManagerRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -102,7 +106,8 @@ class DataLoader(
                 ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON.set,
                 ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON.set,
                 ReferenceDataSetGenerator.ACCEPTED_DECISION,
-                ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON
+                ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON,
+                ReferenceDataSetGenerator.AUTO_TRANSFER_REASON
             )
         )
         referenceDataRepository.saveAll(
@@ -115,15 +120,53 @@ class DataLoader(
                     ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON,
                     ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
                     ReferenceDataGenerator.LC_REJECTED_DECISION,
-                    ReferenceDataGenerator.LC_REJECTED_REASON
+                    ReferenceDataGenerator.LC_REJECTED_REASON,
+                    ReferenceDataGenerator.AUTO_TRANSFER
                 )
         )
         recallReasonRepository.saveAll(ReferenceDataGenerator.RECALL_REASON.values)
         contactTypeRepository.saveAll(ReferenceDataGenerator.CONTACT_TYPE.values)
-        institutionRepository.saveAll(listOf(InstitutionGenerator.DEFAULT, InstitutionGenerator.MOVED_TO))
-        probationAreaRepository.save(InstitutionGenerator.DEFAULT.probationArea!!)
+        institutionRepository.saveAll(
+            listOf(
+                InstitutionGenerator.DEFAULT,
+                InstitutionGenerator.MOVED_TO,
+                InstitutionGenerator.MOVED_TO_WITH_POM
+            )
+        )
+        probationAreaRepository.saveAll(
+            listOf(
+                InstitutionGenerator.DEFAULT.probationArea!!,
+                InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!
+            )
+        )
         val team = teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.DEFAULT.probationArea!!))
+        val teamBir =
+            teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!))
+        val prisonManager = PrisonManager(
+            IdGenerator.getAndIncrement(),
+            0,
+            PersonGenerator.MATCHABLE_WITH_POM.id,
+            ZonedDateTime.of(2023, 1, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
+            ReferenceDataGenerator.AUTO_TRANSFER,
+            StaffGenerator.UNALLOCATED,
+            teamBir,
+            InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!,
+            false
+        )
+        val prisonManager1 = PrisonManager(
+            IdGenerator.getAndIncrement(),
+            0,
+            PersonGenerator.MATCHABLE_WITH_POM.id,
+            ZonedDateTime.of(2023, 2, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
+            ReferenceDataGenerator.AUTO_TRANSFER,
+            StaffGenerator.UNALLOCATED,
+            teamBir,
+            InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!,
+            false
+        )
+        prisonManagerRepository.saveAll(listOf(prisonManager, prisonManager1))
         staffRepository.save(StaffGenerator.unallocated(team))
+        staffRepository.save(StaffGenerator.unallocated(teamBir))
         institutionRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values)
         probationAreaRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values.mapNotNull { it.probationArea })
         val teams = teamRepository.saveAll(
@@ -163,6 +206,8 @@ class DataLoader(
     private fun createMatchablePerson() {
         createPerson(PersonGenerator.MATCHABLE)
         createEvent(EventGenerator.custodialEvent(PersonGenerator.MATCHABLE, InstitutionGenerator.DEFAULT))
+        createPerson(PersonGenerator.MATCHABLE_WITH_POM)
+        createEvent(EventGenerator.custodialEvent(PersonGenerator.MATCHABLE_WITH_POM, InstitutionGenerator.DEFAULT))
     }
 
     private fun createNewCustodyPerson() {

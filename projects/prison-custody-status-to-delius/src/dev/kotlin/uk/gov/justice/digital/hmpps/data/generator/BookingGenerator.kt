@@ -13,6 +13,11 @@ object BookingGenerator {
         "INT",
         prisonId = InstitutionGenerator.MOVED_TO.nomisCdeCode!!
     )
+    val MATCHED_WITH_POM = generateReceive(
+        PersonGenerator.MATCHABLE_WITH_POM.nomsNumber,
+        "INT",
+        prisonId = InstitutionGenerator.MOVED_TO_WITH_POM.nomisCdeCode!!
+    )
     val NEW_CUSTODY = generateReceive(PersonGenerator.NEW_CUSTODY.nomsNumber, "N")
     val RECALLED = generateReceive(PersonGenerator.RECALLED.nomsNumber, "24")
     val HOSPITAL_RELEASE = generateRelease(PersonGenerator.HOSPITAL_RELEASED.nomsNumber, "HO")

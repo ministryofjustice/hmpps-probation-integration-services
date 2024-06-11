@@ -8,6 +8,7 @@ object InstitutionGenerator {
     val DEFAULT = generate("WSIHMP", "WSI")
     val STANDARD_INSTITUTIONS = InstitutionCode.entries.associateWith { generate(it.code, null) }
     val MOVED_TO = generate("SWIHMP", "SWI")
+    val MOVED_TO_WITH_POM = generate("BIRHMP", "BIR")
 
     fun generate(code: String, prisonId: String?): Institution {
         val institution = Institution(
