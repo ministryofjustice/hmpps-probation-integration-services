@@ -37,7 +37,10 @@ class AllocateRequirementService(
     fun createRequirementAllocation(crn: String, allocationDetail: RequirementAllocation) =
         audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) { audit ->
             val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
-                ?: throw NotFoundException("Requirement", "id", allocationDetail.requirementId)
+                ?: throw IgnorableMessageException(
+                    "Requirement not found or soft deleted in delius",
+                    mapOf("id" to allocationDetail.requirementId.toString())
+                )
 
             audit["offenderId"] = requirement.person.id
             audit["eventId"] = requirement.disposal.event.id
@@ -58,12 +61,8 @@ class AllocateRequirementService(
             val activeRequirementManager = requirementManagerRepository.findActiveManagerAtDate(
                 allocationDetail.requirementId,
                 allocationDetail.createdDate
-            ) ?: throw IgnorableMessageException(
-                "Requirement Manager and requirement records are soft deleted in delius",
-                mapOf(
-                    "requirement id" to allocationDetail.requirementId.toString(),
-                    "creation date" to allocationDetail.createdDate.toString()
-                )
+            ) ?: throw NotFoundException(
+                "Requirement Manager for requirement ${allocationDetail.requirementId} at ${allocationDetail.createdDate} not found"
             )
 
             if (allocationDetail.isDuplicate(activeRequirementManager)) {

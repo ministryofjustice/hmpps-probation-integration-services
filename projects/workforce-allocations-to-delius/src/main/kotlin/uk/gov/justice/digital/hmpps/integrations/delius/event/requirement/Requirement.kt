@@ -1,13 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.requirement
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
@@ -15,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 @Immutable
 @Entity
 @Table(name = "rqmnt")
+@SQLRestriction("soft_deleted = 0")
 class Requirement(
     @Id
     @Column(name = "rqmnt_id", nullable = false)

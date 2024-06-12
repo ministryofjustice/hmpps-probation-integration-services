@@ -86,12 +86,14 @@ internal class AllocateRequirementServiceTest {
     fun `when requirement not found exception thrown`() {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(Optional.empty())
 
-        assertThrows<NotFoundException> {
+        val exception = assertThrows<IgnorableMessageException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail
             )
         }
+
+        assert(exception.message.contains("Requirement not found or soft deleted in delius"))
     }
 
     @Test
@@ -188,14 +190,12 @@ internal class AllocateRequirementServiceTest {
             )
         ).thenReturn(null)
 
-        val exception = assertThrows<IgnorableMessageException> {
+        assertThrows<NotFoundException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail
             )
         }
-
-        assert(exception.message.contains("Requirement Manager and requirement records are soft deleted in delius"))
     }
 
     @Test
