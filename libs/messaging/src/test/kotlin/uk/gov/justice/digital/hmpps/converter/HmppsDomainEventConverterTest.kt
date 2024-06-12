@@ -13,12 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.junit.jupiter.MockitoExtension
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
-import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.message.PersonIdentifier
-import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.message.*
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -76,7 +71,7 @@ class HmppsDomainEventConverterTest {
                 "http://detail/url",
                 ZonedDateTime.parse("2022-07-27T15:22:08.509+01:00"),
                 "A description for the event",
-                AdditionalInformation(mutableMapOf("specialId" to "6aafe304-861f-4479-8380-fec5f90f6d17")),
+                mapOf("specialId" to "6aafe304-861f-4479-8380-fec5f90f6d17"),
                 PersonReference(listOf(PersonIdentifier("CRN", "X123456")))
             ),
             attributes = MessageAttributes("attribute.event.type")
@@ -88,7 +83,7 @@ class HmppsDomainEventConverterTest {
             message,
             equalTo(
                 """
-                |{"Message":"{\"eventType\":\"message.event.type\",\"version\":1,\"detailUrl\":\"http://detail/url\",\"occurredAt\":\"2022-07-27T15:22:08.509+01:00\",\"description\":\"A description for the event\",\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X123456\"}]},\"additionalInformation\":{\"specialId\":\"6aafe304-861f-4479-8380-fec5f90f6d17\"}}",
+                |{"Message":"{\"eventType\":\"message.event.type\",\"version\":1,\"detailUrl\":\"http://detail/url\",\"occurredAt\":\"2022-07-27T15:22:08.509+01:00\",\"description\":\"A description for the event\",\"additionalInformation\":{\"specialId\":\"6aafe304-861f-4479-8380-fec5f90f6d17\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X123456\"}]}}",
                 |"MessageAttributes":{"eventType":{"Type":"String","Value":"attribute.event.type"}},"MessageId":"${hmppsEvent.id}"}
                 """.trimMargin().replace("\\n".toRegex(), "")
             )

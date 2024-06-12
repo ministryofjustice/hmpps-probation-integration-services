@@ -1,6 +1,10 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import jakarta.transaction.Transactional
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Subscribe
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -11,6 +15,7 @@ import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import kotlin.streams.asSequence
 
 @Service
+@Channel("hmpps-domain-events-topic")
 class Notifier(
     private val personRepository: PersonRepository,
     @Qualifier("queuePublisher") private val queuePublisher: NotificationPublisher,
@@ -42,6 +47,12 @@ class Notifier(
             .forEach { queuePublisher.publish(it) }
     }
 
+    @Subscribe(
+        summary = "Messages sent to the hmpps-domain-events-topic, that can be subscribed to.", messages = [
+            Message(messageId = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
+        ]
+    )
     fun identifierAdded(crn: String, prisonIdentifiers: PrisonIdentifiers) {
         topicPublisher.publish(
             Notification(
@@ -55,13 +66,8 @@ class Notifier(
                             PersonIdentifier("NOMS", prisonIdentifiers.prisonerNumber),
                         ),
                     ),
-                    nullableAdditionalInformation = prisonIdentifiers.bookingNumber?.let {
-                        AdditionalInformation(
-                            info = mutableMapOf(
-                                "bookingNumber" to it
-                            )
-                        )
-                    }
+                    additionalInformation = prisonIdentifiers.bookingNumber?.let { mapOf("bookingNumber" to it) }
+                        ?: emptyMap()
                 ),
                 attributes = MessageAttributes("probation-case.prison-identifier.added")
             )
@@ -81,7 +87,7 @@ class Notifier(
                             PersonIdentifier("NOMS", nomsNumber),
                         ),
                     ),
-                    nullableAdditionalInformation = AdditionalInformation(info = mutableMapOf("previousNomsNumber" to previousNomsNumber)),
+                    additionalInformation = mapOf("previousNomsNumber" to previousNomsNumber)
                 ),
                 attributes = MessageAttributes("probation-case.prison-identifier.updated")
             )
@@ -93,7 +99,7 @@ class Notifier(
             message = HmppsDomainEvent(
                 eventType = eventType,
                 version = 1,
-                nullableAdditionalInformation = AdditionalInformation(mutableMapOf("dryRun" to dryRun)),
+                additionalInformation = mapOf("dryRun" to dryRun),
                 personReference = PersonReference(listOf(identifier))
             ),
             attributes = MessageAttributes(eventType)

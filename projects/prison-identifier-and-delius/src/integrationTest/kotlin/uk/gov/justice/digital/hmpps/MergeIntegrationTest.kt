@@ -47,8 +47,15 @@ internal class MergeIntegrationTest {
 
     @Test
     fun `logs event if the new noms number is already assigned`() {
-        val event = prepEvent("prisoner-merged", wireMockServer.port()).apply {
-            message.additionalInformation["nomsNumber"] = PERSON_WITH_NOMS.nomsNumber!!
+        val event = prepEvent("prisoner-merged", wireMockServer.port()).let {
+            it.copy(
+                it.message.copy(
+                    additionalInformation = mapOf(
+                        "nomsNumber" to PERSON_WITH_NOMS.nomsNumber!!,
+                        "removedNomsNumber" to "A0007AA",
+                    )
+                )
+            )
         }
 
         channelManager.getChannel(queueName).publishAndWait(event)
@@ -63,8 +70,15 @@ internal class MergeIntegrationTest {
 
     @Test
     fun `merge ignored if the old noms number is not in Delius`() {
-        val event = prepEvent("prisoner-merged", wireMockServer.port()).apply {
-            message.additionalInformation["removedNomsNumber"] = "Z9999ZZ"
+        val event = prepEvent("prisoner-merged", wireMockServer.port()).let {
+            it.copy(
+                it.message.copy(
+                    additionalInformation = mapOf(
+                        "nomsNumber" to "B0007BB",
+                        "removedNomsNumber" to "Z9999ZZ"
+                    )
+                )
+            )
         }
 
         channelManager.getChannel(queueName).publishAndWait(event)

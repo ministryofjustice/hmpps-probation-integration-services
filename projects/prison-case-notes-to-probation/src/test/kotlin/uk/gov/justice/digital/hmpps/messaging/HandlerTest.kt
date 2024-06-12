@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.prepMessage
@@ -131,8 +130,7 @@ internal class HandlerTest {
     @Test
     fun `get case note from NOMIS has null caseNoteId`() {
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
-        val prisonOffenderEvent =
-            Notification(message = message.copy(nullableAdditionalInformation = AdditionalInformation()))
+        val prisonOffenderEvent = Notification(message = message.copy(additionalInformation = emptyMap()))
         handler.handle(prisonOffenderEvent)
         verify(deliusService, times(0)).mergeCaseNote(any())
         verify(prisonCaseNotesClient, times(0)).getCaseNote(any())

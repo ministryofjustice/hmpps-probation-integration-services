@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.*
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -11,12 +13,40 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @Component
+@Channel("prison-identifier-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<Any>,
     private val telemetryService: TelemetryService,
     private val probationMatchingService: ProbationMatchingService,
     private val prisonMatchingService: PrisonMatchingService,
 ) : NotificationHandler<Any> {
+    @Publish(
+        description = "Messages published to the prison-identifier-and-delius-queue",
+        bindings = OperationBindings(sqs = OperationBinding.SQS()),
+        messages = [
+            Message(
+                messageId = "prison-offender-events.prisoner.sentence-dates-changed",
+                payload = Schema(OffenderEvent::class)
+            ),
+            Message(
+                messageId = "prison-offender-events.prisoner.imprisonment-status-changed",
+                payload = Schema(OffenderEvent::class)
+            ),
+            Message(messageId = "prison-offender-events.prisoner.merged", payload = Schema(OffenderEvent::class)),
+            Message(messageId = "OFFENDER_DETAILS_CHANGED", payload = Schema(OffenderEvent::class)),
+            Message(messageId = "SENTENCE_CHANGED", payload = Schema(OffenderEvent::class)),
+            Message(
+                messageId = "prison-identifier.internal.prison-match-requested",
+                summary = "Internal use - attempt to match a case",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "prison-identifier.internal.probation-match-requested",
+                summary = "Internal use - attempt to match a case",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+        ]
+    )
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
         when (val message = notification.message) {
