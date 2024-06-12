@@ -25,7 +25,7 @@ class CaseNoteService(
     fun createContact(crn: String, createContact: CreateContact) = audit(BusinessInteractionCode.ADD_CONTACT) {
         val person = personRepository.getByCrn(crn)
         val type = caseNoteTypeRepository.getCode(createContact.type.code)
-        val cm = lazy { personManagerRepository.getByCrn(crn) }
+        val cm = personManagerRepository.getByCrn(crn)
 
         try {
             val prisonStaff = assignmentService.findAssignment(
@@ -51,9 +51,9 @@ class CaseNoteService(
                     contactId = contact.id,
                     typeId = contact.type.id,
                     personId = person.id,
-                    personManagerId = cm.value.id,
-                    staffId = cm.value.staff.id,
-                    teamId = cm.value.team.id
+                    personManagerId = cm.id,
+                    staffId = cm.staff.id,
+                    teamId = cm.team.id
                 )
             )
         } catch (ex: Exception) {
