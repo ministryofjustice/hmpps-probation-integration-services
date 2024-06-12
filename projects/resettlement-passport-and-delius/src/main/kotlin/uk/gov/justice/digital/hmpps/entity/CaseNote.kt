@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
@@ -29,6 +30,9 @@ class CaseNote(
     @JoinColumn(name = "contact_type_id", updatable = false)
     val type: CaseNoteType,
 
+    @Column(name = "description")
+    val description: String? = null,
+
     @Lob
     val notes: String,
 
@@ -43,6 +47,10 @@ class CaseNote(
 
     @Column(name = "team_id")
     val teamId: Long,
+
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "alert_active")
+    val alert: Boolean? = false,
 
     @Column(updatable = false)
     val probationAreaId: Long,

@@ -11,6 +11,7 @@ data class CreateContact(
         description = "Nomis contact type. Must either IMMEDIATE_NEEDS_REPORT or PRE_RELEASE_REPORT"
     )
     val type: CaseNoteType,
+    val description: String?,
     val dateTime: ZonedDateTime,
     @field:NotBlank
     val notes: String,

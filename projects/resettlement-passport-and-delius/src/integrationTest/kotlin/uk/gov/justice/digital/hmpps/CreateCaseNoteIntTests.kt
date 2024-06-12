@@ -12,8 +12,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.CreateContact
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_AREA
+import uk.gov.justice.digital.hmpps.entity.AlertRepository
 import uk.gov.justice.digital.hmpps.entity.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.entity.TeamRepository
@@ -28,6 +30,9 @@ internal class CreateCaseNoteIntTests {
 
     @Autowired
     internal lateinit var caseNoteRepository: CaseNoteRepository
+
+    @Autowired
+    internal lateinit var alertRepository: AlertRepository
 
     @Autowired
     internal lateinit var staffRepository: StaffRepository
@@ -62,8 +67,14 @@ internal class CreateCaseNoteIntTests {
             DEFAULT.id,
             CreateContact.CaseNoteType.IMMEDIATE_NEEDS_REPORT.code
         ).first()
+        val alert =
+            alertRepository.findByContactId(contact.id)
         val staff = staffRepository.findById(contact.staffId).get()
         val team = teamRepository.findById(contact.teamId).get()
+        assertThat(alert?.contactId, equalTo(contact.id))
+        assertThat(alert?.personManagerId, equalTo(PersonGenerator.DEFAULT_MANAGER.id))
+        assertThat(contact.alert, equalTo(true))
+        assertThat(contact.description, equalTo(null))
         assertThat(contact.notes, equalTo("Testing"))
         assertThat(contact.type.code, equalTo(CreateContact.CaseNoteType.IMMEDIATE_NEEDS_REPORT.code))
         assertThat(staff.forename, equalTo("John"))
@@ -83,6 +94,7 @@ internal class CreateCaseNoteIntTests {
                     """
                     {
                         "type": "PRE_RELEASE_REPORT",
+                        "description": "Part 1 of 2",
                         "notes": "Testing",
                         "dateTime": "2023-02-12T10:15:00.382936Z[Europe/London]",
                         "author": {
@@ -99,8 +111,15 @@ internal class CreateCaseNoteIntTests {
         val contact =
             caseNoteRepository.findByPersonIdAndTypeCode(DEFAULT.id, CreateContact.CaseNoteType.PRE_RELEASE_REPORT.code)
                 .first()
+        val alert =
+            alertRepository.findByContactId(contact.id)
         val staff = staffRepository.findById(contact.staffId).get()
         val team = teamRepository.findById(contact.teamId).get()
+        assertThat(alert?.contactId, equalTo(contact.id))
+        assertThat(alert?.personManagerId, equalTo(PersonGenerator.DEFAULT_MANAGER.id))
+        assertThat(alert?.contactId, equalTo(contact.id))
+        assertThat(contact.alert, equalTo(true))
+        assertThat(contact.description, equalTo("Part 1 of 2"))
         assertThat(contact.notes, equalTo("Testing"))
         assertThat(contact.type.code, equalTo(CreateContact.CaseNoteType.PRE_RELEASE_REPORT.code))
         assertThat(staff.forename, equalTo("Terry"))
