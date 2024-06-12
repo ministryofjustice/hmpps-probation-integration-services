@@ -38,7 +38,7 @@ class AllocateRequirementService(
         audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) { audit ->
             val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
                 ?: throw IgnorableMessageException(
-                    "Requirement not found or soft deleted in delius",
+                    "Requirement not found, or soft deleted in delius",
                     mapOf("id" to allocationDetail.requirementId.toString())
                 )
 
