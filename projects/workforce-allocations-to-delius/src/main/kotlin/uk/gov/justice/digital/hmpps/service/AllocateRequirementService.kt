@@ -59,7 +59,7 @@ class AllocateRequirementService(
                 allocationDetail.requirementId,
                 allocationDetail.createdDate
             ) ?: throw IgnorableMessageException(
-                "Requirement Manager and requirement has been deleted",
+                "Requirement Manager and requirement records are soft deleted in delius",
                 mapOf(
                     "requirement id" to allocationDetail.requirementId.toString(),
                     "creation date" to allocationDetail.createdDate.toString()

@@ -195,7 +195,7 @@ internal class AllocateRequirementServiceTest {
             )
         }
 
-        assert(exception.message.contains("Requirement Manager and requirement has been deleted"))
+        assert(exception.message.contains("Requirement Manager and requirement records are soft deleted in delius"))
     }
 
     @Test
