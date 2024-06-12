@@ -11,25 +11,10 @@ import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.never
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
@@ -45,7 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requir
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamStaffContainer
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocation
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
-import java.util.Optional
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class AllocateRequirementServiceTest {
@@ -101,12 +86,14 @@ internal class AllocateRequirementServiceTest {
     fun `when requirement not found exception thrown`() {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(Optional.empty())
 
-        assertThrows<NotFoundException> {
+        val exception = assertThrows<IgnorableMessageException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail
             )
         }
+
+        assert(exception.message.contains("Requirement no longer exists"))
     }
 
     @Test

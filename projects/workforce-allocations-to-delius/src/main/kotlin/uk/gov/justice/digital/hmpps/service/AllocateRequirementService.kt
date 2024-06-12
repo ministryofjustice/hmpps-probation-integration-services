@@ -37,7 +37,10 @@ class AllocateRequirementService(
     fun createRequirementAllocation(crn: String, allocationDetail: RequirementAllocation) =
         audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) { audit ->
             val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
-                ?: throw NotFoundException("Requirement", "id", allocationDetail.requirementId)
+                ?: throw IgnorableMessageException(
+                    "Requirement no longer exists",
+                    mapOf("id" to allocationDetail.requirementId.toString())
+                )
 
             audit["offenderId"] = requirement.person.id
             audit["eventId"] = requirement.disposal.event.id
