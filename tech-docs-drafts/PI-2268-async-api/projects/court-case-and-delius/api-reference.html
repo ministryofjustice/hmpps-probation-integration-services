@@ -1,0 +1,4174 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>API Reference - HMPPS Court Case And Delius</title>
+
+    <link href="stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius/api-reference.html">
+
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius/images/govuk-large.png" />
+      <meta name="twitter:title" content="API Reference - HMPPS Court Case And Delius" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius/api-reference.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius/images/govuk-large.png" />
+      <meta property="og:site_name" content="HMPPS Court Case And Delius" />
+      <meta property="og:title" content="API Reference" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius/api-reference.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__product-name">
+          HMPPS Court Case And Delius
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs">Home</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://mojdt.slack.com/archives/C02HQ4M2YQN">Slack</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
+              <div class="search" data-module="search" data-path-to-site-root="./">
+  <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius"/>
+    <label class="govuk-label search__label" for="search" aria-hidden="true">
+      Search (via Google)
+    </label>
+    <input
+      type="text"
+      id="search" name="q"
+      class="govuk-input govuk-!-margin-bottom-0 search__input"
+      aria-controls="search-results"
+      placeholder="Search">
+    <button type="submit" class="search__button">Search</button>
+  </form>
+</div>
+
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
+                      <ul>
+  <li>
+    <a href="./index.html"><span>court-case-and-delius</span></a>
+  </li>
+  <li>
+    <a href="./api-reference.html"><span>API Reference v1.0</span></a>
+    <ul>
+      <li>
+        <a href="./api-reference.html#probation-case-crn"><span>/probation-case/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crn-status"><span>/probation-case/{crn}/status</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crn-convictions-convictionid"><span>/probation-case/{crn}/convictions/{convictionId}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crn-all"><span>/probation-case/{crn}/all</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#schemas"><span>Schemas</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <header id="api" class="anchored-heading govuk-heading-xl" style="padding-top: 30px">
+    <a href="#api" class="anchored-heading__icon" aria-hidden="true" tabindex="-1"></a>
+    API Reference
+</header>
+
+<style>.technical-documentation > h1 { display: none !important }</style>
+<p>The following documentation is also available in these formats:</p>
+
+<ul>
+<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius/api-docs.json">OpenAPI JSON</a></li>
+<li><a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius/api-docs.yaml">OpenAPI YAML</a></li>
+<li><a href="https://court-case-and-delius-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html">Swagger UI</a></li>
+</ul>
+<h1 id="api-reference">API Reference v1.0</h1>
+
+
+
+
+
+
+<h2 id="probation-case-crn">/probation-case/{crn}</h2>
+
+<h3 id="probation-case-crn-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "preferredName": "string",
+  "activeProbationManagedSentence": "boolean",
+  "contactDetails": {
+    "allowSMS": "boolean",
+    "emailAddresses": [
+      {
+      }
+    ],
+    "phoneNumbers": [
+      {
+        "number": "string",
+        "type": "string"
+      }
+    ]
+  },
+  "currentDisposal": "string",
+  "currentExclusion": "boolean",
+  "currentRestriction": "boolean",
+  "dateOfBirth": "string",
+  "firstName": "string",
+  "gender": "string",
+  "middleNames": [
+    {
+    }
+  ],
+  "offenderId": "integer",
+  "offenderProfile": {
+    "genderIdentity": "string",
+    "selfDescribedGenderIdentity": "string",
+    "disabilities": [
+      {
+        "lastUpdatedDateTime": "string",
+        "disabilityCondition": {
+          "code": "string",
+          "description": "string"
+        },
+        "disabilityId": "integer",
+        "disabilityType": {
+          "code": "string",
+          "description": "string"
+        },
+        "endDate": "string",
+        "isActive": "boolean",
+        "notes": "string",
+        "provisions": [
+          {
+            "category": {
+              "code": "string",
+              "description": "string"
+            },
+            "finishDate": "string",
+            "notes": "string",
+            "provisionId": "integer",
+            "provisionType": {
+              "code": "string",
+              "description": "string"
+            },
+            "startDate": "string"
+          }
+        ],
+        "startDate": "string"
+      }
+    ],
+    "ethnicity": "string",
+    "immigrationStatus": "string",
+    "nationality": "string",
+    "notes": "string",
+    "offenderDetails": "string",
+    "offenderLanguages": {
+      "languageConcerns": "string",
+      "otherLanguages": [
+        {
+        }
+      ],
+      "primaryLanguage": "string",
+      "requiresInterpreter": "boolean"
+    },
+    "previousConviction": {
+      "convictionDate": "string",
+      "detail": {
+      }
+    },
+    "provisions": [
+      {
+        "category": {
+          "code": "string",
+          "description": "string"
+        },
+        "finishDate": "string",
+        "notes": "string",
+        "provisionId": "integer",
+        "provisionType": {
+          "code": "string",
+          "description": "string"
+        },
+        "startDate": "string"
+      }
+    ],
+    "religion": "string",
+    "remandStatus": "string",
+    "riskColour": "string",
+    "secondaryNationality": "string",
+    "sexualOrientation": "string"
+  },
+  "otherIds": {
+    "crn": "string",
+    "croNumber": "string",
+    "immigrationNumber": "string",
+    "mostRecentPrisonerNumber": "string",
+    "niNumber": "string",
+    "nomsNumber": "string",
+    "pncNumber": "string"
+  },
+  "partitionArea": "string",
+  "previousSurname": "string",
+  "softDeleted": "boolean",
+  "surname": "string",
+  "title": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-offenderdetailsummary'>OffenderDetailSummary</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-status">/probation-case/{crn}/status</h2>
+
+<h3 id="probation-case-crn-status-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-status-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-status-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "status": "string",
+  "terminationDate": "string",
+  "inBreach": "boolean",
+  "preSentenceActivity": "boolean",
+  "awaitingPsr": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-probationstatusdetail'>ProbationStatusDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-convictions-convictionid">/probation-case/{crn}/convictions/{convictionId}</h2>
+
+<h3 id="probation-case-crn-convictions-convictionid-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "convictionId": "integer",
+  "index": "string",
+  "active": "boolean",
+  "inBreach": "boolean",
+  "failureToComplyCount": "integer",
+  "breachEnd": "string",
+  "awaitingPsr": "boolean",
+  "convictionDate": "string",
+  "referralDate": "string",
+  "offences": [
+    {
+      "offenceId": "integer",
+      "mainOffence": "boolean",
+      "detail": {
+        "code": "string",
+        "description": "string",
+        "abbreviation": "string",
+        "mainCategoryCode": "string",
+        "mainCategoryDescription": "string",
+        "mainCategoryAbbreviation": "string",
+        "ogrsOffenceCategory": "string",
+        "subCategoryCode": "string",
+        "subCategoryDescription": "string",
+        "form20Code": "string",
+        "subCategoryAbbreviation": "string",
+        "cjitCode": "string"
+      },
+      "offenceDate": "string",
+      "offenceCount": "integer",
+      "tics": "integer",
+      "verdict": "string",
+      "offenderId": "integer",
+      "createdDatetime": "string",
+      "lastUpdatedDatetime": "string"
+    }
+  ],
+  "sentence": {
+    "sentenceId": "integer",
+    "description": "string",
+    "originalLength": "integer",
+    "originalLengthUnits": "string",
+    "secondLength": "integer",
+    "secondLengthUnits": "string",
+    "defaultLength": "integer",
+    "effectiveLength": "integer",
+    "lengthInDays": "integer",
+    "expectedSentenceEndDate": "string",
+    "unpaidWork": {
+      "minutesOrdered": "integer",
+      "minutesCompleted": "integer",
+      "appointments": {
+        "total": "integer",
+        "attended": "integer",
+        "acceptableAbsences": "integer",
+        "unacceptableAbsences": "integer",
+        "noOutcomeRecorded": "integer"
+      },
+      "status": "string"
+    },
+    "startDate": "string",
+    "terminationDate": "string",
+    "terminationReason": "string",
+    "sentenceType": {
+      "code": "string",
+      "description": "string"
+    },
+    "additionalSentences": [
+      {
+        "additionalSentenceId": "integer",
+        "type": {
+          "code": "string",
+          "description": "string"
+        },
+        "amount": "number",
+        "length": "integer",
+        "notes": "string"
+      }
+    ],
+    "failureToComplyLimit": "integer",
+    "cja2003Order": "boolean",
+    "legacyOrder": "boolean"
+  },
+  "latestCourtAppearanceOutcome": {
+    "code": "string",
+    "description": "string"
+  },
+  "custody": {
+    "bookingNumber": "string",
+    "institution": {
+      "institutionId": "integer",
+      "isEstablishment": "boolean",
+      "code": "string",
+      "description": "string",
+      "institutionName": "string",
+      "establishmentType": {
+        "code": "string",
+        "description": "string"
+      },
+      "isPrivate": "boolean",
+      "nomsPrisonInstitutionCode": "string"
+    },
+    "keyDates": {
+      "conditionalReleaseDate": "string",
+      "licenceExpiryDate": "string",
+      "hdcEligibilityDate": "string",
+      "paroleEligibilityDate": "string",
+      "sentenceExpiryDate": "string",
+      "expectedReleaseDate": "string",
+      "postSentenceSupervisionEndDate": "string",
+      "expectedPrisonOffenderManagerHandoverStartDate": "string",
+      "expectedPrisonOffenderManagerHandoverDate": "string"
+    },
+    "status": {
+      "code": "string",
+      "description": "string"
+    },
+    "sentenceStartDate": "string"
+  },
+  "responsibleCourt": {
+    "courtId": "integer",
+    "code": "string",
+    "selectable": "boolean",
+    "courtName": "string",
+    "telephoneNumber": "string",
+    "fax": "string",
+    "buildingName": "string",
+    "street": "string",
+    "locality": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "country": "string",
+    "courtTypeId": "integer",
+    "createdDatetime": "string",
+    "lastUpdatedDatetime": "string",
+    "probationAreaId": "integer",
+    "secureEmailAddress": "string",
+    "probationArea": {
+      "code": "string",
+      "description": "string"
+    },
+    "courtType": {
+      "code": "string",
+      "description": "string"
+    }
+  },
+  "courtAppearance": {
+    "courtAppearanceId": "integer",
+    "appearanceDate": "string",
+    "courtCode": "string",
+    "courtName": "string",
+    "appearanceType": {
+      "code": "string",
+      "description": "string"
+    },
+    "crn": "string"
+  },
+  "orderManagers": [
+    {
+      "probationAreaId": "integer",
+      "teamId": "integer",
+      "officerId": "integer",
+      "name": "string",
+      "staffCode": "string",
+      "dateStartOfAllocation": "string",
+      "dateEndOfAllocation": "string",
+      "gradeCode": "string",
+      "teamCode": "string",
+      "probationAreaCode": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-all">/probation-case/{crn}/all</h2>
+
+<h3 id="probation-case-crn-all-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-all-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-all-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "preferredName": "string",
+  "activeProbationManagedSentence": "boolean",
+  "contactDetails": {
+    "allowSMS": "boolean",
+    "emailAddresses": [
+      {
+      }
+    ],
+    "phoneNumbers": [
+      {
+        "number": "string",
+        "type": "string"
+      }
+    ],
+    "addresses": [
+      {
+        "from": "string",
+        "to": "string",
+        "noFixedAbode": "boolean",
+        "notes": "string",
+        "addressNumber": "string",
+        "buildingName": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string",
+        "telephoneNumber": "string",
+        "status": {
+          "code": "string",
+          "description": "string"
+        },
+        "type": {
+          "code": "string",
+          "description": "string"
+        },
+        "typeVerified": "boolean",
+        "latestAssessmentDate": "string",
+        "createdDatetime": "string",
+        "lastUpdatedDatetime": "string"
+      }
+    ]
+  },
+  "currentDisposal": "string",
+  "currentExclusion": "boolean",
+  "exclusionMessage": "string",
+  "currentRestriction": "boolean",
+  "restrictionMessage": "string",
+  "dateOfBirth": "string",
+  "firstName": "string",
+  "gender": "string",
+  "middleNames": [
+    {
+    }
+  ],
+  "offenderId": "integer",
+  "offenderProfile": {
+    "genderIdentity": "string",
+    "selfDescribedGenderIdentity": "string",
+    "disabilities": [
+      {
+        "lastUpdatedDateTime": "string",
+        "disabilityCondition": {
+          "code": "string",
+          "description": "string"
+        },
+        "disabilityId": "integer",
+        "disabilityType": {
+          "code": "string",
+          "description": "string"
+        },
+        "endDate": "string",
+        "isActive": "boolean",
+        "notes": "string",
+        "provisions": [
+          {
+            "category": {
+              "code": "string",
+              "description": "string"
+            },
+            "finishDate": "string",
+            "notes": "string",
+            "provisionId": "integer",
+            "provisionType": {
+              "code": "string",
+              "description": "string"
+            },
+            "startDate": "string"
+          }
+        ],
+        "startDate": "string"
+      }
+    ],
+    "ethnicity": "string",
+    "immigrationStatus": "string",
+    "nationality": "string",
+    "notes": "string",
+    "offenderDetails": "string",
+    "offenderLanguages": {
+      "languageConcerns": "string",
+      "otherLanguages": [
+        {
+        }
+      ],
+      "primaryLanguage": "string",
+      "requiresInterpreter": "boolean"
+    },
+    "previousConviction": {
+      "convictionDate": "string",
+      "detail": {
+      }
+    },
+    "provisions": [
+      {
+        "category": {
+          "code": "string",
+          "description": "string"
+        },
+        "finishDate": "string",
+        "notes": "string",
+        "provisionId": "integer",
+        "provisionType": {
+          "code": "string",
+          "description": "string"
+        },
+        "startDate": "string"
+      }
+    ],
+    "religion": "string",
+    "remandStatus": "string",
+    "riskColour": "string",
+    "secondaryNationality": "string",
+    "sexualOrientation": "string"
+  },
+  "offenderAliases": [
+    {
+      "id": "integer",
+      "dateOfBirth": "string",
+      "firstName": "string",
+      "middleNames": [
+        {
+        }
+      ],
+      "surname": "string",
+      "gender": "string"
+    }
+  ],
+  "offenderManagers": [
+    {
+      "trustOfficer": {
+        "forenames": "string",
+        "surname": "string"
+      },
+      "staff": {
+        "code": "string",
+        "forename": "string",
+        "surname": "string",
+        "isUnallocated": "boolean"
+      },
+      "providerEmployee": {
+        "forenames": "string",
+        "surname": "string"
+      },
+      "partitionArea": "string",
+      "softDeleted": "boolean",
+      "team": {
+        "code": "string",
+        "description": "string",
+        "telephone": "string",
+        "emailAddress": "string",
+        "localDeliveryUnit": {
+          "code": "string",
+          "description": "string"
+        },
+        "district": {
+          "code": "string",
+          "description": "string"
+        },
+        "borough": {
+          "code": "string",
+          "description": "string"
+        }
+      },
+      "probationArea": {
+        "probationAreaId": "integer",
+        "code": "string",
+        "description": "string",
+        "nps": "boolean"
+      },
+      "fromDate": "string",
+      "toDate": "string",
+      "active": "boolean",
+      "allocationReason": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  ],
+  "otherIds": {
+    "crn": "string",
+    "croNumber": "string",
+    "immigrationNumber": "string",
+    "mostRecentPrisonerNumber": "string",
+    "niNumber": "string",
+    "nomsNumber": "string",
+    "pncNumber": "string"
+  },
+  "partitionArea": "string",
+  "currentTier": "string",
+  "previousSurname": "string",
+  "softDeleted": "boolean",
+  "surname": "string",
+  "title": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-offenderdetail'>OffenderDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+
+<h2 id="schemas">Schemas</h2>
+<h3 id="schema-contactdetailssummary">ContactDetailsSummary</h3>
+
+
+<table class='schema-contactdetailssummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>allowSMS</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>emailAddresses</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>phoneNumbers</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-phonenumber'>PhoneNumber</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-disability">Disability</h3>
+
+
+<table class='schema-disability'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>lastUpdatedDateTime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>disabilityCondition</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>disabilityId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>disabilityType</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isActive</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>provisions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provision'>Provision</a>
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-keyvalue">KeyValue</h3>
+
+
+<table class='schema-keyvalue'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderdetailsummary">OffenderDetailSummary</h3>
+
+
+<table class='schema-offenderdetailsummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>preferredName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>activeProbationManagedSentence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>contactDetails</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-contactdetailssummary'>ContactDetailsSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>currentDisposal</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentExclusion</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentRestriction</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleNames</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderProfile</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offenderprofile'>OffenderProfile</a>
+</td>
+</tr>
+
+<tr>
+<td>otherIds</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-otherids'>OtherIds</a>
+</td>
+</tr>
+
+<tr>
+<td>partitionArea</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>previousSurname</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>softDeleted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>title</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderlanguages">OffenderLanguages</h3>
+
+
+<table class='schema-offenderlanguages'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>languageConcerns</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>otherLanguages</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>primaryLanguage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>requiresInterpreter</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderprofile">OffenderProfile</h3>
+
+
+<table class='schema-offenderprofile'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>genderIdentity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>selfDescribedGenderIdentity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>disabilities</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-disability'>Disability</a>
+</td>
+</tr>
+
+<tr>
+<td>ethnicity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>immigrationStatus</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nationality</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderDetails</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderLanguages</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offenderlanguages'>OffenderLanguages</a>
+</td>
+</tr>
+
+<tr>
+<td>previousConviction</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-previousconviction'>PreviousConviction</a>
+</td>
+</tr>
+
+<tr>
+<td>provisions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provision'>Provision</a>
+</td>
+</tr>
+
+<tr>
+<td>religion</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>remandStatus</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>riskColour</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>secondaryNationality</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sexualOrientation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-otherids">OtherIds</h3>
+
+
+<table class='schema-otherids'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>croNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>immigrationNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mostRecentPrisonerNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>niNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-phonenumber">PhoneNumber</h3>
+
+
+<table class='schema-phonenumber'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>number</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-previousconviction">PreviousConviction</h3>
+
+
+<table class='schema-previousconviction'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>convictionDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>detail</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provision">Provision</h3>
+
+
+<table class='schema-provision'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>category</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>finishDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>provisionId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>provisionType</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationstatusdetail">ProbationStatusDetail</h3>
+
+
+<table class='schema-probationstatusdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>inBreach</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>preSentenceActivity</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>awaitingPsr</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-additionalsentence">AdditionalSentence</h3>
+
+
+<table class='schema-additionalsentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>additionalSentenceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>amount</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-appointments">Appointments</h3>
+
+
+<table class='schema-appointments'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>total</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>attended</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>acceptableAbsences</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unacceptableAbsences</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>noOutcomeRecorded</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-conviction">Conviction</h3>
+
+
+<table class='schema-conviction'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>convictionId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>index</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>inBreach</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>failureToComplyCount</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>breachEnd</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>awaitingPsr</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>convictionDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>referralDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+<tr>
+<td>latestCourtAppearanceOutcome</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>custody</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-custody'>Custody</a>
+</td>
+</tr>
+
+<tr>
+<td>responsibleCourt</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-court'>Court</a>
+</td>
+</tr>
+
+<tr>
+<td>courtAppearance</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-courtappearancebasic'>CourtAppearanceBasic</a>
+</td>
+</tr>
+
+<tr>
+<td>orderManagers</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-ordermanager'>OrderManager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-court">Court</h3>
+
+
+<table class='schema-court'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>courtId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>selectable</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>courtName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>fax</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>street</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>locality</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>country</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>courtTypeId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdDatetime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedDatetime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationAreaId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>secureEmailAddress</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationArea</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>courtType</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-courtappearancebasic">CourtAppearanceBasic</h3>
+
+
+<table class='schema-courtappearancebasic'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>courtAppearanceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>appearanceDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>courtCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>courtName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>appearanceType</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-custody">Custody</h3>
+
+
+<table class='schema-custody'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>bookingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>institution</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-institution'>Institution</a>
+</td>
+</tr>
+
+<tr>
+<td>keyDates</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-custodyrelatedkeydates'>CustodyRelatedKeyDates</a>
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>sentenceStartDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-custodyrelatedkeydates">CustodyRelatedKeyDates</h3>
+
+
+<table class='schema-custodyrelatedkeydates'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>conditionalReleaseDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>licenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>hdcEligibilityDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>paroleEligibilityDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedReleaseDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postSentenceSupervisionEndDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedPrisonOffenderManagerHandoverStartDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedPrisonOffenderManagerHandoverDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-institution">Institution</h3>
+
+
+<table class='schema-institution'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>institutionId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isEstablishment</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>institutionName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>establishmentType</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>isPrivate</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsPrisonInstitutionCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offence">Offence</h3>
+
+
+<table class='schema-offence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>offenceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>detail</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offencedetail'>OffenceDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>offenceDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenceCount</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>tics</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>verdict</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdDatetime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedDatetime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offencedetail">OffenceDetail</h3>
+
+
+<table class='schema-offencedetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>abbreviation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainCategoryCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainCategoryDescription</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainCategoryAbbreviation</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ogrsOffenceCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCategoryCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCategoryDescription</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>form20Code</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCategoryAbbreviation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>cjitCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-ordermanager">OrderManager</h3>
+
+
+<table class='schema-ordermanager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>probationAreaId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>teamId</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>officerId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>staffCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateStartOfAllocation</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateEndOfAllocation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gradeCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>teamCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationAreaCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentence">Sentence</h3>
+
+
+<table class='schema-sentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>sentenceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>originalLength</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>originalLengthUnits</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>secondLength</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>secondLengthUnits</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>defaultLength</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>effectiveLength</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthInDays</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedSentenceEndDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unpaidWork</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-unpaidwork'>UnpaidWork</a>
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentenceType</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>additionalSentences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-additionalsentence'>AdditionalSentence</a>
+</td>
+</tr>
+
+<tr>
+<td>failureToComplyLimit</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>cja2003Order</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>legacyOrder</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-unpaidwork">UnpaidWork</h3>
+
+
+<table class='schema-unpaidwork'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>minutesOrdered</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>minutesCompleted</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>appointments</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-appointments'>Appointments</a>
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-address">Address</h3>
+
+
+<table class='schema-address'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>from</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>to</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>noFixedAbode</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>addressNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>typeVerified</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestAssessmentDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdDatetime</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedDatetime</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-contactdetails">ContactDetails</h3>
+
+
+<table class='schema-contactdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>allowSMS</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>emailAddresses</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>phoneNumbers</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-phonenumber'>PhoneNumber</a>
+</td>
+</tr>
+
+<tr>
+<td>addresses</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-human">Human</h3>
+
+
+<table class='schema-human'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forenames</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderalias">OffenderAlias</h3>
+
+
+<table class='schema-offenderalias'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleNames</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderdetail">OffenderDetail</h3>
+
+
+<table class='schema-offenderdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>preferredName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>activeProbationManagedSentence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>contactDetails</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-contactdetails'>ContactDetails</a>
+</td>
+</tr>
+
+<tr>
+<td>currentDisposal</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentExclusion</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentRestriction</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleNames</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderProfile</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offenderprofile'>OffenderProfile</a>
+</td>
+</tr>
+
+<tr>
+<td>offenderAliases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offenderalias'>OffenderAlias</a>
+</td>
+</tr>
+
+<tr>
+<td>offenderManagers</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offendermanager'>OffenderManager</a>
+</td>
+</tr>
+
+<tr>
+<td>otherIds</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-otherids'>OtherIds</a>
+</td>
+</tr>
+
+<tr>
+<td>partitionArea</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentTier</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>previousSurname</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>softDeleted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>title</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offendermanager">OffenderManager</h3>
+
+
+<table class='schema-offendermanager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>trustOfficer</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-human'>Human</a>
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-staffhuman'>StaffHuman</a>
+</td>
+</tr>
+
+<tr>
+<td>providerEmployee</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-human'>Human</a>
+</td>
+</tr>
+
+<tr>
+<td>partitionArea</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>softDeleted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>probationArea</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationarea'>ProbationArea</a>
+</td>
+</tr>
+
+<tr>
+<td>fromDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>toDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>allocationReason</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationarea">ProbationArea</h3>
+
+
+<table class='schema-probationarea'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>probationAreaId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nps</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffhuman">StaffHuman</h3>
+
+
+<table class='schema-staffhuman'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isUnallocated</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephone</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>emailAddress</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localDeliveryUnit</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>borough</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+            
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/court-case-and-delius/tech-docs/source/api-reference.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27API+Reference%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fcourt-case-and-delius%2Fapi-reference.html%29&amp;labels=bug&amp;title=Re%3A+%27API+Reference%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="javascripts/application.js"></script>
+  </body>
+</html>
