@@ -58,8 +58,12 @@ class AllocateRequirementService(
             val activeRequirementManager = requirementManagerRepository.findActiveManagerAtDate(
                 allocationDetail.requirementId,
                 allocationDetail.createdDate
-            ) ?: throw NotFoundException(
-                "Requirement Manager for requirement ${allocationDetail.requirementId} at ${allocationDetail.createdDate} not found"
+            ) ?: throw IgnorableMessageException(
+                "Requirement Manager and requirement has been deleted",
+                mapOf(
+                    "requirement id" to allocationDetail.requirementId.toString(),
+                    "creation date" to allocationDetail.createdDate.toString()
+                )
             )
 
             if (allocationDetail.isDuplicate(activeRequirementManager)) {
