@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.CreateContact
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -17,11 +18,14 @@ class CaseNoteService(
     private val personRepository: PersonRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val assignmentService: AssignmentService,
+    private val alertRepository: AlertRepository,
+    private val personManagerRepository: PersonManagerRepository
 ) : AuditableService(auditedInteractionService) {
-
+    @Transactional
     fun createContact(crn: String, createContact: CreateContact) = audit(BusinessInteractionCode.ADD_CONTACT) {
         val person = personRepository.getByCrn(crn)
         val type = caseNoteTypeRepository.getCode(createContact.type.code)
+        val cm = personManagerRepository.getByCrn(crn)
 
         try {
             val prisonStaff = assignmentService.findAssignment(
@@ -36,9 +40,22 @@ class CaseNoteService(
                 staffId = prisonStaff.third,
                 teamId = prisonStaff.second,
                 probationAreaId = prisonStaff.first,
-                type = type
+                type = type,
+                description = createContact.description,
+                alert = true
             )
-            caseNoteRepository.save(caseNote)
+            val contact = caseNoteRepository.save(caseNote)
+
+            alertRepository.save(
+                Alert(
+                    contactId = contact.id,
+                    typeId = contact.type.id,
+                    personId = person.id,
+                    personManagerId = cm.id,
+                    staffId = cm.staff.id,
+                    teamId = cm.team.id
+                )
+            )
         } catch (ex: Exception) {
             when (ex) {
                 is InvalidEstablishmentCodeException,
