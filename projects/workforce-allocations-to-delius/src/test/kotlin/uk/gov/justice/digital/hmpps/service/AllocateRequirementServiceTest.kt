@@ -93,7 +93,7 @@ internal class AllocateRequirementServiceTest {
             )
         }
 
-        assert(exception.message.contains("Requirement not found, or soft deleted in delius"))
+        assert(exception.message.contains("Requirement no longer exists"))
     }
 
     @Test
