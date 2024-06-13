@@ -109,6 +109,18 @@ paths:
       responses:
         "202":
           description: Accepted
+  /docs/asyncapi:
+    get:
+      tags:
+      - async-api-controller
+      operationId: asyncApi
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
 components:
   securitySchemes:
     hmpps-auth-token:

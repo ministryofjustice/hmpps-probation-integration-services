@@ -343,6 +343,7 @@ components:
           type: string
     Conviction:
       required:
+      - active
       - convictionId
       - latestCourtAppearanceOutcome
       - offences
@@ -369,6 +370,8 @@ components:
             $ref: "#/components/schemas/Offence"
         sentence:
           $ref: "#/components/schemas/Sentence"
+        active:
+          type: boolean
     ConvictionsContainer:
       required:
       - convictions
