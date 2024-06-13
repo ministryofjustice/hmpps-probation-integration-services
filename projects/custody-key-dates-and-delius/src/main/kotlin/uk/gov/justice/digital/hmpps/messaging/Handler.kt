@@ -43,6 +43,7 @@ class Handler(
     }
 }
 
+@Message
 data class CustodyDateChanged(val bookingId: Long)
 
 @Primary
