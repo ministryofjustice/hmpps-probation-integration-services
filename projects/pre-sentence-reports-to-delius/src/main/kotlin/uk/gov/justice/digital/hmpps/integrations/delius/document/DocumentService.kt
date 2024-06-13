@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.time.ZonedDateTime
@@ -26,12 +25,12 @@ class DocumentService(
     private val courtReportRepository: CourtReportRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient
 ) : AuditableService(auditedInteractionService) {
-    fun AdditionalInformation.reportId() = this["reportId"] as String
+    fun HmppsDomainEvent.reportId() = additionalInformation["reportId"] as String
 
     @Transactional
     fun updateCourtReportDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray) =
         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
-            val reportId = hmppsEvent.additionalInformation.reportId()
+            val reportId = hmppsEvent.reportId()
             val document = documentRepository.findByExternalReference(reportId)
                 ?: throw NotFoundException("Document", "externalReference", reportId)
             it["documentId"] = document.id

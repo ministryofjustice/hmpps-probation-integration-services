@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -14,6 +17,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI.create
 
 @Component
+@Channel("workforce-allocations-to-delius-queue")
 class Handler(
     private val allocationsClient: WorkforceAllocationsClient,
     private val allocatePersonService: AllocatePersonService,
@@ -22,6 +26,13 @@ class Handler(
     private val telemetryService: TelemetryService,
     override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
+    @Publish(
+        messages = [
+            Message(name = "workforce/person_allocation"),
+            Message(name = "workforce/event_allocation"),
+            Message(name = "workforce/requirement_allocation"),
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         val allocationEvent = notification.message
         val detailUrl = checkNotNull(allocationEvent.detailUrl)

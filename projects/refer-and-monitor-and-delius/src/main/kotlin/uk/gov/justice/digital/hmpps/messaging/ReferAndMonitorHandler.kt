@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.UnprocessableException
@@ -9,6 +12,7 @@ import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
+@Channel("refer-and-monitor-and-delius-queue")
 class ReferAndMonitorHandler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
@@ -17,6 +21,15 @@ class ReferAndMonitorHandler(
     private val eventHandlers: Map<DomainEventType, (HmppsDomainEvent) -> EventProcessingResult> =
         eventHandlers.flatMap { it.handledEvents.entries }.associate { it.key to it.value }
 
+    @Publish(
+        messages = [
+            Message(name = "refer-and-monitor/action-plan-submitted"),
+            Message(name = "refer-and-monitor/action-plan-approved"),
+            Message(name = "refer-and-monitor/initial-assessment-appointment-feedback-submitted"),
+            Message(name = "refer-and-monitor/session-appointment-feedback-submitted"),
+            Message(name = "refer-and-monitor/referral-ended"),
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         requireNotNull(notification.message.detailUrl) { "Detail Url Missing" }
         val event = DomainEventType.of(notification.eventType ?: notification.message.eventType)

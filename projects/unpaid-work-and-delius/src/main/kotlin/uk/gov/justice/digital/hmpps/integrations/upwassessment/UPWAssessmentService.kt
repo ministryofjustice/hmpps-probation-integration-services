@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManager
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.document.DocumentService
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -23,7 +22,7 @@ class UPWAssessmentService(
     private val eventRepository: EventRepository,
     private val arnClient: ArnClient
 ) {
-    fun AdditionalInformation.episodeId() = this["episodeId"] as String
+    fun HmppsDomainEvent.episodeId() = additionalInformation["episodeId"] as String
 
     fun processMessage(notification: Notification<HmppsDomainEvent>) {
         val crn = notification.message.personReference.findCrn()!!
@@ -37,7 +36,7 @@ class UPWAssessmentService(
 
     private fun uploadDocument(notification: Notification<HmppsDomainEvent>, person: PersonWithManager, eventId: Long) {
         // get the episode id from the message then get the document content from the UPW/ARN Service
-        val episodeId = notification.message.additionalInformation.episodeId()
+        val episodeId = notification.message.episodeId()
         val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
         val reg = Regex("[^A-Za-z0-9-. ]")
         val filename = "${person.forename}-${person.surname}-${person.crn}-UPW.pdf".replace(reg, "")
@@ -60,7 +59,7 @@ class UPWAssessmentService(
                 return telemetryService.trackEvent(
                     "DuplicateMessageReceived",
                     mapOf(
-                        "episodeId" to notification.message.additionalInformation.episodeId(),
+                        "episodeId" to notification.message.episodeId(),
                         "crn" to notification.message.personReference.findCrn()!!
                     )
                 )
