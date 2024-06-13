@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.openfolder.kotlinasyncapi.annotation.Schema
-import org.openfolder.kotlinasyncapi.annotation.channel.*
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -21,18 +23,16 @@ class Handler(
     private val prisonMatchingService: PrisonMatchingService,
 ) : NotificationHandler<Any> {
     @Publish(
-        description = "Messages published to the prison-identifier-and-delius-queue",
-        bindings = OperationBindings(sqs = OperationBinding.SQS()),
         messages = [
             Message(
                 messageId = "prison-offender-events.prisoner.sentence-dates-changed",
-                payload = Schema(OffenderEvent::class)
+                payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
                 messageId = "prison-offender-events.prisoner.imprisonment-status-changed",
-                payload = Schema(OffenderEvent::class)
+                payload = Schema(HmppsDomainEvent::class)
             ),
-            Message(messageId = "prison-offender-events.prisoner.merged", payload = Schema(OffenderEvent::class)),
+            Message(messageId = "prison-offender-events.prisoner.merged", payload = Schema(HmppsDomainEvent::class)),
             Message(messageId = "OFFENDER_DETAILS_CHANGED", payload = Schema(OffenderEvent::class)),
             Message(messageId = "SENTENCE_CHANGED", payload = Schema(OffenderEvent::class)),
             Message(

@@ -48,7 +48,7 @@ class Notifier(
     }
 
     @Subscribe(
-        summary = "Messages sent to the hmpps-domain-events-topic, that can be subscribed to.", messages = [
+        messages = [
             Message(messageId = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
             Message(messageId = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
         ]
