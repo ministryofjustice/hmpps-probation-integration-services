@@ -97,7 +97,8 @@ internal class ConvictionsIntegrationTest {
                             )
                         )
                     )
-                )
+                ),
+                true
             )
 
         val inactiveConviction = Conviction(
@@ -107,7 +108,8 @@ internal class ConvictionsIntegrationTest {
             "unknown",
             "unknown",
             listOf(),
-            null
+            null,
+            false
         )
         return if (withInActive) {
             ConvictionsContainer(listOf(activeConviction, inactiveConviction))

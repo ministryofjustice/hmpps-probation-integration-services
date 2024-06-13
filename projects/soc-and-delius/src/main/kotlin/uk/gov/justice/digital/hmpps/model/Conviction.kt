@@ -9,7 +9,8 @@ data class Conviction(
     val outcome: String,
     val latestCourtAppearanceOutcome: String,
     val offences: List<Offence>,
-    val sentence: Sentence?
+    val sentence: Sentence?,
+    val active: Boolean
 )
 
 data class Offence(

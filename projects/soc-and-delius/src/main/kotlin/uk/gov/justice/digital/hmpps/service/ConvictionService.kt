@@ -63,7 +63,8 @@ class ConvictionService(
                     convictionEventEntity.disposal?.type?.description ?: "unknown",
                     convictionEventRepository.findLatestCourtAppearanceOutcome(convictionEventEntity.id) ?: "unknown",
                     offences,
-                    convictionEventEntity.disposal?.asModel(custody)
+                    convictionEventEntity.disposal?.asModel(custody),
+                    active = convictionEventEntity.active
                 )
             )
         }
