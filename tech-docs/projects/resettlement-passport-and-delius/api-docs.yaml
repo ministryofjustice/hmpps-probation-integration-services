@@ -221,6 +221,8 @@ components:
           type: string
           description: Nomis contact type. Must either IMMEDIATE_NEEDS_REPORT or PRE_RELEASE_REPORT
           example: IMMEDIATE_NEEDS_REPORT
+        description:
+          type: string
         dateTime:
           type: string
           format: date-time
