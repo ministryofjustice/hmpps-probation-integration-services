@@ -272,6 +272,18 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/APDocument"
+  /docs/asyncapi:
+    get:
+      tags:
+      - async-api-controller
+      operationId: asyncApi
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
   /approved-premises/{code}/staff:
     get:
       tags:
@@ -668,15 +680,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     PageableObject:

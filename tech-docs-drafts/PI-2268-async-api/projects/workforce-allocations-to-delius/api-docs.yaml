@@ -318,6 +318,18 @@ paths:
             text/csv:
               schema:
                 $ref: "#/components/schemas/StreamingResponseBody"
+  /docs/asyncapi:
+    get:
+      tags:
+      - async-api-controller
+      operationId: asyncApi
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
   /allocation-demand/{crn}/{eventNumber}/probation-record:
     get:
       tags:

@@ -142,6 +142,9 @@
         <a href="./api-reference.html#documents-crn-all"><span>/documents/{crn}/all</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#docs-asyncapi"><span>/docs/asyncapi</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#approved-premises-code-staff"><span>/approved-premises/{code}/staff</span></a>
       </li>
       <li>
@@ -150,7 +153,7 @@
     </ul>
   </li>
   <li>
-    <a href="./async-api-reference.html"><span>ASyncAPI Reference</span></a>
+    <a href="./asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
   </li>
 </ul>
 
@@ -1048,6 +1051,45 @@
 
 
 
+<h2 id="docs-asyncapi">/docs/asyncapi</h2>
+
+<h3 id="docs-asyncapi-get">get</h3>
+
+
+
+
+
+
+
+<h4 id="docs-asyncapi-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="approved-premises-code-staff">/approved-premises/{code}/staff</h2>
 
 <h3 id="approved-premises-code-staff-get">get</h3>
@@ -1151,8 +1193,6 @@
       "ignoreCase": "boolean"
     }
   ],
-  "first": "boolean",
-  "last": "boolean",
   "numberOfElements": "integer",
   "pageable": {
     "offset": "integer",
@@ -1170,6 +1210,8 @@
     "pageSize": "integer",
     "unpaged": "boolean"
   },
+  "first": "boolean",
+  "last": "boolean",
   "empty": "boolean"
 }</code></pre>
 
@@ -2324,26 +2366,6 @@
 </tr>
 
 <tr>
-<td>first</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>last</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
 <td>numberOfElements</td>
 <td>integer</td>
 <td>false</td>
@@ -2360,6 +2382,26 @@
 <td></td>
 <td>
   <a href='#schema-pageableobject'>PageableObject</a>
+</td>
+</tr>
+
+<tr>
+<td>first</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>last</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
