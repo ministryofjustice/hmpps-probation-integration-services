@@ -76,5 +76,5 @@ class AdditionalIdentifier(
 
     @ManyToOne
     @JoinColumn(name = "identifier_name_id")
-    val type: ReferenceData
+    val mergeDetail: ReferenceData
 )

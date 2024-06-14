@@ -35,8 +35,8 @@ class DataLoader(
             persist(PersonGenerator.RECOMMENDATION_DELETED)
             persist(PersonGenerator.RECOMMENDATION_DELETED_INACTIVE_STAFF)
             persist(PersonGenerator.RECOMMENDATION_MERGED_FROM)
-            persist(PersonGenerator.X000010_ADDITIONAL_IDENTIFIER.type)
-            persist(PersonGenerator.X000010_ADDITIONAL_IDENTIFIER)
+            persist(PersonGenerator.X000077_ADDITIONAL_IDENTIFIER.mergeDetail)
+            persist(PersonGenerator.X000077_ADDITIONAL_IDENTIFIER)
 
             persist(PersonGenerator.DEFAULT_PROVIDER)
             persist(PersonGenerator.DEFAULT_LAU)

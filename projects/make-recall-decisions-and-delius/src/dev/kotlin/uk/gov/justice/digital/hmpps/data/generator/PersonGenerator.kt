@@ -29,13 +29,13 @@ object PersonGenerator {
     val NO_ACCESS_LIMITATIONS = generateUserAccess("X000007")
     val RECOMMENDATION_DELETED = generate("X000008")
     val RECOMMENDATION_DELETED_INACTIVE_STAFF = generate("X000009")
-    val RECOMMENDATION_MERGED_FROM = generate("X000010", softDeleted = true)
-    val X000010_ADDITIONAL_IDENTIFIER =
+    val RECOMMENDATION_MERGED_FROM = generate("X000077", softDeleted = true)
+    val X000077_ADDITIONAL_IDENTIFIER =
         AdditionalIdentifier(
             IdGenerator.getAndIncrement(),
-            RECOMMENDATION_DELETED.crn,
+            RECOMMENDATION_MERGED_FROM.crn,
             false,
-            RECOMMENDATION_MERGED_FROM,
+            RECOMMENDATION_DELETED,
             ReferenceData(IdGenerator.getAndIncrement(), "MFCRN", "Merged From CRN")
         )
 

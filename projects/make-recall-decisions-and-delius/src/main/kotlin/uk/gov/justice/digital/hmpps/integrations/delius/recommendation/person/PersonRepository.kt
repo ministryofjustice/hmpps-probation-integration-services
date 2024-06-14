@@ -20,7 +20,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         WHERE ai.crn = :crn 
         AND p.softDeleted = false 
         AND p.manager.active = true 
-        AND ai.type.code IN ('DOFF', 'MFCRN', 'MTCRN', 'PCRN') 
+        AND ai.mergeDetail.code IN ('DOFF', 'MFCRN', 'MTCRN', 'PCRN') 
     """
     )
     fun findByCrn(crn: String): Person?
