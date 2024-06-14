@@ -61,30 +61,46 @@ jobs:
           bundler-cache: true
           working-directory: projects/${{ matrix.project }}/tech-docs
 
-      - name: Check if OpenAPI is configured
+      - name: Check if OpenAPI or AsyncAPI is configured
         id: check_config
-        run: echo "api_path=$(yq '.api_path' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml')" | tee -a "$GITHUB_OUTPUT"
+        run: |
+          echo "has_rest_api=$(yq '. | has("api_path")' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml')" | tee -a "$GITHUB_OUTPUT"
+          echo "has_async_api=$(test -f 'projects/${{ matrix.project }}/tech-docs/source/asyncapi-reference.html.md.erb' && echo 'true' || echo 'false')" | tee -a "$GITHUB_OUTPUT"
+
       - uses: actions/setup-java@v4
-        if: startsWith(steps.check_config.outputs.api_path, 'http')
+        if: steps.check_config.outputs.has_rest_api == 'true' || steps.check_config.outputs.has_async_api == 'true'
         with:
           java-version: '21'
           distribution: 'temurin'
+
       - uses: gradle/actions/setup-gradle@v3
-        if: startsWith(steps.check_config.outputs.api_path, 'http')
+        if: steps.check_config.outputs.has_rest_api || steps.check_config.outputs.has_async_api
         with:
           cache-read-only: true
-      - name: Host OpenAPI spec
-        if: startsWith(steps.check_config.outputs.api_path, 'http')
+
+      - name: Host API specs
+        if: steps.check_config.outputs.has_rest_api == 'true' || steps.check_config.outputs.has_async_api == 'true'
         run: |
           ./gradlew '${{ matrix.project }}:bootRun' &
           timeout 300 sh -c 'until curl -s localhost:8080/v3/api-docs.yaml; do sleep 5; done'
-          yq -i '.api_path = "http://localhost:8080/v3/api-docs.yaml"' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml'
         env:
           SPRING_PROFILES_ACTIVE: dev
 
-      - name: Set branch
+      - name: Update configured OpenAPI path
+        if: steps.check_config.outputs.has_rest_api == 'true'
+        run: yq -i '.api_path = "http://localhost:8080/v3/api-docs.yaml"' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml'
+
+      - name: Set branch in index
         if: github.ref_name != 'main'
         run: sed -i "s|$REPOSITORY/main|$REPOSITORY/$BRANCH|" index.html.md.erb
+        working-directory: projects/${{ matrix.project }}/tech-docs/source
+        env:
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+
+      - name: Set branch in asyncapi-reference
+        if: github.ref_name != 'main' && steps.check_config.outputs.has_async_api == 'true'
+        run: sed -i "s|/tech-docs/|/tech-docs-drafts/$BRANCH/|" asyncapi-reference.html.md.erb
         working-directory: projects/${{ matrix.project }}/tech-docs/source
         env:
           REPOSITORY: ${{ github.repository }}
@@ -96,11 +112,17 @@ jobs:
           bundle exec middleman build --verbose
         working-directory: projects/${{ matrix.project }}/tech-docs
 
-      - name: Bundle API specs
-        if: startsWith(steps.check_config.outputs.api_path, 'http')
+      - name: Bundle OpenAPI specs
+        if: steps.check_config.outputs.has_rest_api == 'true'
         run: |
           curl -sf localhost:8080/v3/api-docs -o api-docs.json
           curl -sf localhost:8080/v3/api-docs.yaml -o api-docs.yaml
+        working-directory: projects/${{ matrix.project }}/tech-docs/build
+
+      - name: Bundle AsyncAPI specs
+        if: steps.check_config.outputs.has_async_api == 'true'
+        run: |
+          curl -sf localhost:8080/docs/asyncapi -o asyncapi-docs.json
         working-directory: projects/${{ matrix.project }}/tech-docs/build
 
       - uses: actions/upload-artifact@v4

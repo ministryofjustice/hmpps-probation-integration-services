@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
@@ -9,7 +13,6 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.Movement
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.DomainEventType.*
@@ -18,6 +21,7 @@ import java.time.ZonedDateTime
 
 @Component
 @Transactional(noRollbackFor = [IgnorableMessageException::class])
+@Channel("prison-custody-status-to-delius-queue")
 class Handler(
     configContainer: PrisonerMovementConfigs,
     private val featureFlags: FeatureFlags,
@@ -28,6 +32,14 @@ class Handler(
 ) : NotificationHandler<HmppsDomainEvent> {
     private val configs = configContainer.configs
 
+    @Publish(
+        messages = [
+            Message(messageId = "prison-offender-events.prisoner.released", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "prison-offender-events.prisoner.received", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         val message = notification.message
         val eventType = DomainEventType.of(message.eventType)
@@ -106,13 +118,13 @@ class Handler(
             ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsNumber" to nomsId))
 }
 
-fun AdditionalInformation.prisonId() = this["prisonId"] as String?
-fun AdditionalInformation.details() = this["details"] as String?
+fun HmppsDomainEvent.prisonId() = additionalInformation["prisonId"] as String?
+fun HmppsDomainEvent.details() = additionalInformation["details"] as String?
 fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
     "nomsNumber" to personReference.findNomsNumber()!!,
-    additionalInformation.prisonId()?.let { "institution" to it },
-    additionalInformation.details()?.let { "details" to it }
+    prisonId()?.let { "institution" to it },
+    details()?.let { "details" to it }
 ).toMap()
 
 fun PrisonerMovement?.telemetryProperties(): Map<String, String> = if (this == null) {

@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -10,11 +14,26 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
 @Component
+@Channel("approved-premises-and-delius-queue")
 class Handler(
     private val telemetryService: TelemetryService,
     private val approvedPremisesService: ApprovedPremisesService,
     override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
+
+    @Publish(
+        messages = [
+            Message(name = "approved-premises/application-submitted"),
+            Message(name = "approved-premises/application-assessed"),
+            Message(name = "approved-premises/application-withdrawn"),
+            Message(name = "approved-premises/booking-made"),
+            Message(name = "approved-premises/booking-cancelled"),
+            Message(messageId = "approved-premises.booking.changed", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "approved-premises.person.not-arrived", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "approved-premises.person.arrived", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "approved-premises.person.departed", payload = Schema(HmppsDomainEvent::class)),
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         val event = notification.message
         try {

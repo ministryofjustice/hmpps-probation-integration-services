@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
@@ -17,6 +21,7 @@ import java.net.URI
 
 @Component
 @Transactional
+@Channel("cas3-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
@@ -25,6 +30,46 @@ class Handler(
     private val cas3ApiClient: Cas3ApiClient,
     private val personRepository: PersonRepository
 ) : NotificationHandler<HmppsDomainEvent> {
+    @Publish(
+        messages = [
+            Message(
+                messageId = "accommodation.cas3.referral.submitted",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "accommodation.cas3.booking.cancelled",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "accommodation.cas3.booking.confirmed",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "accommodation.cas3.booking.provisionally-made",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "accommodation.cas3.person.arrived",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "accommodation.cas3.person.departed",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "accommodation.cas3.person.arrived.updated",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "accommodation.cas3.person.departed.updated",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "accommodation.cas3.booking.cancelled.updated",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val event = notification.message

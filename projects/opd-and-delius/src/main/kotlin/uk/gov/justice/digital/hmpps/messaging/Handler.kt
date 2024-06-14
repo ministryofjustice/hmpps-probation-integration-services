@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
@@ -16,12 +20,14 @@ const val FeatureFlag = "opd-assessment-processing"
 const val OpdProduced = "opd.produced"
 
 @Component
+@Channel("opd-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
     private val opdService: OpdService,
     private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
+    @Publish(messages = [Message(messageId = OpdProduced, payload = Schema(HmppsDomainEvent::class))])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         if (notification.message.eventType != OpdProduced) return
         val opdAssessment = notification.message.opdAssessment()

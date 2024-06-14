@@ -2,6 +2,10 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
@@ -12,11 +16,22 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @Component
+@Channel("custody-key-dates-and-delius-queue")
 class Handler(
     override val converter: KeyDateChangedEventConverter,
     private val cduService: CustodyDateUpdateService,
     private val telemetryService: TelemetryService
 ) : NotificationHandler<Any> {
+    @Publish(
+        messages = [
+            Message(messageId = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
+            Message(messageId = "SENTENCE_DATES-CHANGED", payload = Schema(CustodyDateChanged::class)),
+            Message(messageId = "CONFIRMED_RELEASE_DATE-CHANGED", payload = Schema(CustodyDateChanged::class)),
+            Message(messageId = "KEY_DATE_ADJUSTMENT_UPSERTED", payload = Schema(CustodyDateChanged::class)),
+            Message(messageId = "KEY_DATE_ADJUSTMENT_DELETED", payload = Schema(CustodyDateChanged::class)),
+        ]
+    )
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
         when (val message = notification.message) {
@@ -34,6 +49,7 @@ class Handler(
     }
 }
 
+@Message
 data class CustodyDateChanged(val bookingId: Long)
 data class ProbationOffenderEvent(val crn: String)
 

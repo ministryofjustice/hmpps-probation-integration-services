@@ -16,7 +16,6 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
@@ -42,11 +41,7 @@ internal class ReferralEndSubmittedTest {
             DomainEventType.ReferralEnded.name,
             1,
             "https://fake.org/url",
-            nullableAdditionalInformation = AdditionalInformation(
-                mutableMapOf(
-                    "referralId" to UUID.randomUUID().toString()
-                )
-            ),
+            additionalInformation = mapOf("referralId" to UUID.randomUUID().toString()),
             personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456")))
         )
 
@@ -77,12 +72,10 @@ internal class ReferralEndSubmittedTest {
             1,
             "https://fake.org/url",
             personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456"))),
-            nullableAdditionalInformation = AdditionalInformation(
-                mutableMapOf(
-                    "referralURN" to UUID.randomUUID().toString(),
-                    "deliveryState" to "CANCELLED",
-                    "referralProbationUserURL" to "https://fake.ui/index.html"
-                )
+            additionalInformation = mapOf(
+                "referralURN" to UUID.randomUUID().toString(),
+                "deliveryState" to "CANCELLED",
+                "referralProbationUserURL" to "https://fake.ui/index.html"
             )
         )
         val referral = sentReferral.copy(endRequestedAt = null, concludedAt = null)

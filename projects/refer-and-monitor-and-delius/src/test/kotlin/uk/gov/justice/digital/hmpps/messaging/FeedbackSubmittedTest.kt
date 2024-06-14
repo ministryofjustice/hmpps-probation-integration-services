@@ -11,13 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.integrations.randm.Appointment
-import uk.gov.justice.digital.hmpps.integrations.randm.AppointmentFeedback
-import uk.gov.justice.digital.hmpps.integrations.randm.AttendanceFeedback
-import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
-import uk.gov.justice.digital.hmpps.integrations.randm.SessionFeedback
-import uk.gov.justice.digital.hmpps.integrations.randm.SupplierAssessment
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
+import uk.gov.justice.digital.hmpps.integrations.randm.*
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
@@ -26,7 +20,7 @@ import uk.gov.justice.digital.hmpps.service.Attended
 import uk.gov.justice.digital.hmpps.service.UpdateAppointmentOutcome
 import java.net.URI
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class FeedbackSubmittedTest {
@@ -49,16 +43,14 @@ internal class FeedbackSubmittedTest {
         DomainEventType.InitialAppointmentSubmitted.name,
         1,
         "https://interventions-service/referral/$referralId/supplier-assessment",
-        nullableAdditionalInformation = AdditionalInformation(
-            mutableMapOf(
-                "serviceUserCRN" to crn,
-                "referralId" to referralId.toString(),
-                "referralReference" to referralReference,
-                "contractTypeName" to contractTypeName,
-                "primeProviderName" to primeProviderName,
-                "deliusAppointmentId" to deliusAppointmentId.toString(),
-                "referralProbationUserURL" to "http://url/pp/$referralId/supplier-assessment"
-            )
+        additionalInformation = mapOf(
+            "serviceUserCRN" to crn,
+            "referralId" to referralId.toString(),
+            "referralReference" to referralReference,
+            "contractTypeName" to contractTypeName,
+            "primeProviderName" to primeProviderName,
+            "deliusAppointmentId" to deliusAppointmentId.toString(),
+            "referralProbationUserURL" to "http://url/pp/$referralId/supplier-assessment"
         ),
         personReference = PersonReference(listOf(PersonIdentifier("CRN", crn)))
     )

@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
@@ -111,14 +110,12 @@ fun Registration.deRegEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
     version = 1,
     occurredAt = ZonedDateTime.now(),
     personReference = forCrn(crn),
-    nullableAdditionalInformation = AdditionalInformation(
-        listOfNotNull(
-            "registerTypeCode" to type.code,
-            "registerTypeDescription" to type.description,
-            "deregistrationId" to deregistration!!.id,
-            "deregistrationDate" to deregistration!!.date,
-            "createdDateAndTime" to deregistration!!.createdDatetime
-        ).toMap().toMutableMap()
+    additionalInformation = mapOf(
+        "registerTypeCode" to type.code,
+        "registerTypeDescription" to type.description,
+        "deregistrationId" to deregistration!!.id,
+        "deregistrationDate" to deregistration!!.date,
+        "createdDateAndTime" to deregistration!!.createdDatetime
     )
 )
 
@@ -126,14 +123,12 @@ fun Registration.regEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
     eventType = ReferenceData.Code.REGISTRATION_ADDED.value,
     version = 1,
     personReference = forCrn(crn),
-    nullableAdditionalInformation = AdditionalInformation(
-        listOfNotNull(
-            "registrationId" to id,
-            "registerTypeCode" to type.code,
-            "registerTypeDescription" to type.description,
-            "registrationDate" to date,
-            "createdDateAndTime" to createdDatetime
-        ).toMap().toMutableMap()
+    additionalInformation = mapOf(
+        "registrationId" to id,
+        "registerTypeCode" to type.code,
+        "registerTypeDescription" to type.description,
+        "registrationDate" to date,
+        "createdDateAndTime" to createdDatetime
     )
 )
 
