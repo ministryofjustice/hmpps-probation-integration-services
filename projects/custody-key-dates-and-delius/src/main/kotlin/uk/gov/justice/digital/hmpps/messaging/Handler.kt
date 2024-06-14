@@ -24,11 +24,18 @@ class Handler(
                 ?.let { cduService.updateCustodyKeyDates(it) }
 
             is CustodyDateChanged -> cduService.updateCustodyKeyDates(message.bookingId)
+            is ProbationOffenderEvent -> when (notification.eventType) {
+                "SENTENCE_CHANGED",
+                -> cduService.updateCustodyKeyDates(cduService.findNomsByCrn(message.crn))
+
+                else -> throw IllegalArgumentException("Unexpected offender event type: ${notification.eventType}")
+            }
         }
     }
 }
 
 data class CustodyDateChanged(val bookingId: Long)
+data class ProbationOffenderEvent(val crn: String)
 
 @Primary
 @Component
@@ -41,6 +48,12 @@ class KeyDateChangedEventConverter(objectMapper: ObjectMapper) : NotificationCon
         if (json.has("bookingId")) {
             return Notification(
                 message = objectMapper.readValue(stringMessage.message, CustodyDateChanged::class.java),
+                attributes = stringMessage.attributes
+            )
+        }
+        if (json.has("crn")) {
+            return Notification(
+                message = objectMapper.readValue(stringMessage.message, ProbationOffenderEvent::class.java),
                 attributes = stringMessage.attributes
             )
         }

@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.check
@@ -21,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -67,6 +67,44 @@ internal class IntegrationTest {
         val custody = custodyRepository.findCustodyById(custodyId)
         verifyUpdatedKeyDates(custody)
         verifyContactCreated()
+
+        verify(telemetryService).trackEvent(
+            eq("KeyDatesUpdated"),
+            check {
+                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo("2025-09-10"))
+            },
+            anyMap()
+        )
+
+        verify(telemetryService).trackEvent(
+            eq("KeyDatesUnchanged"),
+            anyMap(),
+            anyMap()
+        )
+    }
+
+    @Test
+    fun `Custody Key Dates updated from SENTENCE_CHANGED event`() {
+        val notification = Notification(
+            message = MessageGenerator.SENTENCE_CHANGED,
+            attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
+        )
+
+        val first = CompletableFuture.runAsync {
+            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
+        }
+        val second = CompletableFuture.runAsync {
+            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
+        }
+
+        CompletableFuture.allOf(first, second).join()
+
+        verify(telemetryService, times(2)).notificationReceived(notification)
+
+        val custodyId =
+            custodyRepository.findCustodyId(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN.id, "48340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+        verifyUpdatedKeyDates(custody)
 
         verify(telemetryService).trackEvent(
             eq("KeyDatesUpdated"),
