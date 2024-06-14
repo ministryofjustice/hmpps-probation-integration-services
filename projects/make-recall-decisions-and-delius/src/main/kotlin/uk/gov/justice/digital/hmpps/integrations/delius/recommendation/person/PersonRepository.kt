@@ -11,20 +11,26 @@ interface PersonRepository : JpaRepository<Person, Long> {
         """
         SELECT p FROM Person p 
         LEFT JOIN p.manager 
-        WHERE p.crn = :crn AND p.softDeleted = false 
-        AND p.manager.active = true 
-        UNION 
-        SELECT p FROM Person p 
-        LEFT JOIN p.manager
-        JOIN p.additionalIdentifier ai
-        WHERE ai.crn = :crn 
+        WHERE p.crn = :crn 
         AND p.softDeleted = false 
-        AND p.manager.active = true 
-        AND ai.mergeDetail.code IN ('DOFF', 'MFCRN', 'MTCRN', 'PCRN') 
+        AND p.manager.active = true
     """
     )
     fun findByCrn(crn: String): Person?
+
+    @Query(
+        """
+        SELECT p FROM Person p 
+        LEFT JOIN p.manager
+        JOIN p.additionalIdentifier ai
+        WHERE ai.mergedFromCrn = :crn 
+        AND p.softDeleted = false 
+        AND p.manager.active = true 
+        AND ai.mergeDetail.code = 'MFCRN'             
+        """
+    )
+    fun findByMergedFromCrn(crn: String): Person?
 }
 
 fun PersonRepository.getPerson(crn: String): Person =
-    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+    findByCrn(crn) ?: findByMergedFromCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

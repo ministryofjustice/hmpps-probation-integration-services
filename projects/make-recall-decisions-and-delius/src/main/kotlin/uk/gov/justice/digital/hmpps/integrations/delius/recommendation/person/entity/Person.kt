@@ -65,7 +65,7 @@ class AdditionalIdentifier(
     val id: Long,
 
     @Column(name = "identifier")
-    val crn: String,
+    val mergedFromCrn: String,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false,
