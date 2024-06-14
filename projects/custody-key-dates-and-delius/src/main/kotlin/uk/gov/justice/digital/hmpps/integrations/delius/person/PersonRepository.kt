@@ -1,12 +1,12 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person
 
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import org.springframework.data.jpa.repository.Query
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(nomsId: String): Person?
-    fun findByCrnAndNomsIdIsNotNullAndSoftDeletedIsFalse(crn: String): Person?
+
+    @Query("select p.nomsId from Person p where p.crn = :crn and p.softDeleted = false")
+    fun findNomsIdByCrn(crn: String): String?
 }
 
-fun PersonRepository.getPersonWithNomsId(crn: String) = findByCrnAndNomsIdIsNotNullAndSoftDeletedIsFalse(crn)
-    ?: throw NotFoundException("Person or NomsId", "crn", crn)

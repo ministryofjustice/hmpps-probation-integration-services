@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.Con
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.findKeyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.getPersonWithNomsId
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
@@ -32,10 +31,6 @@ class CustodyDateUpdateService(
         } catch (e: RestClientResponseException) {
             if (e.statusCode != HttpStatus.NOT_FOUND) throw e
         }
-    }
-
-    fun findNomsByCrn(crn: String): String {
-        return personRepository.getPersonWithNomsId(crn).nomsId!!
     }
 
     fun updateCustodyKeyDates(bookingId: Long) {

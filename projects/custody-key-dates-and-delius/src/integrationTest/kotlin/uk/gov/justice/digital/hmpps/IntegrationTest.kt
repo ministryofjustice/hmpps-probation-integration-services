@@ -25,7 +25,6 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
-import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -53,10 +52,10 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
         val first = CompletableFuture.runAsync {
-            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
+            channelManager.getChannel(queueName).publishAndWait(notification)
         }
         val second = CompletableFuture.runAsync {
-            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
+            channelManager.getChannel(queueName).publishAndWait(notification)
         }
 
         CompletableFuture.allOf(first, second).join()
@@ -91,10 +90,10 @@ internal class IntegrationTest {
         )
 
         val first = CompletableFuture.runAsync {
-            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
+            channelManager.getChannel(queueName).publishAndWait(notification)
         }
         val second = CompletableFuture.runAsync {
-            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
+            channelManager.getChannel(queueName).publishAndWait(notification)
         }
 
         CompletableFuture.allOf(first, second).join()
