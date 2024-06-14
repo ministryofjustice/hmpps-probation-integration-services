@@ -1,13 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 @Immutable
 @Entity
@@ -25,7 +21,11 @@ class Person(
     val softDeleted: Boolean = false,
 
     @OneToOne(mappedBy = "person")
-    val manager: PersonManager? = null
+    val manager: PersonManager? = null,
+
+    @OneToMany(mappedBy = "person")
+    val additionalIdentifier: List<AdditionalIdentifier> = emptyList()
+
 )
 
 @Immutable
@@ -52,4 +52,29 @@ class PersonManager(
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true
+)
+
+@Immutable
+@Entity
+@SQLRestriction("soft_deleted = 0")
+@Table(name = "additional_identifier")
+class AdditionalIdentifier(
+
+    @Id
+    @Column(name = "additional_identifier_id")
+    val id: Long,
+
+    @Column(name = "identifier")
+    val crn: String,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false,
+
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
+
+    @ManyToOne
+    @JoinColumn(name = "identifier_name_id")
+    val type: ReferenceData
 )

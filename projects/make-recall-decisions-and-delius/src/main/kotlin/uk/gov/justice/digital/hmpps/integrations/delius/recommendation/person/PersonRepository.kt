@@ -7,7 +7,22 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.en
 
 interface PersonRepository : JpaRepository<Person, Long> {
 
-    @Query("SELECT p FROM Person p LEFT JOIN FETCH p.manager WHERE p.crn = :crn AND p.softDeleted = false AND p.manager.active = true")
+    @Query(
+        """
+        SELECT p FROM Person p 
+        LEFT JOIN p.manager 
+        WHERE p.crn = :crn AND p.softDeleted = false 
+        AND p.manager.active = true 
+        UNION 
+        SELECT p FROM Person p 
+        LEFT JOIN p.manager
+        JOIN p.additionalIdentifier ai
+        WHERE ai.crn = :crn 
+        AND p.softDeleted = false 
+        AND p.manager.active = true 
+        AND ai.type.code IN ('DOFF', 'MFCRN', 'MTCRN', 'PCRN') 
+    """
+    )
     fun findByCrn(crn: String): Person?
 }
 
