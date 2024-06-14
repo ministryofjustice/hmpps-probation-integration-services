@@ -74,7 +74,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `Multiple matching custody logged to telemetry`() {
-        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId)
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
@@ -93,7 +93,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `No matching custody logged to telemetry`() {
-        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId)
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
@@ -111,7 +111,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `key date save and delete not called without appropriate key dates`() {
-        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId)
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val custody = SentenceGenerator.generateCustodialSentence(
             disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
             bookingRef = booking.bookingNo

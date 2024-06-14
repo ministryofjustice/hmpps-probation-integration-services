@@ -15,8 +15,11 @@ class Person(
     @Column(name = "offender_id")
     val id: Long,
 
+    @Column(columnDefinition = "char(7)")
+    val crn: String,
+
     @Column(name = "NOMS_NUMBER", columnDefinition = "char(7)")
-    val nomsId: String,
+    val nomsId: String?,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
