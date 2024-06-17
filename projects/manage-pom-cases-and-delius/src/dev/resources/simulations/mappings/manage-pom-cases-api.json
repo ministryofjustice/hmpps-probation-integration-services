@@ -55,6 +55,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/api/handovers/A4096DY"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404,
+        "bodyFileName": "sentence-changed-dates.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/api/pom-allocation/A0123BY/0"
       },
       "response": {
