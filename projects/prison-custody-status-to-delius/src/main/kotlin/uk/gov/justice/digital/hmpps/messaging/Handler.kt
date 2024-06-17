@@ -143,16 +143,14 @@ fun PrisonerMovement?.telemetryProperties(): Map<String, String> = if (this == n
 
 fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
     val dateTime = ZonedDateTime.of(movement.movementDate, movement.movementTime, EuropeLondon)
-    check(movement.movementType == movementType && movement.movementReason == movementReason) {
-        "Booking and Last Movement out of sync"
-    }
+
     if (reason == null) {
         throw IgnorableMessageException(
             "UnableToCalculateMovementType",
             mapOf(
                 "nomsNumber" to personReference,
-                "movementType" to movementType,
-                "movementReason" to movementReason,
+                "movementType" to movement.movementType,
+                "movementReason" to movement.movementReason,
                 "inOutStatus" to inOutStatus!!.name,
                 "prisonId" to (agencyId ?: "")
             )
@@ -164,7 +162,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
             movement.fromAgency,
             movement.toAgency!!,
             PrisonerMovement.Type.valueOf(reason),
-            movementReason,
+            movement.movementReason,
             dateTime
         )
 
@@ -173,7 +171,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
             movement.fromAgency!!,
             movement.toAgency,
             PrisonerMovement.Type.valueOf(reason),
-            movementReason,
+            movement.movementReason,
             dateTime
         )
 
