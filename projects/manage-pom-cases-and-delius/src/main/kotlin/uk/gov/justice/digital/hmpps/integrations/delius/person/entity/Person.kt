@@ -1,13 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.LockModeType
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
@@ -98,6 +91,9 @@ interface PersonRepository : JpaRepository<Person, Long> {
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select p.id from Person p where p.id = :personId")
     fun findForUpdate(personId: Long): Long
+
+    @Query("select p.nomsId from Person p where p.crn = :crn and p.softDeleted = false")
+    fun findNomsIdByCrn(crn: String): String?
 }
 
 fun PersonRepository.getByNomsId(nomsId: String) =

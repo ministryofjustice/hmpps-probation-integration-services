@@ -12,6 +12,7 @@ object PersonGenerator {
     val HANDOVER = generate("H123456", "A1024BY")
     val UPDATE_HANDOVER_AND_START = generate("H123457", "A2048BY")
     val CREATE_HANDOVER_AND_START = generate("H123458", "A4096BY")
+    val CREATE_SENTENCE_CHANGED = generate("H123459", "A4096CY")
 
     fun generate(
         crn: String,

@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.Handover
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.ManagePomCasesClient
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.messaging.HandoverMessage
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
@@ -16,7 +16,7 @@ class HandoverDatesChanged(
     private val keyDateService: KeyDateService,
     private val telemetryService: TelemetryService
 ) {
-    fun process(event: HmppsDomainEvent) = try {
+    fun process(event: HandoverMessage) = try {
         val handOver = event.detailUrl?.let { pomCasesClient.getDetails(URI.create(it)) }
             ?: throw IgnorableMessageException(
                 "No handover data available",
