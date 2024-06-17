@@ -32,7 +32,8 @@ class PomCaseMessageHandler(
     @Publish(
         messages = [
             Message(name = "offender-management/handover-changed"),
-            Message(name = "offender-management/pom-allocated")
+            Message(name = "offender-management/pom-allocated"),
+            Message(messageId = "SENTENCE_CHANGED", payload = Schema(ProbationOffenderEvent::class)),
         ]
     )
     override fun handle(notification: Notification<Any>) {
