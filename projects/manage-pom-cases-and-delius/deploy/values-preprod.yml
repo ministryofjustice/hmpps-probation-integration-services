@@ -10,7 +10,7 @@ generic-service:
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/oauth/token
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
-    MPC_ENDPOINT_URL: https://preprod.moic.service.justice.gov.uk
+    MPC_HANDOVER_URL: https://preprod.moic.service.justice.gov.uk
 
 generic-prometheus-alerts:
   businessHoursOnly: true
