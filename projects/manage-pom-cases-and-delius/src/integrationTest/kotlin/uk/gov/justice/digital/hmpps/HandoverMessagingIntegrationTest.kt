@@ -9,11 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.findHandoverDates
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.services.KeyDateMergeResult
@@ -90,5 +93,31 @@ internal class HandoverMessagingIntegrationTest {
         assertThat(handoverDates.size, equalTo(2))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 10)))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_START_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 6)))
+    }
+
+    @Test
+    fun `processes a sentence changed event successfully`() {
+        val notification = Notification(
+            message = MessageGenerator.SENTENCE_CHANGED,
+            attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            KeyDateMergeResult.KeyDateCreated.name,
+            mapOf(
+                "nomsId" to "A4096CY",
+                "handoverDate" to "2023-06-11",
+                "handoverStartDate" to "2023-06-07"
+            )
+        )
+
+        val custody =
+            custodyRepository.findAllByDisposalEventPersonId(PersonGenerator.CREATE_SENTENCE_CHANGED.id).first()
+        val handoverDates = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
+        assertThat(handoverDates.size, equalTo(2))
+        assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_DATE.value]?.date, equalTo(LocalDate.of(2023, 6, 11)))
+        assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_START_DATE.value]?.date, equalTo(LocalDate.of(2023, 6, 7)))
     }
 }
