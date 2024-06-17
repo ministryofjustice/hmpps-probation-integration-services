@@ -8,8 +8,11 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -39,32 +42,51 @@ class PomCaseMessageHandler(
     )
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
-        when (val message = notification.message) {
-            is HmppsDomainEvent -> when (notification.eventType) {
-                "offender-management.handover.changed" -> handoverDatesChanged.process(
-                    HandoverMessage(
-                        message.personReference,
-                        message.detailUrl
-                    )
-                )
 
-                "offender-management.allocation.changed" -> pomAllocated.process(message)
-                else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
-            }
-
-            is ProbationOffenderEvent -> when (notification.eventType) {
-                "SENTENCE_CHANGED",
-                -> personRepository.findNomsIdByCrn(message.crn)?.let {
-                    handoverDatesChanged.process(
+        try {
+            when (val message = notification.message) {
+                is HmppsDomainEvent -> when (notification.eventType) {
+                    "offender-management.handover.changed" -> handoverDatesChanged.process(
                         HandoverMessage(
-                            PersonReference(listOf(PersonIdentifier("NOMS", it))),
-                            "$mpcHandoverUrl/api/handovers/$it"
+                            message.personReference,
+                            message.detailUrl
                         )
                     )
+
+                    "offender-management.allocation.changed" -> pomAllocated.process(message)
+                    else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
                 }
 
-                else -> throw NotImplementedError("Unexpected offender event type: ${notification.eventType}")
+                is ProbationOffenderEvent -> when (notification.eventType) {
+                    "SENTENCE_CHANGED",
+                    -> personRepository.findNomsIdByCrn(message.crn)?.let {
+                        try {
+                            handoverDatesChanged.process(
+                                HandoverMessage(
+                                    PersonReference(listOf(PersonIdentifier("NOMS", it))),
+                                    "$mpcHandoverUrl/api/handovers/$it"
+                                )
+                            )
+                        } catch (e: HttpClientErrorException) {
+                            if (e.statusCode == HttpStatus.NOT_FOUND) {
+                                throw IgnorableMessageException(
+                                    "Handovers api returned not found for sentence changed event",
+                                    mapOf("detailUrl" to "$mpcHandoverUrl/api/handovers/$it")
+                                )
+                            } else {
+                                throw e
+                            }
+                        }
+                    }
+
+                    else -> throw NotImplementedError("Unexpected offender event type: ${notification.eventType}")
+                }
             }
+        } catch (ime: IgnorableMessageException) {
+            telemetryService.trackEvent(
+                ime.message,
+                ime.additionalProperties
+            )
         }
     }
 }

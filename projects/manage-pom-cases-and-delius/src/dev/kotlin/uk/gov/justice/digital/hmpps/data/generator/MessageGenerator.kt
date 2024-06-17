@@ -5,4 +5,5 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 object MessageGenerator {
     val SENTENCE_CHANGED = ResourceLoader.message<ProbationOffenderEvent>("sentence-changed")
+    val SENTENCE_CHANGED_NOT_FOUND = ResourceLoader.message<ProbationOffenderEvent>("sentence-changed-not-found")
 }

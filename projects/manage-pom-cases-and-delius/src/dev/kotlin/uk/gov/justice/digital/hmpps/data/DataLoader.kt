@@ -94,7 +94,8 @@ class DataLoader(
                 PersonGenerator.HANDOVER,
                 PersonGenerator.CREATE_HANDOVER_AND_START,
                 PersonGenerator.UPDATE_HANDOVER_AND_START,
-                PersonGenerator.CREATE_SENTENCE_CHANGED
+                PersonGenerator.CREATE_SENTENCE_CHANGED,
+                PersonGenerator.PERSON_NOT_FOUND
             )
         )
         personManagerRepository.saveAll(

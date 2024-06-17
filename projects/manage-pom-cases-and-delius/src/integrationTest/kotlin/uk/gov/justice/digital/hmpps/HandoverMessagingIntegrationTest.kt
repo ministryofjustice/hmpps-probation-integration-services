@@ -28,6 +28,9 @@ internal class HandoverMessagingIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
 
+    @Value("\${mpc.handover.url}")
+    lateinit var handoverUrl: String
+
     @Autowired
     lateinit var channelManager: HmppsChannelManager
 
@@ -119,5 +122,22 @@ internal class HandoverMessagingIntegrationTest {
         assertThat(handoverDates.size, equalTo(2))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_DATE.value]?.date, equalTo(LocalDate.of(2023, 6, 11)))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_START_DATE.value]?.date, equalTo(LocalDate.of(2023, 6, 7)))
+    }
+
+    @Test
+    fun `ignores a sentence changed event causing 404`() {
+        val notification = Notification(
+            message = MessageGenerator.SENTENCE_CHANGED_NOT_FOUND,
+            attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "Handovers api returned not found for sentence changed event",
+            mapOf(
+                "detailUrl" to "$handoverUrl/api/handovers/A4096DY"
+            )
+        )
     }
 }
