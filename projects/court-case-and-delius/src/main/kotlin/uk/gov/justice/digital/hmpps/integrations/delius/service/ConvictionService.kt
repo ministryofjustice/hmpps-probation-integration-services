@@ -79,7 +79,7 @@ class ConvictionService(
 
     fun MainOffence.toOffence(): Offence =
         Offence(
-            id,
+            "M$id",
             mainOffence = true,
             detail = offence.toOffenceDetail(),
             offenceDate = date,
@@ -93,7 +93,7 @@ class ConvictionService(
 
     fun AdditionalOffence.toOffence(): Offence =
         Offence(
-            id,
+            "A$id",
             mainOffence = false,
             detail = offence.toOffenceDetail(),
             offenceDate = date,

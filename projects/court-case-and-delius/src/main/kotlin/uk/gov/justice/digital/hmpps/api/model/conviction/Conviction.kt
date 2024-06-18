@@ -25,7 +25,7 @@ data class Conviction(
 )
 
 data class Offence(
-    val offenceId: Long,
+    val offenceId: String,
     val mainOffence: Boolean,
     val detail: OffenceDetail,
     val offenceDate: LocalDate?,

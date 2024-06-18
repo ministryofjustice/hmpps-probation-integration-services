@@ -95,7 +95,7 @@ internal class ConvictionIntegrationTest {
             )
         val expectedOffences = listOf(
             Offence(
-                mainOffence.id,
+                "M${mainOffence.id}",
                 mainOffence = true,
                 expectedMainOffenceDetail,
                 mainOffence.date,
@@ -107,7 +107,7 @@ internal class ConvictionIntegrationTest {
                 mainOffence.updated
             ),
             Offence(
-                additionalOffence.id,
+                "A${additionalOffence.id}",
                 mainOffence = false,
                 expectedAdditionalOffenceDetail,
                 additionalOffence.date,
