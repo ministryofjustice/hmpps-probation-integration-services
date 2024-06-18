@@ -132,7 +132,7 @@ class ConvictionService(
             length,
             effectiveLength,
             lengthInDays,
-            enteredSentenceEndDate,
+            enteredSentenceEndDate ?: endDate?.toLocalDate(),
             unpaidWorkDetails?.toUnpaidWork(id),
             startDate,
             terminationDate,
