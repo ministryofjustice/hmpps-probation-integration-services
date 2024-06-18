@@ -67,14 +67,12 @@ internal class HandlerTest {
             1,
             "https//detail/url",
             ZonedDateTime.now(),
-            nullableAdditionalInformation = AdditionalInformation(
-                mutableMapOf(
-                    "nomsNumber" to "Z0001ZZ",
-                    "prisonId" to "ZZZ",
-                    "reason" to "RETURN_FROM_COURT",
-                    "nomisMovementReasonCode" to "OPA",
-                    "details" to "CRT-OPA"
-                )
+            additionalInformation = mapOf(
+                "nomsNumber" to "Z0001ZZ",
+                "prisonId" to "ZZZ",
+                "reason" to "RETURN_FROM_COURT",
+                "nomisMovementReasonCode" to "OPA",
+                "details" to "CRT-OPA"
             ),
             personReference = PersonReference(listOf(PersonIdentifier("NOMS", "Z0001ZZ")))
         ),
@@ -275,7 +273,7 @@ internal class HandlerTest {
 
         val hospitalNotification = notification.copy(
             message = notification.message.copy(
-                nullableAdditionalInformation = AdditionalInformation(mutableMapOf("nomsNumber" to nomsId))
+                additionalInformation = mapOf("nomsNumber" to nomsId)
             )
         )
         handler.handle(hospitalNotification)

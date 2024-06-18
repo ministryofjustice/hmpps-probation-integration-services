@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -20,6 +23,7 @@ import java.net.URI
 const val ProcessResettlementPassport = "case-note-resettlement-passport"
 
 @Component
+@Channel("prison-case-notes-to-probation-queue")
 class Handler(
     val prisonCaseNotesClient: PrisonCaseNotesClient,
     val deliusService: DeliusService,
@@ -32,6 +36,7 @@ class Handler(
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
+    @Publish(messages = [Message(name = "prison/case-note-published")])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val event = notification.message

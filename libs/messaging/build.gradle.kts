@@ -7,6 +7,7 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
 
     api(libs.bundles.aws.messaging)
+    api(libs.asyncapi)
 
     testImplementation(project(":libs:dev-tools"))
     testImplementation(libs.bundles.mockito)

@@ -6,15 +6,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.data.generator.CaseAllocationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.CaseAllocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Disposal
@@ -26,12 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonMana
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Institution
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataSet
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -106,7 +93,9 @@ class DataLoader(
                 PersonGenerator.DEFAULT,
                 PersonGenerator.HANDOVER,
                 PersonGenerator.CREATE_HANDOVER_AND_START,
-                PersonGenerator.UPDATE_HANDOVER_AND_START
+                PersonGenerator.UPDATE_HANDOVER_AND_START,
+                PersonGenerator.CREATE_SENTENCE_CHANGED,
+                PersonGenerator.PERSON_NOT_FOUND
             )
         )
         personManagerRepository.saveAll(
@@ -151,6 +140,12 @@ class DataLoader(
                 )
             )
         )
+
+        val sentenceChangedHandoverEvent =
+            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.CREATE_SENTENCE_CHANGED.id))
+        val sentenceChangedHandoverDisposal =
+            disposalRepository.save(EventGenerator.generateDisposal(sentenceChangedHandoverEvent))
+        custodyRepository.save(EventGenerator.generateCustody(sentenceChangedHandoverDisposal))
 
         val handoverEvent = eventRepository.save(EventGenerator.generateEvent(PersonGenerator.HANDOVER.id))
         val handoverDisposal = disposalRepository.save(EventGenerator.generateDisposal(handoverEvent))

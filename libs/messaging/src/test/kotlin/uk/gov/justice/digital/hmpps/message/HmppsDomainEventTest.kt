@@ -57,10 +57,9 @@ class HmppsDomainEventTest {
             "test.event.type",
             1,
             "https//detail/url",
-            ZonedDateTime.now()
+            ZonedDateTime.now(),
+            additionalInformation = mapOf("specialId" to "SP12345")
         )
-
-        hmppsEvent.additionalInformation["specialId"] = "SP12345"
 
         assertThat(hmppsEvent.additionalInformation["specialId"], equalTo("SP12345"))
     }

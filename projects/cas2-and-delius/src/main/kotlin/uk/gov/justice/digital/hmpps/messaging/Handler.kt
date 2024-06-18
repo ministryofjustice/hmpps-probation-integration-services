@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -12,12 +16,25 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @Component
+@Channel("cas2-and-delius-queue")
 class Handler(
     @Value("\${event.exception.throw-not-found:true}") private val throwNotFound: Boolean,
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
     private val cas2Service: Cas2Service,
 ) : NotificationHandler<HmppsDomainEvent> {
+    @Publish(
+        messages = [
+            Message(
+                messageId = "applications.cas2.application.submitted",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+            Message(
+                messageId = "applications.cas2.application.status-updated",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val event = notification.message

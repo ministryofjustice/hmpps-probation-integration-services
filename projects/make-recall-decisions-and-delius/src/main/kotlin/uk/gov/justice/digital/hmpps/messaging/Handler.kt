@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.Schema
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.MakeRecallDecisionsClient
@@ -11,12 +15,23 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
 
 @Component
+@Channel("make-recall-decisions-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val recommendationService: RecommendationService,
     private val makeRecallDecisionsClient: MakeRecallDecisionsClient,
     private val telemetryService: TelemetryService
 ) : NotificationHandler<HmppsDomainEvent> {
+    @Publish(
+        messages = [
+            Message(name = "consider-a-recall/management_oversight"),
+            Message(messageId = "prison-recall.recommendation.deleted", payload = Schema(HmppsDomainEvent::class)),
+            Message(
+                messageId = "prison-recall.recommendation.consideration",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val crn = notification.message.personReference.findCrn()

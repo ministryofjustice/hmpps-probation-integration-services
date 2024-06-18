@@ -13,16 +13,11 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
-import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.message.PersonIdentifier
-import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.message.*
 import uk.gov.justice.digital.hmpps.messaging.DomainEventType.SessionAppointmentSubmitted
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class ReferAndMonitorHandlerTest {
@@ -144,11 +139,7 @@ internal class ReferAndMonitorHandlerTest {
             1,
             occurredAt = ZonedDateTime.now(),
             detailUrl = "DetailUrl",
-            nullableAdditionalInformation = AdditionalInformation(
-                mutableMapOf(
-                    "referralId" to UUID.randomUUID().toString()
-                )
-            ),
+            additionalInformation = mapOf("referralId" to UUID.randomUUID().toString()),
             personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456")))
         ),
         MessageAttributes(SessionAppointmentSubmitted.name)

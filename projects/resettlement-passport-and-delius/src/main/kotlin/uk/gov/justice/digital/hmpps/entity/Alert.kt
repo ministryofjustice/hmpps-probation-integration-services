@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
@@ -40,4 +39,6 @@ class Alert(
     val id: Long = 0,
 )
 
-interface AlertRepository : JpaRepository<Alert, Long>
+interface AlertRepository : JpaRepository<Alert, Long> {
+    fun findByContactId(contactId: Long): Alert?
+}

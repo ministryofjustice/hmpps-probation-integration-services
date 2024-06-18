@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.District
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.AdditionalIdentifier
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -28,15 +29,25 @@ object PersonGenerator {
     val NO_ACCESS_LIMITATIONS = generateUserAccess("X000007")
     val RECOMMENDATION_DELETED = generate("X000008")
     val RECOMMENDATION_DELETED_INACTIVE_STAFF = generate("X000009")
+    val RECOMMENDATION_MERGED_FROM = generate("X000077", softDeleted = true)
+    val X000077_ADDITIONAL_IDENTIFIER =
+        AdditionalIdentifier(
+            IdGenerator.getAndIncrement(),
+            RECOMMENDATION_MERGED_FROM.crn,
+            false,
+            RECOMMENDATION_DELETED,
+            ReferenceData(IdGenerator.getAndIncrement(), "MFCRN", "Merged From CRN")
+        )
 
     fun generate(
         crn: String,
         providerId: Long = DEFAULT_PROVIDER.id,
         teamId: Long = DEFAULT_TEAM.id,
         staffId: Long = DEFAULT_STAFF.id,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = IdGenerator.getAndIncrement(),
+        softDeleted: Boolean = false,
     ): Person {
-        val person = Person(id, crn)
+        val person = Person(id, crn, softDeleted = softDeleted)
         val personManager = PersonManager(IdGenerator.getAndIncrement(), person, providerId, teamId, staffId)
         person.set("manager", personManager)
         return person

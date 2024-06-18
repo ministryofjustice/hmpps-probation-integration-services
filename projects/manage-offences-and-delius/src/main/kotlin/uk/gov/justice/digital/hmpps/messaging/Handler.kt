@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.openfolder.kotlinasyncapi.annotation.channel.Channel
+import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.client.ManageOffencesClient
@@ -25,6 +28,7 @@ const val FF_UPDATE_OFFENCE = "manage-offences-update-offence"
 
 @Component
 @Transactional
+@Channel("manage-offences-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
@@ -34,6 +38,7 @@ class Handler(
     private val referenceDataRepository: ReferenceDataRepository,
     private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
+    @Publish(messages = [Message(name = "manage-offences/offence-changed")])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
 
