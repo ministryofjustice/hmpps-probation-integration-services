@@ -69,7 +69,7 @@ class KeyDateServiceTest {
     }
 
     @Test
-    fun `delete handover dates`() {
+    fun `null handover dates`() {
         val personId = 42L
         val custody = givenCustodyRecord(personId)
         val keyDates = givenKeyDates(custody, LocalDate.now(), LocalDate.now())
@@ -79,7 +79,7 @@ class KeyDateServiceTest {
             .thenReturn(keyDates)
 
         val res = keyDateService.mergeHandoverDates(personId, null, null)
-        assertThat(res, equalTo(KeyDateMergeResult.KeyDateDeleted))
+        assertThat(res, equalTo(KeyDateMergeResult.NoKeyDateChange))
     }
 
     @Test
