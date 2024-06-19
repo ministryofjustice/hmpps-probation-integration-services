@@ -94,7 +94,7 @@ class Handler(
         mainCategoryAbbreviation = highLevelOffence.description.take(50),
         ogrsOffenceCategoryId = highLevelOffence.ogrsOffenceCategoryId,
         subCategoryCode = subCategoryCode!!,
-        subCategoryDescription = "$homeOfficeDescription - $subCategoryCode".take(200),
+        subCategoryDescription = homeOfficeDescription!!.take(200),
         form20Code = highLevelOffence.form20Code,
         childAbduction = null,
         schedule15ViolentOffence = schedule15ViolentOffence,
