@@ -120,6 +120,11 @@ internal class HandlerTest {
         verify(offenceRepository).save(check {
             assertThat(it.id, equalTo(0))
             assertThat(it.code, equalTo(offence.homeOfficeCode))
+            assertThat(it.description, equalTo("${offence.homeOfficeDescription} - ${offence.homeOfficeCode}"))
+            assertThat(it.mainCategoryCode, equalTo(HIGH_LEVEL_OFFENCE.mainCategoryCode))
+            assertThat(it.mainCategoryDescription, equalTo(HIGH_LEVEL_OFFENCE.description))
+            assertThat(it.subCategoryCode, equalTo(offence.subCategoryCode))
+            assertThat(it.subCategoryDescription, equalTo(offence.homeOfficeDescription))
         })
         verify(telemetryService).trackEvent(
             "OffenceCodeCreated",
