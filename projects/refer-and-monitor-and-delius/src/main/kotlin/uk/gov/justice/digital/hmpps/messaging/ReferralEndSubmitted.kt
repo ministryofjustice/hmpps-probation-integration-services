@@ -131,7 +131,7 @@ enum class ReferralWithdrawalReason(
     EAR("Intervention has been completed", NSI13),
 
     // Other
-    ANO("Another reason", CRS01);
+    ANO("Another reason", NSI5, NSI6);
 
     fun toOutcome(withdrawalState: ReferralWithdrawalState?): ReferralWithdrawalNsiOutcome {
         val state = requireNotNull(withdrawalState) { "Withdrawal state not provided" }
@@ -153,7 +153,6 @@ enum class ReferralWithdrawalNsiOutcome(val description: String) {
     NSI11("Did not start – Disengaged"),
     NSI12("Started - Not finished (Disengaged)"),
     NSI13("Completed"),
-    CRS01("Cancelled"),
 }
 
 data class EndOfServiceReport(val submittedAt: ZonedDateTime?)
