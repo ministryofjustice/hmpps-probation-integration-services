@@ -635,8 +635,7 @@ components:
       type: object
       properties:
         offenceId:
-          type: integer
-          format: int64
+          type: string
         mainOffence:
           type: boolean
         detail:
