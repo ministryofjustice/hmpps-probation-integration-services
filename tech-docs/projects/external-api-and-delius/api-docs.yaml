@@ -163,8 +163,10 @@ components:
       properties:
         code:
           type: string
+          example: RCCO
         description:
           type: string
+          example: Child Concerns
         startDate:
           type: string
           format: date
