@@ -21,7 +21,8 @@ data class Detail(
     val lastRecallDate: LocalDate? = null,
     val recallReason: String? = null,
     val nsiRecallDate: LocalDate? = null,
-    val nsiBreachDate: LocalDate? = null
+    val nsiBreachDate: LocalDate? = null,
+    val offenderAliases: List<OffenderAlias> = emptyList()
 )
 
 data class Name(
@@ -57,6 +58,15 @@ data class KeyDate(
     val code: String,
     val description: String,
     val data: LocalDate
+)
+
+data class OffenderAlias(
+    val id: Long,
+    val dateOfBirth: LocalDate?,
+    val firstName: String,
+    val middleNames: List<String>,
+    val surname: String,
+    val gender: String
 )
 
 fun DetailPerson.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)

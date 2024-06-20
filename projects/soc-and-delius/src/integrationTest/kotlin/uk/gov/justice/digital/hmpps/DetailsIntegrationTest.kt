@@ -81,6 +81,24 @@ internal class DetailsIntegrationTest {
         DetailsGenerator.RECALL.date,
         DetailsGenerator.RECALL.reason.description,
         NSIGenerator.RECALL_NSI.referralDate,
-        NSIGenerator.BREACH_NSI.referralDate
+        NSIGenerator.BREACH_NSI.referralDate,
+        listOf(
+            OffenderAlias(
+                id = DetailsGenerator.ALIAS_1.aliasID,
+                dateOfBirth = DetailsGenerator.ALIAS_1.dateOfBirth,
+                firstName = DetailsGenerator.ALIAS_1.firstName,
+                middleNames = listOf(DetailsGenerator.ALIAS_1.secondName!!, DetailsGenerator.ALIAS_1.thirdName!!),
+                surname = DetailsGenerator.ALIAS_1.surname,
+                gender = DetailsGenerator.MALE.description
+            ),
+            OffenderAlias(
+                id = DetailsGenerator.ALIAS_2.aliasID,
+                dateOfBirth = DetailsGenerator.ALIAS_2.dateOfBirth,
+                firstName = DetailsGenerator.ALIAS_2.firstName,
+                middleNames = listOf(DetailsGenerator.ALIAS_2.secondName!!, DetailsGenerator.ALIAS_2.thirdName!!),
+                surname = DetailsGenerator.ALIAS_2.surname,
+                gender = DetailsGenerator.FEMALE.description
+            )
+        )
     )
 }

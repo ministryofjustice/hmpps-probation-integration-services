@@ -38,6 +38,9 @@ class DetailPerson(
     @OneToMany(mappedBy = "person")
     val personManager: List<PersonManager>,
 
+    @OneToMany(mappedBy = "person")
+    val offenderAliases: List<OffenderAlias>,
+
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
 
@@ -162,6 +165,42 @@ class DetailDistrict(
     @Id
     @Column(name = "district_id")
     val id: Long
+)
+
+@Immutable
+@Entity
+@Table(name = "alias")
+@SQLRestriction("soft_deleted = 0")
+class OffenderAlias(
+
+    @Id
+    @Column(name = "alias_id")
+    val aliasID: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: DetailPerson,
+
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
+
+    @Column(name = "first_name")
+    val firstName: String,
+
+    @Column(name = "second_name")
+    val secondName: String? = null,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    val surname: String,
+
+    @Column(name = "third_name")
+    val thirdName: String? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData
 )
 
 interface DetailRepository : JpaRepository<DetailPerson, Long> {

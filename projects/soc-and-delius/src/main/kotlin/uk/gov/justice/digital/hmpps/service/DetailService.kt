@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.controller.IdentifierType
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.model.KeyDate
+import uk.gov.justice.digital.hmpps.model.OffenderAlias
 import uk.gov.justice.digital.hmpps.model.Team
 import java.time.LocalDate
 
@@ -77,7 +78,17 @@ class DetailService(
             recallDate,
             recallReason,
             nsiDates.firstOrNull { it.name == "recall" }?.referralDate,
-            nsiDates.firstOrNull { it.name == "breach" }?.referralDate
+            nsiDates.firstOrNull { it.name == "breach" }?.referralDate,
+            offenderAliases = p.offenderAliases.map {
+                OffenderAlias(
+                    id = it.aliasID,
+                    dateOfBirth = it.dateOfBirth,
+                    firstName = it.firstName,
+                    middleNames = listOfNotNull(it.secondName, it.thirdName),
+                    surname = it.surname,
+                    gender = it.gender.description
+                )
+            },
         )
     }
 }
