@@ -44,27 +44,28 @@ object DetailsGenerator {
         true
     )
 
-    val ALIAS_1 = OffenderAlias(
-        IdGenerator.getAndIncrement(),
+    val ALIAS_1 = PersonAlias(
         PERSON,
-        LocalDate.of(1977, 12, 8),
         "Phil",
         "Jack",
-        false,
         "Paul",
         "Brown",
-        MALE
-    )
-    val ALIAS_2 = OffenderAlias(
+        LocalDate.of(1977, 12, 8),
+        MALE,
+        false,
         IdGenerator.getAndIncrement(),
+    )
+
+    val ALIAS_2 = PersonAlias(
         PERSON,
-        LocalDate.of(1976, 5, 18),
         "Phillis",
         "Jackie",
-        false,
         "Paula",
         "Brown",
-        FEMALE
+        LocalDate.of(1976, 5, 18),
+        FEMALE,
+        false,
+        IdGenerator.getAndIncrement(),
     )
     val INSTITUTION = Institution(IdGenerator.getAndIncrement(), "HMP-LDN")
 
