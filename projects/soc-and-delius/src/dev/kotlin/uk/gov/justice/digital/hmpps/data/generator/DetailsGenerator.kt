@@ -14,6 +14,19 @@ object DetailsGenerator {
         "BRITISH",
         "BRITISH"
     )
+
+    val MALE = ReferenceData(
+        IdGenerator.getAndIncrement(),
+        "MALE",
+        "MALE"
+    )
+
+    val FEMALE = ReferenceData(
+        IdGenerator.getAndIncrement(),
+        "FEMALE",
+        "FEMALE"
+    )
+
     val PERSON = DetailPerson(
         IdGenerator.getAndIncrement(),
         "X012773",
@@ -21,6 +34,7 @@ object DetailsGenerator {
         "1111111111111",
         RELIGION,
         NATIONALITY,
+        listOf(),
         listOf(),
         LocalDate.now().minusYears(18),
         "Smith",
@@ -30,6 +44,29 @@ object DetailsGenerator {
         true
     )
 
+    val ALIAS_1 = PersonAlias(
+        PERSON,
+        "Phil",
+        "Jack",
+        "Paul",
+        "Brown",
+        LocalDate.of(1977, 12, 8),
+        MALE,
+        false,
+        IdGenerator.getAndIncrement(),
+    )
+
+    val ALIAS_2 = PersonAlias(
+        PERSON,
+        "Phillis",
+        "Jackie",
+        "Paula",
+        "Brown",
+        LocalDate.of(1976, 5, 18),
+        FEMALE,
+        false,
+        IdGenerator.getAndIncrement(),
+    )
     val INSTITUTION = Institution(IdGenerator.getAndIncrement(), "HMP-LDN")
 
     val RELEASE_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "RSN1", "Release reason")
