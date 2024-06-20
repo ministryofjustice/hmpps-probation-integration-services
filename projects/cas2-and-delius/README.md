@@ -8,7 +8,7 @@ Ensuring the Probation Practitioner has an up-to-date view of activity in the CA
 
 ## Context Map
 
-![Context Map](./tech-docs/src/img/cas2-and-delius-context-map.svg)
+![Context Map](./tech-docs/source/img/cas2-and-delius-context-map.svg)
 
 ## Workflows
 
@@ -22,7 +22,7 @@ A referral application is created in the CAS2 service which is reflected in a De
 |---------------------------------------------------------------|----------------------------------------------|
 | Submission of a accommodation referral application            | applications.cas2.application.submitted      |
 
-![Context Map](./tech-docs/src/img/cas2-and-delius-workflow-application.svg)
+![Context Map](./tech-docs/source/img/cas2-and-delius-workflow-application.svg)
 
 ### Update the Status of a CAS2 Referral Application
 
@@ -32,7 +32,7 @@ A referral application is updated in the CAS2 service which is reflected in a De
 |---------------------------------------------------------------|----------------------------------------------|
 | Update to the status of an accommodation referral application | applications.cas2.application.status-updated |
 
-![Context Map](./tech-docs/src/img/cas2-and-delius-workflow-application-update.svg)
+![Context Map](./tech-docs/source/img/cas2-and-delius-workflow-application-update.svg)
 
 ## Interfaces
 
