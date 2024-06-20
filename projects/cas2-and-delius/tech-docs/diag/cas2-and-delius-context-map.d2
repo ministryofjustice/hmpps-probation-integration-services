@@ -1,0 +1,28 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+context-cas2: CAS2 Context {
+  entities: Entities {
+    grid-columns: 2
+    pop: Person on Probation
+    referral: Accommodation Referral
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: CAS2 and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 2
+    pop: Person on Probation
+    contact: Contact
+    manager: Offender Manager
+  }
+}
+
+context-cas2--context-delius.interface: Upstream\n\n\nDownstream
