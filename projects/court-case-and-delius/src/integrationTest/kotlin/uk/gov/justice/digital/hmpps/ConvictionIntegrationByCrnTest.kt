@@ -248,12 +248,12 @@ internal class ConvictionIntegrationByCrnTest {
     fun `retun a list of active and inactive events for a person`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
-        val response = mockMvc
+        mockMvc
             .perform(get("/probation-case/$crn/convictions").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<List<Conviction>>()
-
-        assertEquals(2, response.size)
+            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$[0].active").value(true))
+            .andExpect(jsonPath("$[1].active").value(false))
     }
 
     @Test
