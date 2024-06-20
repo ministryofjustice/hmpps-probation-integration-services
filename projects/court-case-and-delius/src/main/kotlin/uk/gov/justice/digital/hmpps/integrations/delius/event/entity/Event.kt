@@ -79,6 +79,8 @@ interface EventRepository : JpaRepository<Event, Long> {
 
     fun findAllByPerson(person: Person): List<Event>
 
+    fun findAllByPersonAndActiveIsTrue(person: Person): List<Event>
+
     fun findByPersonAndId(person: Person, id: Long): Event?
 
     @Query(

@@ -1,17 +1,20 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.integrations.delius.service.ConvictionService
 
 @RestController
 @RequestMapping("probation-case/{crn}/convictions")
+@PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
 class ConvictionResource(private val convictionService: ConvictionService) {
 
-    @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
+    @GetMapping
+    fun getConvictionsForOffenderByCrn(
+        @PathVariable crn: String,
+        @RequestParam(required = false, defaultValue = "false") activeOnly: Boolean,
+    ) = convictionService.convictionFor(crn, activeOnly)
+
     @GetMapping("/{convictionId}")
     fun getConvictionForOffenderByCrnAndConvictionId(
         @PathVariable crn: String,

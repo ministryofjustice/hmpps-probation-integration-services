@@ -34,7 +34,7 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ConvictionIntegrationTest {
+internal class ConvictionIntegrationByCrnAndEventIdTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
