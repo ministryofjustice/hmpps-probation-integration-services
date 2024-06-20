@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
@@ -39,6 +38,14 @@ internal class ConvictionIntegrationByCrnTest {
     lateinit var mockMvc: MockMvc
 
     @Test
+    fun `unauthorized status returned`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        mockMvc
+            .perform(get("/probation-case/$crn/convictions"))
+            .andExpect(status().isUnauthorized)
+    }
+
+    @Test
     fun `API call probation record not found`() {
         mockMvc
             .perform(get("/probation-case/A123456/convictions").withToken())
@@ -47,7 +54,7 @@ internal class ConvictionIntegrationByCrnTest {
     }
 
     @Test
-    fun `API call retuns list of events for a person`() {
+    fun `retun a list of active events for a person`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
@@ -232,9 +239,29 @@ internal class ConvictionIntegrationByCrnTest {
         val response = mockMvc
             .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andDo(print())
             .andReturn().response.contentAsJson<List<Conviction>>()
 
         assertEquals(expectedResponse, response)
+    }
+
+    @Test
+    fun `retun a list of active and inactive events for a person`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<List<Conviction>>()
+
+        assertEquals(2, response.size)
+    }
+
+    @Test
+    fun `retun a empty list for a person with no active events`() {
+        val crn = PersonGenerator.NO_ACTIVE_EVENTS.crn
+        mockMvc
+            .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.length()").value(0))
     }
 }

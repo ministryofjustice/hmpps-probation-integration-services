@@ -39,6 +39,14 @@ internal class ConvictionIntegrationByCrnAndEventIdTest {
     lateinit var mockMvc: MockMvc
 
     @Test
+    fun `unauthorized status returned`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        mockMvc
+            .perform(get("/probation-case/$crn/convictions/1"))
+            .andExpect(status().isUnauthorized)
+    }
+
+    @Test
     fun `API call probation record not found`() {
         mockMvc
             .perform(get("/probation-case/A123456/convictions/1").withToken())
