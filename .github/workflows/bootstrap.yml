@@ -211,61 +211,50 @@ jobs:
 
       - name: Create alerts for high throughput
         run: |
-          for env in dev preprod prod; do
-            curl "https://sentry.io/api/0/organizations/ministryofjustice/alert-rules/?duplicateRule=true&wizardV3=true" --fail \
-              -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-              -H 'Content-Type: application/json' --data "$(jq --arg env "$env" --arg project_slug "$SLUG" --arg project_name "$PROJECT_NAME" -n '{
-                "aggregate": "count()",
-                "alertType": "throughput",
-                "comparisonDelta": 10080,
-                "dataset": "generic_metrics",
-                "environment": $env,
-                "eventTypes": [
-                  "transaction"
-                ],
-                "name": ($project_name + " throughput (" + $env + ")"),
-                "owner": "team:1611212",
-                "projects": [
-                  $project_slug
-                ],
-                "query": "",
-                "queryType": 1,
-                "resolveThreshold": null,
-                "thresholdPeriod": 1,
-                "thresholdType": 0,
-                "timeWindow": 60,
-                "triggers": [
-                  {
-                    "actions": [
-                      {
-                        "inputChannelId": "C033HPR0W91",
-                        "integrationId": 50134,
-                        "options": null,
-                        "targetIdentifier": "#probation-integration-notifications",
-                        "targetType": "specific",
-                        "type": "slack"
-                      }
-                    ],
-                    "alertThreshold": 100,
-                    "label": "critical"
-                  },
-                  {
-                    "actions": [
-                      {
-                        "inputChannelId": "C033HPR0W91",
-                        "integrationId": 50134,
-                        "options": null,
-                        "targetIdentifier": "#probation-integration-notifications",
-                        "targetType": "specific",
-                        "type": "slack"
-                      }
-                    ],
-                    "alertThreshold": 50,
-                    "label": "warning"
-                  }
-                ]
-              }')"
-          done
+          curl "https://sentry.io/api/0/organizations/ministryofjustice/alert-rules/?duplicateRule=true&wizardV3=true" --fail \
+            -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
+            -H 'Content-Type: application/json' --data "$(jq --arg project_slug "$SLUG" --arg project_name "$PROJECT_NAME" -n '{
+              "aggregate": "count()",
+              "alertType": "throughput",
+              "comparisonDelta": 10080,
+              "dataset": "generic_metrics",
+              "environment": null,
+              "eventTypes": [
+                "transaction"
+              ],
+              "name": ($project_name + " throughput"),
+              "owner": "team:1611212",
+              "projects": [
+                $project_slug
+              ],
+              "query": "",
+              "queryType": 1,
+              "resolveThreshold": null,
+              "thresholdPeriod": 1,
+              "thresholdType": 0,
+              "timeWindow": 1440,
+              "triggers": [
+                {
+                  "actions": [],
+                  "alertThreshold": 500,
+                  "label": "critical"
+                },
+                {
+                  "actions": [
+                    {
+                      "inputChannelId": "C033HPR0W91",
+                      "integrationId": 50134,
+                      "options": null,
+                      "targetIdentifier": "#probation-integration-notifications",
+                      "targetType": "specific",
+                      "type": "slack"
+                    }
+                  ],
+                  "alertThreshold": 200,
+                  "label": "warning"
+                }
+              ]
+            }')"
         env:
           SLUG: ${{ steps.project.outputs.slug }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
