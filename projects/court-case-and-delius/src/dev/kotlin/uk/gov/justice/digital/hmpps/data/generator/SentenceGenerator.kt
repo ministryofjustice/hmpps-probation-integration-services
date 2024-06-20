@@ -29,6 +29,15 @@ object SentenceGenerator {
         court = CourtGenerator.BHAM
     )
 
+    val INACTIVE_EVENT = generateEvent(
+        PersonGenerator.CURRENTLY_MANAGED,
+        referralDate = LocalDate.now().minusDays(1),
+        inBreach = true,
+        breachDate = LocalDate.now().minusMonths(3),
+        court = CourtGenerator.BHAM,
+        active = false
+    )
+
     val CURRENT_SENTENCE = generateSentence(
         CURRENTLY_MANAGED,
         LocalDate.now(),
@@ -212,6 +221,17 @@ object SentenceGenerator {
     val MAIN_OFFENCE_DEFAULT =
         generateMainOffence(
             CURRENTLY_MANAGED,
+            MAIN_OFFENCE,
+            LocalDate.now(),
+            offenceCount = 1,
+            PersonGenerator.CURRENTLY_MANAGED.id,
+            ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, TIME_ZONE),
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, TIME_ZONE),
+        )
+
+    val MAIN_OFFENCE_FOR_INACTIVE_EVENT =
+        generateMainOffence(
+            INACTIVE_EVENT,
             MAIN_OFFENCE,
             LocalDate.now(),
             offenceCount = 1,

@@ -230,7 +230,7 @@ internal class ConvictionIntegrationByCrnTest {
         )
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions").withToken())
+            .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
             .andExpect(status().is2xxSuccessful)
             .andDo(print())
             .andReturn().response.contentAsJson<List<Conviction>>()

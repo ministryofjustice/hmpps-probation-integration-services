@@ -155,6 +155,7 @@ class DataLoader(
 
         em.saveAll(
             currentEvent,
+            SentenceGenerator.INACTIVE_EVENT,
             currentSentence,
             AdditionalSentenceGenerator.SENTENCE_DISQ,
             ReferenceDataGenerator.HOURS_WORKED,
@@ -179,6 +180,7 @@ class DataLoader(
             SentenceGenerator.HANDOVER_START_KEY_DATE,
             SentenceGenerator.HANDOVER_KEY_DATE,
             mainOffence,
+            SentenceGenerator.MAIN_OFFENCE_FOR_INACTIVE_EVENT,
             additionalOffence,
             requirement,
             licenceCondition,
