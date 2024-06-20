@@ -41,7 +41,7 @@ object DetailsGenerator {
         "Bob",
         "Richard",
         "Clive",
-        true,
+        true
     )
 
     val ALIAS_1 = OffenderAlias(
