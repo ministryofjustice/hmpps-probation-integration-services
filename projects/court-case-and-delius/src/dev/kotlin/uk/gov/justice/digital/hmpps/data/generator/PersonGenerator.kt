@@ -30,6 +30,8 @@ object PersonGenerator {
     val CURRENTLY_MANAGED = generate("C123456", currentDisposal = true)
     val PREVIOUSLY_MANAGED = generate("P123456")
     val NO_SENTENCE = generate("U123456")
+    val NO_ACTIVE_EVENTS = generate("Z123456")
+
     val PROVISION_1 = generateProvision(CURRENTLY_MANAGED.id, null)
     val DISABILITY_1 = generateDisability(CURRENTLY_MANAGED.id, null)
 

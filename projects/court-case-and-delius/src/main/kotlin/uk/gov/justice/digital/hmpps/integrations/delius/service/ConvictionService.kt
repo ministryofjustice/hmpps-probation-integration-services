@@ -22,6 +22,16 @@ class ConvictionService(
     private val upwAppointmentRepository: UpwAppointmentRepository,
     private val additionalSentenceRepository: AdditionalSentenceRepository
 ) {
+
+    fun convictionFor(crn: String, activeOnly: Boolean): List<Conviction> {
+        val person = personRepository.getPerson(crn)
+
+        return when (activeOnly) {
+            true -> eventRepository.findAllByPersonAndActiveIsTrue(person)
+            else -> eventRepository.findAllByPerson(person)
+        }.map { it.toConviction() }
+    }
+
     fun getConvictionFor(crn: String, eventId: Long): Conviction? {
         val person = personRepository.getPerson(crn)
         val event = eventRepository.getByPersonAndEventNumber(person, eventId)

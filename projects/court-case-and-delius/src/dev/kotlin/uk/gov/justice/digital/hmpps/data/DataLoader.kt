@@ -98,6 +98,7 @@ class DataLoader(
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
             PersonGenerator.NO_SENTENCE,
+            PersonGenerator.NO_ACTIVE_EVENTS,
             PersonGenerator.PROVISION_1,
             PersonGenerator.DISABILITY_1,
             PersonGenerator.PREVIOUS_CONVICTION_DOC,
@@ -155,6 +156,8 @@ class DataLoader(
 
         em.saveAll(
             currentEvent,
+            SentenceGenerator.INACTIVE_EVENT,
+            SentenceGenerator.INACTIVE_EVENT_1,
             currentSentence,
             AdditionalSentenceGenerator.SENTENCE_DISQ,
             ReferenceDataGenerator.HOURS_WORKED,
@@ -179,6 +182,8 @@ class DataLoader(
             SentenceGenerator.HANDOVER_START_KEY_DATE,
             SentenceGenerator.HANDOVER_KEY_DATE,
             mainOffence,
+            SentenceGenerator.MAIN_OFFENCE_FOR_INACTIVE_EVENT,
+            SentenceGenerator.MAIN_OFFENCE_FOR_INACTIVE_EVENT_1,
             additionalOffence,
             requirement,
             licenceCondition,
