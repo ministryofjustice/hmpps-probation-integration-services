@@ -1,0 +1,41 @@
+# CAS2 Workflow: Referral Application
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+direction: right
+
+# What triggers the workflow?
+cas2: CAS2  {
+     style.font-size: 24
+
+     explanation: |md
+     ## Referral Application Workflow
+     Referral application actions raise domain events
+     |
+
+     application_submitted: Application Submitted
+}
+
+domain_event_1: "applications.cas2\n.application.submitted" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+
+     explanation: |md
+     ## Delius Workflow
+     Contact is added to Delius \
+     to indicate referral application creation
+     |
+
+    d_contact: Create Contact
+}
+
+cas2 -> domain_event_1
+
+domain_event_1 -> delius
