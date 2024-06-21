@@ -135,7 +135,7 @@ data class Court(
     val courtName: String?,
     val telephoneNumber: String?,
     val fax: String?,
-    val buildingName: String,
+    val buildingName: String?,
     val street: String?,
     val locality: String?,
     val town: String?,
