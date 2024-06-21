@@ -50,6 +50,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProbationStatusDetail"
+  /probation-case/{crn}/convictions:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getConvictionsForOffenderByCrn
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: activeOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conviction"
   /probation-case/{crn}/convictions/{convictionId}:
     get:
       tags:

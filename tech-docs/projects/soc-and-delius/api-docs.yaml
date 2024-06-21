@@ -172,6 +172,7 @@ components:
       - dateOfBirth
       - keyDates
       - name
+      - offenderAliases
       - offenderManager
       type: object
       properties:
@@ -218,6 +219,10 @@ components:
         nsiBreachDate:
           type: string
           format: date
+        offenderAliases:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderAlias"
     KeyDate:
       required:
       - code
@@ -266,6 +271,31 @@ components:
         middleName:
           type: string
         surname:
+          type: string
+    OffenderAlias:
+      required:
+      - firstName
+      - gender
+      - id
+      - middleNames
+      - surname
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        dateOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+        surname:
+          type: string
+        gender:
           type: string
     Profile:
       type: object

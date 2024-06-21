@@ -326,7 +326,20 @@
   "lastRecallDate": "string",
   "recallReason": "string",
   "nsiRecallDate": "string",
-  "nsiBreachDate": "string"
+  "nsiBreachDate": "string",
+  "offenderAliases": [
+    {
+      "id": "integer",
+      "dateOfBirth": "string",
+      "firstName": "string",
+      "middleNames": [
+        {
+        }
+      ],
+      "surname": "string",
+      "gender": "string"
+    }
+  ]
 }</code></pre>
 
 </td>
@@ -855,6 +868,16 @@
 </td>
 </tr>
 
+<tr>
+<td>offenderAliases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offenderalias'>OffenderAlias</a>
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -1005,6 +1028,78 @@
 
 <tr>
 <td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderalias">OffenderAlias</h3>
+
+
+<table class='schema-offenderalias'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleNames</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
 <td>string</td>
 <td>true</td>
 <td></td>

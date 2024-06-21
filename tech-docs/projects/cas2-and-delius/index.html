@@ -125,7 +125,7 @@
 <h2 id="business-need">Business Need</h2>
 <p>Ensuring the Probation Practitioner has an up-to-date view of activity in the CAS2 service when interacting with the probation case via Delius.</p>
 <h2 id="context-map">Context Map</h2>
-<p><a href="./tech-docs/src/img/cas2-and-delius-context-map.svg" rel="noopener noreferrer"><img src="images/tech-docs/src/img/cas2-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<p><a href="././img/cas2-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/cas2-and-delius-context-map.svg" alt="Context Map" /></a></p>
 <h2 id="workflows">Workflows</h2>
 <p>CAS2 domain events are raised in real time as referral applications are processed. There is a single update domain event to inform of progress or changes to the referral application.</p>
 <h3 id="create-a-cas2-referral-application">Create a CAS2 Referral Application</h3>
@@ -140,7 +140,7 @@
 <td>applications.cas2.application.submitted</td>
 </tr>
         </table>
-      </div><p><a href="./tech-docs/src/img/cas2-and-delius-workflow-application.svg" rel="noopener noreferrer"><img src="images/tech-docs/src/img/cas2-and-delius-workflow-application.svg" alt="Context Map" /></a></p>
+      </div><p><a href="././img/cas2-and-delius-workflow-application.svg" rel="noopener noreferrer"><img src="img/cas2-and-delius-workflow-application.svg" alt="Context Map" /></a></p>
 <h3 id="update-the-status-of-a-cas2-referral-application">Update the Status of a CAS2 Referral Application</h3>
 <p>A referral application is updated in the CAS2 service which is reflected in a Delius contact. Only a single update contact exists in Delius for any single CAS2 referral and the contact is updated with the latest status. An <code>EXTERNAL_REFERENCE</code> URN is added to the contact in the form <code>urn:hmpps:cas2:application-status-updated:{referralId}</code> using the CAS2 referral ID as a unique reference.</p>
 <div class="table-container">
@@ -153,7 +153,7 @@
 <td>applications.cas2.application.status-updated</td>
 </tr>
         </table>
-      </div><p><a href="./tech-docs/src/img/cas2-and-delius-workflow-application-update.svg" rel="noopener noreferrer"><img src="images/tech-docs/src/img/cas2-and-delius-workflow-application-update.svg" alt="Context Map" /></a></p>
+      </div><p><a href="././img/cas2-and-delius-workflow-application-update.svg" rel="noopener noreferrer"><img src="img/cas2-and-delius-workflow-application-update.svg" alt="Context Map" /></a></p>
 <h2 id="interfaces">Interfaces</h2>
 <h3 id="message-interface">Message Interface</h3>
 <p>The service responds to HMPPS Domain Event messages via the
