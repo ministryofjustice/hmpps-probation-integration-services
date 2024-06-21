@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,5 +25,5 @@ class PersonResource(private val personService: PersonService) {
     }
 
     @GetMapping(value = ["/all-probation-cases"])
-    fun getPersonDetails(pageable: Pageable) = personService.getAllPersonDetails(pageable)
+    fun getPersonDetails(pageable: Pageable) = PagedModel(personService.getAllPersonDetails(pageable))
 }

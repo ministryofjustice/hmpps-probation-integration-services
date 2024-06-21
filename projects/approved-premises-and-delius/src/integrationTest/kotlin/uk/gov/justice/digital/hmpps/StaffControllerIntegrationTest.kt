@@ -26,8 +26,8 @@ class StaffControllerIntegrationTest {
         mockMvc
             .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withToken())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.numberOfElements", equalTo(3)))
-            .andExpect(jsonPath("$.size", equalTo(100)))
+            .andExpect(jsonPath("$.page.totalElements", equalTo(3)))
+            .andExpect(jsonPath("$.page.size", equalTo(100)))
             .andExpect(
                 jsonPath(
                     "$.content[*].name.surname",
@@ -43,8 +43,9 @@ class StaffControllerIntegrationTest {
         mockMvc
             .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withToken())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.numberOfElements", equalTo(0)))
-            .andExpect(jsonPath("$.totalElements", equalTo(0)))
+            .andExpect(jsonPath("$.content.size()", equalTo(0)))
+            .andExpect(jsonPath("$.page.totalPages", equalTo(0)))
+            .andExpect(jsonPath("$.page.totalElements", equalTo(0)))
     }
 
     @Test
@@ -60,7 +61,7 @@ class StaffControllerIntegrationTest {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         mockMvc.perform(get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withToken())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.numberOfElements", equalTo(1)))
+            .andExpect(jsonPath("$.page.totalElements", equalTo(1)))
             .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker"))))
             .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true))))
     }

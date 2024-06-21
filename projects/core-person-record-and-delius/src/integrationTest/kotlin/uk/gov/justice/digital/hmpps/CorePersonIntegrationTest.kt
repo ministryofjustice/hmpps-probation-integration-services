@@ -67,7 +67,7 @@ internal class CorePersonIntegrationTest {
         mockMvc
             .perform(get("/all-probation-cases?sort=crn,desc").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("totalElements", equalTo(2)))
+            .andExpect(jsonPath("page.totalElements", equalTo(2)))
             .andExpect(jsonPath("content[0].identifiers.crn", equalTo(minPerson.identifiers.crn)))
             .andExpect(jsonPath("content[1].identifiers.crn", equalTo(fullPerson.identifiers.crn)))
     }

@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -23,7 +23,7 @@ class StaffService(
         approvedPremisesCode: String,
         keyWorkersOnly: Boolean,
         pageable: Pageable
-    ): Page<StaffResponse> {
+    ): PagedModel<StaffResponse> {
         if (!approvedPremisesRepository.existsByCodeCode(approvedPremisesCode)) {
             throw NotFoundException("Approved Premises", "code", approvedPremisesCode)
         }
@@ -36,7 +36,7 @@ class StaffService(
             staffRepository.findAllStaffLinkedToApprovedPremisesTeam(approvedPremisesCode, pageable).map {
                 it.toResponse(approvedPremisesCode)
             }
-        }
+        }.let { PagedModel(it) }
     }
 
     fun getStaffByUsername(username: String) =
