@@ -106,11 +106,12 @@ class DataLoader(
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_WITH_NO_STAFF)
         teamRepository.save(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
         teamRepository.save(TeamGenerator.UNALLOCATED)
+        teamRepository.save(TeamGenerator.E2E_TEST_TEAM)
         staffRepository.save(
             StaffGenerator.generate(
                 "Key-worker",
                 "KEY0001",
-                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM),
+                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM, TeamGenerator.E2E_TEST_TEAM),
                 approvedPremises = listOf(ApprovedPremisesGenerator.DEFAULT, ApprovedPremisesGenerator.E2E_TEST)
             )
         )
