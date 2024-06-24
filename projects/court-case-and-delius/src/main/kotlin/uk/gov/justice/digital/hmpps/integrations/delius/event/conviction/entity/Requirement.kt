@@ -86,7 +86,7 @@ interface ConvictionEventRepository : JpaRepository<Event, Long> {
 }
 
 fun ConvictionEventRepository.getByEventId(eventId: Long): Event =
-    findEventById(eventId) ?: throw NotFoundException("Event with ID $eventId not found")
+    findEventById(eventId) ?: throw NotFoundException("Conviction with convictionId $eventId not found")
 
 @Immutable
 @Entity(name = "conviction_disposal")
