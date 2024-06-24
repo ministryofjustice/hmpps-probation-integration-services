@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
@@ -33,7 +34,7 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ConvictionIntegrationByCrnTest {
+internal class ConvictionByCrnAndEventIdIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -41,20 +42,30 @@ internal class ConvictionIntegrationByCrnTest {
     fun `unauthorized status returned`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         mockMvc
-            .perform(get("/probation-case/$crn/convictions"))
+            .perform(get("/probation-case/crn/$crn/convictions/1"))
             .andExpect(status().isUnauthorized)
     }
 
     @Test
     fun `API call probation record not found`() {
         mockMvc
-            .perform(get("/probation-case/A123456/convictions").withToken())
+            .perform(get("/probation-case/crn/A123456/convictions/1").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
     }
 
     @Test
-    fun `retun a list of active events for a person`() {
+    fun `API call sentence not found`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+
+        mockMvc
+            .perform(get("/probation-case/crn/$crn/convictions/3").withToken())
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.message").value("Conviction with ID 3 for Offender with crn C123456 not found"))
+    }
+
+    @Test
+    fun `API call retuns sentence and custodial status information by crn convictionId`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
@@ -147,121 +158,99 @@ internal class ConvictionIntegrationByCrnTest {
             cja2003Order = CURFEW_ORDER.cja2003Order,
             legacyOrder = CURFEW_ORDER.legacyOrder
         )
-        val expectedResponse = listOf(
-            Conviction(
-                event.id, event.eventNumber,
-                event.active,
-                event.inBreach,
-                2,
-                event.breachEnd,
-                false,
-                event.convictionDate,
-                event.referralDate,
-                expectedOffences,
-                expectedSentence,
-                KeyValue("101", "Adjourned - Pre-Sentence Report"),
-                Custody(
-                    "FD1234",
-                    Institution(
-                        WSIHMP.id.institutionId,
-                        WSIHMP.id.establishment,
-                        WSIHMP.code,
-                        WSIHMP.description,
-                        WSIHMP.institutionName,
-                        KeyValue(WSIHMP.establishmentType.code, WSIHMP.establishmentType.description),
-                        WSIHMP.private,
-                        WSIHMP.nomisCdeCode
-                    ),
-                    CustodyRelatedKeyDates(
-                        LocalDate.now(),
-                        LocalDate.now().plusDays(1),
-                        LocalDate.now().plusDays(2),
-                        LocalDate.now().plusDays(3),
-                        LocalDate.now().plusDays(4),
-                        LocalDate.now().plusDays(5),
-                        LocalDate.now().plusDays(6),
-                        LocalDate.now().plusDays(7),
-                        LocalDate.now().plusDays(8),
-                    ),
-                    KeyValue(
-                        ReferenceDataGenerator.CUSTODIAL_STATUS.code,
-                        ReferenceDataGenerator.CUSTODIAL_STATUS.description
-                    ),
-                    LocalDate.now()
+        val expectedResponse = Conviction(
+            event.id, event.eventNumber,
+            event.active,
+            event.inBreach,
+            2,
+            event.breachEnd,
+            false,
+            event.convictionDate,
+            event.referralDate,
+            expectedOffences,
+            expectedSentence,
+            KeyValue("101", "Adjourned - Pre-Sentence Report"),
+            Custody(
+                "FD1234",
+                Institution(
+                    WSIHMP.id.institutionId,
+                    WSIHMP.id.establishment,
+                    WSIHMP.code,
+                    WSIHMP.description,
+                    WSIHMP.institutionName,
+                    KeyValue(WSIHMP.establishmentType.code, WSIHMP.establishmentType.description),
+                    WSIHMP.private,
+                    WSIHMP.nomisCdeCode
                 ),
-                Court(
-                    BHAM.id,
-                    BHAM.code,
-                    BHAM.selectable,
-                    BHAM.courtName,
-                    BHAM.telephoneNumber,
-                    BHAM.faxNumber,
-                    BHAM.buildingName,
-                    BHAM.street,
-                    BHAM.locality,
-                    BHAM.town,
-                    BHAM.county,
-                    BHAM.postcode,
-                    BHAM.country,
-                    BHAM.courtTypeId,
-                    BHAM.createdDatetime,
-                    BHAM.lastUpdatedDatetime,
-                    BHAM.probationAreaId,
-                    BHAM.secureEmailAddress,
-                    KeyValue(BHAM.probationArea.code, BHAM.probationArea.description),
-                    KeyValue(BHAM.courtType.code, BHAM.courtType.description)
+                CustodyRelatedKeyDates(
+                    LocalDate.now(),
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(2),
+                    LocalDate.now().plusDays(3),
+                    LocalDate.now().plusDays(4),
+                    LocalDate.now().plusDays(5),
+                    LocalDate.now().plusDays(6),
+                    LocalDate.now().plusDays(7),
+                    LocalDate.now().plusDays(8),
                 ),
-                CourtAppearanceBasic(
-                    COURT_APPEARANCE.id,
-                    COURT_APPEARANCE.appearanceDate,
-                    COURT_APPEARANCE.court.code,
-                    COURT_APPEARANCE.court.courtName,
-                    KeyValue(COURT_APPEARANCE.appearanceType.code, COURT_APPEARANCE.appearanceType.description),
-                    COURT_APPEARANCE.person.crn
+                KeyValue(
+                    ReferenceDataGenerator.CUSTODIAL_STATUS.code,
+                    ReferenceDataGenerator.CUSTODIAL_STATUS.description
                 ),
-                listOf(
-                    OrderManager(
-                        PROBATIONARE_AREA.id,
-                        null,
-                        CURRENT_ORDER_MANAGER.id,
-                        ALLOCATED.getName(),
-                        ALLOCATED.code,
-                        CURRENT_ORDER_MANAGER.allocationDate,
-                        CURRENT_ORDER_MANAGER.endDate,
-                        null,
-                        null,
-                        PROBATIONARE_AREA.code
-                    )
+                LocalDate.now()
+            ),
+            Court(
+                BHAM.id,
+                BHAM.code,
+                BHAM.selectable,
+                BHAM.courtName,
+                BHAM.telephoneNumber,
+                BHAM.faxNumber,
+                BHAM.buildingName,
+                BHAM.street,
+                BHAM.locality,
+                BHAM.town,
+                BHAM.county,
+                BHAM.postcode,
+                BHAM.country,
+                BHAM.courtTypeId,
+                BHAM.createdDatetime,
+                BHAM.lastUpdatedDatetime,
+                BHAM.probationAreaId,
+                BHAM.secureEmailAddress,
+                KeyValue(BHAM.probationArea.code, BHAM.probationArea.description),
+                KeyValue(BHAM.courtType.code, BHAM.courtType.description)
+            ),
+            CourtAppearanceBasic(
+                COURT_APPEARANCE.id,
+                COURT_APPEARANCE.appearanceDate,
+                COURT_APPEARANCE.court.code,
+                COURT_APPEARANCE.court.courtName,
+                KeyValue(COURT_APPEARANCE.appearanceType.code, COURT_APPEARANCE.appearanceType.description),
+                COURT_APPEARANCE.person.crn
+            ),
+            listOf(
+                OrderManager(
+                    PROBATIONARE_AREA.id,
+                    null,
+                    CURRENT_ORDER_MANAGER.id,
+                    ALLOCATED.getName(),
+                    ALLOCATED.code,
+                    CURRENT_ORDER_MANAGER.allocationDate,
+                    CURRENT_ORDER_MANAGER.endDate,
+                    null,
+                    null,
+                    PROBATIONARE_AREA.code
                 )
             )
         )
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
+            .perform(get("/probation-case/crn/$crn/convictions/${event.id}").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsJson<List<Conviction>>()
+            .andDo(print())
+            .andReturn().response.contentAsJson<Conviction>()
 
         assertEquals(expectedResponse, response)
-    }
-
-    @Test
-    fun `retun a list of active and inactive events for a person`() {
-        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-
-        mockMvc
-            .perform(get("/probation-case/$crn/convictions").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].active").value(true))
-            .andExpect(jsonPath("$[1].active").value(false))
-    }
-
-    @Test
-    fun `retun a empty list for a person with no active events`() {
-        val crn = PersonGenerator.NO_ACTIVE_EVENTS.crn
-        mockMvc
-            .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
-            .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.length()").value(0))
     }
 }
