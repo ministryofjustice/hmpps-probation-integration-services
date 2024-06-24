@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
+import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.conviction.ConvictionRequirements
 import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.ConvictionEventRepository
@@ -9,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Requirement as RequirementEntity
 
+@Service
 class RequirementService(
     private val personRepository: PersonRepository,
     private val convictionEventRepository: ConvictionEventRepository,
