@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
@@ -74,8 +75,18 @@ class Requirement(
 class Event(
     @Id
     @Column(name = "event_id", nullable = false)
-    val id: Long
+    val id: Long,
+
+    @Column(name = "offender_id")
+    val offenderId: Long
 )
+
+interface ConvictionEventRepository : JpaRepository<Event, Long> {
+    fun findEventById(id: Long): Event?
+}
+
+fun ConvictionEventRepository.getByEventId(eventId: Long): Event =
+    findEventById(eventId) ?: throw NotFoundException("Event with ID $eventId not found")
 
 @Immutable
 @Entity(name = "conviction_disposal")
