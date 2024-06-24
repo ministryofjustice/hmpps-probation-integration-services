@@ -494,7 +494,6 @@ components:
             $ref: "#/components/schemas/OrderManager"
     Court:
       required:
-      - buildingName
       - code
       - courtId
       - courtType

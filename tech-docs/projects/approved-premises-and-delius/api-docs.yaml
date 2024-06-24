@@ -321,7 +321,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageStaffResponse"
+                $ref: "#/components/schemas/PagedModelStaffResponse"
 components:
   schemas:
     CaseAccess:
@@ -657,73 +657,30 @@ components:
           type: array
           items:
             type: string
-    PageStaffResponse:
+    PageMetadata:
       type: object
       properties:
-        totalPages:
+        size:
           type: integer
-          format: int32
+          format: int64
+        number:
+          type: integer
+          format: int64
         totalElements:
           type: integer
           format: int64
-        size:
+        totalPages:
           type: integer
-          format: int32
+          format: int64
+    PagedModelStaffResponse:
+      type: object
+      properties:
         content:
           type: array
           items:
             $ref: "#/components/schemas/StaffResponse"
-        number:
-          type: integer
-          format: int32
-        sort:
-          type: array
-          items:
-            $ref: "#/components/schemas/SortObject"
-        numberOfElements:
-          type: integer
-          format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        empty:
-          type: boolean
-    PageableObject:
-      type: object
-      properties:
-        offset:
-          type: integer
-          format: int64
-        sort:
-          type: array
-          items:
-            $ref: "#/components/schemas/SortObject"
-        paged:
-          type: boolean
-        pageNumber:
-          type: integer
-          format: int32
-        pageSize:
-          type: integer
-          format: int32
-        unpaged:
-          type: boolean
-    SortObject:
-      type: object
-      properties:
-        direction:
-          type: string
-        nullHandling:
-          type: string
-        ascending:
-          type: boolean
-        property:
-          type: string
-        ignoreCase:
-          type: boolean
+        page:
+          $ref: "#/components/schemas/PageMetadata"
     StaffGrade:
       required:
       - code

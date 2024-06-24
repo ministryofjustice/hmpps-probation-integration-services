@@ -313,9 +313,6 @@
 
 
 <pre><code>{
-  "totalPages": "integer",
-  "totalElements": "integer",
-  "size": "integer",
   "content": [
     {
       "identifiers": {
@@ -392,41 +389,17 @@
       }
     }
   ],
-  "number": "integer",
-  "sort": [
-    {
-      "direction": "string",
-      "nullHandling": "string",
-      "ascending": "boolean",
-      "property": "string",
-      "ignoreCase": "boolean"
-    }
-  ],
-  "first": "boolean",
-  "last": "boolean",
-  "numberOfElements": "integer",
-  "pageable": {
-    "offset": "integer",
-    "sort": [
-      {
-        "direction": "string",
-        "nullHandling": "string",
-        "ascending": "boolean",
-        "property": "string",
-        "ignoreCase": "boolean"
-      }
-    ],
-    "paged": "boolean",
-    "pageNumber": "integer",
-    "pageSize": "integer",
-    "unpaged": "boolean"
-  },
-  "empty": "boolean"
+  "page": {
+    "size": "integer",
+    "number": "integer",
+    "totalElements": "integer",
+    "totalPages": "integer"
+  }
 }</code></pre>
 
 </td>
 <td>
-<a href='#schema-pagepersondetail'>PagePersonDetail</a>
+<a href='#schema-pagedmodelpersondetail'>PagedModelPersonDetail</a>
 </td>
 </tr>
 
@@ -948,17 +921,27 @@
 </tbody>
 </table>
 
-<h3 id="schema-pagepersondetail">PagePersonDetail</h3>
+<h3 id="schema-pagemetadata">PageMetadata</h3>
 
 
-<table class='schema-pagepersondetail'>
+<table class='schema-pagemetadata'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>totalPages</td>
+<td>size</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>number</td>
 <td>integer</td>
 <td>false</td>
 <td></td>
@@ -978,7 +961,7 @@
 </tr>
 
 <tr>
-<td>size</td>
+<td>totalPages</td>
 <td>integer</td>
 <td>false</td>
 <td></td>
@@ -986,6 +969,18 @@
   
 </td>
 </tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pagedmodelpersondetail">PagedModelPersonDetail</h3>
+
+
+<table class='schema-pagedmodelpersondetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
 
 <tr>
 <td>content</td>
@@ -998,206 +993,12 @@
 </tr>
 
 <tr>
-<td>number</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>sort</td>
-<td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-sortobject'>SortObject</a>
-</td>
-</tr>
-
-<tr>
-<td>first</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>last</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>numberOfElements</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pageable</td>
+<td>page</td>
 <td>object</td>
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-pageableobject'>PageableObject</a>
-</td>
-</tr>
-
-<tr>
-<td>empty</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-pageableobject">PageableObject</h3>
-
-
-<table class='schema-pageableobject'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>offset</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>sort</td>
-<td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-sortobject'>SortObject</a>
-</td>
-</tr>
-
-<tr>
-<td>paged</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pageNumber</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pageSize</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>unpaged</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-sortobject">SortObject</h3>
-
-
-<table class='schema-sortobject'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>direction</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>nullHandling</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>ascending</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>property</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>ignoreCase</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
+  <a href='#schema-pagemetadata'>PageMetadata</a>
 </td>
 </tr>
 
