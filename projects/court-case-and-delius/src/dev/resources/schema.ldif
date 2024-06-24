@@ -1,0 +1,13 @@
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=JoeBloggs,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: JoeBloggs
+sn: Bloggs
+givenname: Joe
+mail: joe.blogs@moj.gov.uk
+telephoneNumber: 07321165373

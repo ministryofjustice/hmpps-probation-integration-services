@@ -26,17 +26,20 @@ class PersonManager(
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    val team: Team,
+    val team: Team?,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
-    val staff: Staff,
+    val staff: Staff?,
 
     @Column(name = "staff_employee_id")
     val staffEmployeeId: Long,
 
     @Column(name = "trust_provider_flag", columnDefinition = "number")
     val trustProviderFlag: Boolean,
+
+    @Column(name = "officer_code", columnDefinition = "char(7)")
+    val officerCode: String,
 
     @ManyToOne
     @JoinColumns(
@@ -54,6 +57,17 @@ class PersonManager(
         )
     )
     val officer: Officer,
+
+    @OneToMany
+    @JoinColumns(
+        JoinColumn(
+            name = "offender_manager_id",
+            referencedColumnName = "offender_manager_id",
+            insertable = false,
+            updatable = false
+        ), JoinColumn(name = "offender_id", referencedColumnName = "offender_id", insertable = false, updatable = false)
+    )
+    val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
 
     @ManyToOne
     @JoinColumn(name = "provider_employee_id")
@@ -77,13 +91,23 @@ class PersonManager(
     @Column(name = "end_date")
     val endDate: LocalDate? = null,
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER")
+    @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER")
+    @Column(name = "soft_deleted", columnDefinition = "number")
     var softDeleted: Boolean = false
 
-)
+) {
+    @Transient
+    var emailAddress: String? = null
+
+    @Transient
+    var telephoneNumber: String? = null
+
+    fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.isActive() }
+
+    fun isUnallocated(): Boolean = staff?.code?.endsWith("U") ?: false
+}
 
 @Immutable
 @Entity

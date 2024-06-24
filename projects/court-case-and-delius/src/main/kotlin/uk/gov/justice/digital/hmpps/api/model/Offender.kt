@@ -86,13 +86,13 @@ data class StaffHuman(
 )
 
 data class Institution(
-    val institutionId: Long? = null,
-    val isEstablishment: Boolean? = null,
-    val code: String? = null,
-    val description: String? = null,
-    val institutionName: String? = null,
-    val establishmentType: KeyValue? = null,
-    val isPrivate: Boolean? = null,
+    val institutionId: Long,
+    val isEstablishment: Boolean?,
+    val code: String,
+    val description: String,
+    val institutionName: String?,
+    val establishmentType: KeyValue?,
+    val isPrivate: Boolean,
     val nomsPrisonInstitutionCode: String? = null
 )
 
@@ -100,16 +100,19 @@ data class ProbationArea(
     val probationAreaId: Long,
     val code: String,
     val description: String,
-    val nps: Boolean
+    val organisation: KeyValue,
+    val institution: Institution?,
+    val nps: Boolean,
+    val teams: List<AllTeam> = emptyList()
 )
 
 data class OffenderManager(
     val trustOfficer: Human,
-    val staff: StaffHuman,
+    val staff: StaffHuman?,
     val providerEmployee: Human? = null,
     val partitionArea: String,
     val softDeleted: Boolean,
-    val team: Team,
+    val team: Team?,
     val probationArea: ProbationArea,
     val fromDate: LocalDate,
     val toDate: LocalDate? = null,
@@ -124,7 +127,24 @@ data class Team(
     val emailAddress: String? = null,
     val localDeliveryUnit: KeyValue,
     val district: KeyValue,
-    val borough: KeyValue
+    val borough: KeyValue,
+    val teamType: KeyValue,
+    val startDate: LocalDate,
+    val endDate: LocalDate?
+)
+
+data class AllTeam(
+    val providerTeamId: Long? = null,
+    val teamId: Long? = null,
+    val code: String,
+    val description: String? = null,
+    val name: String? = null,
+    val isPrivate: Boolean? = null,
+    val externalProvider: KeyValue? = null,
+    val scProvider: KeyValue? = null,
+    val localDeliveryUnit: KeyValue? = null,
+    val district: KeyValue? = null,
+    val borough: KeyValue? = null,
 )
 
 data class Address(

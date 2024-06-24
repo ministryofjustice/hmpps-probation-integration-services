@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import java.time.LocalDate
+import kotlin.jvm.Transient
 
 @Immutable
 @Entity
@@ -24,6 +26,9 @@ class Staff(
     @ManyToOne
     @JoinColumn(name = "staff_grade_id")
     val grade: ReferenceData?,
+
+    @OneToOne(mappedBy = "staff")
+    val user: StaffUser? = null,
 
     @Id
     @Column(name = "staff_id")
@@ -67,5 +72,38 @@ class Team(
 
     @ManyToOne
     @JoinColumn(name = "district_id")
-    val district: District
+    val district: District,
+
+    @Column(name = "start_date")
+    val startDate: LocalDate = LocalDate.now(),
+
+    @Column(name = "end_date")
+    val endDate: LocalDate? = null,
+
+    @JoinColumn(name = "probation_area_id")
+    @ManyToOne
+    val probationArea: ProbationAreaEntity,
+
+    @Column(name = "private", columnDefinition = "number")
+    val private: Boolean = false
 )
+
+@Entity
+@Immutable
+@Table(name = "user_")
+class StaffUser(
+
+    @OneToOne
+    @JoinColumn(name = "staff_id")
+    val staff: Staff? = null,
+
+    @Column(name = "distinguished_name")
+    val username: String,
+
+    @Id
+    @Column(name = "user_id")
+    val id: Long
+) {
+    @Transient
+    var email: String? = null
+}

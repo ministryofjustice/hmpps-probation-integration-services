@@ -27,6 +27,10 @@ spring:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
+  ldap:
+    base: ou=Users,dc=moj,dc=com
+    base-environment:
+      java.naming.ldap.derefAliases: never
 
 oauth2.roles:
   - PROBATION_API__COURT_CASE__CASE_DETAIL
@@ -51,6 +55,7 @@ server.shutdown: immediate
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
+  ldap.embedded.base-dn: ${spring.ldap.base}
 
 seed.database: true
 wiremock.enabled: true

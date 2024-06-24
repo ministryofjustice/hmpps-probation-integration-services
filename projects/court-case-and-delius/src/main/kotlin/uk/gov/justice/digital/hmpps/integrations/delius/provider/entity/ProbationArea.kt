@@ -2,7 +2,9 @@ package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Institution
 
 @Entity
 @Immutable
@@ -18,18 +20,71 @@ class ProbationAreaEntity(
     @Column(columnDefinition = "char(3)")
     val code: String,
 
-    @Column(columnDefinition = "char(1)")
-    val establishment: String?,
-
     @Column(name = "private", columnDefinition = "number")
     val privateSector: Boolean,
+
+    @ManyToOne @JoinColumn(name = "organisation_id")
+    val organisation: Organisation,
 
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
 
     @OneToMany(mappedBy = "probationArea")
-    val boroughs: List<Borough> = listOf()
+    val boroughs: List<Borough> = listOf(),
+
+    @ManyToOne
+    @JoinColumns(
+        JoinColumn(name = "institution_id", referencedColumnName = "institution_id"),
+        JoinColumn(name = "establishment", referencedColumnName = "establishment")
+    )
+    val institution: Institution? = null,
+
+    @OneToMany
+    @JoinColumn(name = "probation_area_id")
+    val teams: List<Team> = emptyList(),
+
+    @OneToMany
+    @JoinColumn(name = "probation_area_id")
+    val providerTeams: List<ProviderTeam> = emptyList()
+)
+
+@Immutable
+@Entity
+@Table
+class ProviderTeam(
+
+    @Id
+    @Column(name = "provider_team_id")
+    val providerTeamId: Long,
+
+    @Column(name = "code")
+    val code: String,
+
+    @Column(name = "name")
+    val name: String,
+
+    @Column(name = "probation_area_id")
+    val probationAreaId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "external_provider_id")
+    val externalProvider: ExternalProvider
+)
+
+@Immutable
+@Entity
+@Table
+class ExternalProvider(
+
+    @Id @Column(name = "external_provider_id")
+    val externalProviderId: Long,
+
+    @Column(name = "code")
+    val code: String,
+
+    @Column(name = "description")
+    val description: String,
 )
 
 @Immutable
@@ -94,7 +149,37 @@ class Borough(
     @Column(name = "code")
     val code: String,
 
+    @Column(name = "description")
+    val description: String,
+
     @OneToMany(mappedBy = "borough")
-    val districts: List<District> = listOf()
+    val districts: List<District> = listOf(),
+
+    @ManyToOne
+    @JoinColumn(name = "organisation_id")
+    val organisation: Organisation? = null
 
 )
+
+@Immutable
+@Entity
+@Table
+@SQLRestriction("active_flag = 1")
+class Organisation(
+
+    @Id
+    @Column(name = "organisation_id")
+    val organisationId: Long,
+
+    @Column(name = "code")
+    val code: String,
+
+    @Column(name = "description")
+    val description: String,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val activeFlag: Boolean,
+
+    )
+
+

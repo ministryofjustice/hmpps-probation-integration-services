@@ -1,15 +1,16 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.integrations.delius.service.OffenderManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.service.OffenderService
 
 @RestController
 @RequestMapping("probation-case/{crn}")
-class ProbationRecordResource(private val offenderService: OffenderService) {
+class ProbationRecordResource(
+    private val offenderService: OffenderService,
+    private val offenderManagerService: OffenderManagerService
+) {
 
     @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
     @GetMapping
@@ -22,4 +23,11 @@ class ProbationRecordResource(private val offenderService: OffenderService) {
     fun getOffenderDetail(
         @PathVariable crn: String
     ) = offenderService.getOffenderDetail(crn)
+
+    @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
+    @GetMapping("/allOffenderManagers")
+    fun getAllOffenderManagers(
+        @PathVariable crn: String,
+        @RequestParam(defaultValue = "false", required = false) includeProbationAreaTeams: Boolean
+    ) = offenderManagerService.getAllOffenderManagersForCrn(crn, includeProbationAreaTeams)
 }

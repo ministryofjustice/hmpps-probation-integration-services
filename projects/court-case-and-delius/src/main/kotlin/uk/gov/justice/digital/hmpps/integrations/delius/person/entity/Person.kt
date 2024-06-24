@@ -145,10 +145,6 @@ class Person(
     @OneToMany(mappedBy = "personId", fetch = FetchType.LAZY)
     val addresses: List<PersonAddress> = emptyList(),
 
-    @OneToMany
-    @JoinColumn(name = "offender_id")
-    val offenderManagers: List<PersonManager>,
-
     @Column(name = "allow_sms")
     @Convert(converter = YesNoConverter::class)
     val allowSms: Boolean? = false,
@@ -176,7 +172,15 @@ class Person(
     val restrictionMessage: String? = null,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @OneToMany(mappedBy = "person")
+    @SQLRestriction("active_flag = 1 and soft_deleted != 1")
+    val offenderManagers: List<PersonManager> = emptyList(),
+
+    @OneToMany(mappedBy = "personId")
+    @SQLRestriction("active_flag = 1 and soft_deleted != 1")
+    val prisonOffenderManagers: List<PrisonManager> = emptyList()
 
 )
 

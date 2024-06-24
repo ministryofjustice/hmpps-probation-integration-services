@@ -45,6 +45,9 @@ object PersonGenerator {
     val ADDRESS = generateAddress(CURRENTLY_MANAGED.id, false)
     val ALIAS = generatePersonAlias(CURRENTLY_MANAGED)
 
+    val PRISON_MANAGER = generatePrisonManager(CURRENTLY_MANAGED)
+    val RESPONSIBLE_OFFICER = generateResponsibleOfficer(CURRENTLY_MANAGED, PRISON_MANAGER)
+
     fun generate(
         crn: String,
         softDeleted: Boolean = false,
@@ -98,6 +101,26 @@ object PersonGenerator {
             currentTier = DEFAULT_TIER
         )
 
+    fun generatePrisonManager(person: Person) = PrisonManager(
+        id = IdGenerator.getAndIncrement(),
+        version = 1L,
+        personId = person.id,
+        date = ZonedDateTime.now(),
+        allocationReason = DEFAULT_ALLOCATION_REASON,
+        staff = StaffGenerator.ALLOCATED,
+        team = TeamGenerator.DEFAULT,
+        probationArea = ProviderGenerator.DEFAULT,
+        telephoneNumber = "0987654321",
+    )
+
+    fun generateResponsibleOfficer(person: Person, prisonManager: PrisonManager) = ResponsibleOfficer(
+        personId = person.id,
+        prisonManager = prisonManager,
+        startDate = ZonedDateTime.now(),
+        version = 0L,
+        id = IdGenerator.getAndIncrement()
+    )
+
     fun generatePersonManager(person: Person) =
         PersonManager(
             id = IdGenerator.getAndIncrement(),
@@ -111,7 +134,8 @@ object PersonGenerator {
             officer = StaffGenerator.OFFICER,
             partitionArea = PARTITION_AREA,
             staffEmployeeId = StaffGenerator.ALLOCATED.id,
-            providerEmployee = ProviderEmployeeGenerator.PROVIDER_EMPLOYEE
+            providerEmployee = ProviderEmployeeGenerator.PROVIDER_EMPLOYEE,
+            officerCode = "OFFCODE"
         )
 
     fun generatePersonAlias(person: Person) =

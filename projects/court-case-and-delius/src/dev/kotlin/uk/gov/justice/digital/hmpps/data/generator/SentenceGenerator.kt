@@ -78,7 +78,7 @@ object SentenceGenerator {
     val CURRENT_ORDER_MANAGER = SentenceGenerator.generateOrderManager(
         CURRENTLY_MANAGED,
         StaffGenerator.ALLOCATED,
-        CourtGenerator.PROBATIONARE_AREA,
+        CourtGenerator.PROBATION_AREA,
         ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
         ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
     )

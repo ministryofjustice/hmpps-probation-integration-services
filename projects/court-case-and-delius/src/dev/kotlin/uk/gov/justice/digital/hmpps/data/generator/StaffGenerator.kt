@@ -6,13 +6,17 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.OfficerPk
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PartitionArea
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.ProviderEmployee
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
+import java.time.LocalDate
 
 object StaffGenerator {
     val UNALLOCATED = generate("N01UATU")
     val ALLOCATED = generate("N01ABBA")
     val OFFICER = generateOfficer()
+    val STAFF_USER = generateStaffUser()
     fun generate(code: String, id: Long = IdGenerator.getAndIncrement(), grade: ReferenceData? = null) =
-        Staff(code, "Bob", "Micheal", "Smith", grade, id)
+        Staff(code, "Bob", "Micheal", "Smith", grade, null, id)
+
+    fun generateStaffUser() = StaffUser(ALLOCATED, "JoeBloggs", IdGenerator.getAndIncrement())
 
     fun generateOfficer() =
         Officer(
@@ -26,9 +30,19 @@ object StaffGenerator {
         )
 }
 
+object OrganisationGenerator {
+    val DEFAULT = generate()
+    fun generate() = Organisation(IdGenerator.getAndIncrement(), "ORG1", "Org 1", true)
+}
+
 object ProviderGenerator {
     val DEFAULT = generate()
-    fun generate(id: Long = IdGenerator.getAndIncrement()) = ProbationAreaEntity(true, "London", "LN1", null, true, id)
+    fun generate(id: Long = IdGenerator.getAndIncrement()) = ProbationAreaEntity(
+        true, "London", "LN1",
+        privateSector = true,
+        organisation = OrganisationGenerator.DEFAULT,
+        id = id, institution = InstitutionGenerator.WSIHMP
+    )
 }
 
 object AreaGenerator {
@@ -52,7 +66,8 @@ object LDUGenerator {
 
 object BoroughGenerator {
     val DEFAULT = generate()
-    fun generate(id: Long = IdGenerator.getAndIncrement()) = Borough(true, id, ProviderGenerator.DEFAULT, "LN1")
+    fun generate(id: Long = IdGenerator.getAndIncrement()) =
+        Borough(true, id, ProviderGenerator.DEFAULT, "LN1", description = "Default")
 }
 
 object DistrictGenerator {
@@ -75,6 +90,29 @@ object TeamGenerator {
         "123",
         "email@address.com",
         LDUGenerator.DEFAULT,
-        DistrictGenerator.DEFAULT
+        DistrictGenerator.DEFAULT,
+        LocalDate.now(),
+        null,
+        ProviderGenerator.DEFAULT,
+        false
+    )
+}
+
+object ProviderTeamGenerator {
+
+    val EXTERNAL_PROVIDER = generateExternalProvider()
+    val DEFAULT_PROVIDER_TEAM = generate()
+    fun generateExternalProvider(id: Long = IdGenerator.getAndIncrement()) = ExternalProvider(
+        id,
+        "EP1",
+        "External Provider",
+    )
+
+    fun generate(id: Long = IdGenerator.getAndIncrement()) = ProviderTeam(
+        id,
+        "PT1",
+        "Provider Team1",
+        ProviderGenerator.DEFAULT.id,
+        EXTERNAL_PROVIDER
     )
 }
