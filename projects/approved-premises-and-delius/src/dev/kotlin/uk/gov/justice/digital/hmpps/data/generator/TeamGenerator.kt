@@ -13,6 +13,7 @@ object TeamGenerator {
     val APPROVED_PREMISES_TEAM_WITH_NO_STAFF = generate(ApprovedPremisesGenerator.NO_STAFF)
     val NON_APPROVED_PREMISES_TEAM = generate()
     val UNALLOCATED = generate(code = "N54UAT")
+    val E2E_TEST_TEAM = generate(ApprovedPremisesGenerator.E2E_TEST)
 
     fun generate(
         approvedPremises: ApprovedPremises? = null,
