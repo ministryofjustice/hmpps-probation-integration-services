@@ -15,13 +15,6 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "prison_offender_manager")
 class PrisonManager(
-    @Id
-    @Column(name = "prison_offender_manager_id", nullable = false)
-    val id: Long = 0,
-
-    @Version
-    @Column(name = "row_version", nullable = false)
-    val version: Long = 0,
 
     @Column(name = "offender_id", nullable = false)
     val personId: Long,
@@ -48,19 +41,19 @@ class PrisonManager(
     @Column(name = "telephone_number")
     val telephoneNumber: String?,
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "prisonManager", cascade = [CascadeType.PERSIST, CascadeType.MERGE])
-    val responsibleOfficers: MutableList<ResponsibleOfficer> = mutableListOf(),
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "prisonManager")
+    val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
 
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false
-) : Manager {
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "prison_offender_manager_id", nullable = false)
+    val id: Long = 0,
+
+    ) : Manager {
     @Column
     var endDate: ZonedDateTime? = null
-        set(value) {
-            field = value
-            active = value == null
-            responsibleOfficer()?.endDate = value
-        }
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     var active: Boolean = true
@@ -86,10 +79,6 @@ class PrisonManager(
     fun isUnallocated() = staff.code.endsWith("U")
 
     fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.isActive() }
-
-    fun makeResponsibleOfficer() {
-        responsibleOfficers.add(ResponsibleOfficer(personId, this, date))
-    }
 }
 
 @Entity
@@ -105,27 +94,12 @@ class ResponsibleOfficer(
 
     val startDate: ZonedDateTime,
 
-    @Version
-    @Column(name = "row_version")
-    val version: Long = 0,
+    val endDate: ZonedDateTime? = null,
 
     @Id
     @Column(name = "responsible_officer_id", nullable = false)
     val id: Long = 0
 ) {
 
-    @CreatedBy
-    var createdByUserId: Long = 0
-
-    @LastModifiedBy
-    var lastUpdatedUserId: Long = 0
-
-    @CreatedDate
-    var createdDatetime: ZonedDateTime = ZonedDateTime.now()
-
-    @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
-
-    var endDate: ZonedDateTime? = null
     fun isActive() = endDate == null
 }

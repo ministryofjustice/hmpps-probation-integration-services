@@ -103,7 +103,6 @@ object PersonGenerator {
 
     fun generatePrisonManager(person: Person) = PrisonManager(
         id = IdGenerator.getAndIncrement(),
-        version = 1L,
         personId = person.id,
         date = ZonedDateTime.now(),
         allocationReason = DEFAULT_ALLOCATION_REASON,
@@ -117,7 +116,6 @@ object PersonGenerator {
         personId = person.id,
         prisonManager = prisonManager,
         startDate = ZonedDateTime.now(),
-        version = 0L,
         id = IdGenerator.getAndIncrement()
     )
 
