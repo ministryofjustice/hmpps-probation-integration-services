@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.BHAM
-import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.PROBATIONARE_AREA
+import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.PROBATION_AREA
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator.WSIHMP
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -168,7 +168,7 @@ internal class ConvictionIntegrationByCrnTest {
                         WSIHMP.code,
                         WSIHMP.description,
                         WSIHMP.institutionName,
-                        KeyValue(WSIHMP.establishmentType.code, WSIHMP.establishmentType.description),
+                        WSIHMP.establishmentType?.let { KeyValue(it.code, it.description) },
                         WSIHMP.private,
                         WSIHMP.nomisCdeCode
                     ),
@@ -221,7 +221,7 @@ internal class ConvictionIntegrationByCrnTest {
                 ),
                 listOf(
                     OrderManager(
-                        PROBATIONARE_AREA.id,
+                        PROBATION_AREA.id,
                         null,
                         CURRENT_ORDER_MANAGER.id,
                         ALLOCATED.getName(),
@@ -230,7 +230,7 @@ internal class ConvictionIntegrationByCrnTest {
                         CURRENT_ORDER_MANAGER.endDate,
                         null,
                         null,
-                        PROBATIONARE_AREA.code
+                        PROBATION_AREA.code
                     )
                 )
             )
