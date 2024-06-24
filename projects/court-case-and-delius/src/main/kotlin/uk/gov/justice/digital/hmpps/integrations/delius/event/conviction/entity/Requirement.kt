@@ -1,0 +1,104 @@
+package uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity
+
+import jakarta.persistence.*
+import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
+import java.time.LocalDate
+
+@Immutable
+@Entity(name = "conviction_rqmnt")
+@Table(name = "rqmnt")
+class Requirement(
+
+    @Id
+    @Column(name = "rqmnt_id")
+    val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_type_main_category_id")
+    val mainCategory: RequirementMainCategory?,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_type_sub_category_id")
+    val subCategory: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "ad_rqmnt_type_main_category_id")
+    val adMainCategory: AdRequirementMainCategory?,
+
+    @ManyToOne
+    @JoinColumn(name = "ad_rqmnt_type_sub_category_id")
+    val adSubCategory: ReferenceData?,
+
+    @Column(name = "commencement_date")
+    val commencementDate: LocalDate? = null,
+
+    @Column(name = "start_date")
+    val startDate: LocalDate? = null,
+
+    @Column(name = "termination_date")
+    val terminationDate: LocalDate? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_termination_reason_id")
+    val terminationReason: ReferenceData? = null,
+
+    @Column(name = "expected_start_date")
+    val expectedStartDate: LocalDate? = null,
+
+    @Column(name = "expected_end_date")
+    val expectedEndDate: LocalDate? = null,
+
+    @Column(name = "length")
+    val length: Long? = null,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
+
+    @Column(updatable = false, columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    )
+
+@Immutable
+@Entity(name = "conviction_event")
+@Table(name = "event")
+class Event(
+    @Id
+    @Column(name = "event_id", nullable = false)
+    val id: Long
+)
+
+@Immutable
+@Entity(name = "conviction_disposal")
+@Table(name = "disposal")
+class Disposal(
+    @Id
+    @Column(name = "disposal_id")
+    val id: Long,
+
+    @OneToOne
+    @JoinColumn(name = "event_id")
+    val event: Event,
+)
+
+interface ConvictionRequirementRepository : JpaRepository<Requirement, Long> {
+    @Query(
+        """
+        SELECT r FROM conviction_rqmnt r
+        JOIN r.disposal.event e 
+        WHERE e.id = :eventId
+        AND r.active = :active
+        AND r.softDeleted = :softDeleted
+    """
+    )
+    fun getRequirements(eventId: Long, active: Boolean, softDeleted: Boolean): List<Requirement>
+}
