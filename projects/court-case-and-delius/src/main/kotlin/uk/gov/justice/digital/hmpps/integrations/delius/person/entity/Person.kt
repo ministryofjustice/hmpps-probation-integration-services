@@ -175,11 +175,11 @@ class Person(
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "person")
-    @SQLRestriction("active_flag = 1 and soft_deleted != 1")
+    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
     val offenderManagers: List<PersonManager> = emptyList(),
 
     @OneToMany(mappedBy = "personId")
-    @SQLRestriction("active_flag = 1 and soft_deleted != 1")
+    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
     val prisonOffenderManagers: List<PrisonManager> = emptyList()
 
 )
