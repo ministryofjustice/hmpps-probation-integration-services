@@ -18,14 +18,14 @@ class Institution(
 
     val description: String,
 
-    val institutionName: String,
+    val institutionName: String?,
 
     @ManyToOne
     @JoinColumn(name = "establishment_type_id")
-    val establishmentType: ReferenceData,
+    val establishmentType: ReferenceData?,
 
     @Column(columnDefinition = "number")
-    val private: Boolean? = false,
+    val private: Boolean,
 
     val nomisCdeCode: String?
 )

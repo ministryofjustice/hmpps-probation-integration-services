@@ -16,13 +16,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Ps
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.PersonManagerRepository
 import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Disability as DisabilityEntity
 
 @Service
 class OffenderService(
-    private val personManagerRepository: PersonManagerRepository,
     private val eventRepository: EventRepository,
     private val mainOffenceRepository: MainOffenceRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
@@ -242,12 +240,14 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
         ),
         softDeleted = it.softDeleted,
         partitionArea = it.partitionArea.area,
-        staff = StaffHuman(
-            code = it.staff.code,
-            forename = it.staff.forename,
-            surname = it.staff.surname,
-            isUnallocated = it.staff.isUnallocated()
-        ),
+        staff = it.staff?.let { staff ->
+            StaffHuman(
+                code = staff.code,
+                forename = staff.forename,
+                surname = staff.surname,
+                isUnallocated = staff.isUnallocated()
+            )
+        },
         providerEmployee = it.providerEmployee.let { emp ->
             emp?.surname?.let { surname ->
                 Human(
@@ -256,20 +256,27 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
                 )
             }
         },
-        team = Team(
-            code = it.team.code,
-            description = it.team.description,
-            telephone = it.team.telephone,
-            emailAddress = it.team.emailAddress,
-            localDeliveryUnit = KeyValue(it.team.ldu.code, it.team.ldu.description),
-            district = KeyValue(it.team.district.code, it.team.district.description),
-            borough = KeyValue(it.team.district.borough.code, it.team.district.borough.code)
-        ),
+        team = it.team?.let { team ->
+            Team(
+                code = team.code,
+                description = team.description,
+                telephone = team.telephone,
+                emailAddress = team.emailAddress,
+                localDeliveryUnit = KeyValue(team.ldu.code, team.ldu.description),
+                district = KeyValue(team.district.code, team.district.description),
+                borough = KeyValue(team.district.borough.code, team.district.borough.code),
+                startDate = team.startDate,
+                endDate = team.endDate,
+                teamType = KeyValue(team.code, team.description)
+            )
+        },
         probationArea = ProbationArea(
             probationAreaId = it.provider.id,
             code = it.provider.code,
             description = it.provider.description,
-            nps = it.provider.privateSector
+            nps = it.provider.privateSector,
+            institution = it.provider.institution?.toInstitution(),
+            organisation = KeyValue(it.provider.organisation.code, it.provider.organisation.description)
         ),
         active = it.active,
         fromDate = it.date.toLocalDate(),

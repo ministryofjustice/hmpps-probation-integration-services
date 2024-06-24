@@ -83,8 +83,8 @@ class DeliusIntegrationService(
             startTime = occurredAt,
             isSensitive = caseNoteType.isSensitive,
             probationAreaId = comDetails.provider.id,
-            teamId = comDetails.team.id,
-            staffId = comDetails.staff.id,
+            teamId = comDetails.team!!.id,
+            staffId = comDetails.staff!!.id,
             externalReference = reference
         )
     }

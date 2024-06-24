@@ -187,9 +187,10 @@ class ConvictionService(
         Institution(
             id.institutionId,
             id.establishment,
-            code, description,
+            code,
+            description,
             institutionName,
-            KeyValue(establishmentType.code, establishmentType.description),
+            establishmentType?.let { KeyValue(it.code, establishmentType.description) },
             private,
             nomisCdeCode
         )
