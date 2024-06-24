@@ -29,6 +29,7 @@ object ReferenceDataGenerator {
     val PREV_ADDRESS_STATUS = generate("P", ADDRESS_STATUS.id, "Previous Address")
     val NHC_Q001 = generate("Q001", HOSTEL_CODE.id)
     val NHC_Q002 = generate("Q002", HOSTEL_CODE.id)
+    val NHC_Q710 = generate("Q710", HOSTEL_CODE.id)
     val STAFF_GRADE = generate("TEST", DatasetGenerator.STAFF_GRADE.id, "Test staff grade")
 
     val REFERRAL_DATE_TYPE = generate("CRC", ALL_DATASETS[DatasetCode.AP_REFERRAL_DATE_TYPE]!!.id)
@@ -83,6 +84,7 @@ object ReferenceDataGenerator {
         PREV_ADDRESS_STATUS,
         NHC_Q001,
         NHC_Q002,
+        NHC_Q710,
         STAFF_GRADE,
         REFERRAL_DATE_TYPE,
         REFERRAL_GROUP,

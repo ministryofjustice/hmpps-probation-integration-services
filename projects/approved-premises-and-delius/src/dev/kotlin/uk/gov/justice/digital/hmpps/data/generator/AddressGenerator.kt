@@ -23,6 +23,7 @@ object AddressGenerator {
 
     val Q001 = generateAddress("", "1", "Promise Street", "", "Make Believe", "", "MB01 1PS", "01234567890")
     val Q002 = generateAddress("", "2", "Future Street", "", "Make Believe", "", "MB02 2PS", "01234567891")
+    val Q710 = generateAddress("Test AP 10", "10", "Hope Street", "", "Make Believe", "", "MB03 3PS", "01234567892")
 
     fun generateAddress(
         buildingName: String? = null,

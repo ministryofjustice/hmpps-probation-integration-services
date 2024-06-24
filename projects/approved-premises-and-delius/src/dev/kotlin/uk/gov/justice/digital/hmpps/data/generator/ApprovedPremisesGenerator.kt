@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 object ApprovedPremisesGenerator {
     val DEFAULT = generate(ReferenceDataGenerator.NHC_Q001, AddressGenerator.Q001)
     val NO_STAFF = generate(ReferenceDataGenerator.NHC_Q002, AddressGenerator.Q002)
+    val E2E_TEST = generate(ReferenceDataGenerator.NHC_Q710, AddressGenerator.Q710)
     val AP_GROUP_LINKS = listOf(generateGroupLink(DEFAULT), generateGroupLink(NO_STAFF))
 
     fun generate(

@@ -84,7 +84,7 @@ class DataLoader(
         moveOnCategoryRepository.save(ReferenceDataGenerator.MC05)
         registerTypeRepository.saveAll(ReferenceDataGenerator.REGISTER_TYPES.values)
 
-        addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002))
+        addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002, AddressGenerator.Q710))
 
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         approvedPremisesRepository.save(ApprovedPremisesGenerator.DEFAULT)
@@ -97,6 +97,7 @@ class DataLoader(
             )
         )
         approvedPremisesRepository.save(ApprovedPremisesGenerator.NO_STAFF)
+        approvedPremisesRepository.save(ApprovedPremisesGenerator.E2E_TEST)
         officeLocationRepository.save(OfficeLocationGenerator.DEFAULT)
         apGroupLinkRepository.saveAll(ApprovedPremisesGenerator.AP_GROUP_LINKS)
 
@@ -110,7 +111,7 @@ class DataLoader(
                 "Key-worker",
                 "KEY0001",
                 teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM),
-                approvedPremises = listOf(ApprovedPremisesGenerator.DEFAULT)
+                approvedPremises = listOf(ApprovedPremisesGenerator.DEFAULT, ApprovedPremisesGenerator.E2E_TEST)
             )
         )
         staffRepository.save(
