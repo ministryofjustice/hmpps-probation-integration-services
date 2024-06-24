@@ -155,11 +155,7 @@ class Borough(
     @OneToMany(mappedBy = "borough")
     val districts: List<District> = listOf(),
 
-    @ManyToOne
-    @JoinColumn(name = "organisation_id")
-    val organisation: Organisation? = null
-
-)
+    )
 
 @Immutable
 @Entity
