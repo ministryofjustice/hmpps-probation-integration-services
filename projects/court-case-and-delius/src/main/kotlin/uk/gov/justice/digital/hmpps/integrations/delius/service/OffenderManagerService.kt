@@ -51,7 +51,7 @@ class OffenderManagerService(
 }
 
 fun PersonManager.toOffenderManager(includeProbationAreaTeams: Boolean) = CommunityOrPrisonOffenderManager(
-    staffCode = officerCode,
+    staffCode = staff?.code,
     staffId = staff?.id,
     isUnallocated = isUnallocated(),
     staff = staff?.let {

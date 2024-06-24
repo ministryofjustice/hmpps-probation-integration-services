@@ -132,8 +132,7 @@ object PersonGenerator {
             officer = StaffGenerator.OFFICER,
             partitionArea = PARTITION_AREA,
             staffEmployeeId = StaffGenerator.ALLOCATED.id,
-            providerEmployee = ProviderEmployeeGenerator.PROVIDER_EMPLOYEE,
-            officerCode = "OFFCODE"
+            providerEmployee = ProviderEmployeeGenerator.PROVIDER_EMPLOYEE
         )
 
     fun generatePersonAlias(person: Person) =
