@@ -9,8 +9,8 @@ data class ConvictionRequirements(
 data class Requirement(
     @Schema(description = "Unique identifier for the requirement", required = true)
     val requirementId: Long,
-//    @Schema(description = "Name of the requirement", required = true)
-//    val requirementNotes: String,
+    @Schema(description = "Name of the requirement", required = true)
+    val requirementNotes: String?,
 //    val commencementDate: LocalDate,
 //    val startDate: LocalDate,
 //    val terminationDate: LocalDate,

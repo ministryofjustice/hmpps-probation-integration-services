@@ -57,7 +57,14 @@ internal class RequirementsByEventIdIntegrationTest {
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
         val requirement = RequirementsGenerator.REQ1
-        val expectedResponse = ConvictionRequirements(listOf(Requirement(requirement.id)))
+        val expectedResponse = ConvictionRequirements(
+            listOf(
+                Requirement(
+                    requirement.id,
+                    requirement.notes
+                )
+            )
+        )
 
         val response = mockMvc
             .perform(get("/probation-case/$crn/convictions/${event.id}/requirements").withToken())

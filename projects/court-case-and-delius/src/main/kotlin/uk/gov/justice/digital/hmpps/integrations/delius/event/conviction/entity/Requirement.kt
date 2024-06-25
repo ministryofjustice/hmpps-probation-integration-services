@@ -18,6 +18,9 @@ class Requirement(
     @Column(name = "disposal_id")
     val disposalId: Long,
 
+    @Column(name = "rqmnt_notes", columnDefinition = "clob")
+    val notes: String? = null,
+
     @ManyToOne
     @JoinColumn(name = "disposal_id", updatable = false, insertable = false)
     val disposal: Disposal? = null,

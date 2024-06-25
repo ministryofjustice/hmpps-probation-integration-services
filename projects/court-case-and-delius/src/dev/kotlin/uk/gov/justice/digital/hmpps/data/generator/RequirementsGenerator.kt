@@ -6,6 +6,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.
 object RequirementsGenerator {
 
     val REQ1 = Requirement(
-        IdGenerator.getAndIncrement(), CURRENT_SENTENCE.id
+        IdGenerator.getAndIncrement(),
+        CURRENT_SENTENCE.id,
+        "notes"
     )
 }

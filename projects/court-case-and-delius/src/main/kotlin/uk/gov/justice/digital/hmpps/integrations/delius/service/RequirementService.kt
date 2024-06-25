@@ -34,5 +34,8 @@ class RequirementService(
     }
 
     fun RequirementEntity.toRequirement(): Requirement =
-        Requirement(id)
+        Requirement(
+            id,
+            notes
+        )
 }
