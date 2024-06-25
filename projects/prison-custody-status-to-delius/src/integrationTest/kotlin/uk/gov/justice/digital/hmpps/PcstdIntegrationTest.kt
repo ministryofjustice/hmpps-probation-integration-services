@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 
+
 class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     private val releaseOnLicence = "Released on Licence"
 
@@ -608,6 +609,44 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
                 "institution" to "OUT",
                 "reason" to "RELEASED",
                 "movementReason" to "ETR",
+                "movementType" to "Released"
+            )
+        }
+    }
+
+    @Test
+    fun `ecslirc release when in custody in delius`() {
+        val notification = NotificationGenerator.PRISONER_ECSLIRC_IN_CUSTODY
+        withBooking(
+            BookingGenerator.ECSLIRC_CUSTODY,
+            BookingGenerator.ECSLIRC_CUSTODY.lastMovement(notification.message.occurredAt)
+        )
+        val nomsNumber = notification.nomsId()
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
+        assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_IRC.code))
+
+        verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
+        verifyCustodyHistory(
+            custody,
+            CustodyEventTester(
+                CustodyEventTypeCode.LOCATION_CHANGE,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.OTHER_IRC]?.description
+            )
+        )
+
+        verifyTelemetry("RecallNotRequired", "PrisonerStatusCorrect", "LocationUpdated") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0019BB",
+                "previousInstitution" to "WSI",
+                "institution" to "OUT",
+                "reason" to "RELEASED",
+                "movementReason" to "ECSLIRC",
                 "movementType" to "Released"
             )
         }
