@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 
-
 class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     private val releaseOnLicence = "Released on Licence"
 
