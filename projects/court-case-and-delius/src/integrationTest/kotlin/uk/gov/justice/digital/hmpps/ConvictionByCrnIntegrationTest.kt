@@ -41,14 +41,14 @@ internal class ConvictionByCrnIntegrationTest {
     fun `unauthorized status returned`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         mockMvc
-            .perform(get("/probation-case/crn/$crn/convictions"))
+            .perform(get("/probation-case/$crn/convictions"))
             .andExpect(status().isUnauthorized)
     }
 
     @Test
     fun `API call probation record not found`() {
         mockMvc
-            .perform(get("/probation-case/crn/A123456/convictions").withToken())
+            .perform(get("/probation-case/A123456/convictions").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
     }
@@ -237,7 +237,7 @@ internal class ConvictionByCrnIntegrationTest {
         )
 
         val response = mockMvc
-            .perform(get("/probation-case/crn/$crn/convictions?activeOnly=true").withToken())
+            .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<List<Conviction>>()
 
@@ -249,7 +249,7 @@ internal class ConvictionByCrnIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
         mockMvc
-            .perform(get("/probation-case/crn/$crn/convictions").withToken())
+            .perform(get("/probation-case/$crn/convictions").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].active").value(true))
@@ -260,7 +260,7 @@ internal class ConvictionByCrnIntegrationTest {
     fun `retun a empty list for a person with no active events`() {
         val crn = PersonGenerator.NO_ACTIVE_EVENTS.crn
         mockMvc
-            .perform(get("/probation-case/crn/$crn/convictions?activeOnly=true").withToken())
+            .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.length()").value(0))
     }

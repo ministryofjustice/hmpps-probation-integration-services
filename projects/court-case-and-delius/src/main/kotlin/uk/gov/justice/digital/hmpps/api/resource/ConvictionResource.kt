@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.service.ConvictionServic
 import uk.gov.justice.digital.hmpps.integrations.delius.service.RequirementService
 
 @RestController
-@RequestMapping("probation-case/crn/{crn}/convictions")
+@RequestMapping("probation-case/{crn}/convictions")
 @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
 class ConvictionResource(
     private val convictionService: ConvictionService,

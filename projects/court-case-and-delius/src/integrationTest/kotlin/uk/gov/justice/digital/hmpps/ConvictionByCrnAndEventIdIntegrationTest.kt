@@ -42,14 +42,14 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
     fun `unauthorized status returned`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         mockMvc
-            .perform(get("/probation-case/crn/$crn/convictions/1"))
+            .perform(get("/probation-case/$crn/convictions/1"))
             .andExpect(status().isUnauthorized)
     }
 
     @Test
     fun `API call probation record not found`() {
         mockMvc
-            .perform(get("/probation-case/crn/A123456/convictions/1").withToken())
+            .perform(get("/probation-case/A123456/convictions/1").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
     }
@@ -59,7 +59,7 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
         mockMvc
-            .perform(get("/probation-case/crn/$crn/convictions/3").withToken())
+            .perform(get("/probation-case/$crn/convictions/3").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Conviction with ID 3 for Offender with crn C123456 not found"))
     }
@@ -246,7 +246,7 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         )
 
         val response = mockMvc
-            .perform(get("/probation-case/crn/$crn/convictions/${event.id}").withToken())
+            .perform(get("/probation-case/$crn/convictions/${event.id}").withToken())
             .andExpect(status().is2xxSuccessful)
             .andDo(print())
             .andReturn().response.contentAsJson<Conviction>()
