@@ -35,8 +35,6 @@ import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.Movement
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 

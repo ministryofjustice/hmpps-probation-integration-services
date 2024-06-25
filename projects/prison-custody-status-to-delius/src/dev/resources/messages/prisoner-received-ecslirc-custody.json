@@ -1,0 +1,17 @@
+{
+  "Type": "Notification",
+  "MessageId": "a7c8e4ab-5d55-45a5-b69d-2ad0539245de",
+  "TopicArn": "",
+  "Message": "{\"eventType\":\"prison-offender-events.prisoner.released\",\"additionalInformation\":{\"nomsNumber\":\"A0019BB\",\"reason\":\"RELEASED\",\"source\":\"PRISON\",\"nomisMovementReasonCode\":\"ECSLIRC\",\"details\":\"Movement reason code ECSLIRC\",\"currentLocation\":\"OUTSIDE_PRISON\",\"prisonId\":\"SWI\",\"currentPrisonStatus\":\"NOT_UNDER_PRISON_CARE\"},\"version\":1,\"occurredAt\":\"2023-08-04T08:09:36.649098+01:00\",\"publishedAt\":\"2023-08-04T09:06:46.65281576+01:00\",\"description\":\"A prisoner has been released Early Release Scheme\", \"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A0019BB\"}]}}",
+  "Timestamp": "2023-08-04T09:06:46.65281576+01:00",
+  "SignatureVersion": "1",
+  "Signature": "",
+  "SigningCertURL": "",
+  "UnsubscribeURL": "",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "prison-offender-events.prisoner.released"
+    }
+  }
+}

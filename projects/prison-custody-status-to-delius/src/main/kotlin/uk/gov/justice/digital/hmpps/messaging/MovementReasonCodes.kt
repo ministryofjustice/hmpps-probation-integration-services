@@ -5,6 +5,7 @@ object MovementReasonCodes {
     const val DEPORTED_NO_SENTENCE = "DE"
     const val DEPORTED_LICENCE = "DL"
     const val EARLY_REMOVAL_SCHEME = "ETR"
+    const val END_CUSTODY_TO_IMMIGRATION_RELEASE_CENTRE = "ECSLIRC"
     const val DETAINED_MENTAL_HEALTH = "HO"
     const val RELEASE_MENTAL_HEALTH = "HQ"
     const val FINAL_DISCHARGE_PSYCHIATRIC = "HP"
