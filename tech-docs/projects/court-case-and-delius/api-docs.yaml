@@ -118,6 +118,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OffenderDetail"
+  /probation-case/{crn}/allOffenderManagers:
+    get:
+      tags:
+      - probation-record-resource
+      operationId: getAllOffenderManagers
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: includeProbationAreaTeams
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommunityOrPrisonOffenderManager"
   /docs/asyncapi:
     get:
       tags:
@@ -626,9 +652,7 @@ components:
       required:
       - code
       - description
-      - establishmentType
       - institutionId
-      - institutionName
       - isEstablishment
       type: object
       properties:
@@ -877,6 +901,35 @@ components:
         lastUpdatedDatetime:
           type: string
           format: date-time
+    AllTeam:
+      required:
+      - code
+      type: object
+      properties:
+        providerTeamId:
+          type: integer
+          format: int64
+        teamId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        description:
+          type: string
+        name:
+          type: string
+        isPrivate:
+          type: boolean
+        externalProvider:
+          $ref: "#/components/schemas/KeyValue"
+        scProvider:
+          $ref: "#/components/schemas/KeyValue"
+        localDeliveryUnit:
+          $ref: "#/components/schemas/KeyValue"
+        district:
+          $ref: "#/components/schemas/KeyValue"
+        borough:
+          $ref: "#/components/schemas/KeyValue"
     ContactDetails:
       required:
       - addresses
@@ -1015,8 +1068,6 @@ components:
       - partitionArea
       - probationArea
       - softDeleted
-      - staff
-      - team
       - trustOfficer
       type: object
       properties:
@@ -1049,7 +1100,9 @@ components:
       - code
       - description
       - nps
+      - organisation
       - probationAreaId
+      - teams
       type: object
       properties:
         probationAreaId:
@@ -1059,8 +1112,16 @@ components:
           type: string
         description:
           type: string
+        organisation:
+          $ref: "#/components/schemas/KeyValue"
+        institution:
+          $ref: "#/components/schemas/Institution"
         nps:
           type: boolean
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/AllTeam"
     StaffHuman:
       required:
       - code
@@ -1084,6 +1145,8 @@ components:
       - description
       - district
       - localDeliveryUnit
+      - startDate
+      - teamType
       type: object
       properties:
         code:
@@ -1100,6 +1163,80 @@ components:
           $ref: "#/components/schemas/KeyValue"
         borough:
           $ref: "#/components/schemas/KeyValue"
+        teamType:
+          $ref: "#/components/schemas/KeyValue"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+    CommunityOrPrisonOffenderManager:
+      required:
+      - isPrisonOffenderManager
+      - isResponsibleOfficer
+      - isUnallocated
+      - staffCode
+      type: object
+      properties:
+        staffCode:
+          type: string
+          description: Staff code
+          example: CHSE755
+        staffId:
+          type: integer
+          description: Staff id
+          format: int64
+          example: 123455
+        isResponsibleOfficer:
+          type: boolean
+          description: True if this offender manager is the current responsible officer
+          example: true
+        isPrisonOffenderManager:
+          type: boolean
+          description: True if this offender manager is the prison OM else False
+          example: true
+        isUnallocated:
+          type: boolean
+          description: True if no real offender manager has been allocated and this
+            is just a placeholder
+          example: true
+        staff:
+          $ref: "#/components/schemas/ContactableHuman"
+        team:
+          $ref: "#/components/schemas/Team"
+        probationArea:
+          $ref: "#/components/schemas/ProbationArea"
+        fromDate:
+          type: string
+          description: Date since the offender manager was assigned
+          format: date
+          example: 2019-12-04
+        grade:
+          $ref: "#/components/schemas/KeyValue"
+    ContactableHuman:
+      required:
+      - forenames
+      - surname
+      type: object
+      properties:
+        forenames:
+          type: string
+          description: Given names
+          example: Sheila Linda
+        surname:
+          type: string
+          description: Family name
+          example: Hancock
+        email:
+          type: string
+          description: Email address
+          example: officer@gov.uk
+        phoneNumber:
+          type: string
+          description: Phone number
+          example: "0123411278"
+      description: staff name and contact details
   securitySchemes:
     hmpps-auth-token:
       type: http
