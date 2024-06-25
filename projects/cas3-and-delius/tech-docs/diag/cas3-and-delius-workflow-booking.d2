@@ -1,0 +1,57 @@
+# CAS3 Workflow: Accommodation Booking
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+direction: right
+
+# What triggers the workflow?
+cas3: CAS3  {
+     style.font-size: 24
+
+     explanation: |md
+     ## Accommodation Booking Workflow
+     Accommodation booking actions raise domain events
+     |
+
+     booking_provisionally_made: Booking Provisionally Made
+     booking_confirmed: Booking Confirmed
+     booking_cancelled: Booking Cancelled
+}
+
+domain_event_1: "accommodation.cas3\n.booking.provisionally-made" {
+    style.font-size: 12
+    shape: queue
+}
+
+domain_event_2: "accommodation.cas3\n.booking.confirmed" {
+    style.font-size: 12
+    shape: queue
+}
+
+domain_event_3: "accommodation.cas3\n.booking.cancelled" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+
+     explanation: |md
+     ## Delius Workflow
+     Contact is added to Delius \
+     to indicate accommodation booking activity
+     |
+
+    d_contact: Create Contact
+}
+
+cas3 -> domain_event_1
+cas3 -> domain_event_2
+cas3 -> domain_event_3
+
+domain_event_1 -> delius
+domain_event_2 -> delius
+domain_event_3 -> delius
