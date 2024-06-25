@@ -3,10 +3,12 @@ index_patterns:
 
 template:
   settings:
+    default_pipeline: contact-search-pipeline
+    index.knn: true
+    index.mapping.ignore_malformed: true
     index:
       number_of_shards: 18 # ~= Total size of data / 50GB
       number_of_replicas: 1
-    index.mapping.ignore_malformed: true
     analysis:
       analyzer:
         probation_search_analyzer:
@@ -543,6 +545,14 @@ template:
         analyzer: probation_text_analyzer
         search_analyzer: probation_search_analyzer
         boost: 5
+      notes_embedding:
+        type: knn_vector
+        dimension: 768
+        method:
+          engine: lucene
+          space_type: l2
+          name: hnsw
+          parameters: { }
       description:
         type: text
         analyzer: probation_text_analyzer

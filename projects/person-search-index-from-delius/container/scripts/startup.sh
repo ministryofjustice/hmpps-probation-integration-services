@@ -10,7 +10,10 @@ curl_json --retry 3 "$SEARCH_INDEX_HOST"
 # Configure cluster settings
 curl_json -XPUT "${SEARCH_INDEX_HOST}/_cluster/settings" --data '{
   "persistent": {
-    "action.auto_create_index": "false"
+    "action.auto_create_index": "false",
+    "plugins.ml_commons.only_run_on_ml_node": "false",
+    "plugins.ml_commons.model_access_control_enabled": "false",
+    "plugins.ml_commons.native_memory_threshold": "99"
   }
 }'
 
@@ -30,7 +33,7 @@ if grep -q 'person' <<<"$PIPELINES_ENABLED"; then
 fi
 
 if grep -q 'contact' <<<"$PIPELINES_ENABLED"; then
-  /scripts/setup-index.sh -i "$CONTACT_INDEX_PREFIX" -t /pipelines/contact/index/contact-search-template.json
+  /scripts/setup-index.sh -i "$CONTACT_INDEX_PREFIX" -p /pipelines/contact/index/contact-search-pipeline.json -t /pipelines/contact/index/contact-search-template.json
   if grep -q 'contact-full-load' <<<"$PIPELINES_ENABLED"; then
     sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_INDEX_PREFIX" -t "$CONTACT_REINDEXING_TIMEOUT" &
   fi
