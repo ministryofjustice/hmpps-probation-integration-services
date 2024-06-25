@@ -29,7 +29,7 @@ class ConvictionResource(
     fun getRequirementsForConviction(
         @PathVariable crn: String,
         @PathVariable convictionId: Long,
-        @RequestParam(required = false, defaultValue = "false") activeOnly: Boolean,
+        @RequestParam(required = false, defaultValue = "true") activeOnly: Boolean,
         @RequestParam(required = false, defaultValue = "false") excludeSoftDeleted: Boolean,
     ) = requirementService.getRequirementsByConvictionId(crn, convictionId, activeOnly, excludeSoftDeleted)
 }

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -7,9 +8,15 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.conviction.ConvictionRequirements
+import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RequirementsGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -42,5 +49,22 @@ internal class RequirementsByEventIdIntegrationTest {
             .perform(get("/probation-case/$crn/convictions/3/requirements").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Conviction with convictionId 3 not found"))
+    }
+
+    @Test
+    fun `return list of requirements`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val requirement = RequirementsGenerator.REQ1
+        val expectedResponse = ConvictionRequirements(listOf(Requirement(requirement.id)))
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/requirements").withToken())
+            .andExpect(status().isOk)
+            .andDo(print())
+            .andReturn().response.contentAsJson<ConvictionRequirements>()
+
+        assertEquals(expectedResponse, response)
     }
 }

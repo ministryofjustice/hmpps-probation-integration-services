@@ -146,7 +146,7 @@ class DataLoader(
         val currentManager = SentenceGenerator.CURRENT_ORDER_MANAGER
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
         val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
-        val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
+        //val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
         val breachNsi = SentenceGenerator.generateBreachNsi(disposal = currentSentence)
         val pssRequirement = SentenceGenerator.generatePssRequirement(custody.id)
@@ -159,6 +159,7 @@ class DataLoader(
             SentenceGenerator.INACTIVE_EVENT,
             SentenceGenerator.INACTIVE_EVENT_1,
             currentSentence,
+            RequirementsGenerator.REQ1,
             AdditionalSentenceGenerator.SENTENCE_DISQ,
             ReferenceDataGenerator.HOURS_WORKED,
             UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1,
@@ -185,7 +186,6 @@ class DataLoader(
             SentenceGenerator.MAIN_OFFENCE_FOR_INACTIVE_EVENT,
             SentenceGenerator.MAIN_OFFENCE_FOR_INACTIVE_EVENT_1,
             additionalOffence,
-            requirement,
             licenceCondition,
             breachNsi,
             pssRequirement,
