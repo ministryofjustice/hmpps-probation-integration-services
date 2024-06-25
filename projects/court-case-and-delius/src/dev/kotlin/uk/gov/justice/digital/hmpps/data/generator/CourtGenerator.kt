@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Organisation
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import java.time.LocalDate
 import java.time.LocalTime

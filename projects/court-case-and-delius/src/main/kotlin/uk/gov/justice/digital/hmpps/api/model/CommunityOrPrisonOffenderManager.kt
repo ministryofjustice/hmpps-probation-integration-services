@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class CommunityOrPrisonOffenderManager(
     @Schema(description = "Staff code", example = "CHSE755")
-    val staffCode: String,
+    val staffCode: String?,
     @Schema(description = "Staff id", example = "123455")
     val staffId: Long?,
     @Schema(description = "True if this offender manager is the current responsible officer", example = "true")
