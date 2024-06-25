@@ -58,7 +58,7 @@ class ProviderTeam(
     @Column(name = "provider_team_id")
     val providerTeamId: Long,
 
-    @Column(name = "code")
+    @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
 
     @Column(name = "name")
