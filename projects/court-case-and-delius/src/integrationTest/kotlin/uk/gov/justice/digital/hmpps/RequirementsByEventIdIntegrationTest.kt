@@ -61,7 +61,13 @@ internal class RequirementsByEventIdIntegrationTest {
             listOf(
                 Requirement(
                     requirement.id,
-                    requirement.notes
+                    requirement.notes,
+                    requirement.commencementDate,
+                    requirement.startDate,
+                    requirement.terminationDate,
+                    requirement.expectedStartDate,
+                    requirement.expectedEndDate,
+                    requirement.active
                 )
             )
         )

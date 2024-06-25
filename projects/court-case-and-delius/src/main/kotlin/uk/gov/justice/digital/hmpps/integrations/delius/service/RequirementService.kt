@@ -36,6 +36,12 @@ class RequirementService(
     fun RequirementEntity.toRequirement(): Requirement =
         Requirement(
             id,
-            notes
+            notes,
+            commencementDate,
+            startDate,
+            terminationDate,
+            expectedStartDate,
+            expectedEndDate,
+            active
         )
 }

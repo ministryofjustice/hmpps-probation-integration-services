@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import java.time.LocalDate
 
 @Immutable
 @Entity(name = "conviction_rqmnt")
@@ -21,15 +22,32 @@ class Requirement(
     @Column(name = "rqmnt_notes", columnDefinition = "clob")
     val notes: String? = null,
 
-    @ManyToOne
-    @JoinColumn(name = "disposal_id", updatable = false, insertable = false)
-    val disposal: Disposal? = null,
+    @Column(name = "commencement_date")
+    val commencementDate: LocalDate? = null,
+
+    @Column(name = "start_date")
+    val startDate: LocalDate? = null,
+
+    @Column(name = "termination_date")
+    val terminationDate: LocalDate? = null,
+
+    @Column(name = "expected_start_date")
+    val expectedStartDate: LocalDate? = null,
+
+    @Column(name = "expected_end_date")
+    val expectedEndDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
+
+    @ManyToOne
+    @JoinColumn(name = "disposal_id", updatable = false, insertable = false)
+    val disposal: Disposal? = null,
+//    val rqmntTerminationReasonId: Long?,
+
 //
 //    @ManyToOne
 //    @JoinColumn(name = "rqmnt_type_main_category_id")
@@ -47,14 +65,7 @@ class Requirement(
 //    @JoinColumn(name = "ad_rqmnt_type_sub_category_id")
 //    val adSubCategory: ReferenceData?,
 //
-//    @Column(name = "commencement_date")
-//    val commencementDate: LocalDate? = null,
-//
-//    @Column(name = "start_date")
-//    val startDate: LocalDate? = null,
-//
-//    @Column(name = "termination_date")
-//    val terminationDate: LocalDate? = null,
+
 //
 //    @ManyToOne
 //    @JoinColumn(name = "rqmnt_termination_reason_id")
