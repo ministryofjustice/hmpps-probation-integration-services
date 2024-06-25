@@ -38,9 +38,6 @@ class PersonManager(
     @Column(name = "trust_provider_flag", columnDefinition = "number")
     val trustProviderFlag: Boolean,
 
-    @Column(name = "officer_code", columnDefinition = "char(7)")
-    val officerCode: String,
-
     @ManyToOne
     @JoinColumns(
         JoinColumn(

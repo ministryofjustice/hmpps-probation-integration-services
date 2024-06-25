@@ -58,7 +58,7 @@ class ProviderTeam(
     @Column(name = "provider_team_id")
     val providerTeamId: Long,
 
-    @Column(name = "code")
+    @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
 
     @Column(name = "name")
@@ -155,11 +155,7 @@ class Borough(
     @OneToMany(mappedBy = "borough")
     val districts: List<District> = listOf(),
 
-    @ManyToOne
-    @JoinColumn(name = "organisation_id")
-    val organisation: Organisation? = null
-
-)
+    )
 
 @Immutable
 @Entity

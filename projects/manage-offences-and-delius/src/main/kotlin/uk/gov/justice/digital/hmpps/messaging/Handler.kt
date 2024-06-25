@@ -49,10 +49,9 @@ class Handler(
             return
         }
 
-        val isNew = mergeDetailedOffence(offence)
-        if (featureFlags.enabled(FF_CREATE_OFFENCE)) {
-            mergeReferenceOffence(offence)
-        }
+        val newDetailedOffence = mergeDetailedOffence(offence)
+        val newReferenceOffence = mergeReferenceOffence(offence)
+        val isNew = newDetailedOffence || newReferenceOffence
 
         telemetryService.trackEvent(if (isNew) "OffenceCodeCreated" else "OffenceCodeUpdated", offence.telemetry)
     }
@@ -63,12 +62,13 @@ class Handler(
         return existingEntity == null
     }
 
-    private fun mergeReferenceOffence(offence: Offence) {
-        if (offence.homeOfficeCode == null) return
+    private fun mergeReferenceOffence(offence: Offence): Boolean {
+        if (!featureFlags.enabled(FF_CREATE_OFFENCE) || offence.homeOfficeCode == null) return false
         val existingEntity = offenceRepository.findByCode(offence.homeOfficeCode!!)
-        if (existingEntity != null && !featureFlags.enabled(FF_UPDATE_OFFENCE)) return
+        if (existingEntity != null && !featureFlags.enabled(FF_UPDATE_OFFENCE)) return false
         val highLevelOffence = offenceRepository.getByCode(offence.highLevelCode!!)
         offenceRepository.save(existingEntity.mergeWith(offence.toReferenceOffence(highLevelOffence)))
+        return existingEntity == null
     }
 
     private fun Offence.toDetailedOffence() = DetailedOffence(
