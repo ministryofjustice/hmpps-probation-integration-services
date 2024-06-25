@@ -1,0 +1,28 @@
+{
+  "description": "Post processor for hybrid semantic search",
+  "request_processors": [
+    {
+      "neural_query_enricher": {
+        "default_model_id": "${model_id}"
+      }
+    }
+  ],
+  "phase_results_processors": [
+    {
+      "normalization-processor": {
+        "normalization": {
+          "technique": "min_max"
+        },
+        "combination": {
+          "technique": "arithmetic_mean",
+          "parameters": {
+            "weights": [
+              0.5,
+              0.5
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
