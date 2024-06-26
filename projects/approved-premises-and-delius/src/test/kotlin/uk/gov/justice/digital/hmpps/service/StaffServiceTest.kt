@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
@@ -26,6 +27,9 @@ internal class StaffServiceTest {
 
     @Mock
     lateinit var staffRepository: StaffRepository
+
+    @Mock
+    lateinit var ldapTemplate: LdapTemplate
 
     @InjectMocks
     lateinit var staffService: StaffService
