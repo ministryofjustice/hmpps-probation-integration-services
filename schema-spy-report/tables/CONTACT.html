@@ -274,7 +274,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CONTACT_END_TIME">CONTACT_END_TIME</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="CONTACT_END_TIME">CONTACT_END_TIME</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title='nullable'>√</td>
@@ -586,7 +586,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="ATTENDED">ATTENDED</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="ATTENDED">ATTENDED</span></td>
                                     <td>CHAR</td>
                                     <td>1</td>
                                     <td title='nullable'>√</td>
@@ -1290,6 +1290,12 @@
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
                                     <td>OFFENDER_ID + CONTACT_DATE + SOFT_DELETED + CONTACT_START_TIME</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIE18CONTACT_REPLACEMENT</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>OFFENDER_ID + CONTACT_DATE + SOFT_DELETED + CONTACT_TYPE_ID + ATTENDED + CONTACT_ID + CONTACT_START_TIME + CONTACT_END_TIME</td>
                                 </tr>
                                 <tr>
                                     <td title='Indexed'>XIE24CONTACT</td>

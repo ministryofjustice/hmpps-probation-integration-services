@@ -2281,6 +2281,16 @@
             <column ascending="true" name="SOFT_DELETED"/>
             <column ascending="true" name="CONTACT_START_TIME"/>
          </index>
+         <index name="XIE18CONTACT_REPLACEMENT" unique="false">
+            <column ascending="true" name="OFFENDER_ID"/>
+            <column ascending="true" name="CONTACT_DATE"/>
+            <column ascending="true" name="SOFT_DELETED"/>
+            <column ascending="true" name="CONTACT_TYPE_ID"/>
+            <column ascending="true" name="ATTENDED"/>
+            <column ascending="true" name="CONTACT_ID"/>
+            <column ascending="true" name="CONTACT_START_TIME"/>
+            <column ascending="true" name="CONTACT_END_TIME"/>
+         </index>
          <index name="XIE24CONTACT" unique="false">
             <column ascending="true" name="VISOR_CONTACT"/>
             <column ascending="true" name="VISOR_EXPORTED"/>
