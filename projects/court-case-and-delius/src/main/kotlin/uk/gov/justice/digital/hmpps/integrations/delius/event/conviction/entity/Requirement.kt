@@ -63,6 +63,9 @@ class Requirement(
     @Column(name = "length")
     val length: Long? = null,
 
+    @Column(name = "rar_count")
+    val rarCount: Long? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -71,23 +74,8 @@ class Requirement(
 
     @ManyToOne
     @JoinColumn(name = "disposal_id", updatable = false, insertable = false)
-    val disposal: Disposal? = null,
-
-//    val rqmntTerminationReasonId: Long?,
-
-//
-
-//
-//    @Column(name = "expected_start_date")
-//    val expectedStartDate: LocalDate? = null,
-//
-//    @Column(name = "expected_end_date")
-//    val expectedEndDate: LocalDate? = null,
-//
-
-//
-
-    )
+    val disposal: Disposal? = null
+)
 
 @Immutable
 @Entity(name = "conviction_event")

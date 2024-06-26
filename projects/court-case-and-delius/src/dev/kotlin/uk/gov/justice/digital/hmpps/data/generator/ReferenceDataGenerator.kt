@@ -41,6 +41,7 @@ object ReferenceDataGenerator {
         "Main",
         "Main cat",
         MONTHS,
+        "N",
         IdGenerator.getAndIncrement()
     )
 

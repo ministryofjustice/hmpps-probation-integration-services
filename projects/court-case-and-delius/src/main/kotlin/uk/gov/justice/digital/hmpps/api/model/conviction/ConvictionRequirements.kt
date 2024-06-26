@@ -29,9 +29,9 @@ data class Requirement(
     val length: Long?,
     @Schema(description = "The temporal unit corresponding to the length field")
     val lengthUnit: String?,
-//    @Schema(description = "Is the main category restrictive")
-//    val restrictive: Boolean,
-//    val softDeleted: Boolean,
-//    @Schema(description = "Total RAR days completed")
-//    val rarCount: Long
+    @Schema(description = "Is the main category restrictive")
+    val restrictive: Boolean?,
+    val softDeleted: Boolean,
+    @Schema(description = "Total RAR days completed")
+    val rarCount: Long?
 )

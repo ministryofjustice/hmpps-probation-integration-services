@@ -76,6 +76,8 @@ class RequirementMainCategory(
     @OneToOne
     @JoinColumn(name = "units_id")
     val units: ReferenceData? = null,
+    @Column(name = "restrictive", columnDefinition = "char(1)")
+    val restrictive: String,
     @Id
     @Column(name = "rqmnt_type_main_category_id")
     val id: Long

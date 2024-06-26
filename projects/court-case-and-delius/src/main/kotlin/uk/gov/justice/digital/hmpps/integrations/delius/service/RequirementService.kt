@@ -50,6 +50,14 @@ class RequirementService(
             adSubCategory?.let { KeyValue(it.code, it.description) },
             terminationReason?.let { KeyValue(it.code, it.description) },
             length,
-            mainCategory?.let { it.units?.description }
+            mainCategory?.let { it.units?.description },
+            mainCategory?.let {
+                when (it.restrictive) {
+                    "Y" -> true
+                    else -> false
+                }
+            },
+            softDeleted,
+            rarCount
         )
 }
