@@ -19,7 +19,7 @@ object StaffGenerator {
     val JIM_SNOW_USER = generateStaffUser("JIMSNOWLDAP", JIM_SNOW)
 
     fun generate(
-        name: String = "TEST",
+        name: String = "Test",
         code: String = "TEST${staffCodeGenerator.getAndIncrement().toString().padStart(3, '0')}",
         teams: List<Team> = listOf(),
         approvedPremises: List<ApprovedPremises> = listOf()

@@ -34,7 +34,7 @@ class StaffControllerIntegrationTest {
             .andExpect(
                 jsonPath(
                     "$.content[*].name.surname",
-                    equalTo(listOf("TEST", "Key-worker", "Not key-worker", "Unallocated"))
+                    equalTo(listOf("Test", "Key-worker", "Not key-worker", "Unallocated"))
                 )
             )
             .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(false, true, false, false))))
