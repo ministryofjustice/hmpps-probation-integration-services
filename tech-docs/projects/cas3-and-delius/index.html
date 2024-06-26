@@ -92,7 +92,21 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>cas3-and-delius</span></a>
+    <a href="./index.html"><span>CAS3 and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="./index.html#workflows"><span>Workflows</span></a>
+      </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
@@ -106,8 +120,98 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="cas3-and-delius">cas3-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="cas3-and-delius">CAS3 and Delius</h1>
+<p>Service that responds to Community Accommodation Services Tier 3 (CAS3) domain events. The service is responsible for updating Delius with progress of referrals to transitional accommodation for people released from custody without a home.</p>
+<h2 id="business-need">Business Need</h2>
+<p>Ensuring the Probation Practitioner has an up-to-date view of activity in the CAS3 service when interacting with the probation case via Delius.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="././img/cas3-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/cas3-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="workflows">Workflows</h2>
+<p>CAS3 domain events are raised in real time as transitional accommodation referral applications, bookings and residencies are processed in the CAS3 application.</p>
+<h3 id="transitional-accommodation-referral-application">Transitional Accommodation Referral Application</h3>
+<p>A referral application is created in the CAS3 service which is reflected in a Delius contact. An <code>EXTERNAL_REFERENCE</code> URN is added to the contact in the form <code>urn:hmpps:cas3:application-submitted:{applicationId}</code> using the CAS3 application ID as a unique reference.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Submission of a accommodation referral application</td>
+<td>accommodation.cas3.referral.submitted</td>
+</tr>
+        </table>
+      </div><p><a href="././img/cas3-and-delius-workflow-application.svg" rel="noopener noreferrer"><img src="img/cas3-and-delius-workflow-application.svg" alt="Context Map" /></a></p>
+<h3 id="transitional-accommodation-booking">Transitional Accommodation Booking</h3>
+<p>Accommodation booking activity in the CAS3 service is reflected in a set of Delius contacts representing the progress of the booking. An <code>EXTERNAL_REFERENCE</code> URN is added to the contact in the form <code>urn:hmpps:cas3:booking-{action}:{referralId}</code> using the CAS3 booking ID as a unique reference. Domain events indicating an update to a particular booking activity will find and update the relevant contact identified by the external reference URN.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Creation of a provisional accommodation booking</td>
+<td>accommodation.cas3.booking.provisionally-made</td>
+</tr><tr>
+<td>Confirmation of an accommodation booking</td>
+<td>accommodation.cas3.booking.confirmed</td>
+</tr><tr>
+<td>Cancellation of an accommodation booking</td>
+<td>accommodation.cas3.booking.cancelled</td>
+</tr>
+        </table>
+      </div><p><a href="././img/cas3-and-delius-workflow-booking.svg" rel="noopener noreferrer"><img src="img/cas3-and-delius-workflow-booking.svg" alt="Context Map" /></a></p>
+<h3 id="transitional-accommodation-booking-update">Transitional Accommodation Booking Update</h3>
+<p>Updates to accommodation bookings in the CAS3 service are reflected in the Delius contacts previously created to represent the activity. Upon receiving an update event the integration service will find and update the relevant contact identified by the external reference URN.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>An update to the details of an accommodation booking cancellation</td>
+<td>accommodation.cas3.booking.cancelled.updated</td>
+</tr>
+        </table>
+      </div><p><a href="././img/cas3-and-delius-workflow-booking-update.svg" rel="noopener noreferrer"><img src="img/cas3-and-delius-workflow-booking-update.svg" alt="Context Map" /></a></p>
+<h3 id="transitional-accommodation-residence">Transitional Accommodation Residence</h3>
+<p>The CAS3 application will raise domain events with details of arrivals and departures from transitional accommodation premises. An <code>EXTERNAL_REFERENCE</code> URN is added to the contact in the form <code>urn:hmpps:cas3:person-{action}:{referralId}</code> using the CAS3 booking ID as a unique reference. The person&rsquo;s main address is updated to reflect their movement into or out of transitional accommodation.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Arrival at transitional accommodation</td>
+<td>accommodation.cas3.person.arrived</td>
+</tr><tr>
+<td>Departure from transitional accommodation</td>
+<td>accommodation.cas3.person.departed</td>
+</tr>
+        </table>
+      </div><p><a href="././img/cas3-and-delius-workflow-accommodation.svg" rel="noopener noreferrer"><img src="img/cas3-and-delius-workflow-accommodation.svg" alt="Context Map" /></a></p>
+<h3 id="transitional-accommodation-residence-update">Transitional Accommodation Residence Update</h3>
+<p>The CAS3 application will raise domain events when details of arrivals and departures from transitional accommodation premises are changed. Upon receiving an update event the integration service will find and update the relevant contact identified by the external reference URN.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Update to transitional accommodation arrival details</td>
+<td>accommodation.cas3.person.arrived.updated</td>
+</tr><tr>
+<td>Update to transitional accommodation departure details</td>
+<td>accommodation.cas3.person.departed.updated</td>
+</tr>
+        </table>
+      </div><p><a href="././img/cas3-and-delius-workflow-accommodation-update.svg" rel="noopener noreferrer"><img src="img/cas3-and-delius-workflow-accommodation-update.svg" alt="Context Map" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="message-interface">Message Interface</h3>
+<p>The service responds to HMPPS Domain Event messages via the
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/cas3-and-delius-queue.tf">Queue</a>.
+The events are raised by the <a href="https://github.com/ministryofjustice/hmpps-approved-premises-api/">HMPPS Approved Premises API</a> which handles backend integration for the <a href="https://github.com/ministryofjustice/hmpps-temporary-accommodation-ui/">CAS3 UI</a></p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/be6588c3e9cfdd4f3e7cfb4c96ddb38591075c8d/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/cas3-and-delius-queue.tf#L5-L17">SQS queue policy</a></p>
 
             
           </main>
