@@ -5,6 +5,8 @@ import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import java.time.LocalDate
 
 @Immutable
@@ -37,6 +39,14 @@ class Requirement(
     @Column(name = "expected_end_date")
     val expectedEndDate: LocalDate? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_type_sub_category_id")
+    val subCategory: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_type_main_category_id")
+    val mainCategory: RequirementMainCategory?,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -46,16 +56,13 @@ class Requirement(
     @ManyToOne
     @JoinColumn(name = "disposal_id", updatable = false, insertable = false)
     val disposal: Disposal? = null,
+
 //    val rqmntTerminationReasonId: Long?,
 
 //
-//    @ManyToOne
-//    @JoinColumn(name = "rqmnt_type_main_category_id")
-//    val mainCategory: RequirementMainCategory?,
+
 //
-//    @ManyToOne
-//    @JoinColumn(name = "rqmnt_type_sub_category_id")
-//    val subCategory: ReferenceData?,
+
 //
 //    @ManyToOne
 //    @JoinColumn(name = "ad_rqmnt_type_main_category_id")

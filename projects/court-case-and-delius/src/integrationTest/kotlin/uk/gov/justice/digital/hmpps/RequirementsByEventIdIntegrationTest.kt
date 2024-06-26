@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.ConvictionRequirements
 import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -67,7 +68,9 @@ internal class RequirementsByEventIdIntegrationTest {
                     requirement.terminationDate,
                     requirement.expectedStartDate,
                     requirement.expectedEndDate,
-                    requirement.active
+                    requirement.active,
+                    requirement.subCategory?.let { KeyValue(it.code, it.description) },
+                    requirement.mainCategory?.let { KeyValue(it.code, it.description) }
                 )
             )
         )

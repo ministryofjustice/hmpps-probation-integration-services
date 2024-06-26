@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.ConvictionRequirements
 import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.ConvictionEventRepository
@@ -42,6 +43,8 @@ class RequirementService(
             terminationDate,
             expectedStartDate,
             expectedEndDate,
-            active
+            active,
+            subCategory?.let { KeyValue(it.code, it.description) },
+            mainCategory?.let { KeyValue(it.code, it.description) }
         )
 }
