@@ -91,4 +91,15 @@ internal class RequirementsByEventIdIntegrationTest {
 
         assertEquals(expectedResponse, response)
     }
+
+    @Test
+    fun `return empty list of requirements`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.INACTIVE_EVENT
+
+        mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/requirements").withToken())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.requirements").isEmpty)
+    }
 }
