@@ -45,6 +45,8 @@ class RequirementService(
             expectedEndDate,
             active,
             subCategory?.let { KeyValue(it.code, it.description) },
-            mainCategory?.let { KeyValue(it.code, it.description) }
+            mainCategory?.let { KeyValue(it.code, it.description) },
+            adMainCategory?.let { KeyValue(it.code, it.description) },
+            adSubCategory?.let { KeyValue(it.code, it.description) }
         )
 }

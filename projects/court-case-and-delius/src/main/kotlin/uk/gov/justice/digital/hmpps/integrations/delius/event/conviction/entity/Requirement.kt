@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import java.time.LocalDate
 
@@ -47,6 +48,14 @@ class Requirement(
     @JoinColumn(name = "rqmnt_type_main_category_id")
     val mainCategory: RequirementMainCategory?,
 
+    @ManyToOne
+    @JoinColumn(name = "ad_rqmnt_type_main_category_id")
+    val adMainCategory: AdRequirementMainCategory?,
+
+    @ManyToOne
+    @JoinColumn(name = "ad_rqmnt_type_sub_category_id")
+    val adSubCategory: ReferenceData?,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -58,20 +67,6 @@ class Requirement(
     val disposal: Disposal? = null,
 
 //    val rqmntTerminationReasonId: Long?,
-
-//
-
-//
-
-//
-//    @ManyToOne
-//    @JoinColumn(name = "ad_rqmnt_type_main_category_id")
-//    val adMainCategory: AdRequirementMainCategory?,
-//
-//    @ManyToOne
-//    @JoinColumn(name = "ad_rqmnt_type_sub_category_id")
-//    val adSubCategory: ReferenceData?,
-//
 
 //
 //    @ManyToOne

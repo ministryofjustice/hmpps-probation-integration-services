@@ -17,6 +17,8 @@ object RequirementsGenerator {
         LocalDate.of(2024, 1, 5),
         ReferenceDataGenerator.REQUIREMENT_SUB_CAT,
         ReferenceDataGenerator.REQUIREMENT_MAIN_CAT,
+        ReferenceDataGenerator.AD_REQUIREMENT_MAIN_CAT,
+        ReferenceDataGenerator.AD_REQUIREMENT_SUB_CAT,
         true
     )
 }

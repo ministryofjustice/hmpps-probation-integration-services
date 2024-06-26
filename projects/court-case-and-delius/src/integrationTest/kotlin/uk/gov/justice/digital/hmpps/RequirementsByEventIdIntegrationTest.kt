@@ -70,7 +70,9 @@ internal class RequirementsByEventIdIntegrationTest {
                     requirement.expectedEndDate,
                     requirement.active,
                     requirement.subCategory?.let { KeyValue(it.code, it.description) },
-                    requirement.mainCategory?.let { KeyValue(it.code, it.description) }
+                    requirement.mainCategory?.let { KeyValue(it.code, it.description) },
+                    requirement.adMainCategory?.let { KeyValue(it.code, it.description) },
+                    requirement.adSubCategory?.let { KeyValue(it.code, it.description) },
                 )
             )
         )
