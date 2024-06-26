@@ -35,6 +35,17 @@
           "percentage": 0
         },
         {
+          "telemetryType": "request",
+          "attributes": [
+            {
+              "key": "http.url",
+              "value": "https?://[^/]+/info/?.*",
+              "matchType": "regexp"
+            }
+          ],
+          "percentage": 0
+        },
+        {
           "telemetryType": "dependency",
           "attributes": [
             {
