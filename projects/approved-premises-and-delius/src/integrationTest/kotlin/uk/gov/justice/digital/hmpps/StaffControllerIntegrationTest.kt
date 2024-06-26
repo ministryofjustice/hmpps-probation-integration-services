@@ -29,15 +29,15 @@ class StaffControllerIntegrationTest {
         mockMvc
             .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withToken())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.page.totalElements", equalTo(4)))
+            .andExpect(jsonPath("$.page.totalElements", equalTo(3)))
             .andExpect(jsonPath("$.page.size", equalTo(100)))
             .andExpect(
                 jsonPath(
                     "$.content[*].name.surname",
-                    equalTo(listOf("Test", "Key-worker", "Not key-worker", "Unallocated"))
+                    equalTo(listOf("Key-worker", "Not key-worker", "Unallocated"))
                 )
             )
-            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(false, true, false, false))))
+            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, false, false))))
     }
 
     @Test
