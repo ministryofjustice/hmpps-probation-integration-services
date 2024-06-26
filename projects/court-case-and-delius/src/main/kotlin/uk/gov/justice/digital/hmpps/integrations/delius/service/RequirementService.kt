@@ -24,8 +24,8 @@ class RequirementService(
         includeDeleted: Boolean
     ): ConvictionRequirements {
 
-        personRepository.getPerson(crn)
-        val event = convictionEventRepository.getByEventId(convictionId)
+        val person = personRepository.getPerson(crn)
+        val event = convictionEventRepository.getByEventId(convictionId, person.id)
 
         return ConvictionRequirements(
             convictionRequirementRepository

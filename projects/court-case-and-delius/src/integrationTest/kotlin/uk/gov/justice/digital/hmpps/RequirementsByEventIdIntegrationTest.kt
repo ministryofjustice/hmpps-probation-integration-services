@@ -76,9 +76,9 @@ internal class RequirementsByEventIdIntegrationTest {
                     requirement.terminationReason?.let { KeyValue(it.code, it.description) },
                     requirement.length,
                     requirement.mainCategory?.let { it.units?.description },
-                    false,
-                    false,
-                    requirement?.rarCount
+                    restrictive = false,
+                    softDeleted = false,
+                    rarCount = requirement.rarCount
                 )
             )
         )

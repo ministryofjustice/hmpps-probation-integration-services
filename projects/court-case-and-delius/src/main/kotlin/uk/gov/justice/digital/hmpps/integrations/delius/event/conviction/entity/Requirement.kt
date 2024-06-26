@@ -90,11 +90,12 @@ class Event(
 )
 
 interface ConvictionEventRepository : JpaRepository<Event, Long> {
-    fun findEventById(id: Long): Event?
+    fun findEventByIdAndOffenderId(eventId: Long, personId: Long): Event?
 }
 
-fun ConvictionEventRepository.getByEventId(eventId: Long): Event =
-    findEventById(eventId) ?: throw NotFoundException("Conviction with convictionId $eventId not found")
+fun ConvictionEventRepository.getByEventId(eventId: Long, personId: Long): Event =
+    findEventByIdAndOffenderId(eventId, personId)
+        ?: throw NotFoundException("Conviction with convictionId $eventId not found")
 
 @Immutable
 @Entity(name = "conviction_disposal")

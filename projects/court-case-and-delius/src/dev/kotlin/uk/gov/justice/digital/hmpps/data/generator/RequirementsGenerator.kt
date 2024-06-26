@@ -21,7 +21,6 @@ object RequirementsGenerator {
         ReferenceDataGenerator.AD_REQUIREMENT_SUB_CAT,
         ReferenceDataGenerator.TERMINATION_REASON,
         3,
-        7,
-        true
+        active = true
     )
 }
