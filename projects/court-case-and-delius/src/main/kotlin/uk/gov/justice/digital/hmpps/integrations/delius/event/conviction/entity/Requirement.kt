@@ -56,6 +56,13 @@ class Requirement(
     @JoinColumn(name = "ad_rqmnt_type_sub_category_id")
     val adSubCategory: ReferenceData?,
 
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_termination_reason_id")
+    val terminationReason: ReferenceData? = null,
+
+    @Column(name = "length")
+    val length: Long? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -69,9 +76,7 @@ class Requirement(
 //    val rqmntTerminationReasonId: Long?,
 
 //
-//    @ManyToOne
-//    @JoinColumn(name = "rqmnt_termination_reason_id")
-//    val terminationReason: ReferenceData? = null,
+
 //
 //    @Column(name = "expected_start_date")
 //    val expectedStartDate: LocalDate? = null,
@@ -79,8 +84,7 @@ class Requirement(
 //    @Column(name = "expected_end_date")
 //    val expectedEndDate: LocalDate? = null,
 //
-//    @Column(name = "length")
-//    val length: Long? = null,
+
 //
 
     )

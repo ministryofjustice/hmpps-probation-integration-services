@@ -19,6 +19,8 @@ object RequirementsGenerator {
         ReferenceDataGenerator.REQUIREMENT_MAIN_CAT,
         ReferenceDataGenerator.AD_REQUIREMENT_MAIN_CAT,
         ReferenceDataGenerator.AD_REQUIREMENT_SUB_CAT,
+        ReferenceDataGenerator.TERMINATION_REASON,
+        12,
         true
     )
 }

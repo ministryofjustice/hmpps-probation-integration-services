@@ -24,9 +24,9 @@ data class Requirement(
     val requirementTypeMainCategory: KeyValue?,
     val adRequirementTypeMainCategory: KeyValue?,
     val adRequirementTypeSubCategory: KeyValue?,
-//    val terminationReason: KeyValue,
-//    @Schema(description = "The number of temporal units to complete the requirement (see lengthUnit field for unit)")
-//    val length: Long,
+    val terminationReason: KeyValue?,
+    @Schema(description = "The number of temporal units to complete the requirement (see lengthUnit field for unit)")
+    val length: Long?,
 //    @Schema(description = "The temporal unit corresponding to the length field")
 //    val lengthUnit: String,
 //    @Schema(description = "Is the main category restrictive")
