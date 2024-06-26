@@ -74,7 +74,8 @@ internal class RequirementsByEventIdIntegrationTest {
                     requirement.adMainCategory?.let { KeyValue(it.code, it.description) },
                     requirement.adSubCategory?.let { KeyValue(it.code, it.description) },
                     requirement.terminationReason?.let { KeyValue(it.code, it.description) },
-                    requirement.length
+                    requirement.length,
+                    requirement.mainCategory?.let { it.units?.description }
                 )
             )
         )

@@ -27,8 +27,8 @@ data class Requirement(
     val terminationReason: KeyValue?,
     @Schema(description = "The number of temporal units to complete the requirement (see lengthUnit field for unit)")
     val length: Long?,
-//    @Schema(description = "The temporal unit corresponding to the length field")
-//    val lengthUnit: String,
+    @Schema(description = "The temporal unit corresponding to the length field")
+    val lengthUnit: String?,
 //    @Schema(description = "Is the main category restrictive")
 //    val restrictive: Boolean,
 //    val softDeleted: Boolean,

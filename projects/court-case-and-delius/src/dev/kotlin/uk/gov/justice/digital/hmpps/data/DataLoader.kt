@@ -50,6 +50,7 @@ class DataLoader(
             ReferenceDataGenerator.LENGTH_UNITS,
             ReferenceDataGenerator.TERMINATION_REASON,
             ReferenceDataGenerator.CUSTODIAL_STATUS,
+            ReferenceDataGenerator.MONTHS,
             ReferenceDataGenerator.REQUIREMENT_MAIN_CAT,
             ReferenceDataGenerator.REQUIREMENT_SUB_CAT,
             ReferenceDataGenerator.AD_REQUIREMENT_MAIN_CAT,

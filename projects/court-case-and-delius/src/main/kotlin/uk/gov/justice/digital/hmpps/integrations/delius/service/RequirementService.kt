@@ -49,6 +49,7 @@ class RequirementService(
             adMainCategory?.let { KeyValue(it.code, it.description) },
             adSubCategory?.let { KeyValue(it.code, it.description) },
             terminationReason?.let { KeyValue(it.code, it.description) },
-            length
+            length,
+            mainCategory?.let { it.units?.description }
         )
 }
