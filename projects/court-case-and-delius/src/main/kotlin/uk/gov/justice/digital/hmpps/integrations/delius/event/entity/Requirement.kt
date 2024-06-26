@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -78,6 +73,11 @@ class Requirement(
 class RequirementMainCategory(
     val code: String,
     val description: String,
+    @OneToOne
+    @JoinColumn(name = "units_id")
+    val units: ReferenceData? = null,
+    @Column(name = "restrictive", columnDefinition = "char(1)")
+    val restrictive: String,
     @Id
     @Column(name = "rqmnt_type_main_category_id")
     val id: Long

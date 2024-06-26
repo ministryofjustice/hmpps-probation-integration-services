@@ -31,9 +31,17 @@ object ReferenceDataGenerator {
         IdGenerator.getAndIncrement()
     )
 
+    val MONTHS = ReferenceData(
+        "M",
+        "months",
+        IdGenerator.getAndIncrement()
+    )
+
     val REQUIREMENT_MAIN_CAT = RequirementMainCategory(
         "Main",
         "Main cat",
+        MONTHS,
+        "N",
         IdGenerator.getAndIncrement()
     )
 

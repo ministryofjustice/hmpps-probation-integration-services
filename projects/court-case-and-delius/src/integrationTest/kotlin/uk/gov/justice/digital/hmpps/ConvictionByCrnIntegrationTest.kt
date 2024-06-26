@@ -33,7 +33,7 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ConvictionIntegrationByCrnTest {
+internal class ConvictionByCrnIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -54,7 +54,7 @@ internal class ConvictionIntegrationByCrnTest {
     }
 
     @Test
-    fun `retun a list of active events for a person`() {
+    fun `return a list of active events for a person`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
@@ -245,7 +245,7 @@ internal class ConvictionIntegrationByCrnTest {
     }
 
     @Test
-    fun `retun a list of active and inactive events for a person`() {
+    fun `return a list of active and inactive events for a person`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
         mockMvc
@@ -257,7 +257,7 @@ internal class ConvictionIntegrationByCrnTest {
     }
 
     @Test
-    fun `retun a empty list for a person with no active events`() {
+    fun `return a empty list for a person with no active events`() {
         val crn = PersonGenerator.NO_ACTIVE_EVENTS.crn
         mockMvc
             .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
