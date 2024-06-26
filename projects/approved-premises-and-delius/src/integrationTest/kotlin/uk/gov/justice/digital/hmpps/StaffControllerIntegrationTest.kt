@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +13,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.model.StaffDetail
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -26,15 +29,15 @@ class StaffControllerIntegrationTest {
         mockMvc
             .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withToken())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.page.totalElements", equalTo(3)))
+            .andExpect(jsonPath("$.page.totalElements", equalTo(4)))
             .andExpect(jsonPath("$.page.size", equalTo(100)))
             .andExpect(
                 jsonPath(
                     "$.content[*].name.surname",
-                    equalTo(listOf("Key-worker", "Not key-worker", "Unallocated"))
+                    equalTo(listOf("TEST", "Key-worker", "Not key-worker", "Unallocated"))
                 )
             )
-            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, false, false))))
+            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(false, true, false, false))))
     }
 
     @Test
@@ -69,11 +72,24 @@ class StaffControllerIntegrationTest {
     @Test
     fun `Get staff by username`() {
         val username = StaffGenerator.DEFAULT_STAFF.user!!.username
-        mockMvc.perform(get("/staff/$username").withToken())
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.username", equalTo(username)))
-            .andExpect(jsonPath("$.name.surname", equalTo(StaffGenerator.DEFAULT_STAFF.surname)))
-            .andExpect(jsonPath("$.name.forename", equalTo(StaffGenerator.DEFAULT_STAFF.forename)))
-            .andExpect(jsonPath("$.code", equalTo(StaffGenerator.DEFAULT_STAFF.code)))
+        val res = mockMvc.perform(get("/staff/$username").withToken())
+            .andExpect(status().isOk).andReturn().response.contentAsJson<StaffDetail>()
+        assertThat(res.username, equalTo(username))
+        assertThat(res.name.surname, equalTo(StaffGenerator.DEFAULT_STAFF.surname))
+        assertThat(res.name.forename, equalTo(StaffGenerator.DEFAULT_STAFF.forename))
+        assertThat(res.code, equalTo(StaffGenerator.DEFAULT_STAFF.code))
+        assertThat(res.email, equalTo("john.smith@moj.gov.uk"))
+        assertThat(res.telephoneNumber, equalTo("07321165373"))
+        assertThat(res.staffIdentifier, equalTo(StaffGenerator.DEFAULT_STAFF.id))
+        assertThat(res.teams[0].borough?.code, equalTo(StaffGenerator.DEFAULT_STAFF.teams[0].district.borough.code))
+        assertThat(
+            res.teams[0].borough?.description,
+            equalTo(StaffGenerator.DEFAULT_STAFF.teams[0].district.borough.description)
+        )
+        assertThat(res.teams[0].startDate, equalTo(StaffGenerator.DEFAULT_STAFF.teams[0].startDate))
+        assertThat(res.teams[0].endDate, equalTo(StaffGenerator.DEFAULT_STAFF.teams[0].endDate))
+        assertThat(res.probationArea.code, equalTo(StaffGenerator.DEFAULT_STAFF.probationArea.code))
+        assertThat(res.probationArea.description, equalTo(StaffGenerator.DEFAULT_STAFF.probationArea.description))
+        assertThat(res.active, equalTo(true))
     }
 }

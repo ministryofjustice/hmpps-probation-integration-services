@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReleaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.SentenceType
 import java.time.LocalDate
