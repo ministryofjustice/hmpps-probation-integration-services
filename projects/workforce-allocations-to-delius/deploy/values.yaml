@@ -12,6 +12,9 @@ generic-service:
   ingress:
     tlsSecretName: workforce-allocations-to-delius-cert
 
+  env:
+    SENTRY_TRACES_SAMPLE_RATE: '0.01'
+
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
