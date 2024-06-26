@@ -45,12 +45,14 @@ class ProbationCaseDataLoader(
         probationCaseRepository.save(ProbationCaseGenerator.CASE_COMPLEX)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_SIMPLE)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_X320741)
+        probationCaseRepository.save(ProbationCaseGenerator.CASE_X320811)
 
         personManagerRepository.saveAll(
             listOf(
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_COMPLEX).asPersonManager(),
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_SIMPLE).asPersonManager(),
-                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320741).asPersonManager()
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320741).asPersonManager(),
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320811).asPersonManager()
             )
         )
 

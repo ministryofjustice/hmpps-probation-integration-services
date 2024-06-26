@@ -46,6 +46,18 @@ object ProbationCaseGenerator {
         religion = ReferenceDataGenerator.RELIGION_OTHER,
         genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
     )
+    val CASE_X320811 = generate(
+        crn = "X320811",
+        forename = "E2E Person",
+        surname = "AdHoc Bookings",
+        dateOfBirth = LocalDate.of(1987, 8, 2),
+        nomsId = "A1234AI",
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        ethnicity = ReferenceDataGenerator.ETHNICITY_WHITE,
+        nationality = ReferenceDataGenerator.NATIONALITY_BRITISH,
+        religion = ReferenceDataGenerator.RELIGION_OTHER,
+        genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
+    )
 
     fun generate(
         crn: String,
