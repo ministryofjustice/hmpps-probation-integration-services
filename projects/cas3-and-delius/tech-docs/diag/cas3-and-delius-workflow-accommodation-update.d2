@@ -1,0 +1,53 @@
+# CAS3 Workflow: Temporary Accommodation Activity
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+direction: right
+
+# What triggers the workflow?
+cas3: CAS3  {
+     style.font-size: 24
+
+     explanation: |md
+     ## Accommodation Workflows
+     Accommodation actions raise domain events
+     |
+
+     person_arrived_update: Person Arrived Updated
+     person_departed_update: Person Departed Updated
+}
+
+domain_event_1: "accommodation.cas3\n.person.arrived.updated" {
+    style.font-size: 12
+    shape: queue
+}
+
+domain_event_2: "accommodation.cas3\n.person.departed.updated" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_contact: Update Contact
+    d_location: Update Person's\n Main Address
+
+    explanation: |md
+    ## Delius Workflow
+    Contact is updated to Delius to indicate arrival or departure details. \
+    Address is created if not currently present in Delius \
+    Main address is updated to indicate change of location
+    |
+
+}
+
+cas3 -> domain_event_1
+cas3 -> domain_event_2
+
+domain_event_1 -> delius
+domain_event_2 -> delius

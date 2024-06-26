@@ -1,0 +1,42 @@
+# CAS3 Workflow: Booking Update Activity
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+direction: right
+
+# What triggers the workflow?
+cas3: CAS3  {
+     style.font-size: 24
+
+     explanation: |md
+     ## Accommodation Booking Workflow
+     Accommodation booking change actions raise domain events
+     |
+
+     booking_cancelled_updated: Booking Cancellation Updated
+
+}
+
+domain_event_1: "accommodation.cas3\n.booking.cancelled.updated" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+
+     explanation: |md
+     ## Delius Workflow
+     Contact is updated in Delius \
+     to indicate accommodation booking activity
+     |
+
+    d_contact: Update Contact
+}
+
+cas3 -> domain_event_1
+
+domain_event_1 -> delius
