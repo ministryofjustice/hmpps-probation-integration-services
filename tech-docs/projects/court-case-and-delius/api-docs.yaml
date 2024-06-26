@@ -1176,7 +1176,6 @@ components:
       - isPrisonOffenderManager
       - isResponsibleOfficer
       - isUnallocated
-      - staffCode
       type: object
       properties:
         staffCode:
