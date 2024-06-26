@@ -30,11 +30,16 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
+            ReferenceDataGenerator.PRISON,
+            InstitutionGenerator.WSIHMP,
+            OrganisationGenerator.DEFAULT,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT,
             AreaGenerator.PARTITION_AREA,
             ProviderEmployeeGenerator.PROVIDER_EMPLOYEE,
             ProviderGenerator.DEFAULT,
+            ProviderTeamGenerator.EXTERNAL_PROVIDER,
+            ProviderTeamGenerator.DEFAULT_PROVIDER_TEAM,
             LDUGenerator.DEFAULT,
             BoroughGenerator.DEFAULT,
             DistrictGenerator.DEFAULT,
@@ -44,7 +49,6 @@ class DataLoader(
             SentenceGenerator.ADDITIONAL_OFFENCE,
             BusinessInteractionGenerator.UPDATE_CONTACT,
             ContactTypeGenerator.CONTACT_TYPE,
-
             DisposalTypeGenerator.CURFEW_ORDER,
             ReferenceDataGenerator.DISPOSAL_TYPE,
             ReferenceDataGenerator.LENGTH_UNITS,
@@ -81,7 +85,6 @@ class DataLoader(
             ReferenceDataGenerator.DEFAULT_ALLOCATION_REASON,
             ReferenceDataGenerator.DEFAULT_TIER,
             ReferenceDataGenerator.REF_DISQ,
-            ReferenceDataGenerator.PRISON,
             ReferenceDataGenerator.ACR,
             ReferenceDataGenerator.EXP,
             ReferenceDataGenerator.HDE,
@@ -93,7 +96,7 @@ class DataLoader(
             ReferenceDataGenerator.SED,
             ReferenceDataGenerator.CRN,
             ReferenceDataGenerator.TRIAL,
-            CourtGenerator.PROBATIONARE_AREA,
+            CourtGenerator.PROBATION_AREA,
             CourtGenerator.BHAM,
             PersonGenerator.NEW_TO_PROBATION,
             PersonGenerator.CURRENTLY_MANAGED,
@@ -107,11 +110,16 @@ class DataLoader(
             PersonGenerator.ALIAS
         )
 
-        em.saveAll(StaffGenerator.ALLOCATED, StaffGenerator.UNALLOCATED, StaffGenerator.OFFICER)
+        em.saveAll(
+            StaffGenerator.ALLOCATED,
+            StaffGenerator.UNALLOCATED,
+            StaffGenerator.OFFICER,
+            StaffGenerator.STAFF_USER
+        )
 
         em.saveAll(
             PersonGenerator.generatePersonManager(PersonGenerator.NEW_TO_PROBATION),
-            PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED)
+            PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED),
         )
 
         val noSentenceEvent =
@@ -120,7 +128,7 @@ class DataLoader(
             SentenceGenerator.generateOrderManager(
                 noSentenceEvent,
                 StaffGenerator.UNALLOCATED,
-                CourtGenerator.PROBATIONARE_AREA,
+                CourtGenerator.PROBATION_AREA,
                 ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
                 ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, ZoneId.of("Europe/London"))
             )
@@ -135,7 +143,7 @@ class DataLoader(
             SentenceGenerator.generateOrderManager(
                 newEvent,
                 StaffGenerator.UNALLOCATED,
-                CourtGenerator.PROBATIONARE_AREA,
+                CourtGenerator.PROBATION_AREA,
                 ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, ZoneId.of("Europe/London")),
                 ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
             )
@@ -175,7 +183,6 @@ class DataLoader(
             UnpaidWorkGenerator.APPT6,
             UnpaidWorkGenerator.APPT7,
             currentManager,
-            InstitutionGenerator.WSIHMP,
             custody,
             SentenceGenerator.CONDITIONAL_RELEASE_KEY_DATE,
             SentenceGenerator.LED_KEY_DATE,
@@ -215,7 +222,7 @@ class DataLoader(
             SentenceGenerator.generateOrderManager(
                 preEvent,
                 StaffGenerator.ALLOCATED,
-                CourtGenerator.PROBATIONARE_AREA,
+                CourtGenerator.PROBATION_AREA,
                 ZonedDateTime.of(LocalDate.now().minusDays(7), LocalTime.NOON, ZoneId.of("Europe/London")),
                 ZonedDateTime.of(LocalDate.now().minusDays(10), LocalTime.NOON, ZoneId.of("Europe/London"))
             )
@@ -231,6 +238,9 @@ class DataLoader(
                 "EVENT"
             )
         )
+
+        em.persist(PersonGenerator.PRISON_MANAGER)
+        em.persist(PersonGenerator.RESPONSIBLE_OFFICER)
     }
 }
 

@@ -12,17 +12,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import software.amazon.awssdk.utils.ImmutableMap
 import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.AreaGenerator.PARTITION_AREA
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDRESS
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PREVIOUS_CONVICTION_DOC
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_ALLOCATION_REASON
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DISABILITY_TYPE_1
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.PROVISION_TYPE_1
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RELIGION
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.ALLOCATED
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -233,8 +231,8 @@ internal class OffenderIntegrationTest {
         )
         assertThat(detailResponse.offenderManagers[0].allocationReason, equalTo(DEFAULT_ALLOCATION_REASON.keyValueOf()))
         assertThat(detailResponse.offenderManagers[0].partitionArea, equalTo(PARTITION_AREA.area))
-        assertThat(detailResponse.offenderManagers[0].team.code.trim(), equalTo(TeamGenerator.DEFAULT.code.trim()))
-        assertThat(detailResponse.offenderManagers[0].team.description, equalTo(TeamGenerator.DEFAULT.description))
+        assertThat(detailResponse.offenderManagers[0].team!!.code.trim(), equalTo(TeamGenerator.DEFAULT.code.trim()))
+        assertThat(detailResponse.offenderManagers[0].team!!.description, equalTo(TeamGenerator.DEFAULT.description))
         assertThat(detailResponse.offenderProfile.religion, equalTo(RELIGION.description))
         assertThat(detailResponse.offenderProfile.remandStatus, equalTo("Remand Status"))
         assertThat(detailResponse.offenderProfile.riskColour, equalTo("RED"))
@@ -269,5 +267,48 @@ internal class OffenderIntegrationTest {
             .andReturn().response.contentAsJson<OffenderDetailSummary>()
         assertThat(detailResponse.currentDisposal, equalTo("0"))
         assertThat(detailResponse.activeProbationManagedSentence, equalTo(false))
+    }
+
+    @Test
+    fun `All offender managers API call not including teams retuns successfully`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val allOffenderManagers = mockMvc
+            .perform(get("/probation-case/$crn/allOffenderManagers").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<List<CommunityOrPrisonOffenderManager>>()
+        assertThat(allOffenderManagers[0].staff?.surname, equalTo(StaffGenerator.ALLOCATED.surname))
+        assertThat(
+            allOffenderManagers[0].probationArea?.institution?.institutionName,
+            equalTo(ProviderGenerator.DEFAULT.institution?.institutionName)
+        )
+        assertThat(allOffenderManagers[0].probationArea?.teams?.size, equalTo(0))
+    }
+
+    @Test
+    fun `All offender managers API call including teams retuns successfully`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val allOffenderManagers = mockMvc
+            .perform(get("/probation-case/$crn/allOffenderManagers?includeProbationAreaTeams=true").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<List<CommunityOrPrisonOffenderManager>>()
+        assertThat(allOffenderManagers[0].staff?.surname, equalTo(StaffGenerator.ALLOCATED.surname))
+        assertThat(
+            allOffenderManagers[0].probationArea?.institution?.institutionName,
+            equalTo(ProviderGenerator.DEFAULT.institution?.institutionName)
+        )
+        assertThat(allOffenderManagers[0].probationArea?.teams?.size, equalTo(2))
+        assertThat(allOffenderManagers[0].isPrisonOffenderManager, equalTo(false))
+        assertThat(allOffenderManagers[1].isPrisonOffenderManager, equalTo(true))
+        assertThat(
+            allOffenderManagers[1].probationArea?.teams?.get(1)?.externalProvider?.description,
+            equalTo(ProviderTeamGenerator.EXTERNAL_PROVIDER.description)
+        )
+    }
+
+    @Test
+    fun `All offender managers crn not found`() {
+        mockMvc
+            .perform(get("/probation-case/X999999/allOffenderManagers").withToken())
+            .andExpect(status().isNotFound)
     }
 }

@@ -14,7 +14,8 @@ object InstitutionGenerator {
             description = "Test institution ($code)",
             institutionName = "Test institution $code",
             establishmentType = ReferenceDataGenerator.PRISON,
-            nomisCdeCode = prisonId
+            nomisCdeCode = prisonId,
+            private = true
         )
     }
 }

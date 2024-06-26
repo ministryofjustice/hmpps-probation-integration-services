@@ -110,8 +110,8 @@ data class Institution(
     val isEstablishment: Boolean,
     val code: String,
     val description: String,
-    val institutionName: String,
-    val establishmentType: KeyValue,
+    val institutionName: String?,
+    val establishmentType: KeyValue?,
     val isPrivate: Boolean?,
     val nomsPrisonInstitutionCode: String?
 )
