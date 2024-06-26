@@ -42,19 +42,19 @@ class Requirement(
 
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_sub_category_id")
-    val subCategory: ReferenceData?,
+    val subCategory: ReferenceData? = null,
 
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_main_category_id")
-    val mainCategory: RequirementMainCategory?,
+    val mainCategory: RequirementMainCategory? = null,
 
     @ManyToOne
     @JoinColumn(name = "ad_rqmnt_type_main_category_id")
-    val adMainCategory: AdRequirementMainCategory?,
+    val adMainCategory: AdRequirementMainCategory? = null,
 
     @ManyToOne
     @JoinColumn(name = "ad_rqmnt_type_sub_category_id")
-    val adSubCategory: ReferenceData?,
+    val adSubCategory: ReferenceData? = null,
 
     @ManyToOne
     @JoinColumn(name = "rqmnt_termination_reason_id")

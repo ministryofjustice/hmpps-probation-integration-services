@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 object RequirementsGenerator {
 
-    val REQ1 = Requirement(
+    val ACTIVE_REQ = Requirement(
         IdGenerator.getAndIncrement(),
         CURRENT_SENTENCE.id,
         "notes",
@@ -22,5 +22,18 @@ object RequirementsGenerator {
         ReferenceDataGenerator.TERMINATION_REASON,
         3,
         active = true
+    )
+
+    val INACTIVE_REQ = generate(CURRENT_SENTENCE.id, active = false, softDeleted = false)
+
+    fun generate(
+        disposalId: Long,
+        active: Boolean,
+        softDeleted: Boolean,
+    ) = Requirement(
+        IdGenerator.getAndIncrement(),
+        disposalId,
+        active = active,
+        softDeleted = softDeleted,
     )
 }

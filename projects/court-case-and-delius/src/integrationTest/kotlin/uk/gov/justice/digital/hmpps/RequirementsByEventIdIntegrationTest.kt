@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -57,7 +59,7 @@ internal class RequirementsByEventIdIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
-        val requirement = RequirementsGenerator.REQ1
+        val requirement = RequirementsGenerator.ACTIVE_REQ
         val expectedResponse = ConvictionRequirements(
             listOf(
                 Requirement(
@@ -101,5 +103,23 @@ internal class RequirementsByEventIdIntegrationTest {
             .perform(get("/probation-case/$crn/convictions/${event.id}/requirements").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.requirements").isEmpty)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "activeOnly=false,false,false",
+        "activeOnly=false,false,false"
+    )
+    fun `return list based on request parameters`(requestParams: String, active: Boolean, deleted: Boolean) {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/requirements?$requestParams").withToken())
+            .andExpect(status().isOk)
+            .andDo(print())
+            .andExpect(jsonPath("$.requirements.length()").value(1))
+            .andExpect(jsonPath("$.requirements[0].active").value(active))
+            .andExpect(jsonPath("$.requirements[0].softDeleted").value(deleted))
     }
 }
