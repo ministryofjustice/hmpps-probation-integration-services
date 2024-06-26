@@ -43,6 +43,7 @@ class RequirementService(
             terminationDate,
             expectedStartDate,
             expectedEndDate,
+            createdDatetime,
             active,
             subCategory?.let { KeyValue(it.code, it.description) },
             mainCategory?.let { KeyValue(it.code, it.description) },
