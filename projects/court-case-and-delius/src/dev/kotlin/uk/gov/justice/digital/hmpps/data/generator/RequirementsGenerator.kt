@@ -26,6 +26,10 @@ object RequirementsGenerator {
 
     val INACTIVE_REQ = generate(CURRENT_SENTENCE.id, active = false, softDeleted = false)
 
+    val DELETED_REQ = generate(CURRENT_SENTENCE.id, active = true, softDeleted = true)
+
+    val INACTIVE_AND_DELETED_REQ = generate(CURRENT_SENTENCE.id, active = false, softDeleted = true)
+
     fun generate(
         disposalId: Long,
         active: Boolean,

@@ -108,7 +108,8 @@ internal class RequirementsByEventIdIntegrationTest {
     @ParameterizedTest
     @CsvSource(
         "activeOnly=false,false,false",
-        "activeOnly=false,false,false"
+        "excludeSoftDeleted=false,true,true",
+        "activeOnly=false&&excludeSoftDeleted=false,false,true"
     )
     fun `return list based on request parameters`(requestParams: String, active: Boolean, deleted: Boolean) {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn

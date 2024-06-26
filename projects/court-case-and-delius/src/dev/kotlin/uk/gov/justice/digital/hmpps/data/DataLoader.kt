@@ -162,6 +162,8 @@ class DataLoader(
             currentSentence,
             RequirementsGenerator.ACTIVE_REQ,
             RequirementsGenerator.INACTIVE_REQ,
+            RequirementsGenerator.DELETED_REQ,
+            RequirementsGenerator.INACTIVE_AND_DELETED_REQ,
             AdditionalSentenceGenerator.SENTENCE_DISQ,
             ReferenceDataGenerator.HOURS_WORKED,
             UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1,
