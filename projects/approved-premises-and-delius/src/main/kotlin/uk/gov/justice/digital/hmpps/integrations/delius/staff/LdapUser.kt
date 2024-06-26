@@ -9,9 +9,8 @@ import javax.naming.Name
 @Entry(objectClasses = ["inetOrgPerson", "top"])
 class LdapUser(
 
-    @Attribute(name = "cn")
-    @DnAttribute(value = "cn", index = 0)
-    val username: String,
+    @Id
+    val dn: Name,
 
     @Attribute(name = "sn")
     val surname: String,
@@ -19,12 +18,13 @@ class LdapUser(
     @Attribute(name = "givenName")
     val forename: String,
 
-    @Attribute(name = "mail")
-    val email: String?,
+    @Attribute(name = "cn")
+    @DnAttribute(value = "cn", index = 0)
+    val username: String,
 
     @Attribute(name = "telephoneNumber")
     val telephoneNumber: String?,
 
-    @Id
-    val dn: Name,
+    @Attribute(name = "mail")
+    val email: String?,
 )
