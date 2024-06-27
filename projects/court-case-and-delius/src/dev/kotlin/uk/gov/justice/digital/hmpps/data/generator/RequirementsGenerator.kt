@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_SENTENCE
-import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.TIME_ZONE
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Requirement
 import java.time.LocalDate
 import java.time.LocalTime
@@ -9,7 +9,7 @@ import java.time.ZonedDateTime
 
 object RequirementsGenerator {
 
-    private val createdDateTime = ZonedDateTime.of(LocalDate.of(2023, 12, 31), LocalTime.NOON, TIME_ZONE)
+    private val createdDateTime = ZonedDateTime.of(LocalDate.of(2023, 12, 31), LocalTime.NOON, EuropeLondon)
 
     val ACTIVE_REQ = Requirement(
         IdGenerator.getAndIncrement(),

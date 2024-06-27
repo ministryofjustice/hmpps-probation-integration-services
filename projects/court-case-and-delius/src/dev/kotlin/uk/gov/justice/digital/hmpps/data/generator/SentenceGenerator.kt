@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReport
@@ -18,8 +19,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 object SentenceGenerator {
-
-    val TIME_ZONE = ZoneId.of("Europe/London")
 
     val CURRENTLY_MANAGED = generateEvent(
         PersonGenerator.CURRENTLY_MANAGED,
@@ -72,7 +71,7 @@ object SentenceGenerator {
     val COURT_APPEARANCE = generateCourtAppearance(
         CURRENTLY_MANAGED,
         OUTCOME,
-        ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, TIME_ZONE)
+        ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon)
     )
 
     val CURRENT_ORDER_MANAGER = SentenceGenerator.generateOrderManager(
@@ -234,8 +233,8 @@ object SentenceGenerator {
             LocalDate.now(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
-            ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, TIME_ZONE),
-            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, TIME_ZONE),
+            ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, EuropeLondon),
         )
 
     val MAIN_OFFENCE_FOR_INACTIVE_EVENT =
@@ -245,8 +244,8 @@ object SentenceGenerator {
             LocalDate.now(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
-            ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, TIME_ZONE),
-            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, TIME_ZONE),
+            ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, EuropeLondon),
         )
 
     val MAIN_OFFENCE_FOR_INACTIVE_EVENT_1 =
@@ -256,16 +255,16 @@ object SentenceGenerator {
             LocalDate.now(),
             offenceCount = 1,
             PersonGenerator.NO_ACTIVE_EVENTS.id,
-            ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, TIME_ZONE),
-            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, TIME_ZONE),
+            ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, EuropeLondon),
         )
 
     val ADDITIONAL_OFFENCE_DEFAULT = generateAdditionalOffence(
         CURRENTLY_MANAGED,
         ADDITIONAL_OFFENCE,
         LocalDate.now(),
-        ZonedDateTime.of(LocalDate.now().minusMonths(1), LocalTime.NOON, TIME_ZONE),
-        ZonedDateTime.of(LocalDate.now().plusMonths(1), LocalTime.NOON, TIME_ZONE),
+        ZonedDateTime.of(LocalDate.now().minusMonths(1), LocalTime.NOON, EuropeLondon),
+        ZonedDateTime.of(LocalDate.now().plusMonths(1), LocalTime.NOON, EuropeLondon),
     )
 
     fun generateOffence(
