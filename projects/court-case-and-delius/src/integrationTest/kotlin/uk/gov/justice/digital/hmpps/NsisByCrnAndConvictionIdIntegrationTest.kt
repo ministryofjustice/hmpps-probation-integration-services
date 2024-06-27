@@ -39,10 +39,23 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
     fun `probation record not found`() {
         mockMvc
             .perform(get("/probation-case/A123456/convictions/123/nsis")
-                .param("nsiCodes", "[]")
+                .param("nsiCodes", "{}")
                 .withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
+    }
+
+    @Test
+    fun `sentence not found`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+
+        mockMvc
+            .perform(get("/probation-case/$crn/convictions/3/nsis")
+                .param("nsiCodes", "{}")
+                .withToken()
+            )
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.message").value("Conviction with ID 3 for Offender with crn C123456 not found"))
     }
 
 }
