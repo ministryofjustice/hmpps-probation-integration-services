@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
@@ -124,6 +118,12 @@ class CommunityManagerTeam(
     @JoinColumn(name = "district_id")
     val ldu: Ldu,
 
+    @Column(name = "start_date")
+    val startDate: LocalDate = LocalDate.now(),
+
+    @Column(name = "end_date")
+    val endDate: LocalDate? = null,
+
     @Id
     @Column(name = "team_id")
     val id: Long
@@ -139,10 +139,32 @@ class Ldu(
 
     val description: String,
 
+    @ManyToOne
+    @JoinColumn(name = "borough_id")
+    val borough: Borough,
+
     @Id
     @Column(name = "district_id")
     val id: Long
 )
+
+@Immutable
+@Entity
+@Table(name = "borough")
+class Borough(
+
+    @Id
+    @Column(name = "borough_id")
+    val id: Long,
+
+    @Column(name = "code")
+    val code: String,
+
+    @Column(name = "description")
+    val description: String
+)
+
+interface BoroughRepository : JpaRepository<Borough, Long>
 
 interface ProbationCaseRepository : JpaRepository<ProbationCase, Long> {
     @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team.ldu"])

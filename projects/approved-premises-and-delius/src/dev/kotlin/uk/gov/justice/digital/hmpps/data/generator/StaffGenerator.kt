@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 object StaffGenerator {
     private val staffCodeGenerator = AtomicLong(1)
-    val DEFAULT_STAFF = generate()
+    val DEFAULT_STAFF = generate(teams = listOf(TeamGenerator.NON_APPROVED_PREMISES_TEAM))
     val JIM_SNOW = generate(
         name = "Jim Snow"
     )
@@ -19,7 +19,7 @@ object StaffGenerator {
     val JIM_SNOW_USER = generateStaffUser("JIMSNOWLDAP", JIM_SNOW)
 
     fun generate(
-        name: String = "TEST",
+        name: String = "Test",
         code: String = "TEST${staffCodeGenerator.getAndIncrement().toString().padStart(3, '0')}",
         teams: List<Team> = listOf(),
         approvedPremises: List<ApprovedPremises> = listOf()
@@ -31,7 +31,8 @@ object StaffGenerator {
         middleName = null,
         surname = name,
         teams = teams,
-        approvedPremises = approvedPremises
+        approvedPremises = approvedPremises,
+        probationArea = ProbationAreaGenerator.DEFAULT
     )
 
     fun generateStaffUser(

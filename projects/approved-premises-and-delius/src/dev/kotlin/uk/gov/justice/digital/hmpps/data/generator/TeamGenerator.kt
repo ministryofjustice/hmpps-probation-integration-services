@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Ldu
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import java.util.concurrent.atomic.AtomicLong
@@ -19,20 +20,20 @@ object TeamGenerator {
         approvedPremises: ApprovedPremises? = null,
         code: String = "N54${teamCodeGenerator.getAndIncrement().toString().padStart(3, '0')}",
         description: String = "Description of Team $code",
-        districtId: Long = AP_TEAM_LDU.id
+        district: Ldu = AP_TEAM_LDU
     ) = Team(
         id = IdGenerator.getAndIncrement(),
         code = code,
         description = description,
         probationArea = ProbationAreaGenerator.DEFAULT,
         approvedPremises = approvedPremises,
-        districtId
+        district = district
     )
 }
 
 object ProbationAreaGenerator {
-    val DEFAULT = generate("N54")
+    val DEFAULT = generate(code = "N54", description = "A description")
 
-    fun generate(code: String, id: Long = IdGenerator.getAndIncrement()) =
-        ProbationArea(id, code)
+    fun generate(code: String, id: Long = IdGenerator.getAndIncrement(), description: String) =
+        ProbationArea(id, code, description)
 }

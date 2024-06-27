@@ -2,21 +2,22 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
+import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
-import uk.gov.justice.digital.hmpps.model.PersonName
-import uk.gov.justice.digital.hmpps.model.StaffDetail
-import uk.gov.justice.digital.hmpps.model.StaffGrade
-import uk.gov.justice.digital.hmpps.model.StaffResponse
+import uk.gov.justice.digital.hmpps.ldap.findByUsername
+import uk.gov.justice.digital.hmpps.model.*
 
 @Service
 class StaffService(
     private val approvedPremisesRepository: ApprovedPremisesRepository,
-    private val staffRepository: StaffRepository
+    private val staffRepository: StaffRepository,
+    private val ldapTemplate: LdapTemplate
 ) {
     @Transactional
     fun getStaffInApprovedPremises(
@@ -40,11 +41,12 @@ class StaffService(
     }
 
     fun getStaffByUsername(username: String) =
-        staffRepository.findByUsername(username)?.toStaffDetail() ?: throw NotFoundException(
-            "Staff",
-            "username",
-            username
-        )
+        staffRepository.findByUsername(username)?.toStaffDetail(ldapTemplate.findByUsername<LdapUser>(username))
+            ?: throw NotFoundException(
+                "Staff",
+                "username",
+                username
+            )
 
     fun Staff.toResponse(approvedPremisesCode: String) = StaffResponse(
         code = code,
@@ -53,9 +55,27 @@ class StaffService(
         keyWorker = approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode)
     )
 
-    fun Staff.toStaffDetail() = StaffDetail(
-        user!!.username,
-        PersonName(forename, surname, middleName),
-        code
+    fun Staff.toStaffDetail(ldapUser: LdapUser?) = StaffDetail(
+        telephoneNumber = ldapUser?.telephoneNumber,
+        email = ldapUser?.email,
+        teams = teams.map {
+            Team(
+                code = it.code,
+                name = it.description,
+                borough = Borough(code = it.district.borough.code, description = it.district.borough.description),
+                ldu = Ldu(code = it.district.code, name = it.district.description),
+                startDate = it.startDate,
+                endDate = it.endDate
+            )
+        },
+        username = user!!.username,
+        name = PersonName(forename, surname, middleName),
+        code = code,
+        probationArea = ProbationArea(
+            code = probationArea.code,
+            description = probationArea.description
+        ),
+        active = isActive(),
+        staffIdentifier = id
     )
 }

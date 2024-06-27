@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.person.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
@@ -69,8 +70,10 @@ class DataLoader(
     private val lduRepository: LduRepository,
     private val staffUserRepository: StaffUserRepository,
     private val documentRepository: DocumentRepository,
-    private val referralBookingDataLoader: ReferralBookingDataLoader
-) : ApplicationListener<ApplicationReadyEvent> {
+    private val boroughRepository: BoroughRepository,
+    private val referralBookingDataLoader: ReferralBookingDataLoader,
+
+    ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
     fun saveAuditUser() {
@@ -85,7 +88,7 @@ class DataLoader(
         registerTypeRepository.saveAll(ReferenceDataGenerator.REGISTER_TYPES.values)
 
         addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002, AddressGenerator.Q710))
-
+        boroughRepository.save(ProbationCaseGenerator.BOROUGH)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         approvedPremisesRepository.save(ApprovedPremisesGenerator.DEFAULT)
         // add a duplicate AP for testing selectable query
