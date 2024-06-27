@@ -1,0 +1,43 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+context-delius: Delius Context {
+
+  entities: Entities {
+    grid-columns: 3
+    pop: Person on Probation
+    event: Event
+    disposal: Disposal
+    offence: Offence
+    court-appearance: Court Appearance
+    address: Address
+    offender-manager: Offender Manager
+    responsible-officer: Responsible Officer
+    registration: Registration
+  }
+
+  interface: External API and Delius {
+    type: Anti-Corruption\nLayer
+  }
+}
+
+context-int-api: HMPPS Integration API Context {
+  entities: Entities {
+    grid-columns: 4
+    pop: Person on Probation
+    supervision: Supervision
+    address: Address
+    offence: Offence
+    sentence: Sentence
+    key-dates: Key Dates and Adjustments
+    mappa-level: MAPPA Level
+    responsible-officer: Responsible Officer
+    protected-characteristics: Protected Characterisics
+    dynamic-risk: Dynamic Risk
+    status: Status
+  }
+}
+
+context-delius.interface--context-int-api: Upstream\n\n\nDownstream
