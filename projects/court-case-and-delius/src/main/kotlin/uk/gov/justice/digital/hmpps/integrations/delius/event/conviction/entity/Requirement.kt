@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity(name = "conviction_rqmnt")
@@ -39,6 +40,9 @@ class Requirement(
 
     @Column(name = "expected_end_date")
     val expectedEndDate: LocalDate? = null,
+
+    @Column(name = "created_datetime")
+    val createdDatetime: ZonedDateTime,
 
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_sub_category_id")
