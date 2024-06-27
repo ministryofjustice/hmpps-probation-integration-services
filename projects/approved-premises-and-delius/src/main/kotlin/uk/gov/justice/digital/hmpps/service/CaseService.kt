@@ -78,7 +78,14 @@ fun ProbationCase.manager(): Manager =
         Manager(team())
     }
 
-fun CommunityManager.team() = Team(team.code, team.description, Ldu(team.ldu.code, team.ldu.description))
+fun CommunityManager.team() = Team(
+    team.code,
+    team.description,
+    Ldu(team.ldu.code, team.ldu.description),
+    Borough(team.ldu.borough.code, team.ldu.borough.description),
+    team.startDate,
+    team.endDate
+)
 
 fun CaseOffence.asOffence() = Offence(code, description, date, main, eventNumber)
 

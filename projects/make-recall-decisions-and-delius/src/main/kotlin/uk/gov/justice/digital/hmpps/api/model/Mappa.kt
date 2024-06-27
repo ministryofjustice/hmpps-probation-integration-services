@@ -15,12 +15,24 @@ fun Registration.toMappa() = Mappa(
     startDate = date
 )
 
-enum class Category(val number: Int) { X9(0), M1(1), M2(2), M3(3), M4(4) }
+enum class Category(val number: Int) {
+    X9(0), // X9 = Legacy category code, still referenced by some old cases
+    M0(0), // M0 = Legacy category code, still referenced by some old cases
+    M1(1),
+    M2(2),
+    M3(3),
+    M4(4)
+}
 
-private fun String.toMappaCategory() = Category.values().find { it.name == this }?.number
+private fun String.toMappaCategory() = Category.entries.find { it.name == this }?.number
     ?: throw IllegalStateException("Unexpected MAPPA category: $this")
 
-enum class Level(val number: Int) { M0(0), M1(1), M2(2), M3(3) }
+enum class Level(val number: Int) {
+    M0(0),
+    M1(1),
+    M2(2),
+    M3(3)
+}
 
-private fun String.toMappaLevel() = Level.values().find { it.name == this }?.number
+private fun String.toMappaLevel() = Level.entries.find { it.name == this }?.number
     ?: throw IllegalStateException("Unexpected MAPPA level: $this")

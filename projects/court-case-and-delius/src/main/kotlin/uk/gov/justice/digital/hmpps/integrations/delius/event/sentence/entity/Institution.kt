@@ -25,7 +25,7 @@ class Institution(
     val establishmentType: ReferenceData?,
 
     @Column(columnDefinition = "number")
-    val private: Boolean,
+    val private: Boolean?,
 
     val nomisCdeCode: String?
 )

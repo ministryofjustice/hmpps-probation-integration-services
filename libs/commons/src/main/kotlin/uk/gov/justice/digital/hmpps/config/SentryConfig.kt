@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Configuration
 class SentryConfig {
     @Bean
     fun ignoreHealthRequests() = SentryOptions.BeforeSendTransactionCallback { transaction, _ ->
-        transaction.transaction?.let { if (it.startsWith("GET /health")) null else transaction }
+        transaction.transaction?.let { if (it.startsWith("GET /health") or it.startsWith("GET /info")) null else transaction }
     }
 }

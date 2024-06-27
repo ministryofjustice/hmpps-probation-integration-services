@@ -54,6 +54,7 @@ class DataLoader(
             ReferenceDataGenerator.LENGTH_UNITS,
             ReferenceDataGenerator.TERMINATION_REASON,
             ReferenceDataGenerator.CUSTODIAL_STATUS,
+            ReferenceDataGenerator.MONTHS,
             ReferenceDataGenerator.REQUIREMENT_MAIN_CAT,
             ReferenceDataGenerator.REQUIREMENT_SUB_CAT,
             ReferenceDataGenerator.AD_REQUIREMENT_MAIN_CAT,
@@ -154,7 +155,6 @@ class DataLoader(
         val currentManager = SentenceGenerator.CURRENT_ORDER_MANAGER
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
         val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
-        val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
         val breachNsi = SentenceGenerator.generateBreachNsi(disposal = currentSentence)
         val pssRequirement = SentenceGenerator.generatePssRequirement(custody.id)
@@ -167,6 +167,10 @@ class DataLoader(
             SentenceGenerator.INACTIVE_EVENT,
             SentenceGenerator.INACTIVE_EVENT_1,
             currentSentence,
+            RequirementsGenerator.ACTIVE_REQ,
+            RequirementsGenerator.INACTIVE_REQ,
+            RequirementsGenerator.DELETED_REQ,
+            RequirementsGenerator.INACTIVE_AND_DELETED_REQ,
             AdditionalSentenceGenerator.SENTENCE_DISQ,
             ReferenceDataGenerator.HOURS_WORKED,
             UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1,
@@ -192,7 +196,6 @@ class DataLoader(
             SentenceGenerator.MAIN_OFFENCE_FOR_INACTIVE_EVENT,
             SentenceGenerator.MAIN_OFFENCE_FOR_INACTIVE_EVENT_1,
             additionalOffence,
-            requirement,
             licenceCondition,
             breachNsi,
             pssRequirement,

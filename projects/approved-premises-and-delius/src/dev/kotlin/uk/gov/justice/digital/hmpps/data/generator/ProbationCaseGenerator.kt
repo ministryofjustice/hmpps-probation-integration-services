@@ -3,16 +3,15 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_UNALLOCATED
-import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
-import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManagerTeam
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Ldu
-import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
+import uk.gov.justice.digital.hmpps.integrations.delius.person.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import java.time.LocalDate
 
 object ProbationCaseGenerator {
-    val COM_PROVIDER = ProbationAreaGenerator.generate("N01")
+    val COM_PROVIDER = ProbationAreaGenerator.generate(code = "N01", description = "N01 Description")
+    val BOROUGH = generateBorough("B1", "Borough 1")
+
     val COM_LDU = generateLdu("N01LDU", "COM LDU")
     val COM_TEAM = generateComTeam("N01COM", "Community Manager Team", COM_LDU)
     val COM_UNALLOCATED = StaffGenerator.generate("Unallocated", "N01COMU")
@@ -38,6 +37,18 @@ object ProbationCaseGenerator {
         crn = "X320741",
         forename = "Aadland",
         surname = "Bertrand",
+        dateOfBirth = LocalDate.of(1987, 8, 2),
+        nomsId = "A1234AI",
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        ethnicity = ReferenceDataGenerator.ETHNICITY_WHITE,
+        nationality = ReferenceDataGenerator.NATIONALITY_BRITISH,
+        religion = ReferenceDataGenerator.RELIGION_OTHER,
+        genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
+    )
+    val CASE_X320811 = generate(
+        crn = "X320811",
+        forename = "E2E Person",
+        surname = "AdHoc Bookings",
         dateOfBirth = LocalDate.of(1987, 8, 2),
         nomsId = "A1234AI",
         gender = ReferenceDataGenerator.GENDER_MALE,
@@ -88,11 +99,12 @@ object ProbationCaseGenerator {
         id
     )
 
+    fun generateBorough(code: String, description: String) = Borough(IdGenerator.getAndIncrement(), code, description)
     fun generateLdu(code: String, description: String = "LDU of $code", id: Long = IdGenerator.getAndIncrement()) =
-        Ldu(code, description, id)
+        Ldu(code, description, BOROUGH, id)
 
     fun generateComTeam(code: String, description: String, ldu: Ldu, id: Long = IdGenerator.getAndIncrement()) =
-        CommunityManagerTeam(code, description, ldu, id)
+        CommunityManagerTeam(code, description, ldu, LocalDate.now(), null, id)
 
     fun generateManager(
         pc: ProbationCase,
@@ -104,6 +116,6 @@ object ProbationCaseGenerator {
 }
 
 fun ProbationCase.asPerson() = PersonGenerator.generate(crn, id)
-fun CommunityManagerTeam.asTeam() = Team(id, code, description, COM_PROVIDER, null, ldu.id)
+fun CommunityManagerTeam.asTeam() = Team(id, code, description, COM_PROVIDER, null, ldu)
 fun CommunityManager.asPersonManager() =
     PersonManagerGenerator.generate(person.asPerson(), COM_TEAM.asTeam(), COM_UNALLOCATED, id)
