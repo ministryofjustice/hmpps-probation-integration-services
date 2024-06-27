@@ -16,6 +16,7 @@ class CaseDetailsService(
     private val comRepository: PersonManagerRepository,
     private val registrationRepository: RegistrationRepository,
     private val eventRepository: EventRepository,
+    private val personRepository: PersonRepository,
     private val ldapTemplate: LdapTemplate
 ) {
     fun getSupervisions(crn: String): SupervisionResponse = with(comRepository.getForCrn(crn)) {
@@ -27,6 +28,8 @@ class CaseDetailsService(
             personStatus = registrationRepository.findPersonStatusRegistrations(person.id).toRegistrationResponse(),
         )
     }
+
+    fun getCrnForNomsId(nomsId: String) = PersonIdentifier(personRepository.getCrn(nomsId), nomsId)
 
     private fun PersonManager.toCommunityManagerResponse(): Manager {
         staff.user?.apply {
