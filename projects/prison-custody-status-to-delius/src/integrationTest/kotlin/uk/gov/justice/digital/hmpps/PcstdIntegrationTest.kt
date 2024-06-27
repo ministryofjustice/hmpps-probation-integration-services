@@ -614,6 +614,44 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     }
 
     @Test
+    fun `ecslirc release when in custody in delius`() {
+        val notification = NotificationGenerator.PRISONER_ECSLIRC_IN_CUSTODY
+        withBooking(
+            BookingGenerator.ECSLIRC_CUSTODY,
+            BookingGenerator.ECSLIRC_CUSTODY.lastMovement(notification.message.occurredAt)
+        )
+        val nomsNumber = notification.nomsId()
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
+        assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_IRC.code))
+
+        verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
+        verifyCustodyHistory(
+            custody,
+            CustodyEventTester(
+                CustodyEventTypeCode.LOCATION_CHANGE,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.OTHER_IRC]?.description
+            )
+        )
+
+        verifyTelemetry("RecallNotRequired", "PrisonerStatusCorrect", "LocationUpdated") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0019BB",
+                "previousInstitution" to "WSI",
+                "institution" to "OUT",
+                "reason" to "RELEASED",
+                "movementReason" to "ECSLIRC",
+                "movementType" to "Released"
+            )
+        }
+    }
+
+    @Test
     fun `administrative release is not released`() {
         val notification = NotificationGenerator.PRISONER_ADMIN_MERGE
         withBooking(

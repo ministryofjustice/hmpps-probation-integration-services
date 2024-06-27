@@ -36,6 +36,7 @@ prisoner.movement.configs:
       - DE
       - DL
       - ETR
+      - ECSLIRC
     actionNames:
       - Recall
       - UpdateLocation
