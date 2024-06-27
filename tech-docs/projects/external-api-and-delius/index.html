@@ -92,7 +92,15 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>external-api-and-delius</span></a>
+    <a href="./index.html"><span>External API and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-map"><span>Context Map</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -114,9 +122,29 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="external-api-and-delius">external-api-and-delius</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="external-api-and-delius">External API and Delius</h1>
+<p>API Service that provides access to probation case information recorded in Delius to the <a href="https://ministryofjustice.github.io/hmpps-integration-api-docs/">HMPPS Integration API</a>. The HMPPS Integration API supports supplying HMPPS data to external agencies such as the Home Office, Police and external suppliers of HMPPS digital services, using internal HMPPS APIs as data sources.</p>
+<h2 id="business-need">Business Need</h2>
+<p>Supporting the HMPPS Integration API service with the correct and up-to-date information on the probation case as recorded in Delius.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="././img/external-api-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/external-api-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h3 id="api-access-control">API Access Control</h3>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>All</td>
+<td>ROLE_PROBATION_API__HMPPS_API__CASE_DETAIL</td>
+</tr><tr>
+<td></td>
+<td></td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
