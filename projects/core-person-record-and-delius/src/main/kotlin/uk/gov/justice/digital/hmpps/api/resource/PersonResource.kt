@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.service.PersonService
 
 @RestController
 @PreAuthorize("hasRole('PROBATION_API__CORE_PERSON__CASE_DETAIL')")
-class PersonResource(private val personService: PersonService) {
+class xPersonResource(private val personService: PersonService) {
     @GetMapping(value = ["/probation-cases/{identifier}"])
     fun getPersonDetails(
         @PathVariable identifier: String
