@@ -110,6 +110,9 @@
         <a href="./api-reference.html#probation-case-crn-convictions-convictionid"><span>/probation-case/{crn}/convictions/{convictionId}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-case-crn-convictions-convictionid-requirements"><span>/probation-case/{crn}/convictions/{convictionId}/requirements</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-case-crn-all"><span>/probation-case/{crn}/all</span></a>
       </li>
       <li>
@@ -696,6 +699,132 @@
 </td>
 <td>
 <a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-convictions-convictionid-requirements">/probation-case/{crn}/convictions/{convictionId}/requirements</h2>
+
+<h3 id="probation-case-crn-convictions-convictionid-requirements-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-requirements-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>activeOnly</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>excludeSoftDeleted</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-requirements-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "requirements": [
+    {
+      "requirementId": "integer",
+      "requirementNotes": "string",
+      "commencementDate": "string",
+      "startDate": "string",
+      "terminationDate": "string",
+      "expectedStartDate": "string",
+      "expectedEndDate": "string",
+      "active": "boolean",
+      "requirementTypeSubCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "requirementTypeMainCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "adRequirementTypeMainCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "adRequirementTypeSubCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "terminationReason": {
+        "code": "string",
+        "description": "string"
+      },
+      "length": "integer",
+      "lengthUnit": "string",
+      "restrictive": "boolean",
+      "softDeleted": "boolean",
+      "rarCount": "integer"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-convictionrequirements'>ConvictionRequirements</a>
 </td>
 </tr>
 
@@ -3450,6 +3579,227 @@
 <td>string</td>
 <td>true</td>
 <td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-convictionrequirements">ConvictionRequirements</h3>
+
+
+<table class='schema-convictionrequirements'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>requirements</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-requirement'>Requirement</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-requirement">Requirement</h3>
+
+
+<table class='schema-requirement'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>requirementId</td>
+<td>integer</td>
+<td>true</td>
+<td><p>Unique identifier for the requirement</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>requirementNotes</td>
+<td>string</td>
+<td>true</td>
+<td><p>Name of the requirement</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>commencementDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedStartDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedEndDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td><p>Is the requirement currently active</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>requirementTypeSubCategory</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>requirementTypeMainCategory</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>adRequirementTypeMainCategory</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>adRequirementTypeSubCategory</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>terminationReason</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>integer</td>
+<td>false</td>
+<td><p>The number of temporal units to complete the requirement (see lengthUnit field for unit)</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthUnit</td>
+<td>string</td>
+<td>false</td>
+<td><p>The temporal unit corresponding to the length field</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictive</td>
+<td>boolean</td>
+<td>false</td>
+<td><p>Is the main category restrictive</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>softDeleted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rarCount</td>
+<td>integer</td>
+<td>false</td>
+<td><p>Total RAR days completed</p>
+</td>
 <td>
   
 </td>

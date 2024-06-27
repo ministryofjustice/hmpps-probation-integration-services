@@ -100,6 +100,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Conviction"
+  /probation-case/{crn}/convictions/{convictionId}/requirements:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getRequirementsForConviction
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: activeOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - name: excludeSoftDeleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConvictionRequirements"
   /probation-case/{crn}/all:
     get:
       tags:
@@ -857,6 +893,75 @@ components:
           $ref: "#/components/schemas/Appointments"
         status:
           type: string
+    ConvictionRequirements:
+      required:
+      - requirements
+      type: object
+      properties:
+        requirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Requirement"
+    Requirement:
+      required:
+      - active
+      - requirementId
+      - requirementNotes
+      - softDeleted
+      type: object
+      properties:
+        requirementId:
+          type: integer
+          description: Unique identifier for the requirement
+          format: int64
+        requirementNotes:
+          type: string
+          description: Name of the requirement
+        commencementDate:
+          type: string
+          format: date
+        startDate:
+          type: string
+          format: date
+        terminationDate:
+          type: string
+          format: date
+        expectedStartDate:
+          type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+        active:
+          type: boolean
+          description: Is the requirement currently active
+        requirementTypeSubCategory:
+          $ref: "#/components/schemas/KeyValue"
+        requirementTypeMainCategory:
+          $ref: "#/components/schemas/KeyValue"
+        adRequirementTypeMainCategory:
+          $ref: "#/components/schemas/KeyValue"
+        adRequirementTypeSubCategory:
+          $ref: "#/components/schemas/KeyValue"
+        terminationReason:
+          $ref: "#/components/schemas/KeyValue"
+        length:
+          type: integer
+          description: The number of temporal units to complete the requirement (see
+            lengthUnit field for unit)
+          format: int64
+        lengthUnit:
+          type: string
+          description: The temporal unit corresponding to the length field
+        restrictive:
+          type: boolean
+          description: Is the main category restrictive
+        softDeleted:
+          type: boolean
+        rarCount:
+          type: integer
+          description: Total RAR days completed
+          format: int64
     Address:
       type: object
       properties:
