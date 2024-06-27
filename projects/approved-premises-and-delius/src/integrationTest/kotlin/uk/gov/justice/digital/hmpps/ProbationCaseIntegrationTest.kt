@@ -58,7 +58,13 @@ class ProbationCaseIntegrationTest {
         assertTrue(detail.case.currentRestriction)
         assertThat(
             detail.case.manager.team,
-            equalTo(Team(COM_TEAM.code, COM_TEAM.description, Ldu(COM_TEAM.ldu.code, COM_TEAM.ldu.description)))
+            equalTo(
+                Team(
+                    COM_TEAM.code, COM_TEAM.description, Ldu(COM_TEAM.ldu.code, COM_TEAM.ldu.description), Borough(
+                        COM_TEAM.ldu.borough.code, COM_TEAM.ldu.borough.description
+                    ), COM_TEAM.startDate, COM_TEAM.endDate
+                )
+            )
         )
         assertThat(detail.mappaDetail?.category, equalTo(3))
         assertThat(detail.mappaDetail?.level, equalTo(2))
