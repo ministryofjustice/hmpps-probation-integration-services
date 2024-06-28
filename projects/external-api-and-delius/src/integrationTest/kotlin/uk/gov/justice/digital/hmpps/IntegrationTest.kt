@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -10,6 +11,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
+import uk.gov.justice.digital.hmpps.model.PersonIdentifier
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
@@ -121,5 +124,21 @@ internal class IntegrationTest {
                     """.trimIndent()
                 )
             )
+    }
+
+    @Test
+    fun `returns crn for nomsId`() {
+
+        val detailResponse = mockMvc
+            .perform(get("/identifier-converter/noms-to-crn/${PERSON.nomsId}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<PersonIdentifier>()
+        Assertions.assertEquals(detailResponse.crn, PERSON.crn)
+    }
+
+    @Test
+    fun `returns 404 for nomsId not found`() {
+        mockMvc.perform(get("/identifier-converter/noms-to-crn/A0001DZ").withToken())
+            .andExpect(status().isNotFound)
     }
 }
