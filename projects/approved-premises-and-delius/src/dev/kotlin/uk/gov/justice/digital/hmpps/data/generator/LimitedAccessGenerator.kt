@@ -12,8 +12,12 @@ import java.time.LocalDateTime
 object LimitedAccessGenerator {
     val FULL_ACCESS_USER = generateLaoUser(StaffGenerator.LAO_FULL_ACCESS_USER)
     val LIMITED_ACCESS_USER = generateLaoUser(StaffGenerator.LAO_RESTRICTED_USER)
-    val EXCLUDED_CASE = generateLaoPerson(ProbationCaseGenerator.CASE_LAO_EXCLUSION, exclusionMessage = "This case has an exclusion")
-    val RESTRICTED_CASE = generateLaoPerson(ProbationCaseGenerator.CASE_LAO_RESTRICTED, restrictionMessage = "This case has an restriction")
+    val EXCLUDED_CASE =
+        generateLaoPerson(ProbationCaseGenerator.CASE_LAO_EXCLUSION, exclusionMessage = "This case has an exclusion")
+    val RESTRICTED_CASE = generateLaoPerson(
+        ProbationCaseGenerator.CASE_LAO_RESTRICTED,
+        restrictionMessage = "This case has an restriction"
+    )
 
     fun generateLaoUser(staffUser: StaffUser) = LimitedAccessUser(staffUser.username, staffUser.id)
 
