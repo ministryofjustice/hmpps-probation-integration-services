@@ -74,13 +74,15 @@ object SentenceGenerator {
         ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon)
     )
 
-    val CURRENT_ORDER_MANAGER = SentenceGenerator.generateOrderManager(
+    val CURRENT_ORDER_MANAGER = generateOrderManager(
         CURRENTLY_MANAGED,
         StaffGenerator.ALLOCATED,
         CourtGenerator.PROBATION_AREA,
         ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
         ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
     )
+
+    val BREACH_NSIS = generateBreachNsi(CURRENT_SENTENCE)
 
     val CONDITIONAL_RELEASE_KEY_DATE = generateKeyDates(LocalDate.now(), CURRENT_CUSTODY, ReferenceDataGenerator.ACR)
     val LED_KEY_DATE = generateKeyDates(LocalDate.now().plusDays(1), CURRENT_CUSTODY, ReferenceDataGenerator.LED)

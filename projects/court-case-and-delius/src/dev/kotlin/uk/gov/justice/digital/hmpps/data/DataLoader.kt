@@ -156,7 +156,7 @@ class DataLoader(
         val mainOffence = SentenceGenerator.MAIN_OFFENCE_DEFAULT
         val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
-        val breachNsi = SentenceGenerator.generateBreachNsi(disposal = currentSentence)
+        val breachNsi = SentenceGenerator.BREACH_NSIS
         val pssRequirement = SentenceGenerator.generatePssRequirement(custody.id)
         val currentCourtAppearance = SentenceGenerator.COURT_APPEARANCE
         val currentCourtReport = SentenceGenerator.generateCourtReport(currentCourtAppearance)
