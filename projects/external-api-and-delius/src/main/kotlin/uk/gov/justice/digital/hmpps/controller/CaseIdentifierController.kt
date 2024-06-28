@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.service.CaseDetailsService
 @RestController
 @RequestMapping("/identifier-converter")
 @PreAuthorize("hasRole('PROBATION_API__HMPPS_API__CASE_DETAIL')")
-@Tag(name = "Converts case identifier", description = "Requires PROBATION_API__HMPPS_API__CASE_DETAIL")
+@Tag(name = "Identifier Converter", description = "Requires PROBATION_API__HMPPS_API__CASE_DETAIL")
 class CaseIdentifierController(
     private val caseDetailsService: CaseDetailsService
 ) {
