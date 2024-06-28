@@ -15,23 +15,24 @@ object ProbationCaseGenerator {
     val COM_LDU = generateLdu("N01LDU", "COM LDU")
     val COM_TEAM = generateComTeam("N01COM", "Community Manager Team", COM_LDU)
     val COM_UNALLOCATED = StaffGenerator.generate("Unallocated", "N01COMU")
-    val CASE_COMPLEX = generate(
-        "C246139",
-        "James",
-        "Brown",
-        LocalDate.of(1979, 3, 12),
-        "John",
-        "Jack",
-        "A5671YZ",
-        null,
-        ReferenceDataGenerator.GENDER_MALE,
-        ReferenceDataGenerator.ETHNICITY_WHITE,
-        ReferenceDataGenerator.NATIONALITY_BRITISH,
-        ReferenceDataGenerator.RELIGION_OTHER,
-        ReferenceDataGenerator.GENDER_IDENTITY_PNS,
-        currentExclusion = true,
-        currentRestriction = true
-    )
+    val CASE_COMPLEX =
+        generate(
+            "C246139",
+            "James",
+            "Brown",
+            LocalDate.of(1979, 3, 12),
+            "John",
+            "Jack",
+            "A5671YZ",
+            null,
+            ReferenceDataGenerator.GENDER_MALE,
+            ReferenceDataGenerator.ETHNICITY_WHITE,
+            ReferenceDataGenerator.NATIONALITY_BRITISH,
+            ReferenceDataGenerator.RELIGION_OTHER,
+            ReferenceDataGenerator.GENDER_IDENTITY_PNS,
+            currentExclusion = true,
+            currentRestriction = true,
+        )
     val CASE_SIMPLE = generate("S517283", "Teresa", "Green", LocalDate.of(1987, 8, 2))
     val CASE_X320741 = generate(
         crn = "X320741",
@@ -57,6 +58,36 @@ object ProbationCaseGenerator {
         religion = ReferenceDataGenerator.RELIGION_OTHER,
         genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
     )
+    val CASE_LAO_EXCLUSION =
+        generate(
+            crn = "X400000",
+            forename = "Elliot Exclusion",
+            surname = "Erickson",
+            dateOfBirth = LocalDate.of(1979, 4, 11),
+            nomsId = "A1235AI",
+            gender = ReferenceDataGenerator.GENDER_MALE,
+            ethnicity = ReferenceDataGenerator.ETHNICITY_WHITE,
+            nationality = ReferenceDataGenerator.NATIONALITY_BRITISH,
+            religion = ReferenceDataGenerator.RELIGION_OTHER,
+            genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
+            currentExclusion = true,
+            currentRestriction = false,
+        )
+    val CASE_LAO_RESTRICTED =
+        generate(
+            crn = "X400001",
+            forename = "Reginald Restricted",
+            surname = "Robinson",
+            dateOfBirth = LocalDate.of(1981, 1, 1),
+            nomsId = "A1236AI",
+            gender = ReferenceDataGenerator.GENDER_MALE,
+            ethnicity = ReferenceDataGenerator.ETHNICITY_WHITE,
+            nationality = ReferenceDataGenerator.NATIONALITY_BRITISH,
+            religion = ReferenceDataGenerator.RELIGION_OTHER,
+            genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
+            currentExclusion = false,
+            currentRestriction = true,
+        )
 
     fun generate(
         crn: String,
@@ -76,7 +107,7 @@ object ProbationCaseGenerator {
         currentExclusion: Boolean = false,
         currentRestriction: Boolean = false,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = IdGenerator.getAndIncrement(),
     ) = ProbationCase(
         crn,
         nomsId,
@@ -96,7 +127,7 @@ object ProbationCaseGenerator {
         currentRestriction,
         listOf(),
         softDeleted,
-        id
+        id,
     )
 
     fun generateBorough(code: String, description: String) = Borough(IdGenerator.getAndIncrement(), code, description)
@@ -111,7 +142,7 @@ object ProbationCaseGenerator {
         team: CommunityManagerTeam = COM_TEAM,
         active: Boolean = true,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        id: Long = IdGenerator.getAndIncrement(),
     ) = CommunityManager(pc, team, active, softDeleted, id)
 }
 
