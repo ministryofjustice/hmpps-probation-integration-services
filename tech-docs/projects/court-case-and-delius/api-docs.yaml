@@ -905,6 +905,7 @@ components:
     Requirement:
       required:
       - active
+      - createdDatetime
       - requirementId
       - requirementNotes
       - softDeleted
@@ -932,6 +933,9 @@ components:
         expectedEndDate:
           type: string
           format: date
+        createdDatetime:
+          type: string
+          format: date-time
         active:
           type: boolean
           description: Is the requirement currently active

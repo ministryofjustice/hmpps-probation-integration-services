@@ -399,7 +399,13 @@
           "ldu": {
             "code": "string",
             "name": "string"
-          }
+          },
+          "borough": {
+            "code": "string",
+            "description": "string"
+          },
+          "startDate": "string",
+          "endDate": "string"
         }
       },
       "currentExclusion": "boolean",
@@ -469,7 +475,13 @@
           "ldu": {
             "code": "string",
             "name": "string"
-          }
+          },
+          "borough": {
+            "code": "string",
+            "description": "string"
+          },
+          "startDate": "string",
+          "endDate": "string"
         }
       },
       "currentExclusion": "boolean",
@@ -624,13 +636,37 @@
 
 
 <pre><code>{
+  "email": "string",
+  "telephoneNumber": "string",
+  "staffIdentifier": "integer",
+  "teams": [
+    {
+      "code": "string",
+      "name": "string",
+      "ldu": {
+        "code": "string",
+        "name": "string"
+      },
+      "borough": {
+        "code": "string",
+        "description": "string"
+      },
+      "startDate": "string",
+      "endDate": "string"
+    }
+  ],
+  "probationArea": {
+    "code": "string",
+    "description": "string"
+  },
   "username": "string",
   "name": {
     "forename": "string",
     "surname": "string",
     "middleName": "string"
   },
-  "code": "string"
+  "code": "string",
+  "active": "boolean"
 }</code></pre>
 
 </td>
@@ -717,7 +753,13 @@
         "ldu": {
           "code": "string",
           "name": "string"
-        }
+        },
+        "borough": {
+          "code": "string",
+          "description": "string"
+        },
+        "startDate": "string",
+        "endDate": "string"
       }
     },
     "currentExclusion": "boolean",
@@ -1286,6 +1328,38 @@
 </tbody>
 </table>
 
+<h3 id="schema-borough">Borough</h3>
+
+
+<table class='schema-borough'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-casesummaries">CaseSummaries</h3>
 
 
@@ -1607,6 +1681,36 @@
 </td>
 </tr>
 
+<tr>
+<td>borough</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-borough'>Borough</a>
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -1674,6 +1778,38 @@
 </tbody>
 </table>
 
+<h3 id="schema-probationarea">ProbationArea</h3>
+
+
+<table class='schema-probationarea'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-staffdetail">StaffDetail</h3>
 
 
@@ -1682,6 +1818,56 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>staffIdentifier</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>teams</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>probationArea</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationarea'>ProbationArea</a>
+</td>
+</tr>
 
 <tr>
 <td>username</td>
@@ -1706,6 +1892,16 @@
 <tr>
 <td>code</td>
 <td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
 <td>true</td>
 <td></td>
 <td>

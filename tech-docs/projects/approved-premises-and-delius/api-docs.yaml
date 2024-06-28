@@ -350,6 +350,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CaseAccess"
+    Borough:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
     CaseSummaries:
       required:
       - cases
@@ -438,6 +448,7 @@ components:
       - code
       - ldu
       - name
+      - startDate
       type: object
       properties:
         code:
@@ -446,6 +457,14 @@ components:
           type: string
         ldu:
           $ref: "#/components/schemas/Ldu"
+        borough:
+          $ref: "#/components/schemas/Borough"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
     TeamCodeResponse:
       required:
       - teamCodes
@@ -467,19 +486,48 @@ components:
           type: string
         middleName:
           type: string
-    StaffDetail:
+    ProbationArea:
       required:
       - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    StaffDetail:
+      required:
+      - active
+      - code
       - name
+      - probationArea
+      - staffIdentifier
+      - teams
       - username
       type: object
       properties:
+        email:
+          type: string
+        telephoneNumber:
+          type: string
+        staffIdentifier:
+          type: integer
+          format: int64
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
+        probationArea:
+          $ref: "#/components/schemas/ProbationArea"
         username:
           type: string
         name:
           $ref: "#/components/schemas/PersonName"
         code:
           type: string
+        active:
+          type: boolean
     CaseDetail:
       required:
       - careLeaver
