@@ -31,6 +31,8 @@ class InterventionService(
 
     fun NsiEntity.toNsi(): Nsi = Nsi (
             id,
-            KeyValue(type.code, type.description)
+            KeyValue(type.code, type.description),
+            subType?.let { KeyValue(it.code, it.description) },
+            outcome?.let{ KeyValue(it.code, it.description) }
         )
 }

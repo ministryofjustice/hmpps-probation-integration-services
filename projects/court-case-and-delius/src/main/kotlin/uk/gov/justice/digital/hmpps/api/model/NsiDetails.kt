@@ -10,8 +10,8 @@ data class NsiDetails (
 data class Nsi (
     val nsiId: Long,
     val nsiType: KeyValue,
-//    val nsiSubType: KeyValue,
-//    val nsiOutcome: KeyValue,
+    val nsiSubType: KeyValue?,
+    val nsiOutcome: KeyValue?,
 //    val requirement: Requirement,
 //    val nsiStatus: KeyValue,
 //    val statusDateTime: ZonedDateTime,
