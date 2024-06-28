@@ -130,7 +130,7 @@ internal class IntegrationTest {
     fun `returns crn for nomsId`() {
 
         val detailResponse = mockMvc
-            .perform(get("/identifier-convertor/noms-to-crn/${PERSON.nomsId}").withToken())
+            .perform(get("/identifier-converter/noms-to-crn/${PERSON.nomsId}").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<PersonIdentifier>()
         Assertions.assertEquals(detailResponse.crn, PERSON.crn)
@@ -138,7 +138,7 @@ internal class IntegrationTest {
 
     @Test
     fun `returns 404 for nomsId not found`() {
-        mockMvc.perform(get("/identifier-convertor/noms-to-crn/A0001DZ").withToken())
+        mockMvc.perform(get("/identifier-converter/noms-to-crn/A0001DZ").withToken())
             .andExpect(status().isNotFound)
     }
 }
