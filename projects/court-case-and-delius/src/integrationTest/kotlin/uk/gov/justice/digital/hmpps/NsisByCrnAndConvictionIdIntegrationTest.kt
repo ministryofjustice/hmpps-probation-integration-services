@@ -75,8 +75,10 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
 
         val expectedResponse = NsiDetails(listOf(
                 Nsi(BREACH_NSIS.id,
-                    KeyValue(BREACH_NSIS.type.code, BREACH_NSIS.type.description
-                )))
+                    KeyValue(BREACH_NSIS.type.code, BREACH_NSIS.type.description),
+                    null,
+                    KeyValue(BREACH_NSIS.outcome!!.code, BREACH_NSIS.outcome!!.description),
+                ))
         )
 
         val response = mockMvc
