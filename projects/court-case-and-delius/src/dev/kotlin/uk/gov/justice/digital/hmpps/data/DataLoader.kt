@@ -197,6 +197,7 @@ class DataLoader(
             SentenceGenerator.MAIN_OFFENCE_FOR_INACTIVE_EVENT_1,
             additionalOffence,
             licenceCondition,
+            SentenceGenerator.ACTIVE_NSI_STATUS,
             breachNsi,
             pssRequirement,
             currentCourtAppearance,

@@ -30,6 +30,10 @@ class Nsi(
     @JoinColumn(name = "nsi_type_id")
     val type: NsiType,
 
+    @OneToOne
+    @JoinColumn(name = "nsi_status_id")
+    val nsiStatus: NsiStatus,
+
     @ManyToOne
     @JoinColumn(name = "nsi_sub_type_id")
     val subType: ReferenceData?,
@@ -77,6 +81,21 @@ class NsiType(
     val code: String,
 
     @Column
+    val description: String
+)
+
+@Entity
+@Immutable
+@Table(name = "r_nsi_status")
+class NsiStatus(
+    @Id
+    @Column(name = "nsi_status_id")
+    val id: Long,
+
+    @Column(name = "code")
+    val code: String,
+
+    @Column(name = "description")
     val description: String
 )
 

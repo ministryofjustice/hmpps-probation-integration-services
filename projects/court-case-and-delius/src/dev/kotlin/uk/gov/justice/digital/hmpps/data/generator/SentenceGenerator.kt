@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.en
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.ReportManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
@@ -81,6 +82,8 @@ object SentenceGenerator {
         ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
         ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
     )
+
+    val ACTIVE_NSI_STATUS = NsiStatus(IdGenerator.getAndIncrement(), "SLI01", "Active")
 
     val BREACH_NSIS = generateBreachNsi(CURRENT_SENTENCE)
 
@@ -341,6 +344,7 @@ object SentenceGenerator {
         disposal.event.person.id,
         disposal.event.id,
         ReferenceDataGenerator.NSI_TYPE,
+        ACTIVE_NSI_STATUS,
         null,
         ReferenceDataGenerator.NSI_BREACH_OUTCOME,
         LocalDate.now(),
