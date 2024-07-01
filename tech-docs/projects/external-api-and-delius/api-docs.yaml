@@ -14,9 +14,30 @@ servers:
 security:
 - hmpps-auth-token: []
 tags:
+- name: Identifier Converter
+  description: Requires PROBATION_API__HMPPS_API__CASE_DETAIL
 - name: Case Details
   description: Requires PROBATION_API__HMPPS_API__CASE_DETAIL
 paths:
+  /identifier-converter/noms-to-crn/{nomsId}:
+    get:
+      tags:
+      - Identifier Converter
+      summary: Gets the corresponding CRN from delius for the provided nomsId if found
+      operationId: nomsToCrn
+      parameters:
+      - name: nomsId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonIdentifier"
   /case/{crn}/supervisions:
     get:
       tags:
@@ -39,6 +60,16 @@ paths:
                 $ref: "#/components/schemas/SupervisionResponse"
 components:
   schemas:
+    PersonIdentifier:
+      required:
+      - crn
+      - nomsId
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsId:
+          type: string
     CourtAppearance:
       required:
       - court
