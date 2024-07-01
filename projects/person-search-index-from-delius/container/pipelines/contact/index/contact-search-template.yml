@@ -547,12 +547,7 @@ template:
         boost: 5
       notes_embedding:
         type: knn_vector
-        dimension: 768
-        method:
-          engine: lucene
-          space_type: l2
-          name: hnsw
-          parameters: { }
+        dimension: 1024
       description:
         type: text
         analyzer: probation_text_analyzer
