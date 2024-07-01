@@ -46,6 +46,15 @@ class Nsi(
     @Column(name = "actual_start_date")
     val actualStartDate: LocalDate? = null,
 
+    @Column(name = "expected_start_date")
+    val expectedStartDate: LocalDate? = null,
+
+    @Column(name = "actual_end_date")
+    val actualEndDate: LocalDate? = null,
+
+    @Column(name = "expected_end_date")
+    val expectedEndDate: LocalDate? = null,
+
     @Column(name = "referral_Date")
     val referralDate: LocalDate? = null,
 

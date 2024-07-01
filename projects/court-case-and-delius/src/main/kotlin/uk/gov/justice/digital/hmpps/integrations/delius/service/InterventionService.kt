@@ -29,13 +29,18 @@ class InterventionService(
             .map { it.toNsi() })
     }
 
-    fun NsiEntity.toNsi(): Nsi = Nsi (
+    fun NsiEntity.toNsi(): Nsi =
+        Nsi (
             id,
             KeyValue(type.code, type.description),
             subType?.let { KeyValue(it.code, it.description) },
             outcome?.let{ KeyValue(it.code, it.description) },
             requirement?.toRequirementModel(),
             KeyValue(nsiStatus.code, nsiStatus.description),
-            statusDate
+            statusDate,
+            actualStartDate,
+            expectedStartDate,
+            actualEndDate,
+            expectedEndDate
         )
 }
