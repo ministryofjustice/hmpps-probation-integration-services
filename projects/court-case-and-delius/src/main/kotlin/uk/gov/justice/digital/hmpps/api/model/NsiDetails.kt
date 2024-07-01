@@ -16,7 +16,7 @@ data class Nsi(
     val nsiOutcome: KeyValue?,
     val requirement: Requirement? = null,
     val nsiStatus: KeyValue,
-    val statusDateTime: ZonedDateTime?,
+    val statusDateTime: ZonedDateTime,
 //    val actualStartDate: LocalDate,
 //    val expectedStartDate: LocalDate,
 //    val actualEndDate: LocalDate,

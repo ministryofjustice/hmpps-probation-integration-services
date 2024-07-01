@@ -50,7 +50,7 @@ class Nsi(
     val referralDate: LocalDate? = null,
 
     @Column(name = "nsi_status_date")
-    val statusDate: ZonedDateTime? = null,
+    val statusDate: ZonedDateTime,
 
     @Column(name = "rqmnt_id")
     val requirementId: Long?,
