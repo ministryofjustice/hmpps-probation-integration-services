@@ -5,12 +5,14 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Requirement
 import java.time.LocalDate
 
 @Entity
@@ -45,6 +47,9 @@ class Nsi(
     @Column(name = "nsi_status_date")
     val statusDate: LocalDate? = null,
 
+    @Column(name = "rqmnt_id")
+    val requirementId: Long?,
+
     @Id
     @Column(name = "nsi_id")
     val id: Long = 0,
@@ -53,7 +58,11 @@ class Nsi(
     val active: Boolean = true,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @OneToOne
+    @JoinColumn(name = "rqmnt_id", updatable = false, insertable = false)
+    val requirement: Requirement? = null,
 )
 
 @Immutable

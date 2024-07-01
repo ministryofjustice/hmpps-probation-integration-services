@@ -325,19 +325,6 @@ object SentenceGenerator {
         offenceCount: Long? = null,
     ) = AdditionalOffence(event, offence, date, softDeleted, offenceCount, created, updated, id)
 
-    fun generateRequirement(
-        id: Long = IdGenerator.getAndIncrement(),
-        disposal: Disposal
-    ) = Requirement(
-        disposal,
-        ReferenceDataGenerator.REQUIREMENT_MAIN_CAT,
-        ReferenceDataGenerator.REQUIREMENT_SUB_CAT,
-        ReferenceDataGenerator.AD_REQUIREMENT_MAIN_CAT,
-        ReferenceDataGenerator.AD_REQUIREMENT_SUB_CAT,
-        LocalDate.now(),
-        id = id
-    )
-
     fun generateLicenseCondition(
         id: Long = IdGenerator.getAndIncrement(),
         disposal: Disposal
@@ -358,7 +345,8 @@ object SentenceGenerator {
         ReferenceDataGenerator.NSI_BREACH_OUTCOME,
         LocalDate.now(),
         LocalDate.now(),
-        LocalDate.now()
+        LocalDate.now(),
+        RequirementsGenerator.ACTIVE_REQ.id
     )
 
     fun generatePssRequirement(custodyId: Long, id: Long = IdGenerator.getAndIncrement()) = PssRequirement(

@@ -1,18 +1,19 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
 import java.time.LocalDate
 
 data class NsiDetails (
     val nsis: List<Nsi>
 )
 
-data class Nsi (
+data class Nsi(
     val nsiId: Long,
     val nsiType: KeyValue,
     val nsiSubType: KeyValue?,
     val nsiOutcome: KeyValue?,
-//    val requirement: Requirement,
+    val requirement: Requirement? = null,
 //    val nsiStatus: KeyValue,
 //    val statusDateTime: ZonedDateTime,
 //    val actualStartDate: LocalDate,
