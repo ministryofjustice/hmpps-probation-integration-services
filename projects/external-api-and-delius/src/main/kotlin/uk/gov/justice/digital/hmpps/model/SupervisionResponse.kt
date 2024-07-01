@@ -4,8 +4,8 @@ data class SupervisionResponse(
     val communityManager: Manager,
     val mappaDetail: MappaDetail?,
     val supervisions: List<Supervision>,
-    val dynamicRisks: List<Registration>,
-    val personStatus: List<Registration>
+    val dynamicRisks: List<DynamicRiskRegistration>,
+    val personStatus: List<PersonStatusRegistration>
 )
 
 data class Manager(

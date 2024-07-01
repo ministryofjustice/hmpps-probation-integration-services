@@ -24,8 +24,10 @@ class CaseDetailsService(
             communityManager = toCommunityManagerResponse(),
             mappaDetail = registrationRepository.findMappa(person.id).toMappaResponse(),
             supervisions = eventRepository.findByPersonIdOrderByConvictionDateDesc(person.id).toSupervisionResponse(),
-            dynamicRisks = registrationRepository.findDynamicRiskRegistrations(person.id).toRegistrationResponse(),
-            personStatus = registrationRepository.findPersonStatusRegistrations(person.id).toRegistrationResponse(),
+            dynamicRisks = registrationRepository.findDynamicRiskRegistrations(person.id)
+                .toDynamicRiskRegistrationResponse(),
+            personStatus = registrationRepository.findPersonStatusRegistrations(person.id)
+                .toPersonStatusRegistrationResponse(),
         )
     }
 
@@ -66,8 +68,18 @@ class CaseDetailsService(
         )
     }
 
-    private fun List<RegistrationEntity>.toRegistrationResponse() = this.map {
-        Registration(
+    private fun List<RegistrationEntity>.toDynamicRiskRegistrationResponse() = this.map {
+        DynamicRiskRegistration(
+            code = it.type.code,
+            description = it.type.description,
+            startDate = it.date,
+            reviewDate = it.reviewDate,
+            notes = it.notes
+        )
+    }
+
+    private fun List<RegistrationEntity>.toPersonStatusRegistrationResponse() = this.map {
+        PersonStatusRegistration(
             code = it.type.code,
             description = it.type.description,
             startDate = it.date,
