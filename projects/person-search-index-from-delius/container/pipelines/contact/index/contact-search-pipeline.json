@@ -1,9 +1,9 @@
 {
-  "description": "Ingest pipeline to create embeddings for the contact notes field",
+  "description": "Ingest pipeline to create embeddings for the contact notes field, using the Amazon Titan Text Embeddings V2 model in Bedrock",
   "processors": [
     {
       "text_embedding": {
-        "model_id": "fwj-T5ABZT7ztr9Mi1h8",
+        "model_id": "p0l8bZABNIF6rA_H6bPt",
         "field_map": {
           "notes": "notes_embedding"
         }
