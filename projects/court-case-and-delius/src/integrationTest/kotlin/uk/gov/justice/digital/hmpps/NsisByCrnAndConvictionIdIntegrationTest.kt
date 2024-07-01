@@ -81,7 +81,8 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     null,
                     KeyValue(BREACH_NSIS.outcome!!.code, BREACH_NSIS.outcome!!.description),
                     RequirementsGenerator.ACTIVE_REQ.toRequirementModel(),
-                    KeyValue(ACTIVE_NSI_STATUS.code, ACTIVE_NSI_STATUS.description)
+                    KeyValue(ACTIVE_NSI_STATUS.code, ACTIVE_NSI_STATUS.description),
+                    BREACH_NSIS.statusDate
                 ))
         )
 

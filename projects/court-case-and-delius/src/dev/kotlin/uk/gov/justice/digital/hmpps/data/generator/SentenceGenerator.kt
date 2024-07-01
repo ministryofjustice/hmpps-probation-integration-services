@@ -349,7 +349,7 @@ object SentenceGenerator {
         ReferenceDataGenerator.NSI_BREACH_OUTCOME,
         LocalDate.now(),
         LocalDate.now(),
-        LocalDate.now(),
+        ZonedDateTime.of(LocalDate.of(2024, 7, 1), LocalTime.NOON, EuropeLondon),
         RequirementsGenerator.ACTIVE_REQ.id
     )
 

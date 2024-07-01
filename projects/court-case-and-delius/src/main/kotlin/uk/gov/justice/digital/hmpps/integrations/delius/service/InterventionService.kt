@@ -36,5 +36,6 @@ class InterventionService(
             outcome?.let{ KeyValue(it.code, it.description) },
             requirement?.toRequirementModel(),
             KeyValue(nsiStatus.code, nsiStatus.description),
+            statusDate
         )
 }

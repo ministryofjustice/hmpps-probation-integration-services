@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 data class NsiDetails (
     val nsis: List<Nsi>
@@ -15,7 +16,7 @@ data class Nsi(
     val nsiOutcome: KeyValue?,
     val requirement: Requirement? = null,
     val nsiStatus: KeyValue,
-//    val statusDateTime: ZonedDateTime,
+    val statusDateTime: ZonedDateTime?,
 //    val actualStartDate: LocalDate,
 //    val expectedStartDate: LocalDate,
 //    val actualEndDate: LocalDate,

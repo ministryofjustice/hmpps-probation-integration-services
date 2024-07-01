@@ -99,7 +99,7 @@ class Breach(
     val description: String?,
     val status: String?,
     val started: LocalDate?,
-    val statusDate: LocalDate?
+    val statusDate: ZonedDateTime?
 )
 
 class PssRequirement(

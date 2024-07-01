@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Requirement
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "nsi")
@@ -49,7 +50,7 @@ class Nsi(
     val referralDate: LocalDate? = null,
 
     @Column(name = "nsi_status_date")
-    val statusDate: LocalDate? = null,
+    val statusDate: ZonedDateTime? = null,
 
     @Column(name = "rqmnt_id")
     val requirementId: Long?,
