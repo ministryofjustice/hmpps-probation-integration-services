@@ -129,7 +129,7 @@ data class Objective(
     val objectiveCodeDesc: String,
     val objectiveSequence: Long,
     val criminogenicNeeds: List<Need>,
-    val actions: List<Action>
+    val actions: List<Action>?
 )
 
 data class Need(
