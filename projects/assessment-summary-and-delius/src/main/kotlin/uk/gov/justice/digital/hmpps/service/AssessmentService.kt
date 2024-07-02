@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessment
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.SentencePlan
@@ -30,7 +31,7 @@ class AssessmentService(
         val previousAssessment = oasysAssessmentRepository.findByOasysId(summary.assessmentPk.toString())
 
         val eventNumber = summary.furtherInformation.cmsEventNumber?.toString()
-            ?: throw IllegalArgumentException("No Event Number provided")
+            ?: throw IgnorableMessageException("No Event Number provided")
         val event = eventRepository.getByNumber(person.id, eventNumber)
         val manager = checkNotNull(person.manager) { "Community Manager Not Found" }
         val contact = previousAssessment?.contact?.withDateTeamAndStaff(
