@@ -120,7 +120,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     fun findByCrn(crn: String): Person?
 
-    @Query("select p.crn from Person p where p.softDeleted = false")
+    @Query("select p.nomsNumber from Person p where p.softDeleted = false")
     fun findAllCrns(): Stream<String>
 
     fun findAllByNomsNumberAndIdNot(nomsNumber: String, id: Long): List<Person>

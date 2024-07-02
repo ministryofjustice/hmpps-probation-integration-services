@@ -8,3 +8,8 @@ generic-service:
     INTEGRATIONS_PRISON-API_URL: https://prison-api.prison.service.justice.gov.uk
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
+
+bulk-update:
+  enabled: false
+  dry-run: true
+  schedule: 0 7 * * 1

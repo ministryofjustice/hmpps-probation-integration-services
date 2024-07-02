@@ -82,9 +82,16 @@ class DataLoader(
                     DEFAULT_CUSTODY,
                     ReferenceDataGenerator.KEY_DATE_TYPES["LED"]!!,
                     LocalDate.parse("2024-09-10")
+                ),
+                KeyDateGenerator.generate(
+                    DEFAULT_CUSTODY,
+                    ReferenceDataGenerator.KEY_DATE_TYPES["SED"]!!,
+                    LocalDate.parse("2024-08-10")
                 )
             )
         )
+        createPersonWithKeyDates(PersonGenerator.DEFAULT, "58340A")
+
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES, "38340A")
 
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN, "48340A")
