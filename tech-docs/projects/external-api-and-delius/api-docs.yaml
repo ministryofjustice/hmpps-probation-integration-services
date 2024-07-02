@@ -86,6 +86,27 @@ components:
           type: string
         plea:
           type: string
+    DynamicRiskRegistration:
+      required:
+      - code
+      - description
+      - startDate
+      type: object
+      properties:
+        code:
+          type: string
+          example: RCCO
+        description:
+          type: string
+          example: Child Concerns
+        startDate:
+          type: string
+          format: date
+        reviewDate:
+          type: string
+          format: date
+        notes:
+          type: string
     Manager:
       required:
       - allocated
@@ -175,6 +196,27 @@ components:
           type: string
         description:
           type: string
+    PersonStatusRegistration:
+      required:
+      - code
+      - description
+      - startDate
+      type: object
+      properties:
+        code:
+          type: string
+          example: ASFO
+        description:
+          type: string
+          example: Serious Further Offence - Subject to SFO review/investigation
+        startDate:
+          type: string
+          format: date
+        reviewDate:
+          type: string
+          format: date
+        notes:
+          type: string
     Provider:
       required:
       - code
@@ -184,27 +226,6 @@ components:
         code:
           type: string
         description:
-          type: string
-    Registration:
-      required:
-      - code
-      - description
-      - startDate
-      type: object
-      properties:
-        code:
-          type: string
-          example: RCCO
-        description:
-          type: string
-          example: Child Concerns
-        startDate:
-          type: string
-          format: date
-        reviewDate:
-          type: string
-          format: date
-        notes:
           type: string
     Sentence:
       required:
@@ -276,11 +297,11 @@ components:
         dynamicRisks:
           type: array
           items:
-            $ref: "#/components/schemas/Registration"
+            $ref: "#/components/schemas/DynamicRiskRegistration"
         personStatus:
           type: array
           items:
-            $ref: "#/components/schemas/Registration"
+            $ref: "#/components/schemas/PersonStatusRegistration"
     Team:
       required:
       - code
