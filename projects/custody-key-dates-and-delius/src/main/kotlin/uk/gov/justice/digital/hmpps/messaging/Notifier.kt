@@ -22,6 +22,7 @@ class Notifier(
 
     @Async
     @Transactional
+    @Subscribe(messages = [Message(messageId = BULK_KEY_DATE_UPDATE, payload = Schema(HmppsDomainEvent::class))])
     fun requestBulkUpdate(nomsIds: List<String>, dryRun: Boolean) {
         nomsIds.asSequence()
             .ifEmpty { personRepository.findNomsSingleCustodial().asSequence() }
