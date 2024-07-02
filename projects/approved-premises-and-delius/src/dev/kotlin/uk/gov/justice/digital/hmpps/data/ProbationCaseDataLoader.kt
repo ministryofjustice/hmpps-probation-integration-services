@@ -1,8 +1,17 @@
 package uk.gov.justice.digital.hmpps.data
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.EXCLUDED_CASE
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.RESTRICTED_CASE
+import uk.gov.justice.digital.hmpps.entity.Exclusion
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
+import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceSubType
@@ -34,7 +43,10 @@ class ProbationCaseDataLoader(
     private val additionalOffenceRepository: AdditionalOffenceRepository,
     private val personalCircumstanceTypeRepository: PersonalCircumstanceTypeRepository,
     private val personalCircumstanceSubTypeRepository: PersonalCircumstanceSubTypeRepository,
-    private val personalCircumstanceRepository: PersonalCircumstanceRepository
+    private val personalCircumstanceRepository: PersonalCircumstanceRepository,
+    private val mutableLimitedAccessPersonRepository: MutableLimitedAccessPersonRepository,
+    private val restrictionRepository: RestrictionRepository,
+    private val exclusionRepository: ExclusionRepository
 ) {
     fun loadData() {
         offenceRepository.saveAll(listOf(OffenceGenerator.OFFENCE_ONE, OffenceGenerator.OFFENCE_TWO))
@@ -46,13 +58,17 @@ class ProbationCaseDataLoader(
         probationCaseRepository.save(ProbationCaseGenerator.CASE_SIMPLE)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_X320741)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_X320811)
+        probationCaseRepository.save(ProbationCaseGenerator.CASE_LAO_EXCLUSION)
+        probationCaseRepository.save(ProbationCaseGenerator.CASE_LAO_RESTRICTED)
 
         personManagerRepository.saveAll(
             listOf(
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_COMPLEX).asPersonManager(),
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_SIMPLE).asPersonManager(),
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320741).asPersonManager(),
-                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320811).asPersonManager()
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320811).asPersonManager(),
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_LAO_EXCLUSION).asPersonManager(),
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_LAO_RESTRICTED).asPersonManager()
             )
         )
 
@@ -102,7 +118,26 @@ class ProbationCaseDataLoader(
             PersonalCircumstanceGenerator.PC_TYPES.first { it.code == PersonalCircumstanceType.Code.VETERAN.value },
             PersonalCircumstanceGenerator.PC_SUB_TYPES.first { it.description == PersonalCircumstanceType.Code.VETERAN.value + "SUB" }
         ))
+
+        mutableLimitedAccessPersonRepository.save(RESTRICTED_CASE)
+        mutableLimitedAccessPersonRepository.save(EXCLUDED_CASE)
+        restrictionRepository.save(LimitedAccessGenerator.generateRestriction(RESTRICTED_CASE.toLimitedAccessPerson()))
+        exclusionRepository.save(LimitedAccessGenerator.generateExclusion(EXCLUDED_CASE.toLimitedAccessPerson()))
     }
+}
+
+@Entity
+@Table(name = "offender")
+class MutableLimitedAccessPerson(
+    @Column(columnDefinition = "char(7)")
+    val crn: String,
+    val exclusionMessage: String?,
+    val restrictionMessage: String?,
+    @Id
+    @Column(name = "offender_id")
+    val id: Long,
+) {
+    fun toLimitedAccessPerson() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
 }
 
 interface LduRepository : JpaRepository<Ldu, Long>
@@ -111,3 +146,7 @@ interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>
 
 interface PersonalCircumstanceTypeRepository : JpaRepository<PersonalCircumstanceType, Long>
 interface PersonalCircumstanceSubTypeRepository : JpaRepository<PersonalCircumstanceSubType, Long>
+
+interface MutableLimitedAccessPersonRepository : JpaRepository<MutableLimitedAccessPerson, Long>
+interface RestrictionRepository : JpaRepository<Restriction, Long>
+interface ExclusionRepository : JpaRepository<Exclusion, Long>

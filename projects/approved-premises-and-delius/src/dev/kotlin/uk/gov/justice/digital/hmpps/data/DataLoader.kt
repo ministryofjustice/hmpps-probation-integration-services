@@ -147,6 +147,12 @@ class DataLoader(
         staffRepository.save(StaffGenerator.JIM_SNOW)
         staffUserRepository.save(StaffGenerator.JIM_SNOW_USER)
 
+        staffRepository.save(StaffGenerator.LAO_FULL_ACCESS)
+        staffUserRepository.save(StaffGenerator.LAO_FULL_ACCESS_USER)
+
+        staffRepository.save(StaffGenerator.LAO_RESTRICTED)
+        staffUserRepository.save(StaffGenerator.LAO_RESTRICTED_USER)
+
         val personManagerStaff = StaffGenerator.generate(code = "N54A001")
         staffRepository.save(personManagerStaff)
         val person = PersonGenerator.DEFAULT
