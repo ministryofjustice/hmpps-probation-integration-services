@@ -25,7 +25,8 @@ class Court(
 
 interface CourtRepository : JpaRepository<Court, Long> {
     fun findByCode(code: String): Court?
+    fun findByCodeAndSelectableTrue(code: String): Court?
 }
 
 fun CourtRepository.getByCode(code: String) =
-    findByCode(code) ?: throw NotFoundException("Court", "code", code)
+    findByCodeAndSelectableTrue(code) ?: findByCode(code) ?: throw NotFoundException("Court", "code", code)
