@@ -10,7 +10,8 @@ interface PersonRepository : JpaRepository<Person, Long> {
     @Query("select p.nomsId from Person p where p.crn = :crn and p.softDeleted = false")
     fun findNomsIdByCrn(crn: String): String?
 
-    @Query("""
+    @Query(
+        """
             select p.noms_number 
             from offender p
             join event e on e.offender_id = p.offender_id and e.active_flag = 1 and e.soft_deleted = 0
@@ -20,7 +21,8 @@ interface PersonRepository : JpaRepository<Person, Long> {
             where p.noms_number is not null and p.soft_deleted = 0
             group by p.noms_number
             having count(p.noms_number) = 1
-    """, nativeQuery = true)
+    """, nativeQuery = true
+    )
     fun findNomsSingleCustodial(): Stream<String>
 }
 
