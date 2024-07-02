@@ -7,9 +7,14 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.timeout
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.data.entity.IapsPersonRepository
@@ -24,6 +29,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.service.Risk
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
 @SpringBootTest
@@ -51,6 +57,9 @@ internal class IntegrationTest {
 
     @Autowired
     lateinit var transactionManager: PlatformTransactionManager
+
+    @MockBean
+    lateinit var telemetryService: TelemetryService
 
     lateinit var transactionTemplate: TransactionTemplate
 
@@ -203,5 +212,20 @@ internal class IntegrationTest {
         assertThat(scores[9L], equalTo(0))
         assertThat(scores[11L], equalTo(5))
         assertThat(scores[12L], equalTo(5))
+    }
+
+    @Test
+    fun `an assessment without a cmsEventNumber is logged and ignored`() {
+        val message =
+            notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.PERSON_NO_EVENT.crn}")
+
+        channelManager.getChannel(queueName)
+            .publishAndWait(prepNotification(message, wireMockServer.port()))
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummaryFailure"),
+            ArgumentMatchers.anyMap(),
+            ArgumentMatchers.anyMap()
+        )
     }
 }

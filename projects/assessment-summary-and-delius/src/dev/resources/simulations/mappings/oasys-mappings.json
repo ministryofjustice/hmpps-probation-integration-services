@@ -51,6 +51,19 @@
         "status": 200,
         "bodyFileName": "assessment-summary-H123456.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/E123456/ALLOW/10069390/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "assessment-summary-E123456.json"
+      }
     }
   ]
 }
