@@ -33,7 +33,7 @@ data class Nsi(
 )
 
 data class NsiManager (
-//    val probationArea: ProbationArea,
+    val probationArea: ProbationArea,
 //    val team: Team,
 //    val staff: StaffDetails,
     val startDate: LocalDate,

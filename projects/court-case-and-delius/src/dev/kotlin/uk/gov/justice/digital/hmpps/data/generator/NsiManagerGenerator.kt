@@ -12,7 +12,8 @@ object NsiManagerGenerator {
         NsiManager (
             IdGenerator.id(),
             NSIS,
-            LocalDate.now()
+            LocalDate.now(),
+            probationArea = CourtGenerator.PROBATION_AREA
         )
 
     val INACTIVE =
@@ -20,7 +21,8 @@ object NsiManagerGenerator {
             IdGenerator.id(),
             NSIS,
             LocalDate.now().minusDays(7),
-            LocalDate.now().minusDays(1)
+            LocalDate.now().minusDays(1),
+            CourtGenerator.PROBATION_AREA
         )
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Requirement
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -134,9 +135,9 @@ class NsiManager (
 //    @JoinColumn(name = "team_id")
 //    val team: Team,
 
-//    @ManyToOne
-//    @JoinColumn(name = "probation_area_id")
-//    val probationArea: ProbationAreaEntity,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val probationArea: ProbationAreaEntity,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
