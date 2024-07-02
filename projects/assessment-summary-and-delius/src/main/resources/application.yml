@@ -3,6 +3,8 @@ server.shutdown: graceful
 spring:
   jackson:
     default-property-inclusion: non_null
+    parser:
+      ALLOW_NUMERIC_LEADING_ZEROS: true
   jpa:
     hibernate.ddl-auto: validate
     database-platform: org.hibernate.dialect.OracleDialect
