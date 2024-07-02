@@ -14,7 +14,7 @@ object DataGenerator {
     val JOHN_SMITH = Staff("DEFJOSM", "John", "Smith", null, IdGenerator.getAndIncrement())
     val JS_USER = StaffUser(JOHN_SMITH, "john-smith", IdGenerator.getAndIncrement())
 
-    val PERSON = Person(id = IdGenerator.getAndIncrement(), crn = "A000001", softDeleted = false)
+    val PERSON = Person(id = IdGenerator.getAndIncrement(), crn = "A000001", nomsId = "A0001DY", softDeleted = false)
     val PERSON_MANAGER = PersonManager(
         PERSON,
         DEFAULT_PROVIDER,

@@ -5,8 +5,8 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.model.Name
 
 @Entity
 @Immutable
@@ -17,6 +17,9 @@ data class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(name = "noms_number", columnDefinition = "char(7)")
+    val nomsId: String?,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
 
@@ -24,6 +27,14 @@ data class Person(
     @Column(name = "offender_id")
     val id: Long,
 )
+
+interface PersonRepository : JpaRepository<Person, Long> {
+    @Query("select p.crn from Person p where p.nomsId = :nomsId and p.softDeleted = false")
+    fun findByNomsId(nomsId: String): String?
+}
+
+fun PersonRepository.getCrn(nomsId: String) =
+    findByNomsId(nomsId) ?: throw NotFoundException("Person", "nomsId", nomsId)
 
 @Immutable
 @Entity

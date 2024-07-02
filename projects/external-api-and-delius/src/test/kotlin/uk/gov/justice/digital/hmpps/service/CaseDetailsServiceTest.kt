@@ -17,15 +17,10 @@ import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.model.CourtAppearance
-import uk.gov.justice.digital.hmpps.model.LengthUnit
-import uk.gov.justice.digital.hmpps.model.Offence
-import uk.gov.justice.digital.hmpps.model.OffenceCategory
-import uk.gov.justice.digital.hmpps.model.Sentence
-import uk.gov.justice.digital.hmpps.model.Supervision
+import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -42,6 +37,9 @@ internal class CaseDetailsServiceTest {
     lateinit var eventRepository: EventRepository
 
     @Mock
+    lateinit var personRepository: PersonRepository
+
+    @Mock
     lateinit var ldapTemplate: LdapTemplate
 
     @InjectMocks
@@ -51,6 +49,20 @@ internal class CaseDetailsServiceTest {
     fun `supervisions throws error on missing person`() {
         assertThrows<NotFoundException> { caseDetailsService.getSupervisions("MISSING") }
             .run { assertThat(message, equalTo("Person with crn of MISSING not found")) }
+    }
+
+    @Test
+    fun `returns crn for nomsid`() {
+        val crn = "X000001"
+        val nomsId = "A0001DY"
+        whenever(personRepository.findByNomsId(nomsId)).thenReturn(crn)
+        assertThat(caseDetailsService.getCrnForNomsId(nomsId).crn, equalTo(crn))
+    }
+
+    @Test
+    fun `returns not found for nomsid`() {
+        assertThrows<NotFoundException> { caseDetailsService.getCrnForNomsId("MISSING") }
+            .run { assertThat(message, equalTo("Person with nomsId of MISSING not found")) }
     }
 
     @Test

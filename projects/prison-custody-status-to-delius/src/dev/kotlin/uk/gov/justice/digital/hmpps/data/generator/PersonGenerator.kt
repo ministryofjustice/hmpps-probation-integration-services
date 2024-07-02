@@ -20,6 +20,7 @@ object PersonGenerator {
     val RELEASABLE_ECSL_INACTIVE = generate(NotificationGenerator.PRISONER_RELEASED_ECSL_INACTIVE.nomsId())
     val ABSCONDED = generate(NotificationGenerator.PRISONER_ABSCONDED.nomsId())
     val ETR_IN_CUSTODY = generate(NotificationGenerator.PRISONER_ETR_IN_CUSTODY.nomsId())
+    val ECSLIRC_IN_CUSTODY = generate(NotificationGenerator.PRISONER_ECSLIRC_IN_CUSTODY.nomsId())
     val ADMIN_MERGE = generate(NotificationGenerator.PRISONER_ADMIN_MERGE.nomsId())
 
     fun generate(nomsNumber: String, id: Long = IdGenerator.getAndIncrement()) = Person(id, nomsNumber)
