@@ -1,0 +1,55 @@
+{{- if index .Values "bulk-update" "enabled" }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-custody-key-dates
+spec:
+  schedule: {{ index .Values "bulk-update" "schedule" }}
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: custody-key-dates-and-delius
+          containers:
+            - name: update-custody-key-dates
+              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/custody-key-dates-and-delius:{{ .Values.version }}"
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
+              resources:
+                requests:
+                  memory: "1Gi"
+                  cpu: "4"
+                limits:
+                  memory: "2Gi"
+                  cpu: "4"
+              env:
+                {{- range $secret, $envs := index .Values "generic-service" "namespace_secrets" }}
+                  {{- range $key, $val := $envs }}
+                - name: {{ $key }}
+                  valueFrom:
+                    secretKeyRef:
+                      key: {{ trimSuffix "?" $val }}
+                      name: {{ $secret }}{{ if hasSuffix "?" $val }}
+                      optional: true{{ end }}  {{- end }}
+                {{- end }}
+                {{- range $key, $val := index .Values "generic-service" "env" }}
+                - name: {{ $key }}
+                  value: "{{ $val }}"
+                {{- end }}
+                - name: MESSAGING_CONSUMER_ENABLED
+                  value: "false"
+                - name: BULK_UPDATE_ENABLED
+                  value: "true"
+                - name: BULK_UPDATE_DRY-RUN
+                  value: "{{ index .Values "bulk-update" "dry-run" }}"
+          restartPolicy: Never
+{{- end -}}

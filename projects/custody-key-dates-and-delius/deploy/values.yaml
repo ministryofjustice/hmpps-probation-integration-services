@@ -22,6 +22,7 @@ generic-service:
       SENTRY_DSN: SENTRY_DSN
     custody-key-dates-and-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+      MESSAGING_PRODUCER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: custody-key-dates-and-delius

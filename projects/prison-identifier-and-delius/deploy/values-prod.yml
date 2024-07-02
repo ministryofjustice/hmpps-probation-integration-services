@@ -12,6 +12,6 @@ generic-service:
     INTEGRATIONS_PROBATION-SEARCH_URL: https://probation-offender-search.hmpps.service.justice.gov.uk
 
 bulk-update:
-  enabled: true
-  dry-run: false
+  enabled: false
+  dry-run: true
   schedule: 0 7 * * 1
