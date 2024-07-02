@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.Nsi
 import uk.gov.justice.digital.hmpps.api.model.NsiDetails
+import uk.gov.justice.digital.hmpps.api.model.NsiManager
+import uk.gov.justice.digital.hmpps.data.generator.NsiManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
@@ -74,6 +76,17 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
     fun `return list of nsis`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
+        val managers =
+            listOf(
+                NsiManager(
+                    NsiManagerGenerator.ACTIVE.startDate,
+                    NsiManagerGenerator.ACTIVE.endDate
+                ),
+                NsiManager(
+                    NsiManagerGenerator.INACTIVE.startDate,
+                    NsiManagerGenerator.INACTIVE.endDate
+                )
+            )
 
         val expectedResponse = NsiDetails(listOf(
                 Nsi(BREACH_NSIS.id,
@@ -89,7 +102,8 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     BREACH_NSIS.expectedEndDate,
                     BREACH_NSIS.referralDate,
                     BREACH_NSIS.length,
-                    "Months"
+                    "Months",
+                    managers
                 ))
         )
 

@@ -4,10 +4,12 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.Nsi
 import uk.gov.justice.digital.hmpps.api.model.NsiDetails
+import uk.gov.justice.digital.hmpps.api.model.NsiManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByPersonAndEventNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi as NsiEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiManager as NsiManagerEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 
@@ -43,6 +45,14 @@ class InterventionService(
             actualEndDate,
             expectedEndDate,
             referralDate,
-            length
+            length,
+            length?.let { "Months" },
+            managers.map { it.toNsiManager() }
+        )
+
+    fun NsiManagerEntity.toNsiManager(): NsiManager =
+        NsiManager (
+            startDate,
+            endDate
         )
 }

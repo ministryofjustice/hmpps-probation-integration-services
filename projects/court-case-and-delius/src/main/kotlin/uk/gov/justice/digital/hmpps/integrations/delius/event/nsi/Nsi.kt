@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.nsi
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -67,6 +61,9 @@ class Nsi(
     @Column(name = "length")
     val length: Long?,
 
+    @OneToMany(mappedBy = "nsi")
+    val managers: List<NsiManager> = listOf(),
+
     @Id
     @Column(name = "nsi_id")
     val id: Long = 0,
@@ -111,6 +108,43 @@ class NsiStatus(
     @Column(name = "description")
     val description: String
 )
+
+@Entity
+@Table(name = "nsi_manager")
+@Immutable
+class NsiManager (
+    @Id
+    @Column(name = "nsi_manager_id")
+    val id: Long = 0,
+
+    @ManyToOne
+    @JoinColumn(name = "nsi_id")
+    val nsi: Nsi,
+
+    @Column(name = "start_date")
+    val startDate: LocalDate,
+
+    @Column(name = "end_date")
+    val endDate: LocalDate? = null,
+//    @ManyToOne
+//    @JoinColumn(name = "staff_id")
+//    val staff: Staff,
+//
+//    @ManyToOne
+//    @JoinColumn(name = "team_id")
+//    val team: Team,
+
+//    @ManyToOne
+//    @JoinColumn(name = "probation_area_id")
+//    val probationArea: ProbationAreaEntity,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false
+)
+
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
 

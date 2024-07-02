@@ -199,6 +199,8 @@ class DataLoader(
             licenceCondition,
             SentenceGenerator.ACTIVE_NSI_STATUS,
             breachNsi,
+            NsiManagerGenerator.ACTIVE,
+            NsiManagerGenerator.INACTIVE,
             pssRequirement,
             currentCourtAppearance,
             currentCourtReport,

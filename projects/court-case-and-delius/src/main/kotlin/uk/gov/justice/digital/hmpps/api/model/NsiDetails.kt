@@ -23,8 +23,8 @@ data class Nsi(
     val expectedEndDate: LocalDate?,
     val referralDate: LocalDate,
     val length: Long?,
-    val lengthUnit: String? = length?.let { "Months" },
-//    val nsiManagers: List<NsiManager>,
+    val lengthUnit: String?,
+    val nsiManagers: List<NsiManager>,
 //    val notes: String,
 //    val intendedProvider: ProbationArea,
 //    val active: Boolean,
@@ -33,11 +33,11 @@ data class Nsi(
 )
 
 data class NsiManager (
-    val probationArea: ProbationArea,
-    val team: Team,
-    val staff: StaffDetails,
+//    val probationArea: ProbationArea,
+//    val team: Team,
+//    val staff: StaffDetails,
     val startDate: LocalDate,
-    val endDate: LocalDate,
+    val endDate: LocalDate?,
 )
 
 data class StaffDetails (
