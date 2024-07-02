@@ -33,8 +33,8 @@ class InterventionService(
         Nsi (
             id,
             KeyValue(type.code, type.description),
-            subType?.let { KeyValue(it.code, it.description) },
-            outcome?.let{ KeyValue(it.code, it.description) },
+            subType?.keyValueOf(),
+            outcome?.keyValueOf(),
             requirement?.toRequirementModel(),
             KeyValue(nsiStatus.code, nsiStatus.description),
             statusDate,
