@@ -35,6 +35,9 @@ class Nsi(
     @JoinColumn(name = "nsi_status_id")
     val nsiStatus: NsiStatus,
 
+    @Column(name = "referral_Date")
+    val referralDate: LocalDate,
+
     @ManyToOne
     @JoinColumn(name = "nsi_sub_type_id")
     val subType: ReferenceData?,
@@ -54,9 +57,6 @@ class Nsi(
 
     @Column(name = "expected_end_date")
     val expectedEndDate: LocalDate? = null,
-
-    @Column(name = "referral_Date")
-    val referralDate: LocalDate? = null,
 
     @Column(name = "nsi_status_date")
     val statusDate: ZonedDateTime,

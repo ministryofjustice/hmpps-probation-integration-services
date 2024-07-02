@@ -21,7 +21,7 @@ data class Nsi(
     val expectedStartDate: LocalDate?,
     val actualEndDate: LocalDate?,
     val expectedEndDate: LocalDate?,
-//    val referralDate: LocalDate,
+    val referralDate: LocalDate,
 //    val length: Long,
 //    val lengthUnit: String,
 //    val nsiManagers: List<NsiManager>,

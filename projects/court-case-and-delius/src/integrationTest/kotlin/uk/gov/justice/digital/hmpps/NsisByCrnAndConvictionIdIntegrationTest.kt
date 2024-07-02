@@ -86,7 +86,8 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     BREACH_NSIS.actualStartDate,
                     BREACH_NSIS.expectedStartDate,
                     BREACH_NSIS.actualStartDate,
-                    BREACH_NSIS.expectedEndDate
+                    BREACH_NSIS.expectedEndDate,
+                    BREACH_NSIS.referralDate
                 ))
         )
 

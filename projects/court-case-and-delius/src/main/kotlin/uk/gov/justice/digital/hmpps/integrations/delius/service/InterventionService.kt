@@ -41,6 +41,7 @@ class InterventionService(
             actualStartDate,
             expectedStartDate,
             actualEndDate,
-            expectedEndDate
+            expectedEndDate,
+            referralDate
         )
 }

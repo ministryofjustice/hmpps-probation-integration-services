@@ -342,14 +342,14 @@ object SentenceGenerator {
         disposal.event.id,
         ReferenceDataGenerator.NSI_TYPE,
         ACTIVE_NSI_STATUS,
+        referralDate = LocalDate.now().plusDays(1),
         null,
         ReferenceDataGenerator.NSI_BREACH_OUTCOME,
-        LocalDate.now(),
-        LocalDate.of(2024, 1,1),
-        LocalDate.now(),
-        LocalDate.now().minusDays(1),
-        LocalDate.now().minusDays(2),
-        ZonedDateTime.of(LocalDate.of(2024, 7, 1), LocalTime.NOON, EuropeLondon),
+        actualStartDate = LocalDate.now(),
+        expectedStartDate = LocalDate.of(2024, 1,1),
+        actualEndDate = LocalDate.now(),
+        expectedEndDate = LocalDate.now().minusDays(1),
+        statusDate = ZonedDateTime.of(LocalDate.of(2024, 7, 1), LocalTime.NOON, EuropeLondon),
         RequirementsGenerator.ACTIVE_REQ.id
     )
 
