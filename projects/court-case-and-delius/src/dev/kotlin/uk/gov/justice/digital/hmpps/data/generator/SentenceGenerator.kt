@@ -343,14 +343,15 @@ object SentenceGenerator {
         ReferenceDataGenerator.NSI_TYPE,
         ACTIVE_NSI_STATUS,
         referralDate = LocalDate.now().plusDays(1),
+        statusDate = ZonedDateTime.of(LocalDate.of(2024, 7, 1), LocalTime.NOON, EuropeLondon),
         null,
         ReferenceDataGenerator.NSI_BREACH_OUTCOME,
         actualStartDate = LocalDate.now(),
         expectedStartDate = LocalDate.of(2024, 1,1),
         actualEndDate = LocalDate.now(),
         expectedEndDate = LocalDate.now().minusDays(1),
-        statusDate = ZonedDateTime.of(LocalDate.of(2024, 7, 1), LocalTime.NOON, EuropeLondon),
-        RequirementsGenerator.ACTIVE_REQ.id
+        RequirementsGenerator.ACTIVE_REQ.id,
+        7
     )
 
     fun generatePssRequirement(custodyId: Long, id: Long = IdGenerator.getAndIncrement()) = PssRequirement(

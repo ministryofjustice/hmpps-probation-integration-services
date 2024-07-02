@@ -38,6 +38,9 @@ class Nsi(
     @Column(name = "referral_Date")
     val referralDate: LocalDate,
 
+    @Column(name = "nsi_status_date")
+    val statusDate: ZonedDateTime,
+
     @ManyToOne
     @JoinColumn(name = "nsi_sub_type_id")
     val subType: ReferenceData?,
@@ -58,11 +61,11 @@ class Nsi(
     @Column(name = "expected_end_date")
     val expectedEndDate: LocalDate? = null,
 
-    @Column(name = "nsi_status_date")
-    val statusDate: ZonedDateTime,
-
     @Column(name = "rqmnt_id")
     val requirementId: Long?,
+
+    @Column(name = "length")
+    val length: Long?,
 
     @Id
     @Column(name = "nsi_id")
