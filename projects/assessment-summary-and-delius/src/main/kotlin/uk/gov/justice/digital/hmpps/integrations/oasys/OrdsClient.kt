@@ -43,7 +43,7 @@ data class AssessmentSummary(
     val furtherInformation: FurtherInformation = FurtherInformation(),
     val ogpOvp: OgpOvp = OgpOvp(),
     val offences: List<Offence> = arrayListOf(),
-    val basicSentencePlan: String? = null,
+    val basicSentencePlan: List<BasicSentencePlanArea>? = null,
     val sentencePlan: SentencePlan? = null
 ) {
     /*
@@ -145,6 +145,11 @@ data class AssessmentSummaries(
     @JsonAlias("probNumber")
     val crn: String,
     val assessments: List<AssessmentSummary>
+)
+
+data class BasicSentencePlanArea(
+    val bspAreaLinked: String?,
+    val bspAreaLinkedDesc: String?
 )
 
 // TODO remove this once OASys is correctly sending the full description in "pOAssessmentDesc"

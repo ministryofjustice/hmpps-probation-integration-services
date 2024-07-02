@@ -77,7 +77,32 @@
         "ogpRisk": null,
         "ovpRisk": null
       },
-      "basicSentencePlan": null,
+      "basicSentencePlan": [
+        {
+          "bspAreaLinked": "ATTITUDES",
+          "bspAreaLinkedDesc": "Attitudes"
+        },
+        {
+          "bspAreaLinked": "RISK_MANAGEMENT",
+          "bspAreaLinkedDesc": "Risk Management"
+        },
+        {
+          "bspAreaLinked": "THINKING_AND_BEHAVIOUR",
+          "bspAreaLinkedDesc": "Thinking/Behaviour"
+        },
+        {
+          "bspAreaLinked": "EDUCATION_TRAINING_AND_EMPLOYABILITY",
+          "bspAreaLinkedDesc": "ETE"
+        },
+        {
+          "bspAreaLinked": "EDUCATION_TRAINING_AND_EMPLOYABILITY",
+          "bspAreaLinkedDesc": "ETE"
+        },
+        {
+          "bspAreaLinked": "ATTITUDES",
+          "bspAreaLinkedDesc": "Attitudes"
+        }
+      ],
       "offences": [
         {
           "offenceCode": "804",
