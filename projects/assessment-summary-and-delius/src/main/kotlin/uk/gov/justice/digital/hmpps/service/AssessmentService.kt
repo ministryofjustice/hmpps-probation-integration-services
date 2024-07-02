@@ -49,34 +49,34 @@ class AssessmentService(
 
     fun AssessmentSummary.oasysAssessment(person: Person, event: Event, contact: Contact): OasysAssessment {
         val assessment = OasysAssessment(
-            assessmentPk.toString(),
-            dateCompleted,
-            person,
-            event.number,
-            contact,
-            furtherInformation.courtCode?.let { courtRepository.getByCode(it) },
-            offences.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
+            oasysId = assessmentPk.toString(),
+            date = dateCompleted,
+            person = person,
+            eventNumber = event.number,
+            contact = contact,
+            court = furtherInformation.courtCode?.let { courtRepository.getByCode(it) },
+            offence = offences.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
                 ?.let { offenceRepository.getByCode(it.offenceCode + it.offenceSubcode) },
-            furtherInformation.totWeightedScore,
-            furtherInformation.pOAssessment?.let {
+            totalScore = furtherInformation.totWeightedScore,
+            description = furtherInformation.pOAssessment?.let {
                 PurposeOfAssessmentMapping[it] ?: throw IllegalArgumentException("Unexpected 'pOAssessment' code '$it'")
             },
-            furtherInformation.assessorName,
-            riskFlags.joinToString(","),
-            concernFlags.joinToString(","),
-            initiationDate,
-            LocalDate.now(),
-            initialSpDate,
-            reviewSpDate,
-            furtherInformation.reviewTerm?.equals("Y", true),
-            reviewNum,
-            assessmentType,
-            furtherInformation.ogrs1Year,
-            furtherInformation.ogrs2Year,
-            ogpOvp.ogp1Year,
-            ogpOvp.ogp2Year,
-            ogpOvp.ovp1Year,
-            ogpOvp.ovp2Year,
+            assessedBy = furtherInformation.assessorName,
+            riskFlags = riskFlags.joinToString(","),
+            concernFlags = concernFlags.joinToString(","),
+            dateCreated = initiationDate,
+            dateReceived = LocalDate.now(),
+            initialSentencePlanDate = initialSpDate,
+            sentencePlanReviewDate = reviewSpDate,
+            reviewTerminated = furtherInformation.reviewTerm?.equals("Y", true),
+            reviewNumber = reviewNum,
+            layerType = assessmentType,
+            ogrsScore1 = furtherInformation.ogrs1Year,
+            ogrsScore2 = furtherInformation.ogrs2Year,
+            ogpScore1 = ogpOvp.ogp1Year,
+            ogpScore2 = ogpOvp.ogp2Year,
+            ovpScore1 = ogpOvp.ovp1Year,
+            ovpScore2 = ogpOvp.ovp2Year,
         ).withSectionScores(weightedScores)
         sentencePlan?.objectives?.map { it.plan(person, assessment) }
             ?.forEach { assessment.withSentencePlan(it) }
