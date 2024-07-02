@@ -54,7 +54,8 @@ class AssessmentService(
             event.number,
             contact,
             furtherInformation.courtCode?.let { courtRepository.getByCode(it) },
-            offences.firstOrNull()?.let { offenceRepository.getByCode(it.offenceCode + it.offenceSubcode) },
+            offences.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
+                ?.let { offenceRepository.getByCode(it.offenceCode + it.offenceSubcode) },
             furtherInformation.totWeightedScore,
             furtherInformation.pOAssessmentDesc,
             furtherInformation.assessorName,
