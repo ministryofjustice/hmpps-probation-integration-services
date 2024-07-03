@@ -112,7 +112,7 @@ jobs:
 
       - name: Check changes
         id: check-changes
-        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq -r . | jq -s . | jq -c '. // []')" | tee -a "$GITHUB_OUTPUT"
+        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq -R . | jq -s -c '. // []')" | tee -a "$GITHUB_OUTPUT"
 
       - name: Output changes
         run: echo '${{ steps.check-changes.outputs.changes }}' > ${{ matrix.project }}-changes.json
