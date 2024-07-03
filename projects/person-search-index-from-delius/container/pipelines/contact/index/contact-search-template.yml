@@ -44,8 +44,6 @@ template:
             - probation_synonyms        # Apply probation synonyms (e.g. "upw" => ["upw", "unpaid_work"])
             - delimit_words             # Split tokens on punctuation (e.g. "example.text" => ["example.text", "exampletext", "example", "text"])
             - flatten_graph             # Flatten the token graph, so it can be used for indexing
-            - override_stemmer          # Perform additional word stemming after synonyms have been applied
-            - stemmer                   # ...
             - trim                      # Trim any whitespace from the start/end of tokens
             - remove_single_chars       # Remove any tokens that are a single character
             - unique_tokens             # Remove any duplicate tokens in the same positions
@@ -76,6 +74,7 @@ template:
       filter:
         multiword_synonyms:
           type: synonym
+          expand: false
           synonyms:
             - 1.00 am => 1.00_am
             - 2.00 am => 2.00_am
@@ -92,14 +91,15 @@ template:
             - a domestic => a_domestic
             - a home => a_home
             - acceptable absence => acceptable_absence
-            - accredited programme => accredited_programme
+            - acc_prog => acc_prog
             - accredited programme => accredited_programme
             - actual bodily harm => actual_bodily_harm
             - actual end date => actual_end_date
             - after care => after_care
             - air force => air_force
             - alcohol treatment requirement => alcohol_treatment_requirement
-            - anti social => anti depressants
+            - anti social => anti_social
+            - anti depressants => anti_depressants
             - approved premise => approved_premise
             - approved premises => approved_premises
             - assistant chief officer => assistant_chief_officer
@@ -121,10 +121,9 @@ template:
             - case administrator => case_administrator
             - circles of support => circles_of_support
             - commissioned rehabilitative services => commissioned_rehabilitative_services
-            - commissioned services => commissioned services
+            - commissioned services => commissioned_services
             - community domestic violence programme => community_domestic_violence_programme
             - community order => community_order
-            - community payback => community_payback
             - community payback => community_payback
             - community punishment and rehabilitation order => community_punishment_and_rehabilitation_order
             - community punishment order => community_punishment_order
@@ -141,14 +140,12 @@ template:
             - crn court => crn_court
             - crn crt => crn_crt
             - crown court => crown_court
-            - crown court => crown_court
             - crown crt => crown_crt
             - date of birth => date_of_birth
             - department for work and pensions => department_for_work_and_pensions
             - discretionary release date => discretionary_release_date
             - domestic abuse => domestic_abuse
-            - domestic abuse safety officer => domestic abuse safety officer
-            - domestic violence => domestic_violence
+            - domestic abuse safety officer => domestic_abuse_safety_officer
             - domestic violence => domestic_violence
             - drink impaired drivers => drink_impaired_drivers
             - drug intervention programme => drug_intervention_programme
@@ -195,7 +192,6 @@ template:
             - home office => home_office
             - immigration detention => immigration_detention
             - immigration removal centre => immigration_removal_centre
-            - immigration removal centre => immigration_removal_centre
             - independent inquiry into child sexual abuse => independent_inquiry_into_child_sexual_abuse
             - indeterminate sentence for public protection => indeterminate_sentence_for_public_protection
             - initial sentence plan => initial_sentence_plan
@@ -232,7 +228,9 @@ template:
             - noms number => noms_number
             - non parole date => non_parole_date
             - non statutory intervention => non_statutory_intervention
+            - non specified intervention => non_specified_intervention
             - non-parole date => non-parole_date
+            - offender manager => offender_manager
             - offender management => offender_management
             - offender management unit => offender_management_unit
             - office visit => office_visit
@@ -248,7 +246,7 @@ template:
             - person on probation => person_on_probation
             - personal independence payment => personal_independence_payment
             - police constable => police_constable
-            - police officer  => police_officer
+            - police officer => police_officer
             - pom handover expected start date => pom_handover_expected_start_date
             - post sentence supervision => post_sentence_supervision
             - post sentence supervision end date => post_sentence_supervision_end_date
@@ -337,11 +335,9 @@ template:
             - universal credit => universal_credit
             - unlawfully at large => unlawfully_at_large
             - unpaid work => unpaid_work
-            - unpaid work => unpaid_work
             - victims liaison officer => victims_liaison_officer
             - victims liasion unit => victims_liasion_unit
             - warrant without bail => warrant_without_bail
-            - womens safety officer => womens_safety_officer
             - womens safety officer => womens_safety_officer
             - womens safety worker => womens_safety_worker
             - work capability assessment => work_capability_assessment
@@ -351,6 +347,7 @@ template:
             - youth offending team => youth_offending_team
         probation_synonyms:
           type: synonym
+          expand: false
           synonyms:
             - 1, one
             - 2, two
@@ -379,55 +376,49 @@ template:
             - 70, seventy
             - 80, eighty
             - 90, ninety
-            - 1 am, 1am, 0100, 01.00, 1.00_am
-            - 2 am, 2am, 0200, 02.00, 2.00_am
-            - 3 am, 3am, 0300, 03.00, 3.00_am
-            - 4 am, 4am, 0400, 04.00, 4.00_am
-            - 5 am, 5am, 0500, 05.00, 5.00_am
-            - 6 am, 6am, 0600, 06.00, 6.00_am
-            - 7 am, 7am, 0700, 07.00, 7.00_am
-            - 8 am, 8am, 0800, 08.00, 8.00_am
-            - 9 am, 9am, 0900, 09.00, 9.00_am
-            - 10 am, 10am, 1000, 10.00_am
-            - 11 am, 11am, 1100, 11.00_am
-            - 12 pm, 12pm, 1200, 12.00, midday, mid-day, noon
-            - 1 pm, 1pm, 1300, 13.00
-            - 2 pm, 2pm, 1400, 14.00
-            - 3 pm, 3pm, 1500, 15.00
-            - 4 pm, 4pm, 1600, 16.00
-            - 5 pm, 5pm, 1700, 17.00
-            - 6 pm, 6pm, 1800, 18.00
-            - 7 pm, 7pm, 1900, 19.00
-            - 8 pm, 8pm, 2000, 20.00
-            - 9 pm, 9pm, 2100, 21.00
-            - 10 pm, 10pm, 2200, 22.00
-            - 11 pm, 11pm, 2300, 23.00
-            - 12 am, 12am, 0000, 00.00, midnight, mid-night
+            - 1am, 1_am, 0100, 01.00, 1.00_am
+            - 2am, 2_am, 0200, 02.00, 2.00_am
+            - 3am, 3_am, 0300, 03.00, 3.00_am
+            - 4am, 4_am, 0400, 04.00, 4.00_am
+            - 5am, 5_am, 0500, 05.00, 5.00_am
+            - 6am, 6_am, 0600, 06.00, 6.00_am
+            - 7am, 7_am, 0700, 07.00, 7.00_am
+            - 8am, 8_am, 0800, 08.00, 8.00_am
+            - 9am, 9_am, 0900, 09.00, 9.00_am
+            - 10am, 10_am, 1000, 10.00_am
+            - 11am, 11_am, 1100, 11.00_am
+            - 12pm, 12_pm, 1200, 12.00, midday, mid-day, noon
+            - 1pm, 1_pm, 1300, 13.00
+            - 2pm, 2_pm, 1400, 14.00
+            - 3pm, 3_pm, 1500, 15.00
+            - 4pm, 4_pm, 1600, 16.00
+            - 5pm, 5_pm, 1700, 17.00
+            - 6pm, 6_pm, 1800, 18.00
+            - 7pm, 7_pm, 1900, 19.00
+            - 8pm, 8_pm, 2000, 20.00
+            - 9pm, 9_pm, 2100, 21.00
+            - 10pm, 10_pm, 2200, 22.00
+            - 11pm, 11_pm, 2300, 23.00
+            - 12am, 12_am, 0000, 00.00, midnight, mid-night
+            - morning, 8_am, 9_am, 10_am, 11_am
+            - abh, actual_bodily_harm
             - abs, absence, failed_to_attend, fta
             - abuse => cruelty, bullying, domestic_violence, incest
-            - slavery, exploitation
             - acceptable, acceptable_absence, aa
-            - ap => accredited_programme, approved_premises
-            - accredited_programme, acc prog
             - accom, accommodation, housing, home, location, addr, address
-            - cas1, approved_premises, approved_premise, hostel
-            - cas2, bass, bail_accommodation, bail_accommodation_support_service, bail_hostel
-            - cas3, transitional_housing, temporary_accommodation, short-term_accommodation, short_term_accommodation
             - aco, assistant_chief_officer
             - acr, auto_conditional_release_date, crd, conditional_release_date, ard, automatic_release_date
             - adj, adjourned
             - admission, admitted
-            - after care, aftercare, after-care
+            - aftercare, after_care, after-care
             - afternoon, pm
             - alc, alcohol, booze, drinking, drunk, drunkenness
-            - 8_am, 9_am, 10_am, 11_am, morning
             - annual, yearly, 12_monthly, 12monthly, per_annum
-            - anti_social, antisocial, anti-social, asbo
+            - antisocial, anti_social, anti-social, asbo
             - antidepressants, anti-depressants, anti_depressants
+            - ap => accredited_programme, approved_premises
             - appointment, office_visit, visit, attendance, appt
             - assault => abh, actual_bodily_harm, gbh, grievous_bodily_harm
-            - abh, actual_bodily_harm
-            - gbh, grievous_bodily_harm
             - atr, alcohol_treatment_requirement
             - att, attend, attended, attendance
             - bbr, building_better_relationships
@@ -437,6 +428,9 @@ template:
             - ca, case_admin, case_administrator, court_admin, court_administrator, admin, administrator
             - calm, controlling_anger_and_learning_to_manage_it
             - care, care_needs, social_services, care_experienced, care_home, a_home
+            - cas1, approved_premises, approved_premise, hostel
+            - cas2, bass, bail_accommodation, bail_accommodation_support_service, bail_hostel
+            - cas3, transitional_housing, temporary_accommodation, short-term_accommodation, short_term_accommodation
             - cc, crown_court
             - ccr, pre-release_custody_date
             - ccs, recall_date
@@ -446,24 +440,20 @@ template:
             - chronology, timeline, time_line
             - cja, criminal_justice_act
             - client, offender, pop, person_on_probation, probationer
-            - community_order => co, probation_order, cro, community_rehabilitation_order, cpo, community_punishment_order, cpro, community_punishment_and_rehabilitation_order, sso, suspended_sentence_order
             - co, community_order
-            - cpo, community_punishment_order
-            - cro, community_rehabilitation_order
-            - cpro, community_punishment_and_rehabilitation_order
-            - sso, suspended_sentence_order
             - comm, communication, communications
-            - commissioned_services, commissioned_rehabilitative_services, rehabilitative_services, crs
-            - community_service, community_payback, unpaid_work, upw, cp
+            - community_order => co, probation_order, cro, community_rehabilitation_order, cpo, community_punishment_order, cpro, community_punishment_and_rehabilitation_order, sso, suspended_sentence_order
+            - upw, unpaid_work, community_service, community_payback, cp
             - comp, comply, complied
             - conviction, sentence, event, order, disposal
             - cosa, circles_of_support
             - court => magistrates_court, mags_court, mags_crt, mags, mc, crown_court, crown_crt, cc, crn_court, crn_crt
-            - magistrates_court, mags_court, mags_crt, mags, mc
-            - crown_court, crown_crt, cc, crn_court, crn_crt
             - covaid, control_of_violence_for_angry_impulsive_drinkers
             - cpo, community_punishment_order
             - cppt, com, mgr, manager, offender_manager, practitioner, probation_practitioner, pp, community_practitioner, cpp, po, pso, pquip, om, supervisor, officer, probation_officer, ro, responsible_officer
+            - cpro, community_punishment_and_rehabilitation_order
+            - cro, community_rehabilitation_order
+            - crown_court, crown_crt, cc, crn_court, crn_crt
             - csogp, community_sex_offender_group_programme
             - custody, prison, remand, establishment, irc, immigration_removal_centre, sh, secure_hospital
             - da, dad, father
@@ -491,16 +481,17 @@ template:
             - excl, exclusion
             - exp, expected_release_date
             - exposure, flashing
-            - failed_to_attend, fta, failed_to_report, absent, absence, ua, unacceptable_absence
-            - failed_to_comply, ftc, unacceptable_behaviour
+            - fta, failed_to_attend, failed_to_report, absent, absence, ua, unacceptable_absence
+            - ftc, failed_to_comply, unacceptable_behaviour
             - fostercare, foster_care, foster-care
             - ftr, fixed_term_recall, fixed-term_recall, fixed-term-recall, recall
+            - gbh, grievous_bodily_harm
             - gf, girlfriend, girl_friend
             - gp, doctor, doctors, general_practitioner, consultant, psychologist
             - grandad, grand_dad, grandfather, gramp, grampa
             - grandchild, grand_child, grandkid, grand_kid, grand_children, grandchildren, grandkids
             - grandma, grand_ma, grandmother, grand_mother, gran, granny, nan, nana
-            - h/o, handover, hand_over, hand-over
+            - handover, h/o, hand_over, hand-over
             - harm, rosh, rosha, risk_of_serious_harm, risk_of_harm, roh, risk
             - hate_crime, hate-crime, racially_motivated, homophobic, faith_related, transophobic, racist, racism
             - hdc, home_detention_curfew
@@ -508,12 +499,13 @@ template:
             - ho, home_office, home-office
             - homeless, homelessness, duty_to_refer, duty-to-refer, nfa
             - hours, hrs
+            - husband, boyfriend
             - i-sotp, internet_sex_offender_treatment_programme
             - iaps, im, interventions_manager, interim_accredited_programmes_system, interim_accredited_programmes_service
             - iicsa, independent_inquiry_into_child_sexual_abuse
             - ill, sick, unfit, unwell
-            - intensive_supervision, iom, restorative_justice, problem_solving_court
-            - intervention, structured_intervention, accredited_programme, crs, si, tsi, ap, programme, nsi, non_statutory_intervention, non_specified_intervention
+            - iom, intensive_supervision, restorative_justice, problem_solving_court
+            - nsi, commissioned_services, commissioned_rehabilitative_services, rehabilitative_services, crs, intervention, structured_intervention, accredited_programme, acc_prog, si, tsi, ap, programme, national_standards, non_statutory_intervention, non_specified_intervention
             - intro, introduction
             - iom, integrated_offender_management
             - irc, immigration_removal_centre, immigration_detention
@@ -526,33 +518,31 @@ template:
             - liap, low_intensity_alcohol_programmes
             - lic, lc, licence_condition, licence
             - lp, lpt, ldn, london, london_probation, london_probation_trust, london_probation_area
-            - offender_management, supervision, contact
+            - magistrates_court, mags_court, mags_crt, mags, mc
             - medication, medicine, prescription, naloxone, meds
             - mh, mental_health
             - min, minutes
             - mom, mum, mother
             - msg, message, text, email, sms
-            - national_insurance_number, nin, nino, ni_number, national_insurance
-            - national_standards, nsi
+            - nino, national_insurance_number, nin, ni_number, national_insurance
             - nd, national_delius, delius, ndelius
             - new_me, bnm, lmn, nmc, nms
-            - nomis_number, noms_number, noms_no, noms_id, nomis_id
             - nomis, p-nomis
+            - nomis_number, noms_number, noms_no, noms_id, nomis_id
             - npd, npl, non_parole_date, non-parole_date
             - offence, offences, crime, crimes
+            - offender_management, supervision, contact
             - omu, offender_management_unit
             - ooh, out_of_hours, out-of-hours
             - parom1, parom_1, parole_report
             - partner => husband, wife, boyfiend, girlfriend
-            - husband, boyfriend
-            - wife, girlfriend
             - ped, parole_eligibility_date
             - pension, retirement, retirement_benefit
             - phe, public_health_england, health_service, phw, public_health_wales
             - pic, picture, photo, photograph, selfie
             - pip, personal_independence_payment
             - placement, project, schedule
-            - police_constable, constable, pc, police_officer
+            - pc, police_constable, constable, police_officer
             - pom, prison_offender_manager
             - pom1, pom_handover_expected_start_date
             - pom2, ro_responsibility_handover_from_pom_to_om_expected_date
@@ -562,7 +552,6 @@ template:
             - prq, parole_request_date
             - psr, pre-sentence_report, presentence_report, sfr, short_format_report, short-format_report, oral_report
             - pss, pssr, post_sentence_supervision, post-sentence_supervision, post_sentence_supervision_requirement, post-sentence_supervision_requirement, top-up_supervision
-            - tused, pssed, tssed, top-up_supervision_expiry_date, top-up_supervision_end_date, post_sentence_supervision_expiry_date, post-sentence_supervision_expiry_date, post-sentence_supervision_end_date, post_sentence_supervision_end_date
             - rar, rehabilitation_activity_requirement
             - referal, referral
             - register, registration, globe, alert
@@ -581,13 +570,15 @@ template:
             - scp, self_change_programme, self-change_programme
             - sdp, short_duration_programme
             - sed, sentence_expiry_date
-            - self-harm, selfharm, self_harm, suicide, self-inflicted_death, self_inflicted_death
+            - selfharm, self-harm, self_harm, suicide, self-inflicted_death, self_inflicted_death
             - sex, sexual
             - sfo, serious_further_offence, serious_further_offences, further_offence, further_offences
             - sha, strategic_health_authority, health_authority, health_board
             - shpo, sexual_harm_prevention_order, sopo, sexual_offending_prevention_order, shpo, sro, sexual_risk_order
+            - slavery, exploitation
             - sotp, sex_offender_treatment_programme
             - spo, senior, senior_probation_officer
+            - sso, suspended_sentence_order
             - std, standard
             - tact, terrorism_act
             - tc, t/c, resettlement, throughcare, ttg, through_the_gate, through-the-gate
@@ -597,12 +588,14 @@ template:
             - time_table, timetable, time-table
             - trf, tariff_date
             - tsp, thinking_skills_programme
+            - tused, pssed, tssed, top-up_supervision_expiry_date, top-up_supervision_end_date, post_sentence_supervision_expiry_date, post-sentence_supervision_expiry_date, post-sentence_supervision_end_date, post_sentence_supervision_end_date
             - ual, unlawfully_at_large, escaped, at_large, wwb, warrant_without_bail
             - uc, universal_credit, benefits
             - upw, unpaid_work, community_payback
             - vlu, victims_liasion_unit
             - wca, work_capability_assessment, fit_note, sick_note
             - wfh, work_from_home
+            - wife, girlfriend
             - wso, womens_safety_officer
             - youth, youth_offending_service, yots, youth_offending_team, yot, borstal, yoi, young_offender_institution
             - yrs, years
