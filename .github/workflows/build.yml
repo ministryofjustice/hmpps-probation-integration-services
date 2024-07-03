@@ -112,14 +112,16 @@ jobs:
 
       - name: Check changes
         id: check-changes
-        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_OUTPUT"
+        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq -r . | jq -s . | jq -c '. // []')" | tee -a "$GITHUB_OUTPUT"
 
       - name: Output changes
-        uses: cloudposse/github-action-matrix-outputs-write@ed06cf3a6bf23b8dce36d1cf0d63123885bb8375 # v1
+        run: echo '${{ steps.check-changes.outputs.changes }}' > ${{ matrix.project }}-changes.json
+
+      - name: Store changes
+        uses: actions/upload-artifact@v4
         with:
-          matrix-step-name: output-changes
-          matrix-key: ${{ matrix.project }}
-          outputs: ${{ steps.check-changes.outputs.changes }}
+          name: changes-${{ matrix.project }}
+          path: ${{ matrix.project }}-changes.json
 
       - uses: actions/upload-artifact@v4
         with:
@@ -157,8 +159,10 @@ jobs:
           force-deploy: ${{ inputs.force-deploy }}
 
       - name: Output changes
-        uses: cloudposse/github-action-matrix-outputs-write@ed06cf3a6bf23b8dce36d1cf0d63123885bb8375 # v1
+        run: echo '${{ steps.build.outputs.changes }}' > ${{ matrix.project }}-changes.json
+
+      - name: Store changes
+        uses: actions/upload-artifact@v4
         with:
-          matrix-step-name: output-changes
-          matrix-key: ${{ matrix.project }}
-          outputs: ${{ steps.build.outputs.changes }}
+          name: changes-${{ matrix.project }}
+          path: ${{ matrix.project }}-changes.json
