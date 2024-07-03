@@ -6,7 +6,6 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Channel
 import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Subscribe
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.message.*
@@ -23,7 +22,6 @@ class Notifier(
         const val BULK_KEY_DATE_UPDATE = "custody-key-dates.internal.bulk-update"
     }
 
-    @Async
     @Transactional
     @Subscribe(messages = [Message(messageId = BULK_KEY_DATE_UPDATE, payload = Schema(HmppsDomainEvent::class))])
     fun requestBulkUpdate(nomsIds: List<String>, dryRun: Boolean) {
