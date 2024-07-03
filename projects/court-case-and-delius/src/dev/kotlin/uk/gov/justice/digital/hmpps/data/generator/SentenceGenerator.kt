@@ -8,15 +8,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.en
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.ReportManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 
 object SentenceGenerator {
 
@@ -74,13 +72,17 @@ object SentenceGenerator {
         ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon)
     )
 
-    val CURRENT_ORDER_MANAGER = SentenceGenerator.generateOrderManager(
+    val CURRENT_ORDER_MANAGER = generateOrderManager(
         CURRENTLY_MANAGED,
         StaffGenerator.ALLOCATED,
         CourtGenerator.PROBATION_AREA,
         ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
         ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
     )
+
+    val ACTIVE_NSI_STATUS = NsiStatus(IdGenerator.getAndIncrement(), "SLI01", "Active")
+
+    val BREACH_NSIS = generateBreachNsi(CURRENT_SENTENCE)
 
     val CONDITIONAL_RELEASE_KEY_DATE = generateKeyDates(LocalDate.now(), CURRENT_CUSTODY, ReferenceDataGenerator.ACR)
     val LED_KEY_DATE = generateKeyDates(LocalDate.now().plusDays(1), CURRENT_CUSTODY, ReferenceDataGenerator.LED)
@@ -323,19 +325,6 @@ object SentenceGenerator {
         offenceCount: Long? = null,
     ) = AdditionalOffence(event, offence, date, softDeleted, offenceCount, created, updated, id)
 
-    fun generateRequirement(
-        id: Long = IdGenerator.getAndIncrement(),
-        disposal: Disposal
-    ) = Requirement(
-        disposal,
-        ReferenceDataGenerator.REQUIREMENT_MAIN_CAT,
-        ReferenceDataGenerator.REQUIREMENT_SUB_CAT,
-        ReferenceDataGenerator.AD_REQUIREMENT_MAIN_CAT,
-        ReferenceDataGenerator.AD_REQUIREMENT_SUB_CAT,
-        LocalDate.now(),
-        id = id
-    )
-
     fun generateLicenseCondition(
         id: Long = IdGenerator.getAndIncrement(),
         disposal: Disposal
@@ -352,11 +341,20 @@ object SentenceGenerator {
         disposal.event.person.id,
         disposal.event.id,
         ReferenceDataGenerator.NSI_TYPE,
+        ACTIVE_NSI_STATUS,
+        referralDate = LocalDate.now().plusDays(1),
+        statusDate = ZonedDateTime.of(LocalDate.of(2024, 7, 1), LocalTime.NOON, EuropeLondon),
         null,
         ReferenceDataGenerator.NSI_BREACH_OUTCOME,
-        LocalDate.now(),
-        LocalDate.now(),
-        LocalDate.now()
+        actualStartDate = LocalDate.now(),
+        expectedStartDate = LocalDate.of(2024, 1,1),
+        actualEndDate = LocalDate.now(),
+        expectedEndDate = LocalDate.now().minusDays(1),
+        RequirementsGenerator.ACTIVE_REQ.id,
+        7,
+        "notes",
+        "external ref",
+        CourtGenerator.PROBATION_AREA
     )
 
     fun generatePssRequirement(custodyId: Long, id: Long = IdGenerator.getAndIncrement()) = PssRequirement(

@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
+import jakarta.validation.constraints.NotEmpty
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.integrations.delius.service.ConvictionService
+import uk.gov.justice.digital.hmpps.integrations.delius.service.InterventionService
 import uk.gov.justice.digital.hmpps.integrations.delius.service.RequirementService
 
 @RestController
@@ -11,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.service.RequirementServi
 class ConvictionResource(
     private val convictionService: ConvictionService,
     private val requirementService: RequirementService,
+    private val interventionService: InterventionService,
 ) {
 
     @GetMapping
@@ -30,6 +33,14 @@ class ConvictionResource(
         @PathVariable crn: String,
         @PathVariable convictionId: Long,
         @RequestParam(required = false, defaultValue = "true") activeOnly: Boolean,
-        @RequestParam(required = false, defaultValue = "true") excludeSoftDeleted: Boolean,
+        @RequestParam(required = false, defaultValue = "true") excludeSoftDeleted: Boolean
     ) = requirementService.getRequirementsByConvictionId(crn, convictionId, activeOnly, !excludeSoftDeleted)
+
+
+    @GetMapping("/{convictionId}/nsis")
+    fun getNsisByCrnAndConvictionId (
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+        @NotEmpty @RequestParam(required = true) nsiCodes: List<String>
+    ) = interventionService.getNsiByCodes(crn, convictionId, nsiCodes)
 }

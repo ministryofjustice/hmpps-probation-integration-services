@@ -14,7 +14,7 @@ object StaffGenerator {
     val OFFICER = generateOfficer()
     val STAFF_USER = generateStaffUser()
     fun generate(code: String, id: Long = IdGenerator.getAndIncrement(), grade: ReferenceData? = null) =
-        Staff(code, "Bob", "Micheal", "Smith", grade, null, id)
+        Staff(code, "Bob", "Micheal", "Smith", CourtGenerator.PROBATION_AREA, grade, null, id = id)
 
     fun generateStaffUser() = StaffUser(ALLOCATED, "JoeBloggs", IdGenerator.getAndIncrement())
 
