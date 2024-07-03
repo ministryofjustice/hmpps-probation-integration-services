@@ -64,7 +64,7 @@ class Nsi(
     @Column(name = "length")
     val length: Long?,
 
-    @Column(name = "notes")
+    @Column(name = "notes", columnDefinition = "clob")
     val notes: String?,
 
     @Column(name = "external_reference")

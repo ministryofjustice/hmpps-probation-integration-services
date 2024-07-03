@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
+import io.swagger.v3.oas.annotations.Parameter
 import jakarta.validation.constraints.NotEmpty
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -38,8 +39,11 @@ class ConvictionResource(
 
     @GetMapping("/{convictionId}/nsis")
     fun getNsisByCrnAndConvictionId(
+        @Parameter(name = "crn", description = "CRN for the offender", example = "A123456", required = true)
         @PathVariable crn: String,
+        @Parameter(name = "convictionId", description = "ID for the conviction / event", example = "2500295345", required = true)
         @PathVariable convictionId: Long,
+        @Parameter(name = "nsiCodes", description = "list of NSI codes to constrain by", example = "BRE,BRES", required = true)
         @NotEmpty @RequestParam(required = true) nsiCodes: List<String>
     ) = interventionService.getNsiByCodes(crn, convictionId, nsiCodes)
 }
