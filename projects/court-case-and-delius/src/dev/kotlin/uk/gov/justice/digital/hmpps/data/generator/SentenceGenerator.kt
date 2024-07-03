@@ -351,7 +351,9 @@ object SentenceGenerator {
         actualEndDate = LocalDate.now(),
         expectedEndDate = LocalDate.now().minusDays(1),
         RequirementsGenerator.ACTIVE_REQ.id,
-        7
+        7,
+        "notes",
+        "external ref"
     )
 
     fun generatePssRequirement(custodyId: Long, id: Long = IdGenerator.getAndIncrement()) = PssRequirement(

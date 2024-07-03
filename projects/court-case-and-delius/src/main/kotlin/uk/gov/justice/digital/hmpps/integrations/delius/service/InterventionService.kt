@@ -46,7 +46,11 @@ class InterventionService(
             referralDate,
             length,
             length?.let { "Months" },
-            managers.map { it.toNsiManager() }
+            managers.map { it.toNsiManager() },
+            notes,
+            active,
+            softDeleted,
+            externalReference
         )
 
     fun NsiManagerEntity.toNsiManager(): NsiManager =

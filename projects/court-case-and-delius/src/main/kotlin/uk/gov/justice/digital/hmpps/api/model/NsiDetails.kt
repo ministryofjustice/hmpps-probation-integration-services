@@ -25,11 +25,11 @@ data class Nsi(
     val length: Long?,
     val lengthUnit: String?,
     val nsiManagers: List<NsiManager>,
-//    val notes: String,
+    val notes: String?,
 //    val intendedProvider: ProbationArea,
-//    val active: Boolean,
-//    val softDeleted: Boolean,
-//    val externalReference: String
+    val active: Boolean,
+    val softDeleted: Boolean,
+    val externalReference: String?
 )
 
 data class NsiManager (

@@ -107,7 +107,11 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     BREACH_NSIS.referralDate,
                     BREACH_NSIS.length,
                     "Months",
-                    managers
+                    managers,
+                    BREACH_NSIS.notes,
+                    BREACH_NSIS.active,
+                    BREACH_NSIS.softDeleted,
+                    BREACH_NSIS.externalReference
                 ))
         )
 

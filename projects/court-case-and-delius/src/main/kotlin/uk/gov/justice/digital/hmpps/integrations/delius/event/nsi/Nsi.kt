@@ -64,6 +64,12 @@ class Nsi(
     @Column(name = "length")
     val length: Long?,
 
+    @Column(name = "notes")
+    val notes: String?,
+
+    @Column(name = "external_reference")
+    val externalReference: String?,
+
     @OneToMany(mappedBy = "nsi")
     val managers: List<NsiManager> = listOf(),
 
