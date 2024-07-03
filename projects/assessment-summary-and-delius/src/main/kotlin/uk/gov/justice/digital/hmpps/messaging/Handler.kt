@@ -36,7 +36,7 @@ class Handler(
             }
         } catch (ime: IgnorableMessageException) {
             telemetryService.trackEvent(
-                "AssessmentSummaryFailure",
+                "AssessmentSummaryIgnored",
                 notification.message.telemetryProperties() + ime.additionalProperties + ("reason" to ime.message)
             )
         }
