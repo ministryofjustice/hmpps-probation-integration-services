@@ -51,6 +51,7 @@ class InterventionService(
     fun NsiManagerEntity.toNsiManager(): NsiManager =
         NsiManager (
             probationArea.toProbationArea(),
+            team.toTeam(),
             startDate,
             endDate
         )

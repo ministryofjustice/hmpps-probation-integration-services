@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.RequirementsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.BREACH_NSIS
 import uk.gov.justice.digital.hmpps.integrations.delius.service.toProbationArea
+import uk.gov.justice.digital.hmpps.integrations.delius.service.toTeam
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -79,11 +80,13 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
             listOf(
                 NsiManager(
                     NsiManagerGenerator.ACTIVE.probationArea.toProbationArea(),
+                    NsiManagerGenerator.ACTIVE.team.toTeam(),
                     NsiManagerGenerator.ACTIVE.startDate,
                     NsiManagerGenerator.ACTIVE.endDate
                 ),
                 NsiManager(
                     NsiManagerGenerator.ACTIVE.probationArea.toProbationArea(),
+                    NsiManagerGenerator.ACTIVE.team.toTeam(),
                     NsiManagerGenerator.INACTIVE.startDate,
                     NsiManagerGenerator.INACTIVE.endDate
                 )

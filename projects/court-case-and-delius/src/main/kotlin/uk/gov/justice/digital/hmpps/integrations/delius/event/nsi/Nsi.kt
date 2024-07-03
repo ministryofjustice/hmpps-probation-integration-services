@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -131,9 +132,9 @@ class NsiManager (
 //    @JoinColumn(name = "staff_id")
 //    val staff: Staff,
 //
-//    @ManyToOne
-//    @JoinColumn(name = "team_id")
-//    val team: Team,
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    val team: Team,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id")

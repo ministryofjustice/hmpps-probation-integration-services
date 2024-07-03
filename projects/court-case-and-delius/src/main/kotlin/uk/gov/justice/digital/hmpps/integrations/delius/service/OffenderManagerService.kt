@@ -89,7 +89,7 @@ fun PrisonManager.toOffenderManager(includeProbationAreaTeams: Boolean) = Commun
 )
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() = Team(
-    code = code,
+    code = code.trim(),
     description = description,
     telephone = telephone,
     borough = KeyValue(district.borough.code, district.borough.description),
