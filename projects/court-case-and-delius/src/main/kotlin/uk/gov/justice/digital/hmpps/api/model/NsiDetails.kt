@@ -35,18 +35,14 @@ data class Nsi(
 data class NsiManager (
     val probationArea: ProbationArea,
     val team: Team,
-//    val staff: StaffDetails,
+    val staff: StaffDetails,
     val startDate: LocalDate,
     val endDate: LocalDate?,
 )
 
 data class StaffDetails (
     @Schema(description = "the optional username of this staff member, will be absent if the staff member is not a user of Delius", example = "SheilaHancockNPS")
-    val username: String,
-    @Schema(description = "the optional email address of this staff member, will be absent if the staff member is not a user of Delius", example = "sheila.hancock@test.justice.gov.uk")
-    val email: String,
-    @Schema(description = "the optional telephone number of this staff member, will be absent if the staff member is not a user of Delius", example = "020 1111 2222")
-    val telephoneNumber: String,
+    val username: String?,
     @Schema(description = "staff code AKA officer code", example = "SH00001")
     val staffCode: String,
     @Schema(description = "staff identifier", example = "123456")
@@ -58,5 +54,5 @@ data class StaffDetails (
     @Schema(description = "provider this staff member is associated with")
     val probationArea: ProbationArea,
     @Schema(description = "Staff Grade", example = "PO,CRC - PO")
-    val staffGrade: KeyValue
+    val staffGrade: KeyValue?
 )

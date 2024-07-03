@@ -11,15 +11,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.KeyValue
-import uk.gov.justice.digital.hmpps.api.model.Nsi
-import uk.gov.justice.digital.hmpps.api.model.NsiDetails
-import uk.gov.justice.digital.hmpps.api.model.NsiManager
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.NsiManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.BREACH_NSIS
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.service.toProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.service.toTeam
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -81,12 +79,14 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                 NsiManager(
                     NsiManagerGenerator.ACTIVE.probationArea.toProbationArea(),
                     NsiManagerGenerator.ACTIVE.team.toTeam(),
+                    NsiManagerGenerator.ACTIVE.staff.toStaffDetails(),
                     NsiManagerGenerator.ACTIVE.startDate,
                     NsiManagerGenerator.ACTIVE.endDate
                 ),
                 NsiManager(
                     NsiManagerGenerator.ACTIVE.probationArea.toProbationArea(),
                     NsiManagerGenerator.ACTIVE.team.toTeam(),
+                    NsiManagerGenerator.ACTIVE.staff.toStaffDetails(),
                     NsiManagerGenerator.INACTIVE.startDate,
                     NsiManagerGenerator.INACTIVE.endDate
                 )
@@ -122,4 +122,14 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
 
         assertEquals(expectedResponse, response)
     }
+
+    fun Staff.toStaffDetails(): StaffDetails = StaffDetails(
+        "JoeBloggs",
+        code,
+        id,
+        Human(getForenames(), surname),
+        teams.map { it.toTeam() },
+        probationArea.toProbationArea(),
+        grade?.keyValueOf()
+    )
 }

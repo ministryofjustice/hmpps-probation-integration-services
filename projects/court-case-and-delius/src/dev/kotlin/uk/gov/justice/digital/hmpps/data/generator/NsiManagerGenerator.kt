@@ -12,6 +12,7 @@ object NsiManagerGenerator {
             BREACH_NSIS,
             LocalDate.now(),
             endDate = null,
+            StaffGenerator.ALLOCATED,
             TeamGenerator.DEFAULT,
             probationArea = CourtGenerator.PROBATION_AREA
         )
@@ -22,6 +23,7 @@ object NsiManagerGenerator {
             BREACH_NSIS,
             LocalDate.now().minusDays(7),
             LocalDate.now().minusDays(1),
+            StaffGenerator.ALLOCATED,
             TeamGenerator.DEFAULT,
             CourtGenerator.PROBATION_AREA
         )

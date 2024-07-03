@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiManager as 
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 
 @Service
 class InterventionService(
@@ -52,17 +53,28 @@ class InterventionService(
         NsiManager (
             probationArea.toProbationArea(),
             team.toTeam(),
+            staff.toStaffDetails(),
             startDate,
             endDate
         )
 }
 
-fun ProbationAreaEntity.toProbationArea(): ProbationArea =
-    ProbationArea (
+fun Staff.toStaffDetails(): StaffDetails = StaffDetails(
+    user?.username,
+    code,
+    id,
+    Human(getForenames(), surname),
+    teams.map { it.toTeam() },
+    probationArea.toProbationArea(),
+    grade?.keyValueOf()
+)
+
+fun ProbationAreaEntity.toProbationArea(): ProbationArea = ProbationArea (
         id,
         code,
         description,
         KeyValue(organisation.code, organisation.description),
         institution?.toInstitution(),
         privateSector
-    )
+)
+
