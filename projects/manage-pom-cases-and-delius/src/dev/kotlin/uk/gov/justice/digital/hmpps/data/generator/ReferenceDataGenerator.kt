@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.Referen
 object ReferenceDataGenerator {
     val KEY_DATE_TYPE_DATASET = generateDataSet(ReferenceDataSet.Code.KEY_DATE_TYPE.value)
     val POM_ALLOCATION_DATASET = generateDataSet(ReferenceDataSet.Code.POM_ALLOCATION_REASON.value)
-    val CUSTODY_STATUS_DATASET = generateDataSet(ReferenceDataSet.Code.CUSTODY_STATUS.value)
     val TIER_2 = generate("2", "Tier 2")
     val DECISION_ENHANCED = generate("R")
     val DECISION_NORMAL = generate("A")
