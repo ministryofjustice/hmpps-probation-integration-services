@@ -4,12 +4,14 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement as RequirementModel
 
 @Immutable
 @Entity(name = "conviction_rqmnt")
@@ -79,7 +81,34 @@ class Requirement(
     @ManyToOne
     @JoinColumn(name = "disposal_id", updatable = false, insertable = false)
     val disposal: Disposal? = null
-)
+) {
+    fun toRequirementModel(): RequirementModel = RequirementModel(
+        id,
+        notes,
+        commencementDate,
+        startDate,
+        terminationDate,
+        expectedStartDate,
+        expectedEndDate,
+        createdDatetime,
+        active,
+        subCategory?.let { KeyValue(it.code, it.description) },
+        mainCategory?.let { KeyValue(it.code, it.description) },
+        adMainCategory?.let { KeyValue(it.code, it.description) },
+        adSubCategory?.let { KeyValue(it.code, it.description) },
+        terminationReason?.let { KeyValue(it.code, it.description) },
+        length,
+        mainCategory?.let { it.units?.description },
+        mainCategory?.let {
+            when (it.restrictive) {
+                "Y" -> true
+                else -> false
+            }
+        },
+        softDeleted,
+        rarCount
+    )
+}
 
 @Immutable
 @Entity(name = "conviction_event")

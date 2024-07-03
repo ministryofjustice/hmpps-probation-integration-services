@@ -23,12 +23,24 @@ class Staff(
     @Column
     val surname: String,
 
+    @JoinColumn(name = "probation_area_id")
+    @ManyToOne
+    val probationArea: ProbationAreaEntity,
+
     @ManyToOne
     @JoinColumn(name = "staff_grade_id")
     val grade: ReferenceData?,
 
     @OneToOne(mappedBy = "staff")
     val user: StaffUser? = null,
+
+    @ManyToMany
+    @JoinTable(
+        name = "staff_team",
+        joinColumns = [JoinColumn(name = "staff_id", referencedColumnName = "staff_id")],
+        inverseJoinColumns = [JoinColumn(name = "team_id", referencedColumnName = "team_id")]
+    )
+    val teams: List<Team> = listOf(),
 
     @Id
     @Column(name = "staff_id")
@@ -39,9 +51,16 @@ class Staff(
     }
 
     fun getName(): String {
-        return when {
-            forename2 == null -> "$forename $surname"
+        return when (forename2) {
+            null -> "$forename $surname"
             else -> "$forename $forename2 $surname"
+        }
+    }
+
+    fun getForenames(): String {
+        return when (forename2) {
+            null -> forename
+            else -> "$forename $forename2"
         }
     }
 }
