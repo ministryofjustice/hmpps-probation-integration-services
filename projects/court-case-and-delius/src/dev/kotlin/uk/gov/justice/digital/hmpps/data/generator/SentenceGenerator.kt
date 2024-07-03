@@ -347,7 +347,7 @@ object SentenceGenerator {
         null,
         ReferenceDataGenerator.NSI_BREACH_OUTCOME,
         actualStartDate = LocalDate.now(),
-        expectedStartDate = LocalDate.of(2024, 1,1),
+        expectedStartDate = LocalDate.of(2024, 1, 1),
         actualEndDate = LocalDate.now(),
         expectedEndDate = LocalDate.now().minusDays(1),
         RequirementsGenerator.ACTIVE_REQ.id,

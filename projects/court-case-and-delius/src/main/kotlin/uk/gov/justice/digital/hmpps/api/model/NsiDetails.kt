@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-data class NsiDetails (
+data class NsiDetails(
     val nsis: List<Nsi>
 )
 
@@ -32,7 +32,7 @@ data class Nsi(
     val externalReference: String?
 )
 
-data class NsiManager (
+data class NsiManager(
     val probationArea: ProbationArea,
     val team: Team,
     val staff: StaffDetails,
@@ -40,8 +40,11 @@ data class NsiManager (
     val endDate: LocalDate?,
 )
 
-data class StaffDetails (
-    @Schema(description = "the optional username of this staff member, will be absent if the staff member is not a user of Delius", example = "SheilaHancockNPS")
+data class StaffDetails(
+    @Schema(
+        description = "the optional username of this staff member, will be absent if the staff member is not a user of Delius",
+        example = "SheilaHancockNPS"
+    )
     val username: String?,
     @Schema(description = "staff code AKA officer code", example = "SH00001")
     val staffCode: String,

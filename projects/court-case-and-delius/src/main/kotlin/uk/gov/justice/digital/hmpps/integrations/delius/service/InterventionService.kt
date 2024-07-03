@@ -27,11 +27,11 @@ class InterventionService(
         return NsiDetails(
             nsiRepository
                 .findByPersonIdAndEventIdAndTypeCodeIn(person.id, event.id, nsiCodes)
-            .map { it.toNsi() })
+                .map { it.toNsi() })
     }
 
     fun NsiEntity.toNsi(): Nsi =
-        Nsi (
+        Nsi(
             id,
             KeyValue(type.code, type.description),
             subType?.keyValueOf(),
@@ -55,7 +55,7 @@ class InterventionService(
         )
 
     fun NsiManagerEntity.toNsiManager(): NsiManager =
-        NsiManager (
+        NsiManager(
             probationArea.toProbationArea(false),
             team.toTeam(),
             staff.toStaffDetails(),

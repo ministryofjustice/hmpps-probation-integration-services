@@ -38,7 +38,8 @@ class Staff(
     @JoinTable(
         name = "staff_team",
         joinColumns = [JoinColumn(name = "staff_id", referencedColumnName = "staff_id")],
-        inverseJoinColumns = [JoinColumn(name = "team_id", referencedColumnName = "team_id")])
+        inverseJoinColumns = [JoinColumn(name = "team_id", referencedColumnName = "team_id")]
+    )
     val teams: List<Team> = listOf(),
 
     @Id
