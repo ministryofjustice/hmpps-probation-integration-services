@@ -1,14 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
 
 @Immutable
 @Entity
@@ -62,6 +58,13 @@ class Custody(
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)
     val disposal: Disposal,
+
+    @ManyToOne
+    @JoinColumn(name = "custodial_status_id")
+    val status: ReferenceData,
+
+    @Column(name = "prisoner_number")
+    val bookingRef: String?,
 
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,

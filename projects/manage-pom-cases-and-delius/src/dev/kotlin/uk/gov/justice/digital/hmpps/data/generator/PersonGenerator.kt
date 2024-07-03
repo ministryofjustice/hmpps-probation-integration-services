@@ -14,6 +14,7 @@ object PersonGenerator {
     val CREATE_HANDOVER_AND_START = generate("H123458", "A4096BY")
     val CREATE_SENTENCE_CHANGED = generate("H123459", "A4096CY")
     val PERSON_NOT_FOUND = generate("H123410", "A4096DY")
+    val PERSON_MULTIPLE_CUSTODIAL = generate("H123412", "A4096DX")
 
     fun generate(
         crn: String,

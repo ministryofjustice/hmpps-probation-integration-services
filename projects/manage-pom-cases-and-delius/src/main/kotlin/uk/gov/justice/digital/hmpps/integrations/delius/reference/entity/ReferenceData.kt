@@ -42,7 +42,8 @@ class ReferenceDataSet(
 ) {
     enum class Code(val value: String) {
         KEY_DATE_TYPE("THROUGHCARE DATE TYPE"),
-        POM_ALLOCATION_REASON("POM ALLOCATION REASON")
+        POM_ALLOCATION_REASON("POM ALLOCATION REASON"),
+        CUSTODY_STATUS("THROUGHCARE STATUS"),
     }
 }
 

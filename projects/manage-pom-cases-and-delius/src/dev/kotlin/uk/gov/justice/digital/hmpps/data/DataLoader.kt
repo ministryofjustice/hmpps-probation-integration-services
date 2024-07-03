@@ -95,7 +95,8 @@ class DataLoader(
                 PersonGenerator.CREATE_HANDOVER_AND_START,
                 PersonGenerator.UPDATE_HANDOVER_AND_START,
                 PersonGenerator.CREATE_SENTENCE_CHANGED,
-                PersonGenerator.PERSON_NOT_FOUND
+                PersonGenerator.PERSON_NOT_FOUND,
+                PersonGenerator.PERSON_MULTIPLE_CUSTODIAL
             )
         )
         personManagerRepository.saveAll(
@@ -146,6 +147,24 @@ class DataLoader(
         val sentenceChangedHandoverDisposal =
             disposalRepository.save(EventGenerator.generateDisposal(sentenceChangedHandoverEvent))
         custodyRepository.save(EventGenerator.generateCustody(sentenceChangedHandoverDisposal))
+
+        val notFoundSentenceChangedHandoverEvent =
+            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.PERSON_NOT_FOUND.id))
+        val notFoundSentenceChangedHandoverDisposal =
+            disposalRepository.save(EventGenerator.generateDisposal(notFoundSentenceChangedHandoverEvent))
+        custodyRepository.save(EventGenerator.generateCustody(notFoundSentenceChangedHandoverDisposal))
+
+        //Multiple custodial
+        val multipleHandoverEvent1 =
+            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.PERSON_MULTIPLE_CUSTODIAL.id))
+        val multipleHandoverEvent2 =
+            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.PERSON_MULTIPLE_CUSTODIAL.id))
+        val multipleHandoverDisposal1 =
+            disposalRepository.save(EventGenerator.generateDisposal(multipleHandoverEvent1))
+        val multipleHandoverDisposal2 =
+            disposalRepository.save(EventGenerator.generateDisposal(multipleHandoverEvent2))
+        custodyRepository.save(EventGenerator.generateCustody(multipleHandoverDisposal1))
+        custodyRepository.save(EventGenerator.generateCustody(multipleHandoverDisposal2))
 
         val handoverEvent = eventRepository.save(EventGenerator.generateEvent(PersonGenerator.HANDOVER.id))
         val handoverDisposal = disposalRepository.save(EventGenerator.generateDisposal(handoverEvent))
