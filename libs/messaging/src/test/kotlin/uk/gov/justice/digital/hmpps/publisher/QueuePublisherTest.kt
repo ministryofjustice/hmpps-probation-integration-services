@@ -13,7 +13,6 @@ import org.springframework.messaging.Message
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
-import java.util.concurrent.CompletableFuture.completedFuture
 
 @ExtendWith(MockitoExtension::class)
 class QueuePublisherTest {
@@ -23,7 +22,7 @@ class QueuePublisherTest {
 
     @BeforeEach
     fun setup() {
-        whenever(sqsTemplate.sendAsync<Notification<String>>(any(), any())).thenReturn(completedFuture(null))
+        whenever(sqsTemplate.send<Notification<String>>(any(), any())).thenReturn(null)
     }
 
     @Test
@@ -31,7 +30,7 @@ class QueuePublisherTest {
         val publisher = QueuePublisher(sqsTemplate, objectMapper, "my-queue", 1000)
         publisher.publish(Notification("test-message", MessageAttributes("test-event-type")))
 
-        verify(sqsTemplate).sendAsync<String>(eq("my-queue"), check {
+        verify(sqsTemplate).send<String>(eq("my-queue"), check {
             assertThat(it.headers["eventType"], equalTo("test-event-type"))
             assertThat(it.message.asText(), equalTo("\"test-message\""))
         })
@@ -46,7 +45,7 @@ class QueuePublisherTest {
 
         with(inOrder(sqsTemplate)) {
             for (i in 0..9) {
-                verify(sqsTemplate).sendAsync<String>(eq("my-queue"), check {
+                verify(sqsTemplate).send<String>(eq("my-queue"), check {
                     assertThat(it.message.asInt(), equalTo(i))
                 })
             }

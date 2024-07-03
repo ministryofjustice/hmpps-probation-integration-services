@@ -125,7 +125,7 @@ class NsiStatus(
 @Entity
 @Table(name = "nsi_manager")
 @Immutable
-class NsiManager (
+class NsiManager(
     @Id
     @Column(name = "nsi_manager_id")
     val id: Long = 0,
@@ -158,7 +158,6 @@ class NsiManager (
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )
-
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
 

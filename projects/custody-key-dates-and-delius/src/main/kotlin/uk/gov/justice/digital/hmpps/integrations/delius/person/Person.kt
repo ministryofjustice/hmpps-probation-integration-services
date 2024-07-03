@@ -18,9 +18,9 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
-    @Column(name = "NOMS_NUMBER", columnDefinition = "char(7)")
+    @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsId: String?,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false
 )

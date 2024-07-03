@@ -33,13 +33,18 @@ class Handler(
             Message(messageId = "KEY_DATE_ADJUSTMENT_UPSERTED", payload = Schema(CustodyDateChanged::class)),
             Message(messageId = "KEY_DATE_ADJUSTMENT_DELETED", payload = Schema(CustodyDateChanged::class)),
             Message(messageId = "SENTENCE_CHANGED", payload = Schema(ProbationOffenderEvent::class)),
+            Message(
+                messageId = "custody-key-dates.internal.bulk-update",
+                summary = "Internal use - bulk key date update",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
         ]
     )
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
         when (val message = notification.message) {
             is HmppsDomainEvent -> message.personReference.findNomsNumber()
-                ?.let { cduService.updateCustodyKeyDates(it) }
+                ?.let { cduService.updateCustodyKeyDates(it, message.dryRun) }
 
             is CustodyDateChanged -> cduService.updateCustodyKeyDates(message.bookingId)
             is ProbationOffenderEvent -> when (notification.eventType) {
@@ -50,6 +55,8 @@ class Handler(
             }
         }
     }
+
+    val HmppsDomainEvent.dryRun get() = additionalInformation["dryRun"] == true
 }
 
 @Message

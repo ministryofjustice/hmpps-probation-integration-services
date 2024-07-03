@@ -55,7 +55,8 @@ sealed interface PrisonerMovement {
         MovementReasonCodes.DISCHARGED_OR_DEPORTED,
         MovementReasonCodes.DEPORTED_NO_SENTENCE,
         MovementReasonCodes.DEPORTED_LICENCE,
-        MovementReasonCodes.EARLY_REMOVAL_SCHEME
+        MovementReasonCodes.EARLY_REMOVAL_SCHEME,
+        MovementReasonCodes.END_CUSTODY_TO_IMMIGRATION_RELEASE_CENTRE
     )
 
     fun isAbsconded() = this is Released && reason in listOf(

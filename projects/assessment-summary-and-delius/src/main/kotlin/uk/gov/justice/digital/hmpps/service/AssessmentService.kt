@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessment
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.SentencePlan
@@ -15,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByNumber
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.Objective
+import uk.gov.justice.digital.hmpps.integrations.oasys.PurposeOfAssessmentMapping
 import java.time.LocalDate
 
 @Service
@@ -29,7 +31,7 @@ class AssessmentService(
         val previousAssessment = oasysAssessmentRepository.findByOasysId(summary.assessmentPk.toString())
 
         val eventNumber = summary.furtherInformation.cmsEventNumber?.toString()
-            ?: throw IllegalArgumentException("No Event Number provided")
+            ?: throw IgnorableMessageException("No Event Number provided")
         val event = eventRepository.getByNumber(person.id, eventNumber)
         val manager = checkNotNull(person.manager) { "Community Manager Not Found" }
         val contact = previousAssessment?.contact?.withDateTeamAndStaff(
@@ -48,31 +50,34 @@ class AssessmentService(
 
     fun AssessmentSummary.oasysAssessment(person: Person, event: Event, contact: Contact): OasysAssessment {
         val assessment = OasysAssessment(
-            assessmentPk.toString(),
-            dateCompleted,
-            person,
-            event.number,
-            contact,
-            furtherInformation.courtCode?.let { courtRepository.getByCode(it) },
-            offences.firstOrNull()?.let { offenceRepository.getByCode(it.offenceCode + it.offenceSubcode) },
-            furtherInformation.totWeightedScore,
-            furtherInformation.pOAssessmentDesc,
-            furtherInformation.assessorName,
-            riskFlags.joinToString(","),
-            concernFlags.joinToString(","),
-            initiationDate,
-            LocalDate.now(),
-            initialSpDate,
-            reviewSpDate,
-            furtherInformation.reviewTerm?.equals("Y", true),
-            reviewNum,
-            assessmentType,
-            furtherInformation.ogrs1Year,
-            furtherInformation.ogrs2Year,
-            ogpOvp.ogp1Year,
-            ogpOvp.ogp2Year,
-            ogpOvp.ovp1Year,
-            ogpOvp.ovp2Year,
+            oasysId = assessmentPk.toString(),
+            date = dateCompleted,
+            person = person,
+            eventNumber = event.number,
+            contact = contact,
+            court = furtherInformation.courtCode?.let { courtRepository.getByCode(it) },
+            offence = offences.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
+                ?.let { offenceRepository.getByCode(it.offenceCode + it.offenceSubcode) },
+            totalScore = furtherInformation.totWeightedScore,
+            description = furtherInformation.pOAssessment?.let {
+                PurposeOfAssessmentMapping[it] ?: throw IllegalArgumentException("Unexpected 'pOAssessment' code '$it'")
+            },
+            assessedBy = furtherInformation.assessorName,
+            riskFlags = riskFlags.joinToString(","),
+            concernFlags = concernFlags.joinToString(","),
+            dateCreated = initiationDate,
+            dateReceived = LocalDate.now(),
+            initialSentencePlanDate = initialSpDate,
+            sentencePlanReviewDate = reviewSpDate,
+            reviewTerminated = furtherInformation.reviewTerm?.equals("Y", true),
+            reviewNumber = reviewNum,
+            layerType = assessmentType,
+            ogrsScore1 = furtherInformation.ogrs1Year,
+            ogrsScore2 = furtherInformation.ogrs2Year,
+            ogpScore1 = ogpOvp.ogp1Year,
+            ogpScore2 = ogpOvp.ogp2Year,
+            ovpScore1 = ogpOvp.ovp1Year,
+            ovpScore2 = ogpOvp.ovp2Year,
         ).withSectionScores(weightedScores)
         sentencePlan?.objectives?.map { it.plan(person, assessment) }
             ?.forEach { assessment.withSentencePlan(it) }
@@ -99,7 +104,7 @@ fun Objective.plan(
         objectiveCodeDesc
     )
     criminogenicNeeds.forEachIndexed { index, need -> sp.withNeed(index.deliusIndex(), need.criminogenicNeedDesc) }
-    actions.forEachIndexed { index, action ->
+    actions?.forEachIndexed { index, action ->
         sp.withWorkSummary(index.deliusIndex(), action.actionDesc)
         action.actionComment?.also {
             sp.withText(index.deliusIndex(), it)

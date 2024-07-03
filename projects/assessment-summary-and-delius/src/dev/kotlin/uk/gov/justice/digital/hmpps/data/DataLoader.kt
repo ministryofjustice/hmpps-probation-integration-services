@@ -50,6 +50,7 @@ class DataLoader(
         PersonGenerator.MEDIUM_RISK.withEvent().withRisk(Risk.M)
         PersonGenerator.HIGH_RISK.withEvent().withRisk(Risk.L, Risk.H)
         PersonGenerator.VERY_HIGH_RISK.withEvent().withRisk(Risk.L, Risk.M, Risk.H)
+        PersonGenerator.PERSON_NO_EVENT
     }
 
     private fun Person.withEvent(): Person {

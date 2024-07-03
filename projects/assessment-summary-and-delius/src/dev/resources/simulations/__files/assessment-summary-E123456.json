@@ -1,8 +1,8 @@
 {
-  "probNumber": "H123456",
+  "probNumber": "E123456",
   "assessments": [
     {
-      "assessmentPk": 100835871,
+      "assessmentPk": 10078385,
       "assessmentType": "LAYER3",
       "dateCompleted": "2023-12-15T08:34:44",
       "assessorSignedDate": "2023-12-15T08:33:39",
@@ -21,15 +21,15 @@
       "latestCompleteDate": "2023-12-15T08:34:44",
       "currentConcernsRiskOfSuicide": "Yes",
       "reviewSpDate": null,
-      "initialSpDate": "2023-12-15",
+      "initialSpDate": null,
       "reviewNum": 01,
       "riskPrisonersCustody": "Low",
       "riskStaffCustody": "Low",
       "riskStaffCommunity": "Low",
       "riskKnownAdultCustody": "Low",
-      "riskAdultCommunity": "Medium",
+      "riskKnownAdultCommunity": "Medium",
       "riskPublicCustody": "Low",
-      "riskPublicCommunity": "Medium",
+      "riskPublicCommunity": "High",
       "riskChildrenCustody": "Low",
       "riskChildrenCommunity": "Low",
       "currentConcernsBreachOfTrust": "Yes",
@@ -50,21 +50,21 @@
         "attitudesWeightedScore": 5
       },
       "furtherInformation": {
-        "totWeightedScore": 88,
+        "totWeightedScore": 108,
         "pOAssessment": "270",
         "pOAssessmentDesc": "Review",
         "assessorName": "LevelTwo CentralSupport",
         "ogrs1Year": 43,
         "ogrs2Year": 61,
         "reviewTerm": "N",
-        "cmsEventNumber": 1,
+        "cmsEventNumber": null,
         "courtCode": "LVRPCC",
         "courtType": "CC",
         "courtName": "Liverpool Crown Court"
       },
       "offender": {
         "riskToOthers": "H",
-        "offenderPk": 7374972
+        "offenderPk": 7374816
       },
       "ogpOvp": {
         "ogpNC": "N",
@@ -92,13 +92,14 @@
             "objectiveSequence": 1,
             "criminogenicNeeds": [
               {
+                "criminogenicNeed": "IHD",
                 "criminogenicNeedDesc": "Risk to Public"
               }
             ],
             "actions": [
               {
                 "actionDesc": "Drug counselling",
-                "actionComment": "Frank will need to attend regularly"
+                "actionComment": "Comments about the action"
               }
             ]
           },
@@ -107,13 +108,15 @@
             "objectiveSequence": 2,
             "criminogenicNeeds": [
               {
+                "criminogenicNeed": "I4",
                 "criminogenicNeedDesc": "Education Training and Employment"
               }
             ],
             "actions": [
               {
+                "action": "VIII1",
                 "actionDesc": "Basic skills",
-                "actionComment": "Some comment about their skills"
+                "actionComment": "Some comment about their basic skills"
               }
             ]
           }

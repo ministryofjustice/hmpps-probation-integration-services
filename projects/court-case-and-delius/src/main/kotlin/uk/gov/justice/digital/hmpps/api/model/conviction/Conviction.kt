@@ -1,4 +1,5 @@
 package uk.gov.justice.digital.hmpps.api.model.conviction
+
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import java.math.BigDecimal
 import java.time.LocalDate

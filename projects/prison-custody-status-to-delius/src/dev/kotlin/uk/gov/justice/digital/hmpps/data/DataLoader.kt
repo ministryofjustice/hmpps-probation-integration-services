@@ -89,6 +89,7 @@ class DataLoader(
         createReleasablePerson(PersonGenerator.RELEASABLE_ECSL_INACTIVE)
         createAbsconded()
         createEtrInCustody()
+        createEcslircInCustody()
     }
 
     private fun createReferenceData() {
@@ -291,6 +292,16 @@ class DataLoader(
         createEvent(
             EventGenerator.custodialEvent(
                 PersonGenerator.ETR_IN_CUSTODY,
+                InstitutionGenerator.DEFAULT
+            )
+        )
+    }
+
+    private fun createEcslircInCustody() {
+        createPerson(PersonGenerator.ECSLIRC_IN_CUSTODY)
+        createEvent(
+            EventGenerator.custodialEvent(
+                PersonGenerator.ECSLIRC_IN_CUSTODY,
                 InstitutionGenerator.DEFAULT
             )
         )

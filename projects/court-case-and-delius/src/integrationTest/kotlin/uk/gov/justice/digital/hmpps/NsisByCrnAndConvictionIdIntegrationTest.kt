@@ -49,9 +49,11 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
     @Test
     fun `probation record not found`() {
         mockMvc
-            .perform(get("/probation-case/A123456/convictions/123/nsis")
-                .param("nsiCodes", "{}")
-                .withToken())
+            .perform(
+                get("/probation-case/A123456/convictions/123/nsis")
+                    .param("nsiCodes", "{}")
+                    .withToken()
+            )
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
     }
@@ -61,9 +63,10 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
         mockMvc
-            .perform(get("/probation-case/$crn/convictions/3/nsis")
-                .param("nsiCodes", "{}")
-                .withToken()
+            .perform(
+                get("/probation-case/$crn/convictions/3/nsis")
+                    .param("nsiCodes", "{}")
+                    .withToken()
             )
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Conviction with ID 3 for Offender with crn C123456 not found"))
@@ -92,8 +95,10 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                 )
             )
 
-        val expectedResponse = NsiDetails(listOf(
-                Nsi(BREACH_NSIS.id,
+        val expectedResponse = NsiDetails(
+            listOf(
+                Nsi(
+                    BREACH_NSIS.id,
                     KeyValue(BREACH_NSIS.type.code, BREACH_NSIS.type.description),
                     null,
                     KeyValue(BREACH_NSIS.outcome!!.code, BREACH_NSIS.outcome!!.description),
@@ -113,13 +118,15 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     BREACH_NSIS.active,
                     BREACH_NSIS.softDeleted,
                     BREACH_NSIS.externalReference
-                ))
+                )
+            )
         )
 
         val response = mockMvc
-            .perform(get("/probation-case/$crn/convictions/${event.id}/nsis")
-                .param("nsiCodes", "NSI type")
-                .withToken()
+            .perform(
+                get("/probation-case/$crn/convictions/${event.id}/nsis")
+                    .param("nsiCodes", "NSI type")
+                    .withToken()
             )
             .andExpect(status().isOk)
             .andDo(MockMvcResultHandlers.print())

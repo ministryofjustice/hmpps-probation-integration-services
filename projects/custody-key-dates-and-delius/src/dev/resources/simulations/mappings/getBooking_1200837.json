@@ -25,6 +25,19 @@
         },
         "bodyFileName": "booking_noms_A0002DY.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/api/bookings/offenderNo/A5089DY"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "booking_noms_A5089DY.json"
+      }
     }
   ]
 }

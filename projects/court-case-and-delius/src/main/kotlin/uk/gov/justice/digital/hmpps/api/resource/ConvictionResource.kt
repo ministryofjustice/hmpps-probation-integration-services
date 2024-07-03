@@ -36,9 +36,8 @@ class ConvictionResource(
         @RequestParam(required = false, defaultValue = "true") excludeSoftDeleted: Boolean
     ) = requirementService.getRequirementsByConvictionId(crn, convictionId, activeOnly, !excludeSoftDeleted)
 
-
     @GetMapping("/{convictionId}/nsis")
-    fun getNsisByCrnAndConvictionId (
+    fun getNsisByCrnAndConvictionId(
         @PathVariable crn: String,
         @PathVariable convictionId: Long,
         @NotEmpty @RequestParam(required = true) nsiCodes: List<String>

@@ -7,7 +7,7 @@ import java.time.LocalDate
 object NsiManagerGenerator {
 
     val ACTIVE =
-        NsiManager (
+        NsiManager(
             IdGenerator.id(),
             BREACH_NSIS,
             LocalDate.now(),
@@ -18,7 +18,7 @@ object NsiManagerGenerator {
         )
 
     val INACTIVE =
-        NsiManager (
+        NsiManager(
             IdGenerator.id(),
             BREACH_NSIS,
             LocalDate.now().minusDays(7),
@@ -27,5 +27,4 @@ object NsiManagerGenerator {
             TeamGenerator.DEFAULT,
             CourtGenerator.PROBATION_AREA
         )
-
 }
