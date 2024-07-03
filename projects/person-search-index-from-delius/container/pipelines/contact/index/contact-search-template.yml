@@ -44,8 +44,6 @@ template:
             - probation_synonyms        # Apply probation synonyms (e.g. "upw" => ["upw", "unpaid_work"])
             - delimit_words             # Split tokens on punctuation (e.g. "example.text" => ["example.text", "exampletext", "example", "text"])
             - flatten_graph             # Flatten the token graph, so it can be used for indexing
-            - override_stemmer          # Perform additional word stemming after synonyms have been applied
-            - stemmer                   # ...
             - trim                      # Trim any whitespace from the start/end of tokens
             - remove_single_chars       # Remove any tokens that are a single character
             - unique_tokens             # Remove any duplicate tokens in the same positions
@@ -76,6 +74,7 @@ template:
       filter:
         multiword_synonyms:
           type: synonym
+          expand: false
           synonyms:
             - 1.00 am => 1.00_am
             - 2.00 am => 2.00_am
@@ -99,7 +98,8 @@ template:
             - after care => after_care
             - air force => air_force
             - alcohol treatment requirement => alcohol_treatment_requirement
-            - anti social => anti depressants
+            - anti social => anti_social
+            - anti depressants => anti_depressants
             - approved premise => approved_premise
             - approved premises => approved_premises
             - assistant chief officer => assistant_chief_officer
@@ -121,7 +121,7 @@ template:
             - case administrator => case_administrator
             - circles of support => circles_of_support
             - commissioned rehabilitative services => commissioned_rehabilitative_services
-            - commissioned services => commissioned services
+            - commissioned services => commissioned_services
             - community domestic violence programme => community_domestic_violence_programme
             - community order => community_order
             - community payback => community_payback
@@ -228,6 +228,7 @@ template:
             - noms number => noms_number
             - non parole date => non_parole_date
             - non statutory intervention => non_statutory_intervention
+            - non specified intervention => non_specified_intervention
             - non-parole date => non-parole_date
             - offender manager => offender_manager
             - offender management => offender_management
@@ -245,7 +246,7 @@ template:
             - person on probation => person_on_probation
             - personal independence payment => personal_independence_payment
             - police constable => police_constable
-            - police officer  => police_officer
+            - police officer => police_officer
             - pom handover expected start date => pom_handover_expected_start_date
             - post sentence supervision => post_sentence_supervision
             - post sentence supervision end date => post_sentence_supervision_end_date
@@ -346,6 +347,7 @@ template:
             - youth offending team => youth_offending_team
         probation_synonyms:
           type: synonym
+          expand: false
           synonyms:
             - 1, one
             - 2, two
@@ -374,31 +376,31 @@ template:
             - 70, seventy
             - 80, eighty
             - 90, ninety
-            - 1 am, 1am, 0100, 01.00, 1.00_am
-            - 2 am, 2am, 0200, 02.00, 2.00_am
-            - 3 am, 3am, 0300, 03.00, 3.00_am
-            - 4 am, 4am, 0400, 04.00, 4.00_am
-            - 5 am, 5am, 0500, 05.00, 5.00_am
-            - 6 am, 6am, 0600, 06.00, 6.00_am
-            - 7 am, 7am, 0700, 07.00, 7.00_am
-            - 8 am, 8am, 0800, 08.00, 8.00_am
-            - 9 am, 9am, 0900, 09.00, 9.00_am
-            - 10 am, 10am, 1000, 10.00_am
-            - 11 am, 11am, 1100, 11.00_am
-            - 12 pm, 12pm, 1200, 12.00, midday, mid-day, noon
-            - 1 pm, 1pm, 1300, 13.00
-            - 2 pm, 2pm, 1400, 14.00
-            - 3 pm, 3pm, 1500, 15.00
-            - 4 pm, 4pm, 1600, 16.00
-            - 5 pm, 5pm, 1700, 17.00
-            - 6 pm, 6pm, 1800, 18.00
-            - 7 pm, 7pm, 1900, 19.00
-            - 8 pm, 8pm, 2000, 20.00
-            - 9 pm, 9pm, 2100, 21.00
-            - 10 pm, 10pm, 2200, 22.00
-            - 11 pm, 11pm, 2300, 23.00
-            - 12 am, 12am, 0000, 00.00, midnight, mid-night
-            - 8_am, 9_am, 10_am, 11_am, morning
+            - 1am, 1_am, 0100, 01.00, 1.00_am
+            - 2am, 2_am, 0200, 02.00, 2.00_am
+            - 3am, 3_am, 0300, 03.00, 3.00_am
+            - 4am, 4_am, 0400, 04.00, 4.00_am
+            - 5am, 5_am, 0500, 05.00, 5.00_am
+            - 6am, 6_am, 0600, 06.00, 6.00_am
+            - 7am, 7_am, 0700, 07.00, 7.00_am
+            - 8am, 8_am, 0800, 08.00, 8.00_am
+            - 9am, 9_am, 0900, 09.00, 9.00_am
+            - 10am, 10_am, 1000, 10.00_am
+            - 11am, 11_am, 1100, 11.00_am
+            - 12pm, 12_pm, 1200, 12.00, midday, mid-day, noon
+            - 1pm, 1_pm, 1300, 13.00
+            - 2pm, 2_pm, 1400, 14.00
+            - 3pm, 3_pm, 1500, 15.00
+            - 4pm, 4_pm, 1600, 16.00
+            - 5pm, 5_pm, 1700, 17.00
+            - 6pm, 6_pm, 1800, 18.00
+            - 7pm, 7_pm, 1900, 19.00
+            - 8pm, 8_pm, 2000, 20.00
+            - 9pm, 9_pm, 2100, 21.00
+            - 10pm, 10_pm, 2200, 22.00
+            - 11pm, 11_pm, 2300, 23.00
+            - 12am, 12_am, 0000, 00.00, midnight, mid-night
+            - morning, 8_am, 9_am, 10_am, 11_am
             - abh, actual_bodily_harm
             - abs, absence, failed_to_attend, fta
             - abuse => cruelty, bullying, domestic_violence, incest
@@ -408,11 +410,11 @@ template:
             - acr, auto_conditional_release_date, crd, conditional_release_date, ard, automatic_release_date
             - adj, adjourned
             - admission, admitted
-            - after_care, aftercare, after-care
+            - aftercare, after_care, after-care
             - afternoon, pm
             - alc, alcohol, booze, drinking, drunk, drunkenness
             - annual, yearly, 12_monthly, 12monthly, per_annum
-            - anti_social, antisocial, anti-social, asbo
+            - antisocial, anti_social, anti-social, asbo
             - antidepressants, anti-depressants, anti_depressants
             - ap => accredited_programme, approved_premises
             - appointment, office_visit, visit, attendance, appt
@@ -440,9 +442,8 @@ template:
             - client, offender, pop, person_on_probation, probationer
             - co, community_order
             - comm, communication, communications
-            - commissioned_services, commissioned_rehabilitative_services, rehabilitative_services, crs
             - community_order => co, probation_order, cro, community_rehabilitation_order, cpo, community_punishment_order, cpro, community_punishment_and_rehabilitation_order, sso, suspended_sentence_order
-            - community_service, community_payback, unpaid_work, upw, cp
+            - upw, unpaid_work, community_service, community_payback, cp
             - comp, comply, complied
             - conviction, sentence, event, order, disposal
             - cosa, circles_of_support
@@ -480,8 +481,8 @@ template:
             - excl, exclusion
             - exp, expected_release_date
             - exposure, flashing
-            - failed_to_attend, fta, failed_to_report, absent, absence, ua, unacceptable_absence
-            - failed_to_comply, ftc, unacceptable_behaviour
+            - fta, failed_to_attend, failed_to_report, absent, absence, ua, unacceptable_absence
+            - ftc, failed_to_comply, unacceptable_behaviour
             - fostercare, foster_care, foster-care
             - ftr, fixed_term_recall, fixed-term_recall, fixed-term-recall, recall
             - gbh, grievous_bodily_harm
@@ -490,7 +491,7 @@ template:
             - grandad, grand_dad, grandfather, gramp, grampa
             - grandchild, grand_child, grandkid, grand_kid, grand_children, grandchildren, grandkids
             - grandma, grand_ma, grandmother, grand_mother, gran, granny, nan, nana
-            - h/o, handover, hand_over, hand-over
+            - handover, h/o, hand_over, hand-over
             - harm, rosh, rosha, risk_of_serious_harm, risk_of_harm, roh, risk
             - hate_crime, hate-crime, racially_motivated, homophobic, faith_related, transophobic, racist, racism
             - hdc, home_detention_curfew
@@ -503,8 +504,8 @@ template:
             - iaps, im, interventions_manager, interim_accredited_programmes_system, interim_accredited_programmes_service
             - iicsa, independent_inquiry_into_child_sexual_abuse
             - ill, sick, unfit, unwell
-            - intensive_supervision, iom, restorative_justice, problem_solving_court
-            - intervention, structured_intervention, accredited_programme, acc_prog, crs, si, tsi, ap, programme, nsi, non_statutory_intervention, non_specified_intervention
+            - iom, intensive_supervision, restorative_justice, problem_solving_court
+            - nsi, commissioned_services, commissioned_rehabilitative_services, rehabilitative_services, crs, intervention, structured_intervention, accredited_programme, acc_prog, si, tsi, ap, programme, national_standards, non_statutory_intervention, non_specified_intervention
             - intro, introduction
             - iom, integrated_offender_management
             - irc, immigration_removal_centre, immigration_detention
@@ -523,8 +524,7 @@ template:
             - min, minutes
             - mom, mum, mother
             - msg, message, text, email, sms
-            - national_insurance_number, nin, nino, ni_number, national_insurance
-            - national_standards, nsi
+            - nino, national_insurance_number, nin, ni_number, national_insurance
             - nd, national_delius, delius, ndelius
             - new_me, bnm, lmn, nmc, nms
             - nomis, p-nomis
@@ -542,7 +542,7 @@ template:
             - pic, picture, photo, photograph, selfie
             - pip, personal_independence_payment
             - placement, project, schedule
-            - police_constable, constable, pc, police_officer
+            - pc, police_constable, constable, police_officer
             - pom, prison_offender_manager
             - pom1, pom_handover_expected_start_date
             - pom2, ro_responsibility_handover_from_pom_to_om_expected_date
@@ -570,7 +570,7 @@ template:
             - scp, self_change_programme, self-change_programme
             - sdp, short_duration_programme
             - sed, sentence_expiry_date
-            - self-harm, selfharm, self_harm, suicide, self-inflicted_death, self_inflicted_death
+            - selfharm, self-harm, self_harm, suicide, self-inflicted_death, self_inflicted_death
             - sex, sexual
             - sfo, serious_further_offence, serious_further_offences, further_offence, further_offences
             - sha, strategic_health_authority, health_authority, health_board
