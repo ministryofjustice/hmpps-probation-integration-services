@@ -57,6 +57,7 @@ class Custody(
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)
     val disposal: Disposal,
+
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,
 
