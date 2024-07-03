@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Event
@@ -27,11 +26,9 @@ object EventGenerator {
 
     fun generateCustody(
         disposal: Disposal,
-        status: ReferenceData = DEFAULT_CUSTODY_STATUS,
-        prisonerNumber: String? = "P1",
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Custody(disposal, status, prisonerNumber, softDeleted, id)
+    ) = Custody(disposal, softDeleted, id)
 
     fun generateKeyDate(
         custody: Custody,

@@ -17,10 +17,6 @@ object ReferenceDataGenerator {
     val LEVEL_M3 = generate("M3")
     val ALLOCATION_AUTO = generate("AUT", dataSetId = POM_ALLOCATION_DATASET.id)
     val ALLOCATION_INA = generate("INA", dataSetId = POM_ALLOCATION_DATASET.id)
-
-    val TERMINATED_CUSTODY_STATUS = generate("P", dataSetId = CUSTODY_STATUS_DATASET.id)
-    val DEFAULT_CUSTODY_STATUS = generate("D", dataSetId = CUSTODY_STATUS_DATASET.id)
-
     val KEY_DATE_HANDOVER_TYPE = generate(KeyDate.TypeCode.HANDOVER_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
     val KEY_DATE_HANDOVER_START_DATE_TYPE =
         generate(KeyDate.TypeCode.HANDOVER_START_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
@@ -36,9 +32,7 @@ object ReferenceDataGenerator {
         KEY_DATE_HANDOVER_TYPE,
         KEY_DATE_HANDOVER_START_DATE_TYPE,
         ALLOCATION_AUTO,
-        ALLOCATION_INA,
-        TERMINATED_CUSTODY_STATUS,
-        DEFAULT_CUSTODY_STATUS
+        ALLOCATION_INA
     )
 
     fun generateDataSet(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(name, id)

@@ -98,8 +98,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
             from offender p
             join event e on e.offender_id = p.offender_id and e.active_flag = 1 and e.soft_deleted = 0
             join disposal d on d.event_id = e.event_id and d.active_flag = 1 and d.soft_deleted = 0
-            join custody c on c.disposal_id = d.disposal_id and c.prisoner_number is not null and c.soft_deleted = 0
-            join r_standard_reference_list cs on cs.standard_reference_list_id = c.custodial_status_id and cs.code_value <> 'P'
+            join custody c on c.disposal_id = d.disposal_id and c.soft_deleted = 0
             where p.crn = :crn
             and p.noms_number is not null and p.soft_deleted = 0
             group by p.noms_number
