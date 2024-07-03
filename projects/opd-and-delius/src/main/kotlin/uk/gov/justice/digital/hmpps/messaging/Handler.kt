@@ -7,7 +7,6 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.NsiSubType
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -16,7 +15,6 @@ import uk.gov.justice.digital.hmpps.service.OpdService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
-const val FeatureFlag = "opd-assessment-processing"
 const val OpdProduced = "opd.produced"
 
 @Component
@@ -25,16 +23,11 @@ class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
     private val opdService: OpdService,
-    private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(messages = [Message(messageId = OpdProduced, payload = Schema(HmppsDomainEvent::class))])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         if (notification.message.eventType != OpdProduced) return
         val opdAssessment = notification.message.opdAssessment()
-        if (!featureFlags.enabled(FeatureFlag)) {
-            telemetryService.trackEvent("OpdAssessmentIgnored", opdAssessment.telemetryProperties())
-            return
-        }
         when (opdAssessment.result) {
             OpdAssessment.Result.SCREENED_IN, OpdAssessment.Result.SCREENED_IN_OVERRIDE -> {
                 opdService.processAssessment(notification.message.opdAssessment())

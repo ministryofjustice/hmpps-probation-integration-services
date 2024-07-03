@@ -8,17 +8,17 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.check
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.client.Offence
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.COURT_CATEGORY
-import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.EXISTING_DETAILED_OFFENCE
-import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.EXISTING_OFFENCE
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.HIGH_LEVEL_OFFENCE
 import uk.gov.justice.digital.hmpps.entity.OffenceRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.repository.DetailedOffenceRepository
@@ -47,9 +47,6 @@ internal class HandlerTest {
 
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
-
-    @Mock
-    lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     lateinit var handler: Handler
@@ -100,7 +97,6 @@ internal class HandlerTest {
 
     @Test
     fun `offence is created`() {
-        whenever(featureFlags.enabled(FF_CREATE_OFFENCE)).thenReturn(true)
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offence = offence(notification.message.offenceCode)
         whenever(manageOffencesClient.getOffence(offence.code)).thenReturn(offence)
@@ -131,64 +127,6 @@ internal class HandlerTest {
             mapOf("offenceCode" to offence.code, "homeOfficeCode" to "09155"),
             mapOf()
         )
-    }
-
-    @Test
-    fun `offence is updated`() {
-        whenever(featureFlags.enabled(FF_CREATE_OFFENCE)).thenReturn(true)
-        whenever(featureFlags.enabled(FF_UPDATE_OFFENCE)).thenReturn(true)
-        val notification = Notification(ResourceLoader.event("offence-changed"))
-        val offence = offence(notification.message.offenceCode)
-        whenever(manageOffencesClient.getOffence(offence.code)).thenReturn(offence)
-        whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name))
-            .thenReturn(COURT_CATEGORY)
-        whenever(offenceRepository.findByCode(HIGH_LEVEL_OFFENCE.code)).thenReturn(HIGH_LEVEL_OFFENCE)
-        whenever(offenceRepository.findByCode(EXISTING_OFFENCE.code)).thenReturn(EXISTING_OFFENCE)
-        whenever(detailedOffenceRepository.findByCode(EXISTING_DETAILED_OFFENCE.code)).thenReturn(
-            EXISTING_DETAILED_OFFENCE
-        )
-
-        handler.handle(notification)
-
-        verify(telemetryService).notificationReceived(notification)
-        verify(detailedOffenceRepository).save(check {
-            assertThat(it.id, equalTo(EXISTING_DETAILED_OFFENCE.id))
-            assertThat(it.code, equalTo(offence.code))
-            assertThat(it.category, equalTo(COURT_CATEGORY))
-        })
-        verify(offenceRepository).save(check {
-            assertThat(it.id, equalTo(EXISTING_OFFENCE.id))
-            assertThat(it.code, equalTo(offence.homeOfficeCode))
-        })
-        verify(telemetryService).trackEvent(
-            "OffenceCodeUpdated",
-            mapOf("offenceCode" to offence.code, "homeOfficeCode" to "09155"),
-            mapOf()
-        )
-    }
-
-    @Test
-    fun `offence is not updated when feature flag is disabled`() {
-        whenever(featureFlags.enabled(FF_CREATE_OFFENCE)).thenReturn(true)
-        whenever(featureFlags.enabled(FF_UPDATE_OFFENCE)).thenReturn(false)
-        val notification = Notification(ResourceLoader.event("offence-changed"))
-        val offence = offence(notification.message.offenceCode)
-        whenever(manageOffencesClient.getOffence(offence.code)).thenReturn(offence)
-        whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name))
-            .thenReturn(COURT_CATEGORY)
-        whenever(offenceRepository.findByCode(EXISTING_OFFENCE.code)).thenReturn(EXISTING_OFFENCE)
-        whenever(detailedOffenceRepository.findByCode(EXISTING_DETAILED_OFFENCE.code)).thenReturn(
-            EXISTING_DETAILED_OFFENCE
-        )
-
-        handler.handle(notification)
-
-        verify(offenceRepository, never()).save(any())
-        verify(detailedOffenceRepository).save(check {
-            assertThat(it.id, equalTo(EXISTING_DETAILED_OFFENCE.id))
-            assertThat(it.code, equalTo(offence.code))
-            assertThat(it.category, equalTo(COURT_CATEGORY))
-        })
     }
 
     private fun offence(code: String = "AB12345", homeOfficeCode: String = "091/55") = Offence(

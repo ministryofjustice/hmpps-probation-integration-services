@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.entity.OffenceRepository
 import uk.gov.justice.digital.hmpps.entity.ReferenceOffence
 import uk.gov.justice.digital.hmpps.entity.getByCode
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.repository.DetailedOffenceRepository
@@ -22,9 +21,6 @@ import uk.gov.justice.digital.hmpps.repository.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.repository.findCourtCategory
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
-
-const val FF_CREATE_OFFENCE = "manage-offences-create-offence"
-const val FF_UPDATE_OFFENCE = "manage-offences-update-offence"
 
 @Component
 @Transactional
@@ -35,8 +31,7 @@ class Handler(
     private val manageOffencesClient: ManageOffencesClient,
     private val detailedOffenceRepository: DetailedOffenceRepository,
     private val offenceRepository: OffenceRepository,
-    private val referenceDataRepository: ReferenceDataRepository,
-    private val featureFlags: FeatureFlags
+    private val referenceDataRepository: ReferenceDataRepository
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(messages = [Message(name = "manage-offences/offence-changed")])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
@@ -49,26 +44,26 @@ class Handler(
             return
         }
 
-        val newDetailedOffence = mergeDetailedOffence(offence)
-        val newReferenceOffence = mergeReferenceOffence(offence)
-        val isNew = newDetailedOffence || newReferenceOffence
+        mergeDetailedOffence(offence)
+        val isNew = createReferenceOffence(offence)
 
-        telemetryService.trackEvent(if (isNew) "OffenceCodeCreated" else "OffenceCodeUpdated", offence.telemetry)
+        if (isNew) {
+            telemetryService.trackEvent("OffenceCodeCreated", offence.telemetry)
+        }
     }
 
-    private fun mergeDetailedOffence(offence: Offence): Boolean {
+    private fun mergeDetailedOffence(offence: Offence) {
         val existingEntity = detailedOffenceRepository.findByCode(offence.code)
         detailedOffenceRepository.save(existingEntity.mergeWith(offence.toDetailedOffence()))
-        return existingEntity == null
     }
 
-    private fun mergeReferenceOffence(offence: Offence): Boolean {
-        if (!featureFlags.enabled(FF_CREATE_OFFENCE) || offence.homeOfficeCode == null) return false
-        val existingEntity = offenceRepository.findByCode(offence.homeOfficeCode!!)
-        if (existingEntity != null && !featureFlags.enabled(FF_UPDATE_OFFENCE)) return false
-        val highLevelOffence = offenceRepository.getByCode(offence.highLevelCode!!)
-        offenceRepository.save(existingEntity.mergeWith(offence.toReferenceOffence(highLevelOffence)))
-        return existingEntity == null
+    private fun createReferenceOffence(offence: Offence): Boolean {
+        val homeOfficeCode = offence.homeOfficeCode
+        return if (homeOfficeCode != null && offenceRepository.findByCode(homeOfficeCode) == null) {
+            val highLevelOffence = offenceRepository.getByCode(offence.highLevelCode!!)
+            offenceRepository.save(offence.toReferenceOffence(highLevelOffence))
+            true
+        } else false // entity already exists, don't update it
     }
 
     private fun Offence.toDetailedOffence() = DetailedOffence(
@@ -110,21 +105,6 @@ class Handler(
         homeOfficeDescription = newEntity.homeOfficeDescription
         legislation = newEntity.legislation
         category = newEntity.category
-    } ?: newEntity
-
-    private fun ReferenceOffence?.mergeWith(newEntity: ReferenceOffence) = this?.apply {
-        code = newEntity.code
-        description = newEntity.description
-        mainCategoryCode = newEntity.mainCategoryCode
-        mainCategoryDescription = newEntity.mainCategoryDescription
-        mainCategoryAbbreviation = newEntity.mainCategoryAbbreviation
-        ogrsOffenceCategoryId = newEntity.ogrsOffenceCategoryId
-        subCategoryCode = newEntity.subCategoryCode
-        subCategoryDescription = newEntity.subCategoryDescription
-        form20Code = newEntity.form20Code
-        schedule15SexualOffence = newEntity.schedule15SexualOffence
-        schedule15ViolentOffence = newEntity.schedule15ViolentOffence
-        childAbduction = newEntity.childAbduction
     } ?: newEntity
 }
 

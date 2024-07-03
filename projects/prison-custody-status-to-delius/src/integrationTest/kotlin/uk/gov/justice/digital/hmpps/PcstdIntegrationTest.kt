@@ -4,7 +4,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.BookingGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
@@ -268,7 +267,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `hospital release when released on licence in delius`() {
-        whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_HOSPITAL_RELEASED
         withBooking(
             BookingGenerator.HOSPITAL_RELEASE,
@@ -314,7 +312,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `hospital release when in custody in delius`() {
-        whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_HOSPITAL_IN_CUSTODY
         withBooking(
             BookingGenerator.HOSPITAL_CUSTODY,

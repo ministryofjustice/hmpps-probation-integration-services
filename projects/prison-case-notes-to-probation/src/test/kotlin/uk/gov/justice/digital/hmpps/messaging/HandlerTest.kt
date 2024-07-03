@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.StaffCodeExhaustedException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
@@ -39,9 +38,6 @@ internal class HandlerTest {
 
     @Mock
     private lateinit var converter: NotificationConverter<HmppsDomainEvent>
-
-    @Mock
-    private lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     private lateinit var handler: Handler

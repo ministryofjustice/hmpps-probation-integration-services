@@ -13,7 +13,6 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.NsiRepository
 
@@ -25,9 +24,6 @@ internal class CaseNoteRelatedServiceTest {
 
     @Mock
     private lateinit var nsiRepository: NsiRepository
-
-    @Mock
-    private lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     private lateinit var caseNoteRelatedService: CaseNoteRelatedService
