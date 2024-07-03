@@ -26,9 +26,11 @@ class QueuePublisher(
     override fun publish(notification: Notification<*>) {
         notification.message?.also { _ ->
             permit.acquire()
-            sqsTemplate.sendAsync(
-                queue, notification.asMessage()
-            ).whenComplete { _, _ -> permit.release() }
+            try {
+                sqsTemplate.send(queue, notification.asMessage())
+            } finally {
+                permit.release()
+            }
         }
     }
 
