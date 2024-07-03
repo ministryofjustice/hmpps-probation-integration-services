@@ -11,16 +11,16 @@ import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
-import uk.gov.justice.digital.hmpps.integrations.prison.*
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
+import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
-
-const val ProcessResettlementPassport = "case-note-resettlement-passport"
 
 @Component
 @Channel("prison-case-notes-to-probation-queue")
@@ -29,7 +29,6 @@ class Handler(
     val deliusService: DeliusService,
     val telemetryService: TelemetryService,
     override val converter: NotificationConverter<HmppsDomainEvent>,
-    val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
 
     companion object {
@@ -67,11 +66,7 @@ class Handler(
         }
 
         val reasonToIgnore: Lazy<String?> = lazy {
-            (PrisonCaseNoteFilters.filters + PrisonCaseNoteFilter(
-                "Processing of Resettlement Passport case notes is disabled"
-            ) { it.isResettlementPassport() && !featureFlags.enabled(ProcessResettlementPassport) }).firstOrNull {
-                it.predicate.invoke(prisonCaseNote!!)
-            }?.reason
+            PrisonCaseNoteFilters.filters.firstOrNull { it.predicate.invoke(prisonCaseNote!!) }?.reason
         }
 
         if (prisonCaseNote == null || reasonToIgnore.value != null) {

@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyMap
-import org.mockito.kotlin.*
+import org.mockito.kotlin.atLeastOnce
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,11 +20,9 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.messaging.ProcessResettlementPassport
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -51,9 +52,6 @@ class CaseNotesIntegrationTest {
 
     @SpyBean
     lateinit var air: AuditedInteractionRepository
-
-    @MockBean
-    lateinit var featureFlags: FeatureFlags
 
     @Test
     fun `update an existing case note succesfully`() {
@@ -141,7 +139,6 @@ class CaseNotesIntegrationTest {
 
     @Test
     fun `create a new case note for resettlement passport`() {
-        whenever(featureFlags.enabled(ProcessResettlementPassport)).thenReturn(true)
         val nomisCaseNote = PrisonCaseNoteGenerator.RESETTLEMENT_PASSPORT
 
         channelManager.getChannel(queueName).publishAndWait(
@@ -169,16 +166,5 @@ class CaseNotesIntegrationTest {
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
         assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
-    }
-
-    @Test
-    fun `does not create a new case note for resettlement passport when feature flag disabled`() {
-        whenever(featureFlags.enabled(ProcessResettlementPassport)).thenReturn(false)
-
-        channelManager.getChannel(queueName).publishAndWait(
-            prepMessage(CaseNoteMessageGenerator.RESETTLEMENT_PASSPORT, wireMockserver.port())
-        )
-
-        verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), anyMap(), anyMap())
     }
 }
