@@ -70,6 +70,10 @@ class Nsi(
     @Column(name = "external_reference")
     val externalReference: String?,
 
+    @ManyToOne
+    @JoinColumn(name = "intended_provider_id")
+    val intendedProvider: ProbationAreaEntity?,
+
     @OneToMany(mappedBy = "nsi")
     val managers: List<NsiManager> = listOf(),
 

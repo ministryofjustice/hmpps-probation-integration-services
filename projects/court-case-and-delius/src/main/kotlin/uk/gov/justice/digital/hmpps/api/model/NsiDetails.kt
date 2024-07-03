@@ -26,7 +26,7 @@ data class Nsi(
     val lengthUnit: String?,
     val nsiManagers: List<NsiManager>,
     val notes: String?,
-//    val intendedProvider: ProbationArea,
+    val intendedProvider: ProbationArea?,
     val active: Boolean,
     val softDeleted: Boolean,
     val externalReference: String?

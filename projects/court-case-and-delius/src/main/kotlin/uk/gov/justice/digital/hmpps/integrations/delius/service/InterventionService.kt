@@ -48,6 +48,7 @@ class InterventionService(
             length?.let { "Months" },
             managers.map { it.toNsiManager() },
             notes,
+            intendedProvider?.toProbationArea(true),
             active,
             softDeleted,
             externalReference
@@ -55,7 +56,7 @@ class InterventionService(
 
     fun NsiManagerEntity.toNsiManager(): NsiManager =
         NsiManager (
-            probationArea.toProbationArea(),
+            probationArea.toProbationArea(false),
             team.toTeam(),
             staff.toStaffDetails(),
             startDate,
@@ -69,16 +70,8 @@ fun Staff.toStaffDetails(): StaffDetails = StaffDetails(
     id,
     Human(getForenames(), surname),
     teams.map { it.toTeam() },
-    probationArea.toProbationArea(),
+    probationArea.toProbationArea(false),
     grade?.keyValueOf()
 )
 
-fun ProbationAreaEntity.toProbationArea(): ProbationArea = ProbationArea (
-        id,
-        code,
-        description,
-        KeyValue(organisation.code, organisation.description),
-        institution?.toInstitution(),
-        privateSector
-)
 

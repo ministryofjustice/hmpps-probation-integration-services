@@ -77,14 +77,14 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
         val managers =
             listOf(
                 NsiManager(
-                    NsiManagerGenerator.ACTIVE.probationArea.toProbationArea(),
+                    NsiManagerGenerator.ACTIVE.probationArea.toProbationArea(false),
                     NsiManagerGenerator.ACTIVE.team.toTeam(),
                     NsiManagerGenerator.ACTIVE.staff.toStaffDetails(),
                     NsiManagerGenerator.ACTIVE.startDate,
                     NsiManagerGenerator.ACTIVE.endDate
                 ),
                 NsiManager(
-                    NsiManagerGenerator.ACTIVE.probationArea.toProbationArea(),
+                    NsiManagerGenerator.ACTIVE.probationArea.toProbationArea(false),
                     NsiManagerGenerator.ACTIVE.team.toTeam(),
                     NsiManagerGenerator.ACTIVE.staff.toStaffDetails(),
                     NsiManagerGenerator.INACTIVE.startDate,
@@ -109,6 +109,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     "Months",
                     managers,
                     BREACH_NSIS.notes,
+                    BREACH_NSIS.intendedProvider?.toProbationArea(true),
                     BREACH_NSIS.active,
                     BREACH_NSIS.softDeleted,
                     BREACH_NSIS.externalReference
@@ -133,7 +134,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
         id,
         Human(getForenames(), surname),
         teams.map { it.toTeam() },
-        probationArea.toProbationArea(),
+        probationArea.toProbationArea(false),
         grade?.keyValueOf()
     )
 }

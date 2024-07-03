@@ -353,7 +353,8 @@ object SentenceGenerator {
         RequirementsGenerator.ACTIVE_REQ.id,
         7,
         "notes",
-        "external ref"
+        "external ref",
+        CourtGenerator.PROBATION_AREA
     )
 
     fun generatePssRequirement(custodyId: Long, id: Long = IdGenerator.getAndIncrement()) = PssRequirement(
