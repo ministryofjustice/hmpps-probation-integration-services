@@ -7,15 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.repository.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.data.repository.ReferenceDataSetRepository
@@ -62,6 +54,7 @@ class DataLoader(
         referenceDataSetRepository.save(ReferenceDataSetGenerator.TIER_CHANGE_REASON)
         referenceDataRepository.save(ReferenceDataGenerator.generate("UD0", ReferenceDataSetGenerator.TIER))
         referenceDataRepository.save(ReferenceDataGenerator.generate("UD2", ReferenceDataSetGenerator.TIER))
+        referenceDataRepository.save(ReferenceDataGenerator.generate("UC2", ReferenceDataSetGenerator.TIER))
         referenceDataRepository.save(
             ReferenceDataGenerator.generate(
                 "ATS",

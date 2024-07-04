@@ -16,6 +16,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174001"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-tier-calculation-update.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/hmpps-tier/crn/A000002/tier/123e4567-e89b-12d3-a456-426614174000"
       },
       "response": {

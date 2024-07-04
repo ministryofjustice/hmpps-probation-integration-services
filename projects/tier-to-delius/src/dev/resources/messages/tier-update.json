@@ -3,7 +3,7 @@
   "MessageId": "f39059e7-a62d-4157-929a-fb049015c993",
   "Token": null,
   "TopicArn": "arn:aws:sns:eu-west-2:000000000000:hmpps-domain",
-  "Message": "{\"eventType\":\"tier.calculation.complete\",\"version\":\"2\",\"description\":\"Tier calculation complete\",\"occurredAt\":\"2022-10-18T08:19:19.451579+01:00\",\"detailUrl\":\"http://localhost:{wiremock.port}/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174000\",\"additionalInformation\":{\"calculationId\":\"123e4567-e89b-12d3-a456-426614174000\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000001\"}]}}",
+  "Message": "{\"eventType\":\"tier.calculation.complete\",\"version\":\"2\",\"description\":\"Tier calculation complete\",\"occurredAt\":\"2022-10-18T08:19:19.451579+01:00\",\"detailUrl\":\"http://localhost:{wiremock.port}/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174001\",\"additionalInformation\":{\"calculationId\":\"123e4567-e89b-12d3-a456-426614174001\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000001\"}]}}",
   "SubscribeURL": null,
   "Timestamp": "2021-10-21T06:27:57.028Z",
   "SignatureVersion": "1",
