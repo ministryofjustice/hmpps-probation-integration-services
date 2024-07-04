@@ -20,6 +20,8 @@ import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
 import uk.gov.justice.digital.hmpps.model.StaffName
 import uk.gov.justice.digital.hmpps.repository.PrisonProbationAreaRepository
 import uk.gov.justice.digital.hmpps.repository.PrisonTeamRepository
+import java.util.concurrent.CompletableFuture.allOf
+import java.util.concurrent.CompletableFuture.runAsync
 
 @ExtendWith(MockitoExtension::class)
 class AssignmentServiceTest {
@@ -168,6 +170,35 @@ class AssignmentServiceTest {
                 staffName
             )
         }
+    }
+
+    @Test
+    fun `prevents creation of duplicate staff`() {
+        val probationArea = ProbationAreaGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+        val newStaff = PrisonStaff(
+            code = "C12A001",
+            forename = staffName.forename,
+            surname = staffName.surname,
+            probationAreaId = probationArea.id
+        )
+
+        whenever(probationAreaRepository.findByInstitutionNomisCode("LEI"))
+            .thenReturn(probationArea)
+        whenever(teamRepository.findByCode(team.code)).thenReturn(team)
+        whenever(staffService.findStaff(probationArea.id, staffName))
+            .thenReturn(null)
+        whenever(staffService.create(probationArea.id, probationArea.code, team.id, staffName, null))
+            .thenAnswer {
+                whenever(staffService.findStaff(probationArea.id, staffName)).thenReturn(newStaff)
+                newStaff
+            }
+
+        allOf(*List(3) {
+            runAsync { assignmentService.findAssignment("LEI", staffName) }
+        }.toTypedArray()).join()
+
+        verify(staffService, times(1)).create(probationArea.id, probationArea.code, team.id, staffName)
     }
 }
 
