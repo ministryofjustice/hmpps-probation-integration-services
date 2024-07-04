@@ -4,6 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -139,5 +141,17 @@ internal class HandoverMessagingIntegrationTest {
                 "detailUrl" to "$handoverUrl/api/handovers/A4096DY"
             )
         )
+    }
+
+    @Test
+    fun `ignores a sentence changed event due to multiple custodial sentences`() {
+        val notification = Notification(
+            message = MessageGenerator.SENTENCE_CHANGED_MULTIPLE_CUSTODIAL,
+            attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        //Check only 1 telemetry event
+        verify(telemetryService, times(1)).trackEvent(any(), any(), any())
     }
 }

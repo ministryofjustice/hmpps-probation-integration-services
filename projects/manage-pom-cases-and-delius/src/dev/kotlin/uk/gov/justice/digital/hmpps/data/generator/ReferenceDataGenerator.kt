@@ -16,7 +16,6 @@ object ReferenceDataGenerator {
     val LEVEL_M3 = generate("M3")
     val ALLOCATION_AUTO = generate("AUT", dataSetId = POM_ALLOCATION_DATASET.id)
     val ALLOCATION_INA = generate("INA", dataSetId = POM_ALLOCATION_DATASET.id)
-
     val KEY_DATE_HANDOVER_TYPE = generate(KeyDate.TypeCode.HANDOVER_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
     val KEY_DATE_HANDOVER_START_DATE_TYPE =
         generate(KeyDate.TypeCode.HANDOVER_START_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
