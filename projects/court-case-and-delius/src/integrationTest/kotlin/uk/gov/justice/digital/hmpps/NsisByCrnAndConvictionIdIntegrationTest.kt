@@ -114,7 +114,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     "Months",
                     managers,
                     BREACH_NSIS.notes,
-                    BREACH_NSIS.intendedProvider?.toProbationArea(true),
+                    BREACH_NSIS.intendedProvider?.toProbationArea(false),
                     BREACH_NSIS.active,
                     BREACH_NSIS.softDeleted,
                     BREACH_NSIS.externalReference

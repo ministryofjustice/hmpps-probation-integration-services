@@ -15,7 +15,6 @@ import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "nsi")
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Nsi(
 
     @Column(name = "offender_id")
