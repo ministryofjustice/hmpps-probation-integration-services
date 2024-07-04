@@ -20,3 +20,7 @@ data class Type(
 data class CourtAppearancesContainer(
     val courtAppearances: List<CourtAppearance> = listOf()
 )
+
+data class AllCourtAppearancesContainer(
+    val courtAppearances: Map<String, List<CourtAppearance>> = mapOf()
+)
