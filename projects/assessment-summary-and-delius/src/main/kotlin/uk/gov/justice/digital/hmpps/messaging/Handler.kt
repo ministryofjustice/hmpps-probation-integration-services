@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
 
 const val AssessmentSummaryProduced = "assessment.summary.produced"
@@ -30,6 +31,7 @@ class Handler(
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         try {
             if (notification.message.eventType == AssessmentSummaryProduced && featureFlags.enabled("assessment-summary-produced")) {
+                telemetryService.notificationReceived(notification)
                 notification.message.detailUrl
                     ?.let { ordsClient.getAssessmentSummary(URI.create(it)) }
                     ?.let { assessmentSubmitted.assessmentSubmitted(it.crn, it.assessments.first()) }
