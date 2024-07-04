@@ -1,10 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.management
 
-import jakarta.persistence.Column
-import jakarta.persistence.Embeddable
-import jakarta.persistence.EmbeddedId
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
@@ -13,6 +9,7 @@ import java.io.Serializable
 import java.time.ZonedDateTime
 
 @Entity
+@Table(name = "management_tier")
 @EntityListeners(AuditingEntityListener::class)
 data class ManagementTier(
     @EmbeddedId
@@ -20,6 +17,37 @@ data class ManagementTier(
 
     @Column
     val tierChangeReasonId: Long,
+
+    @Column
+    val partitionAreaId: Long = 0L,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    @Column
+    val rowVersion: Long = 0L,
+
+    @Column(nullable = false, updatable = false)
+    @CreatedBy
+    var createdByUserId: Long = 0,
+
+    @Column(nullable = false)
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0
+)
+
+@Entity
+@Table(name = "management_tier")
+@EntityListeners(AuditingEntityListener::class)
+data class ManagementTierWithEndDate(
+    @EmbeddedId
+    val id: ManagementTierId,
+
+    @Column
+    val tierChangeReasonId: Long,
+
+    @Column
+    val endDate: ZonedDateTime,
 
     @Column
     val partitionAreaId: Long = 0L,

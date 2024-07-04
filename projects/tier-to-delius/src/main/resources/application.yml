@@ -4,7 +4,7 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
-    hibernate.ddl-auto: validate
+    #    hibernate.ddl-auto: validate # TODO re-enable this after "tier-end-date" feature flag is enabled
     database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
