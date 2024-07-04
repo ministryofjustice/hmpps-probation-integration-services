@@ -62,7 +62,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -111,13 +111,13 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "rate(flipt_evaluations_requests_total{flag=\"$flag_key\", namespace=\"$namespace\"}[$__rate_interval])",
+          "expr": "sum by(value) (flipt_evaluations_requests_total{flag=\"$flag_key\", namespace=\"$namespace\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Evaluation Requests Rate",
+      "title": "Evaluation Requests",
       "type": "timeseries"
     },
     {
@@ -154,7 +154,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -203,7 +203,7 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "rate(flipt_evaluations_results_total{flag=\"$flag_key\", namespace=\"$namespace\"}[$__rate_interval])",
+          "expr": "sum by(value) (flipt_evaluations_results_total{flag=\"$flag_key\", namespace=\"$namespace\"})",
           "legendFormat": "Match: {{match}} Reason: {{reason}} Segment: {{segment}} Value: {{value}}",
           "range": true,
           "refId": "A"
@@ -282,7 +282,7 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "rate(flipt_evaluations_latency_milliseconds_bucket{flag=\"$flag_key\", namespace=\"$namespace\"}[$__rate_interval])",
+          "expr": "sum(flipt_evaluations_latency_milliseconds_bucket{flag=\"$flag_key\", namespace=\"$namespace\"})",
           "format": "heatmap",
           "legendFormat": "{{le}}",
           "range": true,
