@@ -47,7 +47,7 @@ class InterventionService(
             length?.let { "Months" },
             managers.map { it.toNsiManager() },
             notes,
-            intendedProvider?.toProbationArea(true),
+            intendedProvider?.toProbationArea(false),
             active,
             softDeleted,
             externalReference
