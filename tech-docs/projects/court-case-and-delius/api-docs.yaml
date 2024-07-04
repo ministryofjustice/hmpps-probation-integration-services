@@ -136,6 +136,43 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ConvictionRequirements"
+  /probation-case/{crn}/convictions/{convictionId}/nsis:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getNsisByCrnAndConvictionId
+      parameters:
+      - name: crn
+        in: path
+        description: CRN for the offender
+        required: true
+        schema:
+          type: string
+        example: A123456
+      - name: convictionId
+        in: path
+        description: ID for the conviction / event
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 2500295345
+      - name: nsiCodes
+        in: query
+        description: list of NSI codes to constrain by
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+        example: "BRE,BRES"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NsiDetails"
   /probation-case/{crn}/all:
     get:
       tags:
@@ -966,6 +1003,233 @@ components:
           type: integer
           description: Total RAR days completed
           format: int64
+    AllTeam:
+      required:
+      - code
+      type: object
+      properties:
+        providerTeamId:
+          type: integer
+          format: int64
+        teamId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        description:
+          type: string
+        name:
+          type: string
+        isPrivate:
+          type: boolean
+        externalProvider:
+          $ref: "#/components/schemas/KeyValue"
+        scProvider:
+          $ref: "#/components/schemas/KeyValue"
+        localDeliveryUnit:
+          $ref: "#/components/schemas/KeyValue"
+        district:
+          $ref: "#/components/schemas/KeyValue"
+        borough:
+          $ref: "#/components/schemas/KeyValue"
+    Human:
+      required:
+      - forenames
+      - surname
+      type: object
+      properties:
+        forenames:
+          type: string
+        surname:
+          type: string
+      description: staff name details
+    Nsi:
+      required:
+      - active
+      - nsiId
+      - nsiManagers
+      - nsiStatus
+      - nsiType
+      - referralDate
+      - softDeleted
+      - statusDateTime
+      type: object
+      properties:
+        nsiId:
+          type: integer
+          format: int64
+        nsiType:
+          $ref: "#/components/schemas/KeyValue"
+        nsiSubType:
+          $ref: "#/components/schemas/KeyValue"
+        nsiOutcome:
+          $ref: "#/components/schemas/KeyValue"
+        requirement:
+          $ref: "#/components/schemas/Requirement"
+        nsiStatus:
+          $ref: "#/components/schemas/KeyValue"
+        statusDateTime:
+          type: string
+          format: date-time
+        actualStartDate:
+          type: string
+          format: date
+        expectedStartDate:
+          type: string
+          format: date
+        actualEndDate:
+          type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+        referralDate:
+          type: string
+          format: date
+        length:
+          type: integer
+          format: int64
+        lengthUnit:
+          type: string
+        nsiManagers:
+          type: array
+          items:
+            $ref: "#/components/schemas/NsiManager"
+        notes:
+          type: string
+        intendedProvider:
+          $ref: "#/components/schemas/ProbationArea"
+        active:
+          type: boolean
+        softDeleted:
+          type: boolean
+        externalReference:
+          type: string
+    NsiDetails:
+      required:
+      - nsis
+      type: object
+      properties:
+        nsis:
+          type: array
+          items:
+            $ref: "#/components/schemas/Nsi"
+    NsiManager:
+      required:
+      - probationArea
+      - staff
+      - startDate
+      - team
+      type: object
+      properties:
+        probationArea:
+          $ref: "#/components/schemas/ProbationArea"
+        team:
+          $ref: "#/components/schemas/Team"
+        staff:
+          $ref: "#/components/schemas/StaffDetails"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+    ProbationArea:
+      required:
+      - code
+      - description
+      - nps
+      - organisation
+      - probationAreaId
+      - teams
+      type: object
+      properties:
+        probationAreaId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        description:
+          type: string
+        organisation:
+          $ref: "#/components/schemas/KeyValue"
+        institution:
+          $ref: "#/components/schemas/Institution"
+        nps:
+          type: boolean
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/AllTeam"
+      description: provider this staff member is associated with
+    StaffDetails:
+      required:
+      - probationArea
+      - staff
+      - staffCode
+      - staffIdentifier
+      - teams
+      type: object
+      properties:
+        username:
+          type: string
+          description: "the optional username of this staff member, will be absent\
+            \ if the staff member is not a user of Delius"
+          example: SheilaHancockNPS
+        staffCode:
+          type: string
+          description: staff code AKA officer code
+          example: SH00001
+        staffIdentifier:
+          type: integer
+          description: staff identifier
+          format: int64
+          example: 123456
+        staff:
+          $ref: "#/components/schemas/Human"
+        teams:
+          type: array
+          description: all teams related to this staff member
+          items:
+            $ref: "#/components/schemas/Team"
+        probationArea:
+          $ref: "#/components/schemas/ProbationArea"
+        staffGrade:
+          $ref: "#/components/schemas/KeyValue"
+    Team:
+      required:
+      - borough
+      - code
+      - description
+      - district
+      - localDeliveryUnit
+      - startDate
+      - teamType
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        telephone:
+          type: string
+        emailAddress:
+          type: string
+        localDeliveryUnit:
+          $ref: "#/components/schemas/KeyValue"
+        district:
+          $ref: "#/components/schemas/KeyValue"
+        borough:
+          $ref: "#/components/schemas/KeyValue"
+        teamType:
+          $ref: "#/components/schemas/KeyValue"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      description: all teams related to this staff member
     Address:
       type: object
       properties:
@@ -1010,35 +1274,6 @@ components:
         lastUpdatedDatetime:
           type: string
           format: date-time
-    AllTeam:
-      required:
-      - code
-      type: object
-      properties:
-        providerTeamId:
-          type: integer
-          format: int64
-        teamId:
-          type: integer
-          format: int64
-        code:
-          type: string
-        description:
-          type: string
-        name:
-          type: string
-        isPrivate:
-          type: boolean
-        externalProvider:
-          $ref: "#/components/schemas/KeyValue"
-        scProvider:
-          $ref: "#/components/schemas/KeyValue"
-        localDeliveryUnit:
-          $ref: "#/components/schemas/KeyValue"
-        district:
-          $ref: "#/components/schemas/KeyValue"
-        borough:
-          $ref: "#/components/schemas/KeyValue"
     ContactDetails:
       required:
       - addresses
@@ -1060,16 +1295,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Address"
-    Human:
-      required:
-      - forenames
-      - surname
-      type: object
-      properties:
-        forenames:
-          type: string
-        surname:
-          type: string
     OffenderAlias:
       required:
       - firstName
@@ -1204,33 +1429,6 @@ components:
           type: boolean
         allocationReason:
           $ref: "#/components/schemas/KeyValue"
-    ProbationArea:
-      required:
-      - code
-      - description
-      - nps
-      - organisation
-      - probationAreaId
-      - teams
-      type: object
-      properties:
-        probationAreaId:
-          type: integer
-          format: int64
-        code:
-          type: string
-        description:
-          type: string
-        organisation:
-          $ref: "#/components/schemas/KeyValue"
-        institution:
-          $ref: "#/components/schemas/Institution"
-        nps:
-          type: boolean
-        teams:
-          type: array
-          items:
-            $ref: "#/components/schemas/AllTeam"
     StaffHuman:
       required:
       - code
@@ -1247,39 +1445,6 @@ components:
           type: string
         isUnallocated:
           type: boolean
-    Team:
-      required:
-      - borough
-      - code
-      - description
-      - district
-      - localDeliveryUnit
-      - startDate
-      - teamType
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-        telephone:
-          type: string
-        emailAddress:
-          type: string
-        localDeliveryUnit:
-          $ref: "#/components/schemas/KeyValue"
-        district:
-          $ref: "#/components/schemas/KeyValue"
-        borough:
-          $ref: "#/components/schemas/KeyValue"
-        teamType:
-          $ref: "#/components/schemas/KeyValue"
-        startDate:
-          type: string
-          format: date
-        endDate:
-          type: string
-          format: date
     CommunityOrPrisonOffenderManager:
       required:
       - isPrisonOffenderManager
