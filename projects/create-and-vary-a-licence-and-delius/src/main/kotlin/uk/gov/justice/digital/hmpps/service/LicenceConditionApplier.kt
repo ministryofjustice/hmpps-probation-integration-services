@@ -74,14 +74,19 @@ class LicenceConditionApplier(
         com: PersonManager,
         activatedLicence: ActivatedLicence,
         occurredAt: ZonedDateTime,
-        properties: Map<String, String>): List<ActionResult> {
+        properties: Map<String, String>
+    ): List<ActionResult> {
         val longestSentenceByEnteredDate = sentences
-             .filter { it.disposal.enteredSentenceEndDate != null  }
-             .sortedByDescending { it.disposal.enteredSentenceEndDate }
+            .filter { it.disposal.enteredSentenceEndDate != null }
+            .sortedByDescending { it.disposal.enteredSentenceEndDate }
 
         if (longestSentenceByEnteredDate.isNotEmpty()) {
             return applyLicenceConditions(
-                SentencedCase(com, longestSentenceByEnteredDate[0].disposal, licenceConditionService.findByDisposalId(longestSentenceByEnteredDate[0].disposal.id)),
+                SentencedCase(
+                    com,
+                    longestSentenceByEnteredDate[0].disposal,
+                    licenceConditionService.findByDisposalId(longestSentenceByEnteredDate[0].disposal.id)
+                ),
                 activatedLicence,
                 occurredAt
             )
@@ -96,7 +101,6 @@ class LicenceConditionApplier(
                 occurredAt
             )
         }
-
     }
 
     private fun applyLicenceConditions(
