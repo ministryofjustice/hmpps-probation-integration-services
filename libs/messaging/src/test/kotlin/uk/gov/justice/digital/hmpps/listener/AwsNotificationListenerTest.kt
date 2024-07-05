@@ -1,10 +1,13 @@
 package uk.gov.justice.digital.hmpps.listener
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
 import io.sentry.Sentry
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -12,9 +15,11 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.messaging.support.GenericMessage
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import java.util.concurrent.CompletionException
 
@@ -23,8 +28,17 @@ class AwsNotificationListenerTest {
     @Mock
     lateinit var handler: NotificationHandler<Any>
 
+    @Mock
+    lateinit var objectMapper: ObjectMapper
+
     @InjectMocks
     lateinit var listener: AwsNotificationListener
+
+    @BeforeEach
+    fun setUp() {
+        whenever(objectMapper.readValue(any<String>(), any<TypeReference<Notification<String>>>()))
+            .thenReturn(Notification("message"))
+    }
 
     @Test
     fun `messages are dispatched to handler`() {

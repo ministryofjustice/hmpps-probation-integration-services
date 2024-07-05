@@ -18,8 +18,8 @@ import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.ContactRe
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)

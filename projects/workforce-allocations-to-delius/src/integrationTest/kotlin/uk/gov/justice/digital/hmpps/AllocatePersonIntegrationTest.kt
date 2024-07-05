@@ -15,16 +15,11 @@ import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficer
-import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.*
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.ZonedDateTime
 
 @SpringBootTest

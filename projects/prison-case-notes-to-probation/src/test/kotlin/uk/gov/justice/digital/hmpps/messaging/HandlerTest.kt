@@ -152,7 +152,7 @@ internal class HandlerTest {
         whenever(deliusService.mergeCaseNote(any())).thenThrow(OffenderNotFoundException("A001"))
 
         handler.handle(poe)
-        verify(telemetryService).trackEvent(eq("PRISON_CASE-NOTE_PUBLISHED_RECEIVED"), any(), any())
+        verify(telemetryService).trackEvent(eq("NotificationReceived"), any(), any())
         verify(telemetryService).trackEvent(eq("CaseNoteMergeFailed"), any(), any())
     }
 
@@ -176,7 +176,7 @@ internal class HandlerTest {
         whenever(deliusService.mergeCaseNote(any())).thenThrow(StaffCodeExhaustedException("A999"))
 
         assertThrows<StaffCodeExhaustedException> { handler.handle(poe) }
-        verify(telemetryService).trackEvent(eq("PRISON_CASE-NOTE_PUBLISHED_RECEIVED"), any(), any())
+        verify(telemetryService).trackEvent(eq("NotificationReceived"), any(), any())
         verify(telemetryService).trackEvent(eq("CaseNoteMergeFailed"), any(), any())
     }
 }

@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.ZonedDateTime
 
 @SpringBootTest

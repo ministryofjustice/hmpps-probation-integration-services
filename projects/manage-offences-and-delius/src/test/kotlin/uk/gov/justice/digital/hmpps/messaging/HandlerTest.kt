@@ -24,8 +24,8 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.repository.DetailedOffenceRepository
 import uk.gov.justice.digital.hmpps.repository.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
