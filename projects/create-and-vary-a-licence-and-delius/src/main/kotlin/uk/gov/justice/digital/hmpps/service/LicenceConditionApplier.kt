@@ -94,7 +94,7 @@ class LicenceConditionApplier(
 
         //calculated end date should always be populated
         sentences
-            .sortedByDescending { it.disposal.endDate }[0].let {
+            .maxBy { it.disposal.endDate }.let {
             return applyLicenceConditions(
                 SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
                 activatedLicence,
