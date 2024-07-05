@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.ConcurrentReferenceHashMap
 import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.entity.PrisonStaffTeam
 import uk.gov.justice.digital.hmpps.model.StaffName
@@ -19,33 +18,22 @@ class StaffService(
     private val staffTeamRepository: PrisonStaffTeamRepository
 ) {
 
-    companion object {
-        private val mutexMap = ConcurrentReferenceHashMap<Long, Any>()
-        private fun getMutex(key: Long) {
-            mutexMap.compute(key) { _, v -> v ?: Any() }
-        }
-    }
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun create(
-        paId: Long,
-        paCode: String,
+        probationAreaId: Long,
+        probationAreaCode: String,
         teamId: Long,
         staffName: StaffName,
         startDate: ZonedDateTime? = null
-    ): PrisonStaff = synchronized(getMutex(paId)) {
-        val staff = staffRepository.save(
-            PrisonStaff(
-                forename = staffName.forename,
-                surname = staffName.surname,
-                probationAreaId = paId,
-                code = officerCodeGenerator.generateFor(paCode),
-                startDate = startDate ?: ZonedDateTime.now()
-            )
+    ) = staffRepository.save(
+        PrisonStaff(
+            forename = staffName.forename,
+            surname = staffName.surname,
+            probationAreaId = probationAreaId,
+            code = officerCodeGenerator.generateFor(probationAreaCode),
+            startDate = startDate ?: ZonedDateTime.now()
         )
-        staffTeamRepository.save(PrisonStaffTeam(staff.id, teamId))
-        return staff
-    }
+    ).also { staffTeamRepository.save(PrisonStaffTeam(it.id, teamId)) }
 
     fun findStaff(probationAreaId: Long, staffName: StaffName) =
         staffRepository.findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
