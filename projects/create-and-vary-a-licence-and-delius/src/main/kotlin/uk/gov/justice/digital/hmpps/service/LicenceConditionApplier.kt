@@ -78,7 +78,7 @@ class LicenceConditionApplier(
     ): List<ActionResult> {
         val longestSentenceByEnteredDate = sentences
             .filter { it.disposal.enteredSentenceEndDate != null }
-            .maxByOrNull { it.disposal.enteredSentenceEndDate != null }
+            .maxByOrNull { it.disposal.enteredSentenceEndDate!! }
 
         longestSentenceByEnteredDate?.let {
             return applyLicenceConditions(
