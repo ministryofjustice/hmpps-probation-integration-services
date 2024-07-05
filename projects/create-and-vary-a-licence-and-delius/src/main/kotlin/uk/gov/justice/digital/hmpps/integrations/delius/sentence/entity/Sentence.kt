@@ -47,6 +47,12 @@ class Disposal(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
 
+    @Column(name = "notional_end_date")
+    val endDate: LocalDate,
+
+    @Column(name = "entered_notional_end_date")
+    val enteredSentenceEndDate: LocalDate? = null,
+
     @Id
     @Column(name = "disposal_id")
     val id: Long
