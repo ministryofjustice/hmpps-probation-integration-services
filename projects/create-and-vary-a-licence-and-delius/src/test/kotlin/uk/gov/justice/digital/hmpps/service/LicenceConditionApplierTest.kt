@@ -151,7 +151,10 @@ internal class LicenceConditionApplierTest {
             sentence2 =
                 SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person), endDate = LocalDate.now())
             sentence4 =
-                SentenceGenerator.generate(SentenceGenerator.generateEvent("4", person), endDate = LocalDate.now().minusDays(1))
+                SentenceGenerator.generate(
+                    SentenceGenerator.generateEvent("4", person),
+                    endDate = LocalDate.now().minusDays(1)
+                )
         }
 
         if (field == "enteredEndDate") {
