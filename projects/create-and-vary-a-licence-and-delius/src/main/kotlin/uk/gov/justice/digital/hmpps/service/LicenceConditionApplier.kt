@@ -95,12 +95,12 @@ class LicenceConditionApplier(
         //calculated end date should always be populated
         sentences
             .maxBy { it.disposal.endDate }.let {
-            return applyLicenceConditions(
-                SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
-                activatedLicence,
-                occurredAt
-            )
-        }
+                return applyLicenceConditions(
+                    SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
+                    activatedLicence,
+                    occurredAt
+                )
+            }
     }
 
     private fun applyLicenceConditions(
