@@ -146,15 +146,23 @@ internal class LicenceConditionApplierTest {
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
 
         var sentence2: Custody? = null
+        var sentence4: Custody? = null
         if (field == "endDate") {
             sentence2 =
                 SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person), endDate = LocalDate.now())
+            sentence4 =
+                SentenceGenerator.generate(SentenceGenerator.generateEvent("4", person), endDate = LocalDate.now().minusDays(1))
         }
 
         if (field == "enteredEndDate") {
             sentence2 = SentenceGenerator.generate(
                 SentenceGenerator.generateEvent("2", person),
                 endDate = LocalDate.now().plusDays(7),
+                enteredEndDate = LocalDate.now()
+            )
+            sentence4 = SentenceGenerator.generate(
+                SentenceGenerator.generateEvent("2", person),
+                endDate = LocalDate.now(),
                 enteredEndDate = LocalDate.now()
             )
         }
@@ -170,6 +178,7 @@ internal class LicenceConditionApplierTest {
                     SentenceGenerator.generateEvent("3", person),
                     endDate = LocalDate.now().minusDays(7)
                 ),
+                sentence4!!
             )
         )
 
