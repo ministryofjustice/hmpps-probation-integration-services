@@ -78,14 +78,14 @@ class LicenceConditionApplier(
     ): List<ActionResult> {
         val longestSentenceByEnteredDate = sentences
             .filter { it.disposal.enteredSentenceEndDate != null }
-            .sortedByDescending { it.disposal.enteredSentenceEndDate }
+            .maxByOrNull { it.disposal.enteredSentenceEndDate != null }
 
-        if (longestSentenceByEnteredDate.isNotEmpty()) {
+        longestSentenceByEnteredDate?.let {
             return applyLicenceConditions(
                 SentencedCase(
                     com,
-                    longestSentenceByEnteredDate[0].disposal,
-                    licenceConditionService.findByDisposalId(longestSentenceByEnteredDate[0].disposal.id)
+                    it.disposal,
+                    licenceConditionService.findByDisposalId(it.disposal.id)
                 ),
                 activatedLicence,
                 occurredAt
