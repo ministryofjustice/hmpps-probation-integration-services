@@ -6,7 +6,8 @@ import java.time.LocalDate
 
 object SentenceGenerator {
     val EVENT_CREATE_LC = generateEvent("1", PersonGenerator.PERSON_CREATE_LC)
-    val SENTENCE_CREATE_LC = generate(EVENT_CREATE_LC, ReferenceDataGenerator.RELEASED_STATUS, endDate = LocalDate.now())
+    val SENTENCE_CREATE_LC =
+        generate(EVENT_CREATE_LC, ReferenceDataGenerator.RELEASED_STATUS, endDate = LocalDate.now())
 
     fun generateEvent(
         number: String,
@@ -27,7 +28,13 @@ object SentenceGenerator {
         disposalId: Long = IdGenerator.getAndIncrement(),
         endDate: LocalDate,
         enteredEndDate: LocalDate? = null,
-    ) = Custody(Disposal(event, active, softDeleted, endDate, enteredEndDate, disposalId), status, keyDates, softDeleted, id)
+    ) = Custody(
+        Disposal(event, active, softDeleted, endDate, enteredEndDate, disposalId),
+        status,
+        keyDates,
+        softDeleted,
+        id
+    )
 
     fun generateKeyDate(
         custody: Custody,

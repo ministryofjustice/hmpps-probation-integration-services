@@ -98,7 +98,8 @@ internal class LicenceConditionApplierTest {
             Conditions(ApConditions(listOf(), listOf(), listOf()))
         )
         val occurredAt = ZonedDateTime.now()
-        val sentence = SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person), endDate = LocalDate.now())
+        val sentence =
+            SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person), endDate = LocalDate.now())
         val keyDates = listOf(
             SentenceGenerator.generateKeyDate(
                 sentence,
@@ -133,7 +134,7 @@ internal class LicenceConditionApplierTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["endDate", "enteredEndDate"])
-    fun `when multiple active custodial sentence create CVL where end date is populated`(field: String ) {
+    fun `when multiple active custodial sentence create CVL where end date is populated`(field: String) {
         val crn = "M728831"
         val person = PersonGenerator.generatePerson(crn)
         val activatedLicence = ActivatedLicence(
@@ -144,30 +145,43 @@ internal class LicenceConditionApplierTest {
         val occurredAt = ZonedDateTime.now()
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
 
-        var sentence2:Custody? = null
+        var sentence2: Custody? = null
         if (field == "endDate") {
-            sentence2 = SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person), endDate = LocalDate.now())
+            sentence2 =
+                SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person), endDate = LocalDate.now())
         }
 
         if (field == "enteredEndDate") {
             sentence2 = SentenceGenerator.generate(
                 SentenceGenerator.generateEvent("2", person),
                 endDate = LocalDate.now().plusDays(7),
-                enteredEndDate = LocalDate.now())
+                enteredEndDate = LocalDate.now()
+            )
         }
 
         whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(
             listOf(
-                SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person), endDate = LocalDate.now().minusDays(1)),
+                SentenceGenerator.generate(
+                    SentenceGenerator.generateEvent("1", person),
+                    endDate = LocalDate.now().minusDays(1)
+                ),
                 sentence2!!,
-                SentenceGenerator.generate(SentenceGenerator.generateEvent("3", person), endDate = LocalDate.now().minusDays(7)),
+                SentenceGenerator.generate(
+                    SentenceGenerator.generateEvent("3", person),
+                    endDate = LocalDate.now().minusDays(7)
+                ),
             )
         )
 
         whenever(licenceConditionCategoryRepository.findByCode(STANDARD_CATEGORY_CODE)).thenReturn(
             LC_STANDARD_CATEGORY
         )
-        whenever(referenceDataRepository.findByCodeAndDatasetCode(STANDARD_SUB_CATEGORY_CODE, Dataset.SUB_CATEGORY_CODE)).thenReturn(
+        whenever(
+            referenceDataRepository.findByCodeAndDatasetCode(
+                STANDARD_SUB_CATEGORY_CODE,
+                Dataset.SUB_CATEGORY_CODE
+            )
+        ).thenReturn(
             LC_STANDARD_SUB_CATEGORY
         )
         val results = licenceConditionApplier.applyLicenceConditions(
@@ -191,7 +205,6 @@ internal class LicenceConditionApplierTest {
                 )
             )
         )
-
     }
 
     @Test

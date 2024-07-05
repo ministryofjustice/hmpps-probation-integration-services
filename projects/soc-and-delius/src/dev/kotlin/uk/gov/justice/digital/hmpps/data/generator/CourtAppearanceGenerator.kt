@@ -34,4 +34,27 @@ object CourtAppearanceGenerator {
         DEFAULT_CA_TYPE,
         DEFAULT_COURT
     )
+
+    val PERSON_2 = CourtAppearancePerson(
+        IdGenerator.getAndIncrement(),
+        "X012774"
+    )
+    val EVENT_2 = CourtAppearanceEventEntity(
+        IdGenerator.getAndIncrement(),
+        PERSON_2
+    )
+    val CA_2 = CourtAppearanceEntity(
+        LocalDate.now(),
+        IdGenerator.getAndIncrement(),
+        EVENT_2,
+        DEFAULT_CA_TYPE,
+        DEFAULT_COURT
+    )
+    val CA_3 = CourtAppearanceEntity(
+        LocalDate.of(2090, 1, 1),
+        IdGenerator.getAndIncrement(),
+        EVENT_2,
+        DEFAULT_CA_TYPE,
+        DEFAULT_COURT
+    )
 }

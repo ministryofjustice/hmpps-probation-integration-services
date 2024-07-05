@@ -113,4 +113,17 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
         """
     )
     fun findMostRecentCourtAppearancesByNomsNumber(dateFrom: LocalDate, nomsNumber: String): List<CourtAppearanceEntity>
+
+    @Query(
+        """
+        select ca from CourtAppearanceEntity ca
+        where ca.appearanceDate >= :dateFrom
+        and ca.courtAppearanceEventEntity.courtAppearancePerson.crn in :crns
+        order by ca.courtAppearanceEventEntity.courtAppearancePerson.crn, ca.appearanceDate desc
+        """
+    )
+    fun findCourtAppearancesForCrns(
+        crns: List<String>,
+        dateFrom: LocalDate = LocalDate.now()
+    ): List<CourtAppearanceEntity>
 }
