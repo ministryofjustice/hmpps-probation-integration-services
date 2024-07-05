@@ -24,8 +24,10 @@ object SentenceGenerator {
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
-        disposalId: Long = IdGenerator.getAndIncrement()
-    ) = Custody(Disposal(event, active, softDeleted, id = disposalId), status, keyDates, softDeleted, id)
+        disposalId: Long = IdGenerator.getAndIncrement(),
+        endDate: LocalDate? = null,
+        enteredEndDate: LocalDate? = null,
+    ) = Custody(Disposal(event, active, softDeleted, endDate, enteredEndDate, disposalId), status, keyDates, softDeleted, id)
 
     fun generateKeyDate(
         custody: Custody,
