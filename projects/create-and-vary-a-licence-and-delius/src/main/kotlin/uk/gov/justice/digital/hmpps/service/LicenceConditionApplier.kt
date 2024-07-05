@@ -65,11 +65,11 @@ class LicenceConditionApplier(
                 )
             }
 
-            else -> processMultipleSentences(sentences, com, activatedLicence, occurredAt, properties)
+            else -> associateLicenceToLongestSentence(sentences, com, activatedLicence, occurredAt, properties)
         }
     }
 
-    fun processMultipleSentences(
+    fun associateLicenceToLongestSentence(
         sentences: List<Custody>,
         com: PersonManager,
         activatedLicence: ActivatedLicence,
@@ -87,23 +87,16 @@ class LicenceConditionApplier(
             )
         }
 
-        val longestSentenceByCalculatedDate = sentences
-            .filter { it.disposal.endDate != null  }
-            .sortedByDescending { it.disposal.endDate }
-
-        if (longestSentenceByCalculatedDate.isNotEmpty()) {
+        //calculated end date should always be populated
+        sentences
+            .sortedByDescending { it.disposal.endDate }[0].let {
             return applyLicenceConditions(
-                SentencedCase(com, longestSentenceByCalculatedDate[0].disposal, licenceConditionService.findByDisposalId(longestSentenceByCalculatedDate[0].disposal.id)),
+                SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
                 activatedLicence,
                 occurredAt
             )
         }
 
-       return listOf(
-            ActionResult.Ignored(
-                "Multiple Custodial Sentences",
-                properties
-            ))
     }
 
     private fun applyLicenceConditions(

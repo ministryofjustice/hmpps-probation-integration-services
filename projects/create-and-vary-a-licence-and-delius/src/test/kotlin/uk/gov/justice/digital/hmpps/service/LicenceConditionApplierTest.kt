@@ -98,7 +98,7 @@ internal class LicenceConditionApplierTest {
             Conditions(ApConditions(listOf(), listOf(), listOf()))
         )
         val occurredAt = ZonedDateTime.now()
-        val sentence = SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person))
+        val sentence = SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person), endDate = LocalDate.now())
         val keyDates = listOf(
             SentenceGenerator.generateKeyDate(
                 sentence,
@@ -150,7 +150,10 @@ internal class LicenceConditionApplierTest {
         }
 
         if (field == "enteredEndDate") {
-            sentence2 = SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person), enteredEndDate = LocalDate.now())
+            sentence2 = SentenceGenerator.generate(
+                SentenceGenerator.generateEvent("2", person),
+                endDate = LocalDate.now().plusDays(7),
+                enteredEndDate = LocalDate.now())
         }
 
         whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(
@@ -192,44 +195,6 @@ internal class LicenceConditionApplierTest {
     }
 
     @Test
-    fun `when multiple active custodial sentence it is logged to telemetry where no sentence end dates are recorded`() {
-        val crn = "M728831"
-        val person = PersonGenerator.generatePerson(crn)
-        val activatedLicence = ActivatedLicence(
-            crn,
-            LocalDate.now(),
-            Conditions(ApConditions(listOf(), listOf(), listOf()))
-        )
-        val occurredAt = ZonedDateTime.now()
-        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
-        whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(
-            listOf(
-                SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person)),
-                SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person))
-            )
-        )
-
-        val ex = licenceConditionApplier.applyLicenceConditions(
-            crn,
-            activatedLicence,
-            occurredAt
-        )
-        assertThat(
-            ex.first(), equalTo(
-                ActionResult.Ignored(
-                    "Multiple Custodial Sentences",
-                    mapOf(
-                        "crn" to crn,
-                        "startDate" to activatedLicence.startDate.toString(),
-                        "occurredAt" to occurredAt.toString(),
-                        "sentenceCount" to "2"
-                    )
-                )
-            )
-        )
-    }
-
-    @Test
     fun `no start date is logged to telemetry`() {
         val crn = "S728831"
         val person = PersonGenerator.generatePerson(crn)
@@ -242,7 +207,7 @@ internal class LicenceConditionApplierTest {
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
         whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(
             listOf(
-                SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person))
+                SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person), endDate = LocalDate.now())
             )
         )
 

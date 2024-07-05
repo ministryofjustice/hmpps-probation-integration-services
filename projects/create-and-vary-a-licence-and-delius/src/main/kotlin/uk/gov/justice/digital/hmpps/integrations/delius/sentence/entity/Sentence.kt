@@ -48,7 +48,7 @@ class Disposal(
     val softDeleted: Boolean,
 
     @Column(name = "notional_end_date")
-    val endDate: LocalDate? = null,
+    val endDate: LocalDate,
 
     @Column(name = "entered_notional_end_date")
     val enteredSentenceEndDate: LocalDate? = null,
