@@ -23,6 +23,7 @@ internal class CaseDetailsTest {
             Appearance(LocalDate.now(), Court("NA Court")),
             Sentence(LocalDate.of(2022, 8, 2)),
             Provider("N00", "London"),
+            null,
             null
         )
 
