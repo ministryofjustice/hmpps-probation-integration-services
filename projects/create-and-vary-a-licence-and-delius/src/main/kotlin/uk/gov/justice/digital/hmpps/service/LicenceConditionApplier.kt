@@ -65,7 +65,13 @@ class LicenceConditionApplier(
                 )
             }
 
-            else -> associateLicenceToSentenceWithLatestEndDate(sentences, com, activatedLicence, occurredAt, properties)
+            else -> associateLicenceToSentenceWithLatestEndDate(
+                sentences,
+                com,
+                activatedLicence,
+                occurredAt,
+                properties
+            )
         }
     }
 
