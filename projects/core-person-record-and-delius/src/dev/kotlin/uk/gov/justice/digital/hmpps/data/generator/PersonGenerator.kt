@@ -46,7 +46,18 @@ object PersonGenerator {
     )
 
     val FULL_PERSON_ADDRESSES = listOf(
-        generateAddress(FULL_PERSON.id, MAIN_ADDRESS, "PC1 1TS", LocalDate.now().minusDays(30))
+        generateAddress(
+            FULL_PERSON.id,
+            MAIN_ADDRESS,
+            "1",
+            null,
+            "Main Street",
+            "",
+            "   ",
+            "London",
+            "PC1 1TS",
+            LocalDate.now().minusDays(30)
+        )
     )
 
     val FULL_PERSON_EXCLUSIONS = listOf(
@@ -133,12 +144,32 @@ object PersonGenerator {
     fun generateAddress(
         personId: Long,
         status: ReferenceData,
-        postcode: String,
+        addressNumber: String?,
+        buildingName: String?,
+        streetName: String?,
+        townCity: String?,
+        county: String?,
+        district: String?,
+        postcode: String?,
         startDate: LocalDate,
         endDate: LocalDate? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PersonAddress(personId, status, postcode, startDate, endDate, softDeleted, id)
+    ) = PersonAddress(
+        personId,
+        status,
+        addressNumber,
+        buildingName,
+        streetName,
+        townCity,
+        county,
+        district,
+        postcode,
+        startDate,
+        endDate,
+        softDeleted,
+        id,
+    )
 
     private fun generateExclusion(
         personId: Long,

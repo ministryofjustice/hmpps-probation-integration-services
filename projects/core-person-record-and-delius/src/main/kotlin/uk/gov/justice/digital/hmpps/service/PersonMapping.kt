@@ -51,7 +51,22 @@ fun uk.gov.justice.digital.hmpps.integration.delius.entity.Alias.asModel() = Ali
     dateOfBirth
 )
 
-fun PersonAddress.asAddress() = postcode?.let { Address(it) }
+fun PersonAddress.asAddress() = postcode?.let {
+    Address(
+        fullAddress = listOf(
+            buildingName,
+            listOf(addressNumber, streetName).trimAndJoin(" "),
+            district,
+            townCity,
+            county,
+            postcode
+        ).trimAndJoin(),
+        postcode = postcode
+    )
+}
+
+private fun List<String?>.trimAndJoin(separator: String = ", ") =
+    filterNotNull().filter { it.isNotBlank() }.joinToString(separator) { it.trim() }
 
 fun List<Exclusion>.exclusionsAsLimitedAccess(message: String?) = if (isNotEmpty()) {
     LimitedAccess(

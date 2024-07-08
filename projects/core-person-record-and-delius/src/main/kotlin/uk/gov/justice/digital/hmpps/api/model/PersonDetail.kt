@@ -51,4 +51,4 @@ data class CodeDescription(val code: String, val description: String)
 
 data class Alias(val name: Name, val dateOfBirth: LocalDate)
 
-data class Address(val postcode: String)
+data class Address(val fullAddress: String, val postcode: String)
