@@ -60,13 +60,13 @@ class LicenceConditionApplier(
             else -> sentences.maxBy { it.disposal.expectedEndDate() }
                 .let {
                     return applyLicenceConditions(
-                            SentencedCase(
-                                com,
-                                it.disposal,
-                                licenceConditionService.findByDisposalId(it.disposal.id)
-                            ),
-                            activatedLicence,
-                            occurredAt
+                        SentencedCase(
+                            com,
+                            it.disposal,
+                            licenceConditionService.findByDisposalId(it.disposal.id)
+                        ),
+                        activatedLicence,
+                        occurredAt
                     )
                 }
         }
