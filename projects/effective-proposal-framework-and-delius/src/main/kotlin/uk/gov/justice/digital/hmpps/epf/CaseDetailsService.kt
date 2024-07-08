@@ -31,7 +31,8 @@ class CaseDetailsService(
             appearance?.let { Appearance(it.appearanceDate, Court(it.court.name)) },
             erd?.let { Sentence(it.date) },
             provider,
-            ogrsScore
+            ogrsScore,
+            person.dynamicRsrScore
         )
     }
 

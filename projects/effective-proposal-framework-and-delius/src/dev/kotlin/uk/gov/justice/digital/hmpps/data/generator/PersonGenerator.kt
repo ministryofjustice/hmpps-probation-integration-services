@@ -17,6 +17,7 @@ object PersonGenerator {
         currentExclusion: Boolean = false,
         currentRestriction: Boolean = false,
         softDeleted: Boolean = false,
+        rsrScore: Double = 10.1,
         id: Long = IdGenerator.getAndIncrement()
     ) = Person(
         id,
@@ -30,6 +31,7 @@ object PersonGenerator {
         "Banner",
         currentExclusion,
         currentRestriction,
+        rsrScore,
         softDeleted
     )
 

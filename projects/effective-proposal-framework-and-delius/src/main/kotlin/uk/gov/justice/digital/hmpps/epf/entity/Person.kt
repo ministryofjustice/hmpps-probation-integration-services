@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.epf.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
@@ -52,6 +47,9 @@ class Person(
 
     @Column(columnDefinition = "number")
     val currentRestriction: Boolean,
+
+    @Column(name = "dynamic_rsr_score", columnDefinition = "number(5,2)")
+    val dynamicRsrScore: Double?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
