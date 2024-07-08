@@ -64,6 +64,7 @@ class LicenceConditionApplier(
                     occurredAt
                 )
             }
+
             else -> associateLicenceToSentenceWithMaxEndDate(
                 sentences,
                 com,

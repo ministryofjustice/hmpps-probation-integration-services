@@ -12,7 +12,8 @@ data class CaseDetails(
     val courtAppearance: Appearance?,
     val sentence: Sentence?,
     val responsibleProvider: Provider?,
-    val ogrsScore: Long?
+    val ogrsScore: Long?,
+    val rsrScore: Double?
 ) {
     val age
         get() = YEARS.between(dateOfBirth, LocalDate.now())
