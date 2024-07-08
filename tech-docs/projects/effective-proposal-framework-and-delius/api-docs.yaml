@@ -92,6 +92,9 @@ components:
         ogrsScore:
           type: integer
           format: int64
+        rsrScore:
+          type: number
+          format: double
         age:
           type: integer
           format: int64
