@@ -58,8 +58,8 @@ class LicenceConditionApplier(
         return when (sentences.size) {
             0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
             else -> sentences.maxBy { it.disposal.expectedEndDate() }
-                    .let {
-                        return applyLicenceConditions(
+                .let {
+                    return applyLicenceConditions(
                             SentencedCase(
                                 com,
                                 it.disposal,
@@ -67,7 +67,7 @@ class LicenceConditionApplier(
                             ),
                             activatedLicence,
                             occurredAt
-                        )
+                    )
                 }
         }
     }
