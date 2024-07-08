@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#court-appearances"><span>/court-appearances</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-areas"><span>/probation-areas</span></a>
       </li>
       <li>
@@ -139,6 +142,50 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="court-appearances">/court-appearances</h2>
+
+<h3 id="court-appearances-post">post</h3>
+
+
+  <p>Get all court appearances from today onwards, for a list of up to 500 CRNs</p>
+
+
+
+
+
+
+
+<h4 id="court-appearances-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "courtAppearances": {
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-allcourtappearancescontainer'>AllCourtAppearancesContainer</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -583,6 +630,142 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-allcourtappearancescontainer">AllCourtAppearancesContainer</h3>
+
+
+<table class='schema-allcourtappearancescontainer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>courtAppearances</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-courtappearance">CourtAppearance</h3>
+
+
+<table class='schema-courtappearance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>appearanceDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+<tr>
+<td>courtCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>courtName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>courtAppearanceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-type">Type</h3>
+
+
+<table class='schema-type'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-localdeliveryunit">LocalDeliveryUnit</h3>
 
 
@@ -1207,88 +1390,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-courtappearance">CourtAppearance</h3>
-
-
-<table class='schema-courtappearance'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>appearanceDate</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>type</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-type'>Type</a>
-</td>
-</tr>
-
-<tr>
-<td>courtCode</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>courtName</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>courtAppearanceId</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>offenderId</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-courtappearancescontainer">CourtAppearancesContainer</h3>
 
 
@@ -1305,38 +1406,6 @@
 <td></td>
 <td>
   <a href='#schema-courtappearance'>CourtAppearance</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-type">Type</h3>
-
-
-<table class='schema-type'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 

@@ -14,6 +14,30 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /court-appearances:
+    post:
+      tags:
+      - court-appearances-controller
+      description: "Get all court appearances from today onwards, for a list of up\
+        \ to 500 CRNs"
+      operationId: courtAppearances
+      requestBody:
+        content:
+          application/json:
+            schema:
+              maxItems: 500
+              minItems: 1
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllCourtAppearancesContainer"
   /probation-areas:
     get:
       tags:
@@ -66,7 +90,7 @@ paths:
     get:
       tags:
       - court-appearances-controller
-      operationId: courtAppearances
+      operationId: courtAppearances_1
       parameters:
       - name: value
         in: path
@@ -130,6 +154,55 @@ paths:
                 $ref: "#/components/schemas/ConvictionsContainer"
 components:
   schemas:
+    AllCourtAppearancesContainer:
+      required:
+      - courtAppearances
+      type: object
+      properties:
+        courtAppearances:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/CourtAppearance"
+    CourtAppearance:
+      required:
+      - appearanceDate
+      - courtAppearanceId
+      - courtCode
+      - courtName
+      - crn
+      - offenderId
+      - type
+      type: object
+      properties:
+        appearanceDate:
+          type: string
+          format: date
+        type:
+          $ref: "#/components/schemas/Type"
+        courtCode:
+          type: string
+        courtName:
+          type: string
+        crn:
+          type: string
+        courtAppearanceId:
+          type: integer
+          format: int64
+        offenderId:
+          type: integer
+          format: int64
+    Type:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
     LocalDeliveryUnit:
       required:
       - code
@@ -324,34 +397,6 @@ components:
           type: string
         localDeliveryUnit:
           $ref: "#/components/schemas/Ldu"
-    CourtAppearance:
-      required:
-      - appearanceDate
-      - courtAppearanceId
-      - courtCode
-      - courtName
-      - crn
-      - offenderId
-      - type
-      type: object
-      properties:
-        appearanceDate:
-          type: string
-          format: date
-        type:
-          $ref: "#/components/schemas/Type"
-        courtCode:
-          type: string
-        courtName:
-          type: string
-        crn:
-          type: string
-        courtAppearanceId:
-          type: integer
-          format: int64
-        offenderId:
-          type: integer
-          format: int64
     CourtAppearancesContainer:
       required:
       - courtAppearances
@@ -361,16 +406,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CourtAppearance"
-    Type:
-      required:
-      - code
-      - description
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
     Conviction:
       required:
       - active
