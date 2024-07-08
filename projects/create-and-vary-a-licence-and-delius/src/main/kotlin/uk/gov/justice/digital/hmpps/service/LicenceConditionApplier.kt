@@ -57,43 +57,19 @@ class LicenceConditionApplier(
         optimisationTables.rebuild(com.person.id)
         return when (sentences.size) {
             0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
-            1 -> sentences.flatMap {
-                applyLicenceConditions(
-                    SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
-                    activatedLicence,
-                    occurredAt
-                )
-            }
-
-            else -> associateLicenceToSentenceWithMaxEndDate(
-                sentences,
-                com,
-                activatedLicence,
-                occurredAt,
-                properties
-            )
+            else -> sentences.maxBy { it.disposal.expectedEndDate() }
+                    .let {
+                        return applyLicenceConditions(
+                            SentencedCase(
+                                com,
+                                it.disposal,
+                                licenceConditionService.findByDisposalId(it.disposal.id)
+                            ),
+                            activatedLicence,
+                            occurredAt
+                        )
+                }
         }
-    }
-
-    fun associateLicenceToSentenceWithMaxEndDate(
-        sentences: List<Custody>,
-        com: PersonManager,
-        activatedLicence: ActivatedLicence,
-        occurredAt: ZonedDateTime,
-        properties: Map<String, String>
-    ): List<ActionResult> {
-        sentences
-            .maxBy { it.disposal.expectedEndDate() }.let {
-                return applyLicenceConditions(
-                    SentencedCase(
-                        com,
-                        it.disposal,
-                        licenceConditionService.findByDisposalId(it.disposal.id)
-                    ),
-                    activatedLicence,
-                    occurredAt
-                )
-            }
     }
 
     private fun applyLicenceConditions(
