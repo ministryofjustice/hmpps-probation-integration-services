@@ -64,14 +64,48 @@ class LicenceConditionApplier(
                     occurredAt
                 )
             }
-
-            else -> listOf(
-                ActionResult.Ignored(
-                    "Multiple Custodial Sentences",
-                    properties
-                )
+            else -> associateLicenceToSentenceWithMaxEndDate(
+                sentences,
+                com,
+                activatedLicence,
+                occurredAt,
+                properties
             )
         }
+    }
+
+    fun associateLicenceToSentenceWithMaxEndDate(
+        sentences: List<Custody>,
+        com: PersonManager,
+        activatedLicence: ActivatedLicence,
+        occurredAt: ZonedDateTime,
+        properties: Map<String, String>
+    ): List<ActionResult> {
+        val maxSentenceByEnteredDate = sentences
+            .filter { it.disposal.enteredSentenceEndDate != null }
+            .maxByOrNull { it.disposal.enteredSentenceEndDate!! }
+
+        maxSentenceByEnteredDate?.let {
+            return applyLicenceConditions(
+                SentencedCase(
+                    com,
+                    it.disposal,
+                    licenceConditionService.findByDisposalId(it.disposal.id)
+                ),
+                activatedLicence,
+                occurredAt
+            )
+        }
+
+        //calculated end date should always be populated
+        sentences
+            .maxBy { it.disposal.endDate }.let {
+                return applyLicenceConditions(
+                    SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
+                    activatedLicence,
+                    occurredAt
+                )
+            }
     }
 
     private fun applyLicenceConditions(
