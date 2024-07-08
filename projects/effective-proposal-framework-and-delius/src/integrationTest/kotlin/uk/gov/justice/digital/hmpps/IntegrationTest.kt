@@ -74,7 +74,8 @@ internal class IntegrationTest {
                         SentenceGenerator.RELEASE_DATE.date
                     ),
                     Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
-                    null
+                    null,
+                    person.dynamicRsrScore
                 )
             )
         )
@@ -96,7 +97,8 @@ internal class IntegrationTest {
             ),
             null,
             Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
-            3
+            3,
+            PersonGenerator.DEFAULT.dynamicRsrScore
         )
     }
 
