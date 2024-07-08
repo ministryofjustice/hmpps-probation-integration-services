@@ -65,22 +65,22 @@ class LicenceConditionApplier(
                 )
             }
 
-            else -> associateLicenceToSentenceWithLatestEndDate(sentences, com, activatedLicence, occurredAt, properties)
+            else -> associateLicenceToSentenceWithMaxEndDate(sentences, com, activatedLicence, occurredAt, properties)
         }
     }
 
-    fun associateLicenceToSentenceWithLatestEndDate(
+    fun associateLicenceToSentenceWithMaxEndDate(
         sentences: List<Custody>,
         com: PersonManager,
         activatedLicence: ActivatedLicence,
         occurredAt: ZonedDateTime,
         properties: Map<String, String>
     ): List<ActionResult> {
-        val latestSentenceByEnteredDate = sentences
+        val maxSentenceByEnteredDate = sentences
             .filter { it.disposal.enteredSentenceEndDate != null }
             .maxByOrNull { it.disposal.enteredSentenceEndDate!! }
 
-        latestSentenceByEnteredDate?.let {
+        maxSentenceByEnteredDate?.let {
             return applyLicenceConditions(
                 SentencedCase(
                     com,
