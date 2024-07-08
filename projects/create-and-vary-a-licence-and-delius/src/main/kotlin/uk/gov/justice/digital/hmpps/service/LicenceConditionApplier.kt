@@ -82,20 +82,18 @@ class LicenceConditionApplier(
         occurredAt: ZonedDateTime,
         properties: Map<String, String>
     ): List<ActionResult> {
-        val maxSentenceByEnteredDate = sentences
-            .maxBy { it.disposal.expectedEndDate() }
-
-        maxSentenceByEnteredDate.let {
-            return applyLicenceConditions(
-                SentencedCase(
-                    com,
-                    it.disposal,
-                    licenceConditionService.findByDisposalId(it.disposal.id)
-                ),
-                activatedLicence,
-                occurredAt
-            )
-        }
+        sentences
+            .maxBy { it.disposal.expectedEndDate() }.let {
+                return applyLicenceConditions(
+                    SentencedCase(
+                        com,
+                        it.disposal,
+                        licenceConditionService.findByDisposalId(it.disposal.id)
+                    ),
+                    activatedLicence,
+                    occurredAt
+                )
+            }
     }
 
     private fun applyLicenceConditions(
