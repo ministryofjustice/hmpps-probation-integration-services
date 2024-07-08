@@ -14,9 +14,17 @@ object StaffGenerator {
     val JIM_SNOW = generate(
         name = "Jim Snow"
     )
+    val LAO_FULL_ACCESS = generate(
+        name = "LAO Full Access"
+    )
+    val LAO_RESTRICTED = generate(
+        name = "LAO Restricted"
+    )
 
     val DEFAULT_STAFF_USER = generateStaffUser("john-smith", DEFAULT_STAFF)
     val JIM_SNOW_USER = generateStaffUser("JIMSNOWLDAP", JIM_SNOW)
+    val LAO_FULL_ACCESS_USER = generateStaffUser("LAOFULLACCESS", LAO_FULL_ACCESS)
+    val LAO_RESTRICTED_USER = generateStaffUser("LAORESTRICTED", LAO_RESTRICTED)
 
     fun generate(
         name: String = "Test",
