@@ -26,8 +26,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc

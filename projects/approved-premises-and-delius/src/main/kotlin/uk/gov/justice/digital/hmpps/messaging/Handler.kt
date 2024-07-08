@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.ApprovedPremisesService
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
@@ -35,6 +36,7 @@ class Handler(
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
+        telemetryService.notificationReceived(notification)
         val event = notification.message
         try {
             when (event.eventType) {

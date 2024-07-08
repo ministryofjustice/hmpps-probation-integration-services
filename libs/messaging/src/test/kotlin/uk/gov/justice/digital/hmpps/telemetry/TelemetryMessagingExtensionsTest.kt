@@ -2,9 +2,7 @@ package uk.gov.justice.digital.hmpps.telemetry
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasProperty
-import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -14,15 +12,13 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.check
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
-import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.message.PersonIdentifier
-import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.message.*
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.hmppsEventReceived
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
-class TelemetryServiceTest {
+class TelemetryMessagingExtensionsTest {
 
     @Mock
     private lateinit var telemetryClient: TelemetryClient
@@ -52,7 +48,7 @@ class TelemetryServiceTest {
         )
 
         verify(telemetryClient).trackEvent(
-            eq("SOME_SPECIAL_EVENT_RECEIVED"),
+            eq("NotificationReceived"),
             check {
                 assertThat(it["eventType"], equalTo(eventType))
                 assertThat(it["detailUrl"], equalTo(detailUrl))
@@ -73,7 +69,7 @@ class TelemetryServiceTest {
         )
 
         verify(telemetryClient).trackEvent(
-            eq("SOME_SPECIAL_EVENT_RECEIVED"),
+            eq("NotificationReceived"),
             check { assertThat(it, not(hasProperty("detailUrl"))) },
             anyMap()
         )
@@ -88,13 +84,13 @@ class TelemetryServiceTest {
             )
         )
 
-        verify(telemetryClient).trackEvent(eq("TEST_EVENT_RECEIVED"), anyMap(), anyMap())
+        verify(telemetryClient).trackEvent(eq("NotificationReceived"), anyMap(), anyMap())
     }
 
     @Test
     fun `handles events with no event type`() {
         telemetryService.notificationReceived(Notification(message = "this is a string"))
 
-        verify(telemetryClient).trackEvent(eq("UNKNOWN_EVENT_RECEIVED"), anyMap(), anyMap())
+        verify(telemetryClient).trackEvent(eq("NotificationReceived"), anyMap(), anyMap())
     }
 }

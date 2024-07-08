@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.UUID
+import java.util.*
 
 data class Notification<T>(
     @JsonProperty("Message") val message: T,
@@ -21,8 +21,13 @@ data class MessageAttributes(
     constructor(eventType: String) : this(mutableMapOf("eventType" to MessageAttribute("String", eventType)))
 
     override operator fun get(key: String): MessageAttribute? = attributes[key]
+
     operator fun set(key: String, value: MessageAttribute) {
         attributes[key] = value
+    }
+
+    operator fun set(key: String, value: String) {
+        set(key, MessageAttribute("String", value))
     }
 }
 

@@ -13,8 +13,8 @@ import uk.gov.justice.digital.hmpps.integrations.tier.TierClient
 import uk.gov.justice.digital.hmpps.integrations.tier.TierService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.prepMessage
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
 import java.time.ZonedDateTime.now
 

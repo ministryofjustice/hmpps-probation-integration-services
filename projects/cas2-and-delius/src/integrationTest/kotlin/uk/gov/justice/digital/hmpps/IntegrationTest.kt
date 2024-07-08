@@ -19,8 +19,8 @@ import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.REFERRAL_SUBMITTED
 import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.REFERRAL_UPDATED
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.LocalDate
 import java.time.ZonedDateTime
 

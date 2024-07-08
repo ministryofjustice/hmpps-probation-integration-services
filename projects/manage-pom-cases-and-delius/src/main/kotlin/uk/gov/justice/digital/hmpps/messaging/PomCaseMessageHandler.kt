@@ -20,8 +20,8 @@ import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.services.HandoverDatesChanged
 import uk.gov.justice.digital.hmpps.services.PomAllocated
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @Component
 @Channel("manage-pom-cases-and-delius-queue")

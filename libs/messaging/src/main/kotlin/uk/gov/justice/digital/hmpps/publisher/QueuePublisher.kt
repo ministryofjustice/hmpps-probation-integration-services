@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.publisher
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.operations.SqsTemplate
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Conditional
@@ -10,6 +12,7 @@ import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.withSpanContext
 import java.util.concurrent.Semaphore
 
 @Component
@@ -23,6 +26,8 @@ class QueuePublisher(
 ) : NotificationPublisher {
 
     private val permit = Semaphore(limit, true)
+
+    @WithSpan(kind = SpanKind.PRODUCER)
     override fun publish(notification: Notification<*>) {
         notification.message?.also { _ ->
             permit.acquire()
@@ -35,12 +40,7 @@ class QueuePublisher(
     }
 
     private fun Notification<*>.asMessage() = MessageBuilder.createMessage(
-        objectMapper.writeValueAsString(
-            Notification(
-                message = objectMapper.writeValueAsString(message),
-                attributes
-            )
-        ),
-        MessageHeaders(attributes.map { it.key to it.value.value }.toMap())
+        objectMapper.writeValueAsString(Notification(objectMapper.writeValueAsString(message), attributes)),
+        MessageHeaders(attributes.map { it.key to it.value.value }.toMap()).withSpanContext()
     )
 }

@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.DomainEventType.*
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -41,6 +42,7 @@ class Handler(
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
+        telemetryService.notificationReceived(notification)
         val message = notification.message
         val eventType = DomainEventType.of(message.eventType)
         try {
