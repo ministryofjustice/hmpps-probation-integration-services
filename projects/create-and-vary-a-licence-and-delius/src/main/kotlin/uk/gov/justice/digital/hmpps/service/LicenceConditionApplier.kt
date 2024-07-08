@@ -83,10 +83,9 @@ class LicenceConditionApplier(
         properties: Map<String, String>
     ): List<ActionResult> {
         val maxSentenceByEnteredDate = sentences
-            .filter { it.disposal.enteredSentenceEndDate != null }
-            .maxByOrNull { it.disposal.enteredSentenceEndDate!! }
+            .maxBy { it.disposal.expectedEndDate() }
 
-        maxSentenceByEnteredDate?.let {
+        maxSentenceByEnteredDate.let {
             return applyLicenceConditions(
                 SentencedCase(
                     com,
@@ -97,16 +96,6 @@ class LicenceConditionApplier(
                 occurredAt
             )
         }
-
-        //calculated end date should always be populated
-        sentences
-            .maxBy { it.disposal.endDate }.let {
-                return applyLicenceConditions(
-                    SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
-                    activatedLicence,
-                    occurredAt
-                )
-            }
     }
 
     private fun applyLicenceConditions(

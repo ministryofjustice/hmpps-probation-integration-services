@@ -56,7 +56,9 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long
-)
+) {
+    fun expectedEndDate() = enteredSentenceEndDate ?: endDate
+}
 
 @Immutable
 @Entity
