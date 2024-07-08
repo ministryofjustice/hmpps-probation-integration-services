@@ -57,6 +57,34 @@ object ProbationCaseGenerator {
         religion = ReferenceDataGenerator.RELIGION_OTHER,
         genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
     )
+    val CASE_LAO_EXCLUSION = generate(
+        crn = "X400000",
+        forename = "Elliot Exclusion",
+        surname = "Erickson",
+        dateOfBirth = LocalDate.of(1979, 4, 11),
+        nomsId = "A1235AI",
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        ethnicity = ReferenceDataGenerator.ETHNICITY_WHITE,
+        nationality = ReferenceDataGenerator.NATIONALITY_BRITISH,
+        religion = ReferenceDataGenerator.RELIGION_OTHER,
+        genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
+        currentExclusion = true,
+        currentRestriction = false,
+    )
+    val CASE_LAO_RESTRICTED = generate(
+        crn = "X400001",
+        forename = "Reginald Restricted",
+        surname = "Robinson",
+        dateOfBirth = LocalDate.of(1981, 1, 1),
+        nomsId = "A1236AI",
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        ethnicity = ReferenceDataGenerator.ETHNICITY_WHITE,
+        nationality = ReferenceDataGenerator.NATIONALITY_BRITISH,
+        religion = ReferenceDataGenerator.RELIGION_OTHER,
+        genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
+        currentExclusion = false,
+        currentRestriction = true,
+    )
 
     fun generate(
         crn: String,
