@@ -57,20 +57,18 @@ class LicenceConditionApplier(
         optimisationTables.rebuild(com.person.id)
         return when (sentences.size) {
             0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
-            1 -> sentences.flatMap {
-                applyLicenceConditions(
-                    SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
-                    activatedLicence,
-                    occurredAt
-                )
-            }
-
-            else -> listOf(
-                ActionResult.Ignored(
-                    "Multiple Custodial Sentences",
-                    properties
-                )
-            )
+            else -> sentences.maxBy { it.disposal.expectedEndDate() }
+                .let {
+                    return applyLicenceConditions(
+                        SentencedCase(
+                            com,
+                            it.disposal,
+                            licenceConditionService.findByDisposalId(it.disposal.id)
+                        ),
+                        activatedLicence,
+                        occurredAt
+                    )
+                }
         }
     }
 
