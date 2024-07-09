@@ -88,14 +88,14 @@ class AllocateEventService(
                 )
             )
 
-            createCadeContact(allocationDetail, event, newOrderManager, spoStaff)
+            createSPOContact(allocationDetail, event, newOrderManager, spoStaff)
 
             if (event.hasAccreditedProgrammeRequirement()) {
                 eventRepository.updateIaps(event.id)
             }
         }
 
-    fun createCadeContact(
+    fun createSPOContact(
         allocationDetail: EventAllocation,
         event: Event,
         orderManager: OrderManager,
@@ -103,7 +103,7 @@ class AllocateEventService(
     ) {
         contactRepository.save(
             Contact(
-                type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value),
+                type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value),
                 personId = event.person.id,
                 eventId = event.id,
                 date = orderManager.startDate.toLocalDate(),

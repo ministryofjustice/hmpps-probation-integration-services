@@ -133,17 +133,17 @@ class AllocateEventIntegrationTest {
         val updatedOmCount = orderManagerRepository.findAll().count { it.eventId == event.id }
         assertThat(updatedOmCount, equalTo(originalOmCount + 1))
 
-        val cadeContact = contactRepository.findAll()
-            .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value }
+        val spoContact = contactRepository.findAll()
+            .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value }
 
-        assertNotNull(cadeContact)
+        assertNotNull(spoContact)
 
-        assertThat(cadeContact!!.staffId, equalTo(staffId))
+        assertThat(spoContact!!.staffId, equalTo(staffId))
 
         assertThat(
-            cadeContact!!.isSensitive,
+            spoContact!!.isSensitive,
             equalTo((allocationDetail as AllocationDetail.EventAllocation).sensitive)
         )
-        assertThat(cadeContact.notes, equalTo(allocationDetail.notes))
+        assertThat(spoContact.notes, equalTo(allocationDetail.notes))
     }
 }
