@@ -21,6 +21,7 @@ import java.util.stream.Stream
 class NotifierTest {
 
     val CRN = "CRN123"
+
     @Mock
     lateinit var personRepository: PersonRepository
 
