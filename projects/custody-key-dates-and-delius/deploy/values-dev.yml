@@ -16,9 +16,9 @@ generic-service:
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 bulk-update:
-  enabled: false
-  dry-run: true
-  schedule: 0 7 * * 1
+  enabled: true
+  dry-run: false
+  schedule: 0 7 * * 1 2023
 
 generic-prometheus-alerts:
   businessHoursOnly: true
