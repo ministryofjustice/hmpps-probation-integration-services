@@ -16,7 +16,7 @@ generic-service:
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 bulk-update:
-  enabled: true
+  enabled: false
   dry-run: true
   schedule: 0 7 * * 1
 
