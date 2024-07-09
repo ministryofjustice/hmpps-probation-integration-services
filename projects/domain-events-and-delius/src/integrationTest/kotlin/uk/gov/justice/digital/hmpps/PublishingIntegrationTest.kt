@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.timeout
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -69,7 +69,7 @@ internal class PublishingIntegrationTest {
             equalTo("http://localhost:${wireMockServer.port()}/probation-case.engagement.created/X789654")
         )
 
-        verify(telemetryService, timeout(30000)).trackEvent(eq("DomainEventsProcessed"), any(), any())
+        verify(telemetryService, times(3)).trackEvent(eq("DomainEventPublished"), any(), any())
         assertEquals(0, domainEventRepository.count())
     }
 }
