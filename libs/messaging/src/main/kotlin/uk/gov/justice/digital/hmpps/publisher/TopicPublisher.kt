@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.publisher
 
 import io.awspring.cloud.sns.core.SnsTemplate
 import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.SpanAttribute
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -12,7 +13,7 @@ import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.withSpanContext
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.withTelemetryContext
 
 @Primary
 @Component
@@ -23,12 +24,13 @@ class TopicPublisher(
     @Value("\${messaging.producer.topic}") private val topic: String
 ) : NotificationPublisher {
     @WithSpan(kind = SpanKind.PRODUCER)
-    override fun publish(notification: Notification<*>) {
+    override fun publish(@SpanAttribute notification: Notification<*>) {
         notification.message?.let { message ->
             notificationTemplate.convertAndSend(topic, message) { msg ->
                 MessageBuilder.createMessage(
                     msg.payload,
-                    MessageHeaders(notification.attributes.map { it.key to it.value.value }.toMap()).withSpanContext(),
+                    MessageHeaders(notification.attributes.map { it.key to it.value.value }.toMap())
+                        .withTelemetryContext(),
                 )
             }
         }

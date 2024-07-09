@@ -1,12 +1,14 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.offender
 
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 import java.time.temporal.ChronoUnit
 
 @Service
@@ -14,15 +16,26 @@ class OffenderDeltaService(
     @Value("\${offender-events.batch-size:50}")
     private val batchSize: Int,
     private val repository: OffenderDeltaRepository,
-    private val notificationPublisher: NotificationPublisher
+    private val notificationPublisher: NotificationPublisher,
+    private val telemetryService: TelemetryService
 ) {
-    @Transactional
-    fun checkAndSendEvents(): List<Notification<OffenderEvent>> {
-        val deltas = repository.findAll(Pageable.ofSize(batchSize)).content
-        val events = deltas.flatMap { it.asNotifications() }
-        events.forEach { notificationPublisher.publish(it) }
-        repository.deleteAllByIdInBatch(deltas.map { it.id })
-        return events
+    fun getDeltas(): List<OffenderDelta> = repository.findAll(Pageable.ofSize(batchSize)).content
+
+    fun deleteAll(deltas: List<OffenderDelta>) = repository.deleteAllByIdInBatch(deltas.map { it.id })
+
+    @WithSpan
+    fun notify(delta: OffenderDelta) {
+        delta.asNotifications().forEach {
+            notificationPublisher.publish(it)
+            telemetryService.trackEvent(
+                "OffenderEventPublished",
+                mapOf(
+                    "crn" to it.message.crn,
+                    "eventType" to it.eventType!!,
+                    "occurredAt" to ISO_ZONED_DATE_TIME.format(it.message.eventDatetime)
+                )
+            )
+        }
     }
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {

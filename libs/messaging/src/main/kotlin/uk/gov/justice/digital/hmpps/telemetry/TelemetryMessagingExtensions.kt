@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 
 object TelemetryMessagingExtensions {
-    fun MessageHeaders.withSpanContext(): MessageHeaders {
+    fun MessageHeaders.withTelemetryContext(): MessageHeaders {
         val map = this.toMutableMap()
         val context = Context.current().with(Span.current())
         GlobalOpenTelemetry.getPropagators().textMapPropagator
@@ -19,7 +19,7 @@ object TelemetryMessagingExtensions {
         return MessageHeaders(map)
     }
 
-    fun MessageAttributes.extractSpanContext(): Context {
+    fun MessageAttributes.extractTelemetryContext(): Context {
         val getter = object : TextMapGetter<MessageAttributes> {
             override fun keys(carrier: MessageAttributes) = carrier.keys
             override fun get(carrier: MessageAttributes?, key: String) = carrier?.get(key)?.value
@@ -27,9 +27,19 @@ object TelemetryMessagingExtensions {
         return GlobalOpenTelemetry.getPropagators().textMapPropagator.extract(Context.current(), this, getter)
     }
 
-    fun Context.startSpan(scopeName: String, spanName: String, spanKind: SpanKind = SpanKind.INTERNAL): Span {
+    fun <T> Context.withSpan(
+        scopeName: String,
+        spanName: String,
+        spanKind: SpanKind = SpanKind.INTERNAL,
+        block: () -> T
+    ): T {
         val tracer = GlobalOpenTelemetry.getTracer(scopeName)
-        return tracer.spanBuilder(spanName).setParent(this).setSpanKind(spanKind).startSpan()
+        val span = tracer.spanBuilder("$scopeName.$spanName").setParent(this).setSpanKind(spanKind).startSpan()
+        try {
+            return span.makeCurrent().use { block() }
+        } finally {
+            span.end()
+        }
     }
 
     fun TelemetryService.hmppsEventReceived(hmppsEvent: HmppsDomainEvent) {
