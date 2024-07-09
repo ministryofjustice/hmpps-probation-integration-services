@@ -8,3 +8,8 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
     MPC_HANDOVER_URL: https://moic.service.justice.gov.uk
+
+bulk-update:
+  enabled: true
+  dry-run: true
+  schedule: 0 7 * * 1

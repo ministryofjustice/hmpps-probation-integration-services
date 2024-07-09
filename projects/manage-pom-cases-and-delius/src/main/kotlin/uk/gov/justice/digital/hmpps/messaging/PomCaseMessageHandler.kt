@@ -38,6 +38,11 @@ class PomCaseMessageHandler(
             Message(name = "offender-management/handover-changed"),
             Message(name = "offender-management/pom-allocated"),
             Message(messageId = "SENTENCE_CHANGED", payload = Schema(ProbationOffenderEvent::class)),
+            Message(
+                messageId = "pom-handover-dates.internal.bulk-update",
+                summary = "Internal use - pom handover date update",
+                payload = Schema(HmppsDomainEvent::class)
+            )
         ]
     )
     override fun handle(notification: Notification<Any>) {
