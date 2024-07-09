@@ -6,21 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.LimitedAccess
-import uk.gov.justice.digital.hmpps.api.model.LimitedAccessUser
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Alias
-import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddress
-import uk.gov.justice.digital.hmpps.service.asAddress
-import uk.gov.justice.digital.hmpps.service.asModel
-import uk.gov.justice.digital.hmpps.service.detail
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -29,29 +18,30 @@ internal class CorePersonIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @MockBean
-    lateinit var telemetryService: TelemetryService
-
-    val minPerson = PersonGenerator.MIN_PERSON.detail(listOf(), listOf())
-    val fullPerson = PersonGenerator.FULL_PERSON.detail(
-        aliases = PersonGenerator.FULL_PERSON_ALIASES.map(Alias::asModel),
-        addresses = PersonGenerator.FULL_PERSON_ADDRESSES.mapNotNull(PersonAddress::asAddress),
-        exclusions = LimitedAccess(
-            message = "This case is excluded because ...",
-            users = listOf(LimitedAccessUser("SomeUser1"))
-        ),
-        restrictions = LimitedAccess(
-            message = "This case is restricted because ...",
-            users = listOf(LimitedAccessUser("SomeUser2"), LimitedAccessUser("FutureEndDatedUser"))
-        ),
-    )
-
     @Test
     fun `correctly returns detail by crn`() {
         mockMvc
             .perform(get("/probation-cases/${PersonGenerator.MIN_PERSON.crn}").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(minPerson)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "identifiers": {
+                        "deliusId": ${PersonGenerator.MIN_PERSON.id},
+                        "crn": "M123456"
+                      },
+                      "name": {
+                        "forename": "Isabelle",
+                        "surname": "Necessary"
+                      },
+                      "dateOfBirth": "1990-03-05",
+                      "aliases": [],
+                      "addresses": []
+                    }
+                    """.trimIndent()
+                )
+            )
     }
 
     @Test
@@ -59,7 +49,79 @@ internal class CorePersonIntegrationTest {
         mockMvc
             .perform(get("/probation-cases/${PersonGenerator.FULL_PERSON.id}").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(fullPerson)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "identifiers": {
+                        "deliusId": ${PersonGenerator.FULL_PERSON.id},
+                        "crn": "F123456",
+                        "nomsId": "A3349EX",
+                        "prisonerNumber": "94600E",
+                        "pnc": "2011/0593710D",
+                        "cro": "89861/11W",
+                        "ni": "FJ123456W"
+                      },
+                      "name": {
+                        "forename": "Frederick",
+                        "middleName": "Paul Bernard",
+                        "surname": "Johnson",
+                        "previousSurname": "No Previous",
+                        "preferred": "Freddy"
+                      },
+                      "dateOfBirth": "1975-07-15",
+                      "title": {
+                        "code": "TIT",
+                        "description": "Description of TIT"
+                      },
+                      "gender": {
+                        "code": "GEN",
+                        "description": "Description of GEN"
+                      },
+                      "nationality": {
+                        "code": "NAT",
+                        "description": "Description of NAT"
+                      },
+                      "ethnicity": {
+                        "code": "ETH",
+                        "description": "Description of ETH"
+                      },
+                      "ethnicityDescription": "Description of ethnicity",
+                      "contactDetails": {
+                        "telephone": "0191 755 4789",
+                        "mobile": "07895746789",
+                        "email": "fred@gmail.com"
+                      },
+                      "aliases": [
+                        {
+                          "name": {
+                            "forename": "Freddy",
+                            "surname": "Banter"
+                          },
+                          "dateOfBirth": "1974-02-17"
+                        }
+                      ],
+                      "addresses": [
+                        {
+                          "fullAddress": "1 Main Street, London, PC1 1TS",
+                          "postcode": "PC1 1TS"
+                        }
+                      ],
+                      "excludedFrom": {
+                        "message": "This case is excluded because ...",
+                        "users": [{ "username": "SomeUser1" }]
+                      },
+                      "restrictedTo": {
+                        "message": "This case is restricted because ...",
+                        "users": [
+                          { "username": "SomeUser2" },
+                          { "username": "FutureEndDatedUser" }
+                        ]
+                      }
+                    }
+                    """.trimIndent()
+                )
+            )
     }
 
     @Test
@@ -68,7 +130,7 @@ internal class CorePersonIntegrationTest {
             .perform(get("/all-probation-cases?sort=crn,desc").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("page.totalElements", equalTo(2)))
-            .andExpect(jsonPath("content[0].identifiers.crn", equalTo(minPerson.identifiers.crn)))
-            .andExpect(jsonPath("content[1].identifiers.crn", equalTo(fullPerson.identifiers.crn)))
+            .andExpect(jsonPath("content[0].identifiers.crn", equalTo(PersonGenerator.MIN_PERSON.crn)))
+            .andExpect(jsonPath("content[1].identifiers.crn", equalTo(PersonGenerator.FULL_PERSON.crn)))
     }
 }

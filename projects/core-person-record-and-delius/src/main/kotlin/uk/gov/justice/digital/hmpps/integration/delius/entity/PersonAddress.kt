@@ -17,6 +17,12 @@ class PersonAddress(
     @ManyToOne
     @JoinColumn(name = "address_status_id")
     val status: ReferenceData,
+    val addressNumber: String?,
+    var buildingName: String?,
+    var streetName: String?,
+    var townCity: String?,
+    var county: String?,
+    var district: String?,
     val postcode: String?,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
