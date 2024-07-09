@@ -14,8 +14,8 @@ generic-service:
 
 bulk-update:
   enabled: true
-  dry-run: true
-  schedule: 0 7 * * 1
+  dry-run: false
+  schedule: 0 7 * * 1 2023
 
 generic-prometheus-alerts:
   businessHoursOnly: true
