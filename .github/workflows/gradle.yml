@@ -8,6 +8,7 @@ on:
       - gradlew
       - gradlew.bat
       - gradle/**
+      - .github/workflows/gradle.yml
 
 jobs:
   validate-wrapper:
@@ -37,6 +38,7 @@ jobs:
           labels: dependencies
           repo-token: ${{ secrets.BOT_GITHUB_TOKEN }}
       - name: Reset commit author # workaround for https://github.com/gradle-update/update-gradle-wrapper-action/issues/124
+        continue-on-error: true
         run: |
           if [ "$(git branch --show-current)" != main ]; then
             git config --local user.name probation-integration-bot
