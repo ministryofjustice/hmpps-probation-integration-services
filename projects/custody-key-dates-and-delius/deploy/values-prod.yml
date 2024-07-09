@@ -12,4 +12,4 @@ generic-service:
 bulk-update:
   enabled: true
   dry-run: false
-  schedule: 0 7 * * 1 2023
+  schedule: 0 7 * * 1
