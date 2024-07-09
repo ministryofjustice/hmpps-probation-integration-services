@@ -12,5 +12,10 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
     MPC_HANDOVER_URL: https://preprod.moic.service.justice.gov.uk
 
+bulk-update:
+  enabled: true
+  dry-run: true
+  schedule: 0 7 * * 1
+
 generic-prometheus-alerts:
   businessHoursOnly: true

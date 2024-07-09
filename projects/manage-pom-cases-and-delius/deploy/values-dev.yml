@@ -15,5 +15,10 @@ generic-service:
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     MPC_HANDOVER_URL: https://dev.moic.service.justice.gov.uk
 
+bulk-update:
+  enabled: true
+  dry-run: true
+  schedule: 0 7 * * 1
+
 generic-prometheus-alerts:
   businessHoursOnly: true
