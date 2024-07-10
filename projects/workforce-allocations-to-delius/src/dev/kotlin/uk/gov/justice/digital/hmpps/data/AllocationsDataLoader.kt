@@ -112,7 +112,8 @@ class AllocationsDataLoader(
                 ContactTypeGenerator.INITIAL_APPOINTMENT_ON_DOORSTEP,
                 ContactTypeGenerator.INITIAL_APPOINTMENT_HOME_VISIT,
                 ContactTypeGenerator.INITIAL_APPOINTMENT_BY_VIDEO,
-                ContactTypeGenerator.CASE_ALLOCATION_DECISION_EVIDENCE
+                ContactTypeGenerator.CASE_ALLOCATION_DECISION_EVIDENCE,
+                ContactTypeGenerator.CASE_ALLOCATION_SPO_OVERSIGHT
             )
         )
 
