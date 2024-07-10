@@ -24,6 +24,7 @@ generic-service:
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     manage-pom-cases-and-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+      MESSAGING_PRODUCER_QUEUE: QUEUE_NAME
     manage-pom-cases-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
 

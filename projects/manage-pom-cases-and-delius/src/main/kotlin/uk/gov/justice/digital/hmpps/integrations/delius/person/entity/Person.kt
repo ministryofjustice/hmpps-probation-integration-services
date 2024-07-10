@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Probatio
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
+import java.util.stream.Stream
 
 @Immutable
 @Entity
@@ -106,6 +107,21 @@ interface PersonRepository : JpaRepository<Person, Long> {
     """, nativeQuery = true
     )
     fun findNomsSingleCustodial(crn: String): String?
+
+    @Query(
+        """
+            select p.noms_number 
+            from offender p
+            join event e on e.offender_id = p.offender_id and e.active_flag = 1 and e.soft_deleted = 0
+            join disposal d on d.event_id = e.event_id and d.active_flag = 1 and d.soft_deleted = 0
+            join custody c on c.disposal_id = d.disposal_id and c.prisoner_number is not null and c.soft_deleted = 0
+            join r_standard_reference_list cs on cs.standard_reference_list_id = c.custodial_status_id and cs.code_value <> 'P'
+            where p.noms_number is not null and p.soft_deleted = 0
+            group by p.noms_number
+            having count(p.noms_number) = 1
+    """, nativeQuery = true
+    )
+    fun findNomsSingleCustodial(): Stream<String>
 }
 
 fun PersonRepository.getByNomsId(nomsId: String) =

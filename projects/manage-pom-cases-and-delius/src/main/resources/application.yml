@@ -61,7 +61,9 @@ seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
-messaging.consumer.queue: message-queue
+messaging:
+  consumer.queue: message-queue
+  producer.queue: message-queue
 
 mpc.handover.url: http://localhost:${wiremock.port}
 
