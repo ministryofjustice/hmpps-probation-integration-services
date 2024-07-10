@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -27,7 +28,8 @@ class AllocateEventService(
     private val contactRepository: ContactRepository,
     private val transferReasonRepository: TransferReasonRepository,
     private val optimisationTables: OptimisationTables,
-    private val staffRepository: StaffRepository
+    private val staffRepository: StaffRepository,
+    private val featureFlags: FeatureFlags
 ) : ManagerService<OrderManager>(auditedInteractionService, orderManagerRepository) {
 
     @Transactional
@@ -88,7 +90,11 @@ class AllocateEventService(
                 )
             )
 
-            createCadeContact(allocationDetail, event, newOrderManager, spoStaff)
+            if (featureFlags.enabled("produce-spod03-contact")) {
+                createSPOContact(allocationDetail, event, newOrderManager, spoStaff)
+            } else {
+                createCadeContact(allocationDetail, event, newOrderManager, spoStaff)
+            }
 
             if (event.hasAccreditedProgrammeRequirement()) {
                 eventRepository.updateIaps(event.id)
@@ -112,7 +118,29 @@ class AllocateEventService(
                 staffId = spoStaff?.id ?: orderManager.staff.id,
                 providerId = orderManager.provider.id,
                 notes = allocationDetail.notes,
-                isSensitive = allocationDetail.sensitive
+                isSensitive = allocationDetail.sensitive ?: false
+            )
+        )
+    }
+
+    fun createSPOContact(
+        allocationDetail: EventAllocation,
+        event: Event,
+        orderManager: OrderManager,
+        spoStaff: Staff?
+    ) {
+        contactRepository.save(
+            Contact(
+                type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value),
+                personId = event.person.id,
+                eventId = event.id,
+                date = orderManager.startDate.toLocalDate(),
+                startTime = orderManager.startDate,
+                teamId = orderManager.team.id,
+                staffId = spoStaff?.id ?: orderManager.staff.id,
+                providerId = orderManager.provider.id,
+                notes = allocationDetail.notes,
+                isSensitive = allocationDetail.sensitive ?: true
             )
         )
     }

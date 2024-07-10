@@ -39,7 +39,7 @@ sealed interface AllocationDetail {
         val notes: String?,
         val spoStaffCode: String?,
         @JsonAlias("sensitiveNotes")
-        val sensitive: Boolean = false
+        val sensitive: Boolean?
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
