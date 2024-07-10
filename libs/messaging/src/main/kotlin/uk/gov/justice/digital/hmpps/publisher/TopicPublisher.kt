@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.publisher
 
 import io.awspring.cloud.sns.core.SnsTemplate
+import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.SpanAttribute
 import io.opentelemetry.instrumentation.annotations.WithSpan
@@ -25,6 +26,7 @@ class TopicPublisher(
 ) : NotificationPublisher {
     @WithSpan(kind = SpanKind.PRODUCER)
     override fun publish(@SpanAttribute notification: Notification<*>) {
+        Span.current().updateName("PUBLISH ${notification.eventType}").setAttribute("topic", topic)
         notification.message?.let { message ->
             notificationTemplate.convertAndSend(topic, message) { msg ->
                 MessageBuilder.createMessage(

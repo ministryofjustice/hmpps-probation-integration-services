@@ -34,7 +34,7 @@ object TelemetryMessagingExtensions {
         block: () -> T
     ): T {
         val tracer = GlobalOpenTelemetry.getTracer(scopeName)
-        val span = tracer.spanBuilder("$scopeName.$spanName").setParent(this).setSpanKind(spanKind).startSpan()
+        val span = tracer.spanBuilder(spanName).setParent(this).setSpanKind(spanKind).startSpan()
         try {
             return span.makeCurrent().use { block() }
         } finally {
