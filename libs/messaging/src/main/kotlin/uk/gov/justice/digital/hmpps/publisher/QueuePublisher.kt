@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.publisher
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.operations.SqsTemplate
+import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.SpanAttribute
 import io.opentelemetry.instrumentation.annotations.WithSpan
@@ -30,6 +31,7 @@ class QueuePublisher(
 
     @WithSpan(kind = SpanKind.PRODUCER)
     override fun publish(@SpanAttribute notification: Notification<*>) {
+        Span.current().updateName("PUBLISH ${notification.eventType}").setAttribute("queue", queue)
         notification.message?.also { _ ->
             permit.acquire()
             try {

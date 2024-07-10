@@ -23,7 +23,7 @@ class OffenderDeltaService(
 
     fun deleteAll(deltas: List<OffenderDelta>) = repository.deleteAllByIdInBatch(deltas.map { it.id })
 
-    @WithSpan
+    @WithSpan("POLL offender_delta")
     fun notify(delta: OffenderDelta) {
         delta.asNotifications().forEach {
             notificationPublisher.publish(it)

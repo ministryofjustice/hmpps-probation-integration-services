@@ -29,7 +29,7 @@ class DomainEventService(
 
     fun deleteAll(deltas: List<DomainEvent>) = domainEventRepository.deleteAllByIdInBatch(deltas.map { it.id })
 
-    @WithSpan
+    @WithSpan("POLL domain_event")
     fun notify(delta: DomainEvent) {
         val notification = notificationEnhancer.enhance(delta.asNotification())
         notificationPublisher.publish(notification)

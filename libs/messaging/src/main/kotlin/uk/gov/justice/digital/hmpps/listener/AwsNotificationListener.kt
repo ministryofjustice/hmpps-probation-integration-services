@@ -36,9 +36,10 @@ class AwsNotificationListener(
     @SentryTransaction(operation = "messaging")
     @SqsListener("\${messaging.consumer.queue}")
     fun receive(message: String) {
-        objectMapper.readValue(message, jacksonTypeRef<Notification<String>>()).attributes
+        val notification = objectMapper.readValue(message, jacksonTypeRef<Notification<String>>())
+        notification.attributes
             .extractTelemetryContext()
-            .withSpan(this::class.java.simpleName, "receive", SpanKind.CONSUMER) {
+            .withSpan(this::class.java.simpleName, "RECEIVE ${notification.eventType}", SpanKind.CONSUMER) {
                 Span.current().setAttribute("message", message)
                 try {
                     retry(3, RETRYABLE_EXCEPTIONS) { handler.handle(message) }
