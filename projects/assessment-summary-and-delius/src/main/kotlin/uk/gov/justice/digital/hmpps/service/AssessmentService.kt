@@ -89,7 +89,8 @@ private fun AssessmentSummary.contactDetail() =
     ContactDetail(
         ContactType.Code.OASYS_ASSESSMENT,
         LocalDate.now(),
-        "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}"
+        "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}",
+        "urn:uk:gov:hmpps:oasys:assessment:${assessmentPk}"
     )
 
 fun Objective.plan(

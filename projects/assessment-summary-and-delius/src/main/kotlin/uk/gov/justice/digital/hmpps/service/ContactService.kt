@@ -13,7 +13,12 @@ class ContactService(
 ) {
     fun createContact(detail: ContactDetail, person: Person, event: Event? = null): Contact =
         contactRepository.save(
-            Contact(detail.contactType ?: contactTypeRepository.getByCode(detail.typeCode.value), person, event?.id)
+            Contact(
+                detail.contactType ?: contactTypeRepository.getByCode(detail.typeCode.value),
+                person,
+                event?.id,
+                detail.externalReference
+            )
                 .withNotes(detail.notes)
                 .withDateTeamAndStaff(detail.date, person.manager!!.teamId, person.manager!!.staffId)
         )
@@ -23,5 +28,6 @@ class ContactDetail(
     val typeCode: ContactType.Code,
     val date: LocalDate = LocalDate.now(),
     val notes: String,
+    val externalReference: String? = null,
     val contactType: ContactType? = null
 )

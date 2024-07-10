@@ -1,17 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
@@ -38,6 +27,8 @@ class Contact(
     val person: Person,
 
     val eventId: Long? = null,
+
+    val externalReference: String? = null,
 
     @Column(name = "alert_active")
     @Convert(converter = YesNoConverter::class)
@@ -93,10 +84,7 @@ class ContactType(
         DEREGISTRATION("ERGD"),
         REGISTRATION("ERGN"),
         REGISTRATION_REVIEW("ERGR"),
-        OASYS_ASSESSMENT("EOAS"),
-        OASYS_ASSESSMENT_COMPLETED("C004"),
-        SENTENCE_PLAN_INITIAL("CSPI"),
-        SENTENCE_PLAN_REVIEW("CSPR")
+        OASYS_ASSESSMENT("EOAS")
     }
 }
 
