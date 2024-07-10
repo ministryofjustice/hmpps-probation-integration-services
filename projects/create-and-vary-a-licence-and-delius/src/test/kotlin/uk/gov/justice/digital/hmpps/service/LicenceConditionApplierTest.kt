@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.LC_STANDARD_CATEGORY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.LC_STANDARD_SUB_CATEGORY
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
 import uk.gov.justice.digital.hmpps.integrations.cvl.ApConditions
 import uk.gov.justice.digital.hmpps.integrations.cvl.Conditions
@@ -52,6 +53,9 @@ internal class LicenceConditionApplierTest {
 
     @Mock
     internal lateinit var optimisationTables: OptimisationTables
+
+    @Mock
+    internal lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     internal lateinit var licenceConditionApplier: LicenceConditionApplier
@@ -132,9 +136,8 @@ internal class LicenceConditionApplierTest {
         )
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = ["endDate", "enteredEndDate"])
-    fun `when multiple active custodial sentence create CVL where end date is populated`(field: String) {
+    @Test
+    fun `when multiple active custodial sentence it is logged to telemetry feature flag set to false`() {
         val crn = "M728831"
         val person = PersonGenerator.generatePerson(crn)
         val activatedLicence = ActivatedLicence(
@@ -144,6 +147,48 @@ internal class LicenceConditionApplierTest {
         )
         val occurredAt = ZonedDateTime.now()
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
+        whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(
+            listOf(
+                SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person), endDate = LocalDate.now()),
+                SentenceGenerator.generate(SentenceGenerator.generateEvent("2", person), endDate = LocalDate.now())
+            )
+        )
+
+        whenever(featureFlags.enabled("cvl-multiple-sentences")).thenReturn(false)
+
+        val ex = licenceConditionApplier.applyLicenceConditions(
+            crn,
+            activatedLicence,
+            occurredAt
+        )
+        assertThat(
+            ex.first(), equalTo(
+                ActionResult.Ignored(
+                    "Multiple Custodial Sentences",
+                    mapOf(
+                        "crn" to crn,
+                        "startDate" to activatedLicence.startDate.toString(),
+                        "occurredAt" to occurredAt.toString(),
+                        "sentenceCount" to "2"
+                    )
+                )
+            )
+        )
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["endDate", "enteredEndDate"])
+    fun `when multiple active custodial sentence create CVL where end date is populated feature flag set to true`(field: String) {
+        val crn = "M728831"
+        val person = PersonGenerator.generatePerson(crn)
+        val activatedLicence = ActivatedLicence(
+            crn,
+            LocalDate.now(),
+            Conditions(ApConditions(listOf(), listOf(), listOf()))
+        )
+        val occurredAt = ZonedDateTime.now()
+        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
+        whenever(featureFlags.enabled("cvl-multiple-sentences")).thenReturn(true)
 
         var sentence2: Custody? = null
         var sentence4: Custody? = null
