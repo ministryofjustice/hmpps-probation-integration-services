@@ -75,7 +75,8 @@ class LicenceConditionApplier(
                             )
                         }
                 }
-            false ->  when (sentences.size) {
+
+            false -> when (sentences.size) {
                 0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
                 1 -> sentences.flatMap {
                     applyLicenceConditions(
