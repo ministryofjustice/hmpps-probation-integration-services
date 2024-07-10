@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
 import uk.gov.justice.digital.hmpps.integrations.cvl.AdditionalLicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.cvl.telemetryProperties
@@ -36,7 +37,8 @@ class LicenceConditionApplier(
     private val referenceDataRepository: ReferenceDataRepository,
     private val licenceConditionService: LicenceConditionService,
     private val contactService: ContactService,
-    private val optimisationTables: OptimisationTables
+    private val optimisationTables: OptimisationTables,
+    private val featureFlags: FeatureFlags
 ) {
     @Transactional
     fun applyLicenceConditions(
@@ -55,20 +57,42 @@ class LicenceConditionApplier(
             "sentenceCount" to sentences.size.toString()
         )
         optimisationTables.rebuild(com.person.id)
-        return when (sentences.size) {
-            0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
-            else -> sentences.maxBy { it.disposal.expectedEndDate() }
-                .let {
-                    return applyLicenceConditions(
-                        SentencedCase(
-                            com,
-                            it.disposal,
-                            licenceConditionService.findByDisposalId(it.disposal.id)
-                        ),
+
+        return when (featureFlags.enabled("cvl-multiple-sentences")) {
+            true ->
+                when (sentences.size) {
+                    0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
+                    else -> sentences.maxBy { it.disposal.expectedEndDate() }
+                        .let {
+                            applyLicenceConditions(
+                                SentencedCase(
+                                    com,
+                                    it.disposal,
+                                    licenceConditionService.findByDisposalId(it.disposal.id)
+                                ),
+                                activatedLicence,
+                                occurredAt
+                            )
+                        }
+                }
+
+            false -> when (sentences.size) {
+                0 -> listOf(ActionResult.Ignored("No Custodial Sentences", properties))
+                1 -> sentences.flatMap {
+                    applyLicenceConditions(
+                        SentencedCase(com, it.disposal, licenceConditionService.findByDisposalId(it.disposal.id)),
                         activatedLicence,
                         occurredAt
                     )
                 }
+
+                else -> listOf(
+                    ActionResult.Ignored(
+                        "Multiple Custodial Sentences",
+                        properties
+                    )
+                )
+            }
         }
     }
 
