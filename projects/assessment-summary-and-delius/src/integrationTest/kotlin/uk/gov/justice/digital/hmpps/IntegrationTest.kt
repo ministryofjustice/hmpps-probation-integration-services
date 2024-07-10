@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
@@ -54,6 +56,9 @@ internal class IntegrationTest {
 
     @Autowired
     lateinit var iapsPersonRepository: IapsPersonRepository
+
+    @Autowired
+    lateinit var contactRepository: ContactRepository
 
     @Autowired
     lateinit var transactionManager: PlatformTransactionManager
@@ -95,6 +100,10 @@ internal class IntegrationTest {
         assertThat(assessment?.totalScore, equalTo(76))
         assertThat(assessment?.initialSentencePlanDate, equalTo(LocalDate.of(2024, 2, 12)))
         assertThat(assessment?.sentencePlanReviewDate, equalTo(LocalDate.of(2024, 8, 12)))
+
+        val contact = contactRepository.findAll()
+            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT.value }
+        assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
     }
 
     @Test

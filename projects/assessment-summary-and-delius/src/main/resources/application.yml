@@ -18,7 +18,6 @@ spring:
         query.mutation_strategy.global_temporary:
             create_tables: false
             drop_tables: false
-    show-sql: true
   security.oauth2.client:
     registration:
       default:

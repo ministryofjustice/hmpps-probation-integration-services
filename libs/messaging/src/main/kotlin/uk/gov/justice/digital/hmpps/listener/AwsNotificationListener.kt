@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
+import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
 import io.sentry.Sentry
 import io.sentry.spring.jakarta.tracing.SentryTransaction
@@ -38,6 +39,7 @@ class AwsNotificationListener(
         objectMapper.readValue(message, jacksonTypeRef<Notification<String>>()).attributes
             .extractTelemetryContext()
             .withSpan(this::class.java.simpleName, "receive", SpanKind.CONSUMER) {
+                Span.current().setAttribute("message", message)
                 try {
                     retry(3, RETRYABLE_EXCEPTIONS) { handler.handle(message) }
                 } catch (e: Throwable) {
