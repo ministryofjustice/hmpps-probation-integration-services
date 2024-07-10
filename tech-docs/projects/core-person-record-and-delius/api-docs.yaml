@@ -54,9 +54,12 @@ components:
   schemas:
     Address:
       required:
+      - fullAddress
       - postcode
       type: object
       properties:
+        fullAddress:
+          type: string
         postcode:
           type: string
     Alias:
