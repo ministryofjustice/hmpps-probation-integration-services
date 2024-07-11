@@ -26,15 +26,15 @@ class Handler(
 ) : NotificationHandler<Any> {
     @Publish(
         messages = [
-            Message(messageId = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "SENTENCE_DATES-CHANGED", payload = Schema(CustodyDateChanged::class)),
-            Message(messageId = "CONFIRMED_RELEASE_DATE-CHANGED", payload = Schema(CustodyDateChanged::class)),
-            Message(messageId = "KEY_DATE_ADJUSTMENT_UPSERTED", payload = Schema(CustodyDateChanged::class)),
-            Message(messageId = "KEY_DATE_ADJUSTMENT_DELETED", payload = Schema(CustodyDateChanged::class)),
-            Message(messageId = "SENTENCE_CHANGED", payload = Schema(ProbationOffenderEvent::class)),
+            Message(title = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "SENTENCE_DATES-CHANGED", payload = Schema(CustodyDateChanged::class)),
+            Message(title = "CONFIRMED_RELEASE_DATE-CHANGED", payload = Schema(CustodyDateChanged::class)),
+            Message(title = "KEY_DATE_ADJUSTMENT_UPSERTED", payload = Schema(CustodyDateChanged::class)),
+            Message(title = "KEY_DATE_ADJUSTMENT_DELETED", payload = Schema(CustodyDateChanged::class)),
+            Message(title = "SENTENCE_CHANGED", payload = Schema(ProbationOffenderEvent::class)),
             Message(
-                messageId = "custody-key-dates.internal.bulk-update",
+                title = "custody-key-dates.internal.bulk-update",
                 summary = "Internal use - bulk key date update",
                 payload = Schema(HmppsDomainEvent::class)
             ),

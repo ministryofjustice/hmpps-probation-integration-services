@@ -24,7 +24,7 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val opdService: OpdService,
 ) : NotificationHandler<HmppsDomainEvent> {
-    @Publish(messages = [Message(messageId = OpdProduced, payload = Schema(HmppsDomainEvent::class))])
+    @Publish(messages = [Message(title = OpdProduced, payload = Schema(HmppsDomainEvent::class))])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         if (notification.message.eventType != OpdProduced) return
         val opdAssessment = notification.message.opdAssessment()

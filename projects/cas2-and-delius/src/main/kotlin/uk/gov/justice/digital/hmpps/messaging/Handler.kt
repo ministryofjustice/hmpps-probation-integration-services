@@ -26,11 +26,11 @@ class Handler(
     @Publish(
         messages = [
             Message(
-                messageId = "applications.cas2.application.submitted",
+                title = "applications.cas2.application.submitted",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "applications.cas2.application.status-updated",
+                title = "applications.cas2.application.status-updated",
                 payload = Schema(HmppsDomainEvent::class)
             ),
         ]

@@ -28,7 +28,7 @@ class Notifier(
     }
 
     @Transactional
-    @Subscribe(messages = [Message(messageId = BULK_HANDOVER_DATE_UPDATE, payload = Schema(HmppsDomainEvent::class))])
+    @Subscribe(messages = [Message(title = BULK_HANDOVER_DATE_UPDATE, payload = Schema(HmppsDomainEvent::class))])
     fun requestBulkUpdate(dryRun: Boolean) {
         var count = 0
         personRepository.findNomsSingleCustodial().asSequence()

@@ -25,9 +25,9 @@ class Handler(
     @Publish(
         messages = [
             Message(name = "consider-a-recall/management_oversight"),
-            Message(messageId = "prison-recall.recommendation.deleted", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "prison-recall.recommendation.deleted", payload = Schema(HmppsDomainEvent::class)),
             Message(
-                messageId = "prison-recall.recommendation.consideration",
+                title = "prison-recall.recommendation.consideration",
                 payload = Schema(HmppsDomainEvent::class)
             ),
         ]

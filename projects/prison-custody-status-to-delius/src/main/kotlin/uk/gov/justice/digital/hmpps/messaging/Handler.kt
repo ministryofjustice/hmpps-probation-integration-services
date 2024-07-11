@@ -35,10 +35,10 @@ class Handler(
 
     @Publish(
         messages = [
-            Message(messageId = "prison-offender-events.prisoner.released", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "prison-offender-events.prisoner.received", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "prison-offender-events.prisoner.released", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "prison-offender-events.prisoner.received", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
