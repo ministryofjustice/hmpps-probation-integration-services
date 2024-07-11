@@ -77,7 +77,7 @@ dependencyResolutionManagement {
                 "aws-messaging",
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
             )
-            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.3.1")
+            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.5.3")
