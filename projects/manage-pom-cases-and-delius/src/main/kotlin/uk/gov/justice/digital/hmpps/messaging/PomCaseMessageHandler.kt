@@ -59,9 +59,7 @@ class PomCaseMessageHandler(
                         )
                     )
 
-                    "offender-management.allocation.changed" -> pomAllocated.process(message)
-
-                    BULK_HANDOVER_DATE_UPDATE -> pomAllocated.process(message)
+                    "offender-management.allocation.changed", BULK_HANDOVER_DATE_UPDATE -> pomAllocated.process(message)
                     else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
                 }
 
