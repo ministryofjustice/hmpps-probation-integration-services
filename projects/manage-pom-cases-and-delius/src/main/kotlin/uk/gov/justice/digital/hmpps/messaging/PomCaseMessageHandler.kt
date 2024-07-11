@@ -52,14 +52,14 @@ class PomCaseMessageHandler(
         try {
             when (val message = notification.message) {
                 is HmppsDomainEvent -> when (notification.eventType) {
-                    "offender-management.handover.changed" -> handoverDatesChanged.process(
+                    "offender-management.handover.changed", BULK_HANDOVER_DATE_UPDATE -> handoverDatesChanged.process(
                         HandoverMessage(
                             message.personReference,
                             message.detailUrl
                         )
                     )
 
-                    "offender-management.allocation.changed", BULK_HANDOVER_DATE_UPDATE -> pomAllocated.process(message)
+                    "offender-management.allocation.changed" -> pomAllocated.process(message)
                     else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
                 }
 

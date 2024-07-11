@@ -66,7 +66,7 @@ internal class HandlerTest {
 
     @Test
     fun `handles internal event type`() {
-        doNothing().whenever(pomAllocated).process(any<HmppsDomainEvent>())
+        doNothing().whenever(handoverDatesChanged).process(any<HandoverMessage>())
         handler.handle(
             Notification(
                 message = HmppsDomainEvent(
@@ -77,7 +77,7 @@ internal class HandlerTest {
             )
         )
 
-        verify(pomAllocated, times(1)).process(any<HmppsDomainEvent>())
-        verifyNoMoreInteractions(pomAllocated)
+        verify(handoverDatesChanged, times(1)).process(any<HandoverMessage>())
+        verifyNoMoreInteractions(handoverDatesChanged)
     }
 }
