@@ -20,7 +20,7 @@ import java.util.stream.Stream
 @ExtendWith(OutputCaptureExtension::class)
 class NotifierTest {
 
-    val noms = "CRN123"
+    val noms = "NOM123"
 
     @Mock
     lateinit var personRepository: PersonRepository
