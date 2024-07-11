@@ -7,7 +7,6 @@ import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Entity
@@ -29,4 +28,4 @@ interface CourtRepository : JpaRepository<Court, Long> {
 }
 
 fun CourtRepository.getByCode(code: String) =
-    findByCodeAndSelectableTrue(code) ?: findByCode(code) ?: throw NotFoundException("Court", "code", code)
+    findByCodeAndSelectableTrue(code) ?: findByCode(code)

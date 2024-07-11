@@ -6,7 +6,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Table(name = "r_offence")
@@ -24,6 +23,3 @@ class Offence(
 interface OffenceRepository : JpaRepository<Offence, Long> {
     fun findByCode(code: String): Offence?
 }
-
-fun OffenceRepository.getByCode(code: String) =
-    findByCode(code) ?: throw NotFoundException("Offence", "code", code)
