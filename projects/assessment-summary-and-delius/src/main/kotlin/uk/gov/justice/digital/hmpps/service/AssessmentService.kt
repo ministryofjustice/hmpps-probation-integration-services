@@ -27,7 +27,7 @@ class AssessmentService(
     private val eventRepository: EventRepository,
     private val contactService: ContactService
 ) {
-    fun recordAssessment(person: Person, summary: AssessmentSummary) {
+    fun recordAssessment(person: Person, summary: AssessmentSummary, telemetryParams: Map<String, String>) {
         val previousAssessment = oasysAssessmentRepository.findByOasysId(summary.assessmentPk.toString())
 
         val eventNumber = summary.furtherInformation.cmsEventNumber?.toString()

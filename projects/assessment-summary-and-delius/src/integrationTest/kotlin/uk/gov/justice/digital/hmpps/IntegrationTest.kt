@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -232,8 +233,42 @@ internal class IntegrationTest {
             .publishAndWait(prepNotification(message, wireMockServer.port()))
 
         verify(telemetryService, timeout(5000)).trackEvent(
-            eq("AssessmentSummaryFailure"),
+            eq("AssessmentSummaryFailureReport"),
             ArgumentMatchers.anyMap(),
+            ArgumentMatchers.anyMap()
+        )
+    }
+
+    @Test
+    fun `an assessment with a cmsEventNumber that is soft deleted is logged and ignored`() {
+        val message =
+            notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.PERSON_SOFT_DELETED_EVENT.crn}")
+
+        channelManager.getChannel(queueName)
+            .publishAndWait(prepNotification(message, wireMockServer.port()))
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummaryFailureReport"),
+            org.mockito.kotlin.check {
+                assertThat(it["reason"], Matchers.equalTo("Event with number of 1 not found"))
+            },
+            ArgumentMatchers.anyMap()
+        )
+    }
+
+    @Test
+    fun `an assessment with a crn that is not found is logged and ignored`() {
+        val message =
+            notification<HmppsDomainEvent>("assessment-summary-produced-G123456")
+
+        channelManager.getChannel(queueName)
+            .publishAndWait(prepNotification(message, wireMockServer.port()))
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummaryFailureReport"),
+            org.mockito.kotlin.check {
+                assertThat(it["reason"], Matchers.equalTo("Person with crn of G123456 not found"))
+            },
             ArgumentMatchers.anyMap()
         )
     }

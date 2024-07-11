@@ -10,6 +10,7 @@ object PersonGenerator {
     val HIGH_RISK = generate("H123456")
     val VERY_HIGH_RISK = generate("V123456")
     val PERSON_NO_EVENT = generate("E123456")
+    val PERSON_SOFT_DELETED_EVENT = generate("F123456")
 
     fun generate(
         crn: String,
