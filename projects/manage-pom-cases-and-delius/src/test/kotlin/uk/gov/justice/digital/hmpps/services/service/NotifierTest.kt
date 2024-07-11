@@ -20,7 +20,7 @@ import java.util.stream.Stream
 @ExtendWith(OutputCaptureExtension::class)
 class NotifierTest {
 
-    val CRN = "CRN123"
+    val noms = "CRN123"
 
     @Mock
     lateinit var personRepository: PersonRepository
@@ -37,7 +37,7 @@ class NotifierTest {
 
     @Test
     fun `test notification`(output: CapturedOutput) {
-        whenever(personRepository.findNomsSingleCustodial()).thenReturn(Stream.of(CRN))
+        whenever(personRepository.findNomsSingleCustodial()).thenReturn(Stream.of(noms))
         doNothing().whenever(queuePublisher).publish(any<Notification<*>>())
         notifier.requestBulkUpdate(true)
 
