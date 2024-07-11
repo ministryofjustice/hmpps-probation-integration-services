@@ -45,7 +45,7 @@ class Notifier(
             message = HmppsDomainEvent(
                 eventType = BULK_HANDOVER_DATE_UPDATE,
                 version = 1,
-                detailUrl = "$mpcHandoverUrl/api/handovers/$identifier",
+                detailUrl = "$mpcHandoverUrl/api/handovers/${identifier.value}",
                 additionalInformation = mapOf("dryRun" to dryRun),
                 personReference = PersonReference(listOf(identifier))
             ),
