@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.messaging.Notifier.Companion.BULK_HANDOVER_DATE_UPDATE
 import uk.gov.justice.digital.hmpps.services.HandoverDatesChanged
 import uk.gov.justice.digital.hmpps.services.PomAllocated
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
@@ -58,7 +59,7 @@ class PomCaseMessageHandler(
                         )
                     )
 
-                    "offender-management.allocation.changed" -> pomAllocated.process(message)
+                    "offender-management.allocation.changed", BULK_HANDOVER_DATE_UPDATE -> pomAllocated.process(message)
                     else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
                 }
 
