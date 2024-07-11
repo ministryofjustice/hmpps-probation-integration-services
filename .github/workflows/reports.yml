@@ -22,6 +22,22 @@ jobs:
           app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
           app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
 
+  assessment-summary-failures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/app-insights-to-slack
+        with:
+          title: Assessment Summary Report
+          summary: The following cases failed to send an assessment summary to Delius over the last 7 days. Please check and manually correct the cases if possible.
+          event_name: AssessmentSummaryFailureReport
+          project_name: assessment-summary-and-delius
+          slack_channel: topic-pi-assessments
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          app_insights_key: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          app_insights_guid: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          app_insights_subscription_id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
+
   cas1-failures:
     runs-on: ubuntu-latest
     steps:
