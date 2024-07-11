@@ -20,7 +20,6 @@ import java.util.stream.Stream
 @ExtendWith(OutputCaptureExtension::class)
 class NotifierTest {
 
-
     private val noms = "NOM123"
 
     @Mock
