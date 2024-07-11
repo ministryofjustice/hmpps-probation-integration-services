@@ -64,6 +64,32 @@
         "status": 200,
         "bodyFileName": "assessment-summary-E123456.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/F123456/ALLOW/10069390/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "assessment-summary-F123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/G123456/ALLOW/10069390/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "assessment-summary-G123456.json"
+      }
     }
   ]
 }

@@ -51,11 +51,12 @@ class DataLoader(
         PersonGenerator.HIGH_RISK.withEvent().withRisk(Risk.L, Risk.H)
         PersonGenerator.VERY_HIGH_RISK.withEvent().withRisk(Risk.L, Risk.M, Risk.H)
         PersonGenerator.PERSON_NO_EVENT
+        PersonGenerator.PERSON_SOFT_DELETED_EVENT.withEvent(softDeleted = true).withRisk(Risk.L, Risk.M, Risk.H)
     }
 
-    private fun Person.withEvent(): Person {
+    private fun Person.withEvent(softDeleted: Boolean = false): Person {
         val personManager = PersonGenerator.generateManager(this)
-        val event = PersonGenerator.generateEvent(this)
+        val event = PersonGenerator.generateEvent(this, softDeleted = softDeleted)
         saveAll(this, personManager, event)
         this.set(Person::manager, personManager)
         return this

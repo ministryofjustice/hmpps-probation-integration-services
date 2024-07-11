@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 
 @Entity
 @Table(name = "offender")
@@ -92,4 +92,4 @@ interface PersonRepository : JpaRepository<Person, Long> {
 }
 
 fun PersonRepository.getByCrn(crn: String) =
-    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+    findByCrn(crn) ?: throw IgnorableMessageException("Person with crn of $crn not found")

@@ -6,7 +6,7 @@ import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 
 @Immutable
 @Entity
@@ -35,4 +35,5 @@ interface EventRepository : JpaRepository<Event, Long> {
 }
 
 fun EventRepository.getByNumber(personId: Long, number: String) =
-    findByPersonIdAndNumber(personId, number) ?: throw NotFoundException("Event", "number", number)
+    findByPersonIdAndNumber(personId, number)
+        ?: throw IgnorableMessageException("Event with number of $number not found")
