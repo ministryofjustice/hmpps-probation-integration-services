@@ -29,10 +29,10 @@ class Handler(
             Message(name = "approved-premises/application-withdrawn"),
             Message(name = "approved-premises/booking-made"),
             Message(name = "approved-premises/booking-cancelled"),
-            Message(messageId = "approved-premises.booking.changed", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "approved-premises.person.not-arrived", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "approved-premises.person.arrived", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "approved-premises.person.departed", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "approved-premises.booking.changed", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "approved-premises.person.not-arrived", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "approved-premises.person.arrived", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "approved-premises.person.departed", payload = Schema(HmppsDomainEvent::class)),
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {

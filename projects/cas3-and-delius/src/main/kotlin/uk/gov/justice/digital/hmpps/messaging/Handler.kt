@@ -33,39 +33,39 @@ class Handler(
     @Publish(
         messages = [
             Message(
-                messageId = "accommodation.cas3.referral.submitted",
+                title = "accommodation.cas3.referral.submitted",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "accommodation.cas3.booking.cancelled",
+                title = "accommodation.cas3.booking.cancelled",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "accommodation.cas3.booking.confirmed",
+                title = "accommodation.cas3.booking.confirmed",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "accommodation.cas3.booking.provisionally-made",
+                title = "accommodation.cas3.booking.provisionally-made",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "accommodation.cas3.person.arrived",
+                title = "accommodation.cas3.person.arrived",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "accommodation.cas3.person.departed",
+                title = "accommodation.cas3.person.departed",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "accommodation.cas3.person.arrived.updated",
+                title = "accommodation.cas3.person.arrived.updated",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "accommodation.cas3.person.departed.updated",
+                title = "accommodation.cas3.person.departed.updated",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "accommodation.cas3.booking.cancelled.updated",
+                title = "accommodation.cas3.booking.cancelled.updated",
                 payload = Schema(HmppsDomainEvent::class)
             ),
         ]

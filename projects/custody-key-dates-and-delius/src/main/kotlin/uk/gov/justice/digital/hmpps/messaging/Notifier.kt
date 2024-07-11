@@ -26,7 +26,7 @@ class Notifier(
     }
 
     @Transactional
-    @Subscribe(messages = [Message(messageId = BULK_KEY_DATE_UPDATE, payload = Schema(HmppsDomainEvent::class))])
+    @Subscribe(messages = [Message(title = BULK_KEY_DATE_UPDATE, payload = Schema(HmppsDomainEvent::class))])
     fun requestBulkUpdate(nomsIds: List<String>, dryRun: Boolean) {
         var count = 0
         nomsIds.asSequence()

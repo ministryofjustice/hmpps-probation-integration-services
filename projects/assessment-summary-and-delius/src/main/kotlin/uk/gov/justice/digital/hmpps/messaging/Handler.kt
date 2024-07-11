@@ -27,7 +27,7 @@ class Handler(
     private val featureFlags: FeatureFlags,
     private val telemetryService: TelemetryService
 ) : NotificationHandler<HmppsDomainEvent> {
-    @Publish(messages = [Message(messageId = AssessmentSummaryProduced, payload = Schema(HmppsDomainEvent::class))])
+    @Publish(messages = [Message(title = AssessmentSummaryProduced, payload = Schema(HmppsDomainEvent::class))])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         try {
             if (notification.message.eventType == AssessmentSummaryProduced && featureFlags.enabled("assessment-summary-produced")) {

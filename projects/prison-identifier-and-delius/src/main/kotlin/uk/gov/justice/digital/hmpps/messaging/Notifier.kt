@@ -49,8 +49,8 @@ class Notifier(
 
     @Subscribe(
         messages = [
-            Message(messageId = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "probation-case.prison-identifier.added", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "probation-case.prison-identifier.updated", payload = Schema(HmppsDomainEvent::class)),
         ]
     )
     fun identifierAdded(crn: String, prisonIdentifiers: PrisonIdentifiers) {

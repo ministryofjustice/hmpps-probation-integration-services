@@ -25,23 +25,23 @@ class Handler(
     @Publish(
         messages = [
             Message(
-                messageId = "prison-offender-events.prisoner.sentence-dates-changed",
+                title = "prison-offender-events.prisoner.sentence-dates-changed",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "prison-offender-events.prisoner.imprisonment-status-changed",
+                title = "prison-offender-events.prisoner.imprisonment-status-changed",
                 payload = Schema(HmppsDomainEvent::class)
             ),
-            Message(messageId = "prison-offender-events.prisoner.merged", payload = Schema(HmppsDomainEvent::class)),
-            Message(messageId = "OFFENDER_DETAILS_CHANGED", payload = Schema(OffenderEvent::class)),
-            Message(messageId = "SENTENCE_CHANGED", payload = Schema(OffenderEvent::class)),
+            Message(title = "prison-offender-events.prisoner.merged", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "OFFENDER_DETAILS_CHANGED", payload = Schema(OffenderEvent::class)),
+            Message(title = "SENTENCE_CHANGED", payload = Schema(OffenderEvent::class)),
             Message(
-                messageId = "prison-identifier.internal.prison-match-requested",
+                title = "prison-identifier.internal.prison-match-requested",
                 summary = "Internal use - attempt to match a case",
                 payload = Schema(HmppsDomainEvent::class)
             ),
             Message(
-                messageId = "prison-identifier.internal.probation-match-requested",
+                title = "prison-identifier.internal.probation-match-requested",
                 summary = "Internal use - attempt to match a case",
                 payload = Schema(HmppsDomainEvent::class)
             ),

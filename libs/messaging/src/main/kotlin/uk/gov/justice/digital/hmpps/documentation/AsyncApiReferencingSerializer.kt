@@ -19,12 +19,18 @@ class AsyncApiReferencingSerializer(val objectMapper: ObjectMapper) : AsyncApiSe
 
     private fun Operation.replaceMessagesWithReferences() {
         val messages = (message as OneOfReferencableMessages?)?.oneOf
-        val messageNames = messages?.filterIsInstance<Message>()?.mapNotNull { it.name }
-        messageNames?.forEach { messages.replaceWithReference(it) }
+        messages?.filterIsInstance<Message>()?.forEach { messages.replaceWithReference(it) }
     }
 
-    private fun ReferencableMessagesList.replaceWithReference(name: String) {
-        reference { ref("https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/$name.yml") }
-        removeIf { it is Message && it.name == name }
+    private fun ReferencableMessagesList.replaceWithReference(message: Message) {
+        val name = message.name
+        if (message.name != null) {
+            // If the name is populated, replace with remote schema reference
+            reference { ref("https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/$name.yml") }
+            removeIf { it is Message && it.name == name }
+        } else if (message.title != null) {
+            // Otherwise update the name to match the title
+            message.name = message.title
+        }
     }
 }

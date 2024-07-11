@@ -33,7 +33,7 @@ class Handler(
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    @Publish(messages = [Message(messageId = "court-case-note.published", payload = Schema(HmppsDomainEvent::class))])
+    @Publish(messages = [Message(title = "court-case-note.published", payload = Schema(HmppsDomainEvent::class))])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val event = notification.message

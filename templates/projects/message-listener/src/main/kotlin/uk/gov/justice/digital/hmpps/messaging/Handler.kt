@@ -19,7 +19,7 @@ class Handler(
         messages = [
             // TODO list the event types here that this service will subscribe to. For example,
             // Message(name = "approved-premises/application-assessed"),
-            // Message(messageId = "probation-case.prison-identifier.added"),
+            // Message(title = "probation-case.prison-identifier.added"),
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
