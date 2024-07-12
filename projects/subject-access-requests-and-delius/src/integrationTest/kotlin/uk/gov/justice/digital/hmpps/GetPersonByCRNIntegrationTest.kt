@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Person
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT
-import uk.gov.justice.digital.hmpps.service.toPerson
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -47,7 +46,7 @@ internal class GetPersonByCRNIntegrationTest {
 
     @Test
     fun `API call return person data`() {
-        val expectedResponse = DEFAULT.toPerson()
+        val expectedResponse = Person("Jon Smith")
 
         val response = mockMvc
             .perform(get("/probation-case/$crn").withToken())
