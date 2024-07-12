@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.service.SubjectAccessRequestsService
 
 @RestController
 @RequestMapping("probation-case/{crn}")
-@PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__DETAIL')")
+@PreAuthorize("hasRole('PROBATION_API__SUBJECT_ACCESS_REQUEST___DETAIL')")
 class SubjectAccessRequestsController(private val subjectAccessRequestsService: SubjectAccessRequestsService) {
 
     @GetMapping

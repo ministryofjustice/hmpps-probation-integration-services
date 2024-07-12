@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.service.SentenceService
 @RestController
 @Tag(name = "Sentence")
 @RequestMapping("/sentence/{crn}")
-@PreAuthorize("hasRole('PROBATION_API__SUBJECT_ACCESS_REQUEST___DETAIL')")
+@PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class SentenceController(
     private val sentenceService: SentenceService,
     private val ordersService: OrdersService,
