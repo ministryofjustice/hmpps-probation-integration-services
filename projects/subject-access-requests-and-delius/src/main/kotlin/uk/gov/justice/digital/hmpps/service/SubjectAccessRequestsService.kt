@@ -12,7 +12,6 @@ class SubjectAccessRequestsService(private val personRepository: PersonRepositor
     fun getPersonDetailsByCrn(crn: String): Person {
         return personRepository.getPerson(crn).toPerson()
     }
-
 }
 
 fun PersonEntity.toPerson(): Person = Person(getName())

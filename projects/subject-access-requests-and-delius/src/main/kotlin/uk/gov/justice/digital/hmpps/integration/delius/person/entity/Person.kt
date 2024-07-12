@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 @Entity
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
-class Person (
+class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
