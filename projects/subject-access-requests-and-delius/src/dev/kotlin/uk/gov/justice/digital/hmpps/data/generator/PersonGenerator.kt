@@ -4,7 +4,7 @@ import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
 
 object PersonGenerator {
 
-    val DEFAULT: Person = generate("A123456", "Jon", surname = "Smith")
+    val DEFAULT: Person = generate("A123456", "Jon", "Harry", "Fred", "Smith")
     fun generate(
         crn: String,
         forename: String,

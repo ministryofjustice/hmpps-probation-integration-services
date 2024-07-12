@@ -46,7 +46,7 @@ internal class GetPersonByCRNIntegrationTest {
 
     @Test
     fun `API call return person data`() {
-        val expectedResponse = Person("Jon Smith")
+        val expectedResponse = Person("Jon Harry Fred Smith")
 
         val response = mockMvc
             .perform(get("/probation-case/$crn").withToken())

@@ -37,7 +37,7 @@ class Person(
     val softDeleted: Boolean = false,
 ) {
     fun getName(): String {
-        return forename + listOfNotNull(secondName, thirdName).joinToString(" ") + " $surname"
+        return "$forename " + listOfNotNull(secondName, thirdName).joinToString(" ") + " $surname"
     }
 }
 
