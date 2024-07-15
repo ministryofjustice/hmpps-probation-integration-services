@@ -37,7 +37,6 @@ class SubjectAccessRequestsServiceTest {
         val response = subjectAccessRequestsService.getPersonDetailsByCrn(crn)
 
         assertEquals(fullName, response.fullName)
-
     }
 
     private fun getPerson(person: Int): Person {
