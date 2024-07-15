@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
@@ -29,7 +30,7 @@ class DomainEventService(
 
     fun deleteAll(deltas: List<DomainEvent>) = domainEventRepository.deleteAllByIdInBatch(deltas.map { it.id })
 
-    @WithSpan("POLL domain_event")
+    @WithSpan("POLL domain_event", kind = SpanKind.SERVER)
     fun notify(delta: DomainEvent) {
         val notification = notificationEnhancer.enhance(delta.asNotification())
         notificationPublisher.publish(notification)
