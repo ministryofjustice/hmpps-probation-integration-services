@@ -15,3 +15,7 @@ class SubjectAccessRequestsService(private val personRepository: PersonRepositor
 }
 
 fun PersonEntity.toPerson(): Person = Person(getName())
+
+fun PersonEntity.getName(): String {
+    return listOfNotNull(forename, secondName, thirdName, surname).joinToString(" ")
+}

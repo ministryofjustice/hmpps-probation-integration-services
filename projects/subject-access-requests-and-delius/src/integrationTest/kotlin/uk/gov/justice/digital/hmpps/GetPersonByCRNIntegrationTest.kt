@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Person
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON1
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -24,7 +24,7 @@ internal class GetPersonByCRNIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    val crn = DEFAULT.crn
+    val crn = PERSON1.crn
 
     @MockBean
     lateinit var telemetryService: TelemetryService

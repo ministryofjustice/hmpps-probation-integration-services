@@ -25,7 +25,7 @@ class DataLoader(
 
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        em.persistAll(PersonGenerator.DEFAULT)
+        em.persistAll(PersonGenerator.PERSON1)
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {
