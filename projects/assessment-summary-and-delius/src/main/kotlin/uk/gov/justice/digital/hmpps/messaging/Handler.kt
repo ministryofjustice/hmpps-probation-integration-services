@@ -47,5 +47,8 @@ class Handler(
 
 fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
+    "crn" to crn(),
     detailUrl?.let { "detailUrl" to it }
 ).toMap()
+
+fun HmppsDomainEvent.crn(): String = personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN")
