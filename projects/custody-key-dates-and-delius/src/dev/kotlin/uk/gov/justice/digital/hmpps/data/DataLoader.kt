@@ -76,17 +76,20 @@ class DataLoader(
                 KeyDateGenerator.generate(
                     DEFAULT_CUSTODY,
                     ReferenceDataGenerator.KEY_DATE_TYPES["PED"]!!,
-                    LocalDate.parse("2022-10-26")
+                    LocalDate.parse("2022-10-26"),
+                    false
                 ),
                 KeyDateGenerator.generate(
                     DEFAULT_CUSTODY,
                     ReferenceDataGenerator.KEY_DATE_TYPES["LED"]!!,
-                    LocalDate.parse("2024-09-10")
+                    LocalDate.parse("2024-09-10"),
+                    false
                 ),
                 KeyDateGenerator.generate(
                     DEFAULT_CUSTODY,
                     ReferenceDataGenerator.KEY_DATE_TYPES["SED"]!!,
-                    LocalDate.parse("2024-08-10")
+                    LocalDate.parse("2024-08-10"),
+                    false
                 )
             )
         )
@@ -111,7 +114,11 @@ class DataLoader(
         )
         keyDateRepository.saveAll(
             ReferenceDataGenerator.KEY_DATE_TYPES.values.map {
-                KeyDateGenerator.generate(custody, it, LocalDate.parse("2023-12-11"))
+                if (it.code == "LED") {
+                    KeyDateGenerator.generate(custody, it, LocalDate.parse("2025-09-11"), true)
+                } else {
+                    KeyDateGenerator.generate(custody, it, LocalDate.parse("2025-12-11"), false)
+                }
             }
         )
         return custody
