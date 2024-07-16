@@ -103,6 +103,8 @@ class DataLoader(
             PersonGenerator.PREVIOUSLY_MANAGED,
             PersonGenerator.NO_SENTENCE,
             PersonGenerator.NO_ACTIVE_EVENTS,
+            PersonGenerator.RESTRICTED_CASE,
+            PersonGenerator.EXCLUDED_CASE,
             PersonGenerator.PROVISION_1,
             PersonGenerator.DISABILITY_1,
             PersonGenerator.PREVIOUS_CONVICTION_DOC,

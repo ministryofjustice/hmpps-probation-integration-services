@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.isEqualTo
 import software.amazon.awssdk.utils.ImmutableMap
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.AreaGenerator.PARTITION_AREA
@@ -310,5 +313,39 @@ internal class OffenderIntegrationTest {
         mockMvc
             .perform(get("/probation-case/X999999/allOffenderManagers").withToken())
             .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `Detail API call probation excluded case`() {
+        val resp = mockMvc
+            .perform(get("/probation-case/${PersonGenerator.EXCLUDED_CASE.crn}/all").withToken())
+            .andExpect(status().isEqualTo(HttpStatus.FORBIDDEN.value()))
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(resp.message, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
+    }
+
+    @Test
+    fun `Detail API call probation restricted case returns 200`() {
+        val resp = mockMvc
+            .perform(get("/probation-case/${PersonGenerator.RESTRICTED_CASE.crn}/all").withToken())
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `Summary API call probation excluded case`() {
+        val resp = mockMvc
+            .perform(get("/probation-case/${PersonGenerator.EXCLUDED_CASE.crn}").withToken())
+            .andExpect(status().isEqualTo(HttpStatus.FORBIDDEN.value()))
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(resp.message, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
+    }
+
+    @Test
+    fun `Summary API call probation restricted case returns 200`() {
+        val resp = mockMvc
+            .perform(get("/probation-case/${PersonGenerator.RESTRICTED_CASE.crn}").withToken())
+            .andExpect(status().isOk)
     }
 }

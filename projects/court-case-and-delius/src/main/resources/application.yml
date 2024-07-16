@@ -47,6 +47,10 @@ management:
 
 info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/185
 
+lao-access:
+  ignore-exclusions: false
+  ignore-restrictions: true
+
 ---
 # Shared dev/test config
 spring.config.activate.on-profile: [ "dev", "integration-test" ]

@@ -31,6 +31,8 @@ object PersonGenerator {
     val PREVIOUSLY_MANAGED = generate("P123456")
     val NO_SENTENCE = generate("U123456")
     val NO_ACTIVE_EVENTS = generate("Z123456")
+    val RESTRICTED_CASE = generate("X123456", currentRestriction = true)
+    val EXCLUDED_CASE = generate("Y123456", currentExclusion = true)
 
     val PROVISION_1 = generateProvision(CURRENTLY_MANAGED.id, null)
     val DISABILITY_1 = generateDisability(CURRENTLY_MANAGED.id, null)
@@ -52,7 +54,9 @@ object PersonGenerator {
         crn: String,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
-        currentDisposal: Boolean = false
+        currentDisposal: Boolean = false,
+        currentExclusion: Boolean = false,
+        currentRestriction: Boolean = false
     ) =
         Person(
             id = id,
@@ -60,8 +64,8 @@ object PersonGenerator {
             softDeleted = softDeleted,
             emailAddress = "test@test.none",
             currentDisposal = currentDisposal,
-            currentExclusion = false,
-            currentRestriction = false,
+            currentExclusion = currentExclusion,
+            currentRestriction = currentRestriction,
             currentHighestRiskColour = "RED",
             dateOfBirth = LocalDate.of(1977, 8, 12),
             partitionArea = PARTITION_AREA,
