@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.offender
 
+import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
@@ -23,7 +24,7 @@ class OffenderDeltaService(
 
     fun deleteAll(deltas: List<OffenderDelta>) = repository.deleteAllByIdInBatch(deltas.map { it.id })
 
-    @WithSpan("POLL offender_delta")
+    @WithSpan("POLL offender_delta", kind = SpanKind.SERVER)
     fun notify(delta: OffenderDelta) {
         delta.asNotifications().forEach {
             notificationPublisher.publish(it)
