@@ -9,7 +9,10 @@ import java.time.LocalDate
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "key_date_id_seq", sequenceName = "key_date_id_seq", allocationSize = 1)
-@Table(name = "key_date", uniqueConstraints = [UniqueConstraint(columnNames = ["custody_id", "key_date_type_id", "key_date"])])
+@Table(
+    name = "key_date",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["custody_id", "key_date_type_id", "key_date"])]
+)
 class KeyDate(
 
     @Id
