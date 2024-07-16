@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.advice
 
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -36,4 +37,9 @@ class ControllerAdvice {
     fun handleInvalidRequest(e: InvalidRequestException) = ResponseEntity
         .status(BAD_REQUEST)
         .body(ErrorResponse(status = BAD_REQUEST.value(), message = e.message))
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDenied(e: AccessDeniedException) = ResponseEntity
+        .status(FORBIDDEN)
+        .body(ErrorResponse(status = FORBIDDEN.value(), message = e.message))
 }

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import org.springframework.boot.context.properties.ConfigurationProperties
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -233,6 +234,12 @@ data class Provision(
     val provisionId: Long,
     val provisionType: KeyValue,
     val startDate: LocalDate
+)
+
+@ConfigurationProperties(prefix = "lao-access")
+data class LaoAccess(
+    val ignoreExclusions: Boolean,
+    val ignoreRestrictions: Boolean,
 )
 
 enum class PhoneTypes {
