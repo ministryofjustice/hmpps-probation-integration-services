@@ -47,6 +47,8 @@ internal class IntegrationTest {
     @Autowired
     lateinit var custodyRepository: CustodyRepository
 
+    private val sedDate = "2025-09-10"
+
     @Test
     fun `Custody Key Dates updated as expected`() {
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
@@ -70,7 +72,7 @@ internal class IntegrationTest {
         verify(telemetryService).trackEvent(
             eq("KeyDatesUpdated"),
             check {
-                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo("2025-09-10"))
+                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo(sedDate))
             },
             anyMap()
         )
@@ -89,6 +91,15 @@ internal class IntegrationTest {
             attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
         )
 
+        val custodyId =
+            custodyRepository.findCustodyId(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN.id, "48340A").first()
+
+        var custody = custodyRepository.findCustodyById(custodyId)
+
+        //check key date is soft deleted b4 message is processed
+        val led = custody.keyDate(CustodyDateType.LICENCE_EXPIRY_DATE.code)
+        assertThat(led?.getSoftDeleteFlag(), equalTo(true))
+
         val first = CompletableFuture.runAsync {
             channelManager.getChannel(queueName).publishAndWait(notification)
         }
@@ -100,15 +111,14 @@ internal class IntegrationTest {
 
         verify(telemetryService, times(2)).notificationReceived(notification)
 
-        val custodyId =
-            custodyRepository.findCustodyId(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN.id, "48340A").first()
-        val custody = custodyRepository.findCustodyById(custodyId)
+
+        custody = custodyRepository.findCustodyById(custodyId)
         verifyUpdatedKeyDates(custody)
 
         verify(telemetryService).trackEvent(
             eq("KeyDatesUpdated"),
             check {
-                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo("2025-09-10"))
+                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo(sedDate))
             },
             anyMap()
         )
@@ -127,11 +137,13 @@ internal class IntegrationTest {
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
 
-        assertThat(sed?.date, equalTo(LocalDate.parse("2025-09-10")))
+        assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
         assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
         assertThat(led?.date, equalTo(LocalDate.parse("2025-09-11")))
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
+
+        assertThat(led?.getSoftDeleteFlag(), equalTo(false))
     }
 
     private fun verifyContactCreated() {
