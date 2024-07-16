@@ -40,8 +40,7 @@ class KeyDate(
             it.createdDateTime = createdDateTime
             it.createdUserId = createdUserId
             it.version = version
+            it.softDeleted = false
         }
     }
-
-    fun getSoftDeleteFlag() = softDeleted
 }

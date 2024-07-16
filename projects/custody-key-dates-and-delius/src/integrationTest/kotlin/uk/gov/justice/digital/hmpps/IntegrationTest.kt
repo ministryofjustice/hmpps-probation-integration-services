@@ -98,7 +98,7 @@ internal class IntegrationTest {
 
         //check key date is soft deleted b4 message is processed
         val led = custody.keyDate(CustodyDateType.LICENCE_EXPIRY_DATE.code)
-        assertThat(led?.getSoftDeleteFlag(), equalTo(true))
+        assertThat(led?.softDeleted, equalTo(true))
 
         val first = CompletableFuture.runAsync {
             channelManager.getChannel(queueName).publishAndWait(notification)
@@ -143,7 +143,7 @@ internal class IntegrationTest {
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
 
-        assertThat(led?.getSoftDeleteFlag(), equalTo(false))
+        assertThat(led?.softDeleted, equalTo(false))
     }
 
     private fun verifyContactCreated() {
