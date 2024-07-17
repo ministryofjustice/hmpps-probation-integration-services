@@ -16,7 +16,7 @@ class HandoverDatesChanged(
     private val keyDateService: KeyDateService,
     private val telemetryService: TelemetryService
 ) {
-    fun process(event: HandoverMessage) = try {
+    fun process(event: HandoverMessage, dryRun: Boolean = false) = try {
         val handOver = event.detailUrl?.let { pomCasesClient.getDetails(URI.create(it)) }
             ?: throw IgnorableMessageException(
                 "No handover data available",
@@ -25,7 +25,7 @@ class HandoverDatesChanged(
         val personId = personRepository.findIdFromNomsId(handOver.nomsId)
             ?: throw IgnorableMessageException("PersonNotFound", handOver.properties())
 
-        val result = keyDateService.mergeHandoverDates(personId, handOver.date, handOver.startDate)
+        val result = keyDateService.mergeHandoverDates(personId, handOver.date, handOver.startDate, dryRun)
         telemetryService.trackEvent(result.name, handOver.properties())
     } catch (ime: IgnorableMessageException) {
         telemetryService.trackEvent(

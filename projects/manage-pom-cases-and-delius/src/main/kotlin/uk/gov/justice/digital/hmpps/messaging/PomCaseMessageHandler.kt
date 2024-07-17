@@ -56,7 +56,8 @@ class PomCaseMessageHandler(
                         HandoverMessage(
                             message.personReference,
                             message.detailUrl
-                        )
+                        ),
+                        message.dryRun
                     )
 
                     "offender-management.allocation.changed" -> pomAllocated.process(message)
@@ -95,6 +96,8 @@ class PomCaseMessageHandler(
             )
         }
     }
+
+    val HmppsDomainEvent.dryRun get() = additionalInformation["dryRun"] == true
 }
 
 data class HandoverMessage(
