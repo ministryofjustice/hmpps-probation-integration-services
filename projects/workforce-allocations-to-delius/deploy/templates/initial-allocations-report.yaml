@@ -16,6 +16,8 @@ data:
     echo Downloading report...
     curl -fsSL -H "Authorization: Bearer $hmpps_auth_token" http://workforce-allocations-to-delius/initial-allocations.csv > "/tmp/$filename"
     echo Downloaded report with $(wc -l < "/tmp/$filename") rows
+    echo Validating report...
+    if grep -q '01/2024' "/tmp/$filename"; then echo 'Report is valid'; else echo 'Report is incomplete' >&2; exit 1; fi
 
     echo Starting file upload...
     file_details=$(curl -fsSL -XPOST -F "token=$SLACK_TOKEN" -F "filename=$filename" -F "length=$(wc -c < "/tmp/$filename")" https://slack.com/api/files.getUploadURLExternal)
@@ -81,5 +83,5 @@ spec:
                 allowPrivilegeEscalation: false
                 seccompProfile:
                   type: RuntimeDefault
-          restartPolicy: Never
+          restartPolicy: OnFailure
 {{- end -}}

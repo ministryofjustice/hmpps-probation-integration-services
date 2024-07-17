@@ -75,7 +75,8 @@ class KeyDateServiceTest {
             .thenReturn(listOf(custody))
         whenever(keyDateRepository.findHandoverDates(custody.id))
             .thenReturn(keyDates)
-        val keyDateMergeResult = if (!dryRun) KeyDateMergeResult.KeyDateUpdated else KeyDateMergeResult.DryRunKeyDateUpdated
+        val keyDateMergeResult =
+            if (!dryRun) KeyDateMergeResult.KeyDateUpdated else KeyDateMergeResult.DryRunKeyDateUpdated
 
         val res = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now(), dryRun)
         assertThat(res, equalTo(keyDateMergeResult))
@@ -91,7 +92,8 @@ class KeyDateServiceTest {
             .thenReturn(listOf(custody))
         whenever(keyDateRepository.findHandoverDates(custody.id))
             .thenReturn(keyDates)
-        val keyDateMergeResult = if (!dryRun) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunNoKeyDateChange
+        val keyDateMergeResult =
+            if (!dryRun) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunNoKeyDateChange
 
         val res = keyDateService.mergeHandoverDates(personId, null, null, dryRun)
         assertThat(res, equalTo(keyDateMergeResult))
@@ -104,7 +106,8 @@ class KeyDateServiceTest {
         val custody = givenCustodyRecord(personId)
         whenever(custodyRepository.findAllByDisposalEventPersonId(personId))
             .thenReturn(listOf(custody))
-        val keyDateMergeResult = if (!dryRun) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunNoKeyDateChange
+        val keyDateMergeResult =
+            if (!dryRun) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunNoKeyDateChange
 
         val res = keyDateService.mergeHandoverDates(personId, null, null, dryRun)
         assertThat(res, equalTo(keyDateMergeResult))

@@ -1,6 +1,7 @@
 # Default config
 server.shutdown: graceful
 spring:
+  mvc.async.request-timeout: 5m # for report download
   jackson:
     default-property-inclusion: non_null
   jpa:
