@@ -1,0 +1,59 @@
+
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/secure/offenders/crn/X320741/all",
+        "headers": {
+            "Content-Type": {
+              "equalTo": "application/json"
+            }
+          }
+        },
+        "response": {
+          "status": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "bodyFileName": "GET_offender_all_X320741.json"
+        }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/secure/offenders/crn/X320741",
+        "headers": {
+            "Content-Type": {
+              "equalTo": "application/json"
+            }
+          }
+        },
+        "response": {
+          "status": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "bodyFileName": "GET_offender_X320741.json"
+        }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/secure/offenders/crn/CRNXXX/all",
+        "headers" : {
+          "Content-Type": {
+            "equalTo": "application/json"
+          }
+        }
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"status\": 404, \"developerMessage\": \"Offender with CRN 'CRNXXX' not found\"}"
+      }
+    }
+  ]
+}

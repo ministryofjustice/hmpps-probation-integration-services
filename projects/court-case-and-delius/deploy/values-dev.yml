@@ -15,6 +15,7 @@ generic-service:
     SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 0
 
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
+    COMMUNITY-API_URL: https://community-api-secure.test.delius.probation.hmpps.dsd.io
 
 generic-prometheus-alerts:
   businessHoursOnly: true
