@@ -773,16 +773,19 @@ template:
         type: keyword
         copy_to: type
       typeDescription:
-        type: keyword
+        type: text
+        analyzer: probation_text_analyzer
         copy_to: type
       typeShortDescription:
-        type: keyword
+        type: text
+        analyzer: probation_text_analyzer
         copy_to: type
       outcomeCode:
         type: keyword
         copy_to: outcome
       outcomeDescription:
-        type: keyword
+        type: text
+        analyzer: probation_text_analyzer
         copy_to: outcome
       attended:
         type: keyword
