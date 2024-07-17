@@ -25,7 +25,7 @@ internal class ProxyIntegrationTest {
     lateinit var featureFlags: FeatureFlags
 
     @BeforeEach
-    fun setup(){
+    fun setup() {
         whenever(featureFlags.enabled("ccd-offender-detail-enabled")).thenReturn(false)
         whenever(featureFlags.enabled("ccd-offender-summary-enabled")).thenReturn(false)
     }
