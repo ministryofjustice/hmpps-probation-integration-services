@@ -67,6 +67,8 @@ context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockIniti
 
 messaging.consumer.queue: events
 
+community-api.url: http://localhost:${wiremock.port}
+
 integrations:
   court-case-notes:
     client-id: court-case-and-delius
