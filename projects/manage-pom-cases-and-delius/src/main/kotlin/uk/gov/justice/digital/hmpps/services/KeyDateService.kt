@@ -21,7 +21,12 @@ class KeyDateService(
     private val referenceDataRepository: ReferenceDataRepository
 ) {
     @Transactional
-    fun mergeHandoverDates(personId: Long, date: LocalDate?, startDate: LocalDate?, dryRun: Boolean = false): KeyDateMergeResult {
+    fun mergeHandoverDates(
+        personId: Long,
+        date: LocalDate?,
+        startDate: LocalDate?,
+        dryRun: Boolean = false
+    ): KeyDateMergeResult {
         val custodyList = custodyRepository.findAllByDisposalEventPersonId(personId)
         val custody = when (custodyList.size) {
             0 -> throw IgnorableMessageException("NoActiveCustodialSentence")
@@ -46,7 +51,7 @@ class KeyDateService(
             return when (dryRun) {
                 false -> {
                     keyDateRepository.save(keyDate?.apply { this.date = date } ?: keyDate(custodyId, typeCode, it))
-                     if (keyDate == null) KeyDateMergeResult.KeyDateCreated else KeyDateMergeResult.KeyDateUpdated
+                    if (keyDate == null) KeyDateMergeResult.KeyDateCreated else KeyDateMergeResult.KeyDateUpdated
                 }
 
                 else -> if (keyDate == null) KeyDateMergeResult.DryRunKeyDateCreated else KeyDateMergeResult.DryRunKeyDateUpdated
