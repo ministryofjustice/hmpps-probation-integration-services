@@ -88,6 +88,7 @@ interface InitialAllocationRepository : JpaRepository<Person, Long> {
             join district on district.district_id = team.district_id
             join borough on borough.borough_id = district.borough_id
             join probation_area on probation_area.probation_area_id = allocation.probation_area_id
+            order by allocation.allocation_date desc
         """,
         nativeQuery = true
     )
