@@ -21,12 +21,7 @@ class CommunityApiController(
     @GetMapping
     fun proxy(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<String> {
 
-        val headerNames = request.headerNames
-        val headers = mutableMapOf<String, String>()
-        while (headerNames.hasMoreElements()) {
-            val headerName = headerNames.nextElement()
-            headers[headerName] = request.getHeader(headerName)
-        }
+        val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
         headers[HttpHeaders.CONTENT_TYPE] = MediaType.APPLICATION_JSON_VALUE
         return try {
             communityApiClient.proxy(URI.create(communityApiUrl + request.pathInfo), headers)
