@@ -4,7 +4,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/secure/offenders/crn/X320741/all",
+        "urlPath": "/secure/offenders/crn/C123456/all",
         "headers": {
             "Content-Type": {
               "equalTo": "application/json"
@@ -16,13 +16,13 @@
           "headers": {
             "Content-Type": "application/json"
           },
-          "bodyFileName": "GET_offender_all_X320741.json"
+          "bodyFileName": "GET_offender_all_C123456.json"
         }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/secure/offenders/crn/X320741",
+        "urlPath": "/secure/offenders/crn/C123456",
         "headers": {
             "Content-Type": {
               "equalTo": "application/json"
@@ -34,7 +34,7 @@
           "headers": {
             "Content-Type": "application/json"
           },
-          "bodyFileName": "GET_offender_X320741.json"
+          "bodyFileName": "GET_offender_C123456.json"
         }
     },
     {
