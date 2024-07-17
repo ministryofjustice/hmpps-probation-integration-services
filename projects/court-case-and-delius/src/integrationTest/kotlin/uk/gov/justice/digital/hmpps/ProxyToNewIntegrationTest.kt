@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class ProxyIntegrationTest {
+internal class ProxyToNewIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -25,9 +25,9 @@ internal class ProxyIntegrationTest {
     lateinit var featureFlags: FeatureFlags
 
     @BeforeEach
-    fun setup(){
-        whenever(featureFlags.enabled("ccd-offender-detail-enabled")).thenReturn(false)
-        whenever(featureFlags.enabled("ccd-offender-summary-enabled")).thenReturn(false)
+    fun setup() {
+        whenever(featureFlags.enabled("ccd-offender-detail-enabled")).thenReturn(true)
+        whenever(featureFlags.enabled("ccd-offender-summary-enabled")).thenReturn(true)
     }
 
     @Test
@@ -43,14 +43,6 @@ internal class ProxyIntegrationTest {
         mockMvc
             .perform(get("/secure/offenders/crn/C123456").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.contactDetails.addresses[0].town").value("Leicester"))
-    }
-
-    @Test
-    fun `proxies to community api with error`() {
-        mockMvc
-            .perform(get("/secure/offenders/crn/CRNXXX/all").withToken())
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.developerMessage").value("Offender with CRN 'CRNXXX' not found"))
+            .andExpect(jsonPath("$.contactDetails.emailAddresses[0]").value("test@test.none"))
     }
 }
