@@ -31,7 +31,7 @@ class KeyDateService(
 
         val existing = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
         val hod = update(custody.id, HANDOVER_DATE, existing[HANDOVER_DATE.value], date, dryRun)
-        val hsd = update(custody.id, HANDOVER_START_DATE, existing[HANDOVER_START_DATE.value], startDate)
+        val hsd = update(custody.id, HANDOVER_START_DATE, existing[HANDOVER_START_DATE.value], startDate, dryRun)
         return listOf(hod, hsd).maxByOrNull { it.ordinal }!!
     }
 
