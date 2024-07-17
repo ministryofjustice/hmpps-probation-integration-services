@@ -5,6 +5,8 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
@@ -42,20 +44,30 @@ class KeyDateServiceTest {
         assertThat(ex.message, equalTo("NoActiveCustodialSentence"))
     }
 
-    @Test
-    fun `create handover dates`() {
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `create handover dates`(dryRun: Boolean) {
         val personId = 47L
         val custody = givenCustodyRecord(personId)
-        withKeyDateTypes()
+
+        val keyDateMergeResult = when (dryRun) {
+            true -> KeyDateMergeResult.DryRunKeyDateCreated
+            else -> {
+                withKeyDateTypes()
+                KeyDateMergeResult.KeyDateCreated
+            }
+        }
+
         whenever(custodyRepository.findAllByDisposalEventPersonId(personId))
             .thenReturn(listOf(custody))
 
-        val res = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now())
-        assertThat(res, equalTo(KeyDateMergeResult.KeyDateCreated))
+        val res = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now(), dryRun)
+        assertThat(res, equalTo(keyDateMergeResult))
     }
 
-    @Test
-    fun `update handover dates`() {
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `update handover dates`(dryRun: Boolean) {
         val personId = 93L
         val custody = givenCustodyRecord(personId)
         val keyDates = givenKeyDates(custody, LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))
@@ -63,13 +75,15 @@ class KeyDateServiceTest {
             .thenReturn(listOf(custody))
         whenever(keyDateRepository.findHandoverDates(custody.id))
             .thenReturn(keyDates)
+        val keyDateMergeResult = if (!dryRun) KeyDateMergeResult.KeyDateUpdated else KeyDateMergeResult.DryRunKeyDateUpdated
 
-        val res = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now())
-        assertThat(res, equalTo(KeyDateMergeResult.KeyDateUpdated))
+        val res = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now(), dryRun)
+        assertThat(res, equalTo(keyDateMergeResult))
     }
 
-    @Test
-    fun `null handover dates`() {
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `null handover dates`(dryRun: Boolean) {
         val personId = 42L
         val custody = givenCustodyRecord(personId)
         val keyDates = givenKeyDates(custody, LocalDate.now(), LocalDate.now())
@@ -77,20 +91,23 @@ class KeyDateServiceTest {
             .thenReturn(listOf(custody))
         whenever(keyDateRepository.findHandoverDates(custody.id))
             .thenReturn(keyDates)
+        val keyDateMergeResult = if (!dryRun) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunNoKeyDateChange
 
-        val res = keyDateService.mergeHandoverDates(personId, null, null)
-        assertThat(res, equalTo(KeyDateMergeResult.NoKeyDateChange))
+        val res = keyDateService.mergeHandoverDates(personId, null, null, dryRun)
+        assertThat(res, equalTo(keyDateMergeResult))
     }
 
-    @Test
-    fun `no change to handover dates`() {
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `no change to handover dates`(dryRun: Boolean) {
         val personId = 12L
         val custody = givenCustodyRecord(personId)
         whenever(custodyRepository.findAllByDisposalEventPersonId(personId))
             .thenReturn(listOf(custody))
+        val keyDateMergeResult = if (!dryRun) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunNoKeyDateChange
 
-        val res = keyDateService.mergeHandoverDates(personId, null, null)
-        assertThat(res, equalTo(KeyDateMergeResult.NoKeyDateChange))
+        val res = keyDateService.mergeHandoverDates(personId, null, null, dryRun)
+        assertThat(res, equalTo(keyDateMergeResult))
     }
 
     private fun withKeyDateTypes() {
