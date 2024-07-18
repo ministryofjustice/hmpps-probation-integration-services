@@ -51,10 +51,10 @@ class CommunityApiController(
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
         return try {
             val resp = communityApiClient.proxy(URI.create(communityApiUrl + request.requestURI), headers)
-            log.info("returned status ${resp.statusCode} with json ${resp.body}")
+            log.info("returned status ${resp.statusCode} from community-api")
             return resp
         } catch (ex: HttpStatusCodeException) {
-            log.info("Exception thrown when calling ${communityApiUrl + request.requestURI} with ${ex.message}")
+            log.error("Exception thrown when calling ${communityApiUrl + request.requestURI}. community-api returned ${ex.message}")
             ResponseEntity.status(ex.statusCode)
                 .headers(ex.responseHeaders)
                 .body(ex.responseBodyAsString);
