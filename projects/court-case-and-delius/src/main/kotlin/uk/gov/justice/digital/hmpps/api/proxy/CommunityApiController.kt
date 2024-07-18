@@ -48,7 +48,7 @@ class CommunityApiController(
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
         headers[HttpHeaders.CONTENT_TYPE] = MediaType.APPLICATION_JSON_VALUE
         return try {
-            communityApiClient.proxy(URI.create(communityApiUrl + request.pathInfo), headers)
+            communityApiClient.proxy(URI.create(communityApiUrl + request.requestURI), headers)
         } catch (ex: HttpStatusCodeException) {
             ResponseEntity.status(ex.statusCode)
                 .headers(ex.responseHeaders)
