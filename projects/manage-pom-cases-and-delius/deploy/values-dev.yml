@@ -16,7 +16,7 @@ generic-service:
     MPC_HANDOVER_URL: https://dev.moic.service.justice.gov.uk
 
 bulk-update:
-  enabled: true
+  enabled: false
   dry-run: true
   schedule: 0 7 * * 1
 

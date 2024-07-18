@@ -7,7 +7,7 @@
         "urlPath": "/secure/offenders/crn/C123456/all",
         "headers": {
             "Content-Type": {
-              "equalTo": "application/json"
+              "equalTo": "application/json;charset=UTF-8"
             }
           }
         },
@@ -25,7 +25,7 @@
         "urlPath": "/secure/offenders/crn/C123456",
         "headers": {
             "Content-Type": {
-              "equalTo": "application/json"
+              "equalTo": "application/json;charset=UTF-8"
             }
           }
         },
@@ -43,7 +43,7 @@
         "urlPath": "/secure/offenders/crn/CRNXXX/all",
         "headers" : {
           "Content-Type": {
-            "equalTo": "application/json"
+            "equalTo": "application/json;charset=UTF-8"
           }
         }
       },

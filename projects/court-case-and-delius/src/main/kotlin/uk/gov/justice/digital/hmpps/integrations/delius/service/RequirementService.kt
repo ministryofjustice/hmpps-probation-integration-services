@@ -59,7 +59,7 @@ class RequirementService(
 fun PssRequirementEntity.toPssRequirement(): PssRequirement =
     PssRequirement(
         mainCategory?.let { mainCategory.keyValueOf() },
-        subCategory?.let { subCategory.keyValueOf()},
+        subCategory?.let { subCategory.keyValueOf() },
         active
     )
 

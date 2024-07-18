@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps.api.proxy
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -23,6 +23,9 @@ class CommunityApiController(
     private val featureFlags: FeatureFlags,
     private val communityApiClient: CommunityApiClient
 ) {
+    companion object {
+        val log: Logger = LoggerFactory.getLogger(this::class.java)
+    }
 
     @GetMapping("/offenders/crn/{crn}/all")
     fun offenderDetail(request: HttpServletRequest, response: HttpServletResponse, @PathVariable crn: String): Any {
@@ -46,10 +49,12 @@ class CommunityApiController(
     fun proxy(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<String> {
 
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
-        headers[HttpHeaders.CONTENT_TYPE] = MediaType.APPLICATION_JSON_VALUE
         return try {
-            communityApiClient.proxy(URI.create(communityApiUrl + request.pathInfo), headers)
+            val resp = communityApiClient.proxy(URI.create(communityApiUrl + request.requestURI), headers)
+            log.info("returned status ${resp.statusCode} from community-api")
+            return resp
         } catch (ex: HttpStatusCodeException) {
+            log.error("Exception thrown when calling ${communityApiUrl + request.requestURI}. community-api returned ${ex.message}")
             ResponseEntity.status(ex.statusCode)
                 .headers(ex.responseHeaders)
                 .body(ex.responseBodyAsString);
