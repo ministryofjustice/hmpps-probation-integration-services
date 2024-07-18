@@ -11,8 +11,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.PssRequirement
+import uk.gov.justice.digital.hmpps.api.model.conviction.PssRequirements
 import uk.gov.justice.digital.hmpps.api.model.keyValueOf
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -57,7 +57,7 @@ internal class PssRequirementsByCrnAndEventIdIntegrationTest {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val event = SentenceGenerator.CURRENTLY_MANAGED
 
-        val expectedResponse = listOf<PssRequirement>(
+        val pssRequirements = listOf(
             PssRequirement(
                 ReferenceDataGenerator.PSS_MAIN_CAT.keyValueOf(),
                 ReferenceDataGenerator.PSS_SUB_CAT.keyValueOf(),
@@ -70,14 +70,14 @@ internal class PssRequirementsByCrnAndEventIdIntegrationTest {
             ),
         )
 
+        val expectedResponse = PssRequirements(pssRequirements)
+
         val response = mockMvc
             .perform(get("/probation-case/$crn/convictions/${event.id}/pssRequirements").withToken())
             .andExpect(status().is2xxSuccessful)
             .andDo(MockMvcResultHandlers.print())
-            .andReturn().response.contentAsJson<List<PssRequirement>>()
+            .andReturn().response.contentAsJson<PssRequirements>()
 
         assertEquals(expectedResponse, response)
     }
-
-
 }

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.conviction.ConvictionRequirements
 import uk.gov.justice.digital.hmpps.api.model.conviction.PssRequirement
+import uk.gov.justice.digital.hmpps.api.model.conviction.PssRequirements
 import uk.gov.justice.digital.hmpps.api.model.keyValueOf
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.ConvictionEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.ConvictionRequirementRepository
@@ -26,9 +27,7 @@ class RequirementService(
         includeInactive: Boolean,
         includeDeleted: Boolean
     ): ConvictionRequirements {
-
-        val person = personRepository.getPerson(crn)
-        val event = convictionEventRepository.getByEventId(convictionId, person.id)
+        val event = getEventForPersonByCrnAndEventId(crn, convictionId)
 
         return ConvictionRequirements(
             convictionRequirementRepository
@@ -37,10 +36,10 @@ class RequirementService(
         )
     }
 
-    fun getPssRequirementsByConvictionId(crn: String, convictionId: Long): List<PssRequirement> {
+    fun getPssRequirementsByConvictionId(crn: String, convictionId: Long): PssRequirements {
         val event = getEventForPersonByCrnAndEventId(crn, convictionId)
 
-        return getPssRequirements(event.disposal?.custody?.id)
+        return PssRequirements(getPssRequirements(event.disposal?.custody?.id))
     }
 
     fun getEventForPersonByCrnAndEventId(crn: String, convictionId: Long): Event {
