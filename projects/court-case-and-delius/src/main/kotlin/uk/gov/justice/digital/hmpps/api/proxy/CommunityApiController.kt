@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.api.proxy
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -23,6 +25,9 @@ class CommunityApiController(
     private val featureFlags: FeatureFlags,
     private val communityApiClient: CommunityApiClient
 ) {
+    companion object {
+        val log: Logger = LoggerFactory.getLogger(this::class.java)
+    }
 
     @GetMapping("/offenders/crn/{crn}/all")
     fun offenderDetail(request: HttpServletRequest, response: HttpServletResponse, @PathVariable crn: String): Any {
@@ -50,6 +55,7 @@ class CommunityApiController(
         return try {
             communityApiClient.proxy(URI.create(communityApiUrl + request.requestURI), headers)
         } catch (ex: HttpStatusCodeException) {
+            log.info("Exception thrown when calling ${communityApiUrl + request.requestURI} with ${ex.message}")
             ResponseEntity.status(ex.statusCode)
                 .headers(ex.responseHeaders)
                 .body(ex.responseBodyAsString);
