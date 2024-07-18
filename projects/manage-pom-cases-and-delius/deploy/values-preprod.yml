@@ -13,7 +13,7 @@ generic-service:
     MPC_HANDOVER_URL: https://preprod.moic.service.justice.gov.uk
 
 bulk-update:
-  enabled: false
+  enabled: true
   dry-run: true
   schedule: 0 7 * * 1
 
