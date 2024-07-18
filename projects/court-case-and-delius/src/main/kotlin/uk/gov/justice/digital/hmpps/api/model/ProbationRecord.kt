@@ -4,6 +4,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReportType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementMainCat
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementSubCat
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -11,6 +13,8 @@ fun ReferenceData.keyValueOf() = KeyValue(code, description)
 fun RequirementMainCategory.keyValueOf() = KeyValue(code, description)
 fun AdRequirementMainCategory.keyValueOf() = KeyValue(code, description)
 fun CourtReportType.keyValueOf() = KeyValue(code, description)
+fun PssRequirementMainCat.keyValueOf(): KeyValue = KeyValue(code, description)
+fun PssRequirementSubCat.keyValueOf(): KeyValue = KeyValue(code, description)
 
 data class Conviction(
     val active: Boolean = false,

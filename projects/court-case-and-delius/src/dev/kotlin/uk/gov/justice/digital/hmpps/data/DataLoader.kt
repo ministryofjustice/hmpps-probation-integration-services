@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Component
@@ -131,8 +131,8 @@ class DataLoader(
                 noSentenceEvent,
                 StaffGenerator.UNALLOCATED,
                 CourtGenerator.PROBATION_AREA,
-                ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, ZoneId.of("Europe/London")),
-                ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, ZoneId.of("Europe/London"))
+                ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon),
+                ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, EuropeLondon)
             )
         val outcome = SentenceGenerator.OUTCOME
         val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, ZonedDateTime.now())
@@ -146,8 +146,8 @@ class DataLoader(
                 newEvent,
                 StaffGenerator.UNALLOCATED,
                 CourtGenerator.PROBATION_AREA,
-                ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, ZoneId.of("Europe/London")),
-                ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, ZoneId.of("Europe/London"))
+                ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, EuropeLondon),
+                ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon)
             )
         em.saveAll(newEvent, newSentence, newManager)
 
@@ -159,7 +159,8 @@ class DataLoader(
         val additionalOffence = SentenceGenerator.ADDITIONAL_OFFENCE_DEFAULT
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
         val breachNsi = SentenceGenerator.BREACH_NSIS
-        val pssRequirement = SentenceGenerator.generatePssRequirement(custody.id)
+        val activePssRequirement = SentenceGenerator.generatePssRequirement(custody.id, active = true)
+        val inactivePssRequirement = SentenceGenerator.generatePssRequirement(custody.id, active = false)
         val currentCourtAppearance = SentenceGenerator.COURT_APPEARANCE
         val currentCourtReport = SentenceGenerator.generateCourtReport(currentCourtAppearance)
         val reportManager = SentenceGenerator.generateCourtReportManager(currentCourtReport)
@@ -203,7 +204,8 @@ class DataLoader(
             breachNsi,
             NsiManagerGenerator.ACTIVE,
             NsiManagerGenerator.INACTIVE,
-            pssRequirement,
+            activePssRequirement,
+            inactivePssRequirement,
             currentCourtAppearance,
             currentCourtReport,
             reportManager
@@ -227,8 +229,8 @@ class DataLoader(
                 preEvent,
                 StaffGenerator.ALLOCATED,
                 CourtGenerator.PROBATION_AREA,
-                ZonedDateTime.of(LocalDate.now().minusDays(7), LocalTime.NOON, ZoneId.of("Europe/London")),
-                ZonedDateTime.of(LocalDate.now().minusDays(10), LocalTime.NOON, ZoneId.of("Europe/London"))
+                ZonedDateTime.of(LocalDate.now().minusDays(7), LocalTime.NOON, EuropeLondon),
+                ZonedDateTime.of(LocalDate.now().minusDays(10), LocalTime.NOON, EuropeLondon)
             )
         em.saveAll(preEvent, preSentence, preManager)
 
