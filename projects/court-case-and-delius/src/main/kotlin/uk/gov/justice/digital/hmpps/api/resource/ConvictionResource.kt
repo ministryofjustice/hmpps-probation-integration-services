@@ -56,4 +56,11 @@ class ConvictionResource(
         )
         @NotEmpty @RequestParam(required = true) nsiCodes: List<String>
     ) = interventionService.getNsiByCodes(crn, convictionId, nsiCodes)
+
+
+    @GetMapping("/{convictionId}/pssRequirements")
+    fun getPssRequirementsByConvictionId(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = requirementService.getPssRequirementsByConvictionId(crn, convictionId)
 }

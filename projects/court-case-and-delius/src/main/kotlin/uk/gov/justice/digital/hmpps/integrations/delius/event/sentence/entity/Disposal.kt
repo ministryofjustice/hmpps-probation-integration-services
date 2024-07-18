@@ -223,7 +223,7 @@ class Custody(
 @Entity
 @Immutable
 @Table(name = "pss_rqmnt")
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0")
 class PssRequirement(
 
     @Column(name = "custody_id")
