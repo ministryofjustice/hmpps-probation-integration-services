@@ -357,10 +357,11 @@ object SentenceGenerator {
         CourtGenerator.PROBATION_AREA
     )
 
-    fun generatePssRequirement(custodyId: Long, id: Long = IdGenerator.getAndIncrement()) = PssRequirement(
+    fun generatePssRequirement(custodyId: Long, id: Long = IdGenerator.getAndIncrement(), active: Boolean) = PssRequirement(
         custodyId,
         ReferenceDataGenerator.PSS_MAIN_CAT,
         ReferenceDataGenerator.PSS_SUB_CAT,
+        active = active,
         id = id
     )
 

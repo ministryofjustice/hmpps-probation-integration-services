@@ -1,17 +1,17 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.ConvictionRequirements
 import uk.gov.justice.digital.hmpps.api.model.conviction.PssRequirement
+import uk.gov.justice.digital.hmpps.api.model.keyValueOf
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.ConvictionEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.ConvictionRequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.getByEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.getByEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirement as PssRequirementEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirement as PssRequirementEntity
 
 @Service
 class RequirementService(
@@ -59,8 +59,10 @@ class RequirementService(
 
 fun PssRequirementEntity.toPssRequirement(): PssRequirement =
     PssRequirement(
-        mainCategory?.let { KeyValue(mainCategory.code, mainCategory.description) },
-        subCategory?.let { KeyValue(subCategory.code, subCategory.description) },
+        mainCategory?.let { mainCategory.keyValueOf() },
+        subCategory?.let { subCategory.keyValueOf()},
         active
     )
+
+
 
