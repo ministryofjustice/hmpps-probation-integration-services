@@ -14,6 +14,54 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /secure/offenders/crn/{crn}:
+    get:
+      tags:
+      - community-api-controller
+      operationId: offenderSummary
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/all:
+    get:
+      tags:
+      - community-api-controller
+      operationId: offenderDetail
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/**:
+    get:
+      tags:
+      - community-api-controller
+      operationId: proxy
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
   /probation-case/{crn}:
     get:
       tags:
