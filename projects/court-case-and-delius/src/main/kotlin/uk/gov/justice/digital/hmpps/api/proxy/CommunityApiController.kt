@@ -5,8 +5,6 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -51,7 +49,6 @@ class CommunityApiController(
     fun proxy(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<String> {
 
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
-        headers[HttpHeaders.CONTENT_TYPE] = MediaType.APPLICATION_JSON_VALUE
         return try {
             val resp = communityApiClient.proxy(URI.create(communityApiUrl + request.requestURI), headers)
             log.info("returned status ${resp.statusCode} with json ${resp.body}")
