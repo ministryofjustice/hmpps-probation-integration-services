@@ -78,6 +78,4 @@ internal class PssRequirementsByCrnAndEventIdIntegrationTest {
 
         assertEquals(expectedResponse, response)
     }
-
-
 }
