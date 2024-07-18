@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.proxy
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
@@ -55,6 +56,9 @@ class CommunityApiController(
         return try {
             val resp = communityApiClient.proxy(URI.create(communityApiUrl + request.requestURI), headers)
             log.info("returned status ${resp.statusCode} with json ${resp.body}")
+            val mapper = ObjectMapper()
+            val node = mapper.readTree(resp.body)
+            log.info("id returned is ${node.get("offenderId")}")
             return resp
         } catch (ex: HttpStatusCodeException) {
             log.info("Exception thrown when calling ${communityApiUrl + request.requestURI} with ${ex.message}")
