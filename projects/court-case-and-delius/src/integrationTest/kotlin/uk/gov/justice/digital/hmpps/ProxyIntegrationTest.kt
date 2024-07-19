@@ -1,7 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -10,9 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.api.proxy.CompareReport
+import uk.gov.justice.digital.hmpps.api.proxy.CompareService
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -23,6 +31,9 @@ internal class ProxyIntegrationTest {
 
     @MockBean
     lateinit var featureFlags: FeatureFlags
+
+    @MockBean
+    lateinit var compareService: CompareService
 
     @BeforeEach
     fun setup() {
@@ -52,5 +63,74 @@ internal class ProxyIntegrationTest {
             .perform(get("/secure/offenders/crn/CRNXXX/all").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.developerMessage").value("Offender with CRN 'CRNXXX' not found"))
+    }
+
+    @Test
+    fun `compare new endpoints with community api endpoints`() {
+
+        val forCompare = ResourceUtils.getFile("classpath:simulations/__files/forCompare.json")
+            .inputStream().readBytes().toString(Charsets.UTF_8) //ResourceLoader.file<Any>("forCompare")
+        whenever(compareService.toJsonString(any())).thenReturn(forCompare)
+        val res = mockMvc.perform(
+            post("/secure/compare")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "crn": "C123456",
+                        "uri": "OFFENDER_DETAIL"
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
+
+        assertThat(res.endPointName, equalTo("OFFENDER_DETAIL"))
+        assertThat(res.issues?.size, equalTo(6))
+    }
+
+    @Test
+    fun `compare new endpoints with community api endpoints with unconfigued endpoint`() {
+
+        val forCompare = ResourceUtils.getFile("classpath:simulations/__files/forCompare.json")
+            .inputStream().readBytes().toString(Charsets.UTF_8) //ResourceLoader.file<Any>("forCompare")
+        whenever(compareService.toJsonString(any())).thenReturn(forCompare)
+        val res = mockMvc.perform(
+            post("/secure/compare")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "crn": "C123456",
+                        "uri": "NOT_CONFIGURED"
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
+
+        assertThat(res.endPointName, equalTo("NOT_CONFIGURED"))
+    }
+
+    @Test
+    fun `compare new endpoints with community api endpoints with new controller method not found`() {
+
+        whenever(compareService.toJsonString(any())).thenCallRealMethod()
+        val res = mockMvc.perform(
+            post("/secure/compare")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "crn": "C123456",
+                        "uri": "DUMMY"
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
+
+        assertThat(res.message, equalTo("getDummy bean cannot be found. Has this been implemented yet?"))
+        assertThat(res.endPointName, equalTo("DUMMY"))
     }
 }

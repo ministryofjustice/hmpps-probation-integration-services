@@ -19,6 +19,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.springdoc)
+    implementation(libs.javax.json)
+    implementation(libs.glassfish.json)
 
     dev(project(":libs:dev-tools"))
     dev("com.unboundid:unboundid-ldapsdk")

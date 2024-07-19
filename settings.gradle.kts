@@ -91,6 +91,8 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.3")
             library("wiremock", "org.wiremock:wiremock-standalone:3.8.0")
             library("flipt", "io.flipt:flipt-java:1.1.1")
+            library("javax-json", "javax.json:javax.json-api:1.1.2")
+            library("glassfish-json", "org.glassfish:javax.json:1.1.2")
         }
     }
 }
