@@ -67,6 +67,9 @@ class CommunityApiController(
     fun compare(@RequestBody compare: Compare, request: HttpServletRequest): CompareReport {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }
             .filter { it.key != "Content-Length" }.toMutableMap()
+
+        headers.forEach { log.info("Header name: ${it.key}, value: ${it.value}") }
+
         val uri = try {
             Uri.valueOf(compare.uri)
         } catch (ex: Exception) {
