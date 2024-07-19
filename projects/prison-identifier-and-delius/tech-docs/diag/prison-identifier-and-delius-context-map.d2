@@ -1,4 +1,7 @@
 
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 context-nomis: NOMIS/DPS Context {
 
@@ -30,16 +33,3 @@ context-delius: Delius Context {
 }
 
 context-nomis--context-delius.interface: Upstream\n\n\nDownstream
-
-# Styles
-
-style {
-  fill: "#ffffff"
-}
-
-** {
-  style {
-    border-radius: 10
-    stroke-width: 2
-  }
-}

@@ -1,7 +1,7 @@
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 context-epf: Effective Proposals Framework Context {
 
@@ -15,6 +15,7 @@ context-epf: Effective Proposals Framework Context {
   interface: EPF {
     type: Customer
   }
+
 }
 
 context-delius: Delius Context {
@@ -29,6 +30,7 @@ context-delius: Delius Context {
     person-on-probation: Person on Probation
     probation-area: Probation Area
   }
+
   interface: Effective Proposal Framework and Delius {
     link: https://github.com/ministryofjustice/hmpps-probation-integration-services/tree/main/projects/effective-proposal-framework-and-delius
     type: Supplier
@@ -36,7 +38,3 @@ context-delius: Delius Context {
 }
 
 context-delius.interface--context-epf.interface: Upstream\n\n\nDownstream
-
-*.style.border-radius: 10
-*.*.style.border-radius: 10
-*.*.style.stroke-width: 2

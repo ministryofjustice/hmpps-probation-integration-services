@@ -2,9 +2,9 @@
 
 direction: right
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 # What triggers the workflow?
 nomis: NOMIS  {
@@ -46,17 +46,3 @@ delius: Delius {
 }
 
 nomis -> domain_event -> delius
-
-
-# Styles
-
-style {
-  fill: "#ffffff"
-}
-
-** {
-  style {
-    border-radius: 10
-    stroke-width: 2
-  }
-}

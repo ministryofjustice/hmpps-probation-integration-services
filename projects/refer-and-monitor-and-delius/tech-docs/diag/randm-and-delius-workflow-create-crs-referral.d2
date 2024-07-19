@@ -2,16 +2,14 @@
 
 direction: right
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 # What triggers the workflow?
 refer_and_monitor: Refer and Monitor  {
      style.font-size: 15
-     crs_referral: Create CRS referral {
-         shape: oval
-     }
+     crs_referral: Create CRS referral
 }
 
 # What happens in Delius?
@@ -27,8 +25,3 @@ delius: Delius {
 }
 
 refer_and_monitor -> delius
-
-*.style.border-radius: 10
-*.*.style.border-radius: 10
-*.*.style.stroke-width: 2
-*.*.style.font-size: 12

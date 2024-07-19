@@ -1,5 +1,9 @@
 # Prison Identifier Workflow: Prison Identifier Update - Batch
 
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
 direction: right
 
 integration_service: Prison Identifier and Delius {
@@ -38,17 +42,4 @@ delius: Delius {
     booking: NOMIS booking number\nadded as 'Prisoner Number'
 
     noms->booking
-}
-
-# Styles
-
-style {
-  fill: "#ffffff"
-}
-
-** {
-  style {
-    border-radius: 10
-    stroke-width: 2
-  }
 }

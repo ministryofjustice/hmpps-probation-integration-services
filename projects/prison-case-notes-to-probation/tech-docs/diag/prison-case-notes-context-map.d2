@@ -1,7 +1,7 @@
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 context-nomis: Prisons/NOMIS Context {
 
@@ -40,7 +40,3 @@ context-delius: Delius Context {
 }
 
 context-nomis.interface--context-delius.interface: Upstream\n\n\nDownstream
-
-*.style.border-radius: 10
-*.*.style.border-radius: 10
-*.*.style.stroke-width: 2
