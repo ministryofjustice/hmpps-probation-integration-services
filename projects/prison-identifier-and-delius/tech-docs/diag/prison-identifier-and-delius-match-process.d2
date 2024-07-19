@@ -2,6 +2,10 @@
 
 direction: down
 
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
 one: Delius  {
     explanation: |md
     ## Delius Person Record / CRN
@@ -103,16 +107,3 @@ clash_check -> no_action: Present on Other Record
 
 match -> end_1
 no_action -> end_2
-
-# Styles
-
-style {
-  fill: "#ffffff"
-}
-
-** {
-  style {
-    border-radius: 10
-    stroke-width: 2
-  }
-}

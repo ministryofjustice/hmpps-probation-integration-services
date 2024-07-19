@@ -15,7 +15,7 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 while IFS= read -r -d '' d2_file; do
 	diagram=$(basename "$d2_file")
 	svg=${diagram%.d2}.svg
-	d2 -t 8 --layout elk --pad 25 \
+	d2 \
 		"$SCRIPTPATH/../projects/${PROJECT}/tech-docs/diag/$diagram" \
 		"$SCRIPTPATH/../projects/${PROJECT}/tech-docs/source/img/$svg"
 done < <(

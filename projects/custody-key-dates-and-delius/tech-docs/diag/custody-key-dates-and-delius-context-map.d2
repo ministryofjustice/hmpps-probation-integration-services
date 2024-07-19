@@ -1,8 +1,8 @@
 # Custody Key Dates and Delius Context Map
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 context-nomis: NOMIS/DPS Context {
   entities: Entities {
@@ -38,7 +38,3 @@ context-delius: Delius Context {
 }
 
 context-nomis.interface--context-delius.interface: Upstream\n\n\nDownstream
-
-*.style.border-radius: 10
-*.*.style.border-radius: 10
-*.*.style.stroke-width: 2

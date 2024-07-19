@@ -2,16 +2,14 @@
 
 direction: right
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 # What triggers the workflow?
 mpc: Manage POM Cases {
      style.font-size: 15
-     mpc_responsibility: POM to COM handover\ndates updated {
-         shape: oval
-     }
+     mpc_responsibility: POM to COM handover\ndates updated
 }
 
 # What happens in Delius?
@@ -23,7 +21,3 @@ delius: Delius {
 }
 
 mpc -> delius
-
-*.style.border-radius: 10
-*.*.style.border-radius: 10
-*.*.style.stroke-width: 2

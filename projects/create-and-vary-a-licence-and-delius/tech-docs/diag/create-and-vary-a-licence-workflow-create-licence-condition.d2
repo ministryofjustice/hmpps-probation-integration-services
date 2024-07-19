@@ -2,9 +2,9 @@
 
 direction: right
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 # What triggers the workflow?
 create-and-vary-a-licence: Create and Vary a Licence {
@@ -50,8 +50,3 @@ delius: Delius {
 }
 
 create-and-vary-a-licence -> domain_event -> delius
-
-*.style.border-radius: 10
-*.*.style.border-radius: 10
-*.*.style.stroke-width: 2
-*.*.style.font-size: 12

@@ -2,9 +2,9 @@
 
 direction: right
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 # What triggers the workflow?
 approved_premises: Approved Premises (CAS1)  {
@@ -57,8 +57,3 @@ approved_premises -> domain_event_3
 domain_event_1 -> delius
 domain_event_2 -> delius
 domain_event_3 -> delius
-
-*.style.border-radius: 10
-*.*.style.border-radius: 10
-*.*.style.stroke-width: 2
-*.*.style.font-size: 12

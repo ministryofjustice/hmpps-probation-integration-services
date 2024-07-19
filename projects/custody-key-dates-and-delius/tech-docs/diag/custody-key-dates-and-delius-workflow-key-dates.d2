@@ -2,16 +2,14 @@
 
 direction: right
 
-style {
-  fill: "#ffffff"
-}
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
 
 # What triggers the workflow?
 nomis: NOMIS/DPS {
      style.font-size: 15
-     nomis_key_dates: Any custody\nkey date updated {
-         shape: oval
-     }
+     nomis_key_dates: Any custody\nkey date updated
 }
 
 # What happens in Delius?
@@ -28,8 +26,3 @@ delius: Delius {
 }
 
 nomis -> delius
-
-*.style.border-radius: 10
-*.*.style.border-radius: 10
-*.*.style.stroke-width: 2
-*.*.style.font-size: 12
