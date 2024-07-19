@@ -184,6 +184,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ConvictionRequirements"
+  /probation-case/{crn}/convictions/{convictionId}/pssRequirements:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getPssRequirementsByConvictionId
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PssRequirements"
   /probation-case/{crn}/convictions/{convictionId}/nsis:
     get:
       tags:
@@ -1051,6 +1075,29 @@ components:
           type: integer
           description: Total RAR days completed
           format: int64
+    PssRequirement:
+      required:
+      - active
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/KeyValue"
+        subType:
+          $ref: "#/components/schemas/KeyValue"
+        active:
+          type: boolean
+          description: Is the requirement currently active
+      description: List of pssRequirements associated with this conviction
+    PssRequirements:
+      required:
+      - pssRequirements
+      type: object
+      properties:
+        pssRequirements:
+          type: array
+          description: List of pssRequirements associated with this conviction
+          items:
+            $ref: "#/components/schemas/PssRequirement"
     AllTeam:
       required:
       - code

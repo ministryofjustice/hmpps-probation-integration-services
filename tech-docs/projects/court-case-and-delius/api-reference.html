@@ -122,6 +122,9 @@
         <a href="./api-reference.html#probation-case-crn-convictions-convictionid-requirements"><span>/probation-case/{crn}/convictions/{convictionId}/requirements</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-case-crn-convictions-convictionid-pssrequirements"><span>/probation-case/{crn}/convictions/{convictionId}/pssRequirements</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-case-crn-convictions-convictionid-nsis"><span>/probation-case/{crn}/convictions/{convictionId}/nsis</span></a>
       </li>
       <li>
@@ -995,6 +998,88 @@
 </td>
 <td>
 <a href='#schema-convictionrequirements'>ConvictionRequirements</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-convictions-convictionid-pssrequirements">/probation-case/{crn}/convictions/{convictionId}/pssRequirements</h2>
+
+<h3 id="probation-case-crn-convictions-convictionid-pssrequirements-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-pssrequirements-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-pssrequirements-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "pssRequirements": [
+    {
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "subType": {
+        "code": "string",
+        "description": "string"
+      },
+      "active": "boolean"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-pssrequirements'>PssRequirements</a>
 </td>
 </tr>
 
@@ -4361,6 +4446,73 @@
 </td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pssrequirement">PssRequirement</h3>
+<p>List of pssRequirements associated with this conviction</p>
+
+
+<table class='schema-pssrequirement'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>subType</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td><p>Is the requirement currently active</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pssrequirements">PssRequirements</h3>
+
+
+<table class='schema-pssrequirements'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>pssRequirements</td>
+<td>array</td>
+<td>true</td>
+<td><p>List of pssRequirements associated with this conviction</p>
+</td>
+<td>
+  <a href='#schema-pssrequirement'>PssRequirement</a>
 </td>
 </tr>
 
