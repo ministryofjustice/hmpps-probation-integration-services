@@ -81,7 +81,7 @@ class CommunityApiController(
         val comApiJsonString = try {
             communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
         } catch (ex: HttpStatusCodeException) {
-            log.error("Exception thrown when calling ${communityApiUrl + request.requestURI}. community-api returned ${ex.message}")
+            log.error("Exception thrown when calling ${communityApiUrl + comApiUri}. community-api returned ${ex.message}")
             return compare.toReport(ex.message ?: "No message")
         }
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue().asJsonObject()
