@@ -78,7 +78,12 @@ class CommunityApiController(
             return compare.toReport("${uri.ccdFunction} bean cannot be found. Has this been implemented yet?")
         }
         val comApiUri = uri.comApiUrl.replace("{crn}", compare.crn)
-        val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
+        val comApiJsonString = try {
+            communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
+        } catch (ex: HttpStatusCodeException) {
+            log.error("Exception thrown when calling ${communityApiUrl + request.requestURI}. community-api returned ${ex.message}")
+            return compare.toReport(ex.message ?: "No message")
+        }
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue().asJsonObject()
         val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue().asJsonObject()
         val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)
