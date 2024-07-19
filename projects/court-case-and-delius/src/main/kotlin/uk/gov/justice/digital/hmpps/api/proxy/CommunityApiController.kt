@@ -66,9 +66,9 @@ class CommunityApiController(
     @PostMapping("/compare")
     fun compare(@RequestBody compare: Compare, request: HttpServletRequest): CompareReport {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }
-            .filter { it.key != "Content-Length" }.toMutableMap()
+            .filter { it.key.lowercase() == "Authorization".lowercase() }.toMutableMap()
 
-        headers.forEach { log.info("Header name: ${it.key}, value: ${it.value}") }
+        headers.forEach { log.info("Header name: ${it.key}") }
 
         val uri = try {
             Uri.valueOf(compare.uri)
