@@ -1,16 +1,19 @@
 package uk.gov.justice.digital.hmpps
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -18,7 +21,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.api.proxy.CompareReport
-import uk.gov.justice.digital.hmpps.api.proxy.CompareService
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -26,14 +28,15 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class ProxyIntegrationTest {
+
+    @SpyBean
+    lateinit var mapper: ObjectMapper
+
     @Autowired
     lateinit var mockMvc: MockMvc
 
     @MockBean
     lateinit var featureFlags: FeatureFlags
-
-    @MockBean
-    lateinit var compareService: CompareService
 
     @BeforeEach
     fun setup() {
@@ -70,7 +73,7 @@ internal class ProxyIntegrationTest {
 
         val forCompare = ResourceUtils.getFile("classpath:simulations/__files/forCompare.json")
             .inputStream().readBytes().toString(Charsets.UTF_8) //ResourceLoader.file<Any>("forCompare")
-        whenever(compareService.toJsonString(any())).thenReturn(forCompare)
+        doReturn(forCompare).`when`(mapper).writeValueAsString(any())
         val res = mockMvc.perform(
             post("/secure/compare")
                 .contentType("application/json;charset=utf-8")
@@ -93,8 +96,8 @@ internal class ProxyIntegrationTest {
     fun `compare new endpoints with community api endpoints with unconfigued endpoint`() {
 
         val forCompare = ResourceUtils.getFile("classpath:simulations/__files/forCompare.json")
-            .inputStream().readBytes().toString(Charsets.UTF_8) //ResourceLoader.file<Any>("forCompare")
-        whenever(compareService.toJsonString(any())).thenReturn(forCompare)
+            .inputStream().readBytes().toString(Charsets.UTF_8)
+
         val res = mockMvc.perform(
             post("/secure/compare")
                 .contentType("application/json;charset=utf-8")
@@ -115,7 +118,6 @@ internal class ProxyIntegrationTest {
     @Test
     fun `compare new endpoints with community api endpoints with new controller method not found`() {
 
-        whenever(compareService.toJsonString(any())).thenCallRealMethod()
         val res = mockMvc.perform(
             post("/secure/compare")
                 .contentType("application/json;charset=utf-8")
