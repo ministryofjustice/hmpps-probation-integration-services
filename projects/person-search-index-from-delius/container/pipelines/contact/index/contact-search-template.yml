@@ -87,6 +87,43 @@ template:
             - 9.00 am => 9.00_am
             - 10.00 am => 10.00_am
             - 11.00 am => 11.00_am
+            - 12.00 am => 12.00_am
+            - 1.00 pm => 1.00_pm
+            - 2.00 pm => 2.00_pm
+            - 3.00 pm => 3.00_pm
+            - 4.00 pm => 4.00_pm
+            - 5.00 pm => 5.00_pm
+            - 6.00 pm => 6.00_pm
+            - 7.00 pm => 7.00_pm
+            - 8.00 pm => 8.00_pm
+            - 9.00 pm => 9.00_pm
+            - 10.00 pm => 10.00_pm
+            - 11.00 pm => 11.00_pm
+            - 12.00 pm => 12.00_pm
+            - 1 am => 1_am
+            - 2 am => 2_am
+            - 3 am => 3_am
+            - 4 am => 4_am
+            - 5 am => 5_am
+            - 6 am => 6_am
+            - 7 am => 7_am
+            - 8 am => 8_am
+            - 9 am => 9_am
+            - 10 am => 10_am
+            - 11 am => 11_am
+            - 12 am => 12_am
+            - 1 pm => 1_pm
+            - 2 pm => 2_pm
+            - 3 pm => 3_pm
+            - 4 pm => 4_pm
+            - 5 pm => 5_pm
+            - 6 pm => 6_pm
+            - 7 pm => 7_pm
+            - 8 pm => 8_pm
+            - 9 pm => 9_pm
+            - 10 pm => 10_pm
+            - 11 pm => 11_pm
+            - 12 pm => 12_pm
             - 12 monthly => 12_monthly
             - a domestic => a_domestic
             - a home => a_home
@@ -758,6 +795,7 @@ template:
         boost: 4
       outcome:
         type: text
+        analyzer: probation_text_analyzer
         store: true
         boost: 2
         fields:
@@ -765,6 +803,7 @@ template:
             type: keyword
       type:
         type: text
+        analyzer: probation_text_analyzer
         store: true
         fields:
           keyword:
@@ -773,19 +812,16 @@ template:
         type: keyword
         copy_to: type
       typeDescription:
-        type: text
-        analyzer: probation_text_analyzer
+        type: keyword
         copy_to: type
       typeShortDescription:
-        type: text
-        analyzer: probation_text_analyzer
+        type: keyword
         copy_to: type
       outcomeCode:
         type: keyword
         copy_to: outcome
       outcomeDescription:
-        type: text
-        analyzer: probation_text_analyzer
+        type: keyword
         copy_to: outcome
       attended:
         type: keyword
