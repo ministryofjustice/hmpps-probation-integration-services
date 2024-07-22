@@ -27,7 +27,7 @@ class CommunityApiService(
             ?.call(instance, compare.crn))
     }
 
-    fun compare(compare: Compare, headers: MutableMap<String, String>): CompareReport {
+    fun compare(compare: Compare, headers: Map<String, String>): CompareReport {
 
         val uri = Uri.valueOf(compare.uri)
         val ccdJsonString = getCcdJson(compare)

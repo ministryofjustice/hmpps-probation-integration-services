@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.proxy
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -47,8 +48,7 @@ class CommunityApiController(
 
     @PostMapping("/compare")
     fun compare(@RequestBody compare: Compare, request: HttpServletRequest): CompareReport {
-        val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }
-            .filter { it.key.lowercase() == "Authorization".lowercase() }.toMutableMap()
+        val headers = mapOf(HttpHeaders.AUTHORIZATION to request.getHeader(HttpHeaders.AUTHORIZATION))
         return communityApiService.compare(compare, headers)
     }
 }
