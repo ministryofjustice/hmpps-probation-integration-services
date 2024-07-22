@@ -1,6 +1,10 @@
 package uk.gov.justice.digital.hmpps.api.proxy
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import jakarta.json.Json
+import jakarta.json.JsonObject
+import jakarta.json.JsonPatch
+import jakarta.json.JsonValue
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.http.ResponseEntity
@@ -8,10 +12,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import java.io.StringReader
 import java.net.URI
-import javax.json.Json
-import javax.json.JsonObject
-import javax.json.JsonPatch
-import javax.json.JsonValue
 
 @Service
 class CommunityApiService(
@@ -29,28 +29,13 @@ class CommunityApiService(
 
     fun compare(compare: Compare, headers: MutableMap<String, String>): CompareReport {
 
-        val uri = try {
-            Uri.valueOf(compare.uri)
-        } catch (ex: Exception) {
-            return compare.toReport("This endpoint is not configured")
-        }
-
-        val ccdJsonString = try {
-            getCcdJson(compare)
-        } catch (ex: Exception) {
-            return compare.toReport("${uri.ccdFunction} bean cannot be found. Has this been implemented yet?")
-        }
+        val uri = Uri.valueOf(compare.uri)
+        val ccdJsonString = getCcdJson(compare)
         val comApiUri = uri.comApiUrl.replace("{crn}", compare.crn)
-        val comApiJsonString = try {
-            communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
-        } catch (ex: HttpStatusCodeException) {
-            CommunityApiController.log.error("Exception thrown when calling ${communityApiUrl + comApiUri}. community-api returned ${ex.message}")
-            return compare.toReport(ex.message ?: "No message")
-        }
+        val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue().asJsonObject()
         val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue().asJsonObject()
         val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)
-
         val results = diff.toDiffReport(ccdJson)
 
         return CompareReport(
@@ -83,9 +68,8 @@ fun JsonObject.getValueAsString(path: String, removeQuotes: Boolean = true): Str
 }
 
 fun JsonValue.getValueAsString(path: String) = asJsonObject()[path].toString()
-fun Compare.toReport(message: String) = CompareReport(message = message, success = false, endPointName = uri)
 
-fun JsonPatch.toDiffReport(jsonObject: JsonObject) = toJsonArray().asSequence().associateWith {
+fun JsonPatch.toDiffReport(jsonObject: JsonObject) = toJsonArray().map {
     val op = it.getValueAsString("op")
     val path = it.getValueAsString("path")
     if (op.contains("replace")) {
@@ -99,4 +83,4 @@ fun JsonPatch.toDiffReport(jsonObject: JsonObject) = toJsonArray().asSequence().
     } else {
         "Unhandled operation $op"
     }
-}.map { map -> map.value }.toList()
+}

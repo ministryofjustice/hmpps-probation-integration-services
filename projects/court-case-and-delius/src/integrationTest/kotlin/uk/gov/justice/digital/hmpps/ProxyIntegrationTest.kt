@@ -91,48 +91,4 @@ internal class ProxyIntegrationTest {
         assertThat(res.endPointName, equalTo("OFFENDER_DETAIL"))
         assertThat(res.issues?.size, equalTo(6))
     }
-
-    @Test
-    fun `compare new endpoints with community api endpoints with unconfigued endpoint`() {
-
-        val forCompare = ResourceUtils.getFile("classpath:simulations/__files/forCompare.json")
-            .inputStream().readBytes().toString(Charsets.UTF_8)
-
-        val res = mockMvc.perform(
-            post("/secure/compare")
-                .contentType("application/json;charset=utf-8")
-                .content(
-                    """
-                    {
-                        "crn": "C123456",
-                        "uri": "NOT_CONFIGURED"
-                    }
-                """
-                )
-                .withToken()
-        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
-
-        assertThat(res.endPointName, equalTo("NOT_CONFIGURED"))
-    }
-
-    @Test
-    fun `compare new endpoints with community api endpoints with new controller method not found`() {
-
-        val res = mockMvc.perform(
-            post("/secure/compare")
-                .contentType("application/json;charset=utf-8")
-                .content(
-                    """
-                    {
-                        "crn": "C123456",
-                        "uri": "DUMMY"
-                    }
-                """
-                )
-                .withToken()
-        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
-
-        assertThat(res.message, equalTo("getDummy bean cannot be found. Has this been implemented yet?"))
-        assertThat(res.endPointName, equalTo("DUMMY"))
-    }
 }
