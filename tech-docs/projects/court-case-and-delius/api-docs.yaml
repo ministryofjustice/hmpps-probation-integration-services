@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /secure/compare:
+    post:
+      tags:
+      - community-api-controller
+      operationId: compare
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Compare"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompareReport"
   /secure/offenders/crn/{crn}:
     get:
       tags:
@@ -303,6 +321,35 @@ paths:
                 type: string
 components:
   schemas:
+    Compare:
+      required:
+      - crn
+      - uri
+      type: object
+      properties:
+        crn:
+          type: string
+        uri:
+          type: string
+    CompareReport:
+      required:
+      - endPointName
+      - message
+      - success
+      type: object
+      properties:
+        endPointName:
+          type: string
+        message:
+          type: string
+        url:
+          type: string
+        success:
+          type: boolean
+        issues:
+          type: array
+          items:
+            type: string
     ContactDetailsSummary:
       required:
       - emailAddresses

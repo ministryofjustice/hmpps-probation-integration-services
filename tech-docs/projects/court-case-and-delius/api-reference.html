@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#secure-compare"><span>/secure/compare</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#secure-offenders-crn-crn"><span>/secure/offenders/crn/{crn}</span></a>
       </li>
       <li>
@@ -169,6 +172,53 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="secure-compare">/secure/compare</h2>
+
+<h3 id="secure-compare-post">post</h3>
+
+
+
+
+
+
+
+<h4 id="secure-compare-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "endPointName": "string",
+  "message": "string",
+  "url": "string",
+  "success": "boolean",
+  "issues": [
+    {
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-comparereport'>CompareReport</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -1903,6 +1953,100 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-compare">Compare</h3>
+
+
+<table class='schema-compare'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>uri</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-comparereport">CompareReport</h3>
+
+
+<table class='schema-comparereport'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>endPointName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>message</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>url</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>success</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>issues</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-contactdetailssummary">ContactDetailsSummary</h3>
 
 
