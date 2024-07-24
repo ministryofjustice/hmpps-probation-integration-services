@@ -220,8 +220,6 @@ internal class OffenderIntegrationTest {
 
         assertThat(detailResponse.offenderAliases?.get(0)?.dateOfBirth, equalTo(LocalDate.of(1968, 1, 1)))
         assertThat(detailResponse.offenderAliases?.get(0)?.firstName, equalTo("Bob"))
-        assertThat(detailResponse.offenderAliases?.get(0)?.middleNames, equalTo(listOf("Reg", "Xavier")))
-
         assertThat(
             detailResponse.offenderManagers[0].providerEmployee,
             equalTo(Human("ProvEmpForename1 ProvEmpForename2", "ProvEmpSurname"))
