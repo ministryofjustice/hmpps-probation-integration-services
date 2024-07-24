@@ -222,8 +222,8 @@ fun Person.toContactDetails() = ContactDetails(
             type = it.type.keyValueOf(),
             typeVerified = it.typeVerified,
             latestAssessmentDate = it.addressAssessments.map { it.assessmentDate }.maxByOrNull { it },
-            createdDatetime = it.createdDatetime,
-            lastUpdatedDatetime = it.lastUpdatedDatetime
+            createdDatetime = it.createdDatetime.toLocalDateTime(),
+            lastUpdatedDatetime = it.lastUpdatedDatetime.toLocalDateTime()
         )
     }.takeIf { addresses.isNotEmpty() }
 )
@@ -291,10 +291,9 @@ fun Person.toOffenderDetail(previousConviction: DocumentEntity?) = OffenderDetai
     contactDetails = toContactDetails(),
     offenderAliases = offenderAliases.map {
         OffenderAlias(
-            id = it.aliasID,
+            id = it.aliasID.toString(),
             dateOfBirth = it.dateOfBirth,
             firstName = it.firstName,
-            middleNames = listOfNotNull(it.secondName, it.thirdName),
             surname = it.surname,
             gender = it.gender.description
         )

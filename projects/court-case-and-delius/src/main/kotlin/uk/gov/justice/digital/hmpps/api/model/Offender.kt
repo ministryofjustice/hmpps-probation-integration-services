@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.api.model
 import org.springframework.boot.context.properties.ConfigurationProperties
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 data class OffenderDetailSummary(
     val preferredName: String?,
@@ -53,10 +52,10 @@ data class OffenderDetail(
 )
 
 data class OffenderAlias(
-    val id: Long,
+    val id: String,
     val dateOfBirth: LocalDate?,
     val firstName: String,
-    val middleNames: List<String>,
+    val middleNames: List<String>? = null,
     val surname: String,
     val gender: String
 )
@@ -165,8 +164,8 @@ data class Address(
     val type: KeyValue? = null,
     val typeVerified: Boolean? = null,
     val latestAssessmentDate: LocalDateTime? = null,
-    val createdDatetime: ZonedDateTime? = null,
-    val lastUpdatedDatetime: ZonedDateTime? = null,
+    val createdDatetime: LocalDateTime? = null,
+    val lastUpdatedDatetime: LocalDateTime? = null,
 )
 
 data class OtherIds(

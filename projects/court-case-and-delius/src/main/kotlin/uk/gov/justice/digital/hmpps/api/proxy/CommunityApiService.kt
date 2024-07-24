@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.api.proxy
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.json.Json
-import jakarta.json.JsonObject
 import jakarta.json.JsonPatch
+import jakarta.json.JsonStructure
 import jakarta.json.JsonValue
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
@@ -51,8 +51,8 @@ class CommunityApiService(
             )
         }
         val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
-        val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue().asJsonObject()
-        val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue().asJsonObject()
+        val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
+        val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue() as JsonStructure
         val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)
         val results = diff.toDiffReport(ccdJson)
 
@@ -80,14 +80,14 @@ class CommunityApiService(
     }
 }
 
-fun JsonObject.getValueAsString(path: String, removeQuotes: Boolean = true): String {
+fun JsonStructure.getValueAsString(path: String, removeQuotes: Boolean = true): String {
     val index = if (removeQuotes) 1 else 0
     return getValue(path.substring(index, path.length - index)).toString()
 }
 
 fun JsonValue.getValueAsString(path: String) = asJsonObject()[path].toString()
 
-fun JsonPatch.toDiffReport(jsonObject: JsonObject) = toJsonArray().map {
+fun JsonPatch.toDiffReport(jsonObject: JsonStructure) = toJsonArray().map {
     val op = it.getValueAsString("op")
     val path = it.getValueAsString("path")
     if (op.contains("replace")) {

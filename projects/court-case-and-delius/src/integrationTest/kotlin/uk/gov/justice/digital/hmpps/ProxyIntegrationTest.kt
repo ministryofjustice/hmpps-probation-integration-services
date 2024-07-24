@@ -121,4 +121,25 @@ internal class ProxyIntegrationTest {
         assertThat(res.endPointName, equalTo("CONVICTION_REQUIREMENTS"))
         assertThat(res.success, equalTo(false))
     }
+
+    @Test
+    fun `compare new endpoints with community api endpoints with json arrays`() {
+
+        val res = mockMvc.perform(
+            post("/secure/compare")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "params": {"crn": "C123456", "includeProbationAreaTeams": false },
+                        "uri": "OFFENDER_MANAGERS"
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
+
+        assertThat(res.endPointName, equalTo("OFFENDER_MANAGERS"))
+        assertThat(res.success, equalTo(false))
+    }
 }
