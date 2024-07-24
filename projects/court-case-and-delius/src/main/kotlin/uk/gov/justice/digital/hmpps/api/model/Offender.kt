@@ -102,7 +102,7 @@ data class ProbationArea(
     val description: String,
     val organisation: KeyValue? = null,
     val institution: Institution? = null,
-    val nps: Boolean,
+    val nps: Boolean? = null,
     val teams: List<AllTeam>? = null
 )
 

@@ -42,6 +42,19 @@ class CommunityApiController(
         return proxy(request)
     }
 
+    @GetMapping("/offenders/crn/{crn}/allOffenderManagers")
+    fun offenderManagers(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @RequestParam(defaultValue = "false", required = false) includeProbationAreaTeams: Boolean
+    ): Any {
+
+        if (featureFlags.enabled("ccd-offender-managers-enabled")) {
+            return probationRecordResource.getAllOffenderManagers(crn, includeProbationAreaTeams)
+        }
+        return proxy(request)
+    }
+
     @GetMapping("/offenders/crn/{crn}/{convictionId}/requirements")
     fun convictionRequirements(
         request: HttpServletRequest,

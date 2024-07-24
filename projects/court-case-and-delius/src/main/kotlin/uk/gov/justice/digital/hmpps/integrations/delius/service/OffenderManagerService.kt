@@ -117,25 +117,25 @@ fun ProbationAreaEntity.toProbationArea(includeProbationAreaTeams: Boolean) = Pr
     organisation = KeyValue(organisation.code, organisation.description),
     probationAreaId = id,
     institution = institution?.toInstitution(),
-    nps = privateSector,
-    teams = if (includeProbationAreaTeams) teams.map {
-        AllTeam(
-            code = it.code,
-            description = it.description,
-            district = KeyValue(it.district.code, it.district.description),
-            borough = KeyValue(it.district.borough.code, it.district.borough.description),
-            localDeliveryUnit = KeyValue(it.ldu.code, it.ldu.description),
-            isPrivate = it.private,
-            teamId = it.id,
-            scProvider = KeyValue(it.code, it.description)
-        )
-    } + providerTeams.map {
-        AllTeam(
-            providerTeamId = it.providerTeamId,
-            code = it.code,
-            name = it.name,
-            externalProvider = KeyValue(it.externalProvider.code, it.externalProvider.description)
-        )
-    }
-    else emptyList(),
+    teams = if (includeProbationAreaTeams) {
+        teams.map {
+            AllTeam(
+                code = it.code,
+                description = it.description,
+                district = KeyValue(it.district.code, it.district.description),
+                borough = KeyValue(it.district.borough.code, it.district.borough.description),
+                localDeliveryUnit = KeyValue(it.ldu.code, it.ldu.description),
+                isPrivate = it.private,
+                teamId = it.id,
+                scProvider = KeyValue(it.code, it.description)
+            )
+        } + providerTeams.map {
+            AllTeam(
+                providerTeamId = it.providerTeamId,
+                code = it.code,
+                name = it.name,
+                externalProvider = KeyValue(it.externalProvider.code, it.externalProvider.description)
+            )
+        }
+    } else null,
 )

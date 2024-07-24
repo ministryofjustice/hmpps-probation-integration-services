@@ -292,7 +292,7 @@ internal class OffenderIntegrationTest {
             allOffenderManagers[0].probationArea?.institution?.institutionName,
             equalTo(ProviderGenerator.DEFAULT.institution?.institutionName)
         )
-        assertThat(allOffenderManagers[0].probationArea?.teams?.size, equalTo(0))
+        assertThat(allOffenderManagers[0].probationArea?.teams, equalTo(null))
     }
 
     @Test
