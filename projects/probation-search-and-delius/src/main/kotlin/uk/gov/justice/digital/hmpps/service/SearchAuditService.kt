@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.repository.PersonRepository
 import java.time.ZonedDateTime
 
 @Service
