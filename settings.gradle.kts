@@ -89,7 +89,7 @@ dependencyResolutionManagement {
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.3")
-            library("wiremock", "org.wiremock:wiremock-standalone:3.8.0")
+            library("wiremock", "org.wiremock:wiremock-standalone:3.9.1")
             library("flipt", "io.flipt:flipt-java:1.1.1")
             library("jakarta-json", "jakarta.json:jakarta.json-api:2.0.1")
             library("glassfish-json", "org.glassfish:jakarta.json:2.0.1")
