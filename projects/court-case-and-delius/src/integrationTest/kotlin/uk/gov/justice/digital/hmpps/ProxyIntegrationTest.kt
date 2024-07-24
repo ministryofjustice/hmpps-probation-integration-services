@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.api.proxy.CompareReport
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -72,7 +73,8 @@ internal class ProxyIntegrationTest {
     fun `compare new endpoints with community api endpoints`() {
 
         val forCompare = ResourceUtils.getFile("classpath:simulations/__files/forCompare.json")
-            .inputStream().readBytes().toString(Charsets.UTF_8) //ResourceLoader.file<Any>("forCompare")
+            .inputStream().readBytes().toString(Charsets.UTF_8)
+
         doReturn(forCompare).`when`(mapper).writeValueAsString(any())
         val res = mockMvc.perform(
             post("/secure/compare")
@@ -80,7 +82,9 @@ internal class ProxyIntegrationTest {
                 .content(
                     """
                     {
-                        "crn": "C123456",
+                        "params": {
+                            "crn": "C123456"
+                        },
                         "uri": "OFFENDER_DETAIL"
                     }
                 """
@@ -90,5 +94,31 @@ internal class ProxyIntegrationTest {
 
         assertThat(res.endPointName, equalTo("OFFENDER_DETAIL"))
         assertThat(res.issues?.size, equalTo(6))
+    }
+
+    @Test
+    fun `compare new endpoints with community api endpoints multiple parameters`() {
+
+        val res = mockMvc.perform(
+            post("/secure/compare")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "params": {
+                            "crn": "C123456",
+                            "convictionId": ${SentenceGenerator.CURRENTLY_MANAGED.id},
+                            "activeOnly": true,
+                            "excludeSoftDeleted": true
+                        },
+                        "uri": "CONVICTION_REQUIREMENTS"
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
+
+        assertThat(res.endPointName, equalTo("CONVICTION_REQUIREMENTS"))
+        assertThat(res.success, equalTo(false))
     }
 }

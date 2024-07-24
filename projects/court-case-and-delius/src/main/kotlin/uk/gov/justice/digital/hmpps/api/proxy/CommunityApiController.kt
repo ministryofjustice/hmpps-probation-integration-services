@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.api.resource.ConvictionResource
 import uk.gov.justice.digital.hmpps.api.resource.ProbationRecordResource
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 
@@ -17,6 +18,7 @@ class CommunityApiController(
     private val probationRecordResource: ProbationRecordResource,
     private val featureFlags: FeatureFlags,
     private val communityApiService: CommunityApiService,
+    private val convictionResource: ConvictionResource
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -36,6 +38,21 @@ class CommunityApiController(
 
         if (featureFlags.enabled("ccd-offender-summary-enabled")) {
             return probationRecordResource.getOffenderDetailSummary(crn)
+        }
+        return proxy(request)
+    }
+
+    @GetMapping("/offenders/crn/{crn}/{convictionId}/requirements")
+    fun convictionRequirements(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+        @RequestParam(required = false, defaultValue = "true") activeOnly: Boolean,
+        @RequestParam(required = false, defaultValue = "true") excludeSoftDeleted: Boolean
+    ): Any {
+
+        if (featureFlags.enabled("ccd-conviction-requirements-enabled")) {
+            return convictionResource.getRequirementsForConviction(crn, convictionId, activeOnly, excludeSoftDeleted)
         }
         return proxy(request)
     }

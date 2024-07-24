@@ -41,7 +41,7 @@ data class OffenderDetail(
     val middleNames: List<String>,
     val offenderId: Long,
     val offenderProfile: OffenderProfile,
-    val offenderAliases: List<OffenderAlias>,
+    val offenderAliases: List<OffenderAlias>?,
     val offenderManagers: List<OffenderManager>,
     val otherIds: OtherIds,
     val partitionArea: String,
@@ -63,15 +63,15 @@ data class OffenderAlias(
 
 data class ContactDetailsSummary(
     val allowSMS: Boolean?,
-    val emailAddresses: List<String>,
-    val phoneNumbers: List<PhoneNumber>,
+    val emailAddresses: List<String>? = null,
+    val phoneNumbers: List<PhoneNumber>? = null,
 )
 
 data class ContactDetails(
     val allowSMS: Boolean?,
-    val emailAddresses: List<String>,
-    val phoneNumbers: List<PhoneNumber>,
-    val addresses: List<Address>
+    val emailAddresses: List<String>?,
+    val phoneNumbers: List<PhoneNumber>?,
+    val addresses: List<Address>?
 )
 
 data class Human(
@@ -81,9 +81,9 @@ data class Human(
 
 data class StaffHuman(
     val code: String,
-    val forename: String,
+    val forenames: String,
     val surname: String,
-    val isUnallocated: Boolean
+    val unallocated: Boolean
 )
 
 data class Institution(
@@ -98,13 +98,13 @@ data class Institution(
 )
 
 data class ProbationArea(
-    val probationAreaId: Long,
+    val probationAreaId: Long? = null,
     val code: String,
     val description: String,
-    val organisation: KeyValue,
-    val institution: Institution?,
+    val organisation: KeyValue? = null,
+    val institution: Institution? = null,
     val nps: Boolean,
-    val teams: List<AllTeam> = emptyList()
+    val teams: List<AllTeam>? = null
 )
 
 data class OffenderManager(
@@ -129,9 +129,9 @@ data class Team(
     val localDeliveryUnit: KeyValue,
     val district: KeyValue,
     val borough: KeyValue,
-    val teamType: KeyValue,
-    val startDate: LocalDate,
-    val endDate: LocalDate?
+    val teamType: KeyValue? = null,
+    val startDate: LocalDate? = null,
+    val endDate: LocalDate? = null
 )
 
 data class AllTeam(
@@ -180,36 +180,36 @@ data class OtherIds(
 )
 
 data class Disability(
-    val lastUpdatedDateTime: ZonedDateTime,
+    val lastUpdatedDateTime: LocalDateTime,
     val disabilityCondition: KeyValue,
     val disabilityId: Long,
     val disabilityType: KeyValue,
     val endDate: LocalDate?,
     val isActive: Boolean,
     val notes: String?,
-    val provisions: List<Provision>,
+    val provisions: List<Provision>? = null,
     val startDate: LocalDate
 )
 
 data class OffenderLanguages(
     val languageConcerns: String?,
-    val otherLanguages: List<String> = emptyList(),
+    val otherLanguages: List<String>? = null,
     val primaryLanguage: String?,
     val requiresInterpreter: Boolean?
 )
 
 data class OffenderProfile(
     val genderIdentity: String?,
-    val selfDescribedGenderIdentity: String?,
-    val disabilities: List<Disability> = emptyList(),
+    val selfDescribedGender: String?,
+    val disabilities: List<Disability>? = null,
     val ethnicity: String?,
     val immigrationStatus: String?,
     val nationality: String?,
     val notes: String? = null,
     val offenderDetails: String?,
     val offenderLanguages: OffenderLanguages,
-    val previousConviction: PreviousConviction?,
-    val provisions: List<Provision> = emptyList(),
+    val previousConviction: PreviousConviction,
+    val provisions: List<Provision>? = null,
     val religion: String?,
     val remandStatus: String?,
     val riskColour: String?,
@@ -223,8 +223,8 @@ data class PhoneNumber(
 )
 
 data class PreviousConviction(
-    val convictionDate: LocalDate,
-    val detail: Map<String, String>
+    val convictionDate: LocalDate?,
+    val detail: Map<String, String>?
 )
 
 data class Provision(

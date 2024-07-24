@@ -163,16 +163,25 @@ fun DisabilityEntity.isActive(): Boolean {
     return finishDate == null || finishDate.isAfter(LocalDate.now())
 }
 
+fun Person.toPhoneNumbers(): List<PhoneNumber>? {
+    val phoneNumbers = listOfNotNull(
+        if (telephoneNumber != null) PhoneNumber(telephoneNumber, PhoneTypes.TELEPHONE.name) else null,
+        if (mobileNumber != null) PhoneNumber(mobileNumber, PhoneTypes.MOBILE.name) else null
+    )
+    return phoneNumbers.ifEmpty { null }
+}
+
+fun Person.toEmailAddresses(): List<String>? {
+    return if (emailAddress != null) listOf(emailAddress) else null
+}
+
 fun Person.toOffenderSummary(previousConviction: DocumentEntity?) = OffenderDetailSummary(
     preferredName = preferredName,
     activeProbationManagedSentence = currentDisposal,
     contactDetails = ContactDetailsSummary(
         allowSMS = allowSms,
-        emailAddresses = listOfNotNull(emailAddress),
-        phoneNumbers = listOf(
-            PhoneNumber(telephoneNumber, PhoneTypes.TELEPHONE.name),
-            PhoneNumber(mobileNumber, PhoneTypes.MOBILE.name)
-        )
+        emailAddresses = toEmailAddresses(),
+        phoneNumbers = toPhoneNumbers()
     ),
     currentDisposal = if (currentDisposal) "1" else "0",
     currentExclusion = currentExclusion,
@@ -193,11 +202,8 @@ fun Person.toOffenderSummary(previousConviction: DocumentEntity?) = OffenderDeta
 
 fun Person.toContactDetails() = ContactDetails(
     allowSMS = allowSms,
-    emailAddresses = listOfNotNull(emailAddress),
-    phoneNumbers = listOf(
-        PhoneNumber(telephoneNumber, PhoneTypes.TELEPHONE.name),
-        PhoneNumber(mobileNumber, PhoneTypes.MOBILE.name)
-    ),
+    emailAddresses = toEmailAddresses(),
+    phoneNumbers = toPhoneNumbers(),
     addresses = addresses.map { it ->
         Address(
             from = it.startDate,
@@ -219,7 +225,7 @@ fun Person.toContactDetails() = ContactDetails(
             createdDatetime = it.createdDatetime,
             lastUpdatedDatetime = it.lastUpdatedDatetime
         )
-    }
+    }.takeIf { addresses.isNotEmpty() }
 )
 
 fun Person.toOtherIds() = OtherIds(
@@ -243,9 +249,9 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
         staff = it.staff?.let { staff ->
             StaffHuman(
                 code = staff.code,
-                forename = staff.forename,
+                forenames = listOfNotNull(staff.forename, staff.forename2).joinToString(" "),
                 surname = staff.surname,
-                isUnallocated = staff.isUnallocated()
+                unallocated = staff.isUnallocated()
             )
         },
         providerEmployee = it.providerEmployee.let { emp ->
@@ -262,21 +268,15 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
                 description = team.description,
                 telephone = team.telephone,
                 emailAddress = team.emailAddress,
-                localDeliveryUnit = KeyValue(team.ldu.code, team.ldu.description),
+                localDeliveryUnit = KeyValue(team.district.code, team.district.description),
                 district = KeyValue(team.district.code, team.district.description),
-                borough = KeyValue(team.district.borough.code, team.district.borough.code),
-                startDate = team.startDate,
-                endDate = team.endDate,
-                teamType = KeyValue(team.code, team.description)
+                borough = KeyValue(team.district.borough.code, team.district.borough.description)
             )
         },
         probationArea = ProbationArea(
-            probationAreaId = it.provider.id,
             code = it.provider.code,
             description = it.provider.description,
-            nps = it.provider.privateSector,
-            institution = it.provider.institution?.toInstitution(),
-            organisation = KeyValue(it.provider.organisation.code, it.provider.organisation.description)
+            nps = !it.provider.privateSector
         ),
         active = it.active,
         fromDate = it.date.toLocalDate(),
@@ -298,7 +298,7 @@ fun Person.toOffenderDetail(previousConviction: DocumentEntity?) = OffenderDetai
             surname = it.surname,
             gender = it.gender.description
         )
-    },
+    }.takeIf { offenderAliases.isNotEmpty() },
     currentDisposal = if (currentDisposal) "1" else "0",
     currentExclusion = currentExclusion,
     exclusionMessage = exclusionMessage,
@@ -322,20 +322,19 @@ fun Person.toOffenderDetail(previousConviction: DocumentEntity?) = OffenderDetai
 
 fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     genderIdentity = genderIdentity?.description,
-    selfDescribedGenderIdentity = genderIdentityDescription ?: genderIdentity?.description,
+    selfDescribedGender = genderIdentityDescription ?: genderIdentity?.description,
     disabilities = disabilities.sortedByDescending { it.startDate }.map {
         Disability(
-            lastUpdatedDateTime = it.lastUpdated,
+            lastUpdatedDateTime = it.lastUpdated.toLocalDateTime(),
             disabilityCondition = KeyValue(it.condition.code, it.condition.description),
             disabilityId = it.id,
             disabilityType = KeyValue(it.type.code, it.type.description),
             endDate = it.finishDate,
             isActive = it.isActive(),
             notes = it.notes,
-            provisions = emptyList(),
             startDate = it.startDate
         )
-    },
+    }.takeIf { disabilities.isNotEmpty() },
     ethnicity = ethnicity?.description,
     immigrationStatus = immigrationStatus?.description,
     nationality = nationality?.description,
@@ -343,18 +342,11 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     offenderLanguages = OffenderLanguages(
         languageConcerns = languageConcerns,
         primaryLanguage = language?.description,
-        requiresInterpreter = requiresInterpreter,
-        otherLanguages = emptyList()
+        requiresInterpreter = requiresInterpreter
     ),
-    previousConviction = previousConviction?.lastUpdated.let {
-        previousConviction?.createdAt?.toLocalDate()
-            ?.let { it1 ->
-                PreviousConviction(
-                    convictionDate = it1,
-                    detail = ImmutableMap.of("documentName", previousConviction.name)
-                )
-            }
-    },
+    previousConviction = PreviousConviction(convictionDate = previousConviction?.dateProduced?.toLocalDate(),
+        detail = previousConviction?.let { ImmutableMap.of("documentName", previousConviction.name) }),
+
     provisions = provisions.sortedByDescending { it.startDate }.map {
         Provision(
             category = it.category?.let { cat -> KeyValue(cat.code, cat.description) },
@@ -364,7 +356,7 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
             provisionType = KeyValue(it.type.code, it.type.description),
             startDate = it.startDate
         )
-    },
+    }.takeIf { provisions.isNotEmpty() },
     religion = religion?.description,
     remandStatus = currentRemandStatus,
     riskColour = currentHighestRiskColour,

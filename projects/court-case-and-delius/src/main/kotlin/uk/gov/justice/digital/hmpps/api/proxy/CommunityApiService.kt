@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import java.io.StringReader
 import java.net.URI
+import kotlin.reflect.KParameter
 
 @Service
 class CommunityApiService(
@@ -23,15 +24,32 @@ class CommunityApiService(
     fun getCcdJson(compare: Compare): String {
         val uri = Uri.valueOf(compare.uri)
         val instance = applicationContext.getBean(uri.ccdInstance)
-        return mapper.writeValueAsString(instance::class.members.firstOrNull { it.name == uri.ccdFunction }
-            ?.call(instance, compare.crn))
+        val function = instance::class.members.firstOrNull { it.name == uri.ccdFunction }
+        val functionParams = function?.parameters?.drop(1)?.associateBy({ it }, {
+            generateValue(it, compare.params)
+        })!!
+        val paramsFunc = function.parameters
+        val params = mapOf(paramsFunc[0] to instance) + functionParams
+
+        return mapper.writeValueAsString(
+            function.callBy(params)
+        )
+    }
+
+    fun generateValue(param: KParameter, originalValue: Map<*, *>): Any? {
+        return originalValue.values.toList()[param.index - 1]
     }
 
     fun compare(compare: Compare, headers: Map<String, String>): CompareReport {
 
         val uri = Uri.valueOf(compare.uri)
         val ccdJsonString = getCcdJson(compare)
-        val comApiUri = uri.comApiUrl.replace("{crn}", compare.crn)
+        val comApiUri = compare.params.entries.fold(uri.comApiUrl) { path, (key, value) ->
+            path.replace(
+                "{$key}",
+                value.toString()
+            )
+        }
         val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue().asJsonObject()
         val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue().asJsonObject()

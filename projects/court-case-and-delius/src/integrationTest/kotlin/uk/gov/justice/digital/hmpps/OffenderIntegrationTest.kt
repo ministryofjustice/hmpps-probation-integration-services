@@ -15,15 +15,18 @@ import org.springframework.test.web.servlet.result.isEqualTo
 import software.amazon.awssdk.utils.ImmutableMap
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.*
-import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.AreaGenerator.PARTITION_AREA
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDRESS
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PREVIOUS_CONVICTION_DOC
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProviderTeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DEFAULT_ALLOCATION_REASON
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DISABILITY_TYPE_1
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.PROVISION_TYPE_1
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RELIGION
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.ALLOCATED
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -68,15 +71,15 @@ internal class OffenderIntegrationTest {
         assertThat(detailResponse.offenderId, equalTo(PersonGenerator.CURRENTLY_MANAGED.id))
         assertThat(detailResponse.offenderProfile.genderIdentity, equalTo("Some gender identity"))
         assertThat(
-            detailResponse.offenderProfile.selfDescribedGenderIdentity,
+            detailResponse.offenderProfile.selfDescribedGender,
             equalTo("Some self described gender identity")
         )
         assertThat(
-            detailResponse.offenderProfile.selfDescribedGenderIdentity,
+            detailResponse.offenderProfile.selfDescribedGender,
             equalTo("Some self described gender identity")
         )
         assertThat(
-            detailResponse.offenderProfile.disabilities[0].disabilityType.description,
+            detailResponse.offenderProfile.disabilities?.get(0)?.disabilityType?.description,
             equalTo(DISABILITY_TYPE_1.description)
         )
         assertThat(detailResponse.offenderProfile.ethnicity, equalTo("Some ethnicity"))
@@ -95,13 +98,13 @@ internal class OffenderIntegrationTest {
         assertThat(
             detailResponse.offenderProfile.previousConviction, equalTo(
                 PreviousConviction(
-                    convictionDate = PREVIOUS_CONVICTION_DOC.createdAt.toLocalDate(),
+                    convictionDate = PREVIOUS_CONVICTION_DOC.dateProduced?.toLocalDate(),
                     detail = ImmutableMap.of("documentName", PREVIOUS_CONVICTION_DOC.name)
                 )
             )
         )
         assertThat(
-            detailResponse.offenderProfile.provisions[0].provisionType.description,
+            detailResponse.offenderProfile.provisions?.get(0)?.provisionType?.description,
             equalTo(PROVISION_TYPE_1.description)
         )
         assertThat(detailResponse.offenderProfile.religion, equalTo(RELIGION.description))
@@ -162,9 +165,9 @@ internal class OffenderIntegrationTest {
                 )
             )
         )
-        assertThat(detailResponse.contactDetails.addresses[0].addressNumber, equalTo(ADDRESS.addressNumber))
-        assertThat(detailResponse.contactDetails.addresses[0].county, equalTo(ADDRESS.county))
-        assertThat(detailResponse.contactDetails.addresses[0].status, equalTo(ADDRESS.status.keyValueOf()))
+        assertThat(detailResponse.contactDetails.addresses?.get(0)?.addressNumber, equalTo(ADDRESS.addressNumber))
+        assertThat(detailResponse.contactDetails.addresses?.get(0)?.county, equalTo(ADDRESS.county))
+        assertThat(detailResponse.contactDetails.addresses?.get(0)?.status, equalTo(ADDRESS.status.keyValueOf()))
         assertThat(detailResponse.contactDetails.allowSMS, equalTo(true))
         assertThat(detailResponse.contactDetails.emailAddresses, equalTo(listOf("test@test.none")))
         assertThat(detailResponse.currentDisposal, equalTo("1"))
@@ -178,15 +181,15 @@ internal class OffenderIntegrationTest {
         assertThat(detailResponse.offenderId, equalTo(PersonGenerator.CURRENTLY_MANAGED.id))
         assertThat(detailResponse.offenderProfile.genderIdentity, equalTo("Some gender identity"))
         assertThat(
-            detailResponse.offenderProfile.selfDescribedGenderIdentity,
+            detailResponse.offenderProfile.selfDescribedGender,
             equalTo("Some self described gender identity")
         )
         assertThat(
-            detailResponse.offenderProfile.selfDescribedGenderIdentity,
+            detailResponse.offenderProfile.selfDescribedGender,
             equalTo("Some self described gender identity")
         )
         assertThat(
-            detailResponse.offenderProfile.disabilities[0].disabilityType.description,
+            detailResponse.offenderProfile.disabilities?.get(0)?.disabilityType?.description,
             equalTo(DISABILITY_TYPE_1.description)
         )
         assertThat(detailResponse.offenderProfile.ethnicity, equalTo("Some ethnicity"))
@@ -205,19 +208,19 @@ internal class OffenderIntegrationTest {
         assertThat(
             detailResponse.offenderProfile.previousConviction, equalTo(
                 PreviousConviction(
-                    convictionDate = PREVIOUS_CONVICTION_DOC.createdAt.toLocalDate(),
+                    convictionDate = PREVIOUS_CONVICTION_DOC.dateProduced?.toLocalDate(),
                     detail = ImmutableMap.of("documentName", PREVIOUS_CONVICTION_DOC.name)
                 )
             )
         )
         assertThat(
-            detailResponse.offenderProfile.provisions[0].provisionType.description,
+            detailResponse.offenderProfile.provisions?.get(0)?.provisionType?.description,
             equalTo(PROVISION_TYPE_1.description)
         )
 
-        assertThat(detailResponse.offenderAliases[0].dateOfBirth, equalTo(LocalDate.of(1968, 1, 1)))
-        assertThat(detailResponse.offenderAliases[0].firstName, equalTo("Bob"))
-        assertThat(detailResponse.offenderAliases[0].middleNames, equalTo(listOf("Reg", "Xavier")))
+        assertThat(detailResponse.offenderAliases?.get(0)?.dateOfBirth, equalTo(LocalDate.of(1968, 1, 1)))
+        assertThat(detailResponse.offenderAliases?.get(0)?.firstName, equalTo("Bob"))
+        assertThat(detailResponse.offenderAliases?.get(0)?.middleNames, equalTo(listOf("Reg", "Xavier")))
 
         assertThat(
             detailResponse.offenderManagers[0].providerEmployee,
@@ -230,7 +233,14 @@ internal class OffenderIntegrationTest {
         )
         assertThat(
             detailResponse.offenderManagers[0].staff,
-            equalTo(StaffHuman(ALLOCATED.code, ALLOCATED.forename, ALLOCATED.surname, false))
+            equalTo(
+                StaffHuman(
+                    ALLOCATED.code,
+                    ALLOCATED.forename + " " + ALLOCATED.forename2,
+                    ALLOCATED.surname,
+                    false
+                )
+            )
         )
         assertThat(detailResponse.offenderManagers[0].allocationReason, equalTo(DEFAULT_ALLOCATION_REASON.keyValueOf()))
         assertThat(detailResponse.offenderManagers[0].partitionArea, equalTo(PARTITION_AREA.area))
@@ -279,7 +289,7 @@ internal class OffenderIntegrationTest {
             .perform(get("/probation-case/$crn/allOffenderManagers").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<List<CommunityOrPrisonOffenderManager>>()
-        assertThat(allOffenderManagers[0].staff?.surname, equalTo(StaffGenerator.ALLOCATED.surname))
+        assertThat(allOffenderManagers[0].staff?.surname, equalTo(ALLOCATED.surname))
         assertThat(
             allOffenderManagers[0].probationArea?.institution?.institutionName,
             equalTo(ProviderGenerator.DEFAULT.institution?.institutionName)
@@ -294,7 +304,7 @@ internal class OffenderIntegrationTest {
             .perform(get("/probation-case/$crn/allOffenderManagers?includeProbationAreaTeams=true").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<List<CommunityOrPrisonOffenderManager>>()
-        assertThat(allOffenderManagers[0].staff?.surname, equalTo(StaffGenerator.ALLOCATED.surname))
+        assertThat(allOffenderManagers[0].staff?.surname, equalTo(ALLOCATED.surname))
         assertThat(
             allOffenderManagers[0].probationArea?.institution?.institutionName,
             equalTo(ProviderGenerator.DEFAULT.institution?.institutionName)
@@ -327,7 +337,7 @@ internal class OffenderIntegrationTest {
 
     @Test
     fun `Detail API call probation restricted case returns 200`() {
-        val resp = mockMvc
+        mockMvc
             .perform(get("/probation-case/${PersonGenerator.RESTRICTED_CASE.crn}/all").withToken())
             .andExpect(status().isOk)
     }
@@ -344,7 +354,7 @@ internal class OffenderIntegrationTest {
 
     @Test
     fun `Summary API call probation restricted case returns 200`() {
-        val resp = mockMvc
+        mockMvc
             .perform(get("/probation-case/${PersonGenerator.RESTRICTED_CASE.crn}").withToken())
             .andExpect(status().isOk)
     }
