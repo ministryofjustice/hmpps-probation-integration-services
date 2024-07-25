@@ -1,0 +1,32 @@
+# Resettlement Passport Workflow: Create Case Note
+
+direction: right
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+# What triggers the workflow?
+resettlement-passport: Resettlement Passport {
+     style.font-size: 24
+
+     explanation: |md
+     ## Case Workflow
+     Resettlement activity results in a case note \
+     of a specific type
+     |
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+
+     explanation: |md
+     ## Contact Workflow
+     NOMIS case note contacts are added to Delius
+     |
+
+    d_contact: Create Contact
+}
+
+resettlement-passport --> delius: HTTP POST
