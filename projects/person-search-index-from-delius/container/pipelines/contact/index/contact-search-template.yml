@@ -455,7 +455,7 @@ template:
             - antisocial, anti_social, anti-social, asbo
             - ap => accredited_programme, approved_premises
             - appointment, office_visit, visit, attendance, appt
-            - assault => abh, actual_bodily_harm, gbh, grievous_bodily_harm
+            - assault => abh, gbh
             - atr, alcohol_treatment_requirement
             - att, attend, attended, attendance
             - bbr, building_better_relationships
@@ -468,7 +468,6 @@ template:
             - cas1, approved_premises, approved_premise, hostel
             - cas2, bass, bail_accommodation, bail_accommodation_support_service, bail_hostel
             - cas3, transitional_housing, temporary_accommodation, short-term_accommodation, short_term_accommodation
-            - cc, crown_court
             - ccr, pre-release_custody_date
             - ccs, recall_date
             - cdvp, community_domestic_violence_programme
@@ -479,11 +478,11 @@ template:
             - client, offender, pop, person_on_probation, probationer
             - co, community_order
             - comm, communication, communications
-            - community_order => co, probation_order, cro, community_rehabilitation_order, cpo, community_punishment_order, cpro, community_punishment_and_rehabilitation_order, sso, suspended_sentence_order
+            - community_order => co, probation_order, cro, cpo, cpro, sso
             - comp, comply, complied
             - conviction, sentence, event, order, disposal
             - cosa, circles_of_support
-            - court => magistrates_court, mags_court, mags_crt, mags, mc, crown_court, crown_crt, cc, crn_court, crn_crt
+            - court => magistrates_court, crown_court
             - covaid, control_of_violence_for_angry_impulsive_drinkers
             - cpo, community_punishment_order
             - cppt, com, mgr, manager, offender_manager, practitioner, probation_practitioner, pp, community_practitioner, cpp, po, pso, pquip, om, supervisor, officer, probation_officer, ro, responsible_officer
