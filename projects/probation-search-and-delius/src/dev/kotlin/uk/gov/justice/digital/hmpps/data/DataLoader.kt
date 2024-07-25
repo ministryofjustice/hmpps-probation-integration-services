@@ -10,8 +10,8 @@ import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionReposito
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.repository.PersonRepository
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.ZonedDateTime
 

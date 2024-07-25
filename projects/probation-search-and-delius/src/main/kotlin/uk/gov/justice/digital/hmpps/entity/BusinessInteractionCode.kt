@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.audit
+package uk.gov.justice.digital.hmpps.entity
 
 import uk.gov.justice.digital.hmpps.audit.InteractionCode
 

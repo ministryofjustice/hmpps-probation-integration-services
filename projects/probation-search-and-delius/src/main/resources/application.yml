@@ -20,6 +20,7 @@ spring:
 
 oauth2.roles:
   - PROBATION_API__PROBATION_SEARCH__AUDIT_RW
+  - PROBATION_API__PROBATION_SEARCH__CASE_DETAIL
 
 springdoc.default-produces-media-type: application/json
 
