@@ -10,14 +10,33 @@ updates:
     ignore:
       - dependency-name: "software.amazon.awssdk:*" # reduce the noise of frequent AWS SDK updates
         update-types: ["version-update:semver-patch"]
+    groups:
+      minor:
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      minor:
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "*"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/analyse"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/app-insights-to-slack"
     schedule:
       interval: "daily"
 
