@@ -29,7 +29,7 @@ class ConvictionService(
         return when (activeOnly) {
             true -> eventRepository.findAllByPersonAndActiveIsTrue(person)
             else -> eventRepository.findAllByPerson(person)
-        }.map { it.toConviction() }
+        }.sortedByDescending(Event::referralDate).map { it.toConviction() }
     }
 
     fun getConvictionFor(crn: String, eventId: Long): Conviction? {

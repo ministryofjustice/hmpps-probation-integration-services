@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementMainCat
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementSubCat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 fun ReferenceData.keyValueOf() = KeyValue(code, description)
@@ -61,7 +62,7 @@ data class Sentence(
 data class Offence(
     val description: String,
     val main: Boolean = false,
-    val offenceDate: LocalDate?
+    val offenceDate: LocalDateTime?
 )
 
 data class KeyValue(

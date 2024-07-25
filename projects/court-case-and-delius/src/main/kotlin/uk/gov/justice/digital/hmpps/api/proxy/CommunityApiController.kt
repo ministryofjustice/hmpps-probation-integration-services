@@ -86,7 +86,9 @@ class CommunityApiController(
     @GetMapping("/**")
     fun proxy(request: HttpServletRequest): ResponseEntity<String> {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
-        return communityApiService.proxy(request.requestURI, headers)
+        val fullUri =
+            if (request.queryString != null) request.requestURI + '?' + request.queryString else request.requestURI
+        return communityApiService.proxy(fullUri, headers)
     }
 
     @PostMapping("/compare")

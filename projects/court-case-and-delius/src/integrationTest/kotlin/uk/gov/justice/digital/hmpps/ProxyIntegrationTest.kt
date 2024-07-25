@@ -43,6 +43,7 @@ internal class ProxyIntegrationTest {
     fun setup() {
         whenever(featureFlags.enabled("ccd-offender-detail-enabled")).thenReturn(false)
         whenever(featureFlags.enabled("ccd-offender-summary-enabled")).thenReturn(false)
+        whenever(featureFlags.enabled("ccd-offender-managers-enabled")).thenReturn(false)
     }
 
     @Test
@@ -51,6 +52,13 @@ internal class ProxyIntegrationTest {
             .perform(get("/secure/offenders/crn/C123456/all").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.otherIds.crn").value("C123456"))
+    }
+
+    @Test
+    fun `proxies to community api for offenders allOffenderManagers`() {
+        mockMvc
+            .perform(get("/secure/offenders/crn/C123456/allOffenderManagers?includeProbationAreaTeams=true").withToken())
+            .andExpect(status().is2xxSuccessful)
     }
 
     @Test
