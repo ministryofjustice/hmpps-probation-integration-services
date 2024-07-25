@@ -468,6 +468,7 @@ template:
             - cas1, approved_premises, approved_premise, hostel
             - cas2, bass, bail_accommodation, bail_accommodation_support_service, bail_hostel
             - cas3, transitional_housing, temporary_accommodation, short-term_accommodation, short_term_accommodation
+            - cc, crown_court, crown_crt, crn_court, crn_crt
             - ccr, pre-release_custody_date
             - ccs, recall_date
             - cdvp, community_domestic_violence_programme
@@ -552,7 +553,7 @@ template:
             - liap, low_intensity_alcohol_programmes
             - lic, lc, licence_condition, licence
             - lp, lpt, ldn, london, london_probation, london_probation_trust, london_probation_area
-            - magistrates_court, mags_court, mags_crt, mags, mc
+            - mc, magistrates_court, mags_court, mags_crt, mags
             - medication, medicine, prescription, naloxone, meds
             - mh, mental_health
             - min, minutes
