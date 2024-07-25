@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -45,6 +46,9 @@ class DocumentEntity(
 
     @Column
     val lastUpdatedUserId: Long = 0,
+
+    @Column(name = "date_produced")
+    val dateProduced: LocalDateTime? = null,
 
     @Column(name = "last_saved")
     val lastUpdated: ZonedDateTime,

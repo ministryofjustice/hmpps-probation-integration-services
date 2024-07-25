@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.proxy
 
 data class Compare(
-    val crn: String,
+    val params: Map<String, Any>,
     val uri: String
 )

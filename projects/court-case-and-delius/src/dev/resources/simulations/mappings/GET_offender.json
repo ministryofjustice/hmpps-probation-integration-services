@@ -4,6 +4,24 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/secure/offenders/crn/C123456/allOffenderManagers",
+        "headers": {
+          "Content-Type": {
+            "equalTo": "application/json;charset=UTF-8"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_offender_all_offender_managers_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPath": "/secure/offenders/crn/C123456/all",
         "headers": {
             "Content-Type": {

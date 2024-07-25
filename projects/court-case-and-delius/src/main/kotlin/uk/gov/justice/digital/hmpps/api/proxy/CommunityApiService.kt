@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.api.proxy
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.json.Json
-import jakarta.json.JsonObject
 import jakarta.json.JsonPatch
+import jakarta.json.JsonStructure
 import jakarta.json.JsonValue
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import java.io.StringReader
 import java.net.URI
+import kotlin.reflect.KParameter
 
 @Service
 class CommunityApiService(
@@ -23,18 +24,35 @@ class CommunityApiService(
     fun getCcdJson(compare: Compare): String {
         val uri = Uri.valueOf(compare.uri)
         val instance = applicationContext.getBean(uri.ccdInstance)
-        return mapper.writeValueAsString(instance::class.members.firstOrNull { it.name == uri.ccdFunction }
-            ?.call(instance, compare.crn))
+        val function = instance::class.members.firstOrNull { it.name == uri.ccdFunction }
+        val functionParams = function?.parameters?.drop(1)?.associateBy({ it }, {
+            generateValue(it, compare.params)
+        })!!
+        val paramsFunc = function.parameters
+        val params = mapOf(paramsFunc[0] to instance) + functionParams
+
+        return mapper.writeValueAsString(
+            function.callBy(params)
+        )
+    }
+
+    fun generateValue(param: KParameter, originalValue: Map<*, *>): Any? {
+        return originalValue.values.toList()[param.index - 1]
     }
 
     fun compare(compare: Compare, headers: Map<String, String>): CompareReport {
 
         val uri = Uri.valueOf(compare.uri)
         val ccdJsonString = getCcdJson(compare)
-        val comApiUri = uri.comApiUrl.replace("{crn}", compare.crn)
+        val comApiUri = compare.params.entries.fold(uri.comApiUrl) { path, (key, value) ->
+            path.replace(
+                "{$key}",
+                value.toString()
+            )
+        }
         val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
-        val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue().asJsonObject()
-        val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue().asJsonObject()
+        val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
+        val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue() as JsonStructure
         val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)
         val results = diff.toDiffReport(ccdJson)
 
@@ -62,14 +80,14 @@ class CommunityApiService(
     }
 }
 
-fun JsonObject.getValueAsString(path: String, removeQuotes: Boolean = true): String {
+fun JsonStructure.getValueAsString(path: String, removeQuotes: Boolean = true): String {
     val index = if (removeQuotes) 1 else 0
     return getValue(path.substring(index, path.length - index)).toString()
 }
 
 fun JsonValue.getValueAsString(path: String) = asJsonObject()[path].toString()
 
-fun JsonPatch.toDiffReport(jsonObject: JsonObject) = toJsonArray().map {
+fun JsonPatch.toDiffReport(jsonObject: JsonStructure) = toJsonArray().map {
     val op = it.getValueAsString("op")
     val path = it.getValueAsString("path")
     if (op.contains("replace")) {

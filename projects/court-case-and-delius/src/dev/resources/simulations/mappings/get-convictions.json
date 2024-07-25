@@ -1,0 +1,55 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/{convictionId}/requirements"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody":{
+          "requirements": [
+            {
+              "requirementId": 93,
+              "requirementNotes": "notes difference",
+              "commencementDate": "2024-01-01",
+              "startDate": "2024-01-02",
+              "terminationDate": "2024-01-03",
+              "expectedStartDate": "2024-01-04",
+              "expectedEndDate": "2024-01-05",
+              "createdDatetime": "2023-12-31T12:00:00",
+              "active": true,
+              "requirementTypeSubCategory": {
+                "code": "Sub",
+                "description": "Sub cat"
+              },
+              "requirementTypeMainCategory": {
+                "code": "Main",
+                "description": "Main cat"
+              },
+              "adRequirementTypeMainCategory": {
+                "code": "AdMain",
+                "description": "AdMain cat"
+              },
+              "adRequirementTypeSubCategory": {
+                "code": "AdSub",
+                "description": "AdSub cat"
+              },
+              "terminationReason": {
+                "code": "R1",
+                "description": "Released"
+              },
+              "length": 3,
+              "lengthUnit": "months",
+              "restrictive": false,
+              "softDeleted": false
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
