@@ -20,21 +20,22 @@ prisoner.movement.configs:
   - types:
       - RELEASED
     reasons:
+      # Secure hospital
       - HO
       - HP
       - HQ
-    actionNames:
-      - Recall
-      - UpdateLocation
-      - UpdateStatus
-  - types:
-      - RELEASED
-    reasons:
+      # Unlawfully at large
+      - UAL
+      - UAL_ECL
+      # IRC
       - DD
       - DE
       - DL
-      - ETR
       - ECSLIRC
+      # Early removal scheme
+      - ETR
+      # Repatriated
+      - RE
     actionNames:
       - Recall
       - UpdateLocation
@@ -46,15 +47,6 @@ prisoner.movement.configs:
     reasonOverride: RO
     actionNames:
       - Release
-      - UpdateLocation
-      - UpdateStatus
-  - types:
-      - RELEASED
-    reasons:
-      - UAL
-      - UAL_ECL
-    actionNames:
-      - Recall
       - UpdateLocation
       - UpdateStatus
   - types:
