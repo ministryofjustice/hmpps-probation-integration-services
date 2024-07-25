@@ -55,6 +55,19 @@ class CommunityApiController(
         return proxy(request)
     }
 
+    @GetMapping("/offenders/crn/{crn}/convictions")
+    fun convictions(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @RequestParam(defaultValue = "false", required = false) activeOnly: Boolean
+    ): Any {
+
+        if (featureFlags.enabled("ccd-convictions-enabled")) {
+            return convictionResource.getConvictionsForOffenderByCrn(crn, activeOnly)
+        }
+        return proxy(request)
+    }
+
     @GetMapping("/offenders/crn/{crn}/{convictionId}/requirements")
     fun convictionRequirements(
         request: HttpServletRequest,

@@ -66,8 +66,8 @@ class ConvictionService(
     }
 
     fun Event.toLatestCourtAppearanceOutcome(): KeyValue? {
-        courtAppearances.maxByOrNull { it.appearanceDate }
-            ?.let { return KeyValue(it.outcome.code, it.outcome.description) }
+        courtAppearances.filter { it.outcome != null }.maxByOrNull { it.appearanceDate }
+            ?.let { return KeyValue(it.outcome!!.code, it.outcome.description) }
             ?: return null
     }
 
@@ -80,7 +80,7 @@ class ConvictionService(
     fun CourtAppearance.toCourtAppearanceBasic(): CourtAppearanceBasic =
         CourtAppearanceBasic(
             id,
-            appearanceDate,
+            appearanceDate.toLocalDateTime(),
             court.code,
             court.courtName,
             KeyValue(appearanceType.code, appearanceType.description),
@@ -97,8 +97,8 @@ class ConvictionService(
             tics = tics,
             verdict = verdict,
             offenderId = event.person.id,
-            createdDatetime = created,
-            lastUpdatedDatetime = updated
+            createdDatetime = created.toLocalDateTime(),
+            lastUpdatedDatetime = updated.toLocalDateTime()
         )
 
     fun AdditionalOffence.toOffence(): Offence =
@@ -111,8 +111,8 @@ class ConvictionService(
             tics = null,
             verdict = null,
             offenderId = event.person.id,
-            createdDatetime = created,
-            lastUpdatedDatetime = updated
+            createdDatetime = created.toLocalDateTime(),
+            lastUpdatedDatetime = updated.toLocalDateTime()
         )
 
     fun OffenceEntity.toOffenceDetail(): OffenceDetail =
@@ -240,8 +240,8 @@ class ConvictionService(
         postcode,
         country,
         courtTypeId,
-        createdDatetime,
-        lastUpdatedDatetime,
+        createdDatetime.toLocalDateTime(),
+        lastUpdatedDatetime.toLocalDateTime(),
         probationAreaId,
         secureEmailAddress,
         KeyValue(probationArea.code, probationArea.description),
@@ -255,8 +255,8 @@ class ConvictionService(
             id,
             staff?.getName(),
             staff?.code,
-            allocationDate,
-            endDate,
+            allocationDate.toLocalDateTime(),
+            endDate?.toLocalDateTime(),
             staff?.grade?.code,
             team?.code,
             probationArea.code
