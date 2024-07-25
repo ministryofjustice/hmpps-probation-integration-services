@@ -81,23 +81,23 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.5.3")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.11.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.12.0")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.5.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.6.0"
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.3")
-            library("wiremock", "org.wiremock:wiremock-standalone:3.8.0")
+            library("wiremock", "org.wiremock:wiremock-standalone:3.9.1")
             library("flipt", "io.flipt:flipt-java:1.1.1")
-            library("jakarta-json", "jakarta.json:jakarta.json-api:2.0.1")
+            library("jakarta-json", "jakarta.json:jakarta.json-api:2.1.3")
             library("glassfish-json", "org.glassfish:jakarta.json:2.0.1")
         }
     }
 }
 
-plugins { id("com.gradle.develocity") version "3.17.5" }
+plugins { id("com.gradle.develocity") version "3.17.6" }
 develocity {
     buildScan {
         publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }
