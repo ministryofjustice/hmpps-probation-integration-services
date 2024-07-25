@@ -87,6 +87,43 @@ template:
             - 9.00 am => 9.00_am
             - 10.00 am => 10.00_am
             - 11.00 am => 11.00_am
+            - 12.00 am => 12.00_am
+            - 1.00 pm => 1.00_pm
+            - 2.00 pm => 2.00_pm
+            - 3.00 pm => 3.00_pm
+            - 4.00 pm => 4.00_pm
+            - 5.00 pm => 5.00_pm
+            - 6.00 pm => 6.00_pm
+            - 7.00 pm => 7.00_pm
+            - 8.00 pm => 8.00_pm
+            - 9.00 pm => 9.00_pm
+            - 10.00 pm => 10.00_pm
+            - 11.00 pm => 11.00_pm
+            - 12.00 pm => 12.00_pm
+            - 1 am => 1_am
+            - 2 am => 2_am
+            - 3 am => 3_am
+            - 4 am => 4_am
+            - 5 am => 5_am
+            - 6 am => 6_am
+            - 7 am => 7_am
+            - 8 am => 8_am
+            - 9 am => 9_am
+            - 10 am => 10_am
+            - 11 am => 11_am
+            - 12 am => 12_am
+            - 1 pm => 1_pm
+            - 2 pm => 2_pm
+            - 3 pm => 3_pm
+            - 4 pm => 4_pm
+            - 5 pm => 5_pm
+            - 6 pm => 6_pm
+            - 7 pm => 7_pm
+            - 8 pm => 8_pm
+            - 9 pm => 9_pm
+            - 10 pm => 10_pm
+            - 11 pm => 11_pm
+            - 12 pm => 12_pm
             - 12 monthly => 12_monthly
             - a domestic => a_domestic
             - a home => a_home
@@ -414,8 +451,8 @@ template:
             - afternoon, pm
             - alc, alcohol, booze, drinking, drunk, drunkenness
             - annual, yearly, 12_monthly, 12monthly, per_annum
-            - antisocial, anti_social, anti-social, asbo
             - antidepressants, anti-depressants, anti_depressants
+            - antisocial, anti_social, anti-social, asbo
             - ap => accredited_programme, approved_premises
             - appointment, office_visit, visit, attendance, appt
             - assault => abh, actual_bodily_harm, gbh, grievous_bodily_harm
@@ -443,7 +480,6 @@ template:
             - co, community_order
             - comm, communication, communications
             - community_order => co, probation_order, cro, community_rehabilitation_order, cpo, community_punishment_order, cpro, community_punishment_and_rehabilitation_order, sso, suspended_sentence_order
-            - upw, unpaid_work, community_service, community_payback, cp
             - comp, comply, complied
             - conviction, sentence, event, order, disposal
             - cosa, circles_of_support
@@ -481,9 +517,9 @@ template:
             - excl, exclusion
             - exp, expected_release_date
             - exposure, flashing
+            - fostercare, foster_care, foster-care
             - fta, failed_to_attend, failed_to_report, absent, absence, ua, unacceptable_absence
             - ftc, failed_to_comply, unacceptable_behaviour
-            - fostercare, foster_care, foster-care
             - ftr, fixed_term_recall, fixed-term_recall, fixed-term-recall, recall
             - gbh, grievous_bodily_harm
             - gf, girlfriend, girl_friend
@@ -504,10 +540,9 @@ template:
             - iaps, im, interventions_manager, interim_accredited_programmes_system, interim_accredited_programmes_service
             - iicsa, independent_inquiry_into_child_sexual_abuse
             - ill, sick, unfit, unwell
-            - iom, intensive_supervision, restorative_justice, problem_solving_court
-            - nsi, commissioned_services, commissioned_rehabilitative_services, rehabilitative_services, crs, intervention, structured_intervention, accredited_programme, acc_prog, si, tsi, ap, programme, national_standards, non_statutory_intervention, non_specified_intervention
             - intro, introduction
             - iom, integrated_offender_management
+            - iom, intensive_supervision, restorative_justice, problem_solving_court
             - irc, immigration_removal_centre, immigration_detention
             - isp, initial_sentence_plan, fsp, final_sentence_plan, sentence_plan
             - ispp, ipp, indeterminate_sentence_for_public_protection
@@ -524,25 +559,26 @@ template:
             - min, minutes
             - mom, mum, mother
             - msg, message, text, email, sms
-            - nino, national_insurance_number, nin, ni_number, national_insurance
             - nd, national_delius, delius, ndelius
             - new_me, bnm, lmn, nmc, nms
+            - nino, national_insurance_number, nin, ni_number, national_insurance
             - nomis, p-nomis
             - nomis_number, noms_number, noms_no, noms_id, nomis_id
             - npd, npl, non_parole_date, non-parole_date
+            - nsi, commissioned_services, commissioned_rehabilitative_services, rehabilitative_services, crs, intervention, structured_intervention, accredited_programme, acc_prog, si, tsi, ap, programme, national_standards, non_statutory_intervention, non_specified_intervention
             - offence, offences, crime, crimes
             - offender_management, supervision, contact
             - omu, offender_management_unit
             - ooh, out_of_hours, out-of-hours
             - parom1, parom_1, parole_report
-            - partner => husband, wife, boyfiend, girlfriend
+            - partner => husband, wife, boyfriend, girlfriend
+            - pc, police_constable, constable, police_officer
             - ped, parole_eligibility_date
             - pension, retirement, retirement_benefit
             - phe, public_health_england, health_service, phw, public_health_wales
             - pic, picture, photo, photograph, selfie
             - pip, personal_independence_payment
             - placement, project, schedule
-            - pc, police_constable, constable, police_officer
             - pom, prison_offender_manager
             - pom1, pom_handover_expected_start_date
             - pom2, ro_responsibility_handover_from_pom_to_om_expected_date
@@ -585,13 +621,13 @@ template:
             - td01, parole_board_review_date
             - term, termination, end_date, actual_end_date
             - tfr, transfer
-            - time_table, timetable, time-table
+            - timetable, time_table, time-table
             - trf, tariff_date
             - tsp, thinking_skills_programme
             - tused, pssed, tssed, top-up_supervision_expiry_date, top-up_supervision_end_date, post_sentence_supervision_expiry_date, post-sentence_supervision_expiry_date, post-sentence_supervision_end_date, post_sentence_supervision_end_date
             - ual, unlawfully_at_large, escaped, at_large, wwb, warrant_without_bail
             - uc, universal_credit, benefits
-            - upw, unpaid_work, community_payback
+            - upw, unpaid_work, community_payback, community_payback, cp
             - vlu, victims_liasion_unit
             - wca, work_capability_assessment, fit_note, sick_note
             - wfh, work_from_home
@@ -758,6 +794,7 @@ template:
         boost: 4
       outcome:
         type: text
+        analyzer: probation_text_analyzer
         store: true
         boost: 2
         fields:
@@ -765,6 +802,7 @@ template:
             type: keyword
       type:
         type: text
+        analyzer: probation_text_analyzer
         store: true
         fields:
           keyword:
@@ -773,19 +811,16 @@ template:
         type: keyword
         copy_to: type
       typeDescription:
-        type: text
-        analyzer: probation_text_analyzer
+        type: keyword
         copy_to: type
       typeShortDescription:
-        type: text
-        analyzer: probation_text_analyzer
+        type: keyword
         copy_to: type
       outcomeCode:
         type: keyword
         copy_to: outcome
       outcomeDescription:
-        type: text
-        analyzer: probation_text_analyzer
+        type: keyword
         copy_to: outcome
       attended:
         type: keyword

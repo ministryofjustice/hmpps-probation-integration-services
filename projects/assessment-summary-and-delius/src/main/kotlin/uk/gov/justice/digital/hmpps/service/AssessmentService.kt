@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessment
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.SentencePlan
@@ -25,7 +26,8 @@ class AssessmentService(
     private val offenceRepository: OffenceRepository,
     private val oasysAssessmentRepository: OasysAssessmentRepository,
     private val eventRepository: EventRepository,
-    private val contactService: ContactService
+    private val contactService: ContactService,
+    private val featureFlags: FeatureFlags,
 ) {
     fun recordAssessment(person: Person, summary: AssessmentSummary) {
         val previousAssessment = oasysAssessmentRepository.findByOasysId(summary.assessmentPk.toString())
@@ -34,12 +36,14 @@ class AssessmentService(
             ?: throw IgnorableMessageException("No Event Number provided")
         val event = eventRepository.getByNumber(person.id, eventNumber)
         val manager = checkNotNull(person.manager) { "Community Manager Not Found" }
+        val contactDate =
+            if (featureFlags.enabled("assessment-summary-contact-date")) summary.dateCompleted else LocalDate.now()
         val contact = previousAssessment?.contact?.withDateTeamAndStaff(
-            LocalDate.now(),
+            contactDate,
             manager.teamId,
             manager.staffId
         ) ?: contactService.createContact(
-            summary.contactDetail(),
+            summary.contactDetail(contactDate),
             person,
             event
         )
@@ -86,10 +90,10 @@ class AssessmentService(
     }
 }
 
-private fun AssessmentSummary.contactDetail() =
+private fun AssessmentSummary.contactDetail(contactDate: LocalDate) =
     ContactDetail(
         ContactType.Code.OASYS_ASSESSMENT,
-        LocalDate.now(),
+        contactDate,
         "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}",
         "urn:uk:gov:hmpps:oasys:assessment:${assessmentPk}"
     )

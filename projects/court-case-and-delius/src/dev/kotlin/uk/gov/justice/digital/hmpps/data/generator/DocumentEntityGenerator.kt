@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.entity.InstitutionalReport
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 object DocumentEntityGenerator {
@@ -27,6 +28,7 @@ object DocumentEntityGenerator {
             type,
             tableName,
             ZonedDateTime.now(),
+            dateProduced = LocalDateTime.of(1971, 3, 6, 0, 0, 0),
             lastUpdated = ZonedDateTime.now()
         )
 }
