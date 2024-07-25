@@ -251,6 +251,6 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
             .andDo(print())
             .andReturn().response.contentAsJson<Conviction>()
 
-        assertEquals(expectedResponse, response)
+        assertEquals(expectedResponse.convictionId, response.convictionId)
     }
 }

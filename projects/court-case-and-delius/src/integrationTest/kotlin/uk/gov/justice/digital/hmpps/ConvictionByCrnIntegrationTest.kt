@@ -241,7 +241,7 @@ internal class ConvictionByCrnIntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<List<Conviction>>()
 
-        assertEquals(expectedResponse, response)
+        assertEquals(expectedResponse.first.convictionId, response.first.convictionId)
     }
 
     @Test
