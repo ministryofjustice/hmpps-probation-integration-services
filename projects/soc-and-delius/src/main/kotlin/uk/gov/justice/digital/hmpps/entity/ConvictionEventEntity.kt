@@ -83,14 +83,19 @@ class Disposal(
     val startDate: LocalDate,
 
     @Column(name = "notional_end_date")
-    val expectedEndDate: LocalDate? = null,
+    val notionalEndDate: LocalDate? = null,
+
+    @Column(name = "entered_notional_end_date")
+    val enteredEndDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false
-)
+) {
+    fun expectedEndDate() = enteredEndDate ?: notionalEndDate
+}
 
 @Immutable
 @Table(name = "r_disposal_type")
