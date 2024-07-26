@@ -36,7 +36,7 @@ API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests
 
 | API Endpoint       | Required Role                                               |
-|--------------------+-------------------------------------------------------------|
+|--------------------|-------------------------------------------------------------|
 | /appointments      | PROBATION\_API\_\_RESETTLEMENT\_PASSPORT\_\_APPOINTMENT\_RW |
 | /nomis-case-note/* | PROBATION\_API\_\_RESETTLEMENT\_PASSPORT\_\_APPOINTMENT\_RW |
 | /probation-cases/* | PROBATION\_API\_\_RESETTLEMENT\_PASSPORT\_\_CASE\_DETAIL    |
