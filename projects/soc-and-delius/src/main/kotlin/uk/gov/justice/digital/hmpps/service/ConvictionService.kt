@@ -74,7 +74,7 @@ class ConvictionService(
 }
 
 private fun Disposal.asModel(custody: uk.gov.justice.digital.hmpps.entity.Custody?) =
-    Sentence(id, startDate, expectedEndDate, custody?.custodyModel())
+    Sentence(id, startDate, expectedEndDate(), custody?.custodyModel())
 
 private fun ReferenceData.custodialStatus() = CustodyStatus(code, description)
 private fun uk.gov.justice.digital.hmpps.entity.Custody.custodyModel() =
