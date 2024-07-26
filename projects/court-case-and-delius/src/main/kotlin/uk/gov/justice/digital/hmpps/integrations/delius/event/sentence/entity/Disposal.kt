@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Immutable
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0")
 class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")

@@ -3,6 +3,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_convictions_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPathTemplate": "/secure/offenders/crn/{crn}/{convictionId}/requirements"
       },
       "response": {

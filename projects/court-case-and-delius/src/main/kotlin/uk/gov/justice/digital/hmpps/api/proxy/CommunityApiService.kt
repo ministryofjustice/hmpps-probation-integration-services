@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.HttpStatusCodeException
 import java.io.StringReader
 import java.net.URI
@@ -40,6 +42,7 @@ class CommunityApiService(
         return originalValue.values.toList()[param.index - 1]
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun compare(compare: Compare, headers: Map<String, String>): CompareReport {
 
         val uri = Uri.valueOf(compare.uri)

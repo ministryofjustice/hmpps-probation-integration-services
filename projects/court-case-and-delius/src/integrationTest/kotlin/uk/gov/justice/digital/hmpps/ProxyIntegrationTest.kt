@@ -150,4 +150,36 @@ internal class ProxyIntegrationTest {
         assertThat(res.endPointName, equalTo("OFFENDER_MANAGERS"))
         assertThat(res.success, equalTo(false))
     }
+
+    @Test
+    fun `compare multiple endpoints with mutliple crns and multiple parameters`() {
+        val res = mockMvc.perform(
+            post("/secure/compareAll")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "crns": [ "C123456", "C123456"],
+                        "uriConfig": {
+                            "OFFENDER_DETAIL": {},
+                            "OFFENDER_MANAGERS": {
+                                "includeProbationAreaTeams": false
+                            },
+                            "CONVICTIONS": {
+                                "activeOnly": false
+                            },
+                            "CONVICTION_REQUIREMENTS": {
+                                "convictionId": ${SentenceGenerator.CURRENTLY_MANAGED.id},
+                                "activeOnly": true,
+                                "excludeSoftDeleted": true
+                            }
+                        }
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<List<CompareReport>>()
+
+        assertThat(res.size, equalTo(8))
+    }
 }

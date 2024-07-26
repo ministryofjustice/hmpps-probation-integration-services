@@ -5,11 +5,14 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.resource.ConvictionResource
 import uk.gov.justice.digital.hmpps.api.resource.ProbationRecordResource
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import java.util.concurrent.CompletableFuture
+import java.util.stream.Collectors
 
 @RestController
 @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
@@ -18,7 +21,8 @@ class CommunityApiController(
     private val probationRecordResource: ProbationRecordResource,
     private val featureFlags: FeatureFlags,
     private val communityApiService: CommunityApiService,
-    private val convictionResource: ConvictionResource
+    private val convictionResource: ConvictionResource,
+    private val taskExecutor: ThreadPoolTaskExecutor
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -95,6 +99,28 @@ class CommunityApiController(
     fun compare(@RequestBody compare: Compare, request: HttpServletRequest): CompareReport {
         val headers = mapOf(HttpHeaders.AUTHORIZATION to request.getHeader(HttpHeaders.AUTHORIZATION))
         return communityApiService.compare(compare, headers)
+    }
+
+    @PostMapping("/compareAll")
+    fun compareAll(@RequestBody compare: CompareAll, request: HttpServletRequest): List<CompareReport> {
+        val headers = mapOf(HttpHeaders.AUTHORIZATION to request.getHeader(HttpHeaders.AUTHORIZATION))
+        return compare.crns.flatMap { crn ->
+            runAll(crn, compare, headers).stream().map(CompletableFuture<CompareReport>::join)
+                .collect(Collectors.toList())
+        }
+    }
+
+    fun runAll(crn: String, compare: CompareAll, headers: Map<String, String>): List<CompletableFuture<CompareReport>> {
+        return compare.uriConfig.entries.map {
+            CompletableFuture.supplyAsync(
+                {
+                    communityApiService.compare(
+                        Compare(params = mapOf("crn" to crn) + it.value, uri = it.key),
+                        headers
+                    )
+                }, taskExecutor
+            )
+        }
     }
 }
 
