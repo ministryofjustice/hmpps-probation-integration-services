@@ -125,7 +125,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
         val response = mockMvc
             .perform(
                 get("/probation-case/$crn/convictions/${event.id}/nsis")
-                    .param("nsiCodes", "NSI type")
+                    .param("nsiCodes", "NSITYPE")
                     .withToken()
             )
             .andExpect(status().isOk)

@@ -75,7 +75,7 @@ object ReferenceDataGenerator {
         IdGenerator.getAndIncrement()
     )
 
-    val NSI_TYPE = NsiType(IdGenerator.getAndIncrement(), "NSI type", "NSI Type desc")
+    val NSI_TYPE = NsiType(IdGenerator.getAndIncrement(), "NSITYPE", "NSI Type desc")
     val NSI_BREACH_OUTCOME = ReferenceData(
         "BRE01",
         "this NSI is in breach",

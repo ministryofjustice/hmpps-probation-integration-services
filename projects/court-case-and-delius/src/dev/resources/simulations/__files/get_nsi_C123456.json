@@ -3,7 +3,7 @@
     {
       "nsiId": 0,
       "nsiType": {
-        "code": "NSI type",
+        "code": "NSITYPE",
         "description": "NSI Type desc"
       },
       "nsiOutcome": {
