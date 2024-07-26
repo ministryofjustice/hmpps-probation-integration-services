@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.proxy
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
@@ -22,7 +23,8 @@ class CommunityApiController(
     private val featureFlags: FeatureFlags,
     private val communityApiService: CommunityApiService,
     private val convictionResource: ConvictionResource,
-    private val taskExecutor: ThreadPoolTaskExecutor
+    private val taskExecutor: ThreadPoolTaskExecutor,
+    private val personRepository: PersonEventRepository
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -72,7 +74,20 @@ class CommunityApiController(
         return proxy(request)
     }
 
-    @GetMapping("/offenders/crn/{crn}/{convictionId}/requirements")
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}")
+    fun convictionForOffenderByCrnAndConvictionId(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ): Any? {
+
+        if (featureFlags.enabled("ccd-conviction-by-id-enabled")) {
+            return convictionResource.getConvictionForOffenderByCrnAndConvictionId(crn, convictionId)
+        }
+        return proxy(request)
+    }
+
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/requirements")
     fun convictionRequirements(
         request: HttpServletRequest,
         @PathVariable crn: String,
@@ -83,6 +98,33 @@ class CommunityApiController(
 
         if (featureFlags.enabled("ccd-conviction-requirements-enabled")) {
             return convictionResource.getRequirementsForConviction(crn, convictionId, activeOnly, excludeSoftDeleted)
+        }
+        return proxy(request)
+    }
+
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/nsis")
+    fun nsisByCrnAndConvictionId(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+        @RequestParam(required = true) nsiCodes: List<String>,
+    ): Any {
+
+        if (featureFlags.enabled("ccd-conviction-nsis-enabled")) {
+            return convictionResource.getNsisByCrnAndConvictionId(crn, convictionId, nsiCodes)
+        }
+        return proxy(request)
+    }
+
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements")
+    fun pssByCrnAndConvictionId(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+    ): Any {
+
+        if (featureFlags.enabled("ccd-conviction-pss-enabled")) {
+            return convictionResource.getPssRequirementsByConvictionId(crn, convictionId)
         }
         return proxy(request)
     }
@@ -102,20 +144,59 @@ class CommunityApiController(
     }
 
     @PostMapping("/compareAll")
-    fun compareAll(@RequestBody compare: CompareAll, request: HttpServletRequest): List<CompareReport> {
+    fun compareAll(@RequestBody compare: CompareAll, request: HttpServletRequest): CompareAllReport {
         val headers = mapOf(HttpHeaders.AUTHORIZATION to request.getHeader(HttpHeaders.AUTHORIZATION))
-        return compare.crns.flatMap { crn ->
-            runAll(crn, compare, headers).stream().map(CompletableFuture<CompareReport>::join)
+        val pageable = PageRequest.of(compare.pageNumber - 1, compare.pageSize)
+        val personList =
+            if (compare.crns.isNullOrEmpty()) personRepository.findAllCrns(pageable) else personRepository.findByCrnIn(
+                compare.crns,
+                pageable
+            )
+
+        val reports = personList.content.flatMap { person ->
+            val convictionId = person.events.filter { it.disposal != null }.maxOfOrNull { it.id }
+            val nsiCodes = person.nsis.filter { it.eventId == convictionId }.map { it.type.code }
+            runAll(person.crn, convictionId, nsiCodes, compare, headers).stream()
+                .map(CompletableFuture<CompareReport>::join)
                 .collect(Collectors.toList())
         }
+        val unsuccessful = reports.filter { !it.success }
+
+        return CompareAllReport(
+            totalNumberOfCrns = personList.numberOfElements,
+            totalPages = pageable.pageSize,
+            currentPageNumber = compare.pageNumber,
+            totalNumberOfRequests = reports.size,
+            numberOfSuccessfulRequests = reports.size - unsuccessful.size,
+            numberOfUnsuccessfulRequests = unsuccessful.size,
+            failureReports = reports.filter { !it.success }
+        )
     }
 
-    fun runAll(crn: String, compare: CompareAll, headers: Map<String, String>): List<CompletableFuture<CompareReport>> {
+    fun setParams(map: Map<String, Any>, convictionId: Long?, nsiCodes: List<String>): Map<String, Any> {
+        val new = map.toMutableMap()
+        if (map.containsKey("convictionId") && convictionId != null) {
+            new["convictionId"] = convictionId
+        }
+        if (map.containsKey("nsiCodes")) {
+            new["nsiCodes"] = nsiCodes.joinToString(",")
+        }
+        return new
+    }
+
+    fun runAll(
+        crn: String,
+        convictionId: Long?,
+        nsiCodes: List<String>,
+        compare: CompareAll,
+        headers: Map<String, String>
+    ): List<CompletableFuture<CompareReport>> {
         return compare.uriConfig.entries.map {
+            val params = setParams(it.value, convictionId, nsiCodes)
             CompletableFuture.supplyAsync(
                 {
                     communityApiService.compare(
-                        Compare(params = mapOf("crn" to crn) + it.value, uri = it.key),
+                        Compare(params = mapOf("crn" to crn) + params, uri = it.key),
                         headers
                     )
                 }, taskExecutor

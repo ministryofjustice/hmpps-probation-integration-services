@@ -15,14 +15,35 @@ enum class Uri(
         listOf("crn", "includeProbationAreaTeams")
     ),
     CONVICTIONS(
-        "/secure/offenders/crn/{crn}/convictions?activeOnly={activeOnly}", "convictionResource", "getConvictionsForOffenderByCrn",
+        "/secure/offenders/crn/{crn}/convictions?activeOnly={activeOnly}",
+        "convictionResource",
+        "getConvictionsForOffenderByCrn",
         listOf("crn", "activeOnly")
     ),
+    CONVICTION_BY_ID(
+        "/secure/offenders/crn/{crn}/convictions/{convictionId}",
+        "convictionResource",
+        "getConvictionForOffenderByCrnAndConvictionId",
+        listOf("crn", "convictionId")
+    ),
     CONVICTION_REQUIREMENTS(
-        "/secure/offenders/crn/{crn}/{convictionId}/requirements?activeOnly={activeOnly}&excludeSoftDeleted={excludeSoftDeleted}",
+        "/secure/offenders/crn/{crn}/convictions/{convictionId}/requirements?activeOnly={activeOnly}&excludeSoftDeleted={excludeSoftDeleted}",
         "convictionResource",
         "getRequirementsForConviction",
         listOf("crn", "convictionId", "activeOnly", "excludeSoftDeleted"),
     ),
+    CONVICTION_BY_ID_NSIS(
+        "/secure/offenders/crn/{crn}/convictions/{convictionId}/nsis?nsiCodes={nsiCodes}",
+        "convictionResource",
+        "getNsisByCrnAndConvictionId",
+        listOf("crn", "convictionId", "nsiCodes"),
+    ),
+    CONVICTION_BY_ID_PSS(
+        "/secure/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements",
+        "convictionResource",
+        "getPssRequirementsByConvictionId",
+        listOf("crn", "convictionId"),
+    ),
+
     DUMMY("/dummy", "dummyResource", "getDummy", listOf("crn")),
 }

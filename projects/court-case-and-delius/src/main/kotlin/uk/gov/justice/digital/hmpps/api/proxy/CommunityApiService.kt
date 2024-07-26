@@ -39,7 +39,11 @@ class CommunityApiService(
     }
 
     fun generateValue(param: KParameter, originalValue: Map<*, *>): Any? {
-        return originalValue.values.toList()[param.index - 1]
+        var value = originalValue.values.toList()[param.index - 1]
+        if (param.type.classifier == List::class) {
+            value = value.toString().split(",")
+        }
+        return value
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -52,7 +56,7 @@ class CommunityApiService(
                 "{$key}",
                 value.toString()
             )
-        }
+        }.replace(" ", "%20")
         val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
         val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue() as JsonStructure

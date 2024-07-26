@@ -20,7 +20,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.api.proxy.CompareAllReport
 import uk.gov.justice.digital.hmpps.api.proxy.CompareReport
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.NSI_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -127,7 +129,56 @@ internal class ProxyIntegrationTest {
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
 
         assertThat(res.endPointName, equalTo("CONVICTION_REQUIREMENTS"))
-        assertThat(res.success, equalTo(false))
+        assertThat(res.success, equalTo(true))
+    }
+
+    @Test
+    fun `compare new endpoints with community api endpoints with an array of string as a parameter`() {
+
+        val res = mockMvc.perform(
+            post("/secure/compare")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "params": {
+                            "crn": "C123456",
+                            "convictionId": ${SentenceGenerator.CURRENTLY_MANAGED.id},
+                            "nsiCodes": "${NSI_TYPE.code},${NSI_TYPE.code}"
+                        },
+                        "uri": "CONVICTION_BY_ID_NSIS"
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
+
+        assertThat(res.endPointName, equalTo("CONVICTION_BY_ID_NSIS"))
+        assertThat(res.success, equalTo(true))
+    }
+
+    @Test
+    fun `compare new endpoints with community api endpoints for pss`() {
+
+        val res = mockMvc.perform(
+            post("/secure/compare")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "params": {
+                            "crn": "C123456",
+                            "convictionId": ${SentenceGenerator.CURRENTLY_MANAGED.id}
+                        },
+                        "uri": "CONVICTION_BY_ID_PSS"
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
+
+        assertThat(res.endPointName, equalTo("CONVICTION_BY_ID_PSS"))
+        assertThat(res.success, equalTo(true))
     }
 
     @Test
@@ -159,27 +210,42 @@ internal class ProxyIntegrationTest {
                 .content(
                     """
                     {
-                        "crns": [ "C123456", "C123456"],
+                        "pageNumber": 1,
+                        "pageSize": 1,
+                        "crns": [ "C123456", "P123456"],
                         "uriConfig": {
                             "OFFENDER_DETAIL": {},
+                            "OFFENDER_SUMMARY": {},
                             "OFFENDER_MANAGERS": {
                                 "includeProbationAreaTeams": false
                             },
                             "CONVICTIONS": {
                                 "activeOnly": false
                             },
+                            "CONVICTION_BY_ID": {
+                                "convictionId": "?"
+                            },
                             "CONVICTION_REQUIREMENTS": {
-                                "convictionId": ${SentenceGenerator.CURRENTLY_MANAGED.id},
+                                "convictionId": "?",
                                 "activeOnly": true,
                                 "excludeSoftDeleted": true
+                            },
+                            "CONVICTION_BY_ID_NSIS": {
+                                "convictionId": "?",
+                                "nsiCodes": "?"
+                            },
+                            "CONVICTION_BY_ID_PSS": {
+                                "convictionId": "?"
                             }
                         }
                     }
                 """
                 )
                 .withToken()
-        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<List<CompareReport>>()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
 
-        assertThat(res.size, equalTo(8))
+        assertThat(res.totalNumberOfRequests, equalTo(8))
+        assertThat(res.totalNumberOfCrns, equalTo(1))
+        assertThat(res.currentPageNumber, equalTo(1))
     }
 }
