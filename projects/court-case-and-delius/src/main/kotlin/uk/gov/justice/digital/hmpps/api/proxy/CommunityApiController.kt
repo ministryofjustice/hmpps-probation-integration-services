@@ -155,7 +155,7 @@ class CommunityApiController(
 
         val reports = personList.content.flatMap { person ->
             val convictionId = person.events.filter { it.disposal != null }.maxOfOrNull { it.id }
-            val nsiCodes = person.nsis.filter { it.eventId == convictionId }.map { it.type.code }
+            val nsiCodes = person.nsis.filter { it.eventId == convictionId }.map { it.type.code.trim() }
             runAll(person.crn, convictionId, nsiCodes, compare, headers).stream()
                 .map(CompletableFuture<CompareReport>::join)
                 .collect(Collectors.toList())
