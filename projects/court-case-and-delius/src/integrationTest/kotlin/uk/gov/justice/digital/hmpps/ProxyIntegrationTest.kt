@@ -133,31 +133,6 @@ internal class ProxyIntegrationTest {
     }
 
     @Test
-    fun `compare new endpoints with community api endpoints with an array of string as a parameter`() {
-
-        val res = mockMvc.perform(
-            post("/secure/compare")
-                .contentType("application/json;charset=utf-8")
-                .content(
-                    """
-                    {
-                        "params": {
-                            "crn": "C123456",
-                            "convictionId": ${SentenceGenerator.CURRENTLY_MANAGED.id},
-                            "nsiCodes": "${NSI_TYPE.code},${NSI_TYPE.code}"
-                        },
-                        "uri": "CONVICTION_BY_ID_NSIS"
-                    }
-                """
-                )
-                .withToken()
-        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
-
-        assertThat(res.endPointName, equalTo("CONVICTION_BY_ID_NSIS"))
-        assertThat(res.success, equalTo(true))
-    }
-
-    @Test
     fun `compare new endpoints with community api endpoints for pss`() {
 
         val res = mockMvc.perform(
@@ -230,10 +205,6 @@ internal class ProxyIntegrationTest {
                                 "activeOnly": true,
                                 "excludeSoftDeleted": true
                             },
-                            "CONVICTION_BY_ID_NSIS": {
-                                "convictionId": "?",
-                                "nsiCodes": "?"
-                            },
                             "CONVICTION_BY_ID_PSS": {
                                 "convictionId": "?"
                             }
@@ -244,7 +215,7 @@ internal class ProxyIntegrationTest {
                 .withToken()
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
 
-        assertThat(res.totalNumberOfRequests, equalTo(8))
+        assertThat(res.totalNumberOfRequests, equalTo(7))
         assertThat(res.totalNumberOfCrns, equalTo(1))
         assertThat(res.currentPageNumber, equalTo(1))
     }
