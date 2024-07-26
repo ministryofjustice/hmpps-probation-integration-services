@@ -104,7 +104,13 @@
         <a href="./api-reference.html#secure-offenders-crn-crn"><span>/secure/offenders/crn/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#secure-offenders-crn-crn-convictionid-requirements"><span>/secure/offenders/crn/{crn}/{convictionId}/requirements</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#secure-offenders-crn-crn-all"><span>/secure/offenders/crn/{crn}/all</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#secure-offenders-crn-crn-alloffendermanagers"><span>/secure/offenders/crn/{crn}/allOffenderManagers</span></a>
       </li>
       <li>
         <a href="./api-reference.html#secure"><span>/secure/**</span></a>
@@ -282,6 +288,95 @@
 
 
 
+<h2 id="secure-offenders-crn-crn-convictionid-requirements">/secure/offenders/crn/{crn}/{convictionId}/requirements</h2>
+
+<h3 id="secure-offenders-crn-crn-convictionid-requirements-get">get</h3>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-convictionid-requirements-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>activeOnly</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>excludeSoftDeleted</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-convictionid-requirements-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="secure-offenders-crn-crn-all">/secure/offenders/crn/{crn}/all</h2>
 
 <h3 id="secure-offenders-crn-crn-all-get">get</h3>
@@ -313,6 +408,75 @@
 
 
 <h4 id="secure-offenders-crn-crn-all-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="secure-offenders-crn-crn-alloffendermanagers">/secure/offenders/crn/{crn}/allOffenderManagers</h2>
+
+<h3 id="secure-offenders-crn-crn-alloffendermanagers-get">get</h3>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-alloffendermanagers-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>includeProbationAreaTeams</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-alloffendermanagers-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -453,7 +617,7 @@
   "offenderId": "integer",
   "offenderProfile": {
     "genderIdentity": "string",
-    "selfDescribedGenderIdentity": "string",
+    "selfDescribedGender": "string",
     "disabilities": [
       {
         "lastUpdatedDateTime": "string",
@@ -1621,7 +1785,7 @@
   "offenderId": "integer",
   "offenderProfile": {
     "genderIdentity": "string",
-    "selfDescribedGenderIdentity": "string",
+    "selfDescribedGender": "string",
     "disabilities": [
       {
         "lastUpdatedDateTime": "string",
@@ -1699,7 +1863,7 @@
   },
   "offenderAliases": [
     {
-      "id": "integer",
+      "id": "string",
       "dateOfBirth": "string",
       "firstName": "string",
       "middleNames": [
@@ -1718,9 +1882,9 @@
       },
       "staff": {
         "code": "string",
-        "forename": "string",
+        "forenames": "string",
         "surname": "string",
-        "isUnallocated": "boolean"
+        "unallocated": "boolean"
       },
       "providerEmployee": {
         "forenames": "string",
@@ -1963,8 +2127,8 @@
 <tbody>
 
 <tr>
-<td>crn</td>
-<td>string</td>
+<td>params</td>
+<td>object</td>
 <td>true</td>
 <td></td>
 <td>
@@ -2069,7 +2233,7 @@
 <tr>
 <td>emailAddresses</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -2079,7 +2243,7 @@
 <tr>
 <td>phoneNumbers</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-phonenumber'>PhoneNumber</a>
@@ -2171,7 +2335,7 @@
 <tr>
 <td>provisions</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-provision'>Provision</a>
@@ -2437,7 +2601,7 @@
 <tr>
 <td>otherLanguages</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -2487,7 +2651,7 @@
 </tr>
 
 <tr>
-<td>selfDescribedGenderIdentity</td>
+<td>selfDescribedGender</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -2499,7 +2663,7 @@
 <tr>
 <td>disabilities</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-disability'>Disability</a>
@@ -2569,7 +2733,7 @@
 <tr>
 <td>previousConviction</td>
 <td>object</td>
-<td>false</td>
+<td>true</td>
 <td></td>
 <td>
   <a href='#schema-previousconviction'>PreviousConviction</a>
@@ -2579,7 +2743,7 @@
 <tr>
 <td>provisions</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-provision'>Provision</a>
@@ -2765,7 +2929,7 @@
 <tr>
 <td>convictionDate</td>
 <td>string</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -2775,7 +2939,7 @@
 <tr>
 <td>detail</td>
 <td>object</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -5130,7 +5294,7 @@
 <tr>
 <td>probationAreaId</td>
 <td>integer</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -5160,7 +5324,7 @@
 <tr>
 <td>organisation</td>
 <td>object</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-keyvalue'>KeyValue</a>
@@ -5180,7 +5344,7 @@
 <tr>
 <td>nps</td>
 <td>boolean</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -5190,7 +5354,7 @@
 <tr>
 <td>teams</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-allteam'>AllTeam</a>
@@ -5371,7 +5535,7 @@
 <tr>
 <td>teamType</td>
 <td>object</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-keyvalue'>KeyValue</a>
@@ -5381,7 +5545,7 @@
 <tr>
 <td>startDate</td>
 <td>string</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -5615,7 +5779,7 @@
 <tr>
 <td>emailAddresses</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -5625,7 +5789,7 @@
 <tr>
 <td>phoneNumbers</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-phonenumber'>PhoneNumber</a>
@@ -5635,7 +5799,7 @@
 <tr>
 <td>addresses</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-address'>Address</a>
@@ -5656,7 +5820,7 @@
 
 <tr>
 <td>id</td>
-<td>integer</td>
+<td>string</td>
 <td>true</td>
 <td></td>
 <td>
@@ -5687,7 +5851,7 @@
 <tr>
 <td>middleNames</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -5869,7 +6033,7 @@
 <tr>
 <td>offenderAliases</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-offenderalias'>OffenderAlias</a>
@@ -6105,7 +6269,7 @@
 </tr>
 
 <tr>
-<td>forename</td>
+<td>forenames</td>
 <td>string</td>
 <td>true</td>
 <td></td>
@@ -6125,7 +6289,7 @@
 </tr>
 
 <tr>
-<td>isUnallocated</td>
+<td>unallocated</td>
 <td>boolean</td>
 <td>true</td>
 <td></td>

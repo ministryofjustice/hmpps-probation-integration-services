@@ -50,6 +50,42 @@ paths:
             application/json:
               schema:
                 type: object
+  /secure/offenders/crn/{crn}/{convictionId}/requirements:
+    get:
+      tags:
+      - community-api-controller
+      operationId: convictionRequirements
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: activeOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - name: excludeSoftDeleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /secure/offenders/crn/{crn}/all:
     get:
       tags:
@@ -61,6 +97,30 @@ paths:
         required: true
         schema:
           type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/allOffenderManagers:
+    get:
+      tags:
+      - community-api-controller
+      operationId: offenderManagers
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: includeProbationAreaTeams
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
       responses:
         "200":
           description: OK
@@ -323,12 +383,14 @@ components:
   schemas:
     Compare:
       required:
-      - crn
+      - params
       - uri
       type: object
       properties:
-        crn:
-          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: object
         uri:
           type: string
     CompareReport:
@@ -351,9 +413,6 @@ components:
           items:
             type: string
     ContactDetailsSummary:
-      required:
-      - emailAddresses
-      - phoneNumbers
       type: object
       properties:
         allowSMS:
@@ -373,7 +432,6 @@ components:
       - disabilityType
       - isActive
       - lastUpdatedDateTime
-      - provisions
       - startDate
       type: object
       properties:
@@ -471,8 +529,6 @@ components:
         title:
           type: string
     OffenderLanguages:
-      required:
-      - otherLanguages
       type: object
       properties:
         languageConcerns:
@@ -487,14 +543,13 @@ components:
           type: boolean
     OffenderProfile:
       required:
-      - disabilities
       - offenderLanguages
-      - provisions
+      - previousConviction
       type: object
       properties:
         genderIdentity:
           type: string
-        selfDescribedGenderIdentity:
+        selfDescribedGender:
           type: string
         disabilities:
           type: array
@@ -557,9 +612,6 @@ components:
         type:
           type: string
     PreviousConviction:
-      required:
-      - convictionDate
-      - detail
       type: object
       properties:
         convictionDate:
@@ -1280,10 +1332,6 @@ components:
       required:
       - code
       - description
-      - nps
-      - organisation
-      - probationAreaId
-      - teams
       type: object
       properties:
         probationAreaId:
@@ -1345,8 +1393,6 @@ components:
       - description
       - district
       - localDeliveryUnit
-      - startDate
-      - teamType
       type: object
       properties:
         code:
@@ -1417,10 +1463,6 @@ components:
           type: string
           format: date-time
     ContactDetails:
-      required:
-      - addresses
-      - emailAddresses
-      - phoneNumbers
       type: object
       properties:
         allowSMS:
@@ -1442,13 +1484,11 @@ components:
       - firstName
       - gender
       - id
-      - middleNames
       - surname
       type: object
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
         dateOfBirth:
           type: string
           format: date
@@ -1473,7 +1513,6 @@ components:
       - firstName
       - gender
       - middleNames
-      - offenderAliases
       - offenderId
       - offenderManagers
       - offenderProfile
@@ -1574,18 +1613,18 @@ components:
     StaffHuman:
       required:
       - code
-      - forename
-      - isUnallocated
+      - forenames
       - surname
+      - unallocated
       type: object
       properties:
         code:
           type: string
-        forename:
+        forenames:
           type: string
         surname:
           type: string
-        isUnallocated:
+        unallocated:
           type: boolean
     CommunityOrPrisonOffenderManager:
       required:

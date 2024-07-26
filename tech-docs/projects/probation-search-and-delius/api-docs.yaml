@@ -28,6 +28,26 @@ paths:
       responses:
         "201":
           description: Created
+  /case/{crn}/contacts:
+    get:
+      tags:
+      - contact-resource
+      operationId: getContacts
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContactJsonResponse"
 components:
   schemas:
     ContactSearchAuditRequest:
@@ -74,6 +94,17 @@ components:
         sort:
           type: string
         direction:
+          type: string
+    ContactJsonResponse:
+      required:
+      - contactId
+      - json
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        json:
           type: string
   securitySchemes:
     hmpps-auth-token:
