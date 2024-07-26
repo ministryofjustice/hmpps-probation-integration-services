@@ -41,7 +41,8 @@ template:
             - override_stemmer          # Exclude words from stemming (e.g. officer and office should be treated separately)
             - stemmer                   # Perform word stemming (e.g. "example" => "exampl" , "testing" => "test")
             - multiword_synonyms        # Combine multi-word synonyms into a single token (e.g. ["unpaid", "work"] => ["unpaid", "work", "unpaid_work"])
-            - probation_synonyms        # Apply probation synonyms (e.g. "upw" => ["upw", "unpaid_work"])
+            - one_way_synonyms          # Apply one-way synonyms, where a term can mean distinct things (e.g. "assault" => ["abh", "gbh"])
+            - probation_synonyms        # Apply probation synonyms (e.g. "unpaid work" => "upw")
             - delimit_words             # Split tokens on punctuation (e.g. "example.text" => ["example.text", "exampletext", "example", "text"])
             - flatten_graph             # Flatten the token graph, so it can be used for indexing
             - trim                      # Trim any whitespace from the start/end of tokens
@@ -382,6 +383,16 @@ template:
             - young offender institution => young_offender_institution
             - youth offending service => youth_offending_service
             - youth offending team => youth_offending_team
+        one_way_synonyms:
+          type: synonym
+          expand: false
+          synonyms:
+            - abuse => cruelty, bullying, domestic_violence, incest
+            - ap => accredited_programme, approved_premises
+            - assault => abh, gbh
+            - community_order => co, probation_order, cro, cpo, cpro, sso
+            - court => magistrates_court, crown_court
+            - partner => husband, wife, boyfriend, girlfriend
         probation_synonyms:
           type: synonym
           expand: false
@@ -440,7 +451,6 @@ template:
             - morning, 8_am, 9_am, 10_am, 11_am
             - abh, actual_bodily_harm
             - abs, absence, failed_to_attend, fta
-            - abuse => cruelty, bullying, domestic_violence, incest
             - acceptable, acceptable_absence, aa
             - accom, accommodation, housing, home, location, addr, address
             - aco, assistant_chief_officer
@@ -453,9 +463,7 @@ template:
             - annual, yearly, 12_monthly, 12monthly, per_annum
             - antidepressants, anti-depressants, anti_depressants
             - antisocial, anti_social, anti-social, asbo
-            - ap => accredited_programme, approved_premises
             - appointment, office_visit, visit, attendance, appt
-            - assault => abh, actual_bodily_harm, gbh, grievous_bodily_harm
             - atr, alcohol_treatment_requirement
             - att, attend, attended, attendance
             - bbr, building_better_relationships
@@ -468,7 +476,7 @@ template:
             - cas1, approved_premises, approved_premise, hostel
             - cas2, bass, bail_accommodation, bail_accommodation_support_service, bail_hostel
             - cas3, transitional_housing, temporary_accommodation, short-term_accommodation, short_term_accommodation
-            - cc, crown_court
+            - cc, crown_court, crown_crt, crn_court, crn_crt
             - ccr, pre-release_custody_date
             - ccs, recall_date
             - cdvp, community_domestic_violence_programme
@@ -479,17 +487,15 @@ template:
             - client, offender, pop, person_on_probation, probationer
             - co, community_order
             - comm, communication, communications
-            - community_order => co, probation_order, cro, community_rehabilitation_order, cpo, community_punishment_order, cpro, community_punishment_and_rehabilitation_order, sso, suspended_sentence_order
             - comp, comply, complied
             - conviction, sentence, event, order, disposal
             - cosa, circles_of_support
-            - court => magistrates_court, mags_court, mags_crt, mags, mc, crown_court, crown_crt, cc, crn_court, crn_crt
             - covaid, control_of_violence_for_angry_impulsive_drinkers
             - cpo, community_punishment_order
             - cppt, com, mgr, manager, offender_manager, practitioner, probation_practitioner, pp, community_practitioner, cpp, po, pso, pquip, om, supervisor, officer, probation_officer, ro, responsible_officer
             - cpro, community_punishment_and_rehabilitation_order
             - cro, community_rehabilitation_order
-            - crown_court, crown_crt, cc, crn_court, crn_crt
+            - crt, court
             - csogp, community_sex_offender_group_programme
             - custody, prison, remand, establishment, irc, immigration_removal_centre, sh, secure_hospital
             - da, dad, father
@@ -553,7 +559,7 @@ template:
             - liap, low_intensity_alcohol_programmes
             - lic, lc, licence_condition, licence
             - lp, lpt, ldn, london, london_probation, london_probation_trust, london_probation_area
-            - magistrates_court, mags_court, mags_crt, mags, mc
+            - mc, magistrates_court, mags_court, mags_crt, mags
             - medication, medicine, prescription, naloxone, meds
             - mh, mental_health
             - min, minutes
@@ -571,7 +577,6 @@ template:
             - omu, offender_management_unit
             - ooh, out_of_hours, out-of-hours
             - parom1, parom_1, parole_report
-            - partner => husband, wife, boyfriend, girlfriend
             - pc, police_constable, constable, police_officer
             - ped, parole_eligibility_date
             - pension, retirement, retirement_benefit
