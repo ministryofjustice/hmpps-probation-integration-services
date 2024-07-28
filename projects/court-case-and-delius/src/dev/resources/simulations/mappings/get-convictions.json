@@ -36,7 +36,7 @@
         "headers": {
           "Content-Type": "application/json"
         },
-        "bodyFileName": "GET_nsi_C123456.json"
+        "bodyFileName": "get_nsi_C123456.json"
       }
     },
     {
