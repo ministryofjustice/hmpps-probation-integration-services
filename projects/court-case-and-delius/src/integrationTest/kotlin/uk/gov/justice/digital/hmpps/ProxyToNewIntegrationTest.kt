@@ -54,7 +54,6 @@ internal class ProxyToNewIntegrationTest {
 
         whileTrue { taskExecutor.threadPoolExecutor.completedTaskCount == 0L }
         verify(telemetryService).trackEvent(eq("ComparisonFailureEvent"), any(), any())
-
     }
 
     @Test
@@ -66,6 +65,6 @@ internal class ProxyToNewIntegrationTest {
     }
 
     private fun whileTrue(action: () -> Boolean) {
-        while(action.invoke());
+        while (action.invoke());
     }
 }
