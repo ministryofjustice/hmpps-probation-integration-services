@@ -20,7 +20,8 @@ object KeyDateGenerator {
         IdGenerator.getAndIncrement(),
         ConvictionEventGenerator.DISPOSAL_2.id,
         "1234BN",
-        CUSTODY_STATUS
+        CUSTODY_STATUS,
+        disposal = ConvictionEventGenerator.DISPOSAL_2
     )
     val KEYDATE = KeyDate(
         IdGenerator.getAndIncrement(),
@@ -32,7 +33,8 @@ object KeyDateGenerator {
         IdGenerator.getAndIncrement(),
         ConvictionEventGenerator.DISPOSAL.id,
         "2234BN",
-        CUSTODY_STATUS
+        CUSTODY_STATUS,
+        disposal = ConvictionEventGenerator.DISPOSAL
     )
     val KEYDATE_1 = KeyDate(
         IdGenerator.getAndIncrement(),

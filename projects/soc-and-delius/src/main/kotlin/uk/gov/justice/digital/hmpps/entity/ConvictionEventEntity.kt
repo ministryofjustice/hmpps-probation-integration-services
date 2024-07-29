@@ -88,6 +88,9 @@ class Disposal(
     @Column(name = "entered_notional_end_date")
     val enteredEndDate: LocalDate? = null,
 
+    @OneToOne(mappedBy = "disposal")
+    val custody: Custody? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -201,9 +204,11 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         join fetch d.type dt
         join fetch c.mainOffence mo
         join fetch mo.offence
+        join fetch d.custody cust
         left join fetch c.additionalOffences ao
         left join fetch ao.offence
         where c.convictionEventPerson.id = :personId and c.active = true
+        and cust.status.code <> 'P'
         order by c.convictionDate desc
     """
     )
