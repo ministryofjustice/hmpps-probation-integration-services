@@ -1,0 +1,35 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+context-delius: Delius Context {
+
+  interface: Resettlement Passport and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 2
+    pop: Person on Probation
+    community-offender-manager: Community Offender Manager
+    contact: Contact
+    appointment: Appointment Contact
+    nsi: NSI
+    registration: Registration
+  }
+}
+
+context-resettlement-passport: Resettlement Passport Context {
+  entities: Entities {
+    grid-columns: 2
+    pop: Person on Probation
+    appointment: Appointment
+    nomis-case-note: NOMIS Case Note
+    community-offender-manager: Community Offender Manager
+    mappa: MAPPA
+    duty-to-refer: Duty to Refer
+  }
+}
+
+context-delius.interface--context-resettlement-passport: Upstream\n\n\nDownstream
