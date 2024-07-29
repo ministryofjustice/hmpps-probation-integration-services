@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model.conviction
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 data class Conviction(
     val convictionId: Long,
@@ -28,13 +28,13 @@ data class Offence(
     val offenceId: String,
     val mainOffence: Boolean,
     val detail: OffenceDetail,
-    val offenceDate: LocalDate?,
+    val offenceDate: LocalDateTime?,
     val offenceCount: Long?,
     val tics: Long?,
     val verdict: String?,
     val offenderId: Long,
-    val createdDatetime: ZonedDateTime,
-    val lastUpdatedDatetime: ZonedDateTime,
+    val createdDatetime: LocalDateTime,
+    val lastUpdatedDatetime: LocalDateTime,
 )
 
 data class OffenceDetail(
@@ -143,8 +143,8 @@ data class Court(
     val postcode: String?,
     val country: String?,
     val courtTypeId: Long,
-    val createdDatetime: ZonedDateTime,
-    val lastUpdatedDatetime: ZonedDateTime,
+    val createdDatetime: LocalDateTime,
+    val lastUpdatedDatetime: LocalDateTime,
     val probationAreaId: Long,
     val secureEmailAddress: String?,
     val probationArea: KeyValue,
@@ -153,7 +153,7 @@ data class Court(
 
 data class CourtAppearanceBasic(
     val courtAppearanceId: Long,
-    val appearanceDate: ZonedDateTime,
+    val appearanceDate: LocalDateTime,
     val courtCode: String,
     val courtName: String?,
     val appearanceType: KeyValue,
@@ -166,8 +166,8 @@ data class OrderManager(
     val officerId: Long,
     val name: String?,
     val staffCode: String?,
-    val dateStartOfAllocation: ZonedDateTime,
-    val dateEndOfAllocation: ZonedDateTime?,
+    val dateStartOfAllocation: LocalDateTime,
+    val dateEndOfAllocation: LocalDateTime?,
     val gradeCode: String?,
     val teamCode: String?,
     val probationAreaCode: String

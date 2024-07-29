@@ -24,7 +24,7 @@ class CourtAppearance(
 
     @ManyToOne
     @JoinColumn(name = "outcome_id")
-    val outcome: Outcome,
+    val outcome: Outcome?,
 
     val appearanceDate: ZonedDateTime,
 

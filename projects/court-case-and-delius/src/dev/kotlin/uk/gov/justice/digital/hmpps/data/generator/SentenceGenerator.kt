@@ -232,7 +232,7 @@ object SentenceGenerator {
         generateMainOffence(
             CURRENTLY_MANAGED,
             MAIN_OFFENCE,
-            LocalDate.now(),
+            LocalDate.now().atStartOfDay(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
             ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
@@ -243,7 +243,7 @@ object SentenceGenerator {
         generateMainOffence(
             INACTIVE_EVENT,
             MAIN_OFFENCE,
-            LocalDate.now(),
+            LocalDate.now().atStartOfDay(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
             ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
@@ -254,7 +254,7 @@ object SentenceGenerator {
         generateMainOffence(
             INACTIVE_EVENT_1,
             MAIN_OFFENCE,
-            LocalDate.now(),
+            LocalDate.now().atStartOfDay(),
             offenceCount = 1,
             PersonGenerator.NO_ACTIVE_EVENTS.id,
             ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
@@ -264,7 +264,7 @@ object SentenceGenerator {
     val ADDITIONAL_OFFENCE_DEFAULT = generateAdditionalOffence(
         CURRENTLY_MANAGED,
         ADDITIONAL_OFFENCE,
-        LocalDate.now(),
+        LocalDate.now().atStartOfDay(),
         ZonedDateTime.of(LocalDate.now().minusMonths(1), LocalTime.NOON, EuropeLondon),
         ZonedDateTime.of(LocalDate.now().plusMonths(1), LocalTime.NOON, EuropeLondon),
     )
@@ -303,7 +303,7 @@ object SentenceGenerator {
     fun generateMainOffence(
         event: Event,
         offence: Offence,
-        date: LocalDate,
+        date: LocalDateTime,
         offenceCount: Long,
         offenderId: Long,
         created: ZonedDateTime,
@@ -317,7 +317,7 @@ object SentenceGenerator {
     fun generateAdditionalOffence(
         event: Event,
         offence: Offence,
-        date: LocalDate,
+        date: LocalDateTime,
         created: ZonedDateTime,
         updated: ZonedDateTime,
         id: Long = IdGenerator.getAndIncrement(),

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.HttpStatusCodeException
 import java.io.StringReader
 import java.net.URI
@@ -37,9 +39,14 @@ class CommunityApiService(
     }
 
     fun generateValue(param: KParameter, originalValue: Map<*, *>): Any? {
-        return originalValue.values.toList()[param.index - 1]
+        var value = originalValue.values.toList()[param.index - 1]
+        if (param.type.classifier == List::class) {
+            value = value.toString().split(",")
+        }
+        return value
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun compare(compare: Compare, headers: Map<String, String>): CompareReport {
 
         val uri = Uri.valueOf(compare.uri)
@@ -49,7 +56,7 @@ class CommunityApiService(
                 "{$key}",
                 value.toString()
             )
-        }
+        }.replace(" ", "%20")
         val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
         val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue() as JsonStructure

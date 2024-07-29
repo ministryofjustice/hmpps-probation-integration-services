@@ -3,6 +3,71 @@
     {
       "request": {
         "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_pss_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/requirements"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_requirements_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/nsis"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_nsi_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_convictions_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_conviction_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPathTemplate": "/secure/offenders/crn/{crn}/{convictionId}/requirements"
       },
       "response": {

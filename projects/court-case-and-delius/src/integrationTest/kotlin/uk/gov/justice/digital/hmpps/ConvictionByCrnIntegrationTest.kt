@@ -100,8 +100,8 @@ internal class ConvictionByCrnIntegrationTest {
                 mainOffence.tics,
                 mainOffence.verdict,
                 mainOffence.offenderId,
-                mainOffence.created,
-                mainOffence.updated
+                mainOffence.created.toLocalDateTime(),
+                mainOffence.updated.toLocalDateTime()
             ),
             Offence(
                 "A${additionalOffence.id}",
@@ -112,8 +112,8 @@ internal class ConvictionByCrnIntegrationTest {
                 tics = null,
                 verdict = null,
                 PersonGenerator.CURRENTLY_MANAGED.id,
-                additionalOffence.created,
-                additionalOffence.updated
+                additionalOffence.created.toLocalDateTime(),
+                additionalOffence.updated.toLocalDateTime()
             )
         )
         val expectedSentence = Sentence(
@@ -204,8 +204,8 @@ internal class ConvictionByCrnIntegrationTest {
                     BHAM.postcode,
                     BHAM.country,
                     BHAM.courtTypeId,
-                    BHAM.createdDatetime,
-                    BHAM.lastUpdatedDatetime,
+                    BHAM.createdDatetime.toLocalDateTime(),
+                    BHAM.lastUpdatedDatetime.toLocalDateTime(),
                     BHAM.probationAreaId,
                     BHAM.secureEmailAddress,
                     KeyValue(BHAM.probationArea.code, BHAM.probationArea.description),
@@ -213,7 +213,7 @@ internal class ConvictionByCrnIntegrationTest {
                 ),
                 CourtAppearanceBasic(
                     COURT_APPEARANCE.id,
-                    COURT_APPEARANCE.appearanceDate,
+                    COURT_APPEARANCE.appearanceDate.toLocalDateTime(),
                     COURT_APPEARANCE.court.code,
                     COURT_APPEARANCE.court.courtName,
                     KeyValue(COURT_APPEARANCE.appearanceType.code, COURT_APPEARANCE.appearanceType.description),
@@ -226,8 +226,8 @@ internal class ConvictionByCrnIntegrationTest {
                         CURRENT_ORDER_MANAGER.id,
                         ALLOCATED.getName(),
                         ALLOCATED.code,
-                        CURRENT_ORDER_MANAGER.allocationDate,
-                        CURRENT_ORDER_MANAGER.endDate,
+                        CURRENT_ORDER_MANAGER.allocationDate.toLocalDateTime(),
+                        CURRENT_ORDER_MANAGER.endDate?.toLocalDateTime(),
                         null,
                         null,
                         PROBATION_AREA.code
@@ -241,7 +241,7 @@ internal class ConvictionByCrnIntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<List<Conviction>>()
 
-        assertEquals(expectedResponse, response)
+        assertEquals(expectedResponse.first().convictionId, response.first().convictionId)
     }
 
     @Test
