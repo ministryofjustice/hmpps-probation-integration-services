@@ -23,6 +23,7 @@ class CommunityApiService(
     private val communityApiClient: CommunityApiClient,
     private val applicationContext: ApplicationContext
 ) {
+
     fun getCcdJson(compare: Compare): String {
         val uri = Uri.valueOf(compare.uri)
         val instance = applicationContext.getBean(uri.ccdInstance)
@@ -51,7 +52,7 @@ class CommunityApiService(
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun compare(compare: Compare, headers: Map<String, String>): CompareReport {
+    fun compare(compare: Compare, headers: Map<String, String>, showValues: Boolean = false): CompareReport {
 
         val uri = Uri.valueOf(compare.uri)
         val comApiUri = compare.params.entries.fold(uri.comApiUrl) { path, (key, value) ->
@@ -76,7 +77,7 @@ class CommunityApiService(
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
         val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue() as JsonStructure
         val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)
-        val results = diff.toDiffReport(ccdJson)
+        val results = diff.toDiffReport(ccdJson, showValues)
 
         return CompareReport(
             endPointName = uri.name,
@@ -110,13 +111,20 @@ fun JsonStructure.getValueAsString(path: String, removeQuotes: Boolean = true): 
 
 fun JsonValue.getValueAsString(path: String) = asJsonObject()[path].toString()
 
-fun JsonPatch.toDiffReport(jsonObject: JsonStructure) = toJsonArray().map {
+fun JsonPatch.toDiffReport(jsonObject: JsonStructure, showValues: Boolean = false) = toJsonArray().map {
     val op = it.getValueAsString("op")
     val path = it.getValueAsString("path")
     if (op.contains("replace")) {
-        val ccdApiValue = jsonObject.getValueAsString(path)
-        "Values differ at ${it.getValueAsString("path")} \n" +
-            "Found $ccdApiValue in new API, but is ${it.getValueAsString("value")} in Community API"
+        if (showValues) {
+            val ccdApiValue = jsonObject.getValueAsString(path)
+            "Values differ at ${it.getValueAsString("path")}. Found $ccdApiValue in new API, but is ${
+                it.getValueAsString(
+                    "value"
+                )
+            } in Community API"
+        } else {
+            "Values differ at ${it.getValueAsString("path")}"
+        }
     } else if (op.contains("remove")) {
         "Additional element at $path exists in new API but is not present in Community API"
     } else if (op.contains("add")) {

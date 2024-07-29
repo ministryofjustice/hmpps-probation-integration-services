@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.resource.ConvictionResource
 import uk.gov.justice.digital.hmpps.api.resource.ProbationRecordResource
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.util.concurrent.CompletableFuture
 import java.util.stream.Collectors
 
@@ -24,7 +25,8 @@ class CommunityApiController(
     private val communityApiService: CommunityApiService,
     private val convictionResource: ConvictionResource,
     private val taskExecutor: ThreadPoolTaskExecutor,
-    private val personRepository: PersonEventRepository
+    private val personRepository: PersonEventRepository,
+    private val telemetryService: TelemetryService,
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -32,6 +34,8 @@ class CommunityApiController(
 
     @GetMapping("/offenders/crn/{crn}/all")
     fun offenderDetail(request: HttpServletRequest, @PathVariable crn: String): Any {
+
+        sendComparisonReport(mapOf("crn" to crn), Uri.OFFENDER_DETAIL, request)
 
         if (featureFlags.enabled("ccd-offender-detail-enabled")) {
             return probationRecordResource.getOffenderDetail(crn)
@@ -41,6 +45,8 @@ class CommunityApiController(
 
     @GetMapping("/offenders/crn/{crn}")
     fun offenderSummary(request: HttpServletRequest, @PathVariable crn: String): Any {
+
+        sendComparisonReport(mapOf("crn" to crn), Uri.OFFENDER_SUMMARY, request)
 
         if (featureFlags.enabled("ccd-offender-summary-enabled")) {
             return probationRecordResource.getOffenderDetailSummary(crn)
@@ -55,6 +61,12 @@ class CommunityApiController(
         @RequestParam(defaultValue = "false", required = false) includeProbationAreaTeams: Boolean
     ): Any {
 
+        sendComparisonReport(
+            mapOf("crn" to crn) + mapOf("includeProbationAreaTeams" to includeProbationAreaTeams),
+            Uri.OFFENDER_MANAGERS,
+            request
+        )
+
         if (featureFlags.enabled("ccd-offender-managers-enabled")) {
             return probationRecordResource.getAllOffenderManagers(crn, includeProbationAreaTeams)
         }
@@ -68,6 +80,8 @@ class CommunityApiController(
         @RequestParam(defaultValue = "false", required = false) activeOnly: Boolean
     ): Any {
 
+        sendComparisonReport(mapOf("crn" to crn) + mapOf("activeOnly" to activeOnly), Uri.CONVICTIONS, request)
+
         if (featureFlags.enabled("ccd-convictions-enabled")) {
             return convictionResource.getConvictionsForOffenderByCrn(crn, activeOnly)
         }
@@ -80,6 +94,8 @@ class CommunityApiController(
         @PathVariable crn: String,
         @PathVariable convictionId: Long
     ): Any? {
+
+        sendComparisonReport(mapOf("crn" to crn) + mapOf("convictionId" to convictionId), Uri.CONVICTION_BY_ID, request)
 
         if (featureFlags.enabled("ccd-conviction-by-id-enabled")) {
             return convictionResource.getConvictionForOffenderByCrnAndConvictionId(crn, convictionId)
@@ -96,6 +112,13 @@ class CommunityApiController(
         @RequestParam(required = false, defaultValue = "true") excludeSoftDeleted: Boolean
     ): Any {
 
+        sendComparisonReport(
+            mapOf("crn" to crn) +
+                mapOf("convictionId" to convictionId) +
+                mapOf("activeOnly" to activeOnly) +
+                mapOf("excludeSoftDeleted" to excludeSoftDeleted), Uri.CONVICTION_REQUIREMENTS, request
+        )
+
         if (featureFlags.enabled("ccd-conviction-requirements-enabled")) {
             return convictionResource.getRequirementsForConviction(crn, convictionId, activeOnly, excludeSoftDeleted)
         }
@@ -110,6 +133,12 @@ class CommunityApiController(
         @RequestParam(required = true) nsiCodes: List<String>,
     ): Any {
 
+        sendComparisonReport(
+            mapOf("crn" to crn) +
+                mapOf("convictionId" to convictionId) +
+                mapOf("nsiCodes" to nsiCodes), Uri.CONVICTION_BY_ID_NSIS, request
+        )
+
         if (featureFlags.enabled("ccd-conviction-nsis-enabled")) {
             return convictionResource.getNsisByCrnAndConvictionId(crn, convictionId, nsiCodes)
         }
@@ -122,6 +151,11 @@ class CommunityApiController(
         @PathVariable crn: String,
         @PathVariable convictionId: Long,
     ): Any {
+
+        sendComparisonReport(
+            mapOf("crn" to crn) +
+                mapOf("convictionId" to convictionId), Uri.CONVICTION_BY_ID_NSIS, request
+        )
 
         if (featureFlags.enabled("ccd-conviction-pss-enabled")) {
             return convictionResource.getPssRequirementsByConvictionId(crn, convictionId)
@@ -140,7 +174,7 @@ class CommunityApiController(
     @PostMapping("/compare")
     fun compare(@RequestBody compare: Compare, request: HttpServletRequest): CompareReport {
         val headers = mapOf(HttpHeaders.AUTHORIZATION to request.getHeader(HttpHeaders.AUTHORIZATION))
-        return communityApiService.compare(compare, headers)
+        return communityApiService.compare(compare, headers, showValues = true)
     }
 
     @PostMapping("/compareAll")
@@ -165,7 +199,7 @@ class CommunityApiController(
 
         return CompareAllReport(
             totalNumberOfCrns = personList.totalElements.toInt(),
-            totalPages = pageable.pageSize,
+            totalPages = personList.totalPages,
             currentPageNumber = compare.pageNumber,
             totalNumberOfRequests = reports.size - executionFailures,
             numberOfSuccessfulRequests = reports.size - unsuccessful.size,
@@ -199,9 +233,32 @@ class CommunityApiController(
                 {
                     communityApiService.compare(
                         Compare(params = mapOf("crn" to crn) + params, uri = it.key),
-                        headers
+                        headers,
+                        showValues = true
                     )
                 }, taskExecutor
+            )
+        }
+    }
+
+    fun sendComparisonReport(params: Map<String, Any>, uri: Uri, request: HttpServletRequest) {
+        CompletableFuture.supplyAsync({
+            val headers = mapOf(HttpHeaders.AUTHORIZATION to request.getHeader(HttpHeaders.AUTHORIZATION))
+            val report = communityApiService.compare(Compare(params = params, uri = uri.name), headers)
+            telemetryService.comparisonFailureEvent(params["crn"].toString(), report)
+        }, taskExecutor)
+    }
+
+    fun TelemetryService.comparisonFailureEvent(crn: String, compareReport: CompareReport) {
+        if (!compareReport.success) {
+            val issuesMap = compareReport.issues?.mapIndexed { index, s -> index.toString() to s }?.toMap()!!
+            trackEvent(
+                "ComparisonFailureEvent",
+                mapOf("crn" to crn) +
+                    mapOf("endpointName" to compareReport.endPointName) +
+                    mapOf("url" to compareReport.url!!) +
+                    mapOf("numberOfDifferences" to compareReport.issues.size.toString()) +
+                    issuesMap
             )
         }
     }
