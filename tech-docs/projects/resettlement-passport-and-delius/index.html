@@ -92,7 +92,24 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>resettlement-passport-and-delius</span></a>
+    <a href="./index.html"><span>Resettlement Passport and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#data-dependencies"><span>Data Dependencies</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="./index.html#workflows"><span>Workflows</span></a>
+      </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -132,9 +149,45 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="resettlement-passport-and-delius">resettlement-passport-and-delius</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="resettlement-passport-and-delius">Resettlement Passport and Delius</h1>
+<p>Service that provides API interfaces to Delius giving access probation case information needed by the resettlement process for prison leavers. We also provide APIs to add case note and appointment information to the Delius contact log.</p>
+<h2 id="business-need">Business Need</h2>
+<p>Supporting the <a href="https://github.com/ministryofjustice/hmpps-resettlement-passport-api">Resettlement Passport API</a> with information from Delius and enabling the service to add data to Delius as required.</p>
+<h2 id="data-dependencies">Data Dependencies</h2>
+<p><em>Resettlement Passport</em> depends on <em>Delius</em> data for background on the relevant <strong>Person on Probation</strong> and the specific <strong>Probation Case</strong>. The <em>Resettlement Passport</em> system creates <em>Delius</em> <strong>Contacts</strong> to represent <strong>Appointments</strong> and <strong>NOMIS Case Notes</strong>.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="././img/resettlement-passport-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/resettlement-passport-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="workflows">Workflows</h2>
+<h3 id="create-appointment">Create Appointment</h3>
+<p>Appointment contacts are created in Delius using a synchronous <code>POST</code> request as part of the <em>Resettlement Passport</em> user workflow. No appointment data is stored in the <em>Resettlement Passport</em> system</p>
+<p><a href="././img/resettlement-passport-and-delius-workflow-appointment.svg" rel="noopener noreferrer"><img src="img/resettlement-passport-and-delius-workflow-appointment.svg" alt="Workflow Map" /></a></p>
+<h3 id="create-case-note">Create Case Note</h3>
+<p>NOMIS case note contacts are created in Delius using a synchronous <code>POST</code> request as part of the <em>Resettlement Passport</em> user workflow. No case note data is stored in the <em>Resettlement Passport</em> system</p>
+<p><a href="././img/resettlement-passport-and-delius-workflow-casenote.svg" rel="noopener noreferrer"><img src="img/resettlement-passport-and-delius-workflow-casenote.svg" alt="Workflow Map" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="api-access-control">API Access Control</h3>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/appointments</td>
+<td>PROBATION_API__RESETTLEMENT_PASSPORT__APPOINTMENT_RW</td>
+</tr><tr>
+<td>/nomis-case-note/*</td>
+<td>PROBATION_API__RESETTLEMENT_PASSPORT__APPOINTMENT_RW</td>
+</tr><tr>
+<td>/probation-cases/*</td>
+<td>PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL</td>
+</tr><tr>
+<td>/duty-to-refer-nsi</td>
+<td>PROBATION_API__RESETTLEMENT_PASSPORT__CASE_DETAIL</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 

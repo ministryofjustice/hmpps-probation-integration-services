@@ -32,6 +32,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CompareReport"
+  /secure/compareAll:
+    post:
+      tags:
+      - community-api-controller
+      operationId: compareAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompareAll"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompareAllReport"
   /secure/offenders/crn/{crn}:
     get:
       tags:
@@ -50,7 +68,55 @@ paths:
             application/json:
               schema:
                 type: object
-  /secure/offenders/crn/{crn}/{convictionId}/requirements:
+  /secure/offenders/crn/{crn}/convictions:
+    get:
+      tags:
+      - community-api-controller
+      operationId: convictions
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: activeOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}:
+    get:
+      tags:
+      - community-api-controller
+      operationId: convictionForOffenderByCrnAndConvictionId
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/requirements:
     get:
       tags:
       - community-api-controller
@@ -79,6 +145,61 @@ paths:
         schema:
           type: boolean
           default: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements:
+    get:
+      tags:
+      - community-api-controller
+      operationId: pssByCrnAndConvictionId
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/nsis:
+    get:
+      tags:
+      - community-api-controller
+      operationId: nsisByCrnAndConvictionId
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: nsiCodes
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           description: OK
@@ -412,6 +533,62 @@ components:
           type: array
           items:
             type: string
+    CompareAll:
+      required:
+      - pageNumber
+      - pageSize
+      - uriConfig
+      type: object
+      properties:
+        crns:
+          type: array
+          items:
+            type: string
+        uriConfig:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: object
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+    CompareAllReport:
+      required:
+      - currentPageNumber
+      - failureReports
+      - numberOfSuccessfulRequests
+      - numberOfUnsuccessfulRequests
+      - totalNumberOfCrns
+      - totalNumberOfRequests
+      - totalPages
+      type: object
+      properties:
+        totalNumberOfCrns:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        currentPageNumber:
+          type: integer
+          format: int32
+        totalNumberOfRequests:
+          type: integer
+          format: int32
+        numberOfSuccessfulRequests:
+          type: integer
+          format: int32
+        numberOfUnsuccessfulRequests:
+          type: integer
+          format: int32
+        failureReports:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompareReport"
     ContactDetailsSummary:
       type: object
       properties:
@@ -935,7 +1112,7 @@ components:
           $ref: "#/components/schemas/OffenceDetail"
         offenceDate:
           type: string
-          format: date
+          format: date-time
         offenceCount:
           type: integer
           format: int64
