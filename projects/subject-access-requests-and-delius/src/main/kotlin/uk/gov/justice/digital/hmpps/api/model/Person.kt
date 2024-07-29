@@ -4,7 +4,6 @@ data class Person(
     val name: Name
 )
 
-
 data class Name(
     val forename: String,
     val middleName: String? = null,

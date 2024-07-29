@@ -52,12 +52,12 @@ class SubjectAccessRequestsServiceTest {
         }
     }
 
-    private fun getName(fullName: String):Name {
+    private fun getName(fullName: String): Name {
         val name = fullName.split(" ")
         return when (name.size) {
             4 -> Name(name[0], name[1] + " " + name[2], name[3])
             3 -> Name(name[0], name[1], name[2])
-            else -> Name(name[0], surname =  name[1])
+            else -> Name(name[0], surname = name[1])
         }
     }
 }
