@@ -21,7 +21,7 @@ class Nsi(
     val personId: Long,
 
     @Column(name = "event_id")
-    val eventId: Long,
+    val eventId: Long?,
 
     @ManyToOne
     @JoinColumn(name = "nsi_type_id")

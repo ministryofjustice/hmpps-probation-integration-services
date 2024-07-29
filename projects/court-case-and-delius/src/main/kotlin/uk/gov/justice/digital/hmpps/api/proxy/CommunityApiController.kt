@@ -161,15 +161,17 @@ class CommunityApiController(
                 .collect(Collectors.toList())
         }
         val unsuccessful = reports.filter { !it.success }
+        val executionFailures = reports.filter { it.testExecuted == false }
 
         return CompareAllReport(
-            totalNumberOfCrns = personList.numberOfElements,
+            totalNumberOfCrns = personList.totalElements.toInt(),
             totalPages = pageable.pageSize,
             currentPageNumber = compare.pageNumber,
             totalNumberOfRequests = reports.size,
             numberOfSuccessfulRequests = reports.size - unsuccessful.size,
             numberOfUnsuccessfulRequests = unsuccessful.size,
-            failureReports = reports.filter { !it.success }
+            executionFailures = executionFailures,
+            failureReports = reports.filter { !it.success && it.testExecuted == true }
         )
     }
 

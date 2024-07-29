@@ -244,7 +244,46 @@ internal class ProxyIntegrationTest {
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
 
         assertThat(res.totalNumberOfRequests, equalTo(8))
-        assertThat(res.totalNumberOfCrns, equalTo(1))
+        assertThat(res.totalNumberOfCrns, equalTo(2))
         assertThat(res.currentPageNumber, equalTo(1))
+    }
+
+    @Test
+    fun `compare when test data is not available`() {
+        val res = mockMvc.perform(
+            post("/secure/compareAll")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "pageNumber": 2,
+                        "pageSize": 1,
+                        "crns": [ "C123456", "U123456"],
+                        "uriConfig": {
+                            "CONVICTION_BY_ID": {
+                                "convictionId": "?"
+                            },
+                            "CONVICTION_REQUIREMENTS": {
+                                "convictionId": "?",
+                                "activeOnly": true,
+                                "excludeSoftDeleted": true
+                            },
+                            "CONVICTION_BY_ID_NSIS": {
+                                "convictionId": "?",
+                                "nsiCodes": "?"
+                            },
+                            "CONVICTION_BY_ID_PSS": {
+                                "convictionId": "?"
+                            }
+                        }
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
+
+        assertThat(res.totalNumberOfRequests, equalTo(4))
+        assertThat(res.totalNumberOfCrns, equalTo(2))
+        assertThat(res.currentPageNumber, equalTo(2))
     }
 }
