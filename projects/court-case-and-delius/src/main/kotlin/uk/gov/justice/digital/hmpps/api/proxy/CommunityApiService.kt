@@ -40,7 +40,7 @@ class CommunityApiService(
 
     fun generateValue(param: KParameter, originalValue: Map<*, *>, paramNames: List<String>): Any? {
         var value = originalValue.values.toList()[param.index - 1]
-        if (value == "?") {
+        if (value == "?" || value == "") {
             val name = paramNames[param.index - 1]
             throw DataNotAvailableException(name)
         }
