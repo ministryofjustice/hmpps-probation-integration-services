@@ -7,5 +7,6 @@ data class CompareAllReport(
     val totalNumberOfRequests: Int,
     val numberOfSuccessfulRequests: Int,
     val numberOfUnsuccessfulRequests: Int,
+    val unableToBeExecuted: Int,
     val failureReports: List<CompareReport>,
 )

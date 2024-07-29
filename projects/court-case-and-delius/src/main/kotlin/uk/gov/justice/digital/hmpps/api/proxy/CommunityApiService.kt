@@ -28,7 +28,7 @@ class CommunityApiService(
         val instance = applicationContext.getBean(uri.ccdInstance)
         val function = instance::class.members.firstOrNull { it.name == uri.ccdFunction }
         val functionParams = function?.parameters?.drop(1)?.associateBy({ it }, {
-            generateValue(it, compare.params)
+            generateValue(it, compare.params, uri.urlParams)
         })!!
         val paramsFunc = function.parameters
         val params = mapOf(paramsFunc[0] to instance) + functionParams
@@ -38,8 +38,12 @@ class CommunityApiService(
         )
     }
 
-    fun generateValue(param: KParameter, originalValue: Map<*, *>): Any? {
+    fun generateValue(param: KParameter, originalValue: Map<*, *>, paramNames: List<String>): Any? {
         var value = originalValue.values.toList()[param.index - 1]
+        if (value == "?" || value == "") {
+            val name = paramNames[param.index - 1]
+            throw DataNotAvailableException(name)
+        }
         if (param.type.classifier == List::class) {
             value = value.toString().split(",")
         }
@@ -50,13 +54,24 @@ class CommunityApiService(
     fun compare(compare: Compare, headers: Map<String, String>): CompareReport {
 
         val uri = Uri.valueOf(compare.uri)
-        val ccdJsonString = getCcdJson(compare)
         val comApiUri = compare.params.entries.fold(uri.comApiUrl) { path, (key, value) ->
             path.replace(
                 "{$key}",
                 value.toString()
             )
         }.replace(" ", "%20")
+
+        val ccdJsonString = try {
+            getCcdJson(compare)
+        } catch (ex: DataNotAvailableException) {
+            return CompareReport(
+                endPointName = uri.name,
+                url = comApiUri,
+                message = ex.message!! + " for ${compare.params["crn"]}",
+                success = false
+            )
+        }
+
         val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
         val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue() as JsonStructure
@@ -68,7 +83,8 @@ class CommunityApiService(
             message = "${results.size} differences found between New API and Community API",
             issues = results,
             url = comApiUri,
-            success = results.isEmpty()
+            success = results.isEmpty(),
+            testExecuted = true
         )
     }
 
