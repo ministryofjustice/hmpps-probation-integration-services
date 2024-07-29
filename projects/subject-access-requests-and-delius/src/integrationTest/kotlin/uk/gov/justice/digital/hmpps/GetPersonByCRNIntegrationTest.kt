@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.Person
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON1
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -46,7 +47,7 @@ internal class GetPersonByCRNIntegrationTest {
 
     @Test
     fun `API call return person data`() {
-        val expectedResponse = Person("Jon Harry Fred Smith")
+        val expectedResponse = Person(Name("Jon", "Harry Fred", "Smith"))
 
         val response = mockMvc
             .perform(get("/probation-case/$crn").withToken())
