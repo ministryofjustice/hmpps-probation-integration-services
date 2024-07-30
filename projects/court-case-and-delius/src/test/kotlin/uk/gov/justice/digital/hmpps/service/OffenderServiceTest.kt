@@ -51,14 +51,14 @@ class OffenderServiceTest {
 
     @Test
     fun `person has no middle names `() {
-        val doc = DocumentEntityGenerator.generateDocument(1L, 1L,"DOC", "DOC")
+        val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         val person = PersonGenerator.generate("TEST", secondName = null, thirdName = null)
         assertEquals(null, person.toOffenderSummary(doc).middleNames)
     }
 
     @Test
     fun `person has no phone numbers `() {
-        val doc = DocumentEntityGenerator.generateDocument(1L, 1L,"DOC", "DOC")
+        val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         val person = PersonGenerator.generate("TEST", mobileNumber = null, telephoneNumber = null)
 
         assertEquals(null, person.toOffenderSummary(doc).contactDetails.phoneNumbers)
@@ -66,7 +66,7 @@ class OffenderServiceTest {
 
     @Test
     fun `person has no email address `() {
-        val doc = DocumentEntityGenerator.generateDocument(1L, 1L,"DOC", "DOC")
+        val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         val person = PersonGenerator.generate("TEST", emailAddress = null)
 
         assertEquals(null, person.toOffenderSummary(doc).contactDetails.emailAddresses)
@@ -74,7 +74,7 @@ class OffenderServiceTest {
 
     @Test
     fun `person has no title `() {
-        val doc = DocumentEntityGenerator.generateDocument(1L, 1L,"DOC", "DOC")
+        val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         val person = PersonGenerator.generate("TEST", title = null)
 
         assertEquals(null, person.toOffenderSummary(doc).title)
@@ -97,28 +97,28 @@ class OffenderServiceTest {
 
     @Test
     fun `person has no aliases `() {
-        val doc = DocumentEntityGenerator.generateDocument(1L, 1L,"DOC", "DOC")
+        val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         whenever(personMock.offenderAliases).thenReturn(emptyList())
         assertEquals(null, personMock.toAliases())
     }
 
     @Test
     fun `person detail has no tier `() {
-        val doc = DocumentEntityGenerator.generateDocument(1L, 1L,"DOC", "DOC")
+        val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         val person = PersonGenerator.generate("TEST", currentTier = null)
         assertEquals(null, person.toOffenderDetail(doc).currentTier)
     }
 
     @Test
     fun `person detail has no title `() {
-        val doc = DocumentEntityGenerator.generateDocument(1L, 1L,"DOC", "DOC")
+        val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         val person = PersonGenerator.generate("TEST", title = null)
         assertEquals(null, person.toOffenderDetail(doc).title)
     }
 
     @Test
     fun `person detail has no middle names `() {
-        val doc = DocumentEntityGenerator.generateDocument(1L, 1L,"DOC", "DOC")
+        val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         val person = PersonGenerator.generate("TEST", secondName = null, thirdName = null)
         assertEquals(null, person.toOffenderDetail(doc).middleNames)
     }

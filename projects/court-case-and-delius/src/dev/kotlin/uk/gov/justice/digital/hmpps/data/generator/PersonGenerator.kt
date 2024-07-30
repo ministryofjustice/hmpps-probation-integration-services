@@ -182,24 +182,25 @@ object PersonGenerator {
         finishDate = end,
     )
 
-    fun generateAddress(personId: Long, softDeleted: Boolean, type: ReferenceData? = DEFAULT_ADDRESS_TYPE) = PersonAddress(
-        id = IdGenerator.getAndIncrement(),
-        personId = personId,
-        type = type,
-        status = DEFAULT_ADDRESS_STATUS,
-        streetName = "A Street",
-        town = "A town",
-        county = "A county",
-        postcode = "NE209XL",
-        telephoneNumber = "089876765",
-        buildingName = "The building",
-        district = "A District",
-        addressNumber = "20",
-        noFixedAbode = false,
-        typeVerified = true,
-        startDate = LocalDate.now().minusDays(1),
-        endDate = null,
-        softDeleted = softDeleted,
-        createdDatetime = ZonedDateTime.now().minusDays(1),
-    )
+    fun generateAddress(personId: Long, softDeleted: Boolean, type: ReferenceData? = DEFAULT_ADDRESS_TYPE) =
+        PersonAddress(
+            id = IdGenerator.getAndIncrement(),
+            personId = personId,
+            type = type,
+            status = DEFAULT_ADDRESS_STATUS,
+            streetName = "A Street",
+            town = "A town",
+            county = "A county",
+            postcode = "NE209XL",
+            telephoneNumber = "089876765",
+            buildingName = "The building",
+            district = "A District",
+            addressNumber = "20",
+            noFixedAbode = false,
+            typeVerified = true,
+            startDate = LocalDate.now().minusDays(1),
+            endDate = null,
+            softDeleted = softDeleted,
+            createdDatetime = ZonedDateTime.now().minusDays(1),
+        )
 }
