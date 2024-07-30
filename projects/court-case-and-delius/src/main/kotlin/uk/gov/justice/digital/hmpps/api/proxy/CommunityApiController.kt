@@ -219,10 +219,10 @@ class CommunityApiController(
 
     fun setParams(map: Map<String, Any>, convictionId: Long?, nsiCodes: List<String>): Map<String, Any> {
         val new = map.toMutableMap()
-        if (map.containsKey("convictionId") && convictionId != null && map["convictionId"]!! == "?") {
+        if (map.containsKey("convictionId") && convictionId != null) {
             new["convictionId"] = convictionId
         }
-        if (map.containsKey("nsiCodes") && map["nsiCodes"]!! == "?") {
+        if (map.containsKey("nsiCodes")) {
             new["nsiCodes"] = nsiCodes.joinToString(",")
         }
         return new
