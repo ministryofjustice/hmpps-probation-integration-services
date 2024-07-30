@@ -195,6 +195,17 @@ fun Person.toOffenderDetail(previousConviction: DocumentEntity?) = OffenderDetai
     currentTier = currentTier?.description
 )
 
+fun Person.toAliases() = offenderAliases.map {
+    OffenderAlias(
+        id = it.aliasID.toString(),
+        dateOfBirth = it.dateOfBirth,
+        firstName = it.firstName,
+        middleNames = listOfNotNull(it.secondName, it.thirdName).takeIf { it.isNotEmpty() },
+        surname = it.surname,
+        gender = it.gender.description
+    )
+}.takeIf { it.isNotEmpty() }
+
 fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     genderIdentity = genderIdentity?.description,
     selfDescribedGender = genderIdentityDescription ?: genderIdentity?.description,
