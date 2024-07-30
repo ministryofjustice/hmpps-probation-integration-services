@@ -3,16 +3,9 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.springframework.stereotype.Service
 import software.amazon.awssdk.utils.ImmutableMap
 import uk.gov.justice.digital.hmpps.api.model.*
-import uk.gov.justice.digital.hmpps.api.model.LicenceCondition
-import uk.gov.justice.digital.hmpps.api.model.Offence
-import uk.gov.justice.digital.hmpps.api.model.Requirement
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReportRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.getPreviousConviction
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
@@ -21,16 +14,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Disability
 
 @Service
 class OffenderService(
-    private val eventRepository: EventRepository,
-    private val mainOffenceRepository: MainOffenceRepository,
-    private val additionalOffenceRepository: AdditionalOffenceRepository,
-    private val licenseConditionRepository: LicenceConditionRepository,
-    private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
     private val personRepository: PersonRepository,
-    private val nsiRepository: NsiRepository,
-    private val pssRequirementRepository: PssRequirementRepository,
-    private val courtReportRepository: CourtReportRepository
 ) {
 
     fun getOffenderDetailSummary(crn: String): OffenderDetailSummary {
@@ -44,116 +29,6 @@ class OffenderService(
         val previousConviction = documentRepository.getPreviousConviction(person.id)
         return person.toOffenderDetail(previousConviction)
     }
-
-    private fun getOffences(event: Event): List<Offence> {
-        val mainOffence =
-            listOf(mainOffenceRepository.findByEvent(event).let { Offence(it.offence.description, true, it.date) })
-        val additionalOffences = additionalOffenceRepository.findByEvent(event).map {
-            Offence(it.offence.description, false, it.date)
-        }
-        return mainOffence + additionalOffences
-    }
-
-    fun getConvictions(person: Person, documents: List<Document>): List<Conviction> {
-        val events = eventRepository.findAllByPerson(person)
-
-        return events.map { event ->
-            Conviction(
-                event.active,
-                event.inBreach,
-                eventRepository.awaitingPSR(event.id) == 1,
-                event.convictionDate,
-                getOffences(event),
-                event.disposal?.sentenceOf(),
-                custodialType = event.disposal?.custody?.let { c -> KeyValue(c.status.code, c.status.description) },
-                documents = getConvictionDocuments(event, documents),
-                breaches = getBreaches(event),
-                requirements = getRequirements(event.disposal),
-                licenceConditions = getLicenseConditions(event.disposal),
-                pssRequirements = getPssRequirements(event.disposal?.custody?.id),
-                courtReports = getCourtReports(event)
-            )
-        }
-    }
-
-    private fun getCourtReports(event: Event) = courtReportRepository.getAllByEvent(event).map {
-        CourtReport(
-            it.dateRequested,
-            it.dateRequired,
-            it.dateCompleted,
-            it.courtReportType?.keyValueOf(),
-            it.deliveredCourtReportType?.keyValueOf(),
-            author = it.reportManagers.lastOrNull()?.let { m ->
-                ReportAuthor(
-                    m.staff.isUnallocated(),
-                    listOfNotNull(m.staff.forename, m.staff.forename2).joinToString(" "),
-                    m.staff.surname
-                )
-            }
-        )
-    }
-
-    private fun getPssRequirements(custodyId: Long?) = if (custodyId == null) {
-        listOf()
-    } else {
-        pssRequirementRepository.findAllByCustodyId(custodyId).map {
-            PssRequirement(it.mainCategory?.description, it.subCategory?.description)
-        }
-    }
-
-    private fun getBreaches(event: Event) = nsiRepository.findAllBreachNSIByEventId(event.id).map {
-        val description = if (it.subType?.description == null) it.type.description else it.subType.description
-        Breach(description, it.outcome?.description, it.actualStartDate, it.statusDate)
-    }
-
-    private fun getConvictionDocuments(event: Event, documents: List<Document>) =
-        documents.filter { it.eventId == event.id }.map {
-            OffenderDocumentDetail(
-                it.name,
-                it.author,
-                DocumentType.valueOf(it.type),
-                it.description,
-                it.createdAt?.atZone(EuropeLondon),
-                KeyValue(it.tableName, it.typeDescription())
-            )
-        }
-
-    private fun getRequirements(disposal: Disposal?) =
-        if (disposal != null) {
-            requirementRepository.getAllByDisposal(disposal).map {
-                Requirement(
-                    it.commencementDate,
-                    it.terminationDate,
-                    it.expectedStartDate,
-                    it.expectedEndDate,
-                    it.active,
-                    it.mainCategory?.keyValueOf(),
-                    it.subCategory?.keyValueOf(),
-                    it.adMainCategory?.keyValueOf(),
-                    it.adSubCategory?.keyValueOf(),
-                    it.terminationReason?.keyValueOf(),
-                    it.length
-                )
-            }
-        } else {
-            listOf()
-        }
-
-    private fun getLicenseConditions(disposal: Disposal?) =
-        if (disposal != null) {
-            licenseConditionRepository.getAllByDisposal(disposal)
-                .map {
-                    LicenceCondition(
-                        it.mainCategory.description,
-                        it.subCategory?.description,
-                        it.startDate,
-                        it.notes,
-                        it.active
-                    )
-                }
-        } else {
-            listOf()
-        }
 }
 
 fun DisabilityEntity.isActive(): Boolean {
@@ -363,15 +238,4 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     sexualOrientation = sexualOrientation?.description,
     secondaryNationality = secondNationality?.description
 
-)
-
-fun Disposal.sentenceOf() = Sentence(
-    disposalType.description,
-    entryLength,
-    entryLengthUnit?.description,
-    lengthInDays,
-    terminationDate,
-    startDate,
-    endDate?.toLocalDate(),
-    terminationReason?.description
 )
