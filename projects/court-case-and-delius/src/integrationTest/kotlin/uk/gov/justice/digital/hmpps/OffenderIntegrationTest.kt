@@ -240,9 +240,15 @@ internal class OffenderIntegrationTest {
                 )
             )
         )
-        assertThat(detailResponse.offenderManagers?.get(0)?.allocationReason, equalTo(DEFAULT_ALLOCATION_REASON.keyValueOf()))
+        assertThat(
+            detailResponse.offenderManagers?.get(0)?.allocationReason,
+            equalTo(DEFAULT_ALLOCATION_REASON.keyValueOf())
+        )
         assertThat(detailResponse.offenderManagers?.get(0)?.partitionArea, equalTo(PARTITION_AREA.area))
-        assertThat(detailResponse.offenderManagers?.get(0)?.team!!.code.trim(), equalTo(TeamGenerator.DEFAULT.code.trim()))
+        assertThat(
+            detailResponse.offenderManagers?.get(0)?.team!!.code.trim(),
+            equalTo(TeamGenerator.DEFAULT.code.trim())
+        )
         assertThat(detailResponse.offenderManagers!![0].team!!.description, equalTo(TeamGenerator.DEFAULT.description))
         assertThat(detailResponse.offenderProfile.religion, equalTo(RELIGION.description))
         assertThat(detailResponse.offenderProfile.remandStatus, equalTo("Remand Status"))
