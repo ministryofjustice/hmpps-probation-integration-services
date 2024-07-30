@@ -91,7 +91,7 @@ class Requirement(
         terminationDate,
         expectedStartDate,
         expectedEndDate,
-        createdDatetime,
+        createdDatetime.toLocalDateTime(),
         active,
         subCategory?.let { KeyValue(it.code, it.description) },
         mainCategory?.let { KeyValue(it.code, it.description) },
