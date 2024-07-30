@@ -68,7 +68,7 @@ data class Sentence(
     val terminationDate: LocalDate? = null,
     val terminationReason: String? = null,
     val sentenceType: KeyValue,
-    val additionalSentences: List<AdditionalSentence>,
+    val additionalSentences: List<AdditionalSentence>? = null,
     val failureToComplyLimit: Long?,
     val cja2003Order: Boolean,
     val legacyOrder: Boolean,

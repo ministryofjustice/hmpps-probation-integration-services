@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model.conviction
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class ConvictionRequirements(
@@ -19,7 +20,7 @@ data class Requirement(
     val terminationDate: LocalDate?,
     val expectedStartDate: LocalDate?,
     val expectedEndDate: LocalDate?,
-    val createdDatetime: ZonedDateTime,
+    val createdDatetime: LocalDateTime,
     @Schema(description = "Is the requirement currently active")
     val active: Boolean,
     val requirementTypeSubCategory: KeyValue?,
