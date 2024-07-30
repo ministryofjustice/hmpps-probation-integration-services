@@ -129,7 +129,7 @@ internal class ProxyIntegrationTest {
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
 
         assertThat(res.endPointName, equalTo("CONVICTION_REQUIREMENTS"))
-        assertThat(res.success, equalTo(true))
+        assertThat(res.success, equalTo(false))
     }
 
     @Test

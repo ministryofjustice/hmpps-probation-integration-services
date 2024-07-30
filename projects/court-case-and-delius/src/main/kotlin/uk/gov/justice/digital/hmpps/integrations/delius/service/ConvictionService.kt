@@ -148,7 +148,8 @@ class ConvictionService(
             terminationDate,
             terminationReason?.description,
             KeyValue(disposalType.sentenceType, disposalType.description),
-            additionalSentenceRepository.getAllByEventId(eventId).map { it.toAdditionalSentence() },
+            additionalSentenceRepository.getAllByEventId(eventId).map { it.toAdditionalSentence() }
+                .takeIf { it.isNotEmpty() },
             disposalType.failureToComplyLimit,
             disposalType.cja2003Order,
             disposalType.legacyOrder
