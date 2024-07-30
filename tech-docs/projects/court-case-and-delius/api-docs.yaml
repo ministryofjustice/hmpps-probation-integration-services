@@ -527,6 +527,8 @@ components:
           type: string
         url:
           type: string
+        testExecuted:
+          type: boolean
         success:
           type: boolean
         issues:
@@ -565,6 +567,7 @@ components:
       - totalNumberOfCrns
       - totalNumberOfRequests
       - totalPages
+      - unableToBeExecuted
       type: object
       properties:
         totalNumberOfCrns:
@@ -583,6 +586,9 @@ components:
           type: integer
           format: int32
         numberOfUnsuccessfulRequests:
+          type: integer
+          format: int32
+        unableToBeExecuted:
           type: integer
           format: int32
         failureReports:

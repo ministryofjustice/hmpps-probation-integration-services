@@ -225,6 +225,7 @@
   "endPointName": "string",
   "message": "string",
   "url": "string",
+  "testExecuted": "boolean",
   "success": "boolean",
   "issues": [
     {
@@ -275,11 +276,13 @@
   "totalNumberOfRequests": "integer",
   "numberOfSuccessfulRequests": "integer",
   "numberOfUnsuccessfulRequests": "integer",
+  "unableToBeExecuted": "integer",
   "failureReports": [
     {
       "endPointName": "string",
       "message": "string",
       "url": "string",
+      "testExecuted": "boolean",
       "success": "boolean",
       "issues": [
         {
@@ -2547,6 +2550,16 @@
 </tr>
 
 <tr>
+<td>testExecuted</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>success</td>
 <td>boolean</td>
 <td>true</td>
@@ -2682,6 +2695,16 @@
 
 <tr>
 <td>numberOfUnsuccessfulRequests</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unableToBeExecuted</td>
 <td>integer</td>
 <td>true</td>
 <td></td>

@@ -34,13 +34,25 @@ paths:
                 $ref: "#/components/schemas/Person"
 components:
   schemas:
-    Person:
+    Name:
       required:
-      - fullName
+      - forename
+      - surname
       type: object
       properties:
-        fullName:
+        forename:
           type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+    Person:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
   securitySchemes:
     hmpps-auth-token:
       type: http
