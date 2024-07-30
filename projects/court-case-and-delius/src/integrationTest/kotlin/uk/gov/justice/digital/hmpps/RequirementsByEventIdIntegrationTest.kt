@@ -70,7 +70,7 @@ internal class RequirementsByEventIdIntegrationTest {
                     requirement.terminationDate,
                     requirement.expectedStartDate,
                     requirement.expectedEndDate,
-                    requirement.createdDatetime,
+                    requirement.createdDatetime.toLocalDateTime(),
                     requirement.active,
                     requirement.subCategory?.let { KeyValue(it.code, it.description) },
                     requirement.mainCategory?.let { KeyValue(it.code, it.description) },

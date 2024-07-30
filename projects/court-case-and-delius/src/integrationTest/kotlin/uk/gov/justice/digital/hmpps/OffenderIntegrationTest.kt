@@ -221,16 +221,16 @@ internal class OffenderIntegrationTest {
         assertThat(detailResponse.offenderAliases?.get(0)?.dateOfBirth, equalTo(LocalDate.of(1968, 1, 1)))
         assertThat(detailResponse.offenderAliases?.get(0)?.firstName, equalTo("Bob"))
         assertThat(
-            detailResponse.offenderManagers[0].providerEmployee,
+            detailResponse.offenderManagers?.get(0)?.providerEmployee,
             equalTo(Human("ProvEmpForename1 ProvEmpForename2", "ProvEmpSurname"))
         )
-        assertThat(detailResponse.offenderManagers[0].trustOfficer, equalTo(Human("Off1 Off2", "OffSurname")))
+        assertThat(detailResponse.offenderManagers?.get(0)?.trustOfficer, equalTo(Human("Off1 Off2", "OffSurname")))
         assertThat(
-            detailResponse.offenderManagers[0].probationArea.description,
+            detailResponse.offenderManagers?.get(0)?.probationArea?.description,
             equalTo(ProviderGenerator.DEFAULT.description)
         )
         assertThat(
-            detailResponse.offenderManagers[0].staff,
+            detailResponse.offenderManagers?.get(0)?.staff,
             equalTo(
                 StaffHuman(
                     ALLOCATED.code,
@@ -240,10 +240,16 @@ internal class OffenderIntegrationTest {
                 )
             )
         )
-        assertThat(detailResponse.offenderManagers[0].allocationReason, equalTo(DEFAULT_ALLOCATION_REASON.keyValueOf()))
-        assertThat(detailResponse.offenderManagers[0].partitionArea, equalTo(PARTITION_AREA.area))
-        assertThat(detailResponse.offenderManagers[0].team!!.code.trim(), equalTo(TeamGenerator.DEFAULT.code.trim()))
-        assertThat(detailResponse.offenderManagers[0].team!!.description, equalTo(TeamGenerator.DEFAULT.description))
+        assertThat(
+            detailResponse.offenderManagers?.get(0)?.allocationReason,
+            equalTo(DEFAULT_ALLOCATION_REASON.keyValueOf())
+        )
+        assertThat(detailResponse.offenderManagers?.get(0)?.partitionArea, equalTo(PARTITION_AREA.area))
+        assertThat(
+            detailResponse.offenderManagers?.get(0)?.team!!.code.trim(),
+            equalTo(TeamGenerator.DEFAULT.code.trim())
+        )
+        assertThat(detailResponse.offenderManagers!![0].team!!.description, equalTo(TeamGenerator.DEFAULT.description))
         assertThat(detailResponse.offenderProfile.religion, equalTo(RELIGION.description))
         assertThat(detailResponse.offenderProfile.remandStatus, equalTo("Remand Status"))
         assertThat(detailResponse.offenderProfile.riskColour, equalTo("RED"))

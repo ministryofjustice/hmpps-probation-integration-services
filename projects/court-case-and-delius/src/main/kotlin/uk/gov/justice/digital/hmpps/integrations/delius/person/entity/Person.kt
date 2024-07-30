@@ -232,7 +232,7 @@ class PersonAddress(
 
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData,
+    val type: ReferenceData? = null,
 
     @ManyToOne
     @JoinColumn(name = "address_status_id")
