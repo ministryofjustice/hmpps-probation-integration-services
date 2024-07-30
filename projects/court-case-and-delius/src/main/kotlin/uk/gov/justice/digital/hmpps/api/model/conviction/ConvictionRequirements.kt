@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 data class ConvictionRequirements(
     val requirements: List<Requirement>
