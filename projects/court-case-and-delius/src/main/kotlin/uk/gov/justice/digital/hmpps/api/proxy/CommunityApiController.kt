@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.proxy
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,6 +28,7 @@ class CommunityApiController(
     private val taskExecutor: ThreadPoolTaskExecutor,
     private val personRepository: PersonEventRepository,
     private val telemetryService: TelemetryService,
+    private val mapper: ObjectMapper
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -62,7 +64,7 @@ class CommunityApiController(
     ): Any {
 
         sendComparisonReport(
-            mapOf("crn" to crn) + mapOf("includeProbationAreaTeams" to includeProbationAreaTeams),
+            mapOf("crn" to crn, "includeProbationAreaTeams" to includeProbationAreaTeams),
             Uri.OFFENDER_MANAGERS,
             request
         )
@@ -80,7 +82,7 @@ class CommunityApiController(
         @RequestParam(defaultValue = "false", required = false) activeOnly: Boolean
     ): Any {
 
-        sendComparisonReport(mapOf("crn" to crn) + mapOf("activeOnly" to activeOnly), Uri.CONVICTIONS, request)
+        sendComparisonReport(mapOf("crn" to crn, "activeOnly" to activeOnly), Uri.CONVICTIONS, request)
 
         if (featureFlags.enabled("ccd-convictions-enabled")) {
             return convictionResource.getConvictionsForOffenderByCrn(crn, activeOnly)
@@ -95,7 +97,7 @@ class CommunityApiController(
         @PathVariable convictionId: Long
     ): Any? {
 
-        sendComparisonReport(mapOf("crn" to crn) + mapOf("convictionId" to convictionId), Uri.CONVICTION_BY_ID, request)
+        sendComparisonReport(mapOf("crn" to crn, "convictionId" to convictionId), Uri.CONVICTION_BY_ID, request)
 
         if (featureFlags.enabled("ccd-conviction-by-id-enabled")) {
             return convictionResource.getConvictionForOffenderByCrnAndConvictionId(crn, convictionId)
@@ -114,9 +116,11 @@ class CommunityApiController(
 
         sendComparisonReport(
             mapOf("crn" to crn) +
-                mapOf("convictionId" to convictionId) +
-                mapOf("activeOnly" to activeOnly) +
-                mapOf("excludeSoftDeleted" to excludeSoftDeleted), Uri.CONVICTION_REQUIREMENTS, request
+                mapOf(
+                    "convictionId" to convictionId,
+                    "activeOnly" to activeOnly,
+                    "excludeSoftDeleted" to excludeSoftDeleted
+                ), Uri.CONVICTION_REQUIREMENTS, request
         )
 
         if (featureFlags.enabled("ccd-conviction-requirements-enabled")) {
@@ -134,9 +138,11 @@ class CommunityApiController(
     ): Any {
 
         sendComparisonReport(
-            mapOf("crn" to crn) +
-                mapOf("convictionId" to convictionId) +
-                mapOf("nsiCodes" to nsiCodes), Uri.CONVICTION_BY_ID_NSIS, request
+            mapOf(
+                "crn" to crn,
+                "convictionId" to convictionId,
+                "nsiCodes" to nsiCodes
+            ), Uri.CONVICTION_BY_ID_NSIS, request
         )
 
         if (featureFlags.enabled("ccd-conviction-nsis-enabled")) {
@@ -153,8 +159,10 @@ class CommunityApiController(
     ): Any {
 
         sendComparisonReport(
-            mapOf("crn" to crn) +
-                mapOf("convictionId" to convictionId), Uri.CONVICTION_BY_ID_NSIS, request
+            mapOf(
+                "crn" to crn,
+                "convictionId" to convictionId
+            ), Uri.CONVICTION_BY_ID_NSIS, request
         )
 
         if (featureFlags.enabled("ccd-conviction-pss-enabled")) {
@@ -211,10 +219,10 @@ class CommunityApiController(
 
     fun setParams(map: Map<String, Any>, convictionId: Long?, nsiCodes: List<String>): Map<String, Any> {
         val new = map.toMutableMap()
-        if (map.containsKey("convictionId") && convictionId != null) {
+        if (map.containsKey("convictionId") && convictionId != null && map["convictionId"]!! == "?") {
             new["convictionId"] = convictionId
         }
-        if (map.containsKey("nsiCodes")) {
+        if (map.containsKey("nsiCodes") && map["nsiCodes"]!! == "?") {
             new["nsiCodes"] = nsiCodes.joinToString(",")
         }
         return new
@@ -244,21 +252,35 @@ class CommunityApiController(
     fun sendComparisonReport(params: Map<String, Any>, uri: Uri, request: HttpServletRequest) {
         CompletableFuture.supplyAsync({
             val headers = mapOf(HttpHeaders.AUTHORIZATION to request.getHeader(HttpHeaders.AUTHORIZATION))
-            val report = communityApiService.compare(Compare(params = params, uri = uri.name), headers)
-            telemetryService.comparisonFailureEvent(params["crn"].toString(), report)
+            val compare = Compare(params = params, uri = uri.name)
+            val report = communityApiService.compare(compare, headers)
+            telemetryService.comparisonFailureEvent(
+                params["crn"].toString(),
+                compare,
+                report,
+                request.requestURL.toString().replace(request.requestURI, "")
+            )
         }, taskExecutor)
     }
 
-    fun TelemetryService.comparisonFailureEvent(crn: String, compareReport: CompareReport) {
+    fun TelemetryService.comparisonFailureEvent(
+        crn: String,
+        compare: Compare,
+        compareReport: CompareReport,
+        baseUrl: String
+    ) {
         if (!compareReport.success) {
-            val issuesMap = compareReport.issues?.mapIndexed { index, s -> index.toString() to s }?.toMap()!!
+            val comparePayload = mapper.writeValueAsString(compare)
             trackEvent(
                 "ComparisonFailureEvent",
-                mapOf("crn" to crn) +
-                    mapOf("endpointName" to compareReport.endPointName) +
-                    mapOf("url" to compareReport.url!!) +
-                    mapOf("numberOfDifferences" to compareReport.issues.size.toString()) +
-                    issuesMap
+                mapOf(
+                    "crn" to crn,
+                    "endpointName" to compareReport.endPointName,
+                    "url" to "$baseUrl/${compareReport.url!!}",
+                    "numberOfDifferences" to compareReport.issues?.size.toString(),
+                    "compareUrl" to "${baseUrl}secure/compare",
+                    "comparePayload" to comparePayload
+                )
             )
         }
     }
