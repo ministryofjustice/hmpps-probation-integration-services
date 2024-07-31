@@ -57,6 +57,13 @@ object PersonGenerator {
             "London",
             "PC1 1TS",
             LocalDate.now().minusDays(30)
+        ),
+        generateAddress(
+            FULL_PERSON.id,
+            MAIN_ADDRESS,
+            postcode = "NF1 1NF",
+            noFixedAbode = true,
+            startDate = LocalDate.now().minusDays(60)
         )
     )
 
@@ -144,14 +151,15 @@ object PersonGenerator {
     fun generateAddress(
         personId: Long,
         status: ReferenceData,
-        addressNumber: String?,
-        buildingName: String?,
-        streetName: String?,
-        townCity: String?,
-        county: String?,
-        district: String?,
-        postcode: String?,
+        addressNumber: String? = null,
+        buildingName: String? = null,
+        streetName: String? = null,
+        townCity: String? = null,
+        county: String? = null,
+        district: String? = null,
+        postcode: String? = null,
         startDate: LocalDate,
+        noFixedAbode: Boolean = false,
         endDate: LocalDate? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
@@ -165,6 +173,7 @@ object PersonGenerator {
         county,
         district,
         postcode,
+        noFixedAbode,
         startDate,
         endDate,
         softDeleted,
