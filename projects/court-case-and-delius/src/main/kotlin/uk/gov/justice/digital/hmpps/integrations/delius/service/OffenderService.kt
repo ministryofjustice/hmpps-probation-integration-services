@@ -212,7 +212,7 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     disabilities = disabilities.sortedByDescending { it.startDate }.map {
         Disability(
             lastUpdatedDateTime = it.lastUpdated.toLocalDateTime(),
-            disabilityCondition = KeyValue(it.condition.code, it.condition.description),
+            disabilityCondition = it.condition?.let { dis -> KeyValue(dis.code, dis.description) },
             disabilityId = it.id,
             disabilityType = KeyValue(it.type.code, it.type.description),
             endDate = it.finishDate,
