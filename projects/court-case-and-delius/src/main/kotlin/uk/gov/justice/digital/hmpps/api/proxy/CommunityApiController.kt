@@ -202,19 +202,26 @@ class CommunityApiController(
                 .map(CompletableFuture<CompareReport>::join)
                 .collect(Collectors.toList())
         }
+
+        val executed = reports.filter { it.testExecuted == true }
+        val successful = reports.filter { it.success && it.testExecuted == true }
         val unsuccessful = reports.filter { !it.success && it.testExecuted == true }
         val executionFailures = reports.filter { it.testExecuted == false }
+        val distinctEndpointsExecuted = executed.groupBy(CompareReport::endPointName)
+        val covered = distinctEndpointsExecuted.map{it.key + " covered " + it.value.size + " times"}
+        val requestedButNotCovered = compare.uriConfig.entries.map { it.key }.toSet().filter { e -> !distinctEndpointsExecuted.map { it.key }.toSet().contains(e)}
 
         return CompareAllReport(
             totalNumberOfCrns = personList.totalElements.toInt(),
             totalPages = personList.totalPages,
             currentPageNumber = compare.pageNumber,
             totalNumberOfRequests = reports.size - executionFailures.size,
-            numberOfSuccessfulRequests = reports.size - unsuccessful.size - executionFailures.size,
+            numberOfSuccessfulRequests = successful.size,
             numberOfUnsuccessfulRequests = unsuccessful.size,
             unableToBeExecuted = executionFailures.size,
-            failureReports = reports.filter { !it.success && it.testExecuted == true },
-            endpointsNotCovered = executionFailures.map { it.endPointName }
+            failureReports = unsuccessful,
+            endpointsCovered = covered,
+            endpointsRequestedButNotCovered = requestedButNotCovered
         )
     }
 
