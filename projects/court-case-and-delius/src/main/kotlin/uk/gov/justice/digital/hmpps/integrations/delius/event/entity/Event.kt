@@ -105,7 +105,6 @@ fun EventRepository.getByPersonAndEventNumber(person: Person, eventId: Long) = f
 
 @Entity
 @Immutable
-@SQLRestriction("soft_deleted = 0")
 @Table(name = "order_manager")
 class OrderManager(
 
