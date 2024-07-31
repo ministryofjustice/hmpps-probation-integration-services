@@ -63,6 +63,9 @@ fun PersonAddress.asAddress() = postcode?.let {
         ).trimAndJoin(),
         postcode = postcode,
         noFixedAbode = noFixedAbode,
+        status = status.asCodeDescription(),
+        startDate = startDate,
+        endDate = endDate,
     )
 }
 

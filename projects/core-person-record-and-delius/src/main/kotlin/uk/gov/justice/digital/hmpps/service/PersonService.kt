@@ -23,7 +23,7 @@ class PersonService(
 
     private fun Person.withDetail() = this.detail(
         aliases = aliasRepository.findByPersonId(id).map(Alias::asModel),
-        addresses = addressRepository.mainAddresses(id).mapNotNull(PersonAddress::asAddress),
+        addresses = addressRepository.findAllByPersonIdOrderByStartDateDesc(id).mapNotNull(PersonAddress::asAddress),
         exclusions = exclusionRepository.findByPersonId(id).exclusionsAsLimitedAccess(exclusionMessage),
         restrictions = restrictionRepository.findByPersonId(id).restrictionsAsLimitedAccess(restrictionMessage),
     )
