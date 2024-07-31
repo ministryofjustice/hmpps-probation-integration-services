@@ -206,20 +206,25 @@ fun Person.toAliases() = offenderAliases.map {
     )
 }.takeIf { it.isNotEmpty() }
 
+fun DisabilityEntity.toDisability() = Disability(
+    lastUpdatedDateTime = lastUpdated.toLocalDateTime(),
+    disabilityCondition = condition?.let { dis -> KeyValue(dis.code, dis.description) },
+    disabilityId = id,
+    disabilityType = KeyValue(type.code, type.description),
+    endDate = finishDate,
+    isActive = isActive(),
+    notes = notes,
+    startDate = startDate
+)
+
+fun DocumentEntity?.toPreviousConviction() = PreviousConviction(convictionDate = this?.dateProduced?.toLocalDate(),
+    detail = this?.name?.let { ImmutableMap.of("documentName", it) })
+
 fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     genderIdentity = genderIdentity?.description,
     selfDescribedGender = genderIdentityDescription ?: genderIdentity?.description,
     disabilities = disabilities.sortedByDescending { it.startDate }.map {
-        Disability(
-            lastUpdatedDateTime = it.lastUpdated.toLocalDateTime(),
-            disabilityCondition = it.condition?.let { dis -> KeyValue(dis.code, dis.description) },
-            disabilityId = it.id,
-            disabilityType = KeyValue(it.type.code, it.type.description),
-            endDate = it.finishDate,
-            isActive = it.isActive(),
-            notes = it.notes,
-            startDate = it.startDate
-        )
+        it.toDisability()
     }.takeIf { disabilities.isNotEmpty() },
     ethnicity = ethnicity?.description,
     immigrationStatus = immigrationStatus?.description,
@@ -230,8 +235,7 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
         primaryLanguage = language?.description,
         requiresInterpreter = requiresInterpreter
     ),
-    previousConviction = PreviousConviction(convictionDate = previousConviction?.dateProduced?.toLocalDate(),
-        detail = previousConviction?.name?.let { ImmutableMap.of("documentName", it) }),
+    previousConviction = previousConviction.toPreviousConviction(),
 
     provisions = provisions.sortedByDescending { it.startDate }.map {
         Provision(
