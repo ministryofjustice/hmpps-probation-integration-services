@@ -63,6 +63,7 @@ class ApprovedPremisesCategoryCodeTest {
             Arguments.of("communityOrder", "in_community", "residencyManagement", "X"),
             Arguments.of("bailPlacement", "in_community", "bailAssessment", "A"),
             Arguments.of("bailPlacement", "in_community", "bailSentence", "B"),
+            Arguments.of("standardDeterminate", "releasedPostRecall", null, "S"),
             Arguments.of("nonStatutory", "not_applicable", null, "MAP"),
             Arguments.of(null, null, null, "O")
         )
