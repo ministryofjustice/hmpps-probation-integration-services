@@ -44,7 +44,7 @@ class InterventionService(
             expectedEndDate,
             referralDate,
             length,
-            length?.let { "Months" },
+            "Months",
             managers.map { it.toNsiManager() },
             notes,
             intendedProvider?.toProbationArea(false),

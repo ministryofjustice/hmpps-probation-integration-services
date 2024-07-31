@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.nsi
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
@@ -11,7 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Probatio
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "nsi")
@@ -35,7 +34,7 @@ class Nsi(
     val referralDate: LocalDate,
 
     @Column(name = "nsi_status_date")
-    val statusDate: ZonedDateTime,
+    val statusDate: LocalDateTime,
 
     @ManyToOne
     @JoinColumn(name = "nsi_sub_type_id")

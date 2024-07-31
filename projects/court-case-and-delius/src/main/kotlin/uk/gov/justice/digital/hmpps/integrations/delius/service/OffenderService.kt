@@ -95,7 +95,7 @@ fun Person.toContactDetails() = ContactDetails(
             telephoneNumber = it.telephoneNumber,
             status = it.status.keyValueOf(),
             type = it.type?.keyValueOf(),
-            typeVerified = it.typeVerified,
+            typeVerified = it.typeVerified ?: false,
             latestAssessmentDate = it.addressAssessments.map { it.assessmentDate }.maxByOrNull { it },
             createdDatetime = it.createdDatetime.toLocalDateTime(),
             lastUpdatedDatetime = it.lastUpdatedDatetime.toLocalDateTime()
@@ -142,7 +142,7 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
                 code = team.code,
                 description = team.description,
                 telephone = team.telephone,
-                emailAddress = team.emailAddress,
+                //emailAddress = team.emailAddress,
                 localDeliveryUnit = KeyValue(team.district.code, team.district.description),
                 district = KeyValue(team.district.code, team.district.description),
                 borough = KeyValue(team.district.borough.code, team.district.borough.description)
@@ -206,20 +206,25 @@ fun Person.toAliases() = offenderAliases.map {
     )
 }.takeIf { it.isNotEmpty() }
 
+fun DisabilityEntity.toDisability() = Disability(
+    lastUpdatedDateTime = lastUpdated.toLocalDateTime(),
+    disabilityCondition = condition?.let { dis -> KeyValue(dis.code, dis.description) },
+    disabilityId = id,
+    disabilityType = KeyValue(type.code, type.description),
+    endDate = finishDate,
+    isActive = isActive(),
+    notes = notes,
+    startDate = startDate
+)
+
+fun DocumentEntity?.toPreviousConviction() = PreviousConviction(convictionDate = this?.dateProduced?.toLocalDate(),
+    detail = this?.name?.let { ImmutableMap.of("documentName", it) })
+
 fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     genderIdentity = genderIdentity?.description,
     selfDescribedGender = genderIdentityDescription ?: genderIdentity?.description,
     disabilities = disabilities.sortedByDescending { it.startDate }.map {
-        Disability(
-            lastUpdatedDateTime = it.lastUpdated.toLocalDateTime(),
-            disabilityCondition = KeyValue(it.condition.code, it.condition.description),
-            disabilityId = it.id,
-            disabilityType = KeyValue(it.type.code, it.type.description),
-            endDate = it.finishDate,
-            isActive = it.isActive(),
-            notes = it.notes,
-            startDate = it.startDate
-        )
+        it.toDisability()
     }.takeIf { disabilities.isNotEmpty() },
     ethnicity = ethnicity?.description,
     immigrationStatus = immigrationStatus?.description,
@@ -230,8 +235,7 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
         primaryLanguage = language?.description,
         requiresInterpreter = requiresInterpreter
     ),
-    previousConviction = PreviousConviction(convictionDate = previousConviction?.dateProduced?.toLocalDate(),
-        detail = previousConviction?.let { ImmutableMap.of("documentName", previousConviction.name) }),
+    previousConviction = previousConviction.toPreviousConviction(),
 
     provisions = provisions.sortedByDescending { it.startDate }.map {
         Provision(

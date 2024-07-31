@@ -24,13 +24,13 @@ class DocumentEntity(
     val personId: Long,
 
     @Column(name = "alfresco_document_id")
-    val alfrescoId: String,
+    val alfrescoId: String?,
 
     @Column
     val primaryKeyId: Long?,
 
     @Column(name = "document_name")
-    val name: String,
+    val name: String?,
 
     @Column(name = "document_type")
     val type: String,
@@ -39,13 +39,13 @@ class DocumentEntity(
     val tableName: String?,
 
     @Column(name = "created_datetime")
-    val createdAt: ZonedDateTime,
+    val createdAt: ZonedDateTime?,
 
     @Column
-    val createdByUserId: Long = 0,
+    val createdByUserId: Long? = 0,
 
     @Column
-    val lastUpdatedUserId: Long = 0,
+    val lastUpdatedUserId: Long? = 0,
 
     @Column(name = "date_produced")
     val dateProduced: LocalDateTime? = null,

@@ -1,14 +1,18 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.api.model.PreviousConviction
 import uk.gov.justice.digital.hmpps.data.generator.DocumentEntityGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CURRENTLY_MANAGED
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateDisability
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Disability
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.service.*
@@ -89,6 +93,14 @@ class OffenderServiceTest {
     }
 
     @Test
+    fun `person address has no type verified `() {
+
+        val address = PersonGenerator.generateAddress(1L, false, typeVerified = null)
+        whenever(personMock.addresses).thenReturn(listOf(address))
+        assertEquals(false, personMock.toContactDetails().addresses?.get(0)?.typeVerified)
+    }
+
+    @Test
     fun `person alias has no middle names `() {
         val alias = PersonGenerator.generatePersonAlias(CURRENTLY_MANAGED, secondName = null, thirdName = null)
         whenever(personMock.offenderAliases).thenReturn(listOf(alias))
@@ -121,6 +133,30 @@ class OffenderServiceTest {
         val doc = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
         val person = PersonGenerator.generate("TEST", secondName = null, thirdName = null)
         assertEquals(null, person.toOffenderDetail(doc).middleNames)
+    }
+
+    @Test
+    fun `person disability condition is null `() {
+        val disability = generateDisability(1, null, condition = null)
+        assertEquals(null, disability.toDisability().disabilityCondition)
+    }
+
+    @Test
+    fun `person disability condition is not null `() {
+        val disability = generateDisability(1, null)
+        assertNotEquals(null, disability.toDisability().disabilityCondition)
+    }
+
+    @Test
+    fun `person previous conviction is null `() {
+        val previousConviction: DocumentEntity? = null
+        assertEquals(PreviousConviction(null, null), previousConviction.toPreviousConviction())
+    }
+
+    @Test
+    fun `person previous conviction is not null `() {
+        val previousConviction: DocumentEntity = DocumentEntityGenerator.generateDocument(1L, 1L, "DOC", "DOC")
+        assertNotEquals(PreviousConviction(null, null), previousConviction.toPreviousConviction())
     }
 }
 
