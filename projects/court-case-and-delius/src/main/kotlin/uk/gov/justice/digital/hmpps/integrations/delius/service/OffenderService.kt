@@ -231,7 +231,7 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
         requiresInterpreter = requiresInterpreter
     ),
     previousConviction = PreviousConviction(convictionDate = previousConviction?.dateProduced?.toLocalDate(),
-        detail = previousConviction?.let { ImmutableMap.of("documentName", previousConviction.name) }),
+        detail = previousConviction?.name?.let { ImmutableMap.of("documentName", it) }),
 
     provisions = provisions.sortedByDescending { it.startDate }.map {
         Provision(

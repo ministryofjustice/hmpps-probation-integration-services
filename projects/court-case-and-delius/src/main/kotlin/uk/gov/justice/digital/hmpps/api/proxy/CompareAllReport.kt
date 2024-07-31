@@ -9,4 +9,5 @@ data class CompareAllReport(
     val numberOfUnsuccessfulRequests: Int,
     val unableToBeExecuted: Int,
     val failureReports: List<CompareReport>,
+    val endpointsNotCovered: List<String> = emptyList()
 )
