@@ -260,6 +260,8 @@ internal class ProxyIntegrationTest {
                         "pageSize": 1,
                         "crns": [ "C123456", "U123456"],
                         "uriConfig": {
+                            "OFFENDER_DETAIL": {},
+                            "OFFENDER_SUMMARY": {},
                             "CONVICTION_BY_ID": {
                                 "convictionId": "?"
                             },
@@ -282,7 +284,7 @@ internal class ProxyIntegrationTest {
                 .withToken()
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
 
-        assertThat(res.totalNumberOfRequests, equalTo(0))
+        assertThat(res.totalNumberOfRequests, equalTo(2))
         assertThat(res.totalNumberOfCrns, equalTo(2))
         assertThat(res.currentPageNumber, equalTo(2))
         assertThat(res.unableToBeExecuted, equalTo(4))

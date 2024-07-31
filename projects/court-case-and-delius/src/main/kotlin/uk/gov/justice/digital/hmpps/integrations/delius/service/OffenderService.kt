@@ -95,7 +95,7 @@ fun Person.toContactDetails() = ContactDetails(
             telephoneNumber = it.telephoneNumber,
             status = it.status.keyValueOf(),
             type = it.type?.keyValueOf(),
-            typeVerified = it.typeVerified,
+            typeVerified = it.typeVerified ?: false,
             latestAssessmentDate = it.addressAssessments.map { it.assessmentDate }.maxByOrNull { it },
             createdDatetime = it.createdDatetime.toLocalDateTime(),
             lastUpdatedDatetime = it.lastUpdatedDatetime.toLocalDateTime()
@@ -142,7 +142,7 @@ fun Person.toOffenderManagers() = offenderManagers.sortedByDescending { it.date 
                 code = team.code,
                 description = team.description,
                 telephone = team.telephone,
-                emailAddress = team.emailAddress,
+                //emailAddress = team.emailAddress,
                 localDeliveryUnit = KeyValue(team.district.code, team.district.description),
                 district = KeyValue(team.district.code, team.district.description),
                 borough = KeyValue(team.district.borough.code, team.district.borough.description)
@@ -212,7 +212,7 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     disabilities = disabilities.sortedByDescending { it.startDate }.map {
         Disability(
             lastUpdatedDateTime = it.lastUpdated.toLocalDateTime(),
-            disabilityCondition = KeyValue(it.condition.code, it.condition.description),
+            disabilityCondition = it.condition?.let { dis -> KeyValue(dis.code, dis.description) },
             disabilityId = it.id,
             disabilityType = KeyValue(it.type.code, it.type.description),
             endDate = it.finishDate,
@@ -231,7 +231,7 @@ fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
         requiresInterpreter = requiresInterpreter
     ),
     previousConviction = PreviousConviction(convictionDate = previousConviction?.dateProduced?.toLocalDate(),
-        detail = previousConviction?.let { ImmutableMap.of("documentName", previousConviction.name) }),
+        detail = previousConviction?.name?.let { ImmutableMap.of("documentName", it) }),
 
     provisions = provisions.sortedByDescending { it.startDate }.map {
         Provision(

@@ -180,7 +180,7 @@ data class OtherIds(
 
 data class Disability(
     val lastUpdatedDateTime: LocalDateTime,
-    val disabilityCondition: KeyValue,
+    val disabilityCondition: KeyValue?,
     val disabilityId: Long,
     val disabilityType: KeyValue,
     val endDate: LocalDate?,
