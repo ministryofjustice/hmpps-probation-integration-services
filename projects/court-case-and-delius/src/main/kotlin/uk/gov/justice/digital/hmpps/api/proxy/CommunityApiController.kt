@@ -208,8 +208,9 @@ class CommunityApiController(
         val unsuccessful = reports.filter { !it.success && it.testExecuted == true }
         val executionFailures = reports.filter { it.testExecuted == false }
         val distinctEndpointsExecuted = executed.groupBy(CompareReport::endPointName)
-        val covered = distinctEndpointsExecuted.map{it.key + " covered " + it.value.size + " times"}
-        val requestedButNotCovered = compare.uriConfig.entries.map { it.key }.toSet().filter { e -> !distinctEndpointsExecuted.map { it.key }.toSet().contains(e)}
+        val covered = distinctEndpointsExecuted.map { it.key + " covered " + it.value.size + " times" }
+        val requestedButNotCovered = compare.uriConfig.entries.map { it.key }.toSet()
+            .filter { e -> !distinctEndpointsExecuted.map { it.key }.toSet().contains(e) }
 
         return CompareAllReport(
             totalNumberOfCrns = personList.totalElements.toInt(),
