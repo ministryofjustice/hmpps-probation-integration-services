@@ -61,7 +61,8 @@ fun PersonAddress.asAddress() = postcode?.let {
             county,
             postcode
         ).trimAndJoin(),
-        postcode = postcode
+        postcode = postcode,
+        noFixedAbode = noFixedAbode,
     )
 }
 
