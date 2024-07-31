@@ -662,7 +662,6 @@ components:
       - dateOfBirth
       - firstName
       - gender
-      - middleNames
       - offenderId
       - offenderProfile
       - otherIds
@@ -1207,7 +1206,6 @@ components:
           type: string
     Sentence:
       required:
-      - additionalSentences
       - cja2003Order
       - description
       - legacyOrder
@@ -1695,9 +1693,7 @@ components:
       - dateOfBirth
       - firstName
       - gender
-      - middleNames
       - offenderId
-      - offenderManagers
       - offenderProfile
       - otherIds
       - partitionArea
