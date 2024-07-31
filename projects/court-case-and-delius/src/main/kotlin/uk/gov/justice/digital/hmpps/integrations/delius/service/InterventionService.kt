@@ -37,7 +37,7 @@ class InterventionService(
             outcome?.keyValueOf(),
             requirement?.toRequirementModel(),
             KeyValue(nsiStatus.code, nsiStatus.description),
-            statusDate.toLocalDateTime(),
+            statusDate,
             actualStartDate,
             expectedStartDate,
             actualEndDate,

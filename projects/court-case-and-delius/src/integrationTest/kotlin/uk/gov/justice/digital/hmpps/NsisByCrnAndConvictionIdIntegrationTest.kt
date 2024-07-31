@@ -104,7 +104,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     KeyValue(BREACH_NSIS.outcome!!.code, BREACH_NSIS.outcome!!.description),
                     RequirementsGenerator.ACTIVE_REQ.toRequirementModel(),
                     KeyValue(BREACH_NSIS.nsiStatus.code, BREACH_NSIS.nsiStatus.description),
-                    BREACH_NSIS.statusDate.toLocalDateTime(),
+                    BREACH_NSIS.statusDate,
                     BREACH_NSIS.actualStartDate,
                     BREACH_NSIS.expectedStartDate,
                     BREACH_NSIS.actualStartDate,
