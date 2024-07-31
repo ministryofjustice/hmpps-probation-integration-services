@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
@@ -24,6 +25,8 @@ class PersonAddress(
     var county: String?,
     var district: String?,
     val postcode: String?,
+    @Convert(converter = YesNoConverter::class)
+    val noFixedAbode: Boolean,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
     val softDeleted: Boolean,

@@ -104,7 +104,13 @@ internal class CorePersonIntegrationTest {
                       "addresses": [
                         {
                           "fullAddress": "1 Main Street, London, PC1 1TS",
-                          "postcode": "PC1 1TS"
+                          "postcode": "PC1 1TS",
+                          "noFixedAbode": false
+                        },
+                        {
+                          "fullAddress": "NF1 1NF",
+                          "postcode": "NF1 1NF",
+                          "noFixedAbode": true
                         }
                       ],
                       "excludedFrom": {
