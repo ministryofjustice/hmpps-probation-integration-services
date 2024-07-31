@@ -127,11 +127,6 @@
                                                 <td class="constraint detail">SYS_C0024524</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
-                                            <tr>
-                                                <td title="DPA_REPORT.BOROUGH_ID references BOROUGH.BOROUGH_ID via SYS_C0024441"><a href='DPA_REPORT.html'>DPA_REPORT</a><span class='relatedKey'>.BOROUGH_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024441</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -325,6 +320,74 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td><span id="GEOGRAPHIC">GEOGRAPHIC</span></td>
+                                    <td>CHAR</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="FUNCTIONAL">FUNCTIONAL</span></td>
+                                    <td>CHAR</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="CORPORATE">CORPORATE</span></td>
+                                    <td>CHAR</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="ND_SYSTEM">ND_SYSTEM</span></td>
+                                    <td>CHAR</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -417,6 +480,22 @@
                                     <td>YES_OR_NO7</td>
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
                                 </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_763263100</td>
+                                    <td>FUNCTIONAL IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_1092844922</td>
+                                    <td>CORPORATE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_893416346</td>
+                                    <td>ND_SYSTEM IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_878541434</td>
+                                    <td>GEOGRAPHIC IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -440,22 +519,20 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="BOROUGH.html" target="_top" title="BOROUGH" alt="" coords="372,253,733,645">
-<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="5,549,328,1077">
+<area shape="rect" id="node1" href="BOROUGH.html" target="_top" title="BOROUGH" alt="" coords="372,251,733,760">
+<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="5,360,328,888">
 <area shape="rect" id="node3" href="COURT.html" target="_top" title="COURT" alt="" coords="1076,5,1331,387">
-<area shape="rect" id="node4" href="DISTRICT.html" target="_top" title="DISTRICT" alt="" coords="777,289,1032,553">
-<area shape="rect" id="node5" href="DPA_REPORT.html" target="_top" title="DPA_REPORT" alt="" coords="1091,404,1315,727">
+<area shape="rect" id="node4" href="DISTRICT.html" target="_top" title="DISTRICT" alt="" coords="777,287,1032,551">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/BOROUGH.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="BOROUGH.html" target="_top" title="BOROUGH" alt="" coords="764,251,1125,643">
+<area shape="rect" id="node1" href="BOROUGH.html" target="_top" title="BOROUGH" alt="" coords="764,235,1125,744">
 <area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,292,353,615">
 <area shape="rect" id="node3" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="397,271,720,799">
 <area shape="rect" id="node4" href="COURT.html" target="_top" title="COURT" alt="" coords="1468,5,1723,387">
-<area shape="rect" id="node5" href="DISTRICT.html" target="_top" title="DISTRICT" alt="" coords="1169,440,1424,704">
-<area shape="rect" id="node6" href="DPA_REPORT.html" target="_top" title="DPA_REPORT" alt="" coords="1483,535,1707,857">
+<area shape="rect" id="node5" href="DISTRICT.html" target="_top" title="DISTRICT" alt="" coords="1169,500,1424,764">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/BOROUGH.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

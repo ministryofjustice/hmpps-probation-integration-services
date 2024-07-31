@@ -668,7 +668,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CONTACT_ID">CONTACT_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CONTACT_ID">CONTACT_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -680,6 +680,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="OASYS_ASSESSMENT$CFO.CONTACT_ID&#39;s name implies that it&#39;s a child of IAPS_CONTACT.CONTACT_ID, but it doesn&#39;t reference that column."><a href='IAPS_CONTACT.html'>IAPS_CONTACT</a><span class='relatedKey'>.CONTACT_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -895,11 +900,12 @@
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="COURT.html" target="_top" title="COURT" alt="" coords="425,829,679,1211">
-<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1068,353,1391">
+<area shape="rect" id="node1" href="COURT.html" target="_top" title="COURT" alt="" coords="425,725,679,1107">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1031,353,1353">
 <area shape="rect" id="node3" href="OASYS_ASSESSMENT_CFO_92e1288e.html" target="_top" title="OASYS_ASSESSMENT$CFO" alt="" coords="751,5,1260,1277">
-<area shape="rect" id="node4" href="R_OFFENCE.html" target="_top" title="R_OFFENCE" alt="" coords="397,607,707,812">
-<area shape="rect" id="node5" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="440,443,664,589">
+<area shape="rect" id="node4" href="IAPS_CONTACT.html" target="_top" title="IAPS_CONTACT" alt="" coords="440,1124,664,1241">
+<area shape="rect" id="node5" href="R_OFFENCE.html" target="_top" title="R_OFFENCE" alt="" coords="397,503,707,708">
+<area shape="rect" id="node6" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="440,339,664,485">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/OASYS_ASSESSMENT_CFO_92e1288e.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

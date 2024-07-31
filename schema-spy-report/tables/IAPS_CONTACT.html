@@ -117,6 +117,16 @@
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="OASYS_ASSESSMENT$CFO.CONTACT_ID&#39;s name implies that it&#39;s a child of IAPS_CONTACT.CONTACT_ID, but it doesn&#39;t reference that column."><a href='OASYS_ASSESSMENT_CFO_92e1288e.html'>OASYS_ASSESSMENT$CFO</a><span class='relatedKey'>.CONTACT_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="REGISTRATION$CFO.CONTACT_ID&#39;s name implies that it&#39;s a child of IAPS_CONTACT.CONTACT_ID, but it doesn&#39;t reference that column."><a href='REGISTRATION_CFO_15fb2de1.html'>REGISTRATION$CFO</a><span class='relatedKey'>.CONTACT_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -213,6 +223,7 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
@@ -220,6 +231,14 @@
 <area shape="rect" id="node1" href="IAPS_CONTACT.html" target="_top" title="IAPS_CONTACT" alt="" coords="5,5,324,163">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/IAPS_CONTACT.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="OASYS_ASSESSMENT_CFO_92e1288e.html" target="_top" title="OASYS_ASSESSMENT$CFO" alt="" coords="368,5,689,299">
+<area shape="rect" id="node2" href="IAPS_CONTACT.html" target="_top" title="IAPS_CONTACT" alt="" coords="5,320,324,477">
+<area shape="rect" id="node3" href="REGISTRATION_CFO_15fb2de1.html" target="_top" title="REGISTRATION$CFO" alt="" coords="401,316,657,668">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/IAPS_CONTACT.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

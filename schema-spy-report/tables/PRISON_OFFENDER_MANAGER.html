@@ -501,6 +501,12 @@
                                     <td>PRISON_OFFENDER_MANAGER_ID</td>
                                 </tr>
                                 <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> XAK1PRISON_OFFENDER_MANAGER</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>OFFENDER_ID</td>
+                                </tr>
+                                <tr>
                                     <td title='Indexed'>XIF1PRISON_OFFENDER_MANAGER</td>
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
@@ -565,12 +571,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1484563887</td>
-                                    <td>ACTIVE_FLAG IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>MANAGEMENT_VALID_DAT_945183357</td>
                                     <td> ((ALLOCATION_DATE &lt;&#61; NVL(END_DATE, ALLOCATION_DATE))) </td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1484563887</td>
+                                    <td>ACTIVE_FLAG IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_1988641336</td>

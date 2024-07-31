@@ -662,6 +662,50 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OSP_LEVEL_DIRECT_CONTACT_ID">OSP_LEVEL_DIRECT_CONTACT_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="CASE_ALLOCATION.OSP_LEVEL_DIRECT_CONTACT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1402"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">R_1402</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OSP_LEVEL_INDIRECT_INDECENT_ID">OSP_LEVEL_INDIRECT_INDECENT_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="CASE_ALLOCATION.OSP_LEVEL_INDIRECT_INDECENT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1403"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">R_1403</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -733,6 +777,18 @@
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>RSR_LEVEL_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF16CASE_ALLOCATION</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>OSP_LEVEL_DIRECT_CONTACT_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF17CASE_ALLOCATION</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>OSP_LEVEL_INDIRECT_INDECENT_ID</td>
                                 </tr>
                                 <tr>
                                     <td title='Indexed'>XIF1CASE_ALLOCATION</td>
@@ -843,30 +899,30 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1081,1252,1521,2113">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="9,1115,327,1379">
-<area shape="rect" id="node3" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="376,1517,699,2045">
-<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="765,1373,1019,1813">
-<area shape="rect" id="node5" href="TEAM.html" target="_top" title="TEAM" alt="" coords="24,1884,312,2236">
-<area shape="rect" id="node6" href="EVENT.html" target="_top" title="EVENT" alt="" coords="747,611,1037,1109">
-<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="371,117,703,1320">
-<area shape="rect" id="node8" href="CASE_ALLOCATION_LINK.html" target="_top" title="CASE_ALLOCATION_LINK" alt="" coords="1587,1255,1860,1377">
-<area shape="rect" id="node9" href="CASE_ALLOCATION_QUESTION.html" target="_top" title="CASE_ALLOCATION_QUESTION" alt="" coords="1565,493,1882,669">
+<area shape="rect" id="node1" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1081,1232,1521,2152">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="9,1146,327,1410">
+<area shape="rect" id="node3" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="376,1556,699,2084">
+<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="765,1225,1019,1665">
+<area shape="rect" id="node5" href="TEAM.html" target="_top" title="TEAM" alt="" coords="24,1922,312,2274">
+<area shape="rect" id="node6" href="EVENT.html" target="_top" title="EVENT" alt="" coords="747,526,1037,1025">
+<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="371,120,703,1322">
+<area shape="rect" id="node8" href="CASE_ALLOCATION_LINK.html" target="_top" title="CASE_ALLOCATION_LINK" alt="" coords="1587,1234,1860,1357">
+<area shape="rect" id="node9" href="CASE_ALLOCATION_QUESTION.html" target="_top" title="CASE_ALLOCATION_QUESTION" alt="" coords="1565,452,1882,628">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/CASE_ALLOCATION.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="2485,5,2925,867">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="1413,1119,1732,1383">
-<area shape="rect" id="node3" href="USER_.html" target="_top" title="USER_" alt="" coords="1021,1499,1369,1821">
-<area shape="rect" id="node4" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="356,1237,679,1765">
-<area shape="rect" id="node5" href="STAFF.html" target="_top" title="STAFF" alt="" coords="723,937,977,1377">
-<area shape="rect" id="node6" href="TEAM.html" target="_top" title="TEAM" alt="" coords="24,1643,312,1995">
-<area shape="rect" id="node7" href="EVENT.html" target="_top" title="EVENT" alt="" coords="2152,979,2441,1477">
-<area shape="rect" id="node8" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1776,591,2108,1793">
-<area shape="rect" id="node9" href="CASE_ALLOCATION_LINK.html" target="_top" title="CASE_ALLOCATION_LINK" alt="" coords="2991,8,3265,131">
-<area shape="rect" id="node10" href="CASE_ALLOCATION_QUESTION.html" target="_top" title="CASE_ALLOCATION_QUESTION" alt="" coords="2969,1041,3287,1217">
+<area shape="rect" id="node1" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="2485,226,2925,1146">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="1413,1006,1732,1270">
+<area shape="rect" id="node3" href="USER_.html" target="_top" title="USER_" alt="" coords="1021,1386,1369,1708">
+<area shape="rect" id="node4" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="356,1128,679,1656">
+<area shape="rect" id="node5" href="STAFF.html" target="_top" title="STAFF" alt="" coords="723,828,977,1268">
+<area shape="rect" id="node6" href="TEAM.html" target="_top" title="TEAM" alt="" coords="24,1532,312,1884">
+<area shape="rect" id="node7" href="EVENT.html" target="_top" title="EVENT" alt="" coords="2152,883,2441,1382">
+<area shape="rect" id="node8" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1776,478,2108,1680">
+<area shape="rect" id="node9" href="CASE_ALLOCATION_LINK.html" target="_top" title="CASE_ALLOCATION_LINK" alt="" coords="2991,284,3265,407">
+<area shape="rect" id="node10" href="CASE_ALLOCATION_QUESTION.html" target="_top" title="CASE_ALLOCATION_QUESTION" alt="" coords="2969,91,3287,267">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/CASE_ALLOCATION.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

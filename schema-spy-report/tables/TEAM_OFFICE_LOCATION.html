@@ -264,6 +264,23 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td><span id="DEFAULT_TEAM_LOCATION_FLAG">DEFAULT_TEAM_LOCATION_FLAG</span></td>
+                                    <td>CHAR</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>&#39;N&#39;  </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -301,6 +318,12 @@
                                     <td>TEAM_ID + OFFICE_LOCATION_ID</td>
                                 </tr>
                                 <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> XAKTEAM_OFFICE_LOCATION</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>TEAM_ID</td>
+                                </tr>
+                                <tr>
                                     <td title='Indexed'>XIF1TEAM_OFFICE_LOCATION</td>
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
@@ -324,6 +347,38 @@
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 class="box-title">Check Constraints</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Constraint</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_1115005281</td>
+                                    <td>DEFAULT_TEAM_LOCATION_FLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
                             <i class="fa fa-code-fork"></i>
                             <h3 id="Relationships" class="box-title">Relationships</h3>
                             <div class="box-tools pull-right">
@@ -341,7 +396,7 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="TEAM_OFFICE_LOCATION.html" target="_top" title="TEAM_OFFICE_LOCATION" alt="" coords="337,173,687,477">
+<area shape="rect" id="node1" href="TEAM_OFFICE_LOCATION.html" target="_top" title="TEAM_OFFICE_LOCATION" alt="" coords="337,173,740,507">
 <area shape="rect" id="node2" href="OFFICE_LOCATION.html" target="_top" title="OFFICE_LOCATION" alt="" coords="22,375,277,668">
 <area shape="rect" id="node3" href="TEAM.html" target="_top" title="TEAM" alt="" coords="5,5,293,357">
 </map>
@@ -352,7 +407,7 @@
 <area shape="rect" id="node1" href="OFFICE_LOCATION.html" target="_top" title="OFFICE_LOCATION" alt="" coords="414,375,669,668">
 <area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,477,353,800">
 <area shape="rect" id="node3" href="TEAM.html" target="_top" title="TEAM" alt="" coords="397,5,685,357">
-<area shape="rect" id="node4" href="TEAM_OFFICE_LOCATION.html" target="_top" title="TEAM_OFFICE_LOCATION" alt="" coords="729,437,1079,741">
+<area shape="rect" id="node4" href="TEAM_OFFICE_LOCATION.html" target="_top" title="TEAM_OFFICE_LOCATION" alt="" coords="729,437,1132,771">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/TEAM_OFFICE_LOCATION.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
