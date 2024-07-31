@@ -343,7 +343,7 @@ object SentenceGenerator {
         ReferenceDataGenerator.NSI_TYPE,
         ACTIVE_NSI_STATUS,
         referralDate = LocalDate.now().plusDays(1),
-        statusDate = ZonedDateTime.of(LocalDate.of(2024, 7, 1), LocalTime.NOON, EuropeLondon),
+        statusDate = ZonedDateTime.of(2024, 7, 1, 12, 0, 0, 0, EuropeLondon),
         null,
         ReferenceDataGenerator.NSI_BREACH_OUTCOME,
         actualStartDate = LocalDate.now(),
