@@ -1,5 +1,5 @@
 #!/bin/bash
-set -exo pipefail
+set -eo pipefail
 eval "$(sentry-cli bash-hook --no-environ)"
 . "$(dirname -- "$0")/functions.sh"
 
