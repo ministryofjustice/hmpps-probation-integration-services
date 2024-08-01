@@ -8,16 +8,19 @@ import jakarta.json.JsonValue
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.advice.ControllerAdvice
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.io.StringReader
 import java.lang.reflect.InvocationTargetException
 import java.net.URI
 import kotlin.reflect.KParameter
-import org.springframework.security.access.AccessDeniedException
 
 @Service
 class CommunityApiService(
@@ -43,12 +46,13 @@ class CommunityApiService(
         } catch (ex: InvocationTargetException) {
             when (val cause = ex.cause) {
                 is AccessDeniedException -> controllerAdvice.handleAccessDenied(cause)
+                is NotFoundException -> controllerAdvice.handleNotFound(cause)
+                is InvalidRequestException -> controllerAdvice.handleInvalidRequest(cause)
+                is MethodArgumentNotValidException -> controllerAdvice.handleMethodArgumentNotValid(cause)
                 else -> throw ex
             }
         }
-        return mapper.writeValueAsString(
-            response
-        )
+        return mapper.writeValueAsString(response)
     }
 
     fun generateValue(param: KParameter, originalValue: Map<*, *>, paramNames: List<String>): Any? {
