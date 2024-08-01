@@ -6,10 +6,7 @@ updates:
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
-      interval: "daily"
-    ignore:
-      - dependency-name: "software.amazon.awssdk:*" # reduce the noise of frequent AWS SDK updates
-        update-types: ["version-update:semver-patch"]
+      interval: "weekly"
     groups:
       minor:
         update-types:
@@ -21,7 +18,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     groups:
       minor:
         update-types:
@@ -33,79 +30,79 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/analyse"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/app-insights-to-slack"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/check-changes"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/cloud-platform-auth"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/cloud-platform-deploy"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/create-signed-pull-request"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/docker-build"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/format-code"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/get-build-info"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/get-env-details"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/merge-changes"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/render-project-template"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "terraform"
     directory: "/templates"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "docker"
     directory: "/projects/person-search-index-from-delius/container"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "docker"
     directory: "/projects/redrive-dead-letter-queues/container"
     schedule:
-      interval: "monthly" # to reduce frequency of AWS CLI updates
+      interval: "weekly"
 
   - package-ecosystem: "docker"
     directory: "/projects/feature-flags/container"
     schedule:
-      interval: "daily"
+      interval: "weekly"
