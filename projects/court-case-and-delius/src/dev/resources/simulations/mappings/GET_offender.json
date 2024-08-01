@@ -4,6 +4,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/secure/offenders/crn/Y123456/all"
+      },
+      "response": {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_offender_all_Y123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPath": "/secure/offenders/crn/C123456/allOffenderManagers",
         "headers": {
           "Content-Type": {

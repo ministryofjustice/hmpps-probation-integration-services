@@ -289,4 +289,29 @@ internal class ProxyIntegrationTest {
         assertThat(res.currentPageNumber, equalTo(2))
         assertThat(res.unableToBeExecuted, equalTo(4))
     }
+
+    @Test
+    fun `compare when lao case`() {
+        val res = mockMvc.perform(
+            post("/secure/compareAll")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "pageNumber": 1,
+                        "pageSize": 1,
+                        "crns": [ "Y123456"],
+                        "uriConfig": {
+                            "OFFENDER_DETAIL": {}
+                        }
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().isOk).andReturn().response.contentAsJson<CompareAllReport>()
+
+        assertThat(res.totalNumberOfRequests, equalTo(1))
+    }
 }
+
+//{"status":403,"developerMessage":"This is a restricted record. Please contact a system administrator"}
