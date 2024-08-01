@@ -89,7 +89,7 @@ enum class ReleaseType(val value: String) {
     ResidencyManagement("residencyManagement"),
     RiskManagement("riskManagement"),
     TemporaryLicence("rotl"),
-    ReReleasedPostRecall("releasedPostRecall"),
+    ReReleasedPostRecall("reReleasedPostRecall"),
     NotApplicable("not_applicable");
 
     companion object {
