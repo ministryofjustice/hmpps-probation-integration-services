@@ -139,7 +139,7 @@ jobs:
     if: always()
     steps:
       - name: Check build matrix status
-        if: ${{ needs.*.result != 'success' }}
+        if: ${{ needs.build-index.result != 'success' || needs.build-projects.result != 'success' }}
         run: exit 1
 
   deploy:
