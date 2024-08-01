@@ -6,12 +6,12 @@ enum class Uri(
     val ccdFunction: String,
     val urlParams: List<String>
 ) {
-    OFFENDER_DETAIL("/secure/offenders/crn/{crn}/all", "offenderService", "getOffenderDetail", listOf("crn")),
-    OFFENDER_SUMMARY("/secure/offenders/crn/{crn}", "offenderService", "getOffenderDetailSummary", listOf("crn")),
+    OFFENDER_DETAIL("/secure/offenders/crn/{crn}/all", "probationRecordResource", "getOffenderDetail", listOf("crn")),
+    OFFENDER_SUMMARY("/secure/offenders/crn/{crn}", "probationRecordResource", "getOffenderDetailSummary", listOf("crn")),
     OFFENDER_MANAGERS(
         "/secure/offenders/crn/{crn}/allOffenderManagers?includeProbationAreaTeams={includeProbationAreaTeams}",
-        "offenderManagerService",
-        "getAllOffenderManagersForCrn",
+        "probationRecordResource",
+        "getAllOffenderManagers",
         listOf("crn", "includeProbationAreaTeams")
     ),
     CONVICTIONS(
