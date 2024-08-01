@@ -39,6 +39,7 @@ generic-service:
       JDBC_PASSWORD: DB_PASSWORD
     person-search-index-from-delius-opensearch:
       SEARCH_INDEX_HOST: url
+      BEDROCK_CONNECTOR_IAM_ROLE_ARN: bedrock_role_arn
     person-search-index-from-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
     person-search-index-from-delius-person-queue:

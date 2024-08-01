@@ -93,4 +93,10 @@ spec:
                       name: person-search-index-from-delius-sentry
                       key: CONTACT_REINDEXING_SENTRY_MONITOR_ID
                       optional: false
+                - name: BEDROCK_CONNECTOR_IAM_ROLE_ARN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-opensearch
+                      key: bedrock_role_arn
+                      optional: false
           restartPolicy: Never

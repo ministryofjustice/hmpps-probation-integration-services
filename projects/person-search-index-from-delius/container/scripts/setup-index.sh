@@ -14,11 +14,12 @@ function help {
 
 export SEARCH_URL="${SEARCH_INDEX_HOST}"
 
-while getopts h:i:p:t:u: FLAG; do
+while getopts h:i:p:s:t:u: FLAG; do
   case $FLAG in
   h) help ;;
   i) export INDEX_PREFIX="${OPTARG}" ;;
-  p) export PIPELINE_FILENAME="${OPTARG}" ;;
+  p) export INGEST_PIPELINE_FILENAME="${OPTARG}" ;;
+  s) export SEARCH_PIPELINE_FILENAME="${OPTARG}" ;;
   t) export TEMPLATE_FILENAME="${OPTARG}" ;;
   u) export SEARCH_URL="$OPTARG" ;;
   \?) #unrecognized option - show help
@@ -31,10 +32,17 @@ if [ -z "$INDEX_PREFIX" ]; then fail 'Missing -i'; fi
 if [ -z "$SEARCH_URL" ]; then fail 'Missing -u'; fi
 
 function create_pipeline() {
-  if [ -n "${PIPELINE_FILENAME}" ]; then
-    if [ ! -f "${PIPELINE_FILENAME}" ]; then fail "${PIPELINE_FILENAME} does not exist."; fi
-    echo "Creating ${INDEX_PREFIX} pipeline ..."
-    curl_json -XPUT "${SEARCH_URL}/_ingest/pipeline/${INDEX_PREFIX}-pipeline" --data @"${PIPELINE_FILENAME}"
+  if [ -n "${INGEST_PIPELINE_FILENAME}" ]; then
+    if [ ! -f "${INGEST_PIPELINE_FILENAME}" ]; then fail "${INGEST_PIPELINE_FILENAME} does not exist."; fi
+    echo "Creating ${INDEX_PREFIX} ingest pipeline ..."
+    pipeline_body=$(envsubst < "${INGEST_PIPELINE_FILENAME}")
+    curl_json -XPUT "${SEARCH_URL}/_ingest/pipeline/${INDEX_PREFIX}-pipeline" --data "$pipeline_body"
+  fi
+  if [ -n "${SEARCH_PIPELINE_FILENAME}" ]; then
+    if [ ! -f "${SEARCH_PIPELINE_FILENAME}" ]; then fail "${SEARCH_PIPELINE_FILENAME} does not exist."; fi
+    echo "Creating ${INDEX_PREFIX} search pipeline ..."
+    pipeline_body=$(envsubst < "${SEARCH_PIPELINE_FILENAME}")
+    curl_json -XPUT "${SEARCH_URL}/_search/pipeline/${INDEX_PREFIX}-search-pipeline" --data "$pipeline_body"
   fi
 }
 

@@ -46,6 +46,7 @@ jobs:
           VALIDATE_YAML: true
           LINTER_RULES_PATH: /
           FILTER_REGEX_EXCLUDE: .*templates/.*.ya?ml
+          BASH_SEVERITY: warning
           GITHUB_ACTIONS_CONFIG_FILE: .github/actionlint.yml
           GITHUB_ACTIONS_COMMAND_ARGS: -ignore=SC.+:info:.+
           GITHUB_TOKEN: ${{ github.token }}

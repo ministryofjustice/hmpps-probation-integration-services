@@ -1,11 +1,13 @@
 index_patterns:
-  - contact-search-*
+  - contact-semantic-search-*
 
 template:
   settings:
-    index:
-      number_of_shards: 18 # ~= Total size of data / 50GB
-      number_of_replicas: 1
+    default_pipeline: contact-semantic-search-pipeline
+    index.search.default_pipeline: contact-semantic-search-search-pipeline
+    index.knn: true
+    index.number_of_shards: 1 # ~= Expected size of data / 50GB
+    index.number_of_replicas: 1
     index.mapping.ignore_malformed: true
     analysis:
       analyzer:
@@ -789,15 +791,26 @@ template:
       endTime:
         type: date
         format: hour_minute_second
+      text:
+        type: text
+      textEmbedding:
+        type: nested
+        properties:
+          knn:
+            type: knn_vector
+            dimension: 1024
       notes:
+        copy_to: text
         type: text
         analyzer: probation_text_analyzer
         boost: 5
       description:
+        copy_to: text
         type: text
         analyzer: probation_text_analyzer
         boost: 4
       outcome:
+        copy_to: text
         type: text
         analyzer: probation_text_analyzer
         store: true
@@ -806,6 +819,7 @@ template:
           keyword:
             type: keyword
       type:
+        copy_to: text
         type: text
         analyzer: probation_text_analyzer
         store: true
