@@ -561,6 +561,8 @@ components:
     CompareAllReport:
       required:
       - currentPageNumber
+      - endpointsCovered
+      - endpointsRequestedButNotCovered
       - failureReports
       - numberOfSuccessfulRequests
       - numberOfUnsuccessfulRequests
@@ -595,6 +597,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CompareReport"
+        endpointsCovered:
+          type: array
+          items:
+            type: string
+        endpointsRequestedButNotCovered:
+          type: array
+          items:
+            type: string
     ContactDetailsSummary:
       type: object
       properties:
@@ -610,7 +620,6 @@ components:
             $ref: "#/components/schemas/PhoneNumber"
     Disability:
       required:
-      - disabilityCondition
       - disabilityId
       - disabilityType
       - isActive

@@ -55,13 +55,26 @@ components:
     Address:
       required:
       - fullAddress
+      - noFixedAbode
       - postcode
+      - startDate
+      - status
       type: object
       properties:
         fullAddress:
           type: string
         postcode:
           type: string
+        noFixedAbode:
+          type: boolean
+        status:
+          $ref: "#/components/schemas/CodeDescription"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
     Alias:
       required:
       - dateOfBirth

@@ -236,7 +236,14 @@
   "addresses": [
     {
       "fullAddress": "string",
-      "postcode": "string"
+      "postcode": "string",
+      "noFixedAbode": "boolean",
+      "status": {
+        "code": "string",
+        "description": "string"
+      },
+      "startDate": "string",
+      "endDate": "string"
     }
   ],
   "excludedFrom": {
@@ -370,7 +377,14 @@
       "addresses": [
         {
           "fullAddress": "string",
-          "postcode": "string"
+          "postcode": "string",
+          "noFixedAbode": "boolean",
+          "status": {
+            "code": "string",
+            "description": "string"
+          },
+          "startDate": "string",
+          "endDate": "string"
         }
       ],
       "excludedFrom": {
@@ -436,6 +450,46 @@
 <td>postcode</td>
 <td>string</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>noFixedAbode</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedescription'>CodeDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   
