@@ -12,16 +12,20 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.HttpStatusCodeException
+import uk.gov.justice.digital.hmpps.advice.ControllerAdvice
 import java.io.StringReader
+import java.lang.reflect.InvocationTargetException
 import java.net.URI
 import kotlin.reflect.KParameter
+import org.springframework.security.access.AccessDeniedException
 
 @Service
 class CommunityApiService(
     @Value("\${community-api.url}") private val communityApiUrl: String,
     private val mapper: ObjectMapper,
     private val communityApiClient: CommunityApiClient,
-    private val applicationContext: ApplicationContext
+    private val applicationContext: ApplicationContext,
+    private val controllerAdvice: ControllerAdvice
 ) {
 
     fun getCcdJson(compare: Compare): String {
@@ -34,8 +38,16 @@ class CommunityApiService(
         val paramsFunc = function.parameters
         val params = mapOf(paramsFunc[0] to instance) + functionParams
 
-        return mapper.writeValueAsString(
+        val response = try {
             function.callBy(params)
+        } catch (ex: InvocationTargetException) {
+            when (val cause = ex.cause) {
+                is AccessDeniedException -> controllerAdvice.handleAccessDenied(cause)
+                else -> throw ex
+            }
+        }
+        return mapper.writeValueAsString(
+            response
         )
     }
 
@@ -73,7 +85,7 @@ class CommunityApiService(
             )
         }
 
-        val comApiJsonString = communityApiClient.proxy(URI.create(communityApiUrl + comApiUri), headers).body!!
+        val comApiJsonString = proxy(comApiUri, headers.toMutableMap()).body!!
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
         val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue() as JsonStructure
         val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)

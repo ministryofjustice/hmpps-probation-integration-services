@@ -92,6 +92,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam
     code = code.trim(),
     description = description,
     telephone = telephone,
+    emailAddress = emailAddress,
     borough = KeyValue(district.borough.code, district.borough.description),
     district = KeyValue(district.code, district.description),
     localDeliveryUnit = KeyValue(district.code, district.description),
