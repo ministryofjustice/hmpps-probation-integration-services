@@ -1,3 +1,4 @@
+{{- if eq .Release.Namespace "hmpps-probation-integration-services-dev" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -17,3 +18,4 @@ metadata:
     grafana_dashboard: ""
 data:
 {{ (.Files.Glob "grafana/flipt-system.json").AsConfig | indent 2 }}
+{{- end -}}
