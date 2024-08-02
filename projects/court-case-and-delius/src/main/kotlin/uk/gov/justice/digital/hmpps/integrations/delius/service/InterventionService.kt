@@ -83,9 +83,7 @@ fun NsiEntity.toOutcomeRecall(): Boolean? =
         } catch (ex: Exception) {
             OutcomeType.UNKNOWN
         }.isOutcomeRecall
-    }.orElse(
-        null
-    )
+    }.orElse(null)
 
 fun NsiEntity.toRecallRejectedOrWithdrawn(): Boolean? {
     val status = try {
