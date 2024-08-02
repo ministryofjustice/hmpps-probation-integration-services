@@ -60,10 +60,7 @@ runs:
       env:
         mask: ${{ inputs.mask }}
 
-    - uses: planetscale/ghcommit-action@b68767a2e130a71926b365322e62b583404a5e09 # v0.1.43
+    - name: Commit and push changes
+      uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
       with:
         commit_message: ${{ inputs.commit_message }}
-        repo: ${{ github.repository }}
-        branch: ${{ github.head_ref || github.ref_name }}
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
