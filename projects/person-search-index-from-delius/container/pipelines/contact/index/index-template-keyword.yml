@@ -1,0 +1,839 @@
+index_patterns:
+  - contact-search-*
+
+template:
+  settings:
+    index.number_of_shards: 18 # ~= Expected size of data / 50GB
+    index.number_of_replicas: 1
+    index.mapping.ignore_malformed: true
+    analysis:
+      analyzer:
+        probation_text_analyzer:
+          tokenizer: custom-whitespace  # Split words on whitespace while preserving space-separated dates, numbers and postcodes
+          filter:
+            - asciifolding              # Convert non-ascii characters to ascii (e.g. "Êxâmple.text" => "Example.text")
+            - lowercase                 # Convert all characters to lowercase
+            - capture_numbers           # Capture consecutive numbers (e.g. "DATE=01-02-03" => ["01-02-03", "DATE=01-02-03"])
+            - replace_dialcodes         # Replace dial codes with 0 (e.g. "+44123..." => "0123...")
+            - dates_iso8601             # Convert a range of date formats to yyyy-MM-dd
+            - dates_month_day_year      #   e.g. "feb 1st 1999" => "01.feb.1999
+            - dates_jan                 #   e.g. "1st January 19" => "01.01.19"
+            - dates_feb                 #   e.g. "01.feb.99" => "01.02.99"
+            - dates_mar                 #   ...
+            - dates_apr
+            - dates_may
+            - dates_jun
+            - dates_jul
+            - dates_aug
+            - dates_sep
+            - dates_oct
+            - dates_nov
+            - dates_dec
+            - dates_year_month_day      #   e.g. "1999.02.01" => "01.02.1999"
+            - dates_long_year           #   e.g. "01 02 1999" => "01.02.1999"
+            - dates_short_year_19       #   e.g. "01 02 99"   => "01.02.1999"
+            - dates_short_year_20       #   e.g. "01 02 03"   => "01.02.2003"
+            - dates_short_day           #   e.g. "1 02 1999"  => "01.02.1999"
+            - dates_short_month         #   e.g. "01 2 1999"  => "01.02.1999"
+            - dates_reformat            #   e.g. "01.02.1999" => "1999-02-01"
+            - catenate_non_dates        # Combine any numeric fields that haven't been matched as dates (e.g. phone numbers "(0123) 456-789" => "0123456780")
+            - override_stemmer          # Exclude words from stemming (e.g. officer and office should be treated separately)
+            - stemmer                   # Perform word stemming (e.g. "example" => "exampl" , "testing" => "test")
+            - multiword_synonyms        # Combine multi-word synonyms into a single token (e.g. ["unpaid", "work"] => ["unpaid", "work", "unpaid_work"])
+            - one_way_synonyms          # Apply one-way synonyms, where a term can mean distinct things (e.g. "assault" => ["abh", "gbh"])
+            - probation_synonyms        # Apply probation synonyms (e.g. "unpaid work" => "upw")
+            - delimit_words             # Split tokens on punctuation (e.g. "example.text" => ["example.text", "exampletext", "example", "text"])
+            - flatten_graph             # Flatten the token graph, so it can be used for indexing
+            - trim                      # Trim any whitespace from the start/end of tokens
+            - remove_single_chars       # Remove any tokens that are a single character
+            - unique_tokens             # Remove any duplicate tokens in the same positions
+      tokenizer:
+        custom-whitespace:
+          type: pattern
+          pattern: |
+            ( \b\d{1,2}(?:st|nd|rd|th)?[\ \-\./]         # capture space-separated dates (e.g. "1st february 1999", "1 feb 99")
+                (?:jan(?:uary)?|feb(?:ruary)?
+                  |mar(?:ch)?|apr(?:il)?|may
+                  |june?|july?|aug(?:ust)?
+                  |sept?(?:ember)?|oct(?:ober)?
+                  |(?:nov|dec)(?:ember)?)
+                [\ \-\./](?:19|20)?\d{2}\b
+            | \b(?:jan(?:uary)?|feb(?:ruary)?            # capture space-separated dates, with month first (e.g. "feb 1st 99", "feb 01 1999")
+                  |mar(?:ch)?|apr(?:il)?|may
+                  |june?|july?|aug(?:ust)?
+                  |sept?(?:ember)?|oct(?:ober)?
+                  |(?:nov|dec)(?:ember)?)
+                [\ \-\./]\d{1,2}(?:st|nd|rd|th)?
+                [\ \-\./](?:19|20)?\d{2}\b
+            | \(?\+?\d+[\ \-\./\(\)][\d\ \-\./\(\)]+\d+  # capture space-separated numbers (e.g. "phone 0123 456 78" => ["phone", "0123 456 78"])
+            | [a-z]{1,2}\d[a-z\d]?\ \d[a-z]{2}           # capture space-separated postcodes (e.g. "M20 0AA is the postcode" => ["M20 0AA", "is", "the", "postcode"])
+            | \S+                                        # tokenize everything else on whitespace
+            )
+          flags: CASE_INSENSITIVE|COMMENTS
+          group: 1
+      filter:
+        multiword_synonyms:
+          type: synonym
+          expand: false
+          synonyms:
+            - 1.00 am => 1.00_am
+            - 2.00 am => 2.00_am
+            - 3.00 am => 3.00_am
+            - 4.00 am => 4.00_am
+            - 5.00 am => 5.00_am
+            - 6.00 am => 6.00_am
+            - 7.00 am => 7.00_am
+            - 8.00 am => 8.00_am
+            - 9.00 am => 9.00_am
+            - 10.00 am => 10.00_am
+            - 11.00 am => 11.00_am
+            - 12.00 am => 12.00_am
+            - 1.00 pm => 1.00_pm
+            - 2.00 pm => 2.00_pm
+            - 3.00 pm => 3.00_pm
+            - 4.00 pm => 4.00_pm
+            - 5.00 pm => 5.00_pm
+            - 6.00 pm => 6.00_pm
+            - 7.00 pm => 7.00_pm
+            - 8.00 pm => 8.00_pm
+            - 9.00 pm => 9.00_pm
+            - 10.00 pm => 10.00_pm
+            - 11.00 pm => 11.00_pm
+            - 12.00 pm => 12.00_pm
+            - 1 am => 1_am
+            - 2 am => 2_am
+            - 3 am => 3_am
+            - 4 am => 4_am
+            - 5 am => 5_am
+            - 6 am => 6_am
+            - 7 am => 7_am
+            - 8 am => 8_am
+            - 9 am => 9_am
+            - 10 am => 10_am
+            - 11 am => 11_am
+            - 12 am => 12_am
+            - 1 pm => 1_pm
+            - 2 pm => 2_pm
+            - 3 pm => 3_pm
+            - 4 pm => 4_pm
+            - 5 pm => 5_pm
+            - 6 pm => 6_pm
+            - 7 pm => 7_pm
+            - 8 pm => 8_pm
+            - 9 pm => 9_pm
+            - 10 pm => 10_pm
+            - 11 pm => 11_pm
+            - 12 pm => 12_pm
+            - 12 monthly => 12_monthly
+            - a domestic => a_domestic
+            - a home => a_home
+            - acceptable absence => acceptable_absence
+            - acc_prog => acc_prog
+            - accredited programme => accredited_programme
+            - actual bodily harm => actual_bodily_harm
+            - actual end date => actual_end_date
+            - after care => after_care
+            - air force => air_force
+            - alcohol treatment requirement => alcohol_treatment_requirement
+            - anti social => anti_social
+            - anti depressants => anti_depressants
+            - approved premise => approved_premise
+            - approved premises => approved_premises
+            - assistant chief officer => assistant_chief_officer
+            - at large => at_large
+            - auto conditional release date => auto_conditional_release_date
+            - automatic release date => automatic_release_date
+            - bail accommodation => bail_accommodation
+            - bail accommodation support service => bail_accommodation_support_service
+            - bail hostel => bail_hostel
+            - basic custody screening => basic_custody_screening
+            - basic custody screening tool => basic_custody_screening_tool
+            - birth date => birth_date
+            - bring on potential => bring_on_potential
+            - building better relationships => building_better_relationships
+            - care experienced => care_experienced
+            - care home => care_home
+            - care needs => care_needs
+            - case admin => case_admin
+            - case administrator => case_administrator
+            - circles of support => circles_of_support
+            - commissioned rehabilitative services => commissioned_rehabilitative_services
+            - commissioned services => commissioned_services
+            - community domestic violence programme => community_domestic_violence_programme
+            - community order => community_order
+            - community payback => community_payback
+            - community punishment and rehabilitation order => community_punishment_and_rehabilitation_order
+            - community punishment order => community_punishment_order
+            - community rehabilitation company => community_rehabilitation_company
+            - community rehabilitation order => community_rehabilitation_order
+            - community service => community_service
+            - community sex offender group programme => community_sex_offender_group_programme
+            - conditional release date => conditional_release_date
+            - control of violence for angry impulsive drinkers => control_of_violence_for_angry_impulsive_drinkers
+            - controlling anger and learning to manage it => controlling_anger_and_learning_to_manage_it
+            - court admin => court_admin
+            - court administrator => court_administrator
+            - criminal justice act => criminal_justice_act
+            - crn court => crn_court
+            - crn crt => crn_crt
+            - crown court => crown_court
+            - crown crt => crown_crt
+            - date of birth => date_of_birth
+            - department for work and pensions => department_for_work_and_pensions
+            - discretionary release date => discretionary_release_date
+            - domestic abuse => domestic_abuse
+            - domestic abuse safety officer => domestic_abuse_safety_officer
+            - domestic violence => domestic_violence
+            - drink impaired drivers => drink_impaired_drivers
+            - drug intervention programme => drug_intervention_programme
+            - drug rehabilitation requirement => drug_rehabilitation_requirement
+            - duty to refer => duty_to_refer
+            - earliest release date => earliest_release_date
+            - early release => early_release
+            - early removal => early_removal
+            - education training and employment => education_training_and_employment
+            - education training employment => education_training_employment
+            - electronic monitoring => electronic_monitoring
+            - end date => end_date
+            - end of custody licence => end_of_custody_licence
+            - end of custody supervision licence => end_of_custody_supervision_licence
+            - ex-armed services personnel => ex-armed_services_personnel
+            - expected release date => expected_release_date
+            - failed to attend => failed_to_attend
+            - failed to comply => failed_to_comply
+            - failed to report => failed_to_report
+            - faith related => faith_related
+            - final sentence plan => final_sentence_plan
+            - fit note => fit_note
+            - fixed term recall => fixed_term_recall
+            - fixed-term recall => fixed-term_recall
+            - foster care => foster_care
+            - further offence => further_offence
+            - further offences => further_offences
+            - general practitioner => general_practitioner
+            - girl friend => girl_friend
+            - grand child => grand_child
+            - grand children => grand_children
+            - grand dad => grand_dad
+            - grand kid => grand_kid
+            - grand ma => grand_ma
+            - grand mother => grand_mother
+            - grievous bodily harm => grievous_bodily_harm
+            - hand over => hand_over
+            - hate crime => hate_crime
+            - hdc expected date => hdc_expected_date
+            - health authority => health_authority
+            - health board => health_board
+            - health service => health_service
+            - home detention curfew => home_detention_curfew
+            - home office => home_office
+            - immigration detention => immigration_detention
+            - immigration removal centre => immigration_removal_centre
+            - independent inquiry into child sexual abuse => independent_inquiry_into_child_sexual_abuse
+            - indeterminate sentence for public protection => indeterminate_sentence_for_public_protection
+            - initial sentence plan => initial_sentence_plan
+            - integrated offender management => integrated_offender_management
+            - intensive supervision => intensive_supervision
+            - interim accredited programmes service => interim_accredited_programmes_service
+            - interim accredited programmes system => interim_accredited_programmes_system
+            - internet sex offender treatment programme => internet_sex_offender_treatment_programme
+            - interventions manager => interventions_manager
+            - key worker => key_worker
+            - licence condition => licence_condition
+            - licence expiry date => licence_expiry_date
+            - local admin unit => local_admin_unit
+            - local delivery unit => local_delivery_unit
+            - london probation => london_probation
+            - london probation area => london_probation_area
+            - london probation trust => london_probation_trust
+            - low intensity alcohol programmes => low_intensity_alcohol_programmes
+            - magistrates court => magistrates_court
+            - mags court => mags_court
+            - mags crt => mags_crt
+            - mental health => mental_health
+            - move on => move_on
+            - national delius => national_delius
+            - national insurance => national_insurance
+            - national insurance number => national_insurance_number
+            - national standards => national_standards
+            - new me => new_me
+            - ni number => ni_number
+            - nomis id => nomis_id
+            - nomis number => nomis_number
+            - noms id => noms_id
+            - noms no => noms_no
+            - noms number => noms_number
+            - non parole date => non_parole_date
+            - non statutory intervention => non_statutory_intervention
+            - non specified intervention => non_specified_intervention
+            - non-parole date => non-parole_date
+            - offender manager => offender_manager
+            - offender management => offender_management
+            - offender management unit => offender_management_unit
+            - office visit => office_visit
+            - oral report => oral_report
+            - out of hours => out_of_hours
+            - parole board review date => parole_board_review_date
+            - parole eligibility date => parole_eligibility_date
+            - parole report => parole_report
+            - parole request date => parole_request_date
+            - parom 1 => parom_1
+            - passed away => passed_away
+            - per annum => per_annum
+            - person on probation => person_on_probation
+            - personal independence payment => personal_independence_payment
+            - police constable => police_constable
+            - police officer => police_officer
+            - pom handover expected start date => pom_handover_expected_start_date
+            - post sentence supervision => post_sentence_supervision
+            - post sentence supervision end date => post_sentence_supervision_end_date
+            - post sentence supervision expiry date => post_sentence_supervision_expiry_date
+            - post sentence supervision requirement => post_sentence_supervision_requirement
+            - post-sentence supervision => post-sentence_supervision
+            - post-sentence supervision end date => post-sentence_supervision_end_date
+            - post-sentence supervision expiry date => post-sentence_supervision_expiry_date
+            - post-sentence supervision requirement => post-sentence_supervision_requirement
+            - pre-release custody date => pre-release_custody_date
+            - pre-sentence report => pre-sentence_report
+            - presentence report => presentence_report
+            - previous convictions => previous_convictions
+            - prison offender manager => prison_offender_manager
+            - probation delivery unit => probation_delivery_unit
+            - probation officer => probation_officer
+            - probation order => probation_order
+            - probation service => probation_service
+            - problem solving court => problem_solving_court
+            - prolific priority offender => prolific_priority_offender
+            - public health england => public_health_england
+            - public health wales => public_health_wales
+            - racially motivated => racially_motivated
+            - re-release date => re-release_date
+            - recall date => recall_date
+            - rehabilitation activity requirement => rehabilitation_activity_requirement
+            - rehabilitative services => rehabilitative_services
+            - release date => release_date
+            - release on temporary licence => release_on_temporary_licence
+            - release review date => release_review_date
+            - responsible officer => responsible_officer
+            - restorative justice => restorative_justice
+            - retirement benefit => retirement_benefit
+            - risk of harm => risk_of_harm
+            - risk of serious harm => risk_of_serious_harm
+            - risk of serious recidivism => risk_of_serious_recidivism
+            - ro responsibility handover from pom to om expected date => ro_responsibility_handover_from_pom_to_om_expected_date
+            - rotl end date => rotl_end_date
+            - safe guarding => safe_guarding
+            - section 44 extended date => section_44_extended_date
+            - secure hospital => secure_hospital
+            - self change programme => self_change_programme
+            - self harm => self_harm
+            - self inflicted death => self_inflicted_death
+            - self-change programme => self-change_programme
+            - self-inflicted death => self-inflicted_death
+            - senior probation officer => senior_probation_officer
+            - sentence expiry date => sentence_expiry_date
+            - sentence plan => sentence_plan
+            - serious further offence => serious_further_offence
+            - serious further offences => serious_further_offences
+            - sex offender treatment programme => sex_offender_treatment_programme
+            - sexual harm prevention order => sexual_harm_prevention_order
+            - sexual offending prevention order => sexual_offending_prevention_order
+            - sexual risk order => sexual_risk_order
+            - short duration programme => short_duration_programme
+            - short format report => short_format_report
+            - short term accommodation => short_term_accommodation
+            - short-format report => short-format_report
+            - short-term accommodation => short-term_accommodation
+            - sick note => sick_note
+            - social security => social_security
+            - social services => social_services
+            - spousal assault risk assessment => spousal_assault_risk_assessment
+            - strategic health authority => strategic_health_authority
+            - structured assessment of risk and need => structured_assessment_of_risk_and_need
+            - structured intervention => structured_intervention
+            - subject access request => subject_access_request
+            - substance abuse => substance_abuse
+            - substance misuse => substance_misuse
+            - suspended sentence order => suspended_sentence_order
+            - tariff date => tariff_date
+            - temporary accommodation => temporary_accommodation
+            - temporary licence => temporary_licence
+            - temporary release => temporary_release
+            - terrorism act => terrorism_act
+            - thinking skills programme => thinking_skills_programme
+            - through the gate => through_the_gate
+            - time table => time_table
+            - top-up supervision => top-up_supervision
+            - top-up supervision end date => top-up_supervision_end_date
+            - top-up supervision expiry date => top-up_supervision_expiry_date
+            - transitional housing => transitional_housing
+            - unacceptable absence => unacceptable_absence
+            - unacceptable behaviour => unacceptable_behaviour
+            - universal credit => universal_credit
+            - unlawfully at large => unlawfully_at_large
+            - unpaid work => unpaid_work
+            - victims liaison officer => victims_liaison_officer
+            - victims liasion unit => victims_liasion_unit
+            - warrant without bail => warrant_without_bail
+            - womens safety officer => womens_safety_officer
+            - womens safety worker => womens_safety_worker
+            - work capability assessment => work_capability_assessment
+            - work from home => work_from_home
+            - young offender institution => young_offender_institution
+            - youth offending service => youth_offending_service
+            - youth offending team => youth_offending_team
+        one_way_synonyms:
+          type: synonym
+          expand: false
+          synonyms:
+            - abuse => cruelty, bullying, domestic_violence, incest
+            - ap => accredited_programme, approved_premises
+            - assault => abh, gbh
+            - community_order => co, probation_order, cro, cpo, cpro, sso
+            - court => magistrates_court, crown_court
+            - partner => husband, wife, boyfriend, girlfriend
+        probation_synonyms:
+          type: synonym
+          expand: false
+          synonyms:
+            - 1, one
+            - 2, two
+            - 3, three
+            - 4, four
+            - 5, five
+            - 6, six
+            - 7, seven
+            - 8, eight
+            - 9, nine
+            - 10, ten
+            - 11, eleven
+            - 12, twelve
+            - 13, thirteen
+            - 14, fourteen
+            - 15, fifteen
+            - 16, sixteen
+            - 17, seventeen
+            - 18, eighteen
+            - 19, nineteen
+            - 20, twenty
+            - 30, thirty
+            - 40, forty
+            - 50, fifty
+            - 60, sixty
+            - 70, seventy
+            - 80, eighty
+            - 90, ninety
+            - 1am, 1_am, 0100, 01.00, 1.00_am
+            - 2am, 2_am, 0200, 02.00, 2.00_am
+            - 3am, 3_am, 0300, 03.00, 3.00_am
+            - 4am, 4_am, 0400, 04.00, 4.00_am
+            - 5am, 5_am, 0500, 05.00, 5.00_am
+            - 6am, 6_am, 0600, 06.00, 6.00_am
+            - 7am, 7_am, 0700, 07.00, 7.00_am
+            - 8am, 8_am, 0800, 08.00, 8.00_am
+            - 9am, 9_am, 0900, 09.00, 9.00_am
+            - 10am, 10_am, 1000, 10.00_am
+            - 11am, 11_am, 1100, 11.00_am
+            - 12pm, 12_pm, 1200, 12.00, midday, mid-day, noon
+            - 1pm, 1_pm, 1300, 13.00
+            - 2pm, 2_pm, 1400, 14.00
+            - 3pm, 3_pm, 1500, 15.00
+            - 4pm, 4_pm, 1600, 16.00
+            - 5pm, 5_pm, 1700, 17.00
+            - 6pm, 6_pm, 1800, 18.00
+            - 7pm, 7_pm, 1900, 19.00
+            - 8pm, 8_pm, 2000, 20.00
+            - 9pm, 9_pm, 2100, 21.00
+            - 10pm, 10_pm, 2200, 22.00
+            - 11pm, 11_pm, 2300, 23.00
+            - 12am, 12_am, 0000, 00.00, midnight, mid-night
+            - morning, 8_am, 9_am, 10_am, 11_am
+            - abh, actual_bodily_harm
+            - abs, absence, failed_to_attend, fta
+            - acceptable, acceptable_absence, aa
+            - accom, accommodation, housing, home, location, addr, address
+            - aco, assistant_chief_officer
+            - acr, auto_conditional_release_date, crd, conditional_release_date, ard, automatic_release_date
+            - adj, adjourned
+            - admission, admitted
+            - aftercare, after_care, after-care
+            - afternoon, pm
+            - alc, alcohol, booze, drinking, drunk, drunkenness
+            - annual, yearly, 12_monthly, 12monthly, per_annum
+            - antidepressants, anti-depressants, anti_depressants
+            - antisocial, anti_social, anti-social, asbo
+            - appointment, office_visit, visit, attendance, appt
+            - atr, alcohol_treatment_requirement
+            - att, attend, attended, attendance
+            - bbr, building_better_relationships
+            - bcs, basic_custody_screening, bcst, basic_custody_screening_tool
+            - birth, maternity
+            - bop, bring_on_potential
+            - ca, case_admin, case_administrator, court_admin, court_administrator, admin, administrator
+            - calm, controlling_anger_and_learning_to_manage_it
+            - care, care_needs, social_services, care_experienced, care_home, a_home
+            - cas1, approved_premises, approved_premise, hostel
+            - cas2, bass, bail_accommodation, bail_accommodation_support_service, bail_hostel
+            - cas3, transitional_housing, temporary_accommodation, short-term_accommodation, short_term_accommodation
+            - cc, crown_court, crown_crt, crn_court, crn_crt
+            - ccr, pre-release_custody_date
+            - ccs, recall_date
+            - cdvp, community_domestic_violence_programme
+            - cert, certificate, certification, award, qualification
+            - child, children, kid, kids
+            - chronology, timeline, time_line
+            - cja, criminal_justice_act
+            - client, offender, pop, person_on_probation, probationer
+            - co, community_order
+            - comm, communication, communications
+            - comp, comply, complied
+            - conviction, sentence, event, order, disposal
+            - cosa, circles_of_support
+            - covaid, control_of_violence_for_angry_impulsive_drinkers
+            - cpo, community_punishment_order
+            - cppt, com, mgr, manager, offender_manager, practitioner, probation_practitioner, pp, community_practitioner, cpp, po, pso, pquip, om, supervisor, officer, probation_officer, ro, responsible_officer
+            - cpro, community_punishment_and_rehabilitation_order
+            - cro, community_rehabilitation_order
+            - crt, court
+            - csogp, community_sex_offender_group_programme
+            - custody, prison, remand, establishment, irc, immigration_removal_centre, sh, secure_hospital
+            - da, dad, father
+            - daso, domestic_abuse_safety_officer, wso, womens_safety_officer, wsw, womens_safety_worker, vlo, victims_liaison_officer, liaison
+            - dcr, discretionary_release_date
+            - departure, move_on, move-on, leave
+            - deported, deportation, early_removal
+            - did, drink_impaired_drivers
+            - died, passed_away, dead
+            - dip, drug_intervention_programme
+            - disq, disqualified
+            - dob, date_of_birth, birthday, birth_date, birthdate
+            - docs, documents, letters, reports
+            - drg, drug, drugs, substance_misuse, substance_abuse, glue
+            - drr, drug_rehabilitation_requirement
+            - dss, dhss, social_security
+            - dv, da, domestic_abuse, domestic_violence, a_domestic
+            - dwp, department_for_work_and_pensions
+            - ecl, end_of_custody_licence
+            - ecsl, end_of_custody_supervision_licence, early_release
+            - em, electronic_monitoring, curfew, tag
+            - erd, earliest_release_date
+            - ete, education, training, employment, education_training_employment, education_training_and_employment, training
+            - ex-asp, ex-armed_services_personnel, veteran, army, navy, air_force, airforce, raf, marines, reservist, territorial
+            - excl, exclusion
+            - exp, expected_release_date
+            - exposure, flashing
+            - fostercare, foster_care, foster-care
+            - fta, failed_to_attend, failed_to_report, absent, absence, ua, unacceptable_absence
+            - ftc, failed_to_comply, unacceptable_behaviour
+            - ftr, fixed_term_recall, fixed-term_recall, fixed-term-recall, recall
+            - gbh, grievous_bodily_harm
+            - gf, girlfriend, girl_friend
+            - gp, doctor, doctors, general_practitioner, consultant, psychologist
+            - grandad, grand_dad, grandfather, gramp, grampa
+            - grandchild, grand_child, grandkid, grand_kid, grand_children, grandchildren, grandkids
+            - grandma, grand_ma, grandmother, grand_mother, gran, granny, nan, nana
+            - handover, h/o, hand_over, hand-over
+            - harm, rosh, rosha, risk_of_serious_harm, risk_of_harm, roh, risk
+            - hate_crime, hate-crime, racially_motivated, homophobic, faith_related, transophobic, racist, racism
+            - hdc, home_detention_curfew
+            - hde, hdc_expected_date
+            - ho, home_office, home-office
+            - homeless, homelessness, duty_to_refer, duty-to-refer, nfa
+            - hours, hrs
+            - husband, boyfriend
+            - i-sotp, internet_sex_offender_treatment_programme
+            - iaps, im, interventions_manager, interim_accredited_programmes_system, interim_accredited_programmes_service
+            - iicsa, independent_inquiry_into_child_sexual_abuse
+            - ill, sick, unfit, unwell
+            - intro, introduction
+            - iom, integrated_offender_management
+            - iom, intensive_supervision, restorative_justice, problem_solving_court
+            - irc, immigration_removal_centre, immigration_detention
+            - isp, initial_sentence_plan, fsp, final_sentence_plan, sentence_plan
+            - ispp, ipp, indeterminate_sentence_for_public_protection
+            - key_worker, keyworker, key-worker
+            - lau, local_admin_unit, district
+            - ldu, local_delivery_unit, pdu, probation_delivery_unit, cluster, borough
+            - led, licence_expiry_date
+            - liap, low_intensity_alcohol_programmes
+            - lic, lc, licence_condition, licence
+            - lp, lpt, ldn, london, london_probation, london_probation_trust, london_probation_area
+            - mc, magistrates_court, mags_court, mags_crt, mags
+            - medication, medicine, prescription, naloxone, meds
+            - mh, mental_health
+            - min, minutes
+            - mom, mum, mother
+            - msg, message, text, email, sms
+            - nd, national_delius, delius, ndelius
+            - new_me, bnm, lmn, nmc, nms
+            - nino, national_insurance_number, nin, ni_number, national_insurance
+            - nomis, p-nomis
+            - nomis_number, noms_number, noms_no, noms_id, nomis_id
+            - npd, npl, non_parole_date, non-parole_date
+            - nsi, commissioned_services, commissioned_rehabilitative_services, rehabilitative_services, crs, intervention, structured_intervention, accredited_programme, acc_prog, si, tsi, ap, programme, national_standards, non_statutory_intervention, non_specified_intervention
+            - offence, offences, crime, crimes
+            - offender_management, supervision, contact
+            - omu, offender_management_unit
+            - ooh, out_of_hours, out-of-hours
+            - parom1, parom_1, parole_report
+            - pc, police_constable, constable, police_officer
+            - ped, parole_eligibility_date
+            - pension, retirement, retirement_benefit
+            - phe, public_health_england, health_service, phw, public_health_wales
+            - pic, picture, photo, photograph, selfie
+            - pip, personal_independence_payment
+            - placement, project, schedule
+            - pom, prison_offender_manager
+            - pom1, pom_handover_expected_start_date
+            - pom2, ro_responsibility_handover_from_pom_to_om_expected_date
+            - ppo, prolific_priority_offender
+            - precons, previous_convictions, pre-cons
+            - probation, probation_service, ps, nps, crc, community_rehabilitation_company, trust, provider
+            - prq, parole_request_date
+            - psr, pre-sentence_report, presentence_report, sfr, short_format_report, short-format_report, oral_report
+            - pss, pssr, post_sentence_supervision, post-sentence_supervision, post_sentence_supervision_requirement, post-sentence_supervision_requirement, top-up_supervision
+            - rar, rehabilitation_activity_requirement
+            - referal, referral
+            - register, registration, globe, alert
+            - rehab, rehabilitation
+            - rotl, temporary_release, temporary_licence, release_on_temporary_licence
+            - rotld, rotl_end_date
+            - rpt, rep, rept, report
+            - rrl, re-release_date, release_date
+            - rrr, release_review_date
+            - rsr, risk_of_serious_recidivism
+            - safe_guarding, safeguarding, safe-guarding, protection, vulnerable, vulnerability
+            - sar, subject_access_request
+            - sara, spousal_assault_risk_assessment
+            - sarn, structured_assessment_of_risk_and_need
+            - sc4, section_44_extended_date
+            - scp, self_change_programme, self-change_programme
+            - sdp, short_duration_programme
+            - sed, sentence_expiry_date
+            - selfharm, self-harm, self_harm, suicide, self-inflicted_death, self_inflicted_death
+            - sex, sexual
+            - sfo, serious_further_offence, serious_further_offences, further_offence, further_offences
+            - sha, strategic_health_authority, health_authority, health_board
+            - shpo, sexual_harm_prevention_order, sopo, sexual_offending_prevention_order, shpo, sro, sexual_risk_order
+            - slavery, exploitation
+            - sotp, sex_offender_treatment_programme
+            - spo, senior, senior_probation_officer
+            - sso, suspended_sentence_order
+            - std, standard
+            - tact, terrorism_act
+            - tc, t/c, resettlement, throughcare, ttg, through_the_gate, through-the-gate
+            - td01, parole_board_review_date
+            - term, termination, end_date, actual_end_date
+            - tfr, transfer
+            - timetable, time_table, time-table
+            - trf, tariff_date
+            - tsp, thinking_skills_programme
+            - tused, pssed, tssed, top-up_supervision_expiry_date, top-up_supervision_end_date, post_sentence_supervision_expiry_date, post-sentence_supervision_expiry_date, post-sentence_supervision_end_date, post_sentence_supervision_end_date
+            - ual, unlawfully_at_large, escaped, at_large, wwb, warrant_without_bail
+            - uc, universal_credit, benefits
+            - upw, unpaid_work, community_payback, community_payback, cp
+            - vlu, victims_liasion_unit
+            - wca, work_capability_assessment, fit_note, sick_note
+            - wfh, work_from_home
+            - wife, girlfriend
+            - wso, womens_safety_officer
+            - youth, youth_offending_service, yots, youth_offending_team, yot, borstal, yoi, young_offender_institution
+            - yrs, years
+        delimit_words:
+          type: word_delimiter_graph
+          preserve_original: true
+          generate_number_parts: false
+        remove_single_chars:
+          type: length
+          min: 2
+        override_stemmer:
+          type: stemmer_override
+          rules:
+            - officer => officer
+            - officers => officer
+            - office => office
+            - offices => office
+            - nps => nps
+            - one => one
+            - nomis => nomis
+            - delius => delius
+            - ndelius => ndelius
+            - nationaldelius => nationaldelius
+        capture_numbers:
+          type: pattern_capture
+          preserve_original: true
+          patterns:
+            - (\d{4}-\d{2}-\d{2})t00:00:00(?:\.000)?z? # iso8601 dates (e.g. "2001-02-03T00:00:00.000Z" => "2001-02-03")
+            - (\d+[\d\W]+\d+)                          # any delimited numbers (e.g. "0123-456 789")
+        replace_dialcodes:
+          type: pattern_replace
+          preserve_original: true
+          pattern: ^(?:00|\+)?44\W*0?(.*)$
+          replacement: 0$1
+        dates_iso8601:
+          type: pattern_replace
+          pattern: ^(\d{4})-(\d{2})-(\d{2})t\d{2}:00:00(?:\.000)?z?$
+          replacement: $3.$2.$1
+        dates_month_day_year:
+          type: pattern_replace
+          pattern: ^(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|(?:nov|dec)(?:ember)?)[\s\-\./](\d{1,2})(?:st|nd|rd|th)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $2.$1.$3
+        dates_jan:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]jan(?:uary)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.01.$2
+        dates_feb:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]feb(?:ruary)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.02.$2
+        dates_mar:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]mar(?:ch)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.03.$2
+        dates_apr:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]apr(?:il)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.04.$2
+        dates_may:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]may[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.05.$2
+        dates_jun:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]june?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.06.$2
+        dates_jul:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]july?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.07.$2
+        dates_aug:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]aug(?:ust)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.08.$2
+        dates_sep:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]sept?(?:ember)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.09.$2
+        dates_oct:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]oct(?:ober)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.10.$2
+        dates_nov:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]nov(?:ember)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.11.$2
+        dates_dec:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]dec(?:ember)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.12.$2
+        dates_year_month_day:
+          type: pattern_replace
+          pattern: ^((?:19|20)\d{2})[\s\-\./]?(0?[1-9]|1[0-2])[\s\-\./]?(\d{2})$
+          replacement: $3.$2.$1
+        dates_long_year:
+          type: pattern_replace
+          pattern: ^(\d{1,2})[\s\-\./](0?[1-9]|1[0-2])[\s\-\./]((?:19|20)\d{2})$
+          replacement: $1.$2.$3
+        dates_short_year_19:
+          type: pattern_replace
+          pattern: ^(\d{1,2})[\s\-\./](0?[1-9]|1[0-2])[\s\-\./]([8-9]\d)$
+          replacement: $1.$2.19$3
+        dates_short_year_20:
+          type: pattern_replace
+          pattern: ^(\d{1,2})[\s\-\./](0?[1-9]|1[0-2])[\s\-\./]([0-7]\d)$
+          replacement: $1.$2.20$3
+        dates_short_day:
+          type: pattern_replace
+          pattern: ^(\d{1})[\s\-\./](0?[1-9]|1[0-2])[\s\-\./]((?:19|20)?\d{2})$
+          replacement: 0$1.$2.$3
+        dates_short_month:
+          type: pattern_replace
+          pattern: ^(\d{2})[\s\-\./](\d{1})[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.0$2.$3
+        dates_reformat:
+          type: pattern_replace
+          pattern: ^(\d{2})\.(0[1-9]|1[0-2])\.((?:19|20)\d{2})$
+          replacement: $3-$2-$1
+        catenate_non_dates:
+          type: condition
+          filter: [ remove_non_digits ]
+          script:
+            source: '!(token.getTerm().toString() ==~ /^(?:19|20)\d{2}-(0[1-9]|1[0-2])-\d{2}$/) && token.getTerm().toString() ==~ /^[\d\W]+$/'
+        remove_non_digits:
+          type: pattern_replace
+          pattern: \D
+        unique_tokens:
+          type: unique
+          only_on_same_position: true
+
+  mappings:
+    properties:
+      crn:
+        type: keyword
+      offenderId:
+        type: integer
+      contactId:
+        type: integer
+      date:
+        type: text
+        analyzer: probation_text_analyzer
+        copy_to: notes
+        fields:
+          date:
+            type: date
+            format: date_optional_time||yyyy-MM-dd||dd-MM-yyyy
+      startTime:
+        type: date
+        format: hour_minute_second
+      endTime:
+        type: date
+        format: hour_minute_second
+      notes:
+        type: text
+        analyzer: probation_text_analyzer
+        boost: 5
+      description:
+        type: text
+        analyzer: probation_text_analyzer
+        boost: 4
+      outcome:
+        type: text
+        analyzer: probation_text_analyzer
+        store: true
+        boost: 2
+        fields:
+          keyword:
+            type: keyword
+      type:
+        type: text
+        analyzer: probation_text_analyzer
+        store: true
+        fields:
+          keyword:
+            type: keyword
+      typeCode:
+        type: keyword
+        copy_to: type
+      typeDescription:
+        type: keyword
+        copy_to: type
+      typeShortDescription:
+        type: keyword
+        copy_to: type
+      outcomeCode:
+        type: keyword
+        copy_to: outcome
+      outcomeDescription:
+        type: keyword
+        copy_to: outcome
+      attended:
+        type: keyword
+        copy_to: outcome
+      complied:
+        type: keyword
+        copy_to: outcome
+      lastUpdatedDateTime:
+        type: date
+      rowVersion:
+        type: double
+        index: false

@@ -11,7 +11,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "offender_address")
-@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
+@SQLRestriction("soft_deleted = 0")
 class PersonAddress(
     @Column(name = "offender_id")
     val personId: Long,
@@ -27,7 +27,7 @@ class PersonAddress(
     val postcode: String?,
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean,
-    val startDate: LocalDate?,
+    val startDate: LocalDate,
     val endDate: LocalDate?,
     val softDeleted: Boolean,
     @Id
@@ -37,11 +37,7 @@ class PersonAddress(
 
 interface AddressRepository : JpaRepository<PersonAddress, Long> {
     @EntityGraph(attributePaths = ["status"])
-    fun findAllByPersonIdAndStatusCodeInOrderByStartDateDesc(
-        personId: Long,
-        statusCodes: List<String>
+    fun findAllByPersonIdOrderByStartDateDesc(
+        personId: Long
     ): List<PersonAddress>
 }
-
-fun AddressRepository.mainAddresses(personId: Long) =
-    findAllByPersonIdAndStatusCodeInOrderByStartDateDesc(personId, listOf("M"))

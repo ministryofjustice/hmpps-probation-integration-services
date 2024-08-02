@@ -29,7 +29,7 @@ class Disability(
     @ManyToOne
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "disability_condition_id")
-    val condition: ReferenceData,
+    val condition: ReferenceData? = null,
 
     val startDate: LocalDate,
 

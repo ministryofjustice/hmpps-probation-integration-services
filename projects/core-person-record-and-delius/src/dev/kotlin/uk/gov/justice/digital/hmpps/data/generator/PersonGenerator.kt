@@ -9,6 +9,7 @@ object PersonGenerator {
     val GENDER = generateReferenceData("GEN")
     val NATIONALITY = generateReferenceData("NAT")
     val TITLE = generateReferenceData("TIT")
+    val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
 
     val MIN_PERSON =
@@ -60,10 +61,11 @@ object PersonGenerator {
         ),
         generateAddress(
             FULL_PERSON.id,
-            MAIN_ADDRESS,
+            PREVIOUS_ADDRESS,
             postcode = "NF1 1NF",
             noFixedAbode = true,
-            startDate = LocalDate.now().minusDays(60)
+            startDate = LocalDate.now().minusDays(60),
+            endDate = LocalDate.now().minusDays(30)
         )
     )
 

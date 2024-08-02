@@ -39,6 +39,7 @@ enum class ApprovedPremisesCategoryCode(
         )
     ),
     OTHER("O", CategoryMappings()),
+    POST_RECALL("S", CategoryMappings(SentenceType.StandardDeterminate to ReleaseType.ReReleasedPostRecall)),
     ORA_PSS("U", CategoryMappings(SentenceType.StandardDeterminate to ReleaseType.PostSentenceSupervision)),
     RESIDENCY_REQUIREMENT(
         "X",
@@ -88,6 +89,7 @@ enum class ReleaseType(val value: String) {
     ResidencyManagement("residencyManagement"),
     RiskManagement("riskManagement"),
     TemporaryLicence("rotl"),
+    ReReleasedPostRecall("reReleasedPostRecall"),
     NotApplicable("not_applicable");
 
     companion object {

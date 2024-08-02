@@ -171,18 +171,24 @@ object PersonGenerator {
         finishDate = end,
     )
 
-    fun generateDisability(personId: Long, end: LocalDate?) = Disability(
-        id = IdGenerator.getAndIncrement(),
-        personId = personId,
-        type = DISABILITY_TYPE_1,
-        startDate = LocalDate.now().minusDays(1),
-        lastUpdated = ZonedDateTime.now().minusDays(1),
-        condition = DISABILITY_CONDITION_1,
-        notes = null,
-        finishDate = end,
-    )
+    fun generateDisability(personId: Long, end: LocalDate?, condition: ReferenceData? = DISABILITY_CONDITION_1) =
+        Disability(
+            id = IdGenerator.getAndIncrement(),
+            personId = personId,
+            type = DISABILITY_TYPE_1,
+            startDate = LocalDate.now().minusDays(1),
+            lastUpdated = ZonedDateTime.now().minusDays(1),
+            condition = condition,
+            notes = null,
+            finishDate = end,
+        )
 
-    fun generateAddress(personId: Long, softDeleted: Boolean, type: ReferenceData? = DEFAULT_ADDRESS_TYPE) =
+    fun generateAddress(
+        personId: Long,
+        softDeleted: Boolean,
+        type: ReferenceData? = DEFAULT_ADDRESS_TYPE,
+        typeVerified: Boolean? = true
+    ) =
         PersonAddress(
             id = IdGenerator.getAndIncrement(),
             personId = personId,
@@ -197,7 +203,7 @@ object PersonGenerator {
             district = "A District",
             addressNumber = "20",
             noFixedAbode = false,
-            typeVerified = true,
+            typeVerified = typeVerified,
             startDate = LocalDate.now().minusDays(1),
             endDate = null,
             softDeleted = softDeleted,

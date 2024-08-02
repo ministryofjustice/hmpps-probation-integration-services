@@ -10,7 +10,10 @@ curl_json --retry 3 "$SEARCH_INDEX_HOST"
 # Configure cluster settings
 curl_json -XPUT "${SEARCH_INDEX_HOST}/_cluster/settings" --data '{
   "persistent": {
-    "action.auto_create_index": "false"
+    "action.auto_create_index": "false",
+    "plugins.ml_commons.only_run_on_ml_node": "false",
+    "plugins.ml_commons.model_access_control_enabled": "false",
+    "plugins.ml_commons.native_memory_threshold": "90"
   }
 }'
 
@@ -30,10 +33,20 @@ if grep -q 'person' <<<"$PIPELINES_ENABLED"; then
 fi
 
 if grep -q 'contact' <<<"$PIPELINES_ENABLED"; then
-  /scripts/setup-index.sh -i "$CONTACT_INDEX_PREFIX" -t /pipelines/contact/index/contact-search-template.json
+  /scripts/setup-index.sh -i "$CONTACT_INDEX_PREFIX" -t /pipelines/contact/index/index-template-keyword.json
   if grep -q 'contact-full-load' <<<"$PIPELINES_ENABLED"; then
     sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_INDEX_PREFIX" -t "$CONTACT_REINDEXING_TIMEOUT" &
   fi
+
+  # Setup semantic search for contacts
+  export BEDROCK_MODEL_NAME=amazon.titan-embed-text-v2:0
+  /scripts/deploy-semantic-model.sh
+  model_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/_search" --data "{\"query\":{\"match\":{\"name.keyword\":\"bedrock-${BEDROCK_MODEL_NAME}\"}}}" | jq -r '.hits.hits[0]._id // ""')
+  export model_id
+  echo "Deployed semantic search model. model_id=${model_id}"
+  envsubst < /pipelines/contact/index/ingest-pipeline.tpl.json > /pipelines/contact/index/ingest-pipeline.json
+  envsubst < /pipelines/contact/index/search-pipeline.tpl.json > /pipelines/contact/index/search-pipeline.json
+  /scripts/setup-index.sh -i "contact-semantic-search" -p /pipelines/contact/index/ingest-pipeline.json -s /pipelines/contact/index/search-pipeline.json -t /pipelines/contact/index/index-template-semantic.json
 fi
 
 /usr/local/bin/docker-entrypoint
