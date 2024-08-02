@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import java.util.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi as NsiEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiManager as NsiManagerEntity
 
@@ -18,7 +17,6 @@ class InterventionService(
     private val eventRepository: EventRepository,
     private val nsiRepository: NsiRepository,
 ) {
-
     fun getNsiByCodes(crn: String, convictionId: Long, nsiCodes: List<String>): NsiDetails {
         val person = personRepository.getPerson(crn)
         val event = eventRepository.getByPersonAndEventNumber(person, convictionId)
@@ -76,37 +74,13 @@ fun Staff.toStaffDetails(): StaffDetails = StaffDetails(
     grade?.keyValueOf()
 )
 
-fun NsiEntity.toOutcomeRecall(): Boolean? =
-    Optional.ofNullable(outcome).map {
-        try {
-            OutcomeType.valueOf(it.code)
-        } catch (ex: Exception) {
-            OutcomeType.UNKNOWN
-        }.isOutcomeRecall
-    }.orElse(null)
+private inline fun <reified T : Enum<T>> String.toEnumOrElse(default: T) =
+    T::class.java.enumConstants.firstOrNull { it.name == this } ?: default
 
-fun NsiEntity.toRecallRejectedOrWithdrawn(): Boolean? {
-    val status = try {
-        Status.valueOf(nsiStatus.code)
-    } catch (ex: Exception) {
-        Status.UNKNOWN
-    }
+fun NsiEntity.toOutcomeRecall() = outcome?.code?.toEnumOrElse(OutcomeType.UNKNOWN)?.isOutcomeRecall
 
-    return if (status.isRejectedOrWithdrawn != null) {
-        if (status.isRejectedOrWithdrawn) {
-            true
-        } else {
-            Optional.ofNullable(outcome).map {
-                try {
-                    OutcomeType.valueOf(it.code)
-                } catch (ex: Exception) {
-                    OutcomeType.UNKNOWN
-                }.isOutcomeRejectedOrWithdrawn
-            }.orElse(false)
-        }
-    } else {
-        null
-    }
+fun NsiEntity.toRecallRejectedOrWithdrawn() = nsiStatus.code.toEnumOrElse(Status.UNKNOWN).isRejectedOrWithdrawn?.let {
+    it || (outcome?.code?.toEnumOrElse(OutcomeType.UNKNOWN)?.isOutcomeRejectedOrWithdrawn ?: false)
 }
 
 enum class OutcomeType(val code: String, val isOutcomeRejectedOrWithdrawn: Boolean?, val isOutcomeRecall: Boolean?) {
