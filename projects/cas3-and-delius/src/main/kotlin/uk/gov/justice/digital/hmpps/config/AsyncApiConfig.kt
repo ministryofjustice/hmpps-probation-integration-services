@@ -18,10 +18,8 @@ class AsyncApiConfig {
                 url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-preprod-cas3-and-delius-queue")
                 protocol("sqs")
             }
-            server("prod") {
-                url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-cas3-and-delius-queue")
-                protocol("sqs")
-            }
+            server("prod") { url("https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-cas3-and-delius-queue")
+                protocol("sqs") }
         }
         externalDocs {
             url("https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/cas3-and-delius/")
