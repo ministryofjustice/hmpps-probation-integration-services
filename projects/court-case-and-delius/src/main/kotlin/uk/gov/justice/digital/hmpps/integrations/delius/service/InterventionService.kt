@@ -82,8 +82,7 @@ fun NsiEntity.toOutcomeRecall(): Boolean? =
             OutcomeType.valueOf(it.code)
         } catch (ex: Exception) {
             OutcomeType.UNKNOWN
-        }
-            .isOutcomeRecall
+        }.isOutcomeRecall
     }.orElse(
         null
     )
