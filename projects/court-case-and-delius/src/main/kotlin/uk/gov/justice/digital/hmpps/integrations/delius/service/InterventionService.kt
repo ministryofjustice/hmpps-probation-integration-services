@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import java.util.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi as NsiEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiManager as NsiManagerEntity
 
@@ -50,7 +51,9 @@ class InterventionService(
             intendedProvider?.toProbationArea(false),
             active,
             softDeleted,
-            externalReference
+            externalReference,
+            this.toRecallRejectedOrWithdrawn(),
+            this.toOutcomeRecall()
         )
 
     fun NsiManagerEntity.toNsiManager(): NsiManager =
@@ -72,5 +75,63 @@ fun Staff.toStaffDetails(): StaffDetails = StaffDetails(
     probationArea.toProbationArea(false),
     grade?.keyValueOf()
 )
+
+fun NsiEntity.toOutcomeRecall(): Boolean? =
+    Optional.ofNullable(outcome).map {
+        try {
+            OutcomeType.valueOf(it.code)
+        } catch (ex: Exception) {
+            OutcomeType.UNKNOWN
+        }.isOutcomeRecall
+    }.orElse(null)
+
+fun NsiEntity.toRecallRejectedOrWithdrawn(): Boolean? {
+    val status = try {
+        Status.valueOf(nsiStatus.code)
+    } catch (ex: Exception) {
+        Status.UNKNOWN
+    }
+
+    return if (status.isRejectedOrWithdrawn != null) {
+        if (status.isRejectedOrWithdrawn) {
+            true
+        } else {
+            Optional.ofNullable(outcome).map {
+                try {
+                    OutcomeType.valueOf(it.code)
+                } catch (ex: Exception) {
+                    OutcomeType.UNKNOWN
+                }.isOutcomeRejectedOrWithdrawn
+            }.orElse(false)
+        }
+    } else {
+        null
+    }
+}
+
+enum class OutcomeType(val code: String, val isOutcomeRejectedOrWithdrawn: Boolean?, val isOutcomeRecall: Boolean?) {
+    REC01("Fixed Term Recall", true, false),
+    REC02("Standard Term Recall", true, false),
+    REC03("Recall Rejected by NPS", false, true),
+    REC04("Recall Rejected by PPCS", false, true),
+    REC05("Request Withdrawn by OM", false, true),
+    UNKNOWN("No recall matching code", null, null)
+}
+
+enum class Status(val code: String, val isRejectedOrWithdrawn: Boolean?) {
+    REC01("Recall Initiated", false),
+    REC02("Part A Completed by NPS/CRC OM", false),
+    REC03("Part A Countersigned by NPS/CRC Manager", false),
+    REC04("NPS Recall Endorsed by Senior Manager", false),
+    REC05("NPS Recall Rejected by Senior Manager", true),
+    REC06("Recall Referred to NPS", false),
+    REC07("PPCS Recall Decision Received", false),
+    REC08("Recall Submitted to PPCS", false),
+    REC09("Out-of-hours Recall Instigated", false),
+    REC10("Request Withdrawn by OM", true),
+    UNKNOWN("No recall matching code", null)
+}
+
+
 
 

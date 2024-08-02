@@ -29,7 +29,9 @@ data class Nsi(
     val intendedProvider: ProbationArea?,
     val active: Boolean,
     val softDeleted: Boolean,
-    val externalReference: String?
+    val externalReference: String?,
+    val recallRejectedOrWithdrawn: Boolean?,
+    val outcomeRecall: Boolean?
 )
 
 data class NsiManager(
