@@ -72,17 +72,13 @@ class ConvictionService(
     }
 
     fun Event.toLatestOrSentencingCourtAppearanceOf(): CourtAppearanceBasic? {
-        return courtAppearances
-            .stream()
-            .filter { it.isSentenceing() }
-            .max(Comparator.comparing(CourtAppearance::appearanceDate))
-            .map { it.toCourtAppearanceBasic() }.orElseGet {
-                courtAppearances
-                    .stream()
-                    .max(Comparator.comparing(CourtAppearance::appearanceDate))
-                    .map { it.toCourtAppearanceBasic() }
-                    .orElse(null)
-            }
+        return courtAppearances.filter { it.isSentenceing() }
+            .sortedBy(CourtAppearance::id)
+            .maxByOrNull { it.appearanceDate }
+            ?.let { return it.toCourtAppearanceBasic() }
+            ?: courtAppearances.sortedBy(CourtAppearance::id)
+                .maxByOrNull { it.appearanceDate }
+                ?.let { return it.toCourtAppearanceBasic() }
     }
 
     fun CourtAppearance.toCourtAppearanceBasic(): CourtAppearanceBasic =
