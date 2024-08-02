@@ -117,7 +117,9 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     BREACH_NSIS.intendedProvider?.toProbationArea(false),
                     BREACH_NSIS.active,
                     BREACH_NSIS.softDeleted,
-                    BREACH_NSIS.externalReference
+                    BREACH_NSIS.externalReference,
+                    null,
+                    null
                 )
             )
         )
