@@ -337,15 +337,19 @@ object SentenceGenerator {
         id
     )
 
-    fun generateBreachNsi(disposal: Disposal) = Nsi(
+    fun generateBreachNsi(
+        disposal: Disposal,
+        outcome: ReferenceData? = ReferenceDataGenerator.NSI_BREACH_OUTCOME,
+        status: NsiStatus = ACTIVE_NSI_STATUS
+    ) = Nsi(
         disposal.event.person.id,
         disposal.event.id,
         ReferenceDataGenerator.NSI_TYPE,
-        ACTIVE_NSI_STATUS,
+        status,
         referralDate = LocalDate.now().plusDays(1),
         statusDate = LocalDateTime.of(2024, 7, 1, 12, 0, 0, 0),
         null,
-        ReferenceDataGenerator.NSI_BREACH_OUTCOME,
+        outcome,
         actualStartDate = LocalDate.now(),
         expectedStartDate = LocalDate.of(2024, 1, 1),
         actualEndDate = LocalDate.now(),
