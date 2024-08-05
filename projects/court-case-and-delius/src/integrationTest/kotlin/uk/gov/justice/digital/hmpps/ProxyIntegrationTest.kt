@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -29,6 +30,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
+@TestPropertySource(properties = ["lao-access.ignore-exclusions = false", "lao-access.ignore-restrictions = true"])
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class ProxyIntegrationTest {
 

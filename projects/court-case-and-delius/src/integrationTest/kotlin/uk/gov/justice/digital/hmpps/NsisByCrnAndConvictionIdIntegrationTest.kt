@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.api.resource.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.NsiManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementsGenerator
@@ -58,7 +59,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     .withToken()
             )
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
     }
 
     @Test
@@ -72,7 +73,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     .withToken()
             )
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Conviction with ID 3 for Offender with crn C123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Conviction with ID 3 for Offender with crn C123456 not found"))
     }
 
     @Test
@@ -163,5 +164,19 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
             .andReturn().response.contentAsJson<Nsi>()
 
         MatcherAssert.assertThat(actualNsi.nsiOutcome, equalTo(expectedNsi.nsiOutcome))
+    }
+
+    @Test
+    fun `nsi by nsiId not found`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val response = mockMvc
+            .perform(
+                get("/probation-case/$crn/convictions/${BREACH_NSIS.eventId}/nsis/999")
+                    .withToken()
+            )
+            .andExpect(status().isNotFound)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        MatcherAssert.assertThat(response.developerMessage, equalTo("NSI with id 999 not found"))
     }
 }
