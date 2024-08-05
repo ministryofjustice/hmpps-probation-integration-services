@@ -8,6 +8,9 @@ inputs:
   idea_version:
     description: IntelliJ IDEA version, defaults to latest
     default: latest
+  token:
+    description: GitHub token to use for pushing changes. Defaults to GitHub actions token.
+    required: false
   mask:
     description: |
       Specify a comma-separated list of file masks that define the files to be processed. You can use the * (any string)
@@ -22,6 +25,30 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Use GitHub token
+      if: inputs.token == 'github'
+      shell: bash
+      run: echo "token=${{ github.token }}" >> $GITHUB_ENV
+
+    - name: Use provided token
+      if: inputs.token != 'github'
+      shell: bash
+      run: echo "token=${{ inputs.token }}" >> $GITHUB_ENV
+
+    - name: Checkout pull request
+      uses: actions/checkout@v4
+      if: github.event_name == 'pull_request'
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+        token: ${{ env.token }}
+
+    - name: Checkout branch
+      uses: actions/checkout@v4
+      if: github.event_name != 'pull_request'
+      with:
+        ref: ${{ github.ref }}
+        token: ${{ env.token }}
+
     - name: Install dependencies
       shell: bash
       run: sudo apt update && sudo apt-get install -y libxml2-utils
@@ -53,17 +80,21 @@ runs:
       env:
         mask: ${{ inputs.mask }}
 
-    - name: Fix code formatting
+    - name: Fix code formatting and stage changes
+      # Note: formatting runs twice, as sometimes IntelliJ makes additional changes the second time around
       if: inputs.dry == 'false'
       shell: bash
-      run: /tmp/idea/bin/idea.sh format -allowDefaults -mask "$mask" -r .
+      run: |
+        /tmp/idea/bin/idea.sh format -allowDefaults -mask "$mask" -r .
+        /tmp/idea/bin/idea.sh format -allowDefaults -mask "$mask" -r .
+        git add .
       env:
         mask: ${{ inputs.mask }}
 
-    - uses: planetscale/ghcommit-action@b68767a2e130a71926b365322e62b583404a5e09 # v0.1.43
+    - name: Commit and push
+      if: inputs.dry == 'false'
+      uses: dsanders11/github-app-commit-action@48d2ff8c1a855eb15d16afa97ae12616456d7cbc # v1.4.0
       with:
-        commit_message: ${{ inputs.commit_message }}
-        repo: ${{ github.repository }}
-        branch: ${{ github.head_ref || github.ref_name }}
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+        fail-on-no-changes: false
+        message: ${{ inputs.commit_message }}
+        token: ${{ env.token }}
