@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.api.resource.ProbationRecordResource
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.util.concurrent.CompletableFuture
-import java.util.stream.Collectors
 
 @RestController
 @PreAuthorize("hasRole('PROBATION_API__COURT_CASE__CASE_DETAIL')")
@@ -221,9 +220,9 @@ class CommunityApiController(
             val convictionId = person.events.filter { it.disposal != null }.maxOfOrNull { it.id }
             val nsiCodes = person.nsis.filter { it.eventId == convictionId }.map { it.type.code.trim() }
             val nsiId = person.nsis.firstOrNull()?.id
-            runAll(person.crn, convictionId, nsiCodes, nsiId, compare, headers).stream()
-                .map(CompletableFuture<CompareReport>::join)
-                .collect(Collectors.toList())
+            val futures = runAll(person.crn, convictionId, nsiCodes, nsiId, compare, headers).toTypedArray()
+            CompletableFuture.allOf(*futures).join()
+            futures.map { it.join() }.toList()
         }
 
         val executed = reports.filter { it.testExecuted == true }
