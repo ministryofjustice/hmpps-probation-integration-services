@@ -233,6 +233,10 @@ internal class ProxyIntegrationTest {
                                 "convictionId": "?",
                                 "nsiCodes": "?"
                             },
+                            "CONVICTION_BY_NSIS_ID": {
+                                "convictionId": "?",
+                                "nsiId": "?"
+                            },
                             "CONVICTION_BY_ID_PSS": {
                                 "convictionId": "?"
                             }
@@ -243,7 +247,7 @@ internal class ProxyIntegrationTest {
                 .withToken()
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
 
-        assertThat(res.totalNumberOfRequests, equalTo(8))
+        assertThat(res.totalNumberOfRequests, equalTo(9))
         assertThat(res.totalNumberOfCrns, equalTo(2))
         assertThat(res.currentPageNumber, equalTo(1))
     }
@@ -313,5 +317,3 @@ internal class ProxyIntegrationTest {
         assertThat(res.totalNumberOfRequests, equalTo(1))
     }
 }
-
-//{"status":403,"developerMessage":"This is a restricted record. Please contact a system administrator"}

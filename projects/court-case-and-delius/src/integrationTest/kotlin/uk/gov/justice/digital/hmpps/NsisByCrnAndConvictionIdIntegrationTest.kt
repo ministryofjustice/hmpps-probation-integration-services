@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +20,7 @@ import uk.gov.justice.digital.hmpps.data.generator.RequirementsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.BREACH_NSIS
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.service.toNsi
 import uk.gov.justice.digital.hmpps.integrations.delius.service.toProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.service.toTeam
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -146,4 +149,19 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
         probationArea.toProbationArea(false),
         grade?.keyValueOf()
     )
+
+    @Test
+    fun `nsi by nsiId`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val expectedNsi = BREACH_NSIS.toNsi()
+        val actualNsi = mockMvc
+            .perform(
+                get("/probation-case/$crn/convictions/${BREACH_NSIS.eventId}/nsis/${BREACH_NSIS.id}")
+                    .withToken()
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<Nsi>()
+
+        MatcherAssert.assertThat(actualNsi.nsiOutcome, equalTo(expectedNsi.nsiOutcome))
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
@@ -13,6 +14,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
+@Immutable
 @Table(name = "nsi")
 class Nsi(
 
@@ -170,6 +172,18 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     )
     fun findAllBreachNSIByEventId(eventId: Long): List<Nsi>
 
+    @Query(
+        """
+            select nsi from Nsi nsi
+            where nsi.id = :nsiId and nsi.eventId = :eventId
+        """
+
+    )
+    fun findByNsiId(nsiId: Long, eventId: Long): Nsi?
+
     fun findByPersonIdAndEventIdAndTypeCodeIn(personId: Long, eventId: Long, codes: List<String>): List<Nsi>
 }
+
+fun NsiRepository.getByNsiId(nsiId: Long, eventId: Long) =
+    findByNsiId(nsiId, eventId) ?: throw NotFoundException("NSI with id $nsiId not found")
 

@@ -151,6 +151,28 @@ class CommunityApiController(
         return proxy(request)
     }
 
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/nsis/{nsiId}")
+    fun nsisByNisId(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+        @PathVariable nsiId: Long,
+    ): Any {
+
+        sendComparisonReport(
+            mapOf(
+                "crn" to crn,
+                "convictionId" to convictionId,
+                "nsiId" to nsiId
+            ), Uri.CONVICTION_BY_NSIS_ID, request
+        )
+
+        if (featureFlags.enabled("ccd-conviction-nsis-by-id-enabled")) {
+            return convictionResource.getNsiByNsiId(crn, convictionId, nsiId)
+        }
+        return proxy(request)
+    }
+
     @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements")
     fun pssByCrnAndConvictionId(
         request: HttpServletRequest,
@@ -198,7 +220,8 @@ class CommunityApiController(
         val reports = personList.content.flatMap { person ->
             val convictionId = person.events.filter { it.disposal != null }.maxOfOrNull { it.id }
             val nsiCodes = person.nsis.filter { it.eventId == convictionId }.map { it.type.code.trim() }
-            runAll(person.crn, convictionId, nsiCodes, compare, headers).stream()
+            val nsiId = person.nsis.firstOrNull()?.id
+            runAll(person.crn, convictionId, nsiCodes, nsiId, compare, headers).stream()
                 .map(CompletableFuture<CompareReport>::join)
                 .collect(Collectors.toList())
         }
@@ -226,8 +249,11 @@ class CommunityApiController(
         )
     }
 
-    fun setParams(map: Map<String, Any>, convictionId: Long?, nsiCodes: List<String>): Map<String, Any> {
+    fun setParams(map: Map<String, Any>, convictionId: Long?, nsiCodes: List<String>, nsiId: Long?): Map<String, Any> {
         val new = map.toMutableMap()
+        if (map.containsKey("nsiId") && nsiId != null) {
+            new["nsiId"] = nsiId
+        }
         if (map.containsKey("convictionId") && convictionId != null) {
             new["convictionId"] = convictionId
         }
@@ -241,11 +267,12 @@ class CommunityApiController(
         crn: String,
         convictionId: Long?,
         nsiCodes: List<String>,
+        nsiId: Long?,
         compare: CompareAll,
         headers: Map<String, String>
     ): List<CompletableFuture<CompareReport>> {
         return compare.uriConfig.entries.map {
-            val params = setParams(it.value, convictionId, nsiCodes)
+            val params = setParams(it.value, convictionId, nsiCodes, nsiId)
             CompletableFuture.supplyAsync(
                 {
                     communityApiService.compare(

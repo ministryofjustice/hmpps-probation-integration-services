@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.SEXUAL
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.TITLE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -131,13 +132,13 @@ object PersonGenerator {
         id = IdGenerator.getAndIncrement()
     )
 
-    fun generatePersonManager(person: Person) =
+    fun generatePersonManager(person: Person, staff: Staff? = StaffGenerator.ALLOCATED) =
         PersonManager(
             id = IdGenerator.getAndIncrement(),
             trustProviderFlag = false,
             person = person,
             team = TeamGenerator.DEFAULT,
-            staff = StaffGenerator.ALLOCATED,
+            staff = staff,
             provider = ProviderGenerator.DEFAULT,
             date = ZonedDateTime.now().minusDays(2),
             allocationReason = DEFAULT_ALLOCATION_REASON,

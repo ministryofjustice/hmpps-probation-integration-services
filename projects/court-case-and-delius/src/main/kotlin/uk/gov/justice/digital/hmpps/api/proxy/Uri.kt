@@ -43,6 +43,12 @@ enum class Uri(
         "getNsisByCrnAndConvictionId",
         listOf("crn", "convictionId", "nsiCodes"),
     ),
+    CONVICTION_BY_NSIS_ID(
+        "/secure/offenders/crn/{crn}/convictions/{convictionId}/nsis/{nsiId}",
+        "convictionResource",
+        "getNsiByNsiId",
+        listOf("crn", "convictionId", "nsiId"),
+    ),
     CONVICTION_BY_ID_PSS(
         "/secure/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements",
         "convictionResource",

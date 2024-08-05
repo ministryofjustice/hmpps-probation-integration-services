@@ -44,7 +44,7 @@ class OffenderManagerService(
             .map<LdapUser> { u -> ldapTemplate.findByUsername<LdapUser>(u.username) }
             .ifPresent { staffDetails: LdapUser ->
                 offenderManager.telephoneNumber = staffDetails.telephoneNumber
-                offenderManager.emailAddress = staffDetails.email
+                offenderManager.emailAddress = staffDetails.email?.takeIf { email -> email.isNotBlank() }
             }
         return offenderManager
     }

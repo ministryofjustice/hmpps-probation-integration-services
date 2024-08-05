@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByPersonAndEventNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.getByNsiId
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -28,41 +29,47 @@ class InterventionService(
                 .map { it.toNsi() })
     }
 
-    fun NsiEntity.toNsi(): Nsi =
-        Nsi(
-            id,
-            KeyValue(type.code, type.description),
-            subType?.keyValueOf(),
-            outcome?.keyValueOf(),
-            requirement?.toRequirementModel(),
-            KeyValue(nsiStatus.code, nsiStatus.description),
-            statusDate,
-            actualStartDate,
-            expectedStartDate,
-            actualEndDate,
-            expectedEndDate,
-            referralDate,
-            length,
-            "Months",
-            managers.map { it.toNsiManager() },
-            notes,
-            intendedProvider?.toProbationArea(false),
-            active,
-            softDeleted,
-            externalReference,
-            this.toRecallRejectedOrWithdrawn(),
-            this.toOutcomeRecall()
-        )
-
-    fun NsiManagerEntity.toNsiManager(): NsiManager =
-        NsiManager(
-            probationArea.toProbationArea(false),
-            team.toTeam(),
-            staff.toStaffDetails(),
-            startDate,
-            endDate
-        )
+    fun getNsiByNsiId(crn: String, convictionId: Long, nsiId: Long): Nsi {
+        val person = personRepository.getPerson(crn)
+        val event = eventRepository.getByPersonAndEventNumber(person, convictionId)
+        return nsiRepository.getByNsiId(nsiId, event.id).toNsi()
+    }
 }
+
+fun NsiManagerEntity.toNsiManager(): NsiManager =
+    NsiManager(
+        probationArea.toProbationArea(false),
+        team.toTeam(),
+        staff.toStaffDetails(),
+        startDate,
+        endDate
+    )
+
+fun NsiEntity.toNsi(): Nsi =
+    Nsi(
+        id,
+        KeyValue(type.code, type.description),
+        subType?.keyValueOf(),
+        outcome?.keyValueOf(),
+        requirement?.toRequirementModel(),
+        KeyValue(nsiStatus.code, nsiStatus.description),
+        statusDate,
+        actualStartDate,
+        expectedStartDate,
+        actualEndDate,
+        expectedEndDate,
+        referralDate,
+        length,
+        "Months",
+        managers.map { it.toNsiManager() },
+        notes,
+        intendedProvider?.toProbationArea(false),
+        active,
+        softDeleted,
+        externalReference,
+        this.toRecallRejectedOrWithdrawn(),
+        this.toOutcomeRecall()
+    )
 
 fun Staff.toStaffDetails(): StaffDetails = StaffDetails(
     user?.username,
