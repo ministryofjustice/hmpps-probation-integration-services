@@ -10,7 +10,7 @@ inputs:
     default: latest
   token:
     description: GitHub token to use for pushing changes. Defaults to GitHub actions token.
-    required: false
+    default: github
   mask:
     description: |
       Specify a comma-separated list of file masks that define the files to be processed. You can use the * (any string)
