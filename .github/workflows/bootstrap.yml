@@ -95,7 +95,7 @@ jobs:
           commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
           private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }} # TODO replace these usages with app token signing, once https://github.com/peter-evans/create-pull-request/pull/3057 is released
 
       - uses: actions/checkout@v4
         with:

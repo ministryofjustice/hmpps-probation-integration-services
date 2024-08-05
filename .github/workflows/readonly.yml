@@ -40,10 +40,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: inputs.environment != 'prod' && inputs.action == 'disable'
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
+      - if: inputs.environment != 'prod' && inputs.action == 'disable'
         run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/${{ inputs.environment }}' --input -
         env:
           reviewers: '{"reviewers":[]}'
-          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
   get-projects:
     name: Get projects
@@ -184,10 +191,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: inputs.environment != 'prod' && inputs.action == 'enable'
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
+      - if: inputs.environment != 'prod' && inputs.action == 'enable'
         run: jq -n "$reviewers" | gh api -XPUT '/repos/ministryofjustice/hmpps-probation-integration-services/environments/${{ inputs.environment }}' --input -
         env:
           reviewers: '{"reviewers":[{"type":"Team","id":5521382}]}'
-          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
   notify:
     if: always() && !cancelled()
