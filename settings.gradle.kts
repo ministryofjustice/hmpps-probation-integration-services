@@ -71,8 +71,8 @@ dependencyResolutionManagement {
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.1.1")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.1.1")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.1")
-            library("aws-sts", "software.amazon.awssdk:sts:2.26.29")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.26.29")
+            library("aws-sts", "software.amazon.awssdk:sts:2.26.30")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.26.30")
             bundle(
                 "aws-messaging",
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
@@ -91,7 +91,7 @@ dependencyResolutionManagement {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.3")
             library("wiremock", "org.wiremock:wiremock-standalone:3.9.1")
             library("flipt", "io.flipt:flipt-java:1.1.1")
-            library("jakarta-json", "jakarta.json:jakarta.json-api:2.0.1")
+            library("jakarta-json", "jakarta.json:jakarta.json-api:2.0.2")
             library("glassfish-json", "org.glassfish:jakarta.json:2.0.1")
         }
     }
