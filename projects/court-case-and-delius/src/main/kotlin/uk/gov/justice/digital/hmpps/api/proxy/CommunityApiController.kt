@@ -203,11 +203,31 @@ class CommunityApiController(
             mapOf(
                 "crn" to crn,
                 "convictionId" to convictionId
-            ), Uri.CONVICTION_BY_ID_NSIS, request
+            ), Uri.CONVICTION_BY_ID_PSS, request
         )
 
         if (featureFlags.enabled("ccd-conviction-pss-enabled")) {
             return convictionResource.getPssRequirementsByConvictionId(crn, convictionId)
+        }
+        return proxy(request)
+    }
+
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/courtAppearances")
+    fun convictionByIdCourtAppearances(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+    ): Any {
+
+        sendComparisonReport(
+            mapOf(
+                "crn" to crn,
+                "convictionId" to convictionId
+            ), Uri.CONVICTION_BY_ID_COURT_APPEARANCES, request
+        )
+
+        if (featureFlags.enabled("ccd-conviction-by-id-court-appearances")) {
+            return convictionResource.getConvictionCourtAppearances(crn, convictionId)
         }
         return proxy(request)
     }

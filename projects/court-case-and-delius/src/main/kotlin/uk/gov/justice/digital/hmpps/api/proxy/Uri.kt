@@ -61,6 +61,11 @@ enum class Uri(
         "getPssRequirementsByConvictionId",
         listOf("crn", "convictionId"),
     ),
-
+    CONVICTION_BY_ID_COURT_APPEARANCES(
+        "/secure/offenders/crn/{crn}/convictions/{convictionId}/courtAppearances",
+        "convictionResource",
+        "getConvictionCourtAppearances",
+        listOf("crn", "convictionId"),
+    ),
     DUMMY("/dummy", "dummyResource", "getDummy", listOf("crn")),
 }

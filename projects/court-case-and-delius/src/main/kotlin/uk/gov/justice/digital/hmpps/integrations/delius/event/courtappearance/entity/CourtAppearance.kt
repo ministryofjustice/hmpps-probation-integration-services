@@ -52,6 +52,11 @@ class CourtAppearance(
     }
 }
 
+interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
+
+    fun findByPersonIdAndEventId(personId: Long, eventId: Long): List<CourtAppearance>
+}
+
 interface CourtReportRepository : JpaRepository<CourtReport, Long> {
 
     @Query(

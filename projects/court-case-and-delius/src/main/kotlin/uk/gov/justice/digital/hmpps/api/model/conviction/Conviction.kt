@@ -151,6 +151,10 @@ data class Court(
     val courtType: KeyValue
 )
 
+data class CourtAppearanceBasicWrapper(
+    val courtAppearances: List<CourtAppearanceBasic> = emptyList()
+)
+
 data class CourtAppearanceBasic(
     val courtAppearanceId: Long,
     val appearanceDate: LocalDateTime,
