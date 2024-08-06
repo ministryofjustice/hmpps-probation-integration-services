@@ -12,14 +12,14 @@ import java.time.LocalDate
 @Table(name = "contact")
 class Contact(
     @Id
-    @Column(name = "contact_id", updatable = false)
+    @Column(name = "contact_id")
     val id: Long = 0,
 
     @Column(updatable = false)
     val offenderId: Long,
 
     @ManyToOne
-    @JoinColumn(name = "contact_type_id", updatable = false)
+    @JoinColumn(name = "contact_type_id")
     val type: ContactType? = null,
 
     @Column(name = "contact_date")
@@ -43,8 +43,8 @@ class Contact(
     @JoinColumn(name = "contact_outcome_type_id")
     val outcome: AttendanceOutcome? = null,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false
+    @Column(columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false
 )
 
 @Immutable
