@@ -163,7 +163,8 @@ class DataLoader(
         val activePssRequirement = SentenceGenerator.generatePssRequirement(custody.id, active = true)
         val inactivePssRequirement = SentenceGenerator.generatePssRequirement(custody.id, active = false)
         val currentCourtAppearance = SentenceGenerator.COURT_APPEARANCE
-        val currentCourtReport = SentenceGenerator.generateCourtReport(currentCourtAppearance)
+        val currentCourtReport =
+            SentenceGenerator.generateCourtReport(currentCourtAppearance, PersonGenerator.CURRENTLY_MANAGED.id)
         val reportManager = SentenceGenerator.generateCourtReportManager(currentCourtReport)
 
         em.saveAll(

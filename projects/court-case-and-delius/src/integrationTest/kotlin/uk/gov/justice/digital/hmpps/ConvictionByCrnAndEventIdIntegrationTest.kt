@@ -285,4 +285,18 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
 
         assertThat(response.courtAppearances[0], equalTo(COURT_APPEARANCE.toCourtAppearance()))
     }
+
+    @Test
+    fun `call convictions by id and courtReports`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/courtReports").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<List<CourtReportMinimal>>()
+
+        assertThat(response.size, equalTo(1))
+        assertThat(response[0].reportManagers?.size, equalTo(1))
+    }
 }
