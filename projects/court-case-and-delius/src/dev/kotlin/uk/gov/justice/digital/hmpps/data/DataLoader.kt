@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
@@ -135,7 +136,7 @@ class DataLoader(
                 ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, EuropeLondon)
             )
         val outcome = SentenceGenerator.OUTCOME
-        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, ZonedDateTime.now())
+        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, LocalDateTime.now())
         em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())

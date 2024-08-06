@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Co
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 @Entity
 @Immutable
@@ -26,7 +26,7 @@ class CourtAppearance(
     @JoinColumn(name = "outcome_id")
     val outcome: Outcome?,
 
-    val appearanceDate: ZonedDateTime,
+    val appearanceDate: LocalDateTime,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
@@ -50,6 +50,11 @@ class CourtAppearance(
     fun isSentenceing(): Boolean {
         return appearanceType.code == "S"
     }
+}
+
+interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
+
+    fun findByPersonIdAndEventId(personId: Long, eventId: Long): List<CourtAppearance>
 }
 
 interface CourtReportRepository : JpaRepository<CourtReport, Long> {

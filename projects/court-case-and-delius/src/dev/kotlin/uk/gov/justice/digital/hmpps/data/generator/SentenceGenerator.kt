@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Probatio
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.*
+import java.time.temporal.ChronoUnit
 
 object SentenceGenerator {
 
@@ -69,7 +70,7 @@ object SentenceGenerator {
     val COURT_APPEARANCE = generateCourtAppearance(
         CURRENTLY_MANAGED,
         OUTCOME,
-        ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon)
+        LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)
     )
 
     val CURRENT_ORDER_MANAGER = generateOrderManager(
@@ -182,7 +183,7 @@ object SentenceGenerator {
     fun generateCourtAppearance(
         event: Event,
         outcome: Outcome,
-        appearanceDate: ZonedDateTime,
+        appearanceDate: LocalDateTime,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = CourtAppearance(

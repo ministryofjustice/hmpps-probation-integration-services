@@ -33,6 +33,7 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.MAIN_OFFENC
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.ALLOCATED
 import uk.gov.justice.digital.hmpps.data.generator.UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1
 import uk.gov.justice.digital.hmpps.integrations.delius.service.toAttendance
+import uk.gov.justice.digital.hmpps.integrations.delius.service.toCourtAppearance
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -228,7 +229,7 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
             ),
             CourtAppearanceBasic(
                 COURT_APPEARANCE.id,
-                COURT_APPEARANCE.appearanceDate.toLocalDateTime(),
+                COURT_APPEARANCE.appearanceDate,
                 COURT_APPEARANCE.court.code,
                 COURT_APPEARANCE.court.courtName,
                 KeyValue(COURT_APPEARANCE.appearanceType.code, COURT_APPEARANCE.appearanceType.description),
@@ -270,5 +271,18 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
             .andReturn().response.contentAsJson<Attendances>()
 
         assertThat(response.attendances[0], equalTo(ATTENDANCE_CONTACT_1.toAttendance()))
+    }
+
+    @Test
+    fun `call convictions by id and courtAppearances`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/courtAppearances").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CourtAppearanceBasicWrapper>()
+
+        assertThat(response.courtAppearances[0], equalTo(COURT_APPEARANCE.toCourtAppearance()))
     }
 }

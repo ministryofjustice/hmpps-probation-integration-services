@@ -3,6 +3,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/courtAppearances"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_court_appearances_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/attendancesFilter"
       },
       "response": {

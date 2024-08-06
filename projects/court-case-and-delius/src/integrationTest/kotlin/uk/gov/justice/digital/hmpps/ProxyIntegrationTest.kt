@@ -245,6 +245,10 @@ internal class ProxyIntegrationTest {
                             },
                             "CONVICTION_BY_ID_PSS": {
                                 "convictionId": "?"
+                            },
+                            "CONVICTION_BY_ID_COURT_APPEARANCES": {
+                                "convictionId": "?",
+                                "activeOnly": true
                             }
                         }
                     }
@@ -253,7 +257,7 @@ internal class ProxyIntegrationTest {
                 .withToken()
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
 
-        assertThat(res.totalNumberOfRequests, equalTo(10))
+        assertThat(res.totalNumberOfRequests, equalTo(11))
         assertThat(res.totalNumberOfCrns, equalTo(2))
         assertThat(res.currentPageNumber, equalTo(1))
     }
