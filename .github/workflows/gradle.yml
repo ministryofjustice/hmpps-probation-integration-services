@@ -29,7 +29,6 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           ref: main
           token: ${{ steps.app-token.outputs.token }}
 
@@ -51,7 +50,7 @@ jobs:
           fi
 
       - name: Commit and push
-        uses: dsanders11/github-app-commit-action@48d2ff8c1a855eb15d16afa97ae12616456d7cbc # v1.4.0
+        uses: marcus-bcl/github-app-commit-action@main # using fork while waiting for merge of https://github.com/dsanders11/github-app-commit-action/pull/20
         with:
           fail-on-no-changes: false
           force: true
