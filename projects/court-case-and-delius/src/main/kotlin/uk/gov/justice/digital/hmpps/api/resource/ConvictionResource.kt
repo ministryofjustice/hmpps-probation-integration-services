@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import jakarta.validation.constraints.NotEmpty
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.integrations.delius.service.AttendanceService
 import uk.gov.justice.digital.hmpps.integrations.delius.service.ConvictionService
 import uk.gov.justice.digital.hmpps.integrations.delius.service.InterventionService
 import uk.gov.justice.digital.hmpps.integrations.delius.service.RequirementService
@@ -15,6 +16,7 @@ class ConvictionResource(
     private val convictionService: ConvictionService,
     private val requirementService: RequirementService,
     private val interventionService: InterventionService,
+    private val attendanceService: AttendanceService
 ) {
 
     @GetMapping
@@ -82,4 +84,10 @@ class ConvictionResource(
         @PathVariable crn: String,
         @PathVariable convictionId: Long
     ) = requirementService.getPssRequirementsByConvictionId(crn, convictionId)
+
+    @GetMapping("/{convictionId}/attendancesFilter")
+    fun getConvictionAttendances(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = attendanceService.getAttendancesFor(crn, convictionId)
 }

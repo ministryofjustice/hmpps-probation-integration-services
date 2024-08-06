@@ -247,6 +247,13 @@ class DataLoader(
 
         em.persist(PersonGenerator.PRISON_MANAGER)
         em.persist(PersonGenerator.RESPONSIBLE_OFFICER)
+
+        em.saveAll(
+            ContactGenerator.ATTENDANCE_OUTCOME,
+            ContactGenerator.ATTENDANCE_CONTACT_TYPE,
+            ContactGenerator.ATTENDANCE_CONTACT_1,
+            ContactGenerator.ATTENDANCE_CONTACT_2
+        )
     }
 }
 

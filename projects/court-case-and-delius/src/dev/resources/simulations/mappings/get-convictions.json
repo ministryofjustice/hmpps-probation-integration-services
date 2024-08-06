@@ -3,6 +3,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/attendancesFilter"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_attendances_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements"
       },
       "response": {
