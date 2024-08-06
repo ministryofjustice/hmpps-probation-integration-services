@@ -42,6 +42,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/nsis/{nsiId}"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_single_nsi_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions"
       },
       "response": {

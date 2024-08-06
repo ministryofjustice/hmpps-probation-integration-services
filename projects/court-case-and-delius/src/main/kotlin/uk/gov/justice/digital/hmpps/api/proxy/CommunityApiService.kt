@@ -12,10 +12,8 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.client.HttpStatusCodeException
-import uk.gov.justice.digital.hmpps.advice.ControllerAdvice
-import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
+import uk.gov.justice.digital.hmpps.api.resource.advice.CommunityApiControllerAdvice
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.io.StringReader
 import java.lang.reflect.InvocationTargetException
@@ -28,7 +26,7 @@ class CommunityApiService(
     private val mapper: ObjectMapper,
     private val communityApiClient: CommunityApiClient,
     private val applicationContext: ApplicationContext,
-    private val controllerAdvice: ControllerAdvice
+    private val controllerAdvice: CommunityApiControllerAdvice
 ) {
 
     fun getCcdJson(compare: Compare): String {
@@ -45,10 +43,8 @@ class CommunityApiService(
             function.callBy(params)
         } catch (ex: InvocationTargetException) {
             when (val cause = ex.cause) {
-                is AccessDeniedException -> controllerAdvice.handleAccessDenied(cause)
-                is NotFoundException -> controllerAdvice.handleNotFound(cause)
-                is InvalidRequestException -> controllerAdvice.handleInvalidRequest(cause)
-                is MethodArgumentNotValidException -> controllerAdvice.handleMethodArgumentNotValid(cause)
+                is AccessDeniedException -> controllerAdvice.handleAccessDenied(cause).body
+                is NotFoundException -> controllerAdvice.handleNotFound(cause).body
                 else -> throw ex
             }
         }

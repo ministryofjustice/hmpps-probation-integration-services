@@ -50,7 +50,7 @@ internal class ConvictionByCrnIntegrationTest {
         mockMvc
             .perform(get("/probation-case/A123456/convictions").withToken())
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
     }
 
     @Test

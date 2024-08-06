@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -29,6 +30,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
+@TestPropertySource(properties = ["lao-access.ignore-exclusions = false", "lao-access.ignore-restrictions = true"])
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class ProxyIntegrationTest {
 
@@ -233,6 +235,10 @@ internal class ProxyIntegrationTest {
                                 "convictionId": "?",
                                 "nsiCodes": "?"
                             },
+                            "CONVICTION_BY_NSIS_ID": {
+                                "convictionId": "?",
+                                "nsiId": "?"
+                            },
                             "CONVICTION_BY_ID_PSS": {
                                 "convictionId": "?"
                             }
@@ -243,7 +249,7 @@ internal class ProxyIntegrationTest {
                 .withToken()
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
 
-        assertThat(res.totalNumberOfRequests, equalTo(8))
+        assertThat(res.totalNumberOfRequests, equalTo(9))
         assertThat(res.totalNumberOfCrns, equalTo(2))
         assertThat(res.currentPageNumber, equalTo(1))
     }
@@ -313,5 +319,3 @@ internal class ProxyIntegrationTest {
         assertThat(res.totalNumberOfRequests, equalTo(1))
     }
 }
-
-//{"status":403,"developerMessage":"This is a restricted record. Please contact a system administrator"}

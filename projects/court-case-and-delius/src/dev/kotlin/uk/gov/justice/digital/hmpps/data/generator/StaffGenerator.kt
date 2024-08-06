@@ -13,8 +13,13 @@ object StaffGenerator {
     val ALLOCATED = generate("N01ABBA")
     val OFFICER = generateOfficer()
     val STAFF_USER = generateStaffUser()
-    fun generate(code: String, id: Long = IdGenerator.getAndIncrement(), grade: ReferenceData? = null) =
-        Staff(code, "Bob", "Micheal", "Smith", CourtGenerator.PROBATION_AREA, grade, null, id = id)
+    fun generate(
+        code: String,
+        id: Long = IdGenerator.getAndIncrement(),
+        grade: ReferenceData? = null,
+        user: StaffUser? = null
+    ) =
+        Staff(code, "Bob", "Micheal", "Smith", CourtGenerator.PROBATION_AREA, grade, user = user, id = id)
 
     fun generateStaffUser() = StaffUser(ALLOCATED, "JoeBloggs", IdGenerator.getAndIncrement())
 

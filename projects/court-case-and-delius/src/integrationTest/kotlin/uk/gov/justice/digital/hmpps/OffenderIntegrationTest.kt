@@ -8,13 +8,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import software.amazon.awssdk.utils.ImmutableMap
-import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.api.resource.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.AreaGenerator.PARTITION_AREA
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDRESS
@@ -33,6 +34,7 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@TestPropertySource(properties = ["lao-access.ignore-exclusions = false", "lao-access.ignore-restrictions = true"])
 internal class OffenderIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -336,7 +338,7 @@ internal class OffenderIntegrationTest {
             .andExpect(status().isEqualTo(HttpStatus.FORBIDDEN.value()))
             .andReturn().response.contentAsJson<ErrorResponse>()
 
-        assertThat(resp.message, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
+        assertThat(resp.developerMessage, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
     }
 
     @Test
@@ -353,7 +355,7 @@ internal class OffenderIntegrationTest {
             .andExpect(status().isEqualTo(HttpStatus.FORBIDDEN.value()))
             .andReturn().response.contentAsJson<ErrorResponse>()
 
-        assertThat(resp.message, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
+        assertThat(resp.developerMessage, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
     }
 
     @Test

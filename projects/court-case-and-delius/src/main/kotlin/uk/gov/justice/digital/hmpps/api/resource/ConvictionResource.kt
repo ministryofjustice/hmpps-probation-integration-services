@@ -57,6 +57,26 @@ class ConvictionResource(
         @NotEmpty @RequestParam(required = true) nsiCodes: List<String>
     ) = interventionService.getNsiByCodes(crn, convictionId, nsiCodes)
 
+    @GetMapping("/{convictionId}/nsis/{nsiId}")
+    fun getNsiByNsiId(
+        @Parameter(name = "crn", description = "CRN for the offender", example = "A123456", required = true)
+        @PathVariable crn: String,
+        @Parameter(
+            name = "convictionId",
+            description = "ID for the conviction / event",
+            example = "2500295345",
+            required = true
+        )
+        @PathVariable convictionId: Long,
+        @Parameter(
+            name = "nsiId",
+            description = "ID for the nsi",
+            example = "2500295123",
+            required = true
+        )
+        @PathVariable nsiId: Long
+    ) = interventionService.getNsiByNsiId(crn, convictionId, nsiId)
+
     @GetMapping("/{convictionId}/pssRequirements")
     fun getPssRequirementsByConvictionId(
         @PathVariable crn: String,

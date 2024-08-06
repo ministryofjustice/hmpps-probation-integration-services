@@ -39,7 +39,7 @@ internal class PssRequirementsByCrnAndEventIdIntegrationTest {
         mockMvc
             .perform(get("/probation-case/A123456/convictions/1/pssRequirements").withToken())
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
     }
 
     @Test
@@ -49,7 +49,7 @@ internal class PssRequirementsByCrnAndEventIdIntegrationTest {
         mockMvc
             .perform(get("/probation-case/$crn/convictions/3/pssRequirements").withToken())
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Conviction with convictionId 3 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Conviction with convictionId 3 not found"))
     }
 
     @Test
