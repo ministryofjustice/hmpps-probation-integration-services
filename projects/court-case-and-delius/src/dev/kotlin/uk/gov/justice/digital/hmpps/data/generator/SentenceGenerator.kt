@@ -69,7 +69,7 @@ object SentenceGenerator {
     val COURT_APPEARANCE = generateCourtAppearance(
         CURRENTLY_MANAGED,
         OUTCOME,
-        ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon)
+        LocalDateTime.now()
     )
 
     val CURRENT_ORDER_MANAGER = generateOrderManager(
@@ -182,7 +182,7 @@ object SentenceGenerator {
     fun generateCourtAppearance(
         event: Event,
         outcome: Outcome,
-        appearanceDate: ZonedDateTime,
+        appearanceDate: LocalDateTime,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = CourtAppearance(

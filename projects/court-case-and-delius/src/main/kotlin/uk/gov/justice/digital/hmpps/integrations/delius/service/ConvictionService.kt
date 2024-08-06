@@ -84,7 +84,7 @@ class ConvictionService(
     fun CourtAppearance.toCourtAppearanceBasic(): CourtAppearanceBasic =
         CourtAppearanceBasic(
             id,
-            appearanceDate.toLocalDateTime(),
+            appearanceDate,
             court.code,
             court.courtName,
             KeyValue(appearanceType.code, appearanceType.description),

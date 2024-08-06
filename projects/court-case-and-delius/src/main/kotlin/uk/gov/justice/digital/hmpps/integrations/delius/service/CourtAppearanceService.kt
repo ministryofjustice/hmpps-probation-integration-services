@@ -30,7 +30,7 @@ class CourtAppearanceService(
 
 fun CourtAppearance.toCourtAppearance() = CourtAppearanceBasic(
     courtAppearanceId = id,
-    appearanceDate = appearanceDate.toLocalDateTime(),
+    appearanceDate = appearanceDate,
     courtCode = court.code,
     courtName = court.courtName,
     appearanceType = KeyValue(court.courtType.code, court.courtType.description),

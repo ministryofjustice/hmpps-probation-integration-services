@@ -229,7 +229,7 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
             ),
             CourtAppearanceBasic(
                 COURT_APPEARANCE.id,
-                COURT_APPEARANCE.appearanceDate.toLocalDateTime(),
+                COURT_APPEARANCE.appearanceDate,
                 COURT_APPEARANCE.court.code,
                 COURT_APPEARANCE.court.courtName,
                 KeyValue(COURT_APPEARANCE.appearanceType.code, COURT_APPEARANCE.appearanceType.description),
