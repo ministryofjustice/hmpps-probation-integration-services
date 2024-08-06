@@ -73,7 +73,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
         if: steps.check_config.outputs.has_rest_api || steps.check_config.outputs.has_async_api
         with:
           cache-read-only: true
