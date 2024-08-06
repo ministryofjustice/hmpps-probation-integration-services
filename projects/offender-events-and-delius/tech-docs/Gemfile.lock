@@ -146,7 +146,7 @@ GEM
       ffi (~> 1.0)
     redcarpet (3.5.1)
     rexml (3.3.3)
-      strscan (>= 3.0.9)
+      strscan
     rouge (3.30.0)
     sass (3.4.25)
     sassc (2.4.0)
