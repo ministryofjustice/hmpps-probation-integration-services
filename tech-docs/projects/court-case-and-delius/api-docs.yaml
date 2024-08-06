@@ -207,6 +207,36 @@ paths:
             application/json:
               schema:
                 type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/nsis/{nsiId}:
+    get:
+      tags:
+      - community-api-controller
+      operationId: nsisByNisId
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: nsiId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /secure/offenders/crn/{crn}/all:
     get:
       tags:
@@ -444,6 +474,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NsiDetails"
+  /probation-case/{crn}/convictions/{convictionId}/nsis/{nsiId}:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getNsiByNsiId
+      parameters:
+      - name: crn
+        in: path
+        description: CRN for the offender
+        required: true
+        schema:
+          type: string
+        example: A123456
+      - name: convictionId
+        in: path
+        description: ID for the conviction / event
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 2500295345
+      - name: nsiId
+        in: path
+        description: ID for the nsi
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 2500295123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Nsi"
   /probation-case/{crn}/all:
     get:
       tags:
@@ -1489,6 +1555,10 @@ components:
           type: boolean
         externalReference:
           type: string
+        recallRejectedOrWithdrawn:
+          type: boolean
+        outcomeRecall:
+          type: boolean
     NsiDetails:
       required:
       - nsis
