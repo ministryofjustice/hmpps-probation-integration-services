@@ -1,4 +1,6 @@
 * @ministryofjustice/probation-integration
+buildSrc/build.gradle.kts
+build.gradle.kts
 settings.gradle.kts
 .github/actions
 .github/workflows
