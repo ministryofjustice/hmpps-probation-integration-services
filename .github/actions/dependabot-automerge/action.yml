@@ -1,0 +1,33 @@
+name: Dependabot auto-merge
+description: Auto-approve and merge Dependabot pull requests for minor and patch version upgrades
+
+inputs:
+  token:
+    description: A personal access token, or GitHub app token, with permissions to approve/merge pull requests
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Dependabot metadata
+      if: github.actor == 'dependabot[bot]'
+      id: metadata
+      uses: dependabot/fetch-metadata@v2
+      with:
+        github-token: "${{ github.token }}"
+
+    - name: Enable auto-merge for Dependabot PRs
+      if: github.actor == 'dependabot[bot]'
+      run: gh pr merge --auto --squash "$PR_URL"
+      shell: bash
+      env:
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        GITHUB_TOKEN: ${{ inputs.token }}
+
+    - name: Auto-approve minor or patch versions
+      run: gh pr review --approve "$PR_URL"
+      if: github.actor == 'dependabot[bot]' && (steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch')
+      shell: bash
+      env:
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        GITHUB_TOKEN: ${{ inputs.token }}
