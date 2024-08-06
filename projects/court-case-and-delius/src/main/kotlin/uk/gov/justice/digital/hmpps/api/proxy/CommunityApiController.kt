@@ -150,6 +150,26 @@ class CommunityApiController(
         return proxy(request)
     }
 
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/attendancesFilter")
+    fun convictionByIdAttendances(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+    ): Any {
+
+        sendComparisonReport(
+            mapOf(
+                "crn" to crn,
+                "convictionId" to convictionId
+            ), Uri.CONVICTION_BY_ID_ATTENDANCES, request
+        )
+
+        if (featureFlags.enabled("ccd-conviction-by-id-attendances")) {
+            return convictionResource.getConvictionAttendances(crn, convictionId)
+        }
+        return proxy(request)
+    }
+
     @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/nsis/{nsiId}")
     fun nsisByNisId(
         request: HttpServletRequest,
