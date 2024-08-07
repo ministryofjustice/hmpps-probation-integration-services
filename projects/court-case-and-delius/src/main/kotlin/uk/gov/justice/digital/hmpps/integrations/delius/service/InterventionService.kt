@@ -31,8 +31,8 @@ class InterventionService(
 
     fun getNsiByNsiId(crn: String, convictionId: Long, nsiId: Long): Nsi {
         val person = personRepository.getPerson(crn)
-        val event = eventRepository.getByPersonAndEventNumber(person, convictionId)
-        return nsiRepository.getByNsiId(nsiId, event.id).toNsi()
+        eventRepository.getByPersonAndEventNumber(person, convictionId)
+        return nsiRepository.getByNsiId(nsiId).toNsi()
     }
 }
 

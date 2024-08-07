@@ -175,15 +175,14 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     @Query(
         """
             select nsi from Nsi nsi
-            where nsi.id = :nsiId and nsi.eventId = :eventId
+            where nsi.id = :nsiId
         """
-
     )
-    fun findByNsiId(nsiId: Long, eventId: Long): Nsi?
+    fun findByNsiId(nsiId: Long): Nsi?
 
     fun findByPersonIdAndEventIdAndTypeCodeIn(personId: Long, eventId: Long, codes: List<String>): List<Nsi>
 }
 
-fun NsiRepository.getByNsiId(nsiId: Long, eventId: Long) =
-    findByNsiId(nsiId, eventId) ?: throw NotFoundException("NSI with id $nsiId not found")
+fun NsiRepository.getByNsiId(nsiId: Long) =
+    findByNsiId(nsiId) ?: throw NotFoundException("NSI with id $nsiId not found")
 

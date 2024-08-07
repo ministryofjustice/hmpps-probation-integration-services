@@ -89,7 +89,7 @@ interface AttendanceRepository : JpaRepository<CaseNote, Long> {
             WHERE contact.offenderId = :personId
             AND contact.eventId = :eventId
             AND contact.date <= :contactDate
-            AND (contact.enforcementContact = true OR contact.outcome != null)
+            AND (contact.enforcementContact = true OR contact.outcome is not null)
             AND contact.type.attendanceContact = true
             AND contact.type.nationalStandards = true
         """
