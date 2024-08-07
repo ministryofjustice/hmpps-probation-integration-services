@@ -76,20 +76,6 @@ fun PssRequirementEntity.toPssRequirement(): PssRequirement =
         active
     )
 
-/*
-        return Optional.ofNullable(licenceCondition).map(lc -> uk.gov.justice.digital.delius.data.api.LicenceCondition.builder()
-                .active(zeroOneToBoolean(lc.getActiveFlag()))
-                .commencementDate(lc.getCommencementDate())
-                .commencementNotes(lc.getCommencementNotes())
-                .createdDateTime(lc.getCreatedDateTime())
-                .licenceConditionNotes(lc.getLicenceConditionNotes())
-                .licenceConditionTypeMainCat(licenceConditionTypeMainCatOf(lc.getLicenceConditionTypeMainCat()))
-                .licenceConditionTypeSubCat(KeyValueTransformer.keyValueOf(lc.getLicenceConditionTypeSubCat()))
-                .startDate(lc.getStartDate())
-                .terminationDate(lc.getTerminationDate())
-                .terminationNotes(lc.getTerminationNotes())
-                .build()).orElse(null);
- */
 fun LicenceCondition.toLicenceCondition() = uk.gov.justice.digital.hmpps.api.model.LicenceCondition(
     active = active,
     commencementDate = commencementDate,
@@ -102,4 +88,3 @@ fun LicenceCondition.toLicenceCondition() = uk.gov.justice.digital.hmpps.api.mod
     terminationDate = terminationDate,
     terminationNotes = terminationNotes
 )
-
