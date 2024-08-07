@@ -101,4 +101,10 @@ class ConvictionResource(
         @PathVariable crn: String,
         @PathVariable convictionId: Long
     ) = courtReportService.getCourtReportsFor(crn, convictionId)
+
+    @GetMapping("/{convictionId}/licenceConditions")
+    fun getConvictionLicenceConditions(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = requirementService.getLicenceConditionsForConvictionId(crn, convictionId)
 }

@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody
 import java.time.LocalDate
@@ -148,6 +149,9 @@ class Disposal(
 
     @OneToOne(mappedBy = "disposal")
     val custody: Custody?,
+
+    @OneToMany(mappedBy = "disposal")
+    val licenceConditions: List<LicenceCondition> = emptyList(),
 )
 
 @Entity(name = "conviction_custody")

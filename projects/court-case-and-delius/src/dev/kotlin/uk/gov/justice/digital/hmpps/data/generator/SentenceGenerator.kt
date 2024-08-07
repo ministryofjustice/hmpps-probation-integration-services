@@ -332,6 +332,11 @@ object SentenceGenerator {
     ) = LicenceCondition(
         disposal,
         LocalDate.now(),
+        LocalDate.now(),
+        "commencement notes",
+        LocalDate.now(),
+        "termination notes",
+        LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
         ReferenceDataGenerator.LIC_COND_MAIN_CAT,
         ReferenceDataGenerator.LIC_COND_SUB_CAT,
         "Licence Condition notes",

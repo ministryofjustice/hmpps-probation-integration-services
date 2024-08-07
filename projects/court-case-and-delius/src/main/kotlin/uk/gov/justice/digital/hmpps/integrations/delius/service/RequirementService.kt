@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.KeyValue
+import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.conviction.ConvictionRequirements
 import uk.gov.justice.digital.hmpps.api.model.conviction.PssRequirement
 import uk.gov.justice.digital.hmpps.api.model.conviction.PssRequirements
@@ -9,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.ConvictionRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.getByEventId
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
@@ -34,6 +37,16 @@ class RequirementService(
                 .getRequirements(event.id, includeInactive, includeDeleted)
                 .map { it.toRequirementModel() }
         )
+    }
+
+    fun getLicenceConditionsForConvictionId(crn: String, convictionId: Long): LicenceConditions {
+        val event = getEventForPersonByCrnAndEventId(crn, convictionId)
+        val licenceConditions = event.disposal?.let {
+            it.licenceConditions.map { lc ->
+                lc.toLicenceCondition()
+            }
+        }
+        return LicenceConditions(licenceConditions ?: emptyList())
     }
 
     fun getPssRequirementsByConvictionId(crn: String, convictionId: Long): PssRequirements {
@@ -63,5 +76,15 @@ fun PssRequirementEntity.toPssRequirement(): PssRequirement =
         active
     )
 
-
-
+fun LicenceCondition.toLicenceCondition() = uk.gov.justice.digital.hmpps.api.model.LicenceCondition(
+    active = active,
+    commencementDate = commencementDate,
+    commencementNotes = commencementNotes,
+    createdDateTime = createdDateTime,
+    licenceConditionNotes = notes,
+    licenceConditionTypeMainCat = mainCategory?.let { KeyValue(it.code, it.description) },
+    licenceConditionTypeSubCat = subCategory?.let { KeyValue(it.code, it.description) },
+    startDate = startDate,
+    terminationDate = terminationDate,
+    terminationNotes = terminationNotes
+)

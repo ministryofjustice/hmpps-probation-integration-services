@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Attendances
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
+import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.ATTENDANCE_CONTACT_1
@@ -297,6 +298,20 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
             .andReturn().response.contentAsJson<List<CourtReportMinimal>>()
 
         assertThat(response.size, equalTo(1))
-        assertThat(response[0].reportManagers?.size, equalTo(1))
+        assertThat(response[0].reportManagers.size, equalTo(1))
+    }
+
+    @Test
+    fun `call convictions by id and licence conditions`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/licenceConditions").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<LicenceConditions>()
+
+        assertThat(response.licenceConditions.size, equalTo(1))
+        assertThat(response.licenceConditions[0].licenceConditionNotes, equalTo("Licence Condition notes"))
     }
 }
