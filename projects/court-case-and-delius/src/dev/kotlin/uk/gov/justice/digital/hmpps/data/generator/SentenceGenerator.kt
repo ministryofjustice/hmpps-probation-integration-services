@@ -54,12 +54,17 @@ object SentenceGenerator {
         lengthInDays = 99
     )
 
+    val NO_SENTENCE_EVENT = generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
+
     val CURRENT_CUSTODY = generateCustody(
         CURRENT_SENTENCE,
         ReferenceDataGenerator.CUSTODIAL_STATUS,
         "FD1234",
         InstitutionGenerator.WSIHMP
     )
+
+    val RELEASE_1 = generateRelease(LocalDateTime.now().minusDays(3))
+    val RELEASE_2 = generateRelease(LocalDateTime.now().minusDays(2))
 
     val OUTCOME = Outcome(
         Outcome.Code.AWAITING_PSR.value,
@@ -407,4 +412,10 @@ object SentenceGenerator {
 
     fun generateKeyDates(date: LocalDate, custody: Custody, keyDateType: ReferenceData) =
         KeyDate(IdGenerator.getAndIncrement(), date, custody, keyDateType)
+
+    fun generateRelease(date: LocalDateTime) = Release(
+        id = IdGenerator.getAndIncrement(),
+        custody = CURRENT_CUSTODY,
+        date = date
+    )
 }

@@ -253,7 +253,7 @@ class CommunityApiController(
     }
 
     @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/licenceConditions")
-    fun convictionByIdCLicenceConditions(
+    fun convictionByIdLicenceConditions(
         request: HttpServletRequest,
         @PathVariable crn: String,
         @PathVariable convictionId: Long,
@@ -268,6 +268,26 @@ class CommunityApiController(
 
         if (featureFlags.enabled("ccd-conviction-by-id-licence-conditions")) {
             return convictionResource.getConvictionLicenceConditions(crn, convictionId)
+        }
+        return proxy(request)
+    }
+
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/sentenceStatus")
+    fun convictionByIdSentenceStatus(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+    ): Any {
+
+        sendComparisonReport(
+            mapOf(
+                "crn" to crn,
+                "convictionId" to convictionId
+            ), Uri.CONVICTION_BY_ID_SENTENCE_STATUS, request
+        )
+
+        if (featureFlags.enabled("ccd-conviction-by-id-sentence-status")) {
+            return convictionResource.getConvictionSentenceStatus(crn, convictionId)
         }
         return proxy(request)
     }

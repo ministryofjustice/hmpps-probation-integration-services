@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
@@ -37,6 +38,13 @@ class ConvictionService(
         val event = eventRepository.getByPersonAndEventNumber(person, eventId)
 
         return event.toConviction()
+    }
+
+    fun sentenceStatusFor(crn: String, eventId: Long): SentenceStatus {
+        val person = personRepository.getPerson(crn)
+        val event = eventRepository.getByPersonAndEventNumber(person, eventId)
+        return event.disposal?.let(Disposal::toSentenceStatus)
+            ?: throw NotFoundException("Sentence not found for crn '$crn', convictionId '$eventId'")
     }
 
     fun Event.toConviction(): Conviction =
@@ -280,4 +288,18 @@ enum class KeyDateTypes(val code: String) {
     SENTENCE_EXPIRY_DATE("SED")
 }
 
+fun Disposal.toSentenceStatus() = SentenceStatus(
+    sentenceId = id,
+    custodialType = KeyValue(
+        custody?.status?.code ?: "NOT_IN_CUSTODY",
+        custody?.status?.description ?: "Not in custody"
+    ),
+    sentence = KeyValue(description = disposalType.description),
+    mainOffence = event.mainOffence?.let { KeyValue(description = it.offence.description) },
+    sentenceDate = startDate,
+    actualReleaseDate = custody?.releases?.maxByOrNull { it.date }?.date?.toLocalDate(),
+    licenceExpiryDate = custody?.pssStartDate,
+    length = length,
+    lengthUnit = "Months"
 
+)
