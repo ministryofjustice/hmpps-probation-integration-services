@@ -125,8 +125,7 @@ class Event(
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-
-    )
+)
 
 interface ConvictionEventRepository : JpaRepository<Event, Long> {
     fun findEventByIdAndOffenderId(eventId: Long, personId: Long): Event?
