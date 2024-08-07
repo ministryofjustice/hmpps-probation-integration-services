@@ -107,4 +107,10 @@ class ConvictionResource(
         @PathVariable crn: String,
         @PathVariable convictionId: Long
     ) = requirementService.getLicenceConditionsForConvictionId(crn, convictionId)
+
+    @GetMapping("/{convictionId}/sentenceStatus")
+    fun getConvictionSentenceStatus(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = convictionService.sentenceStatusFor(crn, convictionId)
 }

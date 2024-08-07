@@ -79,5 +79,11 @@ enum class Uri(
         "getConvictionLicenceConditions",
         listOf("crn", "convictionId"),
     ),
+    CONVICTION_BY_ID_SENTENCE_STATUS(
+        "/secure/offenders/crn/{crn}/convictions/{convictionId}/sentenceStatus",
+        "convictionResource",
+        "getConvictionSentenceStatus",
+        listOf("crn", "convictionId"),
+    ),
     DUMMY("/dummy", "dummyResource", "getDummy", listOf("crn")),
 }

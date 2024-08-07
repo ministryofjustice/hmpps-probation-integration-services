@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -79,6 +80,25 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long
+)
+
+@Immutable
+@Entity
+@Table(name = "release")
+class Release(
+    @Id
+    @Column(name = "release_id")
+    val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "custody_id")
+    val custody: Custody,
+
+    @Column(name = "actual_release_date")
+    val date: LocalDateTime,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false
 )
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
@@ -214,6 +234,12 @@ class Custody(
 
     @OneToMany(mappedBy = "custody")
     val keyDates: List<KeyDate> = listOf(),
+
+    @OneToMany(mappedBy = "custody")
+    val releases: List<Release> = emptyList(),
+
+    @Column(name = "pss_start_date")
+    val pssStartDate: LocalDate? = null,
 
     @Id
     @Column(name = "custody_id")

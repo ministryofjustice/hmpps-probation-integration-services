@@ -66,7 +66,7 @@ data class Offence(
 )
 
 data class KeyValue(
-    val code: String,
+    val code: String? = null,
     val description: String
 )
 

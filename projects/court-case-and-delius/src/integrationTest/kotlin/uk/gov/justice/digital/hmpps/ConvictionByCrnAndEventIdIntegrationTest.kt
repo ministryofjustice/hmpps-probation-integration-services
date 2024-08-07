@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.api.model.Attendances
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
+import uk.gov.justice.digital.hmpps.api.resource.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.ATTENDANCE_CONTACT_1
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.BHAM
@@ -313,5 +314,31 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
 
         assertThat(response.licenceConditions.size, equalTo(1))
         assertThat(response.licenceConditions[0].licenceConditionNotes, equalTo("Licence Condition notes"))
+    }
+
+    @Test
+    fun `call convictions by id and sentence status`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/sentenceStatus").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<SentenceStatus>()
+
+        assertThat(response.actualReleaseDate, equalTo(SentenceGenerator.RELEASE_2.date.toLocalDate()))
+    }
+
+    @Test
+    fun `call convictions by id and sentence status not found`() {
+        val crn = PersonGenerator.NO_SENTENCE.crn
+        val event = SentenceGenerator.NO_SENTENCE_EVENT
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/sentenceStatus").withToken())
+            .andExpect(status().isNotFound)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(response.developerMessage, equalTo("Sentence not found for crn '$crn', convictionId '${event.id}'"))
     }
 }

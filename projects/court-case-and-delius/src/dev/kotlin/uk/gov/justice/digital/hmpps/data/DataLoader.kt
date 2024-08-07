@@ -125,19 +125,20 @@ class DataLoader(
             PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED),
         )
 
-        val noSentenceEvent =
-            SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
+//        val noSentenceEvent =
+//            SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
         val noSentenceManager =
             SentenceGenerator.generateOrderManager(
-                noSentenceEvent,
+                SentenceGenerator.NO_SENTENCE_EVENT,
                 StaffGenerator.UNALLOCATED,
                 CourtGenerator.PROBATION_AREA,
                 ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon),
                 ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, EuropeLondon)
             )
         val outcome = SentenceGenerator.OUTCOME
-        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, LocalDateTime.now())
-        em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
+        val courtAppearance =
+            SentenceGenerator.generateCourtAppearance(SentenceGenerator.NO_SENTENCE_EVENT, outcome, LocalDateTime.now())
+        em.saveAll(SentenceGenerator.NO_SENTENCE_EVENT, noSentenceManager, outcome, courtAppearance)
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
         val newSentence =
@@ -188,6 +189,8 @@ class DataLoader(
             UnpaidWorkGenerator.APPT7,
             currentManager,
             custody,
+            SentenceGenerator.RELEASE_1,
+            SentenceGenerator.RELEASE_2,
             SentenceGenerator.CONDITIONAL_RELEASE_KEY_DATE,
             SentenceGenerator.LED_KEY_DATE,
             SentenceGenerator.HDC_KEY_DATE,
