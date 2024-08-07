@@ -135,7 +135,21 @@ internal class CorePersonIntegrationTest {
                           { "username": "SomeUser2" },
                           { "username": "FutureEndDatedUser" }
                         ]
-                      }
+                      },
+                      "sentences": [
+                        {
+                          "date": "2024-08-07",
+                          "active": true
+                        },
+                        {
+                          "date": "2024-08-05",
+                          "active": false
+                        },
+                        {
+                          "date": "2024-08-03",
+                          "active": true
+                        }
+                      ]
                     }
                     """.trimIndent()
                 )

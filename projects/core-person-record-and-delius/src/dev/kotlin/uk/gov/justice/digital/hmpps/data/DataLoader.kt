@@ -40,6 +40,7 @@ class DataLoader(
             *PersonGenerator.FULL_PERSON_EXCLUSIONS.toTypedArray(),
             *PersonGenerator.FULL_PERSON_RESTRICTIONS.map { it.user }.toTypedArray(),
             *PersonGenerator.FULL_PERSON_RESTRICTIONS.toTypedArray(),
+            *PersonGenerator.SENTENCES.toTypedArray()
         )
     }
 

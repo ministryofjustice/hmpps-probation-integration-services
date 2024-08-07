@@ -16,6 +16,7 @@ data class PersonDetail(
     val addresses: List<Address>,
     val excludedFrom: LimitedAccess?,
     val restrictedTo: LimitedAccess?,
+    val sentences: List<Sentence>,
 )
 
 data class Identifiers(
@@ -59,3 +60,5 @@ data class Address(
     val startDate: LocalDate,
     val endDate: LocalDate?,
 )
+
+data class Sentence(val date: LocalDate, val active: Boolean)
