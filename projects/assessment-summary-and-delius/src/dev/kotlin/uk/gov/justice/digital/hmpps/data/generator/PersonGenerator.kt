@@ -11,6 +11,7 @@ object PersonGenerator {
     val VERY_HIGH_RISK = generate("V123456")
     val PERSON_NO_EVENT = generate("E123456")
     val PERSON_SOFT_DELETED_EVENT = generate("F123456")
+    val PRISON_ASSESSMENT = generate("O123456")
 
     fun generate(
         crn: String,
@@ -31,10 +32,19 @@ object PersonGenerator {
     fun generateEvent(
         person: Person,
         number: String = "1",
+        disposal: Disposal? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Event(number, person.id, active, softDeleted, id)
+    ) = Event(number, person.id, disposal, active, softDeleted, id)
+
+    fun generateDisposal(
+        event: Event,
+        type: DisposalType = ReferenceDataGenerator.DISPOSAL_TYPE,
+        active: Boolean = true,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Disposal(event, type, active, softDeleted, id)
 
     fun generateRequirement(
         person: Person,

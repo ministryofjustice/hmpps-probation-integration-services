@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Offence
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -25,6 +26,7 @@ object ReferenceDataGenerator {
     val DOMAIN_EVENT_TYPE_DATASET = generateDataset(Dataset.Code.DOMAIN_EVENT_TYPE.value)
     val DOMAIN_EVENT_TYPES = listOf(ReferenceData.Code.REGISTRATION_ADDED, ReferenceData.Code.REGISTRATION_DEREGISTERED)
         .map { generateReferenceData(it.value, dataset = DOMAIN_EVENT_TYPE_DATASET) }
+    val DISPOSAL_TYPE = generateDisposalType("NC")
 
     fun generateReferenceData(
         code: String,
@@ -41,4 +43,7 @@ object ReferenceDataGenerator {
     fun generateOffence(code: String, id: Long = IdGenerator.getAndIncrement()) = Offence(code, id)
 
     fun generateReqMainCat(code: String, id: Long = IdGenerator.getAndIncrement()) = RequirementMainCategory(code, id)
+
+    fun generateDisposalType(sentenceType: String, id: Long = IdGenerator.getAndIncrement()) =
+        DisposalType(sentenceType, id)
 }
