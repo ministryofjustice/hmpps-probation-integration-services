@@ -237,6 +237,54 @@ paths:
             application/json:
               schema:
                 type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/courtAppearances:
+    get:
+      tags:
+      - community-api-controller
+      operationId: convictionByIdCourtAppearances
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/attendancesFilter:
+    get:
+      tags:
+      - community-api-controller
+      operationId: convictionByIdAttendances
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /secure/offenders/crn/{crn}/all:
     get:
       tags:
@@ -510,6 +558,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Nsi"
+  /probation-case/{crn}/convictions/{convictionId}/courtAppearances:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getConvictionCourtAppearances
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourtAppearanceBasicWrapper"
+  /probation-case/{crn}/convictions/{convictionId}/attendancesFilter:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getConvictionAttendances
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendances"
   /probation-case/{crn}/all:
     get:
       tags:
@@ -1678,6 +1774,54 @@ components:
           type: string
           format: date
       description: all teams related to this staff member
+    CourtAppearanceBasicWrapper:
+      required:
+      - courtAppearances
+      type: object
+      properties:
+        courtAppearances:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourtAppearanceBasic"
+    Attendance:
+      required:
+      - attendanceDate
+      - attended
+      - complied
+      - contactId
+      - contactType
+      type: object
+      properties:
+        attended:
+          type: boolean
+        complied:
+          type: boolean
+        attendanceDate:
+          type: string
+          format: date
+        contactId:
+          type: integer
+          format: int64
+        outcome:
+          type: string
+        contactType:
+          $ref: "#/components/schemas/ContactTypeDetail"
+    Attendances:
+      required:
+      - attendances
+      type: object
+      properties:
+        attendances:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attendance"
+    ContactTypeDetail:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
     Address:
       type: object
       properties:
