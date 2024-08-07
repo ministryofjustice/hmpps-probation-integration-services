@@ -125,8 +125,6 @@ class DataLoader(
             PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED),
         )
 
-//        val noSentenceEvent =
-//            SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
         val noSentenceManager =
             SentenceGenerator.generateOrderManager(
                 SentenceGenerator.NO_SENTENCE_EVENT,
