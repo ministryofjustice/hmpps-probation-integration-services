@@ -150,7 +150,14 @@ internal class MessagingIntegrationTest {
         assertThat(contact.description, equalTo("Approved Premises Booking for Hope House"))
         assertThat(
             contact.notes,
-            equalTo("To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713")
+            equalTo(
+                """
+                Expected arrival: 30/01/2023
+                Expected departure: 30/04/2023
+                
+                To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
+                """.trimIndent()
+            )
         )
         assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
