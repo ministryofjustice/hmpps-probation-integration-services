@@ -70,7 +70,10 @@ class ReferralService(
                     ContactDetails(
                         date = details.bookingMadeAt,
                         type = ContactTypeCode.BOOKING_MADE,
-                        notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
+                        notes = listOfNotNull(
+                            "Current: ${DeliusDateFormatter.format(details.arrivalOn)} to ${DeliusDateFormatter.format(details.departureOn)}",
+                            "To view details of the Approved Premises booking, click here: ${details.applicationUrl}")
+                            .joinToString(System.lineSeparator() + System.lineSeparator()),
                         description = "Approved Premises Booking for ${details.premises.name}",
                         locationCode = ap.locationCode()
                     ),
