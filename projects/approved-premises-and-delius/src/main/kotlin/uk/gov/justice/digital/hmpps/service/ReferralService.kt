@@ -71,7 +71,11 @@ class ReferralService(
                         date = details.bookingMadeAt,
                         type = ContactTypeCode.BOOKING_MADE,
                         notes = """
-                            Current: ${DeliusDateFormatter.format(details.arrivalOn)} to ${DeliusDateFormatter.format(details.departureOn)}
+                            Current: ${DeliusDateFormatter.format(details.arrivalOn)} to ${
+                            DeliusDateFormatter.format(
+                                details.departureOn
+                            )
+                        }
                             
                             To view details of the Approved Premises booking, click here: ${details.applicationUrl}
                             """.trimIndent(),
