@@ -252,6 +252,26 @@ class CommunityApiController(
         return proxy(request)
     }
 
+    @GetMapping("/offenders/crn/{crn}/convictions/{convictionId}/licenceConditions")
+    fun convictionByIdCLicenceConditions(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long,
+    ): Any {
+
+        sendComparisonReport(
+            mapOf(
+                "crn" to crn,
+                "convictionId" to convictionId
+            ), Uri.CONVICTION_BY_ID_LICENCE_CONDITIONS, request
+        )
+
+        if (featureFlags.enabled("ccd-conviction-by-id-licence-conditions")) {
+            return convictionResource.getConvictionLicenceConditions(crn, convictionId)
+        }
+        return proxy(request)
+    }
+
     @GetMapping("/**")
     fun proxy(request: HttpServletRequest): ResponseEntity<String> {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()

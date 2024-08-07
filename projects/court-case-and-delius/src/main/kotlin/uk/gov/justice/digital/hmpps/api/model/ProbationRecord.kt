@@ -126,10 +126,3 @@ data class Requirement(
     val length: Long?
 )
 
-data class LicenceCondition(
-    val description: String?,
-    val subTypeDescription: String?,
-    val startDate: LocalDate?,
-    val notes: String?,
-    val active: Boolean
-)
