@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -251,8 +251,8 @@ internal class IntegrationTest {
 
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummaryFailureReport"),
-            ArgumentMatchers.anyMap(),
-            ArgumentMatchers.anyMap()
+            anyMap(),
+            anyMap()
         )
     }
 
@@ -266,10 +266,10 @@ internal class IntegrationTest {
 
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummaryFailureReport"),
-            org.mockito.kotlin.check {
+            check {
                 assertThat(it["reason"], Matchers.equalTo("Event with number of 1 not found"))
             },
-            ArgumentMatchers.anyMap()
+            anyMap()
         )
     }
 
@@ -283,10 +283,21 @@ internal class IntegrationTest {
 
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("AssessmentSummaryFailureReport"),
-            org.mockito.kotlin.check {
+            check {
                 assertThat(it["reason"], Matchers.equalTo("Person with crn of G123456 not found"))
             },
-            ArgumentMatchers.anyMap()
+            anyMap()
         )
+    }
+
+    @Test
+    fun `event number is inferred for prison assessments`() {
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced-O123456")
+
+        channelManager.getChannel(queueName).publishAndWait(prepNotification(message, wireMockServer.port()))
+
+        verify(telemetryService, timeout(5000)).trackEvent(eq("AssessmentSummarySuccess"), anyMap(), anyMap())
+        val assessment = oasysAssessmentRepository.findByOasysId("10069391")
+        assertThat(assessment?.eventNumber, equalTo("1"))
     }
 }
