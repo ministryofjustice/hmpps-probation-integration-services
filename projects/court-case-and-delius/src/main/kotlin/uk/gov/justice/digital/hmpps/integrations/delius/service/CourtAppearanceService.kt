@@ -33,6 +33,6 @@ fun CourtAppearance.toCourtAppearance() = CourtAppearanceBasic(
     appearanceDate = appearanceDate,
     courtCode = court.code,
     courtName = court.courtName,
-    appearanceType = KeyValue(court.courtType.code, court.courtType.description),
+    appearanceType = KeyValue(appearanceType.code, appearanceType.description),
     crn = person.crn
 )

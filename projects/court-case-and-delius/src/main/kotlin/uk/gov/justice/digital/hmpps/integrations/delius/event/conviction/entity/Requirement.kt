@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody
 import java.time.LocalDate
@@ -124,7 +125,8 @@ class Event(
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-)
+
+    )
 
 interface ConvictionEventRepository : JpaRepository<Event, Long> {
     fun findEventByIdAndOffenderId(eventId: Long, personId: Long): Event?
@@ -148,6 +150,9 @@ class Disposal(
 
     @OneToOne(mappedBy = "disposal")
     val custody: Custody?,
+
+    @OneToMany(mappedBy = "disposal")
+    val licenceConditions: List<LicenceCondition> = emptyList(),
 )
 
 @Entity(name = "conviction_custody")
