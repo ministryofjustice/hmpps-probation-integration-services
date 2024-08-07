@@ -74,7 +74,7 @@ class Handler(
             is OffenderEvent -> when (notification.eventType) {
                 "OFFENDER_DETAILS_CHANGED", // changes to name, date of birth, identifiers in Delius
                 "SENTENCE_CHANGED",         // changes to sentence status and dates in Delius
-                -> prisonMatchingService
+                    -> prisonMatchingService
                     .matchAndUpdateIdentifiers(message.crn)
                     .also { telemetryService.logResult(it) }
 
