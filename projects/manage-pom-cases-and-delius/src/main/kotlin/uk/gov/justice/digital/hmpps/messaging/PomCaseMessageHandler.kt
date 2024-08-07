@@ -66,7 +66,7 @@ class PomCaseMessageHandler(
 
                 is ProbationOffenderEvent -> when (notification.eventType) {
                     "SENTENCE_CHANGED",
-                    -> personRepository.findNomsSingleCustodial(message.crn)?.let {
+                        -> personRepository.findNomsSingleCustodial(message.crn)?.let {
                         try {
                             handoverDatesChanged.process(
                                 HandoverMessage(
