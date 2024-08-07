@@ -371,11 +371,19 @@ object SentenceGenerator {
             id = id
         )
 
-    fun generateCourtReport(courtAppearance: CourtAppearance, id: Long = IdGenerator.getAndIncrement()) =
+    fun generateCourtReport(
+        courtAppearance: CourtAppearance,
+        personId: Long,
+        id: Long = IdGenerator.getAndIncrement()
+    ) =
         CourtReport(
-            LocalDate.now(),
-            LocalDate.now().plusDays(5),
+            personId,
+            LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
+            LocalDateTime.now().plusDays(5).truncatedTo(ChronoUnit.MICROS),
             null,
+            LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
+            LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
+            LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
             ReferenceDataGenerator.COURT_REPORT_TYPE,
             null,
             courtAppearance,

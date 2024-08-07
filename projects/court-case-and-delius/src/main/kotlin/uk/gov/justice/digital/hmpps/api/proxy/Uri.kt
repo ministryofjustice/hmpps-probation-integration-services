@@ -67,5 +67,11 @@ enum class Uri(
         "getConvictionCourtAppearances",
         listOf("crn", "convictionId"),
     ),
+    CONVICTION_BY_ID_COURT_REPORTS(
+        "/secure/offenders/crn/{crn}/convictions/{convictionId}/courtReports",
+        "convictionResource",
+        "getConvictionCourtReports",
+        listOf("crn", "convictionId"),
+    ),
     DUMMY("/dummy", "dummyResource", "getDummy", listOf("crn")),
 }

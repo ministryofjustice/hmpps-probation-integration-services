@@ -82,7 +82,7 @@ data class StaffHuman(
     val code: String,
     val forenames: String,
     val surname: String,
-    val unallocated: Boolean
+    val unallocated: Boolean? = null
 )
 
 data class Institution(

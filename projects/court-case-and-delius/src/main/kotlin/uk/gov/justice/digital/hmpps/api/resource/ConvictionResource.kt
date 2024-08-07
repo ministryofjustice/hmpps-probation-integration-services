@@ -14,7 +14,8 @@ class ConvictionResource(
     private val requirementService: RequirementService,
     private val interventionService: InterventionService,
     private val attendanceService: AttendanceService,
-    private val courtAppearanceService: CourtAppearanceService
+    private val courtAppearanceService: CourtAppearanceService,
+    private val courtReportService: CourtReportService
 ) {
 
     @GetMapping
@@ -94,4 +95,10 @@ class ConvictionResource(
         @PathVariable crn: String,
         @PathVariable convictionId: Long
     ) = courtAppearanceService.getCourtAppearancesFor(crn, convictionId)
+
+    @GetMapping("/{convictionId}/courtReports")
+    fun getConvictionCourtReports(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = courtReportService.getCourtReportsFor(crn, convictionId)
 }

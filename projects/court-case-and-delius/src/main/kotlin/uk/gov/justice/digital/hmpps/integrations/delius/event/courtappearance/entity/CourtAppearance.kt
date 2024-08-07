@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -18,6 +17,7 @@ import java.time.LocalDateTime
 @Table(name = "court_appearance")
 @SQLRestriction("soft_deleted = 0")
 class CourtAppearance(
+
     @JoinColumn(name = "event_id")
     @ManyToOne
     val event: Event,
@@ -66,6 +66,17 @@ interface CourtReportRepository : JpaRepository<CourtReport, Long> {
     """
     )
     fun getAllByEvent(event: Event): List<CourtReport>
+
+    @Query(
+        """
+        select courtReport 
+        from CourtReport courtReport 
+        where courtReport.personId = :personId 
+        and courtReport.courtAppearance.event.id = :eventId
+        and courtReport.softDeleted = false
+    """
+    )
+    fun findByPersonIdAndEventId(personId: Long, eventId: Long): List<CourtReport>
 }
 
 @Immutable
@@ -92,12 +103,24 @@ class Outcome(
 @Table(name = "court_report")
 @SQLRestriction("soft_deleted = 0")
 class CourtReport(
+
+    @Column(name = "offender_id")
+    val personId: Long,
     @Column(name = "date_requested")
-    val dateRequested: LocalDate,
+    val dateRequested: LocalDateTime,
     @Column(name = "date_required")
-    val dateRequired: LocalDate,
+    val dateRequired: LocalDateTime,
     @Column(name = "completed_Date")
-    val dateCompleted: LocalDate?,
+    val dateCompleted: LocalDateTime?,
+
+    @Column(name = "allocation_date")
+    val allocationDate: LocalDateTime? = null,
+
+    @Column(name = "sent_to_court_date")
+    val sentToCourtDate: LocalDateTime? = null,
+
+    @Column(name = "received_by_court_date")
+    val receivedByCourtDate: LocalDateTime? = null,
 
     @ManyToOne
     @JoinColumn(name = "court_report_type_id")
@@ -133,7 +156,7 @@ class ReportManager(
 
     @JoinColumn(name = "staff_id")
     @OneToOne
-    val staff: Staff,
+    val staff: Staff? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
     var active: Boolean,
