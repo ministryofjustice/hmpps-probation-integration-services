@@ -207,5 +207,6 @@ object PersonGenerator {
         personId: Long,
         startDate: LocalDate,
         active: Boolean,
-        softDeleted: Boolean) = Disposal(IdGenerator.getAndIncrement(), personId, startDate, active, softDeleted)
+        softDeleted: Boolean
+    ) = Disposal(IdGenerator.getAndIncrement(), personId, startDate, active, softDeleted)
 }
