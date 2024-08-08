@@ -242,6 +242,7 @@ internal class IntegrationTest {
         assertThat(scores[11L], equalTo(5))
         assertThat(scores[12L], equalTo(5))
     }
+
     @Test
     fun `an assessment with a cmsEventNumber that is soft deleted is logged and ignored`() {
         val message =
