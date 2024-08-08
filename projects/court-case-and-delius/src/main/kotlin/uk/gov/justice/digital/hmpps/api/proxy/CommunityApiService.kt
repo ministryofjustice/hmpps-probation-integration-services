@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.api.resource.advice.CommunityApiControllerAdvice
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.io.StringReader
 import java.lang.reflect.InvocationTargetException
@@ -45,6 +46,7 @@ class CommunityApiService(
             when (val cause = ex.cause) {
                 is AccessDeniedException -> controllerAdvice.handleAccessDenied(cause).body
                 is NotFoundException -> controllerAdvice.handleNotFound(cause).body
+                is InvalidRequestException -> controllerAdvice.handleInvalidRequest(cause).body
                 else -> throw ex
             }
         }
@@ -68,10 +70,14 @@ class CommunityApiService(
 
         val uri = Uri.valueOf(compare.uri)
         val comApiUri = compare.params.entries.fold(uri.comApiUrl) { path, (key, value) ->
-            path.replace(
-                "{$key}",
-                value.toString()
-            )
+            if (value != null) {
+                path.replace(
+                    "{$key}",
+                    value.toString()
+                )
+            } else {
+                path.replace("$key={$key}", "")
+            }
         }.replace(" ", "%20")
 
         val ccdJsonString = try {

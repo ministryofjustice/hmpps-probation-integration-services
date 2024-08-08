@@ -70,22 +70,12 @@ data class KeyValue(
     val description: String
 )
 
-data class OffenderDocumentDetail(
-
-    val documentName: String,
-    val author: String?,
-    val type: DocumentType,
-    val extendedDescription: String?,
-    val createdAt: ZonedDateTime?,
-    val subType: KeyValue?
-)
-
-enum class DocumentType(val description: String) {
+enum class DocumentType(val description: String, val subtypes: List<SubType> = emptyList()) {
     OFFENDER_DOCUMENT("Offender related"),
     CONVICTION_DOCUMENT("Sentence related"),
     CPSPACK_DOCUMENT("Crown Prosecution Service case pack"),
     PRECONS_DOCUMENT("PNC previous convictions"),
-    COURT_REPORT_DOCUMENT("Court report"),
+    COURT_REPORT_DOCUMENT("Court report", listOf(SubType.PSR)),
     INSTITUTION_REPORT_DOCUMENT("Institution report"),
     ADDRESS_ASSESSMENT_DOCUMENT("Address assessment related document"),
     APPROVED_PREMISES_REFERRAL_DOCUMENT("Approved premises referral related document"),
@@ -98,6 +88,10 @@ enum class DocumentType(val description: String) {
     UPW_APPOINTMENT_DOCUMENT("Unpaid work appointment document"),
     CONTACT_DOCUMENT("Contact related document"),
     PREVIOUS_CONVICTION("Previous conviction document")
+}
+
+enum class SubType {
+    PSR
 }
 
 class Breach(

@@ -62,10 +62,17 @@ interface Document {
     val name: String
     val type: String
     val tableName: String
+    val lastModifiedAt: Instant?
     val createdAt: Instant?
+    val primaryKeyId: Long?
     val author: String?
     val description: String?
     val eventId: Long?
+    val subTypeCode: String?
+    val subTypeDescription: String?
+    val dateRequested: Instant?
+    val dateRequired: Instant?
+    val completedDate: Instant?
 }
 
 fun Document.relatesToEvent() = eventId != null
@@ -87,6 +94,24 @@ fun Document.typeDescription() = when (tableName) {
     else -> error("Un-mapped document type ($tableName/$type)")
 }
 
+fun Document.typeCode(): String = when (tableName) {
+    "OFFENDER" -> if (type == "PREVIOUS_CONVICTION") DocumentType.PRECONS_DOCUMENT.name else DocumentType.OFFENDER_DOCUMENT.name
+    "EVENT" -> if (type == "CPS_PACK") DocumentType.CPSPACK_DOCUMENT.name else DocumentType.CONVICTION_DOCUMENT.name
+    "COURT_REPORT" -> DocumentType.COURT_REPORT_DOCUMENT.name
+    "INSTITUTIONAL_REPORT" -> DocumentType.INSTITUTION_REPORT_DOCUMENT.name
+    "ADDRESSASSESSMENT" -> DocumentType.ADDRESS_ASSESSMENT_DOCUMENT.name
+    "APPROVED_PREMISES_REFERRAL" -> DocumentType.APPROVED_PREMISES_REFERRAL_DOCUMENT.name
+    "ASSESSMENT" -> DocumentType.ASSESSMENT_DOCUMENT.name
+    "CASE_ALLOCATION" -> DocumentType.CASE_ALLOCATION_DOCUMENT.name
+    "PERSONALCONTACT" -> DocumentType.PERSONAL_CONTACT_DOCUMENT.name
+    "REFERRAL" -> DocumentType.REFERRAL_DOCUMENT.name
+    "NSI" -> DocumentType.NSI_DOCUMENT.name
+    "PERSONAL_CIRCUMSTANCE" -> DocumentType.PERSONAL_CIRCUMSTANCE_DOCUMENT.name
+    "UPW_APPOINTMENT" -> DocumentType.UPW_APPOINTMENT_DOCUMENT.name
+    "CONTACT" -> DocumentType.CONTACT_DOCUMENT.name
+    else -> type
+}
+
 interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
 
     @Query(
@@ -106,7 +131,9 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
                document.document_name as name,
                document.document_type as type,
                document.table_name as "tableName",
+               document.last_saved as "lastModifiedAt",
                document.created_datetime as "createdAt",
+               document.primary_key_id as "primaryKeyId",
                case
                  when created_by.user_id is not null then created_by.forename || ' ' || created_by.surname
                  when updated_by.user_id is not null then updated_by.forename || ' ' || updated_by.surname
@@ -146,7 +173,27 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
                        upw_appointment_disposal.event_id,
                        contact.event_id,
                        nsi.event_id
-               ) as "eventId"
+               ) as "eventId",
+               coalesce(
+                       institutional_report_type.code_value,
+                       r_court_report_type.code
+               ) as "subTypeCode",
+               coalesce(
+                       institutional_report_type.code_description,
+                       r_court_report_type.description
+               ) as "subTypeDescription",
+               coalesce(
+                      institutional_report.date_requested,
+                      court_report.date_requested
+               ) as "dateRequested",
+               coalesce(
+                      institutional_report.date_required,
+                      court_report.date_required
+               ) as "dateRequired",
+               coalesce(
+                      institutional_report.date_completed,
+                      court_report.completed_date
+               ) as "completedDate" 
         from document
             -- the following joins are to get the event_id from the related entities, for event-level documents
             left join event                        on document.table_name = 'EVENT' and document.primary_key_id = event.event_id

@@ -85,5 +85,11 @@ enum class Uri(
         "getConvictionSentenceStatus",
         listOf("crn", "convictionId"),
     ),
+    DOCUMENTS_GROUPED(
+        "/secure/offenders/crn/{crn}/documents/grouped?type={type}&subtype={subtype}",
+        "documentResource",
+        "getOffenderDocumentsGrouped",
+        listOf("crn", "type", "subtype"),
+    ),
     DUMMY("/dummy", "dummyResource", "getDummy", listOf("crn")),
 }

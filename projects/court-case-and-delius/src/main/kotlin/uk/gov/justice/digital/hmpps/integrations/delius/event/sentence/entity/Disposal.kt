@@ -149,6 +149,10 @@ class UpwAppointment(
 
     val softDeleted: Long,
 
+    val appointmentDate: LocalDate,
+
+    val upwProjectId: Long,
+
     @JoinColumn(name = "upw_details_id")
     @ManyToOne
     val upwDetails: UpwDetails,
