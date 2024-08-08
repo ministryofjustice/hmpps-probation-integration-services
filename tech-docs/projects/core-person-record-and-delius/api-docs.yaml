@@ -167,6 +167,7 @@ components:
       - dateOfBirth
       - identifiers
       - name
+      - sentences
       type: object
       properties:
         identifiers:
@@ -200,6 +201,21 @@ components:
           $ref: "#/components/schemas/LimitedAccess"
         restrictedTo:
           $ref: "#/components/schemas/LimitedAccess"
+        sentences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sentence"
+    Sentence:
+      required:
+      - active
+      - date
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        active:
+          type: boolean
     Pageable:
       type: object
       properties:
