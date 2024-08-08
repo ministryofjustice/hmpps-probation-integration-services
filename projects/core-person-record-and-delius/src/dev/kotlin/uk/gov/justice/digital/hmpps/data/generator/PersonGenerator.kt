@@ -79,6 +79,13 @@ object PersonGenerator {
         generateRestriction(FULL_PERSON.id, "FutureEndDatedUser", LocalDateTime.now().plusDays(30)),
     )
 
+    val SENTENCES = listOf(
+        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 7), active = true, softDeleted = false),
+        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 5), active = false, softDeleted = false),
+        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 4), active = false, softDeleted = true),
+        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 3), active = true, softDeleted = false)
+    )
+
     fun generateReferenceData(
         code: String,
         description: String = "Description of $code",
@@ -195,4 +202,11 @@ object PersonGenerator {
         endDate: LocalDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Restriction(personId, LimitedAccessUser(username, IdGenerator.getAndIncrement()), endDate, id)
+
+    private fun generateDisposal(
+        personId: Long,
+        startDate: LocalDate,
+        active: Boolean,
+        softDeleted: Boolean
+    ) = Disposal(IdGenerator.getAndIncrement(), personId, startDate, active, softDeleted)
 }
