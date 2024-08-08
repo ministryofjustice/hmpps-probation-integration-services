@@ -45,7 +45,8 @@ fun CourtReport.toCourtReport() = CourtReportMinimal(
 fun Staff.toStaffHuman() = StaffHuman(
     forenames = listOfNotNull(forename, forename2).joinToString(" "),
     surname = surname,
-    code = code
+    code = code,
+    unallocated = isUnallocated()
 )
 
 fun ReportManager.toReportManager() = uk.gov.justice.digital.hmpps.api.model.conviction.ReportManager(

@@ -15,7 +15,9 @@ object DocumentEntityGenerator {
         institutionReportTypeId = INSTITUTIONAL_REPORT_TYPE.id,
         custodyId = 1,
         establishment = true,
-        dateRequested = LocalDate.of(2000, 1, 2)
+        dateRequested = LocalDate.of(2000, 1, 2),
+        dateRequired = LocalDate.of(2000, 1, 2),
+        dateCompleted = LocalDateTime.of(2000, 1, 2, 0, 0)
     )
 
     fun generateDocument(personId: Long, primaryKeyId: Long?, type: String, tableName: String?) =

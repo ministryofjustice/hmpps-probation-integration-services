@@ -11,6 +11,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.resource.ConvictionResource
+import uk.gov.justice.digital.hmpps.api.resource.DocumentResource
 import uk.gov.justice.digital.hmpps.api.resource.ProbationRecordResource
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -24,6 +25,7 @@ class CommunityApiController(
     private val featureFlags: FeatureFlags,
     private val communityApiService: CommunityApiService,
     private val convictionResource: ConvictionResource,
+    private val documentResource: DocumentResource,
     private val taskExecutor: ThreadPoolTaskExecutor,
     private val personRepository: PersonEventRepository,
     private val telemetryService: TelemetryService,
@@ -288,6 +290,27 @@ class CommunityApiController(
 
         if (featureFlags.enabled("ccd-conviction-by-id-sentence-status")) {
             return convictionResource.getConvictionSentenceStatus(crn, convictionId)
+        }
+        return proxy(request)
+    }
+
+    @GetMapping("/offenders/crn/{crn}/documents/grouped")
+    fun documentsGrouped(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @RequestParam(required = false) type: String?,
+        @RequestParam(required = false) subtype: String?
+    ): Any {
+
+        val params = mutableMapOf<String, String>()
+        type?.let { params["type"] = it }
+        subtype?.let { params["subtype"] = it }
+        sendComparisonReport(
+            params, Uri.DOCUMENTS_GROUPED, request
+        )
+
+        if (featureFlags.enabled("ccd-document-grouped")) {
+            return documentResource.getOffenderDocumentsGrouped(crn, type, subtype)
         }
         return proxy(request)
     }
