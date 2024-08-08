@@ -75,6 +75,7 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
+          ref: main
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Render project template
@@ -99,6 +100,7 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
+          ref: main
           path: hmpps-probation-integration-e2e-tests
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
           token: ${{ steps.app-token.outputs.token }}

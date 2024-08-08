@@ -5,8 +5,7 @@ inputs:
   add-paths:
     description: A newline-separated list of file paths to commit. Paths should follow git's pathspec syntax.
   body:
-    description: The body of the pull request. Defaults to "Automated changes by a GitHub Actions workflow." with a link to the current run.
-    default: default
+    description: The body of the pull request. Defaults to "Automated changes by a GitHub Actions workflow.", with a link to the current run.
   branch:
     description: The pull request target branch name.
   commit-message:
