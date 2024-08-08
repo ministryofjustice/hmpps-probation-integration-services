@@ -34,11 +34,6 @@ on:
         default: true
         required: true
         type: boolean
-      create_ingress:
-        description: Will the service provide a HTTP API?
-        default: false
-        required: true
-        type: boolean
       create_queue:
         description: Will the service consume HMPPS domain event messages?
         default: true
