@@ -46,15 +46,16 @@ runs:
         url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     - name: Git add
-      run: while IFS= read -r add_path; do git add "$add_path"; done <<< "$add_paths"
+      run: |
+        cd "$path"
+        while IFS= read -r add_path; do git add "$add_path"; done <<< "$add_paths"
       shell: bash
-      working-directory: ${{ env.path }}
       env:
         add_paths: ${{ inputs.add-paths }}
+        path: ${{ env.path }}
 
     - name: Commit and push
       uses: dsanders11/github-app-commit-action@5c7daabae956f8143277417996b26a173439e1b7 # v1.4.1
-      working-directory: ${{ env.path }}
       with:
         fail-on-no-changes: false
         message: ${{ inputs.commit-message }}
