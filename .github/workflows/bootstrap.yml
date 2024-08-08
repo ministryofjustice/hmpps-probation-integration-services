@@ -130,7 +130,7 @@ jobs:
           - [ ] Merge e2e tests pull request: ${{ steps.e2e-pr.outputs.pull-request-url }}' \
             --label bootstrap
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.github_app_token }}
+          GITHUB_TOKEN: ${{ github.token }}
 
   sentry-setup:
     runs-on: ubuntu-latest
@@ -344,7 +344,7 @@ jobs:
           - [ ] Merge the pull requests' \
             --label bootstrap
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ github.token }}
 
   infra-setup:
     runs-on: ubuntu-latest
@@ -431,4 +431,4 @@ jobs:
           - [ ] Merge the pull requests' \
             --label bootstrap
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ github.token }}
