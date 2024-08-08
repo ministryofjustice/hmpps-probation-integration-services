@@ -113,6 +113,9 @@
         <a href="./api-reference.html#secure-offenders-crn-crn-convictions-convictionid"><span>/secure/offenders/crn/{crn}/convictions/{convictionId}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#secure-offenders-crn-crn-convictions-convictionid-sentencestatus"><span>/secure/offenders/crn/{crn}/convictions/{convictionId}/sentenceStatus</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#secure-offenders-crn-crn-convictions-convictionid-requirements"><span>/secure/offenders/crn/{crn}/convictions/{convictionId}/requirements</span></a>
       </li>
       <li>
@@ -123,6 +126,12 @@
       </li>
       <li>
         <a href="./api-reference.html#secure-offenders-crn-crn-convictions-convictionid-nsis-nsiid"><span>/secure/offenders/crn/{crn}/convictions/{convictionId}/nsis/{nsiId}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#secure-offenders-crn-crn-convictions-convictionid-licenceconditions"><span>/secure/offenders/crn/{crn}/convictions/{convictionId}/licenceConditions</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#secure-offenders-crn-crn-convictions-convictionid-courtreports"><span>/secure/offenders/crn/{crn}/convictions/{convictionId}/courtReports</span></a>
       </li>
       <li>
         <a href="./api-reference.html#secure-offenders-crn-crn-convictions-convictionid-courtappearances"><span>/secure/offenders/crn/{crn}/convictions/{convictionId}/courtAppearances</span></a>
@@ -152,6 +161,9 @@
         <a href="./api-reference.html#probation-case-crn-convictions-convictionid"><span>/probation-case/{crn}/convictions/{convictionId}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-case-crn-convictions-convictionid-sentencestatus"><span>/probation-case/{crn}/convictions/{convictionId}/sentenceStatus</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-case-crn-convictions-convictionid-requirements"><span>/probation-case/{crn}/convictions/{convictionId}/requirements</span></a>
       </li>
       <li>
@@ -162,6 +174,12 @@
       </li>
       <li>
         <a href="./api-reference.html#probation-case-crn-convictions-convictionid-nsis-nsiid"><span>/probation-case/{crn}/convictions/{convictionId}/nsis/{nsiId}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crn-convictions-convictionid-licenceconditions"><span>/probation-case/{crn}/convictions/{convictionId}/licenceConditions</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crn-convictions-convictionid-courtreports"><span>/probation-case/{crn}/convictions/{convictionId}/courtReports</span></a>
       </li>
       <li>
         <a href="./api-reference.html#probation-case-crn-convictions-convictionid-courtappearances"><span>/probation-case/{crn}/convictions/{convictionId}/courtAppearances</span></a>
@@ -527,6 +545,75 @@
 
 
 
+<h2 id="secure-offenders-crn-crn-convictions-convictionid-sentencestatus">/secure/offenders/crn/{crn}/convictions/{convictionId}/sentenceStatus</h2>
+
+<h3 id="secure-offenders-crn-crn-convictions-convictionid-sentencestatus-get">get</h3>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-convictions-convictionid-sentencestatus-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-convictions-convictionid-sentencestatus-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="secure-offenders-crn-crn-convictions-convictionid-requirements">/secure/offenders/crn/{crn}/convictions/{convictionId}/requirements</h2>
 
 <h3 id="secure-offenders-crn-crn-convictions-convictionid-requirements-get">get</h3>
@@ -815,6 +902,144 @@
 
 
 <h4 id="secure-offenders-crn-crn-convictions-convictionid-nsis-nsiid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="secure-offenders-crn-crn-convictions-convictionid-licenceconditions">/secure/offenders/crn/{crn}/convictions/{convictionId}/licenceConditions</h2>
+
+<h3 id="secure-offenders-crn-crn-convictions-convictionid-licenceconditions-get">get</h3>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-convictions-convictionid-licenceconditions-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-convictions-convictionid-licenceconditions-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="secure-offenders-crn-crn-convictions-convictionid-courtreports">/secure/offenders/crn/{crn}/convictions/{convictionId}/courtReports</h2>
+
+<h3 id="secure-offenders-crn-crn-convictions-convictionid-courtreports-get">get</h3>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-convictions-convictionid-courtreports-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-convictions-convictionid-courtreports-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -1689,6 +1914,94 @@
 </td>
 <td>
 <a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-convictions-convictionid-sentencestatus">/probation-case/{crn}/convictions/{convictionId}/sentenceStatus</h2>
+
+<h3 id="probation-case-crn-convictions-convictionid-sentencestatus-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-sentencestatus-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-sentencestatus-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "sentenceId": "integer",
+  "custodialType": {
+    "code": "string",
+    "description": "string"
+  },
+  "sentence": {
+    "code": "string",
+    "description": "string"
+  },
+  "mainOffence": {
+    "code": "string",
+    "description": "string"
+  },
+  "sentenceDate": "string",
+  "actualReleaseDate": "string",
+  "licenceExpiryDate": "string",
+  "pssEndDate": "string",
+  "length": "integer",
+  "lengthUnit": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-sentencestatus'>SentenceStatus</a>
 </td>
 </tr>
 
@@ -2656,6 +2969,164 @@
 </td>
 <td>
 <a href='#schema-nsi'>Nsi</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-convictions-convictionid-licenceconditions">/probation-case/{crn}/convictions/{convictionId}/licenceConditions</h2>
+
+<h3 id="probation-case-crn-convictions-convictionid-licenceconditions-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-licenceconditions-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-licenceconditions-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "licenceConditions": [
+    {
+      "licenceConditionNotes": "string",
+      "startDate": "string",
+      "commencementDate": "string",
+      "commencementNotes": "string",
+      "terminationDate": "string",
+      "terminationNotes": "string",
+      "createdDateTime": "string",
+      "active": "boolean",
+      "licenceConditionTypeMainCat": {
+        "code": "string",
+        "description": "string"
+      },
+      "licenceConditionTypeSubCat": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-licenceconditions'>LicenceConditions</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-convictions-convictionid-courtreports">/probation-case/{crn}/convictions/{convictionId}/courtReports</h2>
+
+<h3 id="probation-case-crn-convictions-convictionid-courtreports-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-courtreports-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>convictionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-convictions-convictionid-courtreports-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
 </td>
 </tr>
 
@@ -3688,7 +4159,7 @@
 <tr>
 <td>code</td>
 <td>string</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -5850,6 +6321,118 @@
 </tbody>
 </table>
 
+<h3 id="schema-sentencestatus">SentenceStatus</h3>
+
+
+<table class='schema-sentencestatus'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>sentenceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>custodialType</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>sentenceDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>actualReleaseDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>licenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pssEndDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthUnit</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-convictionrequirements">ConvictionRequirements</h3>
 
 
@@ -6906,6 +7489,346 @@
 </tbody>
 </table>
 
+<h3 id="schema-licencecondition">LicenceCondition</h3>
+
+
+<table class='schema-licencecondition'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>licenceConditionNotes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>commencementDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>commencementNotes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationNotes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdDateTime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>licenceConditionTypeMainCat</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>licenceConditionTypeSubCat</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-licenceconditions">LicenceConditions</h3>
+
+
+<table class='schema-licenceconditions'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>licenceConditions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-licencecondition'>LicenceCondition</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-courtreportminimal">CourtReportMinimal</h3>
+
+
+<table class='schema-courtreportminimal'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>courtReportId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>requestedDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>requiredDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>allocationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>completedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentToCourtDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>receivedByCourtDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>courtReportType</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>reportManagers</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-reportmanager'>ReportManager</a>
+</td>
+</tr>
+
+<tr>
+<td>deliveredCourtReportType</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-reportmanager">ReportManager</h3>
+
+
+<table class='schema-reportmanager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffhuman'>StaffHuman</a>
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffhuman">StaffHuman</h3>
+
+
+<table class='schema-staffhuman'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>forenames</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unallocated</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-courtappearancebasicwrapper">CourtAppearanceBasicWrapper</h3>
 
 
@@ -7732,58 +8655,6 @@
 <td></td>
 <td>
   <a href='#schema-keyvalue'>KeyValue</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-staffhuman">StaffHuman</h3>
-
-
-<table class='schema-staffhuman'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>forenames</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>unallocated</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 

@@ -116,6 +116,30 @@ paths:
             application/json:
               schema:
                 type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/sentenceStatus:
+    get:
+      tags:
+      - community-api-controller
+      operationId: convictionByIdSentenceStatus
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /secure/offenders/crn/{crn}/convictions/{convictionId}/requirements:
     get:
       tags:
@@ -225,6 +249,54 @@ paths:
           type: integer
           format: int64
       - name: nsiId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/licenceConditions:
+    get:
+      tags:
+      - community-api-controller
+      operationId: convictionByIdLicenceConditions
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/convictions/{convictionId}/courtReports:
+    get:
+      tags:
+      - community-api-controller
+      operationId: convictionByIdCourtReports
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
         in: path
         required: true
         schema:
@@ -425,6 +497,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Conviction"
+  /probation-case/{crn}/convictions/{convictionId}/sentenceStatus:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getConvictionSentenceStatus
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SentenceStatus"
   /probation-case/{crn}/convictions/{convictionId}/requirements:
     get:
       tags:
@@ -558,6 +654,56 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Nsi"
+  /probation-case/{crn}/convictions/{convictionId}/licenceConditions:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getConvictionLicenceConditions
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenceConditions"
+  /probation-case/{crn}/convictions/{convictionId}/courtReports:
+    get:
+      tags:
+      - conviction-resource
+      operationId: getConvictionCourtReports
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: convictionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CourtReportMinimal"
   /probation-case/{crn}/convictions/{convictionId}/courtAppearances:
     get:
       tags:
@@ -815,7 +961,6 @@ components:
           format: date
     KeyValue:
       required:
-      - code
       - description
       type: object
       properties:
@@ -1453,6 +1598,40 @@ components:
           $ref: "#/components/schemas/Appointments"
         status:
           type: string
+    SentenceStatus:
+      required:
+      - custodialType
+      - lengthUnit
+      - sentence
+      - sentenceId
+      type: object
+      properties:
+        sentenceId:
+          type: integer
+          format: int64
+        custodialType:
+          $ref: "#/components/schemas/KeyValue"
+        sentence:
+          $ref: "#/components/schemas/KeyValue"
+        mainOffence:
+          $ref: "#/components/schemas/KeyValue"
+        sentenceDate:
+          type: string
+          format: date
+        actualReleaseDate:
+          type: string
+          format: date
+        licenceExpiryDate:
+          type: string
+          format: date
+        pssEndDate:
+          type: string
+          format: date
+        length:
+          type: integer
+          format: int64
+        lengthUnit:
+          type: string
     ConvictionRequirements:
       required:
       - requirements
@@ -1774,6 +1953,111 @@ components:
           type: string
           format: date
       description: all teams related to this staff member
+    LicenceCondition:
+      required:
+      - active
+      - createdDateTime
+      - startDate
+      type: object
+      properties:
+        licenceConditionNotes:
+          type: string
+        startDate:
+          type: string
+          format: date
+        commencementDate:
+          type: string
+          format: date
+        commencementNotes:
+          type: string
+        terminationDate:
+          type: string
+          format: date
+        terminationNotes:
+          type: string
+        createdDateTime:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        licenceConditionTypeMainCat:
+          $ref: "#/components/schemas/KeyValue"
+        licenceConditionTypeSubCat:
+          $ref: "#/components/schemas/KeyValue"
+    LicenceConditions:
+      required:
+      - licenceConditions
+      type: object
+      properties:
+        licenceConditions:
+          type: array
+          items:
+            $ref: "#/components/schemas/LicenceCondition"
+    CourtReportMinimal:
+      required:
+      - courtReportId
+      - offenderId
+      - reportManagers
+      - requestedDate
+      - requiredDate
+      type: object
+      properties:
+        courtReportId:
+          type: integer
+          format: int64
+        offenderId:
+          type: integer
+          format: int64
+        requestedDate:
+          type: string
+          format: date-time
+        requiredDate:
+          type: string
+          format: date-time
+        allocationDate:
+          type: string
+          format: date-time
+        completedDate:
+          type: string
+          format: date-time
+        sentToCourtDate:
+          type: string
+          format: date-time
+        receivedByCourtDate:
+          type: string
+          format: date-time
+        courtReportType:
+          $ref: "#/components/schemas/KeyValue"
+        reportManagers:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportManager"
+        deliveredCourtReportType:
+          $ref: "#/components/schemas/KeyValue"
+    ReportManager:
+      required:
+      - active
+      type: object
+      properties:
+        staff:
+          $ref: "#/components/schemas/StaffHuman"
+        active:
+          type: boolean
+    StaffHuman:
+      required:
+      - code
+      - forenames
+      - surname
+      type: object
+      properties:
+        code:
+          type: string
+        forenames:
+          type: string
+        surname:
+          type: string
+        unallocated:
+          type: boolean
     CourtAppearanceBasicWrapper:
       required:
       - courtAppearances
@@ -2012,22 +2296,6 @@ components:
           type: boolean
         allocationReason:
           $ref: "#/components/schemas/KeyValue"
-    StaffHuman:
-      required:
-      - code
-      - forenames
-      - surname
-      - unallocated
-      type: object
-      properties:
-        code:
-          type: string
-        forenames:
-          type: string
-        surname:
-          type: string
-        unallocated:
-          type: boolean
     CommunityOrPrisonOffenderManager:
       required:
       - isPrisonOffenderManager
