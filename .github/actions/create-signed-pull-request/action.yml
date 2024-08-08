@@ -46,7 +46,6 @@ runs:
 
     - name: Git add
       run: |
-        cd "$path"
         git checkout -b "$branch"
         while IFS= read -r add_path; do 
           if [ -n "$add_path" ]; then
@@ -61,8 +60,9 @@ runs:
         path: ${{ env.path }}
 
     - name: Commit and push
-      uses: dsanders11/github-app-commit-action@5c7daabae956f8143277417996b26a173439e1b7 # v1.4.1
+      uses: marcus-bcl/github-app-commit-action@main
       with:
+        working-directory: ${{ env.path }}
         fail-on-no-changes: false
         message: ${{ inputs.commit-message }}
         token: ${{ inputs.token }}
