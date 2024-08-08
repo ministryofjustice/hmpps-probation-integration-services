@@ -93,7 +93,7 @@ class CommunityApiService(
 
         val comApiJsonString = proxy(comApiUri, headers.toMutableMap()).body!!
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
-        val comApiJson = Json.createReader(StringReader(comApiJsonString)).readValue() as JsonStructure
+        val comApiJson = Json.createReader(StringReader(String(comApiJsonString))).readValue() as JsonStructure
         val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)
         val results = diff.toDiffReport(ccdJson, showValues)
 
@@ -107,7 +107,7 @@ class CommunityApiService(
         )
     }
 
-    fun proxy(requestUri: String, headers: MutableMap<String, String>): ResponseEntity<String> {
+    fun proxy(requestUri: String, headers: MutableMap<String, String>): ResponseEntity<ByteArray> {
 
         return try {
             val resp = communityApiClient.proxy(URI.create(communityApiUrl + requestUri), headers)
@@ -117,7 +117,7 @@ class CommunityApiService(
             CommunityApiController.log.error("Exception thrown when calling ${communityApiUrl + requestUri}. community-api returned ${ex.message}")
             ResponseEntity.status(ex.statusCode)
                 .headers(ex.responseHeaders)
-                .body(ex.responseBodyAsString)
+                .body(ex.responseBodyAsByteArray)
         }
     }
 }
