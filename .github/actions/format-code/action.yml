@@ -93,7 +93,7 @@ runs:
 
     - name: Commit and push
       if: inputs.dry == 'false'
-      uses: dsanders11/github-app-commit-action@48d2ff8c1a855eb15d16afa97ae12616456d7cbc # v1.4.0
+      uses: dsanders11/github-app-commit-action@5c7daabae956f8143277417996b26a173439e1b7 # v1.4.1
       with:
         fail-on-no-changes: false
         message: ${{ inputs.commit_message }}
