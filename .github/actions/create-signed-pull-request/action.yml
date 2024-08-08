@@ -54,6 +54,7 @@ runs:
           fi
         done <<< "$add_paths"
       shell: bash
+      working-directory: ${{ env.path }}
       env:
         branch: ${{ inputs.branch }}
         add_paths: ${{ inputs.add-paths }}
@@ -71,6 +72,7 @@ runs:
     - name: Create pull request
       id: pr
       run: |
+        git checkout "$branch"
         url=$(gh pr create --title "$commit_message" --body "$body" --label "$labels")
         echo "pull-request-url=$url" | tee -a "$GITHUB_OUTPUT"
         echo "pull-request-number=$(gh pr view "$url" --json number --jq .number)" | tee -a "$GITHUB_OUTPUT"
@@ -78,6 +80,7 @@ runs:
       shell: bash
       working-directory: ${{ env.path }}
       env:
+        branch: ${{ inputs.branch }}
         body: ${{ env.body }}
         commit_message: ${{ inputs.commit-message }}
         labels: ${{ inputs.labels }}
