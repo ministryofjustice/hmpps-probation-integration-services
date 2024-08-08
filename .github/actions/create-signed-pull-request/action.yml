@@ -48,7 +48,12 @@ runs:
     - name: Git add
       run: |
         cd "$path"
-        while IFS= read -r add_path; do echo Adding "$add_path"; git add "$add_path"; done <<< "$add_paths"
+        while IFS= read -r add_path; do 
+          if [ -n "$add_path" ]; then
+            echo Adding "$add_path"
+            git add "$add_path"
+          fi
+        done <<< "$add_paths"
       shell: bash
       env:
         add_paths: ${{ inputs.add-paths }}
