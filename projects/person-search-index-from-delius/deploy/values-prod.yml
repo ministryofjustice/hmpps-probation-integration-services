@@ -1,7 +1,9 @@
 enabled: false # Temporarily disabled while NDST team test the new synonym list
 
 generic-service:
+  replicaCount: 3
   ingress:
+    className: production-only
     host: person-search-index-from-delius.hmpps.service.justice.gov.uk
 
   env:
