@@ -84,19 +84,19 @@ jobs:
           project_name: ${{ inputs.project_name }}
           project_template: ${{ inputs.project_template }}
 
-      - name: Create pull request
-        id: pr
-        uses: ./.github/actions/create-signed-pull-request
-        with:
-          add-paths: |
-            settings.gradle.kts
-            .github/workflows
-            .idea/runConfigurations
-            doc/tech-docs
-            projects/${{ inputs.project_name }}
-          branch: bootstrap/${{ inputs.project_name }}
-          commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
-          token: ${{ steps.app-token.outputs.token }}
+      #      - name: Create pull request
+      #        id: pr
+      #        uses: ./.github/actions/create-signed-pull-request
+      #        with:
+      #          add-paths: |
+      #            settings.gradle.kts
+      #            .github/workflows
+      #            .idea/runConfigurations
+      #            doc/tech-docs
+      #            projects/${{ inputs.project_name }}
+      #          branch: bootstrap/${{ inputs.project_name }}
+      #          commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
+      #          token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/checkout@v4
         with:
