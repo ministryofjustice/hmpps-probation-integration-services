@@ -39,7 +39,7 @@ runs:
         path: ${{ inputs.path }}
 
     - name: Get pull request body or default
-      run: echo "body=${body:-Automated changes by a [GitHub Actions workflow]($url)." | tee -a "$GITHUB_ENV"
+      run: echo "body=${body:-"Automated changes by a [GitHub Actions workflow]($url)."}" | tee -a "$GITHUB_ENV"
       shell: bash
       env:
         body: ${{ inputs.body }}
@@ -48,7 +48,7 @@ runs:
     - name: Git add
       run: |
         cd "$path"
-        while IFS= read -r add_path; do git add "$add_path"; done <<< "$add_paths"
+        while IFS= read -r add_path; do echo Adding "$add_path"; git add "$add_path"; done <<< "$add_paths"
       shell: bash
       env:
         add_paths: ${{ inputs.add-paths }}
