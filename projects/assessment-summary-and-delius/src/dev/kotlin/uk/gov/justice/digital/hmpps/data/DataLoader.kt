@@ -46,13 +46,13 @@ class DataLoader(
         PersonGenerator.NO_RISK.withEvent().withRisk(Risk.M, Risk.L)
         PersonGenerator.LOW_RISK
             .withEvent()
-            .withRisk(Risk.H)
+            .withRisk(Risk.M, Risk.H)
             .withAssessment("10096930")
             .withAccreditedProgramRequirement()
         PersonGenerator.MEDIUM_RISK.withEvent().withRisk(Risk.M)
         PersonGenerator.HIGH_RISK.withEvent().withRisk(Risk.L, Risk.H)
         PersonGenerator.VERY_HIGH_RISK.withEvent().withRisk(Risk.L, Risk.M, Risk.H)
-        PersonGenerator.PERSON_NO_EVENT
+        saveAll(PersonGenerator.PERSON_NO_EVENT)
         PersonGenerator.PERSON_SOFT_DELETED_EVENT.withEvent(softDeleted = true).withRisk(Risk.L, Risk.M, Risk.H)
         PersonGenerator.PRISON_ASSESSMENT.withEvent(custodial = true)
     }

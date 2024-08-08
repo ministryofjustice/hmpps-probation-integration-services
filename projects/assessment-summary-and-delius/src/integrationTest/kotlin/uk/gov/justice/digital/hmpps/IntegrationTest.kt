@@ -4,8 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.core.IsEqual.equalTo
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
@@ -78,7 +76,20 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `a new assessment is created and existing registrations are deregistered`() {
+    fun `contact date is set to current date when flag is off`() {
+        whenever(featureFlags.enabled("assessment-summary-contact-date")).thenReturn(false)
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.NO_RISK.crn}")
+        channelManager.getChannel(queueName).publishAndWait(prepNotification(message, wireMockServer.port()))
+
+        val person = personRepository.getByCrn(PersonGenerator.NO_RISK.crn)
+
+        val contact = contactRepository.findAll()
+            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT.value }
+        assertThat(contact.date, equalTo(LocalDate.now()))
+    }
+
+    @Test
+    fun `assessment with no risk information does not change registrations, but does add assessment and contact`() {
         val message = notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.NO_RISK.crn}")
         val prevRegs =
             registrationRepository.findByPersonIdAndTypeFlagCode(
@@ -86,15 +97,18 @@ internal class IntegrationTest {
                 ReferenceDataGenerator.DEFAULT_FLAG.code
             )
         assertThat(prevRegs.size, equalTo(2))
+        val prevRiskColour = personRepository.getByCrn(PersonGenerator.NO_RISK.crn).highestRiskColour
+        assertThat(prevRiskColour, equalTo("Green"))
 
         channelManager.getChannel(queueName).publishAndWait(prepNotification(message, wireMockServer.port()))
 
         val person = personRepository.getByCrn(PersonGenerator.NO_RISK.crn)
-        assertNull(person.highestRiskColour)
+        assertThat(person.highestRiskColour, equalTo(prevRiskColour))
 
         val registrations =
             registrationRepository.findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.DEFAULT_FLAG.code)
-        assertTrue(registrations.isEmpty())
+        assertThat(registrations.size, equalTo(2))
+        assertThat(registrations.map { it.id }, equalTo(prevRegs.map { it.id }))
 
         val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
         assertThat(assessment?.court?.code, equalTo("CRT150"))
@@ -112,27 +126,15 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `contact date is set to current date when flag is off`() {
-        whenever(featureFlags.enabled("assessment-summary-contact-date")).thenReturn(false)
-        val message = notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.NO_RISK.crn}")
-        channelManager.getChannel(queueName).publishAndWait(prepNotification(message, wireMockServer.port()))
-
-        val person = personRepository.getByCrn(PersonGenerator.NO_RISK.crn)
-
-        val contact = contactRepository.findAll()
-            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT.value }
-        assertThat(contact.date, equalTo(LocalDate.now()))
-    }
-
-    @Test
-    fun `an existing assessment is replaced, a new registration added and iaps is notified`() {
+    fun `an existing assessment is replaced, a new registration is added, existing registrations are deregistered, and iaps is notified`() {
         val message = notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.LOW_RISK.crn}")
         val prevRegs =
             registrationRepository.findByPersonIdAndTypeFlagCode(
                 PersonGenerator.LOW_RISK.id,
                 ReferenceDataGenerator.DEFAULT_FLAG.code
             )
-        assertThat(prevRegs.size, equalTo(1))
+        assertThat(prevRegs.size, equalTo(2))
+        assertThat(prevRegs.map { it.type.code }, equalTo(listOf(Risk.M.code, Risk.H.code)))
 
         channelManager.getChannel(queueName)
             .publishAndWait(prepNotification(message, wireMockServer.port()))
@@ -144,7 +146,7 @@ internal class IntegrationTest {
             registrationRepository.findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.DEFAULT_FLAG.code)
         assertThat(registrations.size, equalTo(1))
         val reg = registrations.first()
-        assertThat(reg.type.code, equalTo(RegistrationGenerator.TYPES[Risk.L.code]?.code))
+        assertThat(reg.type.code, equalTo(Risk.L.code))
 
         val assessment = oasysAssessmentRepository.findByOasysId("10096930")
         assertThat(assessment?.court?.code, equalTo("CRT150"))
@@ -242,21 +244,6 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `an assessment without a cmsEventNumber is logged and ignored`() {
-        val message =
-            notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.PERSON_NO_EVENT.crn}")
-
-        channelManager.getChannel(queueName)
-            .publishAndWait(prepNotification(message, wireMockServer.port()))
-
-        verify(telemetryService, timeout(5000)).trackEvent(
-            eq("AssessmentSummaryFailureReport"),
-            anyMap(),
-            anyMap()
-        )
-    }
-
-    @Test
     fun `an assessment with a cmsEventNumber that is soft deleted is logged and ignored`() {
         val message =
             notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.PERSON_SOFT_DELETED_EVENT.crn}")
@@ -292,12 +279,28 @@ internal class IntegrationTest {
 
     @Test
     fun `event number is inferred for prison assessments`() {
-        val message = notification<HmppsDomainEvent>("assessment-summary-produced-O123456")
+        val message =
+            notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.PRISON_ASSESSMENT.crn}")
 
         channelManager.getChannel(queueName).publishAndWait(prepNotification(message, wireMockServer.port()))
 
         verify(telemetryService, timeout(5000)).trackEvent(eq("AssessmentSummarySuccess"), anyMap(), anyMap())
         val assessment = oasysAssessmentRepository.findByOasysId("10069391")
         assertThat(assessment?.eventNumber, equalTo("1"))
+    }
+
+    @Test
+    fun `an assessment without a cmsEventNumber for a person without a matching event is logged and ignored`() {
+        val message =
+            notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.PERSON_NO_EVENT.crn}")
+
+        channelManager.getChannel(queueName)
+            .publishAndWait(prepNotification(message, wireMockServer.port()))
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummaryFailureReport"),
+            check { assertThat(it["reason"], Matchers.equalTo("No single active custodial event")) },
+            anyMap()
+        )
     }
 }
