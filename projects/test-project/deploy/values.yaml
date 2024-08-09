@@ -1,0 +1,29 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: test-project
+  serviceAccountName: test-project
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/test-project
+
+  ingress:
+    tlsSecretName: test-project-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    test-project-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    test-project-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    test-project-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    test-project-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: test-project
+

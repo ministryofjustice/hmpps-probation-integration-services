@@ -37,6 +37,7 @@ on:
           - prison-identifier-and-delius-queue
           - assessment-summary-and-delius-queue
           - cas2-and-delius-queue
+          - test-project-queue
           # ^ add new queues here
 
 jobs:
