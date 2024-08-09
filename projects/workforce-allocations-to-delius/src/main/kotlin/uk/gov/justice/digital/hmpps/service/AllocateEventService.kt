@@ -139,8 +139,8 @@ class AllocateEventService(
                 teamId = orderManager.team.id,
                 staffId = spoStaff?.id ?: orderManager.staff.id,
                 providerId = orderManager.provider.id,
-                notes = allocationDetail.notes,
-                isSensitive = allocationDetail.sensitive ?: true
+                notes = allocationDetail.spoOversightNotes,
+                isSensitive = allocationDetail.sensitiveOversightNotes ?: true
             )
         )
     }

@@ -37,9 +37,11 @@ sealed interface AllocationDetail {
         override val code: String = "INT",
         @JsonAlias("allocationJustificationNotes")
         val notes: String?,
+        val spoOversightNotes: String?,
         val spoStaffCode: String?,
         @JsonAlias("sensitiveNotes")
-        val sensitive: Boolean?
+        val sensitive: Boolean?,
+        val sensitiveOversightNotes: Boolean?,
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
