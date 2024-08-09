@@ -26,7 +26,7 @@ class RegistrationService(
 
 fun Registration.toRegistration() = uk.gov.justice.digital.hmpps.api.model.Registration(
     offenderId = person.id,
-    register = type.flag?.let { KeyValue(it.code, it.description) },
+    register = type.flag.let { KeyValue(it.code, it.description) },
     type = KeyValue(type.code, type.description),
     riskColour = type.colour,
     startDate = date,

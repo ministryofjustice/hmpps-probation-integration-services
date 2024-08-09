@@ -23,7 +23,7 @@ internal class RegistrationsIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
-    fun `get registrations by CRN with inactive only set to false`() {
+    fun `get registrations by CRN with active only set to false`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
         val response = mockMvc
@@ -31,14 +31,14 @@ internal class RegistrationsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Registrations>()
 
-        assertThat(response.registrations.size, equalTo(2))
+        assertThat(response.registrations.size, equalTo(3))
         assertThat(response.registrations[0].active, equalTo(true))
         assertThat(response.registrations[1].active, equalTo(false))
         assertThat(response.registrations[0].endDate, equalTo(DEREG_2.deRegistrationDate))
     }
 
     @Test
-    fun `get registrations by CRN with inactive only set to true`() {
+    fun `get registrations by CRN with active only set to true`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
 
         val response = mockMvc
@@ -46,7 +46,7 @@ internal class RegistrationsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Registrations>()
 
-        assertThat(response.registrations.size, equalTo(1))
+        assertThat(response.registrations.size, equalTo(2))
         assertThat(response.registrations[0].active, equalTo(true))
     }
 }

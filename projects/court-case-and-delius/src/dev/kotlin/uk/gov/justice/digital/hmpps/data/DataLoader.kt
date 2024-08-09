@@ -267,6 +267,7 @@ class DataLoader(
             RegistrationsGenerator.REG_TYPE,
             RegistrationsGenerator.ACTIVE_REG,
             RegistrationsGenerator.INACTIVE_REG,
+            RegistrationsGenerator.REG_NO_DEREG,
             RegistrationsGenerator.DEREG_1,
             RegistrationsGenerator.DEREG_2,
             RegistrationsGenerator.DEREG_3,

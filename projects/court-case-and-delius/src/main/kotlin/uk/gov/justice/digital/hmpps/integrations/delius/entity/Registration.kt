@@ -87,7 +87,7 @@ class RegisterType(
 
     @ManyToOne
     @JoinColumn(name = "register_type_flag_id")
-    val flag: ReferenceData?,
+    val flag: ReferenceData,
 
     @Convert(converter = YesNoConverter::class)
     val alertMessage: Boolean,

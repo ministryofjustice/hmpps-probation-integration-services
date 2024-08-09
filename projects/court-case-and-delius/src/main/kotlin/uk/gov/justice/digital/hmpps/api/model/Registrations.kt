@@ -27,15 +27,5 @@ data class Registration(
     val deregisteringOfficer: StaffHuman? = null,
     val deregisteringProbationArea: KeyValue? = null,
     val deregisteringNotes: String? = null,
-    val numberOfPreviousDeregistrations: Int = 0,
-    val registrationReviews: List<RegistrationReview>? = null
-)
-
-data class RegistrationReview(
-    val reviewDate: LocalDate? = null,
-    val reviewDateDue: LocalDate? = null,
-    val notes: String? = null,
-    val reviewingTeam: KeyValue? = null,
-    val reviewingOfficer: StaffHuman? = null,
-    val completed: Boolean = false
+    val numberOfPreviousDeregistrations: Int = 0
 )

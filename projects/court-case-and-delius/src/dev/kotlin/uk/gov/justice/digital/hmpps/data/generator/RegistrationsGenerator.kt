@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.REG_LE
 import uk.gov.justice.digital.hmpps.integration.delius.registration.entity.DeRegistration
 import uk.gov.justice.digital.hmpps.integration.delius.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integration.delius.registration.entity.Registration
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -20,6 +21,8 @@ object RegistrationsGenerator {
 
     val ACTIVE_REG = generateRegistrations(CURRENTLY_MANAGED, false)
     val INACTIVE_REG = generateRegistrations(CURRENTLY_MANAGED, true)
+
+    val REG_NO_DEREG = generateRegistrations(CURRENTLY_MANAGED, false, level = null, category = null)
 
     val DEREG_1 = generateDeregistration(
         ACTIVE_REG,
@@ -51,11 +54,16 @@ object RegistrationsGenerator {
         createdDateTime = LocalDate.now().minusDays(1).atTime(14, 0)
     )
 
-    fun generateRegistrations(person: Person, deRegistered: Boolean) = Registration(
+    fun generateRegistrations(
+        person: Person,
+        deRegistered: Boolean,
+        category: ReferenceData? = REG_CATEGORY,
+        level: ReferenceData? = REG_LEVEL
+    ) = Registration(
         id = IdGenerator.getAndIncrement(),
         person = person,
-        category = REG_CATEGORY,
-        level = REG_LEVEL,
+        category = category,
+        level = level,
         type = REG_TYPE,
         date = LocalDate.now().minusDays(2),
         reviewDate = LocalDate.now().minusDays(1),
