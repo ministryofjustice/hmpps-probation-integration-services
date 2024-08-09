@@ -46,6 +46,7 @@ runs:
 
     - name: Git add
       run: |
+        git pull
         git checkout -b "$branch"
         while IFS= read -r add_path; do 
           if [ -n "$add_path" ]; then
@@ -54,6 +55,7 @@ runs:
           fi
         done <<< "$add_paths"
         git status
+        git log -1 --format=%T HEAD
       shell: bash
       working-directory: ${{ env.path }}
       env:
