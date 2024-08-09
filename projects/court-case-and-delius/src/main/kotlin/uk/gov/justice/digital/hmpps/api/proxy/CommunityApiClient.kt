@@ -7,6 +7,5 @@ import java.net.URI
 
 interface CommunityApiClient {
     @HttpExchange(method = "GET", contentType = "application/json; charset=utf-8")
-    fun proxy(url: URI, @RequestHeader headers: Map<String, String>): ResponseEntity<String>
+    fun proxy(url: URI, @RequestHeader headers: Map<String, String>): ResponseEntity<ByteArray>
 }
-

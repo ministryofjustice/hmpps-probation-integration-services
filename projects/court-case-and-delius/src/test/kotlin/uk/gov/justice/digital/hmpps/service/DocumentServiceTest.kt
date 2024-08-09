@@ -11,6 +11,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.DocumentFilter
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
@@ -28,6 +29,9 @@ class DocumentServiceTest {
 
     @Mock
     lateinit var documentRepository: DocumentRepository
+
+    @Mock
+    lateinit var alfrescoClient: AlfrescoClient
 
     @InjectMocks
     lateinit var documentService: DocumentService

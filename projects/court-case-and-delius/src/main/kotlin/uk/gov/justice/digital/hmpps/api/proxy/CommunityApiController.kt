@@ -6,7 +6,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpHeaders
-import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -315,8 +314,21 @@ class CommunityApiController(
         return proxy(request)
     }
 
+    @GetMapping("/offenders/crn/{crn}/documents/{documentId}")
+    fun downloadDocument(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable documentId: String
+    ): Any {
+
+        if (featureFlags.enabled("ccd-download-document")) {
+            return documentResource.getOffenderDocumentById(crn, documentId)
+        }
+        return proxy(request)
+    }
+
     @GetMapping("/**")
-    fun proxy(request: HttpServletRequest): ResponseEntity<String> {
+    fun proxy(request: HttpServletRequest): Any {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
         val fullUri =
             if (request.queryString != null) request.requestURI + '?' + request.queryString else request.requestURI

@@ -114,6 +114,9 @@ fun Document.typeCode(): String = when (tableName) {
 
 interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
 
+    @Query("select d.name from DocumentEntity d where d.personId = :personId and d.alfrescoId = :alfrescoId")
+    fun findNameByPersonIdAndAlfrescoId(personId: Long, alfrescoId: String): String?
+
     @Query(
         """
             select d from DocumentEntity d 
