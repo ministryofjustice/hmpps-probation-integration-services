@@ -244,7 +244,8 @@ class DataLoader(
                 PersonGenerator.CURRENTLY_MANAGED.id,
                 currentEvent.id,
                 DocumentType.CONVICTION_DOCUMENT.name,
-                "EVENT"
+                "EVENT",
+                alfrescoId = "alfrescoId"
             )
         )
 
