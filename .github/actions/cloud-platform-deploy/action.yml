@@ -26,6 +26,9 @@ inputs:
   token:
     description: The KUBE_TOKEN
     required: true
+  ip-allowlists:
+    description: The HMPPS IP allow list groups to apply, in base64-encoded YAML format
+    required: true
 
 runs:
   using: composite
@@ -79,7 +82,7 @@ runs:
             --set "generic-service.env.BUILD_INFO=$([ -r "$BUILD_INFO" ] && cat "$BUILD_INFO" | base64 -w0 || echo)" \
             --set "generic-service.env.GIT_INFO=$([ -r "$GIT_INFO" ] && cat "$GIT_INFO" | base64 -w0 || echo)" \
             --timeout 10m \
-            --values <(echo "$HMPPS_IP_ALLOWLIST_GROUPS_YAML" | base64 -d) \
+            --values <(echo "$IP_ALLOWLISTS" | base64 -d) \
             --values templates/helm-defaults.yml \
             --values 'projects/${{ inputs.project }}/deploy/values.yaml' \
             --values 'projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }}' \
@@ -95,5 +98,5 @@ runs:
       env:
         BUILD_INFO: projects/${{ inputs.project }}/build-info.properties
         GIT_INFO: projects/${{ inputs.project }}/git.properties
-        HMPPS_IP_ALLOWLIST_GROUPS_YAML: ${{ vars.HMPPS_IP_ALLOWLIST_GROUPS_YAML }}
+        IP_ALLOWLISTS: ${{ inputs.ip-allowlists }}
         MAX_ATTEMPTS: '3'
