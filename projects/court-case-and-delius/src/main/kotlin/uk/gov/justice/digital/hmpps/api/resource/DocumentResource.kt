@@ -16,4 +16,10 @@ class DocumentResource(private val documentService: DocumentService) {
         @RequestParam(required = false) type: String?,
         @RequestParam(required = false) subType: String?,
     ) = documentService.getDocumentsGroupedFor(crn, DocumentFilter(type, subType))
+
+    @GetMapping("/{documentId}")
+    fun getOffenderDocumentById(
+        @PathVariable crn: String,
+        @PathVariable documentId: String
+    ) = documentService.downloadDocument(crn, documentId)
 }

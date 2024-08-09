@@ -314,6 +314,19 @@ class CommunityApiController(
         return proxy(request)
     }
 
+    @GetMapping("/offenders/crn/{crn}/documents/{documentId}")
+    fun downloadDocument(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @PathVariable documentId: String
+    ): Any {
+
+        if (featureFlags.enabled("ccd-download-document")) {
+            return documentResource.getOffenderDocumentById(crn, documentId)
+        }
+        return proxy(request)
+    }
+
     @GetMapping("/**")
     fun proxy(request: HttpServletRequest): Any {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()

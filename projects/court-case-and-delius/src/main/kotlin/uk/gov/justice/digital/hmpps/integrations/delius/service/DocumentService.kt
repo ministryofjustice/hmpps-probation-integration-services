@@ -1,9 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
@@ -12,7 +16,8 @@ import java.time.LocalDateTime
 @Service
 class DocumentService(
     private val personRepository: PersonRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val alfrescoClient: AlfrescoClient
 ) {
 
     fun getDocumentsGroupedFor(crn: String, filterData: DocumentFilter): OffenderDocuments {
@@ -42,6 +47,13 @@ class DocumentService(
             }
 
         return OffenderDocuments(documents, convictions)
+    }
+
+    fun downloadDocument(crn: String, id: String): ResponseEntity<StreamingResponseBody> {
+        val person = personRepository.getPerson(crn)
+        val filename = documentRepository.findNameByPersonIdAndAlfrescoId(person.id, id)
+            ?: throw NotFoundException("Document with id of $id not found for CRN $crn")
+        return alfrescoClient.streamDocument(id, filename)
     }
 
     private fun filter(record: OffenderDocumentDetail, filter: DocumentFilter): Boolean {
