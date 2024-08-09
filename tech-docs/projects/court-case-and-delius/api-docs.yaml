@@ -68,6 +68,34 @@ paths:
             application/json:
               schema:
                 type: object
+  /secure/offenders/crn/{crn}/documents/grouped:
+    get:
+      tags:
+      - community-api-controller
+      operationId: documentsGrouped
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: subtype
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /secure/offenders/crn/{crn}/convictions:
     get:
       tags:
@@ -447,6 +475,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProbationStatusDetail"
+  /probation-case/{crn}/documents/grouped:
+    get:
+      tags:
+      - document-resource
+      operationId: getOffenderDocumentsGrouped
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: subType
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OffenderDocuments"
   /probation-case/{crn}/convictions:
     get:
       tags:
@@ -1165,6 +1221,72 @@ components:
           type: boolean
         awaitingPsr:
           type: boolean
+    ConvictionDocuments:
+      required:
+      - convictionId
+      - documents
+      type: object
+      properties:
+        convictionId:
+          type: string
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderDocumentDetail"
+    OffenderDocumentDetail:
+      required:
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+        documentName:
+          type: string
+        author:
+          type: string
+        type:
+          $ref: "#/components/schemas/KeyValue"
+        extendedDescription:
+          type: string
+        lastModifiedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        parentPrimaryKeyId:
+          type: integer
+          format: int64
+        subType:
+          $ref: "#/components/schemas/KeyValue"
+        reportDocumentDates:
+          $ref: "#/components/schemas/ReportDocumentDates"
+    OffenderDocuments:
+      required:
+      - convictions
+      - documents
+      type: object
+      properties:
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderDocumentDetail"
+        convictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConvictionDocuments"
+    ReportDocumentDates:
+      type: object
+      properties:
+        requestedDate:
+          type: string
+          format: date
+        requiredDate:
+          type: string
+          format: date
+        completedDate:
+          type: string
+          format: date-time
     AdditionalSentence:
       required:
       - additionalSentenceId

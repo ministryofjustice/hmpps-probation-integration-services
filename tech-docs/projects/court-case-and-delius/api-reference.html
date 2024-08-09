@@ -107,6 +107,9 @@
         <a href="./api-reference.html#secure-offenders-crn-crn"><span>/secure/offenders/crn/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#secure-offenders-crn-crn-documents-grouped"><span>/secure/offenders/crn/{crn}/documents/grouped</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#secure-offenders-crn-crn-convictions"><span>/secure/offenders/crn/{crn}/convictions</span></a>
       </li>
       <li>
@@ -153,6 +156,9 @@
       </li>
       <li>
         <a href="./api-reference.html#probation-case-crn-status"><span>/probation-case/{crn}/status</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crn-documents-grouped"><span>/probation-case/{crn}/documents/grouped</span></a>
       </li>
       <li>
         <a href="./api-reference.html#probation-case-crn-convictions"><span>/probation-case/{crn}/convictions</span></a>
@@ -379,6 +385,85 @@
 
 
 <h4 id="secure-offenders-crn-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="secure-offenders-crn-crn-documents-grouped">/secure/offenders/crn/{crn}/documents/grouped</h2>
+
+<h3 id="secure-offenders-crn-crn-documents-grouped-get">get</h3>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-documents-grouped-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>subtype</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-documents-grouped-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -1605,6 +1690,138 @@
 </td>
 <td>
 <a href='#schema-probationstatusdetail'>ProbationStatusDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-documents-grouped">/probation-case/{crn}/documents/grouped</h2>
+
+<h3 id="probation-case-crn-documents-grouped-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-documents-grouped-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>subType</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-documents-grouped-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "documents": [
+    {
+      "id": "string",
+      "documentName": "string",
+      "author": "string",
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "extendedDescription": "string",
+      "lastModifiedAt": "string",
+      "createdAt": "string",
+      "parentPrimaryKeyId": "integer",
+      "subType": {
+        "code": "string",
+        "description": "string"
+      },
+      "reportDocumentDates": {
+        "requestedDate": "string",
+        "requiredDate": "string",
+        "completedDate": "string"
+      }
+    }
+  ],
+  "convictions": [
+    {
+      "convictionId": "string",
+      "documents": [
+        {
+          "id": "string",
+          "documentName": "string",
+          "author": "string",
+          "type": {
+            "code": "string",
+            "description": "string"
+          },
+          "extendedDescription": "string",
+          "lastModifiedAt": "string",
+          "createdAt": "string",
+          "parentPrimaryKeyId": "integer",
+          "subType": {
+            "code": "string",
+            "description": "string"
+          },
+          "reportDocumentDates": {
+            "requestedDate": "string",
+            "requiredDate": "string",
+            "completedDate": "string"
+          }
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-offenderdocuments'>OffenderDocuments</a>
 </td>
 </tr>
 
@@ -4866,6 +5083,224 @@
 <td>awaitingPsr</td>
 <td>boolean</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-convictiondocuments">ConvictionDocuments</h3>
+
+
+<table class='schema-convictiondocuments'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>convictionId</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offenderdocumentdetail'>OffenderDocumentDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderdocumentdetail">OffenderDocumentDetail</h3>
+
+
+<table class='schema-offenderdocumentdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>documentName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>author</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>extendedDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastModifiedAt</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdAt</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>parentPrimaryKeyId</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subType</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>reportDocumentDates</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-reportdocumentdates'>ReportDocumentDates</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderdocuments">OffenderDocuments</h3>
+
+
+<table class='schema-offenderdocuments'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offenderdocumentdetail'>OffenderDocumentDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>convictions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-convictiondocuments'>ConvictionDocuments</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-reportdocumentdates">ReportDocumentDates</h3>
+
+
+<table class='schema-reportdocumentdates'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>requestedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>requiredDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>completedDate</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   
