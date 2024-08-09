@@ -97,6 +97,9 @@ class DataLoader(
             ReferenceDataGenerator.SED,
             ReferenceDataGenerator.CRN,
             ReferenceDataGenerator.TRIAL,
+            ReferenceDataGenerator.REG_CATEGORY,
+            ReferenceDataGenerator.REG_LEVEL,
+            ReferenceDataGenerator.REG_FLAG,
             CourtGenerator.PROBATION_AREA,
             CourtGenerator.BHAM,
             PersonGenerator.NEW_TO_PROBATION,
@@ -257,6 +260,19 @@ class DataLoader(
             ContactGenerator.ATTENDANCE_CONTACT_TYPE,
             ContactGenerator.ATTENDANCE_CONTACT_1,
             ContactGenerator.ATTENDANCE_CONTACT_2
+        )
+
+        //Registrations
+        em.saveAll(
+            RegistrationsGenerator.REG_TYPE,
+            RegistrationsGenerator.ACTIVE_REG,
+            RegistrationsGenerator.INACTIVE_REG,
+            RegistrationsGenerator.REG_NO_DEREG,
+            RegistrationsGenerator.DEREG_1,
+            RegistrationsGenerator.DEREG_2,
+            RegistrationsGenerator.DEREG_3,
+            RegistrationsGenerator.DEREG_4,
+            RegistrationsGenerator.DEREG_5,
         )
     }
 }

@@ -265,6 +265,9 @@ internal class ProxyIntegrationTest {
                             "DOCUMENTS_GROUPED": {
                                 "type": null,
                                 "subtype": null
+                            },
+                            "REGISTRATIONS": {
+                                "activeOnly": false
                             }
                         }
                     }
@@ -273,7 +276,7 @@ internal class ProxyIntegrationTest {
                 .withToken()
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareAllReport>()
 
-        assertThat(res.totalNumberOfRequests, equalTo(15))
+        assertThat(res.totalNumberOfRequests, equalTo(16))
         assertThat(res.totalNumberOfCrns, equalTo(2))
         assertThat(res.currentPageNumber, equalTo(1))
     }

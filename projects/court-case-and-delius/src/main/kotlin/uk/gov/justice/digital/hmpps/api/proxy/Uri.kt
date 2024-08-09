@@ -91,5 +91,11 @@ enum class Uri(
         "getOffenderDocumentsGrouped",
         listOf("crn", "type", "subtype"),
     ),
+    REGISTRATIONS(
+        "/secure/offenders/crn/{crn}/registrations?activeOnly={activeOnly}",
+        "registrationResource",
+        "getOffenderRegistrations",
+        listOf("crn", "activeOnly"),
+    ),
     DUMMY("/dummy", "dummyResource", "getDummy", listOf("crn")),
 }

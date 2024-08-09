@@ -297,4 +297,22 @@ object ReferenceDataGenerator {
         "Trial/Adjournment",
         IdGenerator.getAndIncrement()
     )
+
+    val REG_CATEGORY = ReferenceData(
+        code = "RC1",
+        "Registration Category",
+        IdGenerator.getAndIncrement()
+    )
+
+    val REG_LEVEL = ReferenceData(
+        code = "L1",
+        "Registration Level",
+        IdGenerator.getAndIncrement()
+    )
+
+    val REG_FLAG = ReferenceData(
+        code = "F1",
+        "Registration Flag",
+        IdGenerator.getAndIncrement()
+    )
 }
