@@ -1,5 +1,3 @@
-enabled: false # Temporarily disabled while NDST team test the new synonym list
-
 generic-service:
   ingress:
     host: person-search-index-from-delius.hmpps.service.justice.gov.uk
