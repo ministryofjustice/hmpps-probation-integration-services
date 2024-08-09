@@ -71,7 +71,6 @@ runs:
       env:
         branch: ${{ inputs.branch }}
         add_paths: ${{ inputs.add-paths }}
-        path: ${{ env.path }}
 
     - name: Commit and push
       uses: marcus-bcl/github-app-commit-action@main
@@ -79,6 +78,7 @@ runs:
         owner: ${{ env.owner }}
         repository: ${{ env.repository }}
         working-directory: ${{ env.path }}
+        ref: ${{ inputs.branch }}
         fail-on-no-changes: false
         message: ${{ inputs.commit-message }}
         token: ${{ inputs.token }}
@@ -86,6 +86,7 @@ runs:
     - name: Create pull request
       id: pr
       run: |
+        git fetch origin "$branch"
         git checkout "$branch"
         url=$(gh pr create --title "$commit_message" --body "$body" --label "$labels")
         echo "pull-request-url=$url" | tee -a "$GITHUB_OUTPUT"
