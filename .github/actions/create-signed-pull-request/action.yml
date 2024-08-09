@@ -48,6 +48,7 @@ runs:
       run: |
         git pull
         git checkout -b "$branch"
+        git push -u origin "$branch"
         while IFS= read -r add_path; do 
           if [ -n "$add_path" ]; then
             echo Adding "$add_path"
