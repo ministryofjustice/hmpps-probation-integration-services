@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/alfresco/fetch/alfrescoId"
+    "urlPath": "/alfresco/fetch/A001"
   },
   "response": {
     "headers": {
