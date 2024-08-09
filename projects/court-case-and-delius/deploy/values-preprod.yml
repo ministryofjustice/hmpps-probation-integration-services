@@ -11,6 +11,7 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/oauth/token
     COMMUNITY-API_URL: https://community-api.pre-prod.delius.probation.hmpps.dsd.io
+    INTEGRATIONS_ALFRESCO_URL: https://alfresco.pre-prod.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg/
 
 generic-prometheus-alerts:
   businessHoursOnly: true
