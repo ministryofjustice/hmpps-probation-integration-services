@@ -137,8 +137,6 @@ class RegistrationReview(
     val id: Long
 )
 
-
-
 interface RegistrationRepository : JpaRepository<Registration, Long> {
     @EntityGraph(attributePaths = ["person", "type.flag", "category", "level", "team.provider", "staff", "reviews.team.provider", "reviews.staff"])
     fun findAllByPersonCrnOrderByDateDescCreatedDateTimeDesc(crn: String): List<Registration>
