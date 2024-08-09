@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.resource.ConvictionResource
 import uk.gov.justice.digital.hmpps.api.resource.DocumentResource
 import uk.gov.justice.digital.hmpps.api.resource.ProbationRecordResource
+import uk.gov.justice.digital.hmpps.api.resource.RegistrationResource
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.util.concurrent.CompletableFuture
@@ -24,6 +25,7 @@ class CommunityApiController(
     private val featureFlags: FeatureFlags,
     private val communityApiService: CommunityApiService,
     private val convictionResource: ConvictionResource,
+    private val registrationResource: RegistrationResource,
     private val documentResource: DocumentResource,
     private val taskExecutor: ThreadPoolTaskExecutor,
     private val personRepository: PersonEventRepository,
@@ -327,7 +329,20 @@ class CommunityApiController(
         return proxy(request)
     }
 
-    @GetMapping("/**")
+    @GetMapping("/offenders/crn/{crn}/registrations")
+    fun registrations(
+        request: HttpServletRequest,
+        @PathVariable crn: String,
+        @RequestParam(defaultValue = "false", required = false) activeOnly: Boolean
+    ): Any {
+        sendComparisonReport(mapOf("crn" to crn, "activeOnly" to activeOnly), Uri.REGISTRATIONS, request)
+
+        if (featureFlags.enabled("ccd-registrations-enabled")) {
+            return registrationResource.getOffenderRegistrations(crn, activeOnly)
+        }
+        return proxy(request)
+    }
+
     fun proxy(request: HttpServletRequest): Any {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
         val fullUri =

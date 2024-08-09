@@ -4,19 +4,19 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integration.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integration.delius.provider.entity.Team
-import uk.gov.justice.digital.hmpps.integration.delius.reference.entity.ReferenceData
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 @Immutable
 @Entity
 @Table(name = "registration")
-@SQLRestriction("soft_deleted = 0 and deregistered = 0")
+@SQLRestriction("soft_deleted = 0")
 class Registration(
 
     @ManyToOne
@@ -53,8 +53,7 @@ class Registration(
     val staff: Staff,
 
     @OneToMany(mappedBy = "registration")
-    @OrderBy("date, createdDateTime")
-    val reviews: List<RegistrationReview>,
+    val deRegistrations: List<DeRegistration> = emptyList(),
 
     @Column(name = "deregistered", columnDefinition = "number")
     val deRegistered: Boolean,
@@ -63,12 +62,18 @@ class Registration(
     val softDeleted: Boolean,
 
     @Column(name = "created_datetime")
-    val createdDateTime: ZonedDateTime,
+    val createdDateTime: LocalDateTime,
 
     @Id
     @Column(name = "registration_id")
     val id: Long
-)
+) {
+    fun latestDeregistration(): DeRegistration? =
+        deRegistrations.sortedWith(
+            compareByDescending(DeRegistration::deRegistrationDate)
+                .thenByDescending(DeRegistration::createdDateTime)
+        ).firstOrNull()
+}
 
 @Immutable
 @Table(name = "r_register_type")
@@ -97,49 +102,48 @@ class RegisterType(
     val id: Long
 )
 
+@Immutable
 @Entity
-@Table(name = "registration_review")
-@SQLRestriction("soft_deleted = 0")
-class RegistrationReview(
+@Table(name = "deregistration")
+class DeRegistration(
+    @Id
+    @Column(name = "deregistration_id", nullable = false)
+    val id: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "registration_id")
+    @Column(name = "deregistration_date")
+    val deRegistrationDate: LocalDate,
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "registration_id", nullable = false)
     val registration: Registration,
 
-    @Column(name = "review_date")
-    val date: LocalDate,
-
-    @Column(name = "review_date_due")
-    val reviewDue: LocalDate?,
-
-    @Column(columnDefinition = "clob")
-    val notes: String?,
-
     @ManyToOne
-    @JoinColumn(name = "reviewing_team_id")
+    @JoinColumn(name = "deregistering_team_id")
     val team: Team,
 
     @ManyToOne
-    @JoinColumn(name = "reviewing_staff_id")
+    @JoinColumn(name = "deregistering_staff_id")
     val staff: Staff,
 
-    @Convert(converter = YesNoConverter::class)
-    val completed: Boolean,
-
-    @Column(columnDefinition = "number")
-    val softDeleted: Boolean,
+    @Column(name = "deregistering_notes", columnDefinition = "clob")
+    val notes: String?,
 
     @Column(name = "created_datetime")
-    val createdDateTime: ZonedDateTime,
+    val createdDateTime: LocalDateTime,
 
-    @Id
-    @Column(name = "registration_review_id")
-    val id: Long
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean
 )
 
-
-
 interface RegistrationRepository : JpaRepository<Registration, Long> {
-    @EntityGraph(attributePaths = ["person", "type.flag", "category", "level", "team.provider", "staff", "reviews.team.provider", "reviews.staff"])
-    fun findAllByPersonCrnOrderByDateDescCreatedDateTimeDesc(crn: String): List<Registration>
+
+    fun findByPersonId(personId: Long): List<Registration>
+
+    @Query(
+        "select registration from Registration registration " +
+            "where registration.person.id = :personId " +
+            "and registration.softDeleted = false " +
+            "and registration.deRegistered = false "
+    )
+    fun findActiveByPersonId(personId: Long): List<Registration>
 }
