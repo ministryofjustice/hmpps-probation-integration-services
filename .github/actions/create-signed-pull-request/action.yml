@@ -68,7 +68,6 @@ runs:
         fail-on-no-changes: false
         message: ${{ inputs.commit-message }}
         token: ${{ inputs.token }}
-        ref: ${{ inputs.branch }}
 
     - name: Create pull request
       id: pr
