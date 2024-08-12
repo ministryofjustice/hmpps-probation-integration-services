@@ -58,7 +58,7 @@ internal class DocumentsIntegrationTest {
             .andExpect(MockMvcResultMatchers.request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
-            .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/octet-stream"))
+            .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/msword;charset=UTF-8"))
             .andExpect(
                 MockMvcResultMatchers.header().string(
                     "Content-Disposition",
