@@ -325,7 +325,7 @@ class CommunityApiController(
         @PathVariable documentId: String
     ): ResponseEntity<StreamingResponseBody> {
 
-        if (featureFlags.enabled("ccd-document-download")) {
+        if (featureFlags.enabled("ccd-download-document")) {
             return documentResource.getOffenderDocumentById(crn, documentId)
         }
 
