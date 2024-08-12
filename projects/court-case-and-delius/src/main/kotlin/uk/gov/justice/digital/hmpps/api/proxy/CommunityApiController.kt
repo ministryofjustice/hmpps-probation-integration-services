@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.core.io.Resource
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -331,7 +332,7 @@ class CommunityApiController(
 
         val proxied = proxy(request)
         val streamingResponseBody =
-            StreamingResponseBody { output -> proxied.body!!.inputStream().use { it.copyTo(output) } }
+            StreamingResponseBody { output -> proxied.body!!.inputStream.use { it.copyTo(output) } }
         return ResponseEntity
             .status(proxied.statusCode)
             .headers(proxied.headers)
@@ -352,7 +353,7 @@ class CommunityApiController(
         return proxy(request)
     }
 
-    fun proxy(request: HttpServletRequest): ResponseEntity<ByteArray> {
+    fun proxy(request: HttpServletRequest): ResponseEntity<Resource> {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
         val fullUri =
             if (request.queryString != null) request.requestURI + '?' + request.queryString else request.requestURI

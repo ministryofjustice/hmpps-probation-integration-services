@@ -7,6 +7,8 @@ import jakarta.json.JsonStructure
 import jakarta.json.JsonValue
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.Resource
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
@@ -93,7 +95,8 @@ class CommunityApiService(
 
         val comApiJsonString = proxy(comApiUri, headers.toMutableMap()).body!!
         val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
-        val comApiJson = Json.createReader(StringReader(String(comApiJsonString))).readValue() as JsonStructure
+        val comApiJson =
+            Json.createReader(StringReader(String(comApiJsonString.contentAsByteArray))).readValue() as JsonStructure
         val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)
         val results = diff.toDiffReport(ccdJson, showValues)
 
@@ -107,7 +110,7 @@ class CommunityApiService(
         )
     }
 
-    fun proxy(requestUri: String, headers: MutableMap<String, String>): ResponseEntity<ByteArray> {
+    fun proxy(requestUri: String, headers: MutableMap<String, String>): ResponseEntity<Resource> {
 
         return try {
             val resp = communityApiClient.proxy(URI.create(communityApiUrl + requestUri), headers)
@@ -117,7 +120,7 @@ class CommunityApiService(
             CommunityApiController.log.error("Exception thrown when calling ${communityApiUrl + requestUri}. community-api returned ${ex.message}")
             ResponseEntity.status(ex.statusCode)
                 .headers(ex.responseHeaders)
-                .body(ex.responseBodyAsByteArray)
+                .body(ByteArrayResource(ex.responseBodyAsByteArray))
         }
     }
 }
