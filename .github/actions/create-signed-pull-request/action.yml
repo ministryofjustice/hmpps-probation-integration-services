@@ -72,7 +72,7 @@ runs:
         add_paths: ${{ inputs.add-paths }}
 
     - name: Commit and push
-      uses: marcus-bcl/github-app-commit-action@main # using fork until PR is merged: https://github.com/dsanders11/github-app-commit-action/pull/23
+      uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac # v1.5.0
       with:
         owner: ${{ env.owner }}
         repository: ${{ env.repository }}
