@@ -6,9 +6,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpHeaders
+import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.api.resource.ConvictionResource
 import uk.gov.justice.digital.hmpps.api.resource.DocumentResource
 import uk.gov.justice.digital.hmpps.api.resource.ProbationRecordResource
@@ -321,12 +323,19 @@ class CommunityApiController(
         request: HttpServletRequest,
         @PathVariable crn: String,
         @PathVariable documentId: String
-    ): Any {
+    ): ResponseEntity<StreamingResponseBody> {
 
-        if (featureFlags.enabled("ccd-download-document")) {
+        if (featureFlags.enabled("ccd-document-download")) {
             return documentResource.getOffenderDocumentById(crn, documentId)
         }
-        return proxy(request)
+
+        val proxied = proxy(request)
+        val streamingResponseBody =
+            StreamingResponseBody { output -> proxied.body!!.inputStream().use { it.copyTo(output) } }
+        return ResponseEntity
+            .status(proxied.statusCode)
+            .headers(proxied.headers)
+            .body(streamingResponseBody)
     }
 
     @GetMapping("/offenders/crn/{crn}/registrations")
@@ -343,7 +352,7 @@ class CommunityApiController(
         return proxy(request)
     }
 
-    fun proxy(request: HttpServletRequest): Any {
+    fun proxy(request: HttpServletRequest): ResponseEntity<ByteArray> {
         val headers = request.headerNames.asSequence().associateWith { request.getHeader(it) }.toMutableMap()
         val fullUri =
             if (request.queryString != null) request.requestURI + '?' + request.queryString else request.requestURI
