@@ -107,6 +107,12 @@
         <a href="./api-reference.html#secure-offenders-crn-crn"><span>/secure/offenders/crn/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#secure-offenders-crn-crn-registrations"><span>/secure/offenders/crn/{crn}/registrations</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#secure-offenders-crn-crn-documents-documentid"><span>/secure/offenders/crn/{crn}/documents/{documentId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#secure-offenders-crn-crn-documents-grouped"><span>/secure/offenders/crn/{crn}/documents/grouped</span></a>
       </li>
       <li>
@@ -149,13 +155,16 @@
         <a href="./api-reference.html#secure-offenders-crn-crn-alloffendermanagers"><span>/secure/offenders/crn/{crn}/allOffenderManagers</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#secure"><span>/secure/**</span></a>
-      </li>
-      <li>
         <a href="./api-reference.html#probation-case-crn"><span>/probation-case/{crn}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#probation-case-crn-status"><span>/probation-case/{crn}/status</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crn-registrations"><span>/probation-case/{crn}/registrations</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crn-documents-documentid"><span>/probation-case/{crn}/documents/{documentId}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#probation-case-crn-documents-grouped"><span>/probation-case/{crn}/documents/grouped</span></a>
@@ -385,6 +394,144 @@
 
 
 <h4 id="secure-offenders-crn-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="secure-offenders-crn-crn-registrations">/secure/offenders/crn/{crn}/registrations</h2>
+
+<h3 id="secure-offenders-crn-crn-registrations-get">get</h3>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-registrations-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>activeOnly</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-registrations-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="secure-offenders-crn-crn-documents-documentid">/secure/offenders/crn/{crn}/documents/{documentId}</h2>
+
+<h3 id="secure-offenders-crn-crn-documents-documentid-get">get</h3>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-documents-documentid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>documentId</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="secure-offenders-crn-crn-documents-documentid-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -1419,45 +1566,6 @@
 
 
 
-<h2 id="secure">/secure/**</h2>
-
-<h3 id="secure-get">get</h3>
-
-
-
-
-
-
-
-<h4 id="secure-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-}</code></pre>
-
-</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
 <h2 id="probation-case-crn">/probation-case/{crn}</h2>
 
 <h3 id="probation-case-crn-get">get</h3>
@@ -1690,6 +1798,203 @@
 </td>
 <td>
 <a href='#schema-probationstatusdetail'>ProbationStatusDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-registrations">/probation-case/{crn}/registrations</h2>
+
+<h3 id="probation-case-crn-registrations-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-registrations-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>activeOnly</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-registrations-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "registrations": [
+    {
+      "offenderId": "integer",
+      "register": {
+        "code": "string",
+        "description": "string"
+      },
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "riskColour": "string",
+      "startDate": "string",
+      "nextReviewDate": "string",
+      "reviewPeriodMonths": "integer",
+      "notes": "string",
+      "registeringTeam": {
+        "code": "string",
+        "description": "string"
+      },
+      "registeringOfficer": {
+        "code": "string",
+        "forenames": "string",
+        "surname": "string",
+        "unallocated": "boolean"
+      },
+      "registeringProbationArea": {
+        "code": "string",
+        "description": "string"
+      },
+      "registerLevel": {
+        "code": "string",
+        "description": "string"
+      },
+      "registerCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "warnUser": "boolean",
+      "active": "boolean",
+      "endDate": "string",
+      "deregisteringTeam": {
+        "code": "string",
+        "description": "string"
+      },
+      "deregisteringOfficer": {
+        "code": "string",
+        "forenames": "string",
+        "surname": "string",
+        "unallocated": "boolean"
+      },
+      "deregisteringProbationArea": {
+        "code": "string",
+        "description": "string"
+      },
+      "deregisteringNotes": "string",
+      "numberOfPreviousDeregistrations": "integer"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-registrations'>Registrations</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-documents-documentid">/probation-case/{crn}/documents/{documentId}</h2>
+
+<h3 id="probation-case-crn-documents-documentid-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-documents-documentid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>documentId</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-documents-documentid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-streamingresponsebody'>StreamingResponseBody</a>
 </td>
 </tr>
 
@@ -5092,6 +5397,305 @@
 </tbody>
 </table>
 
+<h3 id="schema-registration">Registration</h3>
+
+
+<table class='schema-registration'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>register</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>riskColour</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nextReviewDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>reviewPeriodMonths</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>registeringTeam</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>registeringOfficer</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffhuman'>StaffHuman</a>
+</td>
+</tr>
+
+<tr>
+<td>registeringProbationArea</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>registerLevel</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>registerCategory</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>warnUser</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>deregisteringTeam</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>deregisteringOfficer</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffhuman'>StaffHuman</a>
+</td>
+</tr>
+
+<tr>
+<td>deregisteringProbationArea</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-keyvalue'>KeyValue</a>
+</td>
+</tr>
+
+<tr>
+<td>deregisteringNotes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>numberOfPreviousDeregistrations</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-registrations">Registrations</h3>
+
+
+<table class='schema-registrations'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>registrations</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-registration'>Registration</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffhuman">StaffHuman</h3>
+
+
+<table class='schema-staffhuman'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>forenames</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unallocated</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-streamingresponsebody">StreamingResponseBody</h3>
+
+
 <h3 id="schema-convictiondocuments">ConvictionDocuments</h3>
 
 
@@ -8203,58 +8807,6 @@
 <td>active</td>
 <td>boolean</td>
 <td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-staffhuman">StaffHuman</h3>
-
-
-<table class='schema-staffhuman'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>forenames</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>unallocated</td>
-<td>boolean</td>
-<td>false</td>
 <td></td>
 <td>
   

@@ -68,6 +68,53 @@ paths:
             application/json:
               schema:
                 type: object
+  /secure/offenders/crn/{crn}/registrations:
+    get:
+      tags:
+      - community-api-controller
+      operationId: registrations
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: activeOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /secure/offenders/crn/{crn}/documents/{documentId}:
+    get:
+      tags:
+      - community-api-controller
+      operationId: downloadDocument
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /secure/offenders/crn/{crn}/documents/grouped:
     get:
       tags:
@@ -427,18 +474,6 @@ paths:
             application/json:
               schema:
                 type: object
-  /secure/**:
-    get:
-      tags:
-      - community-api-controller
-      operationId: proxy
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: string
   /probation-case/{crn}:
     get:
       tags:
@@ -475,6 +510,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProbationStatusDetail"
+  /probation-case/{crn}/registrations:
+    get:
+      tags:
+      - registration-resource
+      operationId: getOffenderRegistrations
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: activeOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Registrations"
+  /probation-case/{crn}/documents/{documentId}:
+    get:
+      tags:
+      - document-resource
+      operationId: getOffenderDocumentById
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreamingResponseBody"
   /probation-case/{crn}/documents/grouped:
     get:
       tags:
@@ -1221,6 +1303,87 @@ components:
           type: boolean
         awaitingPsr:
           type: boolean
+    Registration:
+      required:
+      - active
+      - numberOfPreviousDeregistrations
+      - warnUser
+      type: object
+      properties:
+        offenderId:
+          type: integer
+          format: int64
+        register:
+          $ref: "#/components/schemas/KeyValue"
+        type:
+          $ref: "#/components/schemas/KeyValue"
+        riskColour:
+          type: string
+        startDate:
+          type: string
+          format: date
+        nextReviewDate:
+          type: string
+          format: date
+        reviewPeriodMonths:
+          type: integer
+          format: int64
+        notes:
+          type: string
+        registeringTeam:
+          $ref: "#/components/schemas/KeyValue"
+        registeringOfficer:
+          $ref: "#/components/schemas/StaffHuman"
+        registeringProbationArea:
+          $ref: "#/components/schemas/KeyValue"
+        registerLevel:
+          $ref: "#/components/schemas/KeyValue"
+        registerCategory:
+          $ref: "#/components/schemas/KeyValue"
+        warnUser:
+          type: boolean
+        active:
+          type: boolean
+        endDate:
+          type: string
+          format: date
+        deregisteringTeam:
+          $ref: "#/components/schemas/KeyValue"
+        deregisteringOfficer:
+          $ref: "#/components/schemas/StaffHuman"
+        deregisteringProbationArea:
+          $ref: "#/components/schemas/KeyValue"
+        deregisteringNotes:
+          type: string
+        numberOfPreviousDeregistrations:
+          type: integer
+          format: int32
+    Registrations:
+      required:
+      - registrations
+      type: object
+      properties:
+        registrations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Registration"
+    StaffHuman:
+      required:
+      - code
+      - forenames
+      - surname
+      type: object
+      properties:
+        code:
+          type: string
+        forenames:
+          type: string
+        surname:
+          type: string
+        unallocated:
+          type: boolean
+    StreamingResponseBody:
+      type: object
     ConvictionDocuments:
       required:
       - convictionId
@@ -2164,21 +2327,6 @@ components:
         staff:
           $ref: "#/components/schemas/StaffHuman"
         active:
-          type: boolean
-    StaffHuman:
-      required:
-      - code
-      - forenames
-      - surname
-      type: object
-      properties:
-        code:
-          type: string
-        forenames:
-          type: string
-        surname:
-          type: string
-        unallocated:
           type: boolean
     CourtAppearanceBasicWrapper:
       required:
