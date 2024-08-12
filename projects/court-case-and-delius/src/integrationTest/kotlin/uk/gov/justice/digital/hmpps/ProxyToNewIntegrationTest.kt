@@ -61,6 +61,24 @@ internal class ProxyToNewIntegrationTest {
             .andExpect(jsonPath("$.contactDetails.emailAddresses[0]").value("test@test.none"))
     }
 
+    @Test
+    fun `document download proxies to community api for download document`() {
+        whenever(featureFlags.enabled("ccd-download-document")).thenReturn(false)
+        mockMvc.perform(
+            get("/secure/offenders/crn/C123456/documents/alfrescoId")
+                .withToken()
+        ).andExpect(status().is2xxSuccessful)
+    }
+
+    @Test
+    fun `document download uses court case service for download document`() {
+        whenever(featureFlags.enabled("ccd-download-document")).thenReturn(true)
+        mockMvc.perform(
+            get("/secure/offenders/crn/C123456/documents/alfrescoId")
+                .withToken()
+        ).andExpect(status().is2xxSuccessful)
+    }
+
     private fun whileTrue(action: () -> Boolean) {
         while (action.invoke());
     }
