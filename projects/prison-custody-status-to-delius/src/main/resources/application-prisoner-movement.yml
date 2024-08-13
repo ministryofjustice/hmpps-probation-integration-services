@@ -20,6 +20,8 @@ prisoner.movement.configs:
   - types:
       - RELEASED
     reasons:
+      ## Release reasons that indicate the person is still in custody outside of NOMIS.
+      ## Note: do not add to this list without also updating the code with specific recall reasons / locations / custody status checks
       # Secure hospital
       - HO
       - HP
@@ -34,8 +36,6 @@ prisoner.movement.configs:
       - ECSLIRC
       # Early removal scheme
       - ETR
-      # Repatriated
-      - RE
     actionNames:
       - Recall
       - UpdateLocation
@@ -52,7 +52,9 @@ prisoner.movement.configs:
   - types:
       - RELEASED
     reasons:
-      - MRG
+      # Do nothing for the following movement reasons
+      - MRG # Merged
+      - RE  # Repatriated
   - types:
       - RELEASED
     actionNames:
