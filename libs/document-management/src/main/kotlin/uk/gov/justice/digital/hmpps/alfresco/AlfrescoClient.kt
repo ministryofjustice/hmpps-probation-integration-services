@@ -5,12 +5,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.ContentDisposition
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpRequest
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
@@ -38,6 +33,7 @@ class AlfrescoClient(
             when (res.statusCode) {
                 HttpStatus.OK -> ResponseEntity.ok()
                     .headers {
+                        it.copy(HttpHeaders.CONTENT_TYPE, res)
                         it.copy(HttpHeaders.CONTENT_LENGTH, res)
                         it.copy(HttpHeaders.ETAG, res)
                         it.copy(HttpHeaders.LAST_MODIFIED, res)
@@ -46,7 +42,6 @@ class AlfrescoClient(
                         HttpHeaders.CONTENT_DISPOSITION,
                         ContentDisposition.attachment().filename(filename, Charsets.UTF_8).build().toString()
                     )
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
 
                 HttpStatus.NOT_FOUND -> throw NotFoundException("Document content", "alfrescoId", id)
