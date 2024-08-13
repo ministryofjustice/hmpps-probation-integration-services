@@ -1,5 +1,3 @@
-enabled: true
-
 generic-service:
   ingress:
     host: manage-supervision-and-delius-dev.hmpps.service.justice.gov.uk
