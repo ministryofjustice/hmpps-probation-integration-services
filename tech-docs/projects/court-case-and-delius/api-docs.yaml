@@ -114,7 +114,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/StreamingResponseBody"
   /secure/offenders/crn/{crn}/documents/grouped:
     get:
       tags:
@@ -1051,6 +1051,8 @@ components:
           type: array
           items:
             type: string
+    StreamingResponseBody:
+      type: object
     ContactDetailsSummary:
       type: object
       properties:
@@ -1382,8 +1384,6 @@ components:
           type: string
         unallocated:
           type: boolean
-    StreamingResponseBody:
-      type: object
     ConvictionDocuments:
       required:
       - convictionId
