@@ -142,7 +142,8 @@ class ReferralService(
         }
         contactService.createContact(
             ContactDetails(
-                date = details.cancelledAt,
+                date = details.cancellationRecordedAt,
+                cancellationRecordedAt = details.cancelledAtDate,
                 type = ContactTypeCode.BOOKING_CANCELLED,
                 locationCode = ap.locationCode(),
                 description = "Booking cancelled for ${details.premises.name}",

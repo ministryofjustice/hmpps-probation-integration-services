@@ -139,7 +139,8 @@ data class BookingCancelled(
     val eventNumber: String,
     val premises: Premises,
     val cancelledBy: StaffMember,
-    val cancelledAt: ZonedDateTime,
+    val cancelledAtDate: LocalDate,
+    val cancellationRecordedAt: ZonedDateTime,
     val cancellationReason: String
 )
 
