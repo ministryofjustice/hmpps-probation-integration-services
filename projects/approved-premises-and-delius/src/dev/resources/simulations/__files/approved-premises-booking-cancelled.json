@@ -24,6 +24,8 @@
       "surname": "Smith",
       "username": "JohnSmithNPS"
     },
-    "cancellationReason": "Reason for application cancellation"
+    "cancellationReason": "Reason for application cancellation",
+    "cancelledAtDate": "2023-07-25",
+    "cancellationRecordedAt": "2023-07-25T17:21:30.290096228Z"
   }
 }

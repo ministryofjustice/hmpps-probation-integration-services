@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getUnallocatedTeam
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Service
@@ -44,7 +45,7 @@ class ContactService(
                 val contactTeam = team ?: teamRepository.getUnallocatedTeam(probationAreaCode)
                 val contact = contactRepository.save(
                     Contact(
-                        date = details.date.toLocalDate(),
+                        date = details.cancellationRecordedAt ?: details.date.toLocalDate(),
                         startTime = details.date,
                         type = contactTypeRepository.getByCode(details.type.code),
                         outcome = details.outcomeCode?.let { contactOutcomeRepository.findByCode(it) },
@@ -83,5 +84,6 @@ data class ContactDetails(
     val locationCode: String? = null,
     val notes: String? = null,
     val description: String? = null,
-    val createAlert: Boolean = true
+    val createAlert: Boolean = true,
+    val cancellationRecordedAt: LocalDate? = null,
 )
