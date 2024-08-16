@@ -452,8 +452,7 @@ class CommunityApiController(
             telemetryService.comparisonFailureEvent(
                 params["crn"].toString(),
                 compare,
-                report,
-                request.requestURL.toString().replace(request.requestURI, "")
+                report
             )
         }, taskExecutor)
     }
@@ -461,8 +460,7 @@ class CommunityApiController(
     fun TelemetryService.comparisonFailureEvent(
         crn: String,
         compare: Compare,
-        compareReport: CompareReport,
-        baseUrl: String
+        compareReport: CompareReport
     ) {
         if (!compareReport.success) {
             val comparePayload = mapper.writeValueAsString(compare)
@@ -471,9 +469,9 @@ class CommunityApiController(
                 mapOf(
                     "crn" to crn,
                     "endpointName" to compareReport.endPointName,
-                    "url" to "$baseUrl/${compareReport.url!!}",
+                    "url" to compareReport.url!!,
                     "numberOfDifferences" to compareReport.issues?.size.toString(),
-                    "compareUrl" to "${baseUrl}secure/compare",
+                    "compareUrl" to "/secure/compare",
                     "comparePayload" to comparePayload
                 )
             )
