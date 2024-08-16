@@ -86,6 +86,24 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ass/allrisk/T123456/ALLOW",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer oasys.token$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "risk-predictors-T123456.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

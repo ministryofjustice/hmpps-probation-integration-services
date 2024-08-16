@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
+import uk.gov.justice.digital.hmpps.integrations.oasys.getRiskPredictors
 
 @RestController
 @RequestMapping("assessments")
@@ -20,6 +21,11 @@ class AssessmentController(private val ordsClient: OrdsClient) {
     @GetMapping("/{id}/section/{name}")
     fun getSection(@PathVariable id: Long, @PathVariable name: String): JsonNode =
         ordsClient.getSection(id, name.lowercase()).asResponse()
+
+    @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
+    @GetMapping("/{id}/risk-predictors")
+    fun getRiskPredictors(@PathVariable id: Long, @RequestParam crn: String): RiskPrediction =
+        ordsClient.getRiskPredictors(crn, id)
 
     @ExceptionHandler
     fun handleNotFound(e: HttpClientErrorException) = ResponseEntity
