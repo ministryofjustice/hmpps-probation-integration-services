@@ -101,6 +101,9 @@
         <a href="./api-reference.html#assessments-id-section-name"><span>/assessments/{id}/section/{name}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#assessments-id-risk-predictors"><span>/assessments/{id}/risk-predictors</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#assessments-timeline-nomsid"><span>/assessments/timeline/{nomsId}</span></a>
       </li>
       <li>
@@ -206,6 +209,106 @@
 
 
 
+<h2 id="assessments-id-risk-predictors">/assessments/{id}/risk-predictors</h2>
+
+<h3 id="assessments-id-risk-predictors-get">get</h3>
+
+
+
+
+<h4 id="assessments-id-risk-predictors-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="assessments-id-risk-predictors-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "completedDate": "string",
+  "assessmentStatus": "string",
+  "groupReconvictionScore": {
+    "oneYear": "number",
+    "twoYears": "number",
+    "scoreLevel": "string"
+  },
+  "violencePredictorScore": {
+    "oneYear": "number",
+    "twoYears": "number",
+    "scoreLevel": "string"
+  },
+  "generalPredictorScore": {
+    "oneYear": "number",
+    "twoYears": "number",
+    "scoreLevel": "string"
+  },
+  "riskOfSeriousRecidivismScore": {
+    "scoreLevel": "string",
+    "percentageScore": "number"
+  },
+  "sexualPredictorScore": {
+    "ospIndecentPercentageScore": "number",
+    "ospContactPercentageScore": "number",
+    "ospIndecentPercentageScoreLevel": "string",
+    "ospContactPercentageScoreLevel": "string",
+    "ospIndirectImagePercentageScore": "number",
+    "ospDirectContactPercentageScore": "number",
+    "ospIndirectImagePercentageScoreLevel": "string",
+    "ospDirectContactPercentageScoreLevel": "string"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-riskprediction'>RiskPrediction</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="assessments-timeline-nomsid">/assessments/timeline/{nomsId}</h2>
 
 <h3 id="assessments-timeline-nomsid-get">get</h3>
@@ -279,6 +382,254 @@
 <h2 id="schemas">Schemas</h2>
 <h3 id="schema-jsonnode">JsonNode</h3>
 
+
+<h3 id="schema-riskprediction">RiskPrediction</h3>
+
+
+<table class='schema-riskprediction'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>completedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>assessmentStatus</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>groupReconvictionScore</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-yearpredictor'>YearPredictor</a>
+</td>
+</tr>
+
+<tr>
+<td>violencePredictorScore</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-yearpredictor'>YearPredictor</a>
+</td>
+</tr>
+
+<tr>
+<td>generalPredictorScore</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-yearpredictor'>YearPredictor</a>
+</td>
+</tr>
+
+<tr>
+<td>riskOfSeriousRecidivismScore</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-rsrpredictor'>RsrPredictor</a>
+</td>
+</tr>
+
+<tr>
+<td>sexualPredictorScore</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sexualpredictor'>SexualPredictor</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-rsrpredictor">RsrPredictor</h3>
+
+
+<table class='schema-rsrpredictor'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>scoreLevel</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>percentageScore</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sexualpredictor">SexualPredictor</h3>
+
+
+<table class='schema-sexualpredictor'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>ospIndecentPercentageScore</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ospContactPercentageScore</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ospIndecentPercentageScoreLevel</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ospContactPercentageScoreLevel</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ospIndirectImagePercentageScore</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ospDirectContactPercentageScore</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ospIndirectImagePercentageScoreLevel</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ospDirectContactPercentageScoreLevel</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-yearpredictor">YearPredictor</h3>
+
+
+<table class='schema-yearpredictor'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>oneYear</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>twoYears</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>scoreLevel</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
 
 <h3 id="schema-assessmentsummary">AssessmentSummary</h3>
 

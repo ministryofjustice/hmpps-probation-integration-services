@@ -38,6 +38,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/JsonNode"
+  /assessments/{id}/risk-predictors:
+    get:
+      tags:
+      - assessment-controller
+      operationId: getRiskPredictors
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: crn
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiskPrediction"
   /assessments/timeline/{nomsId}:
     get:
       tags:
@@ -60,6 +84,95 @@ components:
   schemas:
     JsonNode:
       type: object
+    RiskPrediction:
+      type: object
+      properties:
+        completedDate:
+          type: string
+          format: date-time
+        assessmentStatus:
+          type: string
+        groupReconvictionScore:
+          $ref: "#/components/schemas/YearPredictor"
+        violencePredictorScore:
+          $ref: "#/components/schemas/YearPredictor"
+        generalPredictorScore:
+          $ref: "#/components/schemas/YearPredictor"
+        riskOfSeriousRecidivismScore:
+          $ref: "#/components/schemas/RsrPredictor"
+        sexualPredictorScore:
+          $ref: "#/components/schemas/SexualPredictor"
+    RsrPredictor:
+      type: object
+      properties:
+        scoreLevel:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+        percentageScore:
+          type: number
+    SexualPredictor:
+      type: object
+      properties:
+        ospIndecentPercentageScore:
+          type: number
+        ospContactPercentageScore:
+          type: number
+        ospIndecentPercentageScoreLevel:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+        ospContactPercentageScoreLevel:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+        ospIndirectImagePercentageScore:
+          type: number
+        ospDirectContactPercentageScore:
+          type: number
+        ospIndirectImagePercentageScoreLevel:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+        ospDirectContactPercentageScoreLevel:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+    YearPredictor:
+      type: object
+      properties:
+        oneYear:
+          type: number
+        twoYears:
+          type: number
+        scoreLevel:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
     AssessmentSummary:
       required:
       - id
