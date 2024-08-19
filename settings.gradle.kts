@@ -71,8 +71,8 @@ dependencyResolutionManagement {
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.1.1")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.1.1")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.1")
-            library("aws-sts", "software.amazon.awssdk:sts:2.27.2")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.27.2")
+            library("aws-sts", "software.amazon.awssdk:sts:2.27.7")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.27.7")
             bundle(
                 "aws-messaging",
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
@@ -81,10 +81,10 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.5.4")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.13.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.14.0")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.6.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.7.0"
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
@@ -97,7 +97,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.develocity") version "3.17.6" }
+plugins { id("com.gradle.develocity") version "3.18" }
 develocity {
     buildScan {
         publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }
