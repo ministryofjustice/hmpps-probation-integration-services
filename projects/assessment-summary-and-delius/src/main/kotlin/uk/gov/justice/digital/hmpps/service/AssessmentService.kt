@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByNumber
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.Objective
-import uk.gov.justice.digital.hmpps.integrations.oasys.PurposeOfAssessmentMapping
 import java.time.LocalDate
 
 @Service
@@ -65,9 +64,7 @@ class AssessmentService(
             offence = offences.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
                 ?.let { offenceRepository.findByCode(it.offenceCode + it.offenceSubcode) },
             totalScore = furtherInformation.totWeightedScore,
-            description = furtherInformation.pOAssessment?.let {
-                PurposeOfAssessmentMapping[it] ?: throw IllegalArgumentException("Unexpected 'pOAssessment' code '$it'")
-            },
+            description = furtherInformation.pOAssessmentDesc,
             assessedBy = furtherInformation.assessorName,
             riskFlags = riskFlags.joinToString(","),
             concernFlags = concernFlags.joinToString(","),
