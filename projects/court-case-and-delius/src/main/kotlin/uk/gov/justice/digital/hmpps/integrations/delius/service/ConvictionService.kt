@@ -64,7 +64,7 @@ class ConvictionService(
             disposal?.custody?.toCustody(),
             court?.toCourt(),
             toLatestOrSentencingCourtAppearanceOf(),
-            orderManagers.stream().map { it.toOrderManager() }.toList()
+            orderManagers.map { it.toOrderManager() }
         )
 
     fun Event.toOffences(): List<Offence> {
