@@ -81,11 +81,11 @@ class ConvictionService(
 
     fun Event.toLatestOrSentencingCourtAppearanceOf(): CourtAppearanceBasic? {
         return courtAppearances.filter { it.isSentenceing() }
-            .sortedBy(CourtAppearance::id)
-            .maxByOrNull { it.appearanceDate }
+            .sortedByDescending(CourtAppearance::appearanceDate)
+            .firstOrNull()
             ?.let { return it.toCourtAppearanceBasic() }
-            ?: courtAppearances.sortedBy(CourtAppearance::id)
-                .maxByOrNull { it.appearanceDate }
+            ?: courtAppearances.sortedByDescending(CourtAppearance::appearanceDate)
+                .firstOrNull()
                 ?.let { return it.toCourtAppearanceBasic() }
     }
 
