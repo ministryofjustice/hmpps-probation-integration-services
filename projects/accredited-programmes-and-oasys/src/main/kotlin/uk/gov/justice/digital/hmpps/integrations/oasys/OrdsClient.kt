@@ -33,7 +33,7 @@ fun OrdsClient.getRiskPredictors(assessmentId: Long): RiskPrediction =
                     YearPredictor.of(ogp1Year, ogp2Year, ogpRisk)
                 },
                 with(it.rsr) {
-                    RsrPredictor.of(scoreLevel, rsrPercentageScore)
+                    RsrPredictor.of(rsrScoreLevel, rsrPercentageScore)
                 },
                 with(it.osp) {
                     SexualPredictor.of(
@@ -87,7 +87,7 @@ data class OgrScore(
 
 data class RsrScore(
     val rsrPercentageScore: BigDecimal? = null,
-    val scoreLevel: String? = null,
+    val rsrScoreLevel: String? = null,
 )
 
 data class OspScore(
