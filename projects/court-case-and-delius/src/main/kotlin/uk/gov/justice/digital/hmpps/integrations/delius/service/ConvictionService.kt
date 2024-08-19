@@ -64,7 +64,7 @@ class ConvictionService(
             disposal?.custody?.toCustody(),
             court?.toCourt(),
             toLatestOrSentencingCourtAppearanceOf(),
-            orderManagers.map { it.toOrderManager() }
+            orderManagers.stream().map { it.toOrderManager() }.toList()
         )
 
     fun Event.toOffences(): List<Offence> {
@@ -122,7 +122,7 @@ class ConvictionService(
             offenceCount = offenceCount,
             tics = null,
             verdict = null,
-            offenderId = event.person.id,
+            offenderId = null,
             createdDatetime = created.toLocalDateTime(),
             lastUpdatedDatetime = updated.toLocalDateTime()
         )
