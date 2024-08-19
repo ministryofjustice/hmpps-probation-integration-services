@@ -2,11 +2,8 @@ package uk.gov.justice.digital.hmpps.controller
 
 import uk.gov.justice.digital.hmpps.controller.ScoreLevel.Companion.of
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 data class RiskPrediction(
-    val completedDate: LocalDateTime? = null,
-    val assessmentStatus: String? = null,
     val groupReconvictionScore: YearPredictor? = null,
     val violencePredictorScore: YearPredictor? = null,
     val generalPredictorScore: YearPredictor? = null,

@@ -24,8 +24,7 @@ class AssessmentController(private val ordsClient: OrdsClient) {
 
     @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
     @GetMapping("/{id}/risk-predictors")
-    fun getRiskPredictors(@PathVariable id: Long, @RequestParam crn: String): RiskPrediction =
-        ordsClient.getRiskPredictors(crn, id)
+    fun getRiskPredictors(@PathVariable id: Long): RiskPrediction = ordsClient.getRiskPredictors(id)
 
     @ExceptionHandler
     fun handleNotFound(e: HttpClientErrorException) = ResponseEntity
