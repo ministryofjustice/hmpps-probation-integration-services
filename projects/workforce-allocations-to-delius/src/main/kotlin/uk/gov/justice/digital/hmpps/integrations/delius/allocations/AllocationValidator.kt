@@ -34,7 +34,10 @@ class AllocationValidator(
         }
 
         if (team.endDate != null && team.endDate.isBefore(allocationDetail.createdDate)) {
-            throw NotActiveException("Team", "code", team.code)
+            throw IgnorableMessageException(
+                "Team is not active",
+                mapOf("teamCode" to team.code, "endDate" to team.endDate.toString())
+            )
         }
 
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
