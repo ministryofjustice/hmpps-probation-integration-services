@@ -22,7 +22,7 @@
       "currentConcernsRiskOfSuicide": "Yes",
       "reviewSpDate": null,
       "initialSpDate": null,
-      "reviewNum": 01,
+      "reviewNum": "01",
       "riskPrisonersCustody": "Low",
       "riskStaffCustody": "Low",
       "riskStaffCommunity": "Low",
