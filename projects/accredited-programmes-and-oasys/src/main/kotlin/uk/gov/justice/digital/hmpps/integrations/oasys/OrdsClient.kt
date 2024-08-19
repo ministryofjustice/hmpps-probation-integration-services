@@ -7,7 +7,6 @@ import org.springframework.web.service.annotation.GetExchange
 import uk.gov.justice.digital.hmpps.controller.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 interface OrdsClient {
     @GetExchange("/ass/allasslist/pris/{nomsId}/ALLOW")
@@ -16,16 +15,14 @@ interface OrdsClient {
     @GetExchange("/ass/{name}/ALLOW/{id}")
     fun getSection(@PathVariable id: Long, @PathVariable name: String): ObjectNode
 
-    @GetExchange("/ass/allrisk/{crn}/ALLOW")
-    fun getSection(@PathVariable crn: String): OasysRiskPredictors
+    @GetExchange("/ass/riskscrass/ALLOW/{id}")
+    fun getAssessmentPredictors(@PathVariable id: Long): OasysRiskPredictors
 }
 
-fun OrdsClient.getRiskPredictors(crn: String, assessmentId: Long): RiskPrediction =
-    getSection(crn).assessments.firstOrNull { it.assessmentPk == assessmentId }
+fun OrdsClient.getRiskPredictors(assessmentId: Long): RiskPrediction =
+    getAssessmentPredictors(assessmentId).assessments.firstOrNull()
         ?.let {
             RiskPrediction(
-                it.dateCompleted,
-                it.assessmentStatus,
                 with(it.ogr) {
                     YearPredictor.of(ogrs31Year, ogrs32Year, ogrs3RiskRecon)
                 },
@@ -51,17 +48,13 @@ fun OrdsClient.getRiskPredictors(crn: String, assessmentId: Long): RiskPredictio
                     )
                 }
             )
-        } ?: throw NotFoundException("Assessment $assessmentId not found for $crn")
+        } ?: throw NotFoundException("Risk predictors for assessment $assessmentId not found")
 
 data class OasysRiskPredictors(
     val assessments: List<AssessmentRisk>
 )
 
 data class AssessmentRisk(
-    val assessmentPk: Long,
-    val dateCompleted: LocalDateTime,
-    val assessmentType: String,
-    val assessmentStatus: String,
     @JsonAlias("OGP")
     val ogp: OgpScore,
     @JsonAlias("OVP")

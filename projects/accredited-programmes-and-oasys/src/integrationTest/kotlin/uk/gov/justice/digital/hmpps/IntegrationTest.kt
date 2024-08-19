@@ -91,8 +91,6 @@ internal class IntegrationTest {
         assertThat(
             prediction, equalTo(
                 RiskPrediction(
-                    LocalDateTime.parse("2023-12-19T16:57:25"),
-                    "COMPLETE",
                     YearPredictor(BigDecimal(45), BigDecimal(63), ScoreLevel.HIGH),
                     YearPredictor(BigDecimal(23), BigDecimal(36), ScoreLevel.MEDIUM),
                     YearPredictor(BigDecimal(29), BigDecimal(42), ScoreLevel.HIGH),
