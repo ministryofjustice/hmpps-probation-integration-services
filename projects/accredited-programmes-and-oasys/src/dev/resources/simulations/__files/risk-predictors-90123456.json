@@ -32,7 +32,7 @@
         "rsrExceptionError": null,
         "rsrAlgorithmVersion": 4,
         "rsrPercentageScore": 3.45,
-        "scoreLevel": "Low"
+        "rsrScoreLevel": "Low"
       },
       "OSP": {
         "ospImagePercentageScore": 0.11,
