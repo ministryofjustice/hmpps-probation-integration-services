@@ -252,8 +252,8 @@ internal class ConvictionByCrnIntegrationTest {
             .perform(get("/probation-case/$crn/convictions").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].active").value(true))
-            .andExpect(jsonPath("$[1].active").value(false))
+            .andExpect(jsonPath("$[1].active").value(true))
+            .andExpect(jsonPath("$[0].active").value(false))
     }
 
     @Test
