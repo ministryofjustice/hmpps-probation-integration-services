@@ -1707,7 +1707,6 @@ components:
       - lastUpdatedDatetime
       - mainOffence
       - offenceId
-      - offenderId
       type: object
       properties:
         offenceId:

@@ -50,11 +50,6 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: crn
-        in: query
-        required: true
-        schema:
-          type: string
       responses:
         "200":
           description: OK
@@ -87,11 +82,6 @@ components:
     RiskPrediction:
       type: object
       properties:
-        completedDate:
-          type: string
-          format: date-time
-        assessmentStatus:
-          type: string
         groupReconvictionScore:
           $ref: "#/components/schemas/YearPredictor"
         violencePredictorScore:
