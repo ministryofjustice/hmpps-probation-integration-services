@@ -140,19 +140,19 @@ class OrderManager(
     val id: Long,
 
     @OneToOne
-    @JoinColumn(name = "ALLOCATION_REASON_ID")
+    @JoinColumn(name = "allocation_reason_id")
     val allocationReason: ReferenceData? = null,
 
     @OneToOne
-    @JoinColumn(name = "PROVIDER_EMPLOYEE_ID")
+    @JoinColumn(name = "provider_employee_id")
     val providerEmployee: ProviderEmployee? = null,
 
     @OneToOne
-    @JoinColumn(name = "PROVIDER_TEAM_ID")
+    @JoinColumn(name = "provider_team_id")
     val providerTeam: ProviderTeam? = null,
 
     @ManyToOne
-    @JoinColumn(name = "TRANSFER_REASON_ID")
+    @JoinColumn(name = "transfer_reason_id")
     val transferReason: TransferReason? = null,
 
     @OneToOne
@@ -205,24 +205,24 @@ class TransferReason(
 @Entity
 @Immutable
 class AllTeam(
-    @Column(name = "TRUST_PROVIDER_FLAG")
+    @Column(name = "trust_provider_flag")
     val trustProvideFlag: Long,
 
     @Id
-    @Column(name = "TRUST_PROVIDER_TEAM_ID")
+    @Column(name = "trust_provider_team_id")
     val trustProviderTeamId: Long,
 
-    @JoinColumn(name = "PROBATION_AREA_ID")
+    @JoinColumn(name = "probation_area_id")
     @OneToOne
     val probationArea: ProbationAreaEntity? = null,
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "description")
     val description: String? = null,
 
-    @Column(name = "TELEPHONE")
+    @Column(name = "telephone")
     val telephone: String? = null,
 
-    @JoinColumn(name = "DISTRICT_ID")
+    @JoinColumn(name = "district_id")
     @OneToOne
     val district: District? = null
 )
