@@ -11,4 +11,6 @@ generic-service:
 
   allowlist:
     groups:
+      - internal
+      - unilink_staff
       - mod-platform-live

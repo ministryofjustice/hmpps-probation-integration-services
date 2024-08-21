@@ -17,6 +17,8 @@ generic-service:
 
   allowlist:
     groups:
+      - internal
+      - unilink_staff
       - mod-platform-non-live
 
 generic-prometheus-alerts:
