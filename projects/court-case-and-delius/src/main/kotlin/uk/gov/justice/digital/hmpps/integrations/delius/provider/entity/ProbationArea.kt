@@ -22,7 +22,8 @@ class ProbationAreaEntity(
     @Column(name = "private", columnDefinition = "number")
     val privateSector: Boolean,
 
-    @ManyToOne @JoinColumn(name = "organisation_id")
+    @ManyToOne
+    @JoinColumn(name = "organisation_id")
     val organisation: Organisation,
 
     @Id

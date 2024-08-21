@@ -6,13 +6,14 @@ import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Officer
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.ProviderEmployee
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -136,5 +137,93 @@ class OrderManager(
 
     @Id
     @Column(name = "order_manager_id")
-    val id: Long
+    val id: Long,
+
+    @OneToOne
+    @JoinColumn(name = "ALLOCATION_REASON_ID")
+    val allocationReason: ReferenceData? = null,
+
+    @OneToOne
+    @JoinColumn(name = "PROVIDER_EMPLOYEE_ID")
+    val providerEmployee: ProviderEmployee? = null,
+
+    @OneToOne
+    @JoinColumn(name = "PROVIDER_TEAM_ID")
+    val providerTeam: ProviderTeam? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "TRANSFER_REASON_ID")
+    val transferReason: TransferReason? = null,
+
+    @OneToOne
+    @JoinColumns(
+        JoinColumn(
+            name = "staff_employee_id",
+            referencedColumnName = "staff_employee_id",
+            insertable = false,
+            updatable = false
+        ),
+        JoinColumn(
+            name = "trust_provider_flag",
+            referencedColumnName = "trust_provider_flag",
+            insertable = false,
+            updatable = false
+        )
+    )
+    val officer: Officer? = null,
+
+    @JoinColumns(
+        JoinColumn(
+            name = "trust_provider_team_id",
+            referencedColumnName = "trust_provider_team_id",
+            insertable = false,
+            updatable = false
+        ),
+        JoinColumn(
+            name = "trust_provider_flag",
+            referencedColumnName = "trust_provider_flag",
+            insertable = false,
+            updatable = false
+        )
+    ) @OneToOne
+    val trustProviderTeam: AllTeam? = null,
+
+    )
+
+@Entity
+@Immutable
+@Table(name = "r_transfer_reason")
+class TransferReason(
+    @Id
+    @Column(name = "transfer_reason_id")
+    val id: Long,
+
+    @Column(name = "code")
+    val code: String
 )
+
+@Entity
+@Immutable
+class AllTeam(
+    @Column(name = "TRUST_PROVIDER_FLAG")
+    val trustProvideFlag: Long,
+
+    @Id
+    @Column(name = "TRUST_PROVIDER_TEAM_ID")
+    val trustProviderTeamId: Long,
+
+    @JoinColumn(name = "PROBATION_AREA_ID")
+    @OneToOne
+    val probationArea: ProbationAreaEntity? = null,
+
+    @Column(name = "DESCRIPTION")
+    val description: String? = null,
+
+    @Column(name = "TELEPHONE")
+    val telephone: String? = null,
+
+    @JoinColumn(name = "DISTRICT_ID")
+    @OneToOne
+    val district: District? = null
+)
+
