@@ -1,5 +1,5 @@
-date=2024-08-14 07:04:15+0000
-os=Linux 5.10.217-205.860.amzn2.x86_64
+date=2024-08-21 07:04:13+0000
+os=Linux 5.10.220-209.869.amzn2.x86_64
 schemaspy-version=6.2.4
 schemaspy-build=6.2.4.41 2023-07-21 11:15:12
 renderer=Graphviz dot 2.47.1 
