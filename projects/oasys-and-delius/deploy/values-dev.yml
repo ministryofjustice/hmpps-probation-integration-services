@@ -15,5 +15,9 @@ generic-service:
 
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
+  allowlist:
+    groups:
+      - mod-platform-non-live
+
 generic-prometheus-alerts:
   businessHoursOnly: true
