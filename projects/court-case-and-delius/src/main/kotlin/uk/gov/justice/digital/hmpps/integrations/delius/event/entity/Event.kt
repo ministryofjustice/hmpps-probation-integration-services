@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -15,19 +15,18 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.ProviderEmployee
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Immutable
 @Entity
-@SQLRestriction("soft_deleted = 0")
 @Table(name = "event")
 class Event(
 
-    @ManyToOne
-    @JoinColumn(name = "offender_id", nullable = false)
-    val person: Person,
+    @Column(name = "offender_id", nullable = false)
+    val personId: Long,
 
-    @OneToOne(mappedBy = "event")
+    @OneToOne(mappedBy = "event", fetch = FetchType.EAGER)
     val mainOffence: MainOffence? = null,
 
     @Column(name = "in_breach", columnDefinition = "number")
@@ -70,6 +69,18 @@ class Event(
     @OneToMany(mappedBy = "event")
     val orderManagers: List<OrderManager> = emptyList(),
 
+    @Column(name = "created_by_user_id")
+    val createdByUserId: Long? = null,
+
+    @Column(name = "created_datetime")
+    val createdDatetime: LocalDateTime? = null,
+
+    @Column(name = "last_updated_user_id")
+    val lastUpdatedUserId: Long? = null,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDatetime: LocalDateTime? = null,
+
     @ManyToOne
     @JoinColumn(name = "court_id")
     val court: Court?,
@@ -78,11 +89,14 @@ class Event(
 
 interface EventRepository : JpaRepository<Event, Long> {
 
-    fun findAllByPerson(person: Person): List<Event>
+    @EntityGraph(attributePaths = ["mainOffence", "court", "disposal"])
+    fun findAllByPersonId(personId: Long): List<Event>
 
-    fun findAllByPersonAndActiveIsTrue(person: Person): List<Event>
+    @EntityGraph(attributePaths = ["mainOffence", "court", "disposal"])
+    fun findAllByPersonIdAndActiveIsTrue(personId: Long): List<Event>
 
-    fun findByPersonAndId(person: Person, id: Long): Event?
+    @EntityGraph(attributePaths = ["mainOffence", "court", "disposal"])
+    fun findByPersonIdAndId(personId: Long, id: Long): Event?
 
     @Query(
         """
@@ -101,7 +115,7 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun awaitingPSR(eventId: Long): Int
 }
 
-fun EventRepository.getByPersonAndEventNumber(person: Person, eventId: Long) = findByPersonAndId(person, eventId)
+fun EventRepository.getByPersonAndEventNumber(person: Person, eventId: Long) = findByPersonIdAndId(person.id, eventId)
     ?: throw NotFoundException("Conviction with ID $eventId for Offender with crn ${person.crn} not found")
 
 @Entity

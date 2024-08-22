@@ -28,9 +28,10 @@ class ConvictionService(
         val person = personRepository.getPerson(crn)
 
         return when (activeOnly) {
-            true -> eventRepository.findAllByPersonAndActiveIsTrue(person)
-            else -> eventRepository.findAllByPerson(person)
-        }.sortedWith(compareByDescending(Event::referralDate).thenByDescending(Event::id))
+            true -> eventRepository.findAllByPersonIdAndActiveIsTrue(person.id)
+            else -> eventRepository.findAllByPersonId(person.id)
+        }.filter { event -> !event.softDeleted }
+            .sortedBy(Event::referralDate).reversed()
             .map { it.toConviction() }
     }
 
@@ -75,9 +76,11 @@ class ConvictionService(
     }
 
     fun Event.toLatestCourtAppearanceOutcome(): KeyValue? {
-        courtAppearances.filter { it.outcome != null }.maxByOrNull { it.appearanceDate }
-            ?.let { return KeyValue(it.outcome!!.code, it.outcome.description) }
-            ?: return null
+        return courtAppearances
+            .filter { courtAppearance -> courtAppearance.outcome != null }
+            .maxByOrNull(CourtAppearance::appearanceDate)?.let {
+                KeyValue(it.outcome!!.code, it.outcome.description)
+            }
     }
 
     fun Event.toLatestOrSentencingCourtAppearanceOf(): CourtAppearanceBasic? {
@@ -109,7 +112,7 @@ class ConvictionService(
             offenceCount = offenceCount,
             tics = tics,
             verdict = verdict,
-            offenderId = event.person.id,
+            offenderId = event.personId,
             createdDatetime = created.toLocalDateTime(),
             lastUpdatedDatetime = updated.toLocalDateTime()
         )

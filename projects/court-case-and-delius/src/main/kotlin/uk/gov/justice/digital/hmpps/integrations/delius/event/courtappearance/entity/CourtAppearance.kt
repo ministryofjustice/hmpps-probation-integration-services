@@ -15,14 +15,13 @@ import java.time.LocalDateTime
 @Entity
 @Immutable
 @Table(name = "court_appearance")
-@SQLRestriction("soft_deleted = 0")
 class CourtAppearance(
 
     @JoinColumn(name = "event_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     val event: Event,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "outcome_id")
     val outcome: Outcome?,
 
@@ -45,7 +44,50 @@ class CourtAppearance(
 
     @Id
     @Column(name = "court_appearance_id")
-    val id: Long
+    val id: Long,
+
+    @Column(name = "crown_court_calendar_number")
+    val crownCourtCalendarNumber: String? = null,
+
+    @Column(name = "bail_conditions")
+    val bailConditions: String? = null,
+
+    @Column(name = "court_notes", columnDefinition = "clob")
+    val courtNotes: String? = null,
+
+    @Column(name = "team_id")
+    val teamId: Long? = null,
+
+    @Column(name = "staff_id")
+    val staffId: Long? = null,
+
+    @Column(name = "partition_area_id")
+    val partitionAreaId: Long? = null,
+
+    @Column(name = "row_version")
+    val rowVersion: Long? = null,
+
+    @Column(name = "plea_id")
+    val pleaId: Long? = null,
+
+    @Column(name = "remand_status_id")
+    val remandStatusId: Long? = null,
+
+    @Column(name = "created_by_user_id")
+    val createdByUserId: Long? = null,
+
+    @Column(name = "created_datetime")
+    val createdDatetime: LocalDateTime? = null,
+
+    @Column(name = "last_updated_user_id")
+    val lastUpdatedUserId: Long? = null,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDatetime: LocalDateTime? = null,
+
+    @Column(name = "training_session_id")
+    val trainingSessionId: Long? = null
+
 ) {
     fun isSentenceing(): Boolean {
         return appearanceType.code == "S"
