@@ -85,7 +85,7 @@ class CommunityApiService(
         val ccdJsonString = try {
             getCcdJson(compare)
         } catch (ex: Exception) {
-            when(ex) {
+            when (ex) {
                 is DataNotAvailableException, is ComparisonException -> {
                     return CompareReport(
                         endPointName = uri.name,
@@ -94,9 +94,9 @@ class CommunityApiService(
                         success = false
                     )
                 }
+
                 else -> throw ex
             }
-
         }
 
         val comApiJsonString = proxy(comApiUri, headers.toMutableMap()).body!!
