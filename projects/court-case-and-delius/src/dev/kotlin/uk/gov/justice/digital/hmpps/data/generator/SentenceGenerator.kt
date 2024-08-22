@@ -158,7 +158,7 @@ object SentenceGenerator {
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Event(
-        person,
+        person.id,
         mainOffence,
         inBreach,
         breachDate,
@@ -353,7 +353,7 @@ object SentenceGenerator {
         outcome: ReferenceData? = ReferenceDataGenerator.NSI_BREACH_OUTCOME,
         status: NsiStatus = ACTIVE_NSI_STATUS
     ) = Nsi(
-        disposal.event.person.id,
+        disposal.event.personId,
         disposal.event.id,
         ReferenceDataGenerator.NSI_TYPE,
         status,

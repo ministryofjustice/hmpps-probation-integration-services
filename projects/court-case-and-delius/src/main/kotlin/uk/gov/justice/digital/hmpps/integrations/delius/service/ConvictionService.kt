@@ -28,9 +28,9 @@ class ConvictionService(
         val person = personRepository.getPerson(crn)
 
         return when (activeOnly) {
-            true -> eventRepository.findAllByPersonAndActiveIsTrue(person)
-            else -> eventRepository.findAllByPerson(person)
-        }.sortedWith(compareByDescending(Event::referralDate).thenByDescending(Event::id))
+            true -> eventRepository.findAllByPersonIdAndActiveIsTrue(person.id)
+            else -> eventRepository.findAllByPersonId(person.id)
+        }.sortedWith(compareByDescending(Event::referralDate))
             .map { it.toConviction() }
     }
 
@@ -109,7 +109,7 @@ class ConvictionService(
             offenceCount = offenceCount,
             tics = tics,
             verdict = verdict,
-            offenderId = event.person.id,
+            offenderId = event.personId,
             createdDatetime = created.toLocalDateTime(),
             lastUpdatedDatetime = updated.toLocalDateTime()
         )

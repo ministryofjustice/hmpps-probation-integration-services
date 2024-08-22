@@ -101,16 +101,16 @@ class Release(
     val softDeleted: Boolean = false
 )
 
-interface DisposalRepository : JpaRepository<Disposal, Long> {
-
-    @Query(
-        """ 
-        select d from Disposal d where d.event.person.crn = :crn
-        and d.softDeleted = false
-    """
-    )
-    fun getByCrn(crn: String): List<Disposal>
-}
+//interface DisposalRepository : JpaRepository<Disposal, Long> {
+//
+//    @Query(
+//        """
+//        select d from Disposal d where d.event.person.crn = :crn
+//        and d.softDeleted = false
+//    """
+//    )
+//    fun getByCrn(crn: String): List<Disposal>
+//}
 
 @Entity
 @Table(name = "upw_details")
