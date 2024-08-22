@@ -52,7 +52,7 @@ class CourtAppearance(
     @Column(name = "bail_conditions")
     val bailConditions: String? = null,
 
-    @Column(name = "court_notes")
+    @Column(name = "court_notes", columnDefinition = "clob")
     val courtNotes: String? = null,
 
     @Column(name = "team_id")
