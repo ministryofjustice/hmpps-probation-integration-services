@@ -76,9 +76,11 @@ class ConvictionService(
     }
 
     fun Event.toLatestCourtAppearanceOutcome(): KeyValue? {
-        courtAppearances.filter { it.outcome != null }.maxByOrNull { it.appearanceDate }
-            ?.let { return KeyValue(it.outcome!!.code, it.outcome.description) }
-            ?: return null
+        return courtAppearances.stream()
+            .filter{courtAppearance -> courtAppearance.outcome != null}
+            .max(Comparator.comparing(CourtAppearance::appearanceDate))
+            .map{KeyValue(it.outcome!!.code, it.outcome.description)}
+        .orElse(null);
     }
 
     fun Event.toLatestOrSentencingCourtAppearanceOf(): CourtAppearanceBasic? {
