@@ -30,9 +30,9 @@ class ConvictionService(
         return when (activeOnly) {
             true -> eventRepository.findAllByPersonIdAndActiveIsTrue(person.id)
             else -> eventRepository.findAllByPersonId(person.id)
-        }.stream().filter { event -> !event.softDeleted }
-            .sorted(Comparator.comparing(Event::referralDate).reversed())
-            .map { it.toConviction() }.toList()
+        }.filter { event -> !event.softDeleted }
+            .sortedBy(Event::referralDate).reversed()
+            .map { it.toConviction() }
     }
 
     fun getConvictionFor(crn: String, eventId: Long): Conviction? {
@@ -76,11 +76,11 @@ class ConvictionService(
     }
 
     fun Event.toLatestCourtAppearanceOutcome(): KeyValue? {
-        return courtAppearances.stream()
-            .filter{courtAppearance -> courtAppearance.outcome != null}
-            .max(Comparator.comparing(CourtAppearance::appearanceDate))
-            .map{KeyValue(it.outcome!!.code, it.outcome.description)}
-        .orElse(null);
+        return courtAppearances
+            .filter { courtAppearance -> courtAppearance.outcome != null }
+            .maxByOrNull(CourtAppearance::appearanceDate)?.let {
+                KeyValue(it.outcome!!.code, it.outcome.description)
+            }
     }
 
     fun Event.toLatestOrSentencingCourtAppearanceOf(): CourtAppearanceBasic? {
