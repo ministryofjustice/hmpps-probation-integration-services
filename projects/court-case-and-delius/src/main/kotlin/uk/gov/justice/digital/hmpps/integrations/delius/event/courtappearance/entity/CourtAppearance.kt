@@ -19,10 +19,10 @@ import java.time.LocalDateTime
 class CourtAppearance(
 
     @JoinColumn(name = "event_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     val event: Event,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "outcome_id")
     val outcome: Outcome?,
 

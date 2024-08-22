@@ -30,8 +30,9 @@ class ConvictionService(
         return when (activeOnly) {
             true -> eventRepository.findAllByPersonIdAndActiveIsTrue(person.id)
             else -> eventRepository.findAllByPersonId(person.id)
-        }.sortedWith(compareByDescending(Event::referralDate))
-            .map { it.toConviction() }
+        }.stream().filter { event -> !event.softDeleted }
+            .sorted(Comparator.comparing(Event::referralDate).reversed())
+            .map { it.toConviction() }.toList()
     }
 
     fun getConvictionFor(crn: String, eventId: Long): Conviction? {
