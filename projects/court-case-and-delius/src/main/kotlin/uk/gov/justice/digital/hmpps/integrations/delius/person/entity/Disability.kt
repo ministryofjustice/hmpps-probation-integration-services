@@ -4,7 +4,6 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -12,7 +11,6 @@ import java.time.ZonedDateTime
 @Immutable
 @Entity
 @Table(name = "disability")
-@SQLRestriction("soft_deleted = 0 and (finish_date is null or finish_date > current_date)")
 class Disability(
     @Id
     @Column(name = "disability_id")
