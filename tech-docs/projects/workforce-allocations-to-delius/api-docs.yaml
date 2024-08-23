@@ -236,10 +236,10 @@ paths:
         required: false
         schema:
           type: string
-          default: CRN
           enum:
           - CRN
           - NOMS
+          default: CRN
       responses:
         "200":
           description: OK
