@@ -189,7 +189,7 @@ internal class IntegrationTest {
             val assessment = oasysAssessmentRepository.findByOasysId("100835871")
             assertThat(assessment?.court?.code, equalTo("LVRPCC"))
             assertThat(assessment?.offence?.code, equalTo("00857"))
-            assertThat(assessment?.assessedBy, equalTo("LevelTwo CentralSupport"))
+            assertThat(assessment?.assessedBy, equalTo("R. L. Name"))
             assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-15")))
             assertThat(assessment?.totalScore, equalTo(88))
 

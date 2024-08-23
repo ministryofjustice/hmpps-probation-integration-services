@@ -65,7 +65,7 @@ class AssessmentService(
                 ?.let { offenceRepository.findByCode(it.offenceCode + it.offenceSubcode) },
             totalScore = furtherInformation.totWeightedScore,
             description = furtherInformation.pOAssessmentDesc,
-            assessedBy = furtherInformation.assessorName,
+            assessedBy = furtherInformation.assessorName?.let { if (it.length > 35) initialiseName(it) else it },
             riskFlags = riskFlags.joinToString(","),
             concernFlags = concernFlags.joinToString(","),
             dateCreated = initiationDate,
@@ -85,6 +85,12 @@ class AssessmentService(
         sentencePlan?.objectives?.map { it.plan(person, assessment) }
             ?.forEach { assessment.withSentencePlan(it) }
         return assessment
+    }
+
+    private fun initialiseName(name: String): String {
+        val names = name.split(Regex("\\s+")).toMutableList()
+        for (i in 0 until names.size - 1) names[i] = "${names[i].first()}."
+        return names.joinToString(" ")
     }
 }
 
