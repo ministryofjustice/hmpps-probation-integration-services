@@ -49,7 +49,7 @@ class CommunityApiService(
                 is AccessDeniedException -> controllerAdvice.handleAccessDenied(cause).body
                 is NotFoundException -> controllerAdvice.handleNotFound(cause).body
                 is InvalidRequestException -> controllerAdvice.handleInvalidRequest(cause).body
-                else -> throw ex
+                else -> throw ComparisonException(ex.cause?.message)
             }
         }
         return mapper.writeValueAsString(response)
@@ -84,13 +84,19 @@ class CommunityApiService(
 
         val ccdJsonString = try {
             getCcdJson(compare)
-        } catch (ex: DataNotAvailableException) {
-            return CompareReport(
-                endPointName = uri.name,
-                url = comApiUri,
-                message = ex.message!! + " for ${compare.params["crn"]}",
-                success = false
-            )
+        } catch (ex: Exception) {
+            when (ex) {
+                is DataNotAvailableException, is ComparisonException -> {
+                    return CompareReport(
+                        endPointName = uri.name,
+                        url = comApiUri,
+                        message = ex.message!! + " for ${compare.params["crn"]}",
+                        success = false
+                    )
+                }
+
+                else -> throw ex
+            }
         }
 
         val comApiJsonString = proxy(comApiUri, headers.toMutableMap()).body!!
