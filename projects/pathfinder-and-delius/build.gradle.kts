@@ -35,4 +35,8 @@ configure<ClassPathExtension> {
         "**/entity/**",
         "**/AppKt.class"
     )
+
+    sonarExclusions = listOf(
+        "**/hmpps/**"
+    )
 }
