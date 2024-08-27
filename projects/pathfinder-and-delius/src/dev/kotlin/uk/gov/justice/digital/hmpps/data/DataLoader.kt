@@ -7,12 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
-import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -33,34 +28,62 @@ class DataLoader(
             ProbationAreaGenerator.DEFAULT_PA,
             ProbationAreaGenerator.DEFAULT_BOROUGH,
             ProbationAreaGenerator.DEFAULT_LDU,
+            ProbationAreaGenerator.DEFAULT_LDU2,
+            ProbationAreaGenerator.NON_SELECTABLE_PA,
+            ProbationAreaGenerator.NON_SELECTABLE_BOROUGH,
+            ProbationAreaGenerator.NON_SELECTABLE_LDU,
+            CourtAppearanceGenerator.DEFAULT_OUTCOME,
             CourtAppearanceGenerator.DEFAULT_CA_TYPE,
             CourtAppearanceGenerator.DEFAULT_COURT,
             CourtAppearanceGenerator.DEFAULT_PERSON,
             CourtAppearanceGenerator.DEFAULT_EVENT,
             CourtAppearanceGenerator.DEFAULT_CA,
+            CourtAppearanceGenerator.PERSON_2,
+            CourtAppearanceGenerator.EVENT_2,
+            CourtAppearanceGenerator.CA_2,
+            CourtAppearanceGenerator.CA_3,
             ConvictionEventGenerator.PERSON,
-            ConvictionEventGenerator.OFFENCE_OTHER,
-            ConvictionEventGenerator.OFFENCE_MAIN,
+            ConvictionEventGenerator.ADDITIONAL_OFFENCE_TYPE,
+            ConvictionEventGenerator.OFFENCE_MAIN_TYPE,
             ConvictionEventGenerator.DEFAULT_EVENT,
+            ConvictionEventGenerator.INACTIVE_EVENT,
             ConvictionEventGenerator.MAIN_OFFENCE,
             ConvictionEventGenerator.OTHER_OFFENCE,
             ConvictionEventGenerator.DISPOSAL_TYPE,
             ConvictionEventGenerator.DISPOSAL,
+            ConvictionEventGenerator.COURT_APPEARANCE,
+            DetailsGenerator.INSTITUTION,
             DetailsGenerator.RELIGION,
+            DetailsGenerator.NATIONALITY,
+            DetailsGenerator.MALE,
+            DetailsGenerator.FEMALE,
             DetailsGenerator.PERSON,
+            DetailsGenerator.ALIAS_1,
+            DetailsGenerator.ALIAS_2,
             DetailsGenerator.DEFAULT_PA,
             DetailsGenerator.DISTRICT,
             DetailsGenerator.TEAM,
             DetailsGenerator.STAFF,
             DetailsGenerator.PERSON_MANAGER,
+            DetailsGenerator.RELEASE_TYPE,
+            DetailsGenerator.RELEASE,
+            DetailsGenerator.RECALL_REASON,
+            DetailsGenerator.RECALL,
+            NSIGenerator.BREACH_TYPE,
+            NSIGenerator.RECALL_TYPE,
+            NSIGenerator.BREACH_NSI,
+            NSIGenerator.RECALL_NSI,
             ConvictionEventGenerator.PERSON_2,
             ConvictionEventGenerator.EVENT_2,
             ConvictionEventGenerator.MAIN_OFFENCE_2,
             ConvictionEventGenerator.OTHER_OFFENCE_2,
             ConvictionEventGenerator.DISPOSAL_2,
+            KeyDateGenerator.CUSTODY_STATUS,
             KeyDateGenerator.SED_KEYDATE,
             KeyDateGenerator.CUSTODY,
-            KeyDateGenerator.KEYDATE
+            KeyDateGenerator.KEYDATE,
+            KeyDateGenerator.CUSTODY_1,
+            KeyDateGenerator.KEYDATE_1
         )
 
         em.createNativeQuery(
