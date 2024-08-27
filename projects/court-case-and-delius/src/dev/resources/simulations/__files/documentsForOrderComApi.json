@@ -1,0 +1,34 @@
+{
+  "documents": [],
+  "convictions": [
+    {
+      "convictionId": "83",
+      "documents": [
+        {
+          "id": "alfrescoId",
+          "documentName": "filename.txt",
+          "type": {
+            "code": "CONVICTION_DOCUMENT",
+            "description": "Sentence related"
+          },
+          "lastModifiedAt": "2024-08-08T15:56:02.88685",
+          "createdAt": "2024-08-08T15:56:02.88684",
+          "parentPrimaryKeyId": 83,
+          "reportDocumentDates": {}
+        },
+        {
+          "id": "alfrescoId2",
+          "documentName": "filename2.txt",
+          "type": {
+            "code": "CONVICTION_TESTDOCUMENT",
+            "description": "Sentence related"
+          },
+          "lastModifiedAt": "2024-08-08T15:56:01.88685",
+          "createdAt": "2024-08-08T15:56:02.88684",
+          "parentPrimaryKeyId": 84,
+          "reportDocumentDates": {}
+        }
+      ]
+    }
+  ]
+}

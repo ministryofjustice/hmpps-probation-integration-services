@@ -105,7 +105,36 @@ internal class ProxyIntegrationTest {
         ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
 
         assertThat(res.endPointName, equalTo("OFFENDER_DETAIL"))
-        assertThat(res.issues?.size, equalTo(6))
+        assertThat(res.success, equalTo(false))
+    }
+
+    @Test
+    fun `compare new endpoints with community api endpoints ignoring array order`() {
+
+        val forCompare = ResourceUtils.getFile("classpath:simulations/__files/documentsForOrderCcd.json")
+            .inputStream().readBytes().toString(Charsets.UTF_8)
+
+        doReturn(forCompare).`when`(mapper).writeValueAsString(any())
+        val res = mockMvc.perform(
+            post("/secure/compare")
+                .contentType("application/json;charset=utf-8")
+                .content(
+                    """
+                    {
+                        "params": {
+                            "crn": "X123456",
+                            "type": null,
+                            "subtype": null
+                        },
+                        "uri": "DOCUMENTS_GROUPED"
+                    }
+                """
+                )
+                .withToken()
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsJson<CompareReport>()
+
+        assertThat(res.endPointName, equalTo("DOCUMENTS_GROUPED"))
+        assertThat(res.success, equalTo(true))
     }
 
     @Test

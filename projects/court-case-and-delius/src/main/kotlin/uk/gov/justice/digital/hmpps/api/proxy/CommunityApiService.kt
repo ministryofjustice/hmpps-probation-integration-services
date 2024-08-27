@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.api.proxy
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import jakarta.json.Json
-import jakarta.json.JsonPatch
-import jakarta.json.JsonStructure
-import jakarta.json.JsonValue
+import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.core.io.ByteArrayResource
@@ -18,7 +16,6 @@ import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.api.resource.advice.CommunityApiControllerAdvice
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import java.io.StringReader
 import java.lang.reflect.InvocationTargetException
 import java.net.URI
 import kotlin.reflect.KParameter
@@ -100,20 +97,30 @@ class CommunityApiService(
         }
 
         val comApiJsonString = proxy(comApiUri, headers.toMutableMap()).body!!
-        val ccdJson = Json.createReader(StringReader(ccdJsonString)).readValue() as JsonStructure
-        val comApiJson =
-            Json.createReader(StringReader(String(comApiJsonString.contentAsByteArray))).readValue() as JsonStructure
-        val diff: JsonPatch = Json.createDiff(ccdJson, comApiJson)
-        val results = diff.toDiffReport(ccdJson, showValues)
 
-        return CompareReport(
-            endPointName = uri.name,
-            message = "${results.size} differences found between New API and Community API",
-            issues = results,
-            url = comApiUri,
-            success = results.isEmpty(),
-            testExecuted = true
-        )
+        try {
+            JSONAssert.assertEquals(
+                ccdJsonString,
+                String(comApiJsonString.contentAsByteArray),
+                JSONCompareMode.NON_EXTENSIBLE
+            )
+            return CompareReport(
+                endPointName = uri.name,
+                url = comApiUri,
+                message = "Json is equal",
+                success = true,
+                testExecuted = true
+            )
+        } catch (ex: AssertionError) {
+            // Differences found other than the order
+            return CompareReport(
+                endPointName = uri.name,
+                url = comApiUri,
+                message = ex.message!!,
+                success = false,
+                testExecuted = true
+            )
+        }
     }
 
     fun proxy(requestUri: String, headers: MutableMap<String, String>): ResponseEntity<Resource> {
@@ -131,32 +138,3 @@ class CommunityApiService(
     }
 }
 
-fun JsonStructure.getValueAsString(path: String, removeQuotes: Boolean = true): String {
-    val index = if (removeQuotes) 1 else 0
-    return getValue(path.substring(index, path.length - index)).toString()
-}
-
-fun JsonValue.getValueAsString(path: String) = asJsonObject()[path].toString()
-
-fun JsonPatch.toDiffReport(jsonObject: JsonStructure, showValues: Boolean = false) = toJsonArray().map {
-    val op = it.getValueAsString("op")
-    val path = it.getValueAsString("path")
-    if (op.contains("replace")) {
-        if (showValues) {
-            val ccdApiValue = jsonObject.getValueAsString(path)
-            "Values differ at ${it.getValueAsString("path")}. Found $ccdApiValue in new API, but is ${
-                it.getValueAsString(
-                    "value"
-                )
-            } in Community API"
-        } else {
-            "Values differ at ${it.getValueAsString("path")}"
-        }
-    } else if (op.contains("remove")) {
-        "Additional element at $path exists in new API but is not present in Community API"
-    } else if (op.contains("add")) {
-        "Element at $path not found in new API, but is present with value of ${it.getValueAsString("value")} in Community API "
-    } else {
-        "Unhandled operation $op"
-    }
-}

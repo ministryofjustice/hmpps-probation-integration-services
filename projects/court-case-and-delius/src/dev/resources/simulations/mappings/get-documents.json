@@ -16,6 +16,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/X123456/documents/grouped"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "documentsForOrderComApi.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPathTemplate": "/secure/offenders/crn/{crn}/documents/alfrescoId"
       },
       "response": {
