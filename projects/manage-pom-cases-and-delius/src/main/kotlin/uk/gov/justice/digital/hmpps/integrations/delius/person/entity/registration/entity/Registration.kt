@@ -9,8 +9,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -45,17 +43,6 @@ class Registration(
 
     @Column(name = "deregistered", columnDefinition = "number")
     val deRegistered: Boolean,
-
-    @ManyToOne
-    @JoinColumn(name = "registering_team_id")
-    val registeringTeam: Team,
-
-    @ManyToOne
-    @JoinColumn(name = "registering_staff_id")
-    val registeringStaff: Staff,
-
-    @Column(name = "registration_notes", columnDefinition = "clob")
-    val registrationNotes: String? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,

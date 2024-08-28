@@ -122,28 +122,24 @@ class DataLoader(
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_MAPPA,
                     ReferenceDataGenerator.LEVEL_M2,
-                    LocalDate.now().minusDays(3),
-                    staff = staff,
+                    LocalDate.now().minusDays(3)
                 ),
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_MAPPA,
                     ReferenceDataGenerator.LEVEL_M1,
                     LocalDate.now().minusDays(1),
-                    staff = staff,
                     softDeleted = true
                 ),
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_MAPPA,
                     ReferenceDataGenerator.LEVEL_M3,
                     LocalDate.now().minusDays(2),
-                    staff = staff,
                     deRegistered = true
                 ),
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_OTH,
                     ReferenceDataGenerator.LEVEL_M1,
-                    LocalDate.now().minusDays(1),
-                    staff = staff
+                    LocalDate.now().minusDays(1)
                 )
             )
         )

@@ -2,9 +2,7 @@ package uk.gov.justice.digital.hmpps.services
 
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.MappaDetail
-import uk.gov.justice.digital.hmpps.api.model.StaffHuman
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
@@ -30,14 +28,7 @@ fun Registration.toMappa() = MappaDetail(
     category = category?.code?.let { code -> MappaCategory.toCommunityCategory(code) },
     categoryDescription = category?.description,
     startDate = date,
-    reviewDate = nextReviewDate,
-    team =  KeyValue(registeringTeam.code, registeringTeam.description),
-    officer = StaffHuman(
-            code = registeringStaff.code,
-            forenames = registeringStaff.forename,
-            surname = registeringStaff.surname),
-    probationArea = KeyValue(registeringTeam.probationArea.code, registeringTeam.probationArea.description),
-    notes = registrationNotes
+    reviewDate = nextReviewDate
 )
 
 enum class MappaLevel(val communityValue: Int, val deliusValue: String) {

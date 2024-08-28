@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.api.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
@@ -29,32 +28,4 @@ data class MappaDetail(
 
     @Schema(description = "Next review date", example = "2021-04-27")
     val reviewDate: LocalDate? = null,
-
-    @Schema(description = "Team")
-    val team: KeyValue,
-
-    @Schema(description = "Officer")
-    val officer: StaffHuman,
-
-    @Schema(description = "Probation area")
-    val probationArea: KeyValue,
-
-    @Schema(description = "Notes")
-    private val notes: String? = null
-)
-
-data class KeyValue(
-    val code: String? = null,
-    val description: String
-)
-
-data class StaffHuman(
-    @Schema(description = "Staff code", example = "AN001A")
-    val code: String? = null,
-    @Schema(description = "Given names", example = "Sheila Linda")
-    val forenames: String? = null,
-    @Schema(description = "Family name", example = "Hancock")
-    val surname: String? = null,
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val isUnallocated: Boolean = code?.endsWith("U") ?: false
 )
