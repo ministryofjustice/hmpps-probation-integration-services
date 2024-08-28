@@ -25,19 +25,19 @@ data class MappaDetail(
     val categoryDescription: String? = null,
 
     @Schema(description = "Start date", example = "2021-01-27")
-    val startDate: LocalDate? = null,
+    val startDate: LocalDate,
 
     @Schema(description = "Next review date", example = "2021-04-27")
     val reviewDate: LocalDate? = null,
 
     @Schema(description = "Team")
-    val team: KeyValue? = null,
+    val team: KeyValue,
 
     @Schema(description = "Officer")
-    val officer: StaffHuman? = null,
+    val officer: StaffHuman,
 
     @Schema(description = "Probation area")
-    val probationArea: KeyValue? = null,
+    val probationArea: KeyValue,
 
     @Schema(description = "Notes")
     private val notes: String? = null

@@ -48,11 +48,11 @@ class Registration(
 
     @ManyToOne
     @JoinColumn(name = "registering_team_id")
-    val registeringTeam: Team? = null,
+    val registeringTeam: Team,
 
     @ManyToOne
     @JoinColumn(name = "registering_staff_id")
-    val registeringStaff: Staff? = null,
+    val registeringStaff: Staff,
 
     @Column(name = "registration_notes", columnDefinition = "clob")
     val registrationNotes: String? = null,

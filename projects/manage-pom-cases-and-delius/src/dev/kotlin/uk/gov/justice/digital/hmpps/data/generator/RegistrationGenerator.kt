@@ -27,7 +27,7 @@ object RegistrationGenerator {
         deRegistered: Boolean = false,
         softDeleted: Boolean = false,
         person: Person = PersonGenerator.DEFAULT,
-        category: ReferenceData = REG_CAT1,
+        category: ReferenceData? = REG_CAT1,
         team: Team = DEFAULT_TEAM,
         staff: Staff = DEFAULT_STAFF,
         id: Long = IdGenerator.getAndIncrement()

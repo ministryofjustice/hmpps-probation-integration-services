@@ -22,7 +22,7 @@ class Team(
 
     @JoinColumn(name = "probation_area_id")
     @ManyToOne
-    val probationArea: ProbationArea? = null,
+    val probationArea: ProbationArea,
 
     @Id
     @Column(name = "team_id")

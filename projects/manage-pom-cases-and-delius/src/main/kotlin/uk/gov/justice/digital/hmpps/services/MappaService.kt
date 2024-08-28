@@ -31,15 +31,12 @@ fun Registration.toMappa() = MappaDetail(
     categoryDescription = category?.description,
     startDate = date,
     reviewDate = nextReviewDate,
-    team = registeringTeam?.let { team -> KeyValue(team.code, team.description) },
-    officer = registeringStaff?.let { staff ->
-        StaffHuman(
-            code = staff.code,
-            forenames = staff.forename,
-            surname = staff.surname,
-        )
-    },
-    probationArea = registeringTeam?.probationArea?.let { pa -> KeyValue(pa.code, pa.description) },
+    team =  KeyValue(registeringTeam.code, registeringTeam.description),
+    officer = StaffHuman(
+            code = registeringStaff.code,
+            forenames = registeringStaff.forename,
+            surname = registeringStaff.surname),
+    probationArea = KeyValue(registeringTeam.probationArea.code, registeringTeam.probationArea.description),
     notes = registrationNotes
 )
 
