@@ -97,14 +97,16 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     )
     fun hasVloAssigned(personId: Long): Boolean
 
-    @Query("""
+    @Query(
+        """
         select registration from Registration registration
         where registration.type.code = 'MAPP'
         and registration.person.id = :offenderId
         and registration.softDeleted = false
         and registration.deRegistered = false
         order by registration.createdDatetime desc
-    """)
+    """
+    )
     fun findActiveMappaRegistrationByOffenderId(offenderId: Long, pageable: Pageable): Page<Registration>
 }
 

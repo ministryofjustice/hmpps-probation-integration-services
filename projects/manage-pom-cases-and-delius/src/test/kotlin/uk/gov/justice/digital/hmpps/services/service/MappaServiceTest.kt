@@ -15,7 +15,7 @@ class MappaServiceTest {
     @Test
     fun `mappa null values `() {
 
-        val mappa =  RegistrationGenerator.generate(
+        val mappa = RegistrationGenerator.generate(
             RegistrationGenerator.TYPE_MAPPA,
             null,
             LocalDate.now().minusDays(3),
