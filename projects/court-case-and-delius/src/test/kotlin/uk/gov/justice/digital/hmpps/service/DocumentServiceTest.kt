@@ -114,7 +114,7 @@ class DocumentServiceTest {
     }
 
     @Test
-    fun `  no filter returns all documents `() {
+    fun `no filter returns all documents `() {
 
         whenever(documentRepository.getPersonAndEventDocuments(any())).thenReturn(documents)
 
@@ -125,6 +125,40 @@ class DocumentServiceTest {
         assertThat(docs.convictions.size, equalTo(2))
     }
 
+    @Test
+    fun `no dateRequested, dateRequired, completedDate returns null reportDocumentDates  `() {
+
+        val docs = listOf(
+            generateDocument("CPS_PACK", "EVENT", eventId = 4L),
+            generateDocument("CPS_PACK", "EVENT", eventId = 4L, dateRequired = Instant.now()),
+            generateDocument("CPS_PACK", "EVENT", eventId = 4L, completedDate = Instant.now()),
+            generateDocument("CPS_PACK", "EVENT", eventId = 4L, dateRequested = Instant.now())
+        )
+        whenever(documentRepository.getPersonAndEventDocuments(any())).thenReturn(docs)
+
+        val filter = DocumentFilter()
+        val ret = documentService.getDocumentsGroupedFor("C123456", filter)
+
+        assertThat(ret.convictions[0].documents[0].reportDocumentDates, equalTo(null))
+        assertThat(ret.convictions[0].documents[1].reportDocumentDates == null, equalTo(false))
+        assertThat(ret.convictions[0].documents[2].reportDocumentDates == null, equalTo(false))
+        assertThat(ret.convictions[0].documents[3].reportDocumentDates == null, equalTo(false))
+    }
+
+    @Test
+    fun `no createdDate defaults to lastUpdated  `() {
+
+        val docs = listOf(
+            generateDocument("CPS_PACK", "EVENT", eventId = 4L, createdAt = null),
+        )
+        whenever(documentRepository.getPersonAndEventDocuments(any())).thenReturn(docs)
+
+        val filter = DocumentFilter()
+        val ret = documentService.getDocumentsGroupedFor("C123456", filter)
+
+        assertThat(ret.convictions[0].documents[0].createdAt, equalTo(ret.convictions[0].documents[0].lastModifiedAt))
+    }
+
     fun generateDocument(
         type: String,
         tableName: String,
@@ -132,14 +166,15 @@ class DocumentServiceTest {
         dateRequested: Instant? = null,
         dateRequired: Instant? = null,
         completedDate: Instant? = null,
-        eventId: Long? = null
+        eventId: Long? = null,
+        createdAt: Instant? = Instant.now()
     ) = DocumentTest(
         alfrescoId = "usdiuhasduihd9sd9a8d09u",
         name = "Doc1",
         type = type,
         tableName = tableName,
         lastModifiedAt = Instant.now(),
-        createdAt = Instant.now(),
+        createdAt = createdAt,
         primaryKeyId = 2L,
         author = "Test Author",
         description = "A description",

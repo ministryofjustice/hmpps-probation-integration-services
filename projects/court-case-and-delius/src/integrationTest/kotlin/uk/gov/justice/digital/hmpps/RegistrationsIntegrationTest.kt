@@ -34,7 +34,7 @@ internal class RegistrationsIntegrationTest {
         assertThat(response.registrations.size, equalTo(3))
         assertThat(response.registrations[0].active, equalTo(true))
         assertThat(response.registrations[1].active, equalTo(false))
-        assertThat(response.registrations[0].endDate, equalTo(DEREG_2.deRegistrationDate))
+        assertThat(response.registrations[2].endDate, equalTo(DEREG_2.deRegistrationDate))
     }
 
     @Test

@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.integration.delius.registration.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
@@ -16,7 +16,6 @@ import java.time.LocalDateTime
 @Immutable
 @Entity
 @Table(name = "registration")
-@SQLRestriction("soft_deleted = 0")
 class Registration(
 
     @ManyToOne
@@ -137,8 +136,10 @@ class DeRegistration(
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
 
+    @EntityGraph(attributePaths = ["type", "category", "level", "team", "staff"])
     fun findByPersonId(personId: Long): List<Registration>
 
+    @EntityGraph(attributePaths = ["type", "category", "level", "team", "staff"])
     @Query(
         "select registration from Registration registration " +
             "where registration.person.id = :personId " +

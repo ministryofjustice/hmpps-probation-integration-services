@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getPerson
+import java.time.Instant
 import java.time.LocalDateTime
 
 @Service
@@ -71,19 +72,21 @@ class DocumentService(
 private inline fun <reified T : Enum<T>> String.toEnumOrElseThrow(message: String) =
     T::class.java.enumConstants.firstOrNull { it.name == this } ?: throw InvalidRequestException(message)
 
+private fun Instant?.toLocalDateTime() = this?.let { LocalDateTime.ofInstant(it, EuropeLondon) }
+
 fun Document.toOffenderDocumentDetail() = OffenderDocumentDetail(
     id = alfrescoId,
     documentName = name,
     author = author,
     type = KeyValue(typeCode(), typeDescription()),
     extendedDescription = description,
-    lastModifiedAt = LocalDateTime.ofInstant(lastModifiedAt, EuropeLondon),
-    createdAt = LocalDateTime.ofInstant(createdAt, EuropeLondon),
+    lastModifiedAt = lastModifiedAt.toLocalDateTime(),
+    createdAt = createdAt.toLocalDateTime() ?: lastModifiedAt.toLocalDateTime(),
     parentPrimaryKeyId = primaryKeyId,
     subType = subTypeDescription?.let { KeyValue(code = subTypeCode, description = it) },
     reportDocumentDates = ReportDocumentDates(
         requestedDate = dateRequested?.let { LocalDateTime.ofInstant(it, EuropeLondon).toLocalDate() },
         requiredDate = dateRequired?.let { LocalDateTime.ofInstant(it, EuropeLondon).toLocalDate() },
         completedDate = completedDate?.let { LocalDateTime.ofInstant(it, EuropeLondon) },
-    )
+    ).takeUnless { it.requestedDate == null && it.requiredDate == null && completedDate == null }
 )

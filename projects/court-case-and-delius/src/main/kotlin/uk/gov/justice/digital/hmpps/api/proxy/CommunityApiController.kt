@@ -387,7 +387,7 @@ class CommunityApiController(
 
         val executed = reports.filter { it.testExecuted == true }
         val successful = reports.filter { it.success && it.testExecuted == true }
-        val unsuccessful = reports.filter { !it.success && it.testExecuted == true }
+        val unsuccessful = reports.filter { !it.success }
         val executionFailures = reports.filter { it.testExecuted == false }
         val distinctEndpointsExecuted = executed.groupBy(CompareReport::endPointName)
         val covered = distinctEndpointsExecuted.map { it.key + " covered " + it.value.size + " times" }
@@ -470,7 +470,6 @@ class CommunityApiController(
                     "crn" to crn,
                     "endpointName" to compareReport.endPointName,
                     "url" to compareReport.url!!,
-                    "numberOfDifferences" to compareReport.issues?.size.toString(),
                     "compareUrl" to "/secure/compare",
                     "comparePayload" to comparePayload
                 )

@@ -20,11 +20,15 @@ class RegistrationService(
             if (activeOnly) registrationRepository.findActiveByPersonId(person.id)
             else registrationRepository.findByPersonId(person.id)
 
-        return Registrations(registrations.map(Registration::toRegistration))
+        return Registrations(registrations
+            .filter { r -> !r.softDeleted }
+            .sortedBy(Registration::date).reversed()
+            .map(Registration::toRegistration))
     }
 }
 
 fun Registration.toRegistration() = uk.gov.justice.digital.hmpps.api.model.Registration(
+    registrationId = id,
     offenderId = person.id,
     register = type.flag.let { KeyValue(it.code, it.description) },
     type = KeyValue(type.code, type.description),

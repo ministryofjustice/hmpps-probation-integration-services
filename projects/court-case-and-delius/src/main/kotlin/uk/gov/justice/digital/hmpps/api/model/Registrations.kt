@@ -7,6 +7,7 @@ data class Registrations(
 )
 
 data class Registration(
+    val registrationId: Long? = null,
     val offenderId: Long? = null,
     val register: KeyValue? = null,
     val type: KeyValue? = null,
