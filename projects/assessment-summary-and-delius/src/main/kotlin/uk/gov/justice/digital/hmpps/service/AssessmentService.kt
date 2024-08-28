@@ -61,7 +61,8 @@ class AssessmentService(
             contact = contact,
             court = furtherInformation.courtCode
                 ?.let { courtRepository.getByCode(it) },
-            offence = offences.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
+            offence = offences
+                ?.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
                 ?.let { offenceRepository.findByCode(it.offenceCode + it.offenceSubcode) },
             totalScore = furtherInformation.totWeightedScore,
             description = furtherInformation.pOAssessmentDesc,
