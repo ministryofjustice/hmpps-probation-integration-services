@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
@@ -144,9 +145,12 @@ class AllocationDemandService(
         allocatingStaffUsername: String
     ): AllocationDemandStaffResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
-        val staff = staffRepository.findStaffWithUserByCode(staffCode)!!
-        val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)!!
-        val eventId = eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(crn, eventNumber)!!.id
+        val staff = staffRepository.findStaffWithUserByCode(staffCode)
+            ?: throw NotFoundException("Staff", "code", staffCode)
+        val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)
+            ?: throw NotFoundException("Staff", "username", allocatingStaffUsername)
+        val eventId = eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(crn, eventNumber)?.id
+            ?: throw NotFoundException("Event number $eventNumber not found for $crn")
 
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .map { it.toRequirement() }
