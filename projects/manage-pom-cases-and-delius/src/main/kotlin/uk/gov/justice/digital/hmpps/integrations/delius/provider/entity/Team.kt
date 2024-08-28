@@ -20,6 +20,10 @@ class Team(
     @JoinColumn(name = "district_id")
     val district: District?,
 
+    @JoinColumn(name = "probation_area_id")
+    @ManyToOne
+    val probationArea: ProbationArea? = null,
+
     @Id
     @Column(name = "team_id")
     val id: Long

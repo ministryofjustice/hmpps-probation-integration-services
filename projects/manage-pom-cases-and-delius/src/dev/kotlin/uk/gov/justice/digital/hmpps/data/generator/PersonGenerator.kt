@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.Referen
 object PersonGenerator {
     val DEFAULT = generate("T123456", "A0123BY", ReferenceDataGenerator.TIER_2)
     val HANDOVER = generate("H123456", "A1024BY")
+    val NO_MAPPA = generate("X123456", "A1024BX")
     val UPDATE_HANDOVER_AND_START = generate("H123457", "A2048BY")
     val CREATE_HANDOVER_AND_START = generate("H123458", "A4096BY")
     val CREATE_SENTENCE_CHANGED = generate("H123459", "A4096CY")

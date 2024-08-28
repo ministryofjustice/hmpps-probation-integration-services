@@ -80,6 +80,8 @@ class DataLoader(
         val staffMap =
             staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff } + ProviderGenerator.UNALLOCATED_STAFF)
                 .associateBy { it.code }
+
+        val staff = staffRepository.save(ProviderGenerator.generateStaff("Test", "Test", "Test"))
         UserGenerator.DEFAULT_STAFF_USER = staffUserRepository.save(
             StaffUser(
                 UserGenerator.DEFAULT_STAFF_USER.username,
@@ -92,6 +94,7 @@ class DataLoader(
             listOf(
                 PersonGenerator.DEFAULT,
                 PersonGenerator.HANDOVER,
+                PersonGenerator.NO_MAPPA,
                 PersonGenerator.CREATE_HANDOVER_AND_START,
                 PersonGenerator.UPDATE_HANDOVER_AND_START,
                 PersonGenerator.CREATE_SENTENCE_CHANGED,
@@ -114,30 +117,33 @@ class DataLoader(
         eventRepository.saveAll(CaseAllocationGenerator.ALL.map { it.event })
         disposalRepository.saveAll(CaseAllocationGenerator.ALL.map { it.event.disposal })
         caseAllocationRepository.saveAll(CaseAllocationGenerator.ALL)
-
         registrationRepository.saveAll(
             listOf(
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_MAPPA,
                     ReferenceDataGenerator.LEVEL_M2,
-                    LocalDate.now().minusDays(3)
+                    LocalDate.now().minusDays(3),
+                    staff = staff,
                 ),
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_MAPPA,
                     ReferenceDataGenerator.LEVEL_M1,
                     LocalDate.now().minusDays(1),
+                    staff = staff,
                     softDeleted = true
                 ),
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_MAPPA,
                     ReferenceDataGenerator.LEVEL_M3,
                     LocalDate.now().minusDays(2),
+                    staff = staff,
                     deRegistered = true
                 ),
                 RegistrationGenerator.generate(
                     RegistrationGenerator.TYPE_OTH,
                     ReferenceDataGenerator.LEVEL_M1,
-                    LocalDate.now().minusDays(1)
+                    LocalDate.now().minusDays(1),
+                    staff = staff
                 )
             )
         )
