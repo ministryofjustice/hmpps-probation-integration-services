@@ -42,7 +42,7 @@ data class AssessmentSummary(
     val weightedScores: WeightedScores = WeightedScores(),
     val furtherInformation: FurtherInformation = FurtherInformation(),
     val ogpOvp: OgpOvp = OgpOvp(),
-    val offences: List<Offence> = arrayListOf(),
+    val offences: List<Offence>? = arrayListOf(),
     val basicSentencePlan: List<BasicSentencePlanArea>? = null,
     val sentencePlan: SentencePlan? = null
 ) {
