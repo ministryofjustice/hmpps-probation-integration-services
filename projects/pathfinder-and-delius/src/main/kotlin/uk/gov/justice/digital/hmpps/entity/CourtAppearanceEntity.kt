@@ -1,16 +1,11 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import java.time.ZonedDateTime
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -35,7 +30,7 @@ class Court(
 class CourtAppearanceEntity(
 
     @Column(name = "appearance_date")
-    val appearanceDate: ZonedDateTime,
+    val appearanceDate: LocalDate,
 
     @Id
     @Column(name = "court_appearance_id")
@@ -89,6 +84,9 @@ class CourtAppearancePerson(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(columnDefinition = "char(7)")
+    val nomsNumber: String? = null,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 
@@ -100,9 +98,32 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
         """
         select ca from CourtAppearanceEntity ca
         where ca.appearanceDate >= :dateFrom
-        and ca.courtAppearanceEventEntity.courtAppearancePerson.crn in (:crns)
+        and ca.courtAppearanceEventEntity.courtAppearancePerson.crn = :crn
         order by ca.appearanceDate desc
-    """
+        """
     )
-    fun findMostRecentCourtAppearances(dateFrom: ZonedDateTime, crns: List<String>): List<CourtAppearanceEntity>
+    fun findMostRecentCourtAppearancesByCrn(dateFrom: LocalDate, crn: String): List<CourtAppearanceEntity>
+
+    @Query(
+        """
+        select ca from CourtAppearanceEntity ca
+        where ca.appearanceDate >= :dateFrom
+        and ca.courtAppearanceEventEntity.courtAppearancePerson.nomsNumber = :nomsNumber
+        order by ca.appearanceDate desc
+        """
+    )
+    fun findMostRecentCourtAppearancesByNomsNumber(dateFrom: LocalDate, nomsNumber: String): List<CourtAppearanceEntity>
+
+    @Query(
+        """
+        select ca from CourtAppearanceEntity ca
+        where ca.appearanceDate >= :dateFrom
+        and ca.courtAppearanceEventEntity.courtAppearancePerson.crn in :crns
+        order by ca.courtAppearanceEventEntity.courtAppearancePerson.crn, ca.appearanceDate desc
+        """
+    )
+    fun findCourtAppearancesForCrns(
+        crns: List<String>,
+        dateFrom: LocalDate = LocalDate.now()
+    ): List<CourtAppearanceEntity>
 }

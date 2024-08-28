@@ -1,18 +1,12 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Immutable
@@ -28,17 +22,24 @@ class DetailPerson(
     val crn: String,
 
     @Column(columnDefinition = "char(7)")
-    val nomsNumber: String,
+    val nomsNumber: String? = null,
 
     @Column(columnDefinition = "char(13)")
-    val pncNumber: String,
+    val pncNumber: String? = null,
 
     @ManyToOne
     @JoinColumn(name = "religion_id")
     val religion: ReferenceData?,
 
+    @ManyToOne
+    @JoinColumn(name = "nationality_id")
+    val nationality: ReferenceData?,
+
     @OneToMany(mappedBy = "person")
     val personManager: List<PersonManager>,
+
+    @OneToMany(mappedBy = "person")
+    val offenderAliases: List<PersonAlias>,
 
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
@@ -54,6 +55,9 @@ class DetailPerson(
 
     @Column(name = "third_name", length = 35)
     val thirdName: String? = null,
+
+    @Column(name = "current_disposal", columnDefinition = "number")
+    val currentDisposal: Boolean,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -73,8 +77,9 @@ class PersonManager(
     @JoinColumn(name = "offender_id")
     val person: DetailPerson,
 
-    @Column(name = "probation_area_id")
-    val providerId: Long,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id", nullable = false)
+    val probationArea: DetailProbationArea,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
@@ -119,7 +124,7 @@ class Team(
     val probationArea: DetailProbationArea,
 
     @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "district_id")
     val district: DetailDistrict
 
 )
@@ -162,81 +167,70 @@ class DetailDistrict(
     val id: Long
 )
 
+@Immutable
+@Entity
+@Table(name = "alias")
+@SQLRestriction("soft_deleted = 0")
+class PersonAlias(
+
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: DetailPerson,
+
+    @Column(name = "first_name")
+    val firstName: String,
+
+    @Column(name = "second_name")
+    val secondName: String? = null,
+
+    @Column(name = "third_name")
+    val thirdName: String? = null,
+
+    val surname: String,
+
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
+
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "alias_id")
+    val aliasID: Long,
+)
+
 interface DetailRepository : JpaRepository<DetailPerson, Long> {
-    @Query(
-        """
-        with latest_event as (
-            select e.offender_id, e.event_id, r.actual_release_date, i.description as release_location, c.custody_id
-            from offender o
-                     join event e on e.offender_id = o.offender_id
-                     left outer join disposal d on e.event_id = d.event_id
-                     left outer join custody c on d.disposal_id = c.disposal_id
-                     left outer join release r on c.custody_id = r.custody_id
-                     left outer join r_institution i on r.institution_id = i.institution_id
-            where o.crn in :crns
-              and e.active_flag = 1
-              and e.soft_deleted = 0
-              and d.active_flag = 1
-              and d.soft_deleted = 0
-        )
-        select o.first_name forename,
-               o.second_name middleNameOne,
-               o.third_name middleNameTwo,
-               o.surname, 
-               o.date_of_birth_date dateOfBirth,
-               o.crn,
-               o.noms_number nomisId,
-               o.pnc_number pncNumber,
-               d.description ldu,
-               pa.description probationArea,
-               s.forename omForename,
-               s.forename2 omMiddleName,
-               s.surname omSurname,
-               off.description mainOffence,
-               religion.code_description religion,
-               e.actual_release_date releaseDate,
-               e.release_location releaseLocation,
-               kdt.code_value keyDateCode,
-               kdt.code_description keyDateDesc,
-               kd.key_date keydate
-        from offender o
-                 join offender_manager om on o.offender_id = om.offender_id and om.active_flag = 1
-                 join probation_area pa on om.probation_area_id = pa.probation_area_id
-                 join team t on om.team_id = t.team_id
-                 join staff s on om.allocation_staff_id = s.staff_id
-                 join district d on t.district_id = d.district_id
-                 left outer join latest_event e on o.offender_id = e.offender_id
-                 left outer join main_offence mo on mo.event_id = e.event_id
-                 left outer join r_offence off on mo.offence_id = off.offence_id
-                 left outer join r_standard_reference_list religion on o.religion_id = religion.standard_reference_list_id
-                 left outer join key_date kd on kd.custody_id = e.custody_id
-                 left outer join r_standard_reference_list kdt on kd.key_date_type_id = kdt.standard_reference_list_id
-        where o.crn in :crns
-    """,
-        nativeQuery = true
+    @EntityGraph(
+        attributePaths = [
+            "religion",
+            "personManager",
+            "personManager.staff",
+            "personManager.team",
+            "personManager.team.probationArea",
+            "personManager.team.district"
+        ]
     )
-    fun getByCrns(crns: List<String>): List<PersonDetail>
+    fun getByCrn(crn: String): DetailPerson?
+
+    @EntityGraph(
+        attributePaths = [
+            "religion",
+            "personManager",
+            "personManager.staff",
+            "personManager.team",
+            "personManager.team.probationArea",
+            "personManager.team.district"
+        ]
+    )
+    fun getByNomsNumber(nomsNumber: String): DetailPerson?
 }
 
-interface PersonDetail {
-    val forename: String
-    val middleNameOne: String
-    val middleNameTwo: String
-    val surname: String
-    val dateOfBirth: LocalDate
-    val crn: String
-    val nomisId: String
-    val pncNumber: String
-    val ldu: String
-    val probationArea: String
-    val omForename: String
-    val omMiddleName: String
-    val omSurname: String
-    val mainOffence: String
-    val religion: String
-    val releaseDate: LocalDate
-    val releaseLocation: String
-    val keyDateCode: String
-    val keyDateDesc: String
-    val keydate: LocalDate
-}
+fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =
+    getByNomsNumber(nomsNumber) ?: throw NotFoundException("person", "nomsNumber", nomsNumber)
+
+fun DetailRepository.findByCrn(crn: String): DetailPerson =
+    getByCrn(crn) ?: throw NotFoundException("person", "crn", crn)

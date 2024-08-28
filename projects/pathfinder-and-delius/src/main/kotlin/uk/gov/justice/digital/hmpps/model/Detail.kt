@@ -9,14 +9,20 @@ data class Detail(
     val crn: String,
     val nomisId: String?,
     val pncNumber: String?,
-    val ldu: String,
-    val probationArea: String,
-    val offenderManager: Name,
+    val offenderManager: Manager,
+    val activeProbationManagedSentence: Boolean,
+    val currentlyInPrison: Boolean,
     val mainOffence: String? = null,
-    val religion: String? = null,
+    val profile: Profile? = null,
     val keyDates: List<KeyDate> = listOf(),
     val releaseDate: LocalDate? = null,
-    val releaseLocation: String? = null
+    val releaseReason: String? = null,
+    val releaseLocation: String? = null,
+    val lastRecallDate: LocalDate? = null,
+    val recallReason: String? = null,
+    val nsiRecallDate: LocalDate? = null,
+    val nsiBreachDate: LocalDate? = null,
+    val offenderAliases: List<OffenderAlias> = emptyList()
 )
 
 data class Name(
@@ -25,10 +31,42 @@ data class Name(
     val surname: String
 )
 
+data class Manager(
+    val name: Name,
+    val team: Team,
+    val provider: Provider
+)
+
+data class Provider(
+    val code: String,
+    val description: String
+)
+
+data class Ldu(val code: String, val name: String)
+
+data class Team(
+    val code: String,
+    val localDeliveryUnit: Ldu
+)
+
+data class Profile(
+    val nationality: String?,
+    val religion: String?
+)
+
 data class KeyDate(
     val code: String,
     val description: String,
     val data: LocalDate
+)
+
+data class OffenderAlias(
+    val id: Long,
+    val dateOfBirth: LocalDate?,
+    val firstName: String,
+    val middleNames: List<String>,
+    val surname: String,
+    val gender: String
 )
 
 fun DetailPerson.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
