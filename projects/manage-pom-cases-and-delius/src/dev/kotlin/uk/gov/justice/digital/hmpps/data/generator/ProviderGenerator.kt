@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Institution
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationArea
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import uk.gov.justice.digital.hmpps.set
 import java.time.ZonedDateTime
 
@@ -35,7 +30,7 @@ object ProviderGenerator {
         description: String = "Team $code",
         district: District? = DEFAULT_DISTRICT,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Team(code, description, district, id)
+    ) = Team(code, description, district, DEFAULT_PROVIDER, id)
 
     fun generateStaff(
         code: String,
