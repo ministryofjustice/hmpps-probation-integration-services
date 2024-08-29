@@ -90,6 +90,7 @@ class DataLoader(
         addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002, AddressGenerator.Q710))
         boroughRepository.save(ProbationCaseGenerator.BOROUGH)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
+        probationAreaRepository.save(ProbationAreaGenerator.N58_SW)
         approvedPremisesRepository.save(ApprovedPremisesGenerator.DEFAULT)
         // add a duplicate AP for testing selectable query
         approvedPremisesRepository.save(
