@@ -33,6 +33,7 @@ object TeamGenerator {
 
 object ProbationAreaGenerator {
     val DEFAULT = generate(code = "N54", description = "A description")
+    val N58_SW = generate(code = "N58", description = "SW")
 
     fun generate(code: String, id: Long = IdGenerator.getAndIncrement(), description: String) =
         ProbationArea(id, code, description)
