@@ -101,16 +101,19 @@
         <a href="./api-reference.html#users-username-roles-rolename"><span>/users/{username}/roles/{roleName}</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#detail"><span>/detail</span></a>
-      </li>
-      <li>
         <a href="./api-reference.html#court-appearances"><span>/court-appearances</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#convictions"><span>/convictions</span></a>
+        <a href="./api-reference.html#probation-areas"><span>/probation-areas</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#probation-areas"><span>/probation-areas</span></a>
+        <a href="./api-reference.html#detail-value"><span>/detail/{value}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#court-appearances-value"><span>/court-appearances/{value}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#convictions-value"><span>/convictions/{value}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -274,48 +277,12 @@
 
 
 
-<h2 id="detail">/detail</h2>
-
-<h3 id="detail-post">post</h3>
-
-
-
-
-
-
-
-<h4 id="detail-post-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-}</code></pre>
-
-</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
 <h2 id="court-appearances">/court-appearances</h2>
 
 <h3 id="court-appearances-post">post</h3>
+
+
+  <p>Get all court appearances from today onwards, for a list of up to 500 CRNs</p>
 
 
 
@@ -338,79 +305,13 @@
 
 
 <pre><code>{
-  "courtAppearances": [
-    {
-      "appearanceDate": "string",
-      "type": {
-        "code": "string",
-        "description": "string"
-      },
-      "courtCode": "string",
-      "courtName": "string",
-      "crn": "string"
-    }
-  ]
+  "courtAppearances": {
+  }
 }</code></pre>
 
 </td>
 <td>
-<a href='#schema-courtappearancescontainer'>CourtAppearancesContainer</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="convictions">/convictions</h2>
-
-<h3 id="convictions-post">post</h3>
-
-
-
-
-
-
-
-<h4 id="convictions-post-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "personConvictions": [
-    {
-      "crn": "string",
-      "convictions": [
-        {
-          "convictionDate": "string",
-          "outcome": "string",
-          "offences": [
-            {
-              "description": "string",
-              "mainOffence": "boolean"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-convictionscontainer'>ConvictionsContainer</a>
+<a href='#schema-allcourtappearancescontainer'>AllCourtAppearancesContainer</a>
 </td>
 </tr>
 
@@ -426,6 +327,27 @@
 
 
 
+
+<h4 id="probation-areas-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>includeNonSelectable</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td><p>Include (true) or exclude (false) any probation areas that are not selectable</p>
+
+
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -471,246 +393,386 @@
 
 
 
+<h2 id="detail-value">/detail/{value}</h2>
+
+<h3 id="detail-value-get">get</h3>
+
+
+
+
+<h4 id="detail-value-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>value</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+<p>Available items:</p>
+<ul>
+
+<li>CRN</li>
+
+<li>NOMS</li>
+
+</ul>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="detail-value-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "dateOfBirth": "string",
+  "crn": "string",
+  "nomisId": "string",
+  "pncNumber": "string",
+  "offenderManager": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "team": {
+      "code": "string",
+      "localDeliveryUnit": {
+        "code": "string",
+        "name": "string"
+      }
+    },
+    "provider": {
+      "code": "string",
+      "description": "string"
+    }
+  },
+  "activeProbationManagedSentence": "boolean",
+  "currentlyInPrison": "boolean",
+  "mainOffence": "string",
+  "profile": {
+    "nationality": "string",
+    "religion": "string"
+  },
+  "keyDates": [
+    {
+      "code": "string",
+      "description": "string",
+      "data": "string"
+    }
+  ],
+  "releaseDate": "string",
+  "releaseReason": "string",
+  "releaseLocation": "string",
+  "lastRecallDate": "string",
+  "recallReason": "string",
+  "nsiRecallDate": "string",
+  "nsiBreachDate": "string",
+  "offenderAliases": [
+    {
+      "id": "integer",
+      "dateOfBirth": "string",
+      "firstName": "string",
+      "middleNames": [
+        {
+        }
+      ],
+      "surname": "string",
+      "gender": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-detail'>Detail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="court-appearances-value">/court-appearances/{value}</h2>
+
+<h3 id="court-appearances-value-get">get</h3>
+
+
+
+
+<h4 id="court-appearances-value-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>value</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+<p>Available items:</p>
+<ul>
+
+<li>CRN</li>
+
+<li>NOMS</li>
+
+</ul>
+
+</td>
+</tr>
+
+<tr>
+<td>fromDate</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="court-appearances-value-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "courtAppearances": [
+    {
+      "appearanceDate": "string",
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "courtCode": "string",
+      "courtName": "string",
+      "crn": "string",
+      "courtAppearanceId": "integer",
+      "offenderId": "integer"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-courtappearancescontainer'>CourtAppearancesContainer</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="convictions-value">/convictions/{value}</h2>
+
+<h3 id="convictions-value-get">get</h3>
+
+
+
+
+<h4 id="convictions-value-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>value</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+<p>Available items:</p>
+<ul>
+
+<li>CRN</li>
+
+<li>NOMS</li>
+
+</ul>
+
+</td>
+</tr>
+
+<tr>
+<td>activeOnly</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="convictions-value-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "convictions": [
+    {
+      "convictionId": "integer",
+      "convictionDate": "string",
+      "referralDate": "string",
+      "outcome": "string",
+      "latestCourtAppearanceOutcome": "string",
+      "offences": [
+        {
+          "offenceId": "integer",
+          "description": "string",
+          "mainCategoryDescription": "string",
+          "mainOffence": "boolean"
+        }
+      ],
+      "sentence": {
+        "sentenceId": "integer",
+        "startDate": "string",
+        "expectedEndDate": "string",
+        "custody": {
+          "bookingNumber": "string",
+          "status": {
+            "code": "string",
+            "description": "string"
+          },
+          "keyDates": [
+            {
+              "code": "string",
+              "description": "string",
+              "data": "string"
+            }
+          ]
+        }
+      },
+      "active": "boolean"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-convictionscontainer'>ConvictionsContainer</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 
 <h2 id="schemas">Schemas</h2>
-<h3 id="schema-batchrequest">BatchRequest</h3>
+<h3 id="schema-allcourtappearancescontainer">AllCourtAppearancesContainer</h3>
 
 
-<table class='schema-batchrequest'>
+<table class='schema-allcourtappearancescontainer'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>crns</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-detail">Detail</h3>
-
-
-<table class='schema-detail'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>name</td>
+<td>courtAppearances</td>
 <td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>dateOfBirth</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>nomisId</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pncNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>ldu</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>probationArea</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>offenderManager</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>mainOffence</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>religion</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>keyDates</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-keydate'>KeyDate</a>
-</td>
-</tr>
-
-<tr>
-<td>releaseDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>releaseLocation</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-keydate">KeyDate</h3>
-
-
-<table class='schema-keydate'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>data</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-name">Name</h3>
-
-
-<table class='schema-name'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>forename</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>middleName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
 <td>true</td>
 <td></td>
 <td>
@@ -780,25 +842,23 @@
 </td>
 </tr>
 
-</tbody>
-</table>
-
-<h3 id="schema-courtappearancescontainer">CourtAppearancesContainer</h3>
-
-
-<table class='schema-courtappearancescontainer'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
 <tr>
-<td>courtAppearances</td>
-<td>array</td>
+<td>courtAppearanceId</td>
+<td>integer</td>
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-courtappearance'>CourtAppearance</a>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
@@ -831,134 +891,6 @@
 <td></td>
 <td>
   
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-conviction">Conviction</h3>
-
-
-<table class='schema-conviction'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>convictionDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>outcome</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>offences</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-offence'>Offence</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-convictionscontainer">ConvictionsContainer</h3>
-
-
-<table class='schema-convictionscontainer'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>personConvictions</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-personconviction'>PersonConviction</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-offence">Offence</h3>
-
-
-<table class='schema-offence'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>mainOffence</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personconviction">PersonConviction</h3>
-
-
-<table class='schema-personconviction'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>convictions</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-conviction'>Conviction</a>
 </td>
 </tr>
 
@@ -1055,6 +987,848 @@
 <td></td>
 <td>
   <a href='#schema-probationarea'>ProbationArea</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-detail">Detail</h3>
+
+
+<table class='schema-detail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomisId</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderManager</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+<tr>
+<td>activeProbationManagedSentence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentlyInPrison</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>profile</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-profile'>Profile</a>
+</td>
+</tr>
+
+<tr>
+<td>keyDates</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keydate'>KeyDate</a>
+</td>
+</tr>
+
+<tr>
+<td>releaseDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>releaseReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>releaseLocation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastRecallDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>recallReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nsiRecallDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nsiBreachDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderAliases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offenderalias'>OffenderAlias</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-keydate">KeyDate</h3>
+
+
+<table class='schema-keydate'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>data</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-ldu">Ldu</h3>
+
+
+<table class='schema-ldu'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-manager">Manager</h3>
+
+
+<table class='schema-manager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderalias">OffenderAlias</h3>
+
+
+<table class='schema-offenderalias'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleNames</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-profile">Profile</h3>
+
+
+<table class='schema-profile'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>nationality</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>religion</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localDeliveryUnit</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-ldu'>Ldu</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-courtappearancescontainer">CourtAppearancesContainer</h3>
+
+
+<table class='schema-courtappearancescontainer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>courtAppearances</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-courtappearance'>CourtAppearance</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-conviction">Conviction</h3>
+
+
+<table class='schema-conviction'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>convictionId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>convictionDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>referralDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>outcome</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestCourtAppearanceOutcome</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-convictionscontainer">ConvictionsContainer</h3>
+
+
+<table class='schema-convictionscontainer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>convictions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-custody">Custody</h3>
+
+
+<table class='schema-custody'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>bookingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-custodystatus'>CustodyStatus</a>
+</td>
+</tr>
+
+<tr>
+<td>keyDates</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keydate'>KeyDate</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-custodystatus">CustodyStatus</h3>
+
+
+<table class='schema-custodystatus'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offence">Offence</h3>
+
+
+<table class='schema-offence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>offenceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainCategoryDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentence">Sentence</h3>
+
+
+<table class='schema-sentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>sentenceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedEndDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>custody</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-custody'>Custody</a>
 </td>
 </tr>
 

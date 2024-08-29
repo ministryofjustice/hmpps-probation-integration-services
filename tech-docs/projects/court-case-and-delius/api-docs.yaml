@@ -977,10 +977,6 @@ components:
           type: boolean
         success:
           type: boolean
-        issues:
-          type: array
-          items:
-            type: string
     CompareAll:
       required:
       - pageNumber
@@ -1312,6 +1308,9 @@ components:
       - warnUser
       type: object
       properties:
+        registrationId:
+          type: integer
+          format: int64
         offenderId:
           type: integer
           format: int64

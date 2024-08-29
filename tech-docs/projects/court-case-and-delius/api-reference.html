@@ -277,11 +277,7 @@
   "message": "string",
   "url": "string",
   "testExecuted": "boolean",
-  "success": "boolean",
-  "issues": [
-    {
-    }
-  ]
+  "success": "boolean"
 }</code></pre>
 
 </td>
@@ -334,11 +330,7 @@
       "message": "string",
       "url": "string",
       "testExecuted": "boolean",
-      "success": "boolean",
-      "issues": [
-        {
-        }
-      ]
+      "success": "boolean"
     }
   ],
   "endpointsCovered": [
@@ -1864,6 +1856,7 @@
 <pre><code>{
   "registrations": [
     {
+      "registrationId": "integer",
       "offenderId": "integer",
       "register": {
         "code": "string",
@@ -4348,16 +4341,6 @@
 </td>
 </tr>
 
-<tr>
-<td>issues</td>
-<td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
 </tbody>
 </table>
 
@@ -5408,6 +5391,16 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>registrationId</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>offenderId</td>
