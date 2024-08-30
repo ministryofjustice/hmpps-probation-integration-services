@@ -59,6 +59,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /case-records/{crn}/risks/mappa:
+    get:
+      tags:
+      - mappa-resource
+      operationId: getMappaDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MappaDetail"
 components:
   schemas:
     ErrorResponse:
@@ -155,6 +173,47 @@ components:
           type: string
         localDeliveryUnit:
           $ref: "#/components/schemas/LocalDeliveryUnit"
+    MappaDetail:
+      required:
+      - startDate
+      type: object
+      properties:
+        level:
+          type: integer
+          description: MAPPA Level (0=unknown). If the level is unknown due to an
+            unrecognised Delius MAPPA level code (e.g. one not used anymore) the original
+            Delius level description will still be returned
+          format: int32
+          example: 1
+          enum:
+          - null
+        levelDescription:
+          type: string
+          description: MAPPA Level Description
+          example: MAPPA Level 1
+        category:
+          type: integer
+          description: MAPPA Category (0 = unknown). If the category is unknown due
+            to an unrecognised Delius MAPPA category code (e.g. one not used anymore)
+            the original Delius category  description will still be returned
+          format: int32
+          example: 3
+          enum:
+          - null
+        categoryDescription:
+          type: string
+          description: MAPPA Category Description
+          example: MAPPA Cat 1
+        startDate:
+          type: string
+          description: Start date
+          format: date
+          example: 2021-01-27
+        reviewDate:
+          type: string
+          description: Next review date
+          format: date
+          example: 2021-04-27
   securitySchemes:
     hmpps-auth-token:
       type: http

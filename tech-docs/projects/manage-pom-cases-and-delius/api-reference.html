@@ -121,6 +121,9 @@
         <a href="./api-reference.html#case-records-identifier"><span>/case-records/{identifier}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#case-records-crn-risks-mappa"><span>/case-records/{crn}/risks/mappa</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -304,6 +307,71 @@
 </td>
 <td>
 <a href='#schema-errorresponse'>ErrorResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="case-records-crn-risks-mappa">/case-records/{crn}/risks/mappa</h2>
+
+<h3 id="case-records-crn-risks-mappa-get">get</h3>
+
+
+
+
+<h4 id="case-records-crn-risks-mappa-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-records-crn-risks-mappa-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "level": 1,
+  "levelDescription": "MAPPA Level 1",
+  "category": 3,
+  "categoryDescription": "MAPPA Cat 1",
+  "startDate": "2021-01-27",
+  "reviewDate": "2021-04-27"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-mappadetail'>MappaDetail</a>
 </td>
 </tr>
 
@@ -633,6 +701,84 @@
 <td></td>
 <td>
   <a href='#schema-localdeliveryunit'>LocalDeliveryUnit</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-mappadetail">MappaDetail</h3>
+
+
+<table class='schema-mappadetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>level</td>
+<td>integer</td>
+<td>false</td>
+<td><p>MAPPA Level (0=unknown). If the level is unknown due to an unrecognised Delius MAPPA level code (e.g. one not used anymore) the original Delius level description will still be returned</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>levelDescription</td>
+<td>string</td>
+<td>false</td>
+<td><p>MAPPA Level Description</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>category</td>
+<td>integer</td>
+<td>false</td>
+<td><p>MAPPA Category (0 = unknown). If the category is unknown due to an unrecognised Delius MAPPA category code (e.g. one not used anymore) the original Delius category  description will still be returned</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>categoryDescription</td>
+<td>string</td>
+<td>false</td>
+<td><p>MAPPA Category Description</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td><p>Start date</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>reviewDate</td>
+<td>string</td>
+<td>false</td>
+<td><p>Next review date</p>
+</td>
+<td>
+  
 </td>
 </tr>
 
