@@ -737,8 +737,8 @@
                                     <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
                                 </tr>
                                 <tr>
-                                    <td>OFFENDER_MANAGER_XOR</td>
-                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND ALLOCATION_STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND ALLOCATION_STAFF_ID IS NOT NULL)&#10;) </td>
+                                    <td>OFFENDER_MANAGER_TEAM_XOR5</td>
+                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>STAFF_OR_TEAM21</td>
@@ -757,8 +757,8 @@
                                     <td> (&#10;TRUST_PROVIDER_TEAM_ID &#61; TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID &#61; PROVIDER_TEAM_ID&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>OFFENDER_MANAGER_TEAM_XOR5</td>
-                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                    <td>OFFENDER_MANAGER_XOR</td>
+                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND ALLOCATION_STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND ALLOCATION_STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
