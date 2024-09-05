@@ -69,6 +69,8 @@ object ReferenceDataGenerator {
         generate(it.name, REGISTER_LEVEL.id, "MAPPA Level ${it.name}")
     }.associateBy { it.code }
 
+    val NON_MAPPA_CATEGORY = generate("RC07", REGISTER_CATEGORY.id, "Other category")
+
     fun generate(
         code: String,
         datasetId: Long,
@@ -99,7 +101,8 @@ object ReferenceDataGenerator {
         GENDER_MALE,
         GENDER_IDENTITY_PNS,
         NATIONALITY_BRITISH,
-        RELIGION_OTHER
+        RELIGION_OTHER,
+        NON_MAPPA_CATEGORY,
     ) + REGISTER_CATEGORIES.values + REGISTER_LEVELS.values + REFERRAL_CATEGORIES.values
 
     fun generateReferralSource(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferralSource(id, code)

@@ -77,6 +77,16 @@ class ProbationCaseDataLoader(
                 ProbationCaseGenerator.CASE_COMPLEX.asPerson(),
                 ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.MAPPA.value]!!,
                 LocalDate.now().minusDays(7),
+                ReferenceDataGenerator.NON_MAPPA_CATEGORY,
+                ReferenceDataGenerator.REGISTER_LEVELS["M2"]
+            )
+        )
+
+        registrationRepository.save(
+            PersonGenerator.generateRegistration(
+                ProbationCaseGenerator.CASE_COMPLEX.asPerson(),
+                ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.MAPPA.value]!!,
+                LocalDate.now().minusDays(7),
                 ReferenceDataGenerator.REGISTER_CATEGORIES["M3"],
                 ReferenceDataGenerator.REGISTER_LEVELS["M2"]
             )
