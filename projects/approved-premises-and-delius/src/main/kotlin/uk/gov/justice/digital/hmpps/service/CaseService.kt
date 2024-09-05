@@ -105,5 +105,7 @@ fun String.toMappaLevel() = Level.entries.find { it.name == this }?.number
 fun String.toMappaCategory() = Category.entries.find { it.name == this }?.number
     ?: throw IllegalStateException("Unexpected MAPPA category: $this")
 
-fun Map<Boolean, List<Registration>>.mappa() = get(true)?.firstOrNull()?.asMappa()
+fun Map<Boolean, List<Registration>>.mappa() = get(true)?.firstOrNull {
+    it.category?.code != null && Category.entries.map(Category::name).contains(it.category.code)
+}?.asMappa()
 fun Map<Boolean, List<Registration>>.flags() = get(false)?.map { it.asRegistration() } ?: listOf()
