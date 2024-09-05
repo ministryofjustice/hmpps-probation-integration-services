@@ -1,13 +1,6 @@
 package uk.gov.justice.digital.hmpps.controller.casedetails.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
@@ -94,6 +87,9 @@ class CaseEntity(
     val requiresInterpreter: Boolean? = false,
 
     @OneToMany(mappedBy = "case")
-    val registrations: List<RegistrationEntity>
+    val registrations: List<RegistrationEntity>,
 
-)
+    val exclusionMessage: String? = null,
+    val restrictionMessage: String? = null,
+
+    )
