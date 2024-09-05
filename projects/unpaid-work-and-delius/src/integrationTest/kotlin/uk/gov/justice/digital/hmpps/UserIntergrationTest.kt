@@ -118,9 +118,9 @@ class UserIntergrationTest {
     }
 
     @Test
-    fun `limited access controls are correctly returned for both exclusions and restrictions`() {
+    fun `limited access controls are correctly returned for both exclusions and restrictions by id`() {
         val caseAccess = mockMvc.perform(
-            get("/users/${UserGenerator.LIMITED_ACCESS_USER.username.lowercase()}/access/${CaseGenerator.RESTRICTION_EXCLUSION.crn}")
+            get("/users/${UserGenerator.LIMITED_ACCESS_USER.id}/access/${CaseGenerator.RESTRICTION_EXCLUSION.crn}")
                 .withToken()
         )
             .andExpect(status().isOk)
