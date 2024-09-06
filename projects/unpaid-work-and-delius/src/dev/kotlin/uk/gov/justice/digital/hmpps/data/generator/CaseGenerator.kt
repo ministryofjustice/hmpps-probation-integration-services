@@ -6,7 +6,19 @@ import java.time.LocalDate
 object CaseGenerator {
     val DEFAULT = generate("D001022")
 
-    fun generate(crn: String, id: Long = IdGenerator.getAndIncrement()) =
+    val EXCLUSION = generate("E123456", exclusionMessage = "There is an exclusion on this person")
+    val RESTRICTION = generate("R123456", restrictionMessage = "There is a restriction on this person")
+    val RESTRICTION_EXCLUSION = generate(
+        "B123456",
+        exclusionMessage = "You are excluded from viewing this case",
+        restrictionMessage = "You are restricted from viewing this case"
+    )
+
+    fun generate(
+        crn: String, id: Long = IdGenerator.getAndIncrement(),
+        exclusionMessage: String? = null,
+        restrictionMessage: String? = null
+    ) =
         CaseEntity(
             id,
             crn,
@@ -27,6 +39,8 @@ object CaseGenerator {
             provisions = listOf(),
             ethnicity = ReferenceDataGenerator.ETHNICITY_INDIAN,
             primaryLanguage = ReferenceDataGenerator.LANGUAGE_ENGLISH,
-            registrations = listOf()
+            registrations = listOf(),
+            exclusionMessage = exclusionMessage,
+            restrictionMessage = restrictionMessage
         )
 }
