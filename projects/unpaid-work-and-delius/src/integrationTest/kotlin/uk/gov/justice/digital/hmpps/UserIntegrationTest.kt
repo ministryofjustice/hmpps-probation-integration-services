@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class UserIntergrationTest {
+class UserIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
