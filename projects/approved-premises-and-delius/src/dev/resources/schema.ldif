@@ -11,3 +11,12 @@ sn: Smith
 givenname: John
 mail: john.smith@moj.gov.uk
 telephoneNumber: 07321165373
+
+dn: cn=jimsnowldap,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: jimsnowldap
+sn: Jim Snow
+givenname: Test
+mail: jim.snow@justice.gov.uk
+telephoneNumber: 07321165374
