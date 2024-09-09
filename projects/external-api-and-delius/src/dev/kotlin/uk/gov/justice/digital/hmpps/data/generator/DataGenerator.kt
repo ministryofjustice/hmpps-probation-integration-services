@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.DATASET_TYPE_OTHER
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import uk.gov.justice.digital.hmpps.set
@@ -38,12 +39,27 @@ object DataGenerator {
 
     val COURT = Court(id = IdGenerator.getAndIncrement(), name = "Manchester Crown Court")
     val COURT_APPEARANCE_TYPE =
-        ReferenceData(id = IdGenerator.getAndIncrement(), code = "SEN", description = "Sentence")
+        ReferenceData(
+            id = IdGenerator.getAndIncrement(),
+            code = "SEN",
+            description = "Sentence",
+            dataset = DATASET_TYPE_OTHER
+        )
     val COURT_APPEARANCE_PLEA =
-        ReferenceData(id = IdGenerator.getAndIncrement(), code = "GLT", description = "Not guilty")
+        ReferenceData(
+            id = IdGenerator.getAndIncrement(),
+            code = "GLT",
+            description = "Not guilty",
+            dataset = DATASET_TYPE_OTHER
+        )
     val DISPOSAL_TYPE =
         DisposalType(id = IdGenerator.getAndIncrement(), description = "ORA Suspended Sentence Order", "SC")
-    val MONTHS = ReferenceData(id = IdGenerator.getAndIncrement(), code = "MNTH", description = "Months")
+    val MONTHS = ReferenceData(
+        id = IdGenerator.getAndIncrement(),
+        code = "MNTH",
+        description = "Months",
+        dataset = DATASET_TYPE_OTHER
+    )
 
     val EVENT: Event
 
