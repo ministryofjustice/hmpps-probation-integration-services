@@ -10,7 +10,8 @@ class ReferenceDataService(
     private val registrationRepository: RegistrationRepository,
 ) {
     fun getReferenceData(): ProbationReferenceData =
-        ProbationReferenceData(registrationRepository.getReferenceData()
-            .groupByTo(LinkedHashMap(), { it.codeSet }, { RefData(it.code, it.description) })
+        ProbationReferenceData(
+            registrationRepository.getReferenceData()
+                .groupByTo(LinkedHashMap(), { it.codeSet }, { RefData(it.code, it.description) })
         )
 }

@@ -81,6 +81,7 @@ interface RefData {
     val code: String
     val description: String
 }
+
 interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
     @EntityGraph(attributePaths = ["type", "category", "level"])
     fun findFirstByPersonIdAndTypeCodeOrderByDateDesc(personId: Long, typeCode: String): RegistrationEntity?
@@ -88,7 +89,8 @@ interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
     @EntityGraph(attributePaths = ["type", "category", "level"])
     fun findByPersonIdAndTypeCodeInOrderByDateDesc(personId: Long, typeCode: List<String>): List<RegistrationEntity>
 
-    @Query("""
+    @Query(
+        """
         select rdm.code_set_name as codeSet, rdl.code_value as code, rdl.code_description as description
         from r_standard_reference_list rdl join r_reference_data_master rdm 
         on rdm.reference_data_master_id = rdl.reference_data_master_id
@@ -96,9 +98,9 @@ interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
         union
         select 'REGISTER_TYPES' as set_name, rt.code, rt.description 
         from r_register_type rt
-    """, nativeQuery = true)
-    fun getReferenceData() : List<RefData>
-
+    """, nativeQuery = true
+    )
+    fun getReferenceData(): List<RefData>
 }
 
 fun RegistrationRepository.findMappa(personId: Long) =
