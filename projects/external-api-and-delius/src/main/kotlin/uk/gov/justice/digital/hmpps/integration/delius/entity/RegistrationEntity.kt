@@ -98,6 +98,7 @@ interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
         union
         select 'REGISTER_TYPES' as set_name, rt.code, rt.description 
         from r_register_type rt
+        order by codeSet, code        
     """, nativeQuery = true
     )
     fun getReferenceData(): List<RefData>

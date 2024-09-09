@@ -12,6 +12,6 @@ class ReferenceDataService(
     fun getReferenceData(): ProbationReferenceData =
         ProbationReferenceData(
             registrationRepository.getReferenceData()
-                .groupByTo(LinkedHashMap(), { it.codeSet }, { RefData(it.code, it.description) })
+                .groupByTo(LinkedHashMap(), { it.codeSet.trim() }, { RefData(it.code.trim(), it.description) })
         )
 }
