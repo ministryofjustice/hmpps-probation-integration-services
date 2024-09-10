@@ -11,7 +11,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.REFDATA_FEMALE
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.REFDATA_MALE
 import uk.gov.justice.digital.hmpps.model.PersonIdentifier
+import uk.gov.justice.digital.hmpps.model.ProbationReferenceData
+import uk.gov.justice.digital.hmpps.model.RefData
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -140,5 +144,19 @@ internal class IntegrationTest {
     fun `returns 404 for nomsId not found`() {
         mockMvc.perform(get("/identifier-converter/noms-to-crn/A0001DZ").withToken())
             .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `returns reference data for ethnicity, gender and register_types`() {
+        val response = mockMvc.perform(get("/reference-data").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<ProbationReferenceData>()
+        Assertions.assertEquals(
+            response.probationReferenceData.get("GENDER"),
+            listOf(
+                RefData(REFDATA_FEMALE.code, REFDATA_FEMALE.description),
+                RefData(REFDATA_MALE.code, REFDATA_MALE.description)
+            )
+        )
     }
 }

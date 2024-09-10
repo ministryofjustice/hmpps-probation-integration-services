@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
@@ -75,12 +76,32 @@ class RegisterType(
     }
 }
 
+interface RefData {
+    val codeSet: String
+    val code: String
+    val description: String
+}
+
 interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
     @EntityGraph(attributePaths = ["type", "category", "level"])
     fun findFirstByPersonIdAndTypeCodeOrderByDateDesc(personId: Long, typeCode: String): RegistrationEntity?
 
     @EntityGraph(attributePaths = ["type", "category", "level"])
     fun findByPersonIdAndTypeCodeInOrderByDateDesc(personId: Long, typeCode: List<String>): List<RegistrationEntity>
+
+    @Query(
+        """
+        select rdm.code_set_name as codeSet, rdl.code_value as code, rdl.code_description as description
+        from r_standard_reference_list rdl join r_reference_data_master rdm 
+        on rdm.reference_data_master_id = rdl.reference_data_master_id
+        where rdm.code_set_name in ('GENDER','ETHNICITY')
+        union
+        select 'REGISTER_TYPES' as set_name, rt.code, rt.description 
+        from r_register_type rt
+        order by codeSet, code        
+    """, nativeQuery = true
+    )
+    fun getReferenceData(): List<RefData>
 }
 
 fun RegistrationRepository.findMappa(personId: Long) =
