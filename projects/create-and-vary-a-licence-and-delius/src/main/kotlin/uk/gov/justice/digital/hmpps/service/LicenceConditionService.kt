@@ -32,7 +32,7 @@ class LicenceConditionService(
                 category,
                 subCategory,
                 notes,
-                cvlText.let { it?.take(4000) }
+                cvlText?.let { String(it.toByteArray().take(4000).toByteArray()) }
             )
         )
         licenceConditionManagerRepository.save(

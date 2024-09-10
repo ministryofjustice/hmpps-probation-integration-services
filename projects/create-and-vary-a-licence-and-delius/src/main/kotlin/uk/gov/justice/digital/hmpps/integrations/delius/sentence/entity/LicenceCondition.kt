@@ -38,7 +38,7 @@ class LicenceCondition(
     @Column(name = "lic_condition_notes")
     val notes: String?,
 
-    @Column
+    @Column(columnDefinition = "varchar2(4000)")
     val cvlText: String?,
 
     @Column(columnDefinition = "number")
