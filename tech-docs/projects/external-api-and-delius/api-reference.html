@@ -106,6 +106,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#reference-data"><span>/reference-data</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#identifier-converter-noms-to-crn-nomsid"><span>/identifier-converter/noms-to-crn/{nomsId}</span></a>
       </li>
       <li>
@@ -141,6 +144,49 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="reference-data">/reference-data</h2>
+
+<h3 id="reference-data-get">get</h3>
+
+  <p><em>Gets delius reference data </em></p>
+
+
+
+
+
+
+
+<h4 id="reference-data-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "probationReferenceData": {
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-probationreferencedata'>ProbationReferenceData</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -375,6 +421,62 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-probationreferencedata">ProbationReferenceData</h3>
+
+
+<table class='schema-probationreferencedata'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>probationReferenceData</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-refdata">RefData</h3>
+
+
+<table class='schema-refdata'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td><p>reference data code</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td><p>reference data description</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-personidentifier">PersonIdentifier</h3>
 
 

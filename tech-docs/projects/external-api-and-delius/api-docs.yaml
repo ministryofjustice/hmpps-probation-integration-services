@@ -19,6 +19,19 @@ tags:
 - name: Case Details
   description: Requires PROBATION_API__HMPPS_API__CASE_DETAIL
 paths:
+  /reference-data:
+    get:
+      tags:
+      - Identifier Converter
+      summary: 'Gets delius reference data '
+      operationId: refData
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProbationReferenceData"
   /identifier-converter/noms-to-crn/{nomsId}:
     get:
       tags:
@@ -60,6 +73,31 @@ paths:
                 $ref: "#/components/schemas/SupervisionResponse"
 components:
   schemas:
+    ProbationReferenceData:
+      required:
+      - probationReferenceData
+      type: object
+      properties:
+        probationReferenceData:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/RefData"
+    RefData:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+          description: reference data code
+          example: M
+        description:
+          type: string
+          description: reference data description
+          example: MALE
     PersonIdentifier:
       required:
       - crn
