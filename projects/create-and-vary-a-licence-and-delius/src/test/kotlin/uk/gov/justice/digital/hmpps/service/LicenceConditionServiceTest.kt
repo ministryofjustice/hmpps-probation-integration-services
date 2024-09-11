@@ -85,7 +85,8 @@ internal class LicenceConditionServiceTest {
 
     @Test
     fun `cvlText is truncated to 4000 chars when greater than 4000`() {
-        val cvlText = 'A'.repeat(4212)
+        val cvlText = 'A'.repeat(2000) + '|'.repeat(1000) + '£'.repeat(1120)
+        val expected = String(cvlText.toByteArray().take(4000).toByteArray())
         licenceConditionService.createLicenceCondition(
             disposal,
             LocalDate.now(),
@@ -97,7 +98,9 @@ internal class LicenceConditionServiceTest {
         )
         val lcCaptor = ArgumentCaptor.forClass(LicenceCondition::class.java)
         Mockito.verify(licenceConditionRepository, Mockito.times(1)).save(lcCaptor.capture())
-        assertThat(lcCaptor.value.cvlText?.length, equalTo(4000))
+        val lc = lcCaptor.value.cvlText!!
+        assertThat(lc.toByteArray().size, equalTo(4000))
+        assertThat(lc, equalTo(expected))
     }
 
     @Test
