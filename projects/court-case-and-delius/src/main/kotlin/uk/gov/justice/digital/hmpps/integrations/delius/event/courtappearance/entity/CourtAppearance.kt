@@ -189,7 +189,7 @@ class CourtReport(
 
 @Entity
 @Table(name = "report_manager")
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class ReportManager(
 
     @JoinColumn(name = "court_report_id")

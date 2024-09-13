@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model
 import java.time.LocalDate
 
 data class Registrations(
-    val registrations: List<Registration> = emptyList()
+    val registrations: List<Registration>? = null
 )
 
 data class Registration(
