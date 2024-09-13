@@ -20,10 +20,12 @@ class RegistrationService(
             if (activeOnly) registrationRepository.findActiveByPersonId(person.id)
             else registrationRepository.findByPersonId(person.id)
 
-        return Registrations(registrations
+        val regList = registrations
             .filter { r -> !r.softDeleted }
             .sortedBy(Registration::date).reversed()
-            .map(Registration::toRegistration))
+            .map(Registration::toRegistration)
+
+        return Registrations(registrations = regList.takeIf { it.isNotEmpty() })
     }
 }
 

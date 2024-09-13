@@ -104,7 +104,7 @@ interface EventRepository : JpaRepository<Event, Long> {
         case when d.disposal_id is null and ca.outcome_code = '101' then 1 else 0 end as awaitingPsr
          from event e
          left join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
-         left join (select ca.event_id, oc.code_value as outcome_code
+         left join (select distinct ca.event_id, oc.code_value as outcome_code
             from court_appearance ca
             join r_standard_reference_list oc on ca.outcome_id = oc.standard_reference_list_id) ca
             on ca.event_id = e.event_id
