@@ -206,7 +206,7 @@ object SentenceGenerator {
         disposal: Disposal,
         custodialStatus: ReferenceData,
         prisonerNumber: String,
-        institution: Institution,
+        institution: Institution?,
         id: Long = IdGenerator.getAndIncrement()
     ) = Custody(disposal, custodialStatus, prisonerNumber = prisonerNumber, institution = institution, id = id)
 

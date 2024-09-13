@@ -57,7 +57,7 @@ class ConvictionService(
             inBreach,
             failureToComplyCount,
             breachEnd,
-            eventRepository.awaitingPSR(id) == 1,
+            eventRepository.awaitingPSR(id) > 0,
             convictionDate,
             referralDate,
             toOffences(),
@@ -194,7 +194,7 @@ class ConvictionService(
     fun CustodyEntity.toCustody(): Custody =
         Custody(
             prisonerNumber,
-            institution.toInstitution(),
+            institution?.toInstitution(),
             populateKeyDates(keyDates),
             KeyValue(status.code, status.description),
             disposal.startDate
