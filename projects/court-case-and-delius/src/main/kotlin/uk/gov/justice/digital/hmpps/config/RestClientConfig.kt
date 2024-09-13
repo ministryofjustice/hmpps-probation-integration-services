@@ -17,7 +17,7 @@ class RestClientConfig(private val oauth2Client: RestClient, private val restCli
 
     @Bean
     fun proxyClient() =
-        restClientBuilder.requestFactory(withTimeouts(Duration.ofSeconds(20), Duration.ofSeconds(5))).build()
+        restClientBuilder.requestFactory(withTimeouts(Duration.ofSeconds(30), Duration.ofSeconds(10))).build()
 
     @Bean
     fun communityApiClient() = createClient<CommunityApiClient>(proxyClient())
