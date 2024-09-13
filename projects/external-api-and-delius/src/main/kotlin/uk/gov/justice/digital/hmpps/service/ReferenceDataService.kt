@@ -9,9 +9,19 @@ import uk.gov.justice.digital.hmpps.model.RefData
 class ReferenceDataService(
     private val registrationRepository: RegistrationRepository,
 ) {
-    fun getReferenceData(): ProbationReferenceData =
-        ProbationReferenceData(
+    fun getReferenceData(): ProbationReferenceData {
+
+        val refData = LinkedHashMap<String, MutableList<RefData>>()
+        refData["PHONE_TYPE"] = PhoneTypes.entries.map { RefData(it.name, it.description) }.toMutableList()
+        refData.putAll(
             registrationRepository.getReferenceData()
                 .groupByTo(LinkedHashMap(), { it.codeSet.trim() }, { RefData(it.code.trim(), it.description) })
         )
+        return ProbationReferenceData(refData)
+    }
+}
+
+enum class PhoneTypes(val description: String) {
+    TELEPHONE("Home"),
+    MOBILE("Mobile")
 }

@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.REFDATA
 import uk.gov.justice.digital.hmpps.model.PersonIdentifier
 import uk.gov.justice.digital.hmpps.model.ProbationReferenceData
 import uk.gov.justice.digital.hmpps.model.RefData
+import uk.gov.justice.digital.hmpps.service.PhoneTypes
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -152,10 +153,17 @@ internal class IntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<ProbationReferenceData>()
         Assertions.assertEquals(
-            response.probationReferenceData.get("GENDER"),
+            response.probationReferenceData["GENDER"],
             listOf(
                 RefData(REFDATA_FEMALE.code, REFDATA_FEMALE.description),
                 RefData(REFDATA_MALE.code, REFDATA_MALE.description)
+            )
+        )
+        Assertions.assertEquals(
+            response.probationReferenceData["PHONE_TYPE"],
+            listOf(
+                RefData(PhoneTypes.TELEPHONE.name, PhoneTypes.TELEPHONE.description),
+                RefData(PhoneTypes.MOBILE.name, PhoneTypes.MOBILE.description)
             )
         )
     }
