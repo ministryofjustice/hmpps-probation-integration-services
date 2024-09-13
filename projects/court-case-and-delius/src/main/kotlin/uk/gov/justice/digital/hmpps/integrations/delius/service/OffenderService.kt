@@ -222,7 +222,7 @@ fun DocumentEntity?.toPreviousConviction() = PreviousConviction(convictionDate =
 
 fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
     genderIdentity = genderIdentity?.description,
-    selfDescribedGender = genderIdentityDescription ?: genderIdentity?.description,
+    selfDescribedGender = genderIdentityDescription,
     disabilities = disabilities.filter { d -> !d.softDeleted }.sortedBy { it.startDate }.reversed().map {
         it.toDisability()
     }.takeIf { disabilities.isNotEmpty() },
