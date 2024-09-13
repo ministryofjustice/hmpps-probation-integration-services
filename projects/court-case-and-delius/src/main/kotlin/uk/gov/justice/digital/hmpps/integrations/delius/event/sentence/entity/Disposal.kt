@@ -223,7 +223,7 @@ class Custody(
         JoinColumn(name = "institution_id", referencedColumnName = "institution_id"),
         JoinColumn(name = "establishment", referencedColumnName = "establishment")
     )
-    val institution: Institution,
+    val institution: Institution? = null,
 
     @OneToMany(mappedBy = "custody")
     val keyDates: List<KeyDate> = listOf(),
