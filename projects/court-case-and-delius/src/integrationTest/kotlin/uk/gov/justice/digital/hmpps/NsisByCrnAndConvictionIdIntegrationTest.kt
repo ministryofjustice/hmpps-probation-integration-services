@@ -146,7 +146,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
         code,
         id,
         Human(getForenames(), surname),
-        teams.map { it.toTeam() },
+        teams.map { it.toTeam() }.takeIf { it.isNotEmpty() },
         probationArea.toProbationArea(false),
         grade?.keyValueOf()
     )

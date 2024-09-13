@@ -55,7 +55,7 @@ data class StaffDetails(
     @Schema(description = "staff name details")
     val staff: Human,
     @Schema(description = "all teams related to this staff member")
-    val teams: List<Team>,
+    val teams: List<Team>? = null,
     @Schema(description = "provider this staff member is associated with")
     val probationArea: ProbationArea,
     @Schema(description = "Staff Grade", example = "PO,CRC - PO")

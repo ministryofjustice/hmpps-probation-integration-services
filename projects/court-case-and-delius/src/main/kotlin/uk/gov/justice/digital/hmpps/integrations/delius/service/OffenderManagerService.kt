@@ -84,8 +84,7 @@ fun PrisonManager.toOffenderManager(includeProbationAreaTeams: Boolean) = Commun
     isPrisonOffenderManager = true,
     probationArea = probationArea.toProbationArea(includeProbationAreaTeams),
     isResponsibleOfficer = responsibleOfficer() != null,
-    fromDate = date.toLocalDate(),
-    grade = staff.grade?.keyValueOf()
+    fromDate = date.toLocalDate()
 )
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() = Team(
