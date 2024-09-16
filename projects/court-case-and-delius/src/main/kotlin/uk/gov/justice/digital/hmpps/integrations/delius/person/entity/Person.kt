@@ -220,6 +220,7 @@ class OffenderAlias(
 
 @Entity
 @Table(name = "offender_address")
+@SQLRestriction("soft_deleted = 0")
 class PersonAddress(
     @Id
     @Column(name = "offender_address_id")
