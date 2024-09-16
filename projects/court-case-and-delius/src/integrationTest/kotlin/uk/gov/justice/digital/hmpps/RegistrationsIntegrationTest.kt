@@ -49,4 +49,13 @@ internal class RegistrationsIntegrationTest {
         assertThat(response.registrations?.size, equalTo(2))
         assertThat(response.registrations?.get(0)?.active, equalTo(true))
     }
+
+    @Test
+    fun `registrations record soft deleted returns null registations`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456/registrations").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<Registrations>()
+        assertThat(response.registrations, equalTo(null))
+    }
 }

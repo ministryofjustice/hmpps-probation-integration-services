@@ -278,6 +278,33 @@ internal class OffenderIntegrationTest {
     }
 
     @Test
+    fun `probation summary record that is soft deleted still returns`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<OffenderDetailSummary>()
+        assertThat(response.softDeleted, equalTo(true))
+    }
+
+    @Test
+    fun `probation detail record that is soft deleted still returns`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456/all").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<OffenderDetail>()
+        assertThat(response.softDeleted, equalTo(true))
+    }
+
+    @Test
+    fun `Detail API call allOffenderManagers record soft deleted`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456/allOffenderManagers").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<List<OffenderManager>>()
+        assertThat(response, equalTo(emptyList()))
+    }
+
+    @Test
     fun `Detail API call retuns probation record with no active sentence`() {
         val crn = PersonGenerator.NO_SENTENCE.crn
         val detailResponse = mockMvc

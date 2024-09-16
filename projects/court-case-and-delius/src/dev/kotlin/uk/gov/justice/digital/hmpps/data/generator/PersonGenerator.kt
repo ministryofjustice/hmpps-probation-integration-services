@@ -29,6 +29,7 @@ import java.time.ZonedDateTime
 object PersonGenerator {
 
     val NEW_TO_PROBATION = generate("N123456")
+    val SOFT_DELETED = generate("S123456", softDeleted = true)
     val CURRENTLY_MANAGED = generate("C123456", currentDisposal = true)
     val PREVIOUSLY_MANAGED = generate("P123456")
     val NO_SENTENCE = generate("U123456")

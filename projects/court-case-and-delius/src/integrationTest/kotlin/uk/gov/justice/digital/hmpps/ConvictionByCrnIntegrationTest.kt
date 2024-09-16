@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -263,5 +265,14 @@ internal class ConvictionByCrnIntegrationTest {
             .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.length()").value(0))
+    }
+
+    @Test
+    fun `convictions record soft deleted return emptyList for convictions`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456/convictions").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<List<Conviction>>()
+        MatcherAssert.assertThat(response, Matchers.equalTo(emptyList()))
     }
 }
