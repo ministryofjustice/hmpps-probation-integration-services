@@ -18,7 +18,8 @@ data class Address(
     val lastUpdated: LocalDate?,
     val lastUpdatedBy: Name,
     val type: String?,
-    val status: String?
+    val status: String?,
+    val notes: String?
 ) {
     companion object {
         fun from(
@@ -36,7 +37,8 @@ data class Address(
             lastUpdated: LocalDate? = null,
             lastUpdatedBy: Name,
             type: String? = null,
-            status: String? = null
+            status: String? = null,
+            notes: String? = null
         ): Address? =
             if (
                 buildingName == null && buildingNumber == null && streetName == null &&
@@ -59,7 +61,8 @@ data class Address(
                     lastUpdated,
                     lastUpdatedBy,
                     type,
-                    status
+                    status,
+                    notes
                 )
             }
     }

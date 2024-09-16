@@ -55,6 +55,10 @@ class PersonAddress(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
 
+    @Lob
+    @Column
+    val notes: String?,
+
     @Id
     @Column(name = "offender_address_id")
     val id: Long

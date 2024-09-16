@@ -151,7 +151,8 @@ object PersonDetailsGenerator {
         PERSONAL_DETAILS.id,
         PERSON_ADDRESS_STATUS_1,
         PERSON_ADDRESS_TYPE_1,
-        verified = true
+        verified = true,
+        notes = "Some Notes"
     )
     val PERSON_ADDRESS_2 = generatePersonAddress(
         "43",
@@ -195,7 +196,8 @@ object PersonDetailsGenerator {
         LocalDate.now(),
         USER,
         false,
-        IdGenerator.getAndIncrement()
+        "Some Notes",
+        IdGenerator.getAndIncrement(),
     )
 
     val DOCUMENT_1 = generateDocument(PERSONAL_DETAILS.id, "A001", "induction.doc", "DOCUMENT")
@@ -232,7 +234,8 @@ object PersonDetailsGenerator {
         status: ReferenceData,
         type: ReferenceData,
         endDate: LocalDate? = null,
-        verified: Boolean? = null
+        verified: Boolean? = null,
+        notes: String? = null
     ) = PersonAddress(
         personId = personId,
         id = IdGenerator.getAndIncrement(),
@@ -251,7 +254,8 @@ object PersonDetailsGenerator {
         type = type,
         typeVerified = verified,
         telephoneNumber = "0191876865",
-        lastUpdatedUser = USER
+        lastUpdatedUser = USER,
+        notes = notes
     )
 
     fun generatePersonDetails(
