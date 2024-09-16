@@ -103,6 +103,7 @@ class DataLoader(
             CourtGenerator.PROBATION_AREA,
             CourtGenerator.BHAM,
             PersonGenerator.NEW_TO_PROBATION,
+            PersonGenerator.SOFT_DELETED,
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
             PersonGenerator.NO_SENTENCE,
