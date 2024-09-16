@@ -55,6 +55,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.previousSurname, equalTo("Smith"))
         assertThat(res.sexualOrientation, equalTo("Heterosexual"))
         assertThat(res.mainAddress?.status, equalTo("Main Address"))
+        assertThat(res.mainAddress?.notes, equalTo("Some Notes"))
         assertThat(res.mainAddress?.verified, equalTo(true))
         assertThat(res.mainAddress?.type, equalTo("Address type 1"))
         assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
