@@ -1360,8 +1360,6 @@ components:
           type: integer
           format: int32
     Registrations:
-      required:
-      - registrations
       type: object
       properties:
         registrations:
@@ -1627,7 +1625,6 @@ components:
           type: string
     Custody:
       required:
-      - institution
       - keyDates
       - sentenceStartDate
       - status
@@ -2176,7 +2173,6 @@ components:
       - staff
       - staffCode
       - staffIdentifier
-      - teams
       type: object
       properties:
         username:
