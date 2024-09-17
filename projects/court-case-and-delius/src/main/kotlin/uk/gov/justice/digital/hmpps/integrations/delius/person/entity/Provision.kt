@@ -12,7 +12,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "provision")
-@SQLRestriction("soft_deleted = 0 and (finish_date is null or finish_date > current_date)")
+@SQLRestriction("soft_deleted = 0")
 class Provision(
     @Id
     @Column(name = "provision_id")
