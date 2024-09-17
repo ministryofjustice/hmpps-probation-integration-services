@@ -212,7 +212,8 @@ object PersonGenerator {
             active = active,
             mainOffence = mainOffence,
             notes = notes,
-            additionalOffences = additionalOffences
+            additionalOffences = additionalOffences,
+            dateCreated = ZonedDateTime.now()
         )
 
     val DISABILITIES: List<Disability> = listOf(

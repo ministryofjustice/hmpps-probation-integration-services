@@ -17,7 +17,7 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
             "LEFT JOIN FETCH m.offence mo " +
             "LEFT JOIN FETCH ao.offence aoo " +
             "WHERE e.personId = :id " +
-            "ORDER BY e.eventNumber DESC "
+            "ORDER BY e.dateCreated DESC "
     )
     fun findSentencesByPersonId(id: Long): List<Event>
 
