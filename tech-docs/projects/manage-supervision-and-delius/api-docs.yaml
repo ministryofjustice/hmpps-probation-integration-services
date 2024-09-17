@@ -1154,6 +1154,8 @@ components:
           type: string
         status:
           type: string
+        notes:
+          type: string
     Circumstances:
       required:
       - circumstances
