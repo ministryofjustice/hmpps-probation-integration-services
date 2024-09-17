@@ -52,6 +52,20 @@ class SentenceIntegrationTest {
             listOf(
                 Sentence(
                     OffenceDetails(
+                        "1234567",
+                        Offence("Another Murder", 1),
+                        LocalDate.now(),
+                        "overview",
+                        emptyList()
+                    ),
+                    Conviction(null, null, null, listOf()),
+                    null,
+                    listOf(),
+                    listOf(),
+                    null
+                ),
+                Sentence(
+                    OffenceDetails(
                         "7654321",
                         Offence("Murder", 1),
                         LocalDate.now(),
@@ -101,20 +115,6 @@ class SentenceIntegrationTest {
                         CourtDocument(EVENT_DOCUMENT.alfrescoId, LocalDate.now().minusDays(3), "event report")
                     ),
                     "3 minutes completed (of 12 hours)"
-                ),
-                Sentence(
-                    OffenceDetails(
-                        "1234567",
-                        Offence("Another Murder", 1),
-                        LocalDate.now(),
-                        "overview",
-                        emptyList()
-                    ),
-                    Conviction(null, null, null, listOf()),
-                    null,
-                    listOf(),
-                    listOf(),
-                    null
                 )
             ),
             ProbationHistory(2, LocalDate.now().minusDays(7), 2, 2)

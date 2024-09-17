@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Court
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -50,7 +51,10 @@ class Event(
     val notes: String?,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @Column(name = "created_datetime")
+    val dateCreated: ZonedDateTime,
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
