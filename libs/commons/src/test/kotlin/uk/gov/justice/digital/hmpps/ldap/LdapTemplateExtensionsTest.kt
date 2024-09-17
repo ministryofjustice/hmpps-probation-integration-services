@@ -8,11 +8,13 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.DirContextOperations
 import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.entity.LdapUser
+import javax.naming.Name
 import javax.naming.directory.Attributes
 import javax.naming.ldap.LdapName
 
@@ -115,5 +117,60 @@ class LdapTemplateExtensionsTest {
         verify(ldapTemplate).unbind(check<LdapName> {
             assertThat(it.toString(), equalTo("cn=ROLE1,cn=john-smith"))
         })
+    }
+
+    @Test
+    fun `unknown username throws NotFoundException when getting roles`() {
+
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenThrow(NameNotFoundException("No Such Object"))
+
+        assertThrows<NotFoundException> { ldapTemplate.getRoles("test") }
+    }
+
+    @Test
+    fun `unknown username throws NotFoundException finding by username`() {
+
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>()))
+            .thenThrow(NameNotFoundException("No Such Object"))
+
+        assertThrows<NotFoundException> { ldapTemplate.findEmailByUsername("test") }
+    }
+
+    @Test
+    fun `unknown username throws NotFoundException when adding roles`() {
+        whenever(ldapTemplate.lookupContext(any<LdapName>()))
+            .thenReturn(dirContextOperations)
+        whenever(dirContextOperations.nameInNamespace)
+            .thenReturn("cn=ROLE1,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com")
+
+        whenever(ldapTemplate.rebind(any<Name>(), anyOrNull(), any<Attributes>())).thenThrow(
+            NameNotFoundException("No Such Object")
+        )
+        whenever(ldapTemplate.unbind(any<Name>())).thenThrow(
+            NameNotFoundException("No Such Object")
+        )
+
+        assertThrows<NotFoundException> {
+            ldapTemplate.addRole(
+                "test",
+                object : DeliusRole {
+                    override val description = "Role One Description"
+                    override val mappedRole = "MAPPED_ROLE_ONE"
+                    override val name = "ROLE1"
+                }
+            )
+        }
+
+        assertThrows<NotFoundException> {
+            ldapTemplate.removeRole(
+                "test",
+                object : DeliusRole {
+                    override val description = "Role One Description"
+                    override val mappedRole = "MAPPED_ROLE_ONE"
+                    override val name = "ROLE1"
+                }
+            )
+        }
     }
 }
