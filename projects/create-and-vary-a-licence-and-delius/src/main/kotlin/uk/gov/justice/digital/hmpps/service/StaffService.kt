@@ -28,6 +28,12 @@ class StaffService(
             staff.asStaff()
         } ?: throw NotFoundException("Staff", "username", username)
 
+    fun findStaffById(id: Long): Staff {
+        val staff = staffRepository.findById(id).orElseThrow { NotFoundException("Staff", "id", id) }
+        staff.user?.apply { email = ldapTemplate.findEmailByUsername(staff.user.username) }
+        return staff.asStaff()
+    }
+
     fun findPDUHeads(boroughCode: String): List<PDUHead> =
         boroughRepository.findActiveByCode(boroughCode)?.pduHeads?.map {
             it.let { pduHead ->
@@ -53,6 +59,7 @@ class StaffService(
 }
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaff() = Staff(
+    id,
     code,
     name(),
     teams?.map { it.asTeam() } ?: listOf(),

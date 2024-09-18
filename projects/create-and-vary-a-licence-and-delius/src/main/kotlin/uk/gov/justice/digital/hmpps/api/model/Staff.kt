@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 data class Staff(
+    val id: Long,
     val code: String,
     val name: Name,
     val teams: List<Team>,
