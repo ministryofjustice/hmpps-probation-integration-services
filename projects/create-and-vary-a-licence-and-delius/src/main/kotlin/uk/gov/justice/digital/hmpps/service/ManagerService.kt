@@ -27,6 +27,7 @@ class ManagerService(
 }
 
 fun PersonManager.asManager() = Manager(
+    id,
     staff.code,
     staff.name(),
     provider.asProvider(),
