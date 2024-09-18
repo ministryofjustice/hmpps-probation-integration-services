@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model
 import java.time.LocalDate
 
 data class Manager(
+    val id: Long,
     val code: String,
     val name: Name,
     val provider: Provider,

@@ -74,6 +74,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asPDU
 )
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaffName() = StaffName(
+    id,
     name(),
     code
 )

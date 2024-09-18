@@ -16,6 +16,7 @@ data class PDUHead(
 )
 
 data class StaffName(
+    val id: Long,
     val name: Name,
     val code: String
 )
