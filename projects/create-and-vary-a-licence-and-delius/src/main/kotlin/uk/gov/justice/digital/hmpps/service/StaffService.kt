@@ -49,6 +49,14 @@ class StaffService(
             it.asStaffName()
         }
 
+    fun getManagedOffendersByStaffId(id: Long): List<ManagedOffender> =
+        caseloadRepository.findByStaffIdAndRoleCode(
+            id,
+            CaseloadRole.OFFENDER_MANAGER.value
+        ).map {
+            it.asManagedOffender()
+        }
+
     fun getManagedOffenders(staffCode: String): List<ManagedOffender> =
         caseloadRepository.findByStaffCodeAndRoleCode(
             staffCode,

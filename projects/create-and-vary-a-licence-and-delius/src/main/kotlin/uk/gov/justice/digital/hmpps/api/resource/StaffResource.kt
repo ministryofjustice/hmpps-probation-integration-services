@@ -33,6 +33,11 @@ class StaffResource(
         )
 
     @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
+    @GetMapping("/byid/{id}/caseload/managed-offenders")
+    fun getManagedOffenders(@PathVariable id: Long): List<ManagedOffender> =
+        staffService.getManagedOffendersByStaffId(id)
+
+    @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{staffCode}/caseload/managed-offenders")
     fun getManagedOffenders(@PathVariable staffCode: String): List<ManagedOffender> =
         staffService.getManagedOffenders(staffCode)
