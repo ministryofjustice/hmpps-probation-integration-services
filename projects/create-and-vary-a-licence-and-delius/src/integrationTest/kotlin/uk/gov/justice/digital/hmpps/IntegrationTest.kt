@@ -133,4 +133,26 @@ internal class IntegrationTest {
             )
         )
     }
+
+    @Test
+    fun `returns staff by id `() {
+
+        val staff = mockMvc
+            .perform(get("/staff/byid/${StaffGenerator.DEFAULT.id}").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<Staff>()
+
+        assertThat(
+            staff,
+            equalTo(
+                StaffGenerator.DEFAULT.asStaff().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
+            )
+        )
+    }
+
+    @Test
+    fun `returns staff by id not found `() {
+
+        mockMvc.perform(get("/staff/byid/9999999").withToken()).andExpect(status().isNotFound)
+    }
 }

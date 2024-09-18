@@ -1,12 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.api.model.PDUHead
 import uk.gov.justice.digital.hmpps.api.model.Staff
@@ -21,6 +16,10 @@ class StaffResource(
     @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{username}")
     fun findStaff(@PathVariable username: String): Staff = staffService.findStaff(username)
+
+    @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
+    @GetMapping("/byid/{id}")
+    fun findStaff(@PathVariable id: Long): Staff = staffService.findStaffById(id)
 
     @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{boroughCode}/pdu-head")
