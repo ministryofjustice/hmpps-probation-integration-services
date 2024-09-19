@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.api.model.OfficeAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import java.time.LocalDate
 
@@ -75,8 +74,7 @@ object ProviderGenerator {
         code: String,
         description: String = "Description of $code",
         id: Long = IdGenerator.getAndIncrement(),
-        pduHeads: List<Staff> = listOf(StaffGenerator.PDUHEAD)
-    ) = Borough(code, description, id, pduHeads, DEFAULT_PROVIDER)
+    ) = Borough(code, description, id, listOf(), DEFAULT_PROVIDER)
 
     fun generateDistrict(
         code: String,
