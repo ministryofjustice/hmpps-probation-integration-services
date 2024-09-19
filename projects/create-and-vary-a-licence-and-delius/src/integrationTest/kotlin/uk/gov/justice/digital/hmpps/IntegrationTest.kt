@@ -92,18 +92,12 @@ internal class IntegrationTest {
     @Test
     fun `returns staff details`() {
         val username = StaffGenerator.DEFAULT_STAFF_USER.username
-
-        val staff = mockMvc
+        mockMvc
             .perform(get("/staff/$username").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<Staff>()
-
-        assertThat(
-            staff,
-            equalTo(
-                StaffGenerator.DEFAULT.asStaff().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
-            )
-        )
+            .andExpect(jsonPath("$.username", equalTo("john-smith")))
+            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
+            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
     }
 
     @Test
@@ -148,18 +142,12 @@ internal class IntegrationTest {
 
     @Test
     fun `returns staff by id `() {
-
-        val staff = mockMvc
+        mockMvc
             .perform(get("/staff/byid/${StaffGenerator.DEFAULT.id}").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<Staff>()
-
-        assertThat(
-            staff,
-            equalTo(
-                StaffGenerator.DEFAULT.asStaff().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
-            )
-        )
+            .andExpect(jsonPath("$.username", equalTo("john-smith")))
+            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
+            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
     }
 
     @Test

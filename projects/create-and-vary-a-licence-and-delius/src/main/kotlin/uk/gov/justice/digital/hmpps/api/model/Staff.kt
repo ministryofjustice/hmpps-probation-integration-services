@@ -8,6 +8,7 @@ data class Staff(
     val provider: Provider,
     val username: String?,
     val email: String?,
+    val telephoneNumber: String?,
     val unallocated: Boolean,
 )
 
