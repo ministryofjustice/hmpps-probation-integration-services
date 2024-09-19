@@ -141,6 +141,25 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/PDUHead"
+  /staff/byid/{id}:
+    get:
+      tags:
+      - staff-resource
+      operationId: findStaff_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
   /probation-case/{crn}/responsible-community-manager:
     get:
       tags:
@@ -188,9 +207,13 @@ components:
     StaffName:
       required:
       - code
+      - id
       - name
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         name:
           $ref: "#/components/schemas/Name"
         code:
@@ -272,11 +295,15 @@ components:
     Staff:
       required:
       - code
+      - id
       - name
       - teams
       - unallocated
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         code:
           type: string
         name:
@@ -334,12 +361,16 @@ components:
     Manager:
       required:
       - code
+      - id
       - name
       - provider
       - team
       - unallocated
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         code:
           type: string
         name:
