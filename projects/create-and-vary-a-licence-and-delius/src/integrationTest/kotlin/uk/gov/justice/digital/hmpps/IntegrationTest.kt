@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -48,6 +49,17 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `returns responsible officer details for a list of CRNs`() {
+        val crn = PersonGenerator.DEFAULT_PERSON.crn
+        mockMvc
+            .perform(post("/probation-case/responsible-community-manager").withToken().withJson(listOf(crn)))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("size()", equalTo(1)))
+            .andExpect(jsonPath("$[0].code", equalTo("N01BDT1")))
+            .andExpect(jsonPath("$[0].email", equalTo("john.smith@moj.gov.uk")))
+    }
+
+    @Test
     fun `returns only active and non null team office locations`() {
         val crn = PersonGenerator.PERSON_ENDED_TEAM_LOCATION.crn
         val expectedAddresses: List<OfficeAddress> = listOf(
@@ -80,18 +92,12 @@ internal class IntegrationTest {
     @Test
     fun `returns staff details`() {
         val username = StaffGenerator.DEFAULT_STAFF_USER.username
-
-        val staff = mockMvc
+        mockMvc
             .perform(get("/staff/$username").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<Staff>()
-
-        assertThat(
-            staff,
-            equalTo(
-                StaffGenerator.DEFAULT.asStaff().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
-            )
-        )
+            .andExpect(jsonPath("$.username", equalTo("john-smith")))
+            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
+            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
     }
 
     @Test
@@ -136,18 +142,12 @@ internal class IntegrationTest {
 
     @Test
     fun `returns staff by id `() {
-
-        val staff = mockMvc
+        mockMvc
             .perform(get("/staff/byid/${StaffGenerator.DEFAULT.id}").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<Staff>()
-
-        assertThat(
-            staff,
-            equalTo(
-                StaffGenerator.DEFAULT.asStaff().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
-            )
-        )
+            .andExpect(jsonPath("$.username", equalTo("john-smith")))
+            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
+            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
     }
 
     @Test

@@ -11,7 +11,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.LdapUser
+import uk.gov.justice.digital.hmpps.ldap.findByUsername
 
 @Service
 class StaffService(
@@ -21,33 +22,21 @@ class StaffService(
     private val caseloadRepository: CaseloadRepository,
 ) {
     fun findStaff(username: String): Staff =
-        staffRepository.findByUserUsername(username)?.let { staff ->
-            staff.user?.apply {
-                email = ldapTemplate.findEmailByUsername(username)
-            }
-            staff.asStaff()
-        } ?: throw NotFoundException("Staff", "username", username)
+        staffRepository.findByUserUsername(username)
+            ?.let { ldapTemplate.populateUserDetails(it).asStaff() }
+            ?: throw NotFoundException("Staff", "username", username)
 
     fun findStaffById(id: Long): Staff {
         val staff = staffRepository.findById(id).orElseThrow { NotFoundException("Staff", "id", id) }
-        staff.user?.apply { email = ldapTemplate.findEmailByUsername(staff.user.username) }
-        return staff.asStaff()
+        return ldapTemplate.populateUserDetails(staff).asStaff()
     }
 
-    fun findPDUHeads(boroughCode: String): List<PDUHead> =
-        boroughRepository.findActiveByCode(boroughCode)?.pduHeads?.map {
-            it.let { pduHead ->
-                pduHead.user?.apply {
-                    email = ldapTemplate.findEmailByUsername(username)
-                }
-                pduHead.asPDUHead()
-            }
-        } ?: listOf()
+    fun findPDUHeads(boroughCode: String): List<PDUHead> = boroughRepository.findActiveByCode(boroughCode)?.pduHeads
+        ?.map { ldapTemplate.populateUserDetails(it).asPDUHead() }
+        ?: listOf()
 
     fun findStaffForUsernames(usernames: List<String>): List<StaffName> =
-        staffRepository.findByUserUsernameIn(usernames).map {
-            it.asStaffName()
-        }
+        staffRepository.findByUserUsernameIn(usernames).map { it.asStaffName() }
 
     fun getManagedOffendersByStaffId(id: Long): List<ManagedOffender> =
         caseloadRepository.findByStaffIdAndRoleCode(
@@ -64,6 +53,16 @@ class StaffService(
         ).map {
             it.asManagedOffender()
         }
+
+    private fun LdapTemplate.populateUserDetails(staff: uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff) =
+        staff.apply {
+            user?.apply {
+                ldapTemplate.findByUsername<LdapUser>(username)?.let {
+                    email = it.email
+                    telephoneNumber = it.telephoneNumber
+                }
+            }
+        }
 }
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaff() = Staff(
@@ -71,8 +70,10 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asSta
     code,
     name(),
     teams?.map { it.asTeam() } ?: listOf(),
+    provider.asProvider(),
     user?.username,
     user?.email,
+    user?.telephoneNumber,
     isUnallocated()
 )
 
@@ -84,6 +85,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asPDU
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaffName() = StaffName(
     id,
     name(),
-    code
+    code,
+    user?.username
 )
 

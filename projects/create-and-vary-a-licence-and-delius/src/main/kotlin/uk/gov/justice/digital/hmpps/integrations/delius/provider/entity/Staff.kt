@@ -34,8 +34,11 @@ class Staff(
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
-    val teams: List<Team>?
+    val teams: List<Team>?,
 
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")  // Note: this column should not be used in general, because it can change whenever a user's teams changes. It's only used here for backward compatibility with Community API.
+    val provider: Provider,
 ) {
     fun isUnallocated() = code.endsWith("U")
 }
@@ -58,6 +61,9 @@ class StaffUser(
 ) {
     @Transient
     var email: String? = null
+
+    @Transient
+    var telephoneNumber: String? = null
 }
 
 interface StaffRepository : JpaRepository<Staff, Long> {

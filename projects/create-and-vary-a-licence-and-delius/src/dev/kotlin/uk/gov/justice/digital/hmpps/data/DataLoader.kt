@@ -41,6 +41,7 @@ class DataLoader(
             StaffGenerator.DEFAULT.forename,
             StaffGenerator.DEFAULT.surname,
             listOf(ProviderGenerator.DEFAULT_TEAM),
+            ProviderGenerator.DEFAULT_PROVIDER,
             StaffGenerator.DEFAULT.middleName,
             StaffGenerator.DEFAULT.user,
             StaffGenerator.DEFAULT.id
