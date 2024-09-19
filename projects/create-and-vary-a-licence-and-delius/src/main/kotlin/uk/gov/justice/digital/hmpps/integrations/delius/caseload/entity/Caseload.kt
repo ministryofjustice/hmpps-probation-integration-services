@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
@@ -15,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
 
 interface CaseloadRepository : JpaRepository<Caseload, Long> {
+    fun findByStaffIdAndRoleCode(id: Long, role: String): List<Caseload>
     fun findByStaffCodeAndRoleCode(staffCode: String, role: String): List<Caseload>
     fun findByTeamCodeAndRoleCodeOrderByAllocationDateDesc(staffCode: String, role: String): List<Caseload>
 }
