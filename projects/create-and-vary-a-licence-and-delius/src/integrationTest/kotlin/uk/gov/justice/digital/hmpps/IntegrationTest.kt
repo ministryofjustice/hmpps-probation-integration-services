@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -45,6 +46,17 @@ internal class IntegrationTest {
                 )
             )
         )
+    }
+
+    @Test
+    fun `returns responsible officer details for a list of CRNs`() {
+        val crn = PersonGenerator.DEFAULT_PERSON.crn
+        mockMvc
+            .perform(post("/probation-case/responsible-community-manager").withToken().withJson(listOf(crn)))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("size()", equalTo(1)))
+            .andExpect(jsonPath("$[0].code", equalTo("N01BDT1")))
+            .andExpect(jsonPath("$[0].email", equalTo("john.smith@moj.gov.uk")))
     }
 
     @Test

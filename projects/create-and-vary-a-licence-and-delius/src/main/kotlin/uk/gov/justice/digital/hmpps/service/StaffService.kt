@@ -45,9 +45,7 @@ class StaffService(
         } ?: listOf()
 
     fun findStaffForUsernames(usernames: List<String>): List<StaffName> =
-        staffRepository.findByUserUsernameIn(usernames).map {
-            it.asStaffName()
-        }
+        staffRepository.findByUserUsernameIn(usernames).map { it.asStaffName() }
 
     fun getManagedOffendersByStaffId(id: Long): List<ManagedOffender> =
         caseloadRepository.findByStaffIdAndRoleCode(
@@ -71,6 +69,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asSta
     code,
     name(),
     teams?.map { it.asTeam() } ?: listOf(),
+    provider.asProvider(),
     user?.username,
     user?.email,
     isUnallocated()
@@ -84,6 +83,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asPDU
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaffName() = StaffName(
     id,
     name(),
-    code
+    code,
+    user?.username
 )
 

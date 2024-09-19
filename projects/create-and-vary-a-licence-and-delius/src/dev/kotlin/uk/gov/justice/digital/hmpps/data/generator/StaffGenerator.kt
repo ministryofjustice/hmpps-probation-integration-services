@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
@@ -16,10 +17,11 @@ object StaffGenerator {
         forename: String,
         surname: String,
         teams: List<Team> = listOf(),
+        provider: Provider = ProviderGenerator.DEFAULT_PROVIDER,
         middleName: String? = null,
         user: StaffUser? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Staff(code, forename, surname, middleName, user, id, teams).apply { user?.set("staff", this) }
+    ) = Staff(code, forename, surname, middleName, user, id, teams, provider).apply { user?.set("staff", this) }
 
     fun generateStaffUser(
         username: String,
