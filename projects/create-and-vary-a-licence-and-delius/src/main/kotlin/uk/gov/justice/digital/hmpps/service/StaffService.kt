@@ -56,17 +56,20 @@ class StaffService(
         ).map {
             it.asManagedOffender()
         }
+}
 
-    private fun LdapTemplate.populateUserDetails(staff: uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff) =
-        staff.apply {
-            user?.apply {
-                ldapTemplate.findByUsername<LdapUser>(username)?.let {
-                    email = it.email
-                    telephoneNumber = it.telephoneNumber
-                }
+fun LdapTemplate.populateUserDetails(
+    staff: uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff,
+    ldapTemplate: LdapTemplate = this
+) =
+    staff.apply {
+        user?.apply {
+            ldapTemplate.findByUsername<LdapUser>(username)?.let {
+                email = it.email
+                telephoneNumber = it.telephoneNumber
             }
         }
-}
+    }
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaff() = Staff(
     id,

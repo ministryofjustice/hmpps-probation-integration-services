@@ -2,21 +2,25 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
-import uk.gov.justice.digital.hmpps.api.model.Manager
-import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.OfficeAddress
-import uk.gov.justice.digital.hmpps.api.model.StaffEmail
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PrisonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Borough
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 
 @Service
 class ManagerService(
     private val ldapTemplate: LdapTemplate,
-    private val personManagerRepository: PersonManagerRepository
+    private val personManagerRepository: PersonManagerRepository,
+    private val prisonManagerRepository: PrisonManagerRepository
 ) {
     fun findCommunityManager(crn: String): Manager =
         personManagerRepository.findByPersonCrn(crn)?.let { ro ->
@@ -30,9 +34,35 @@ class ManagerService(
         personManagerRepository.findByPersonCrnIn(crns).map {
             StaffEmail(it.staff.code, it.staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) })
         }
+
+    fun findAllOffenderManagers(crn: String): List<Manager> {
+
+        return personManagerRepository.findAllByPersonCrn(crn).map { ro ->
+            ro.staff.apply {
+                ldapTemplate.populateUserDetails(this)
+            }
+            ro.asManager()
+        } + prisonManagerRepository.findAllByPersonCrn(crn).map { ro ->
+            ro.staff.apply {
+                ldapTemplate.populateUserDetails(this)
+            }
+            ro.asManager()
+        }
+    }
 }
 
 fun PersonManager.asManager() = Manager(
+    staff.id,
+    staff.code,
+    staff.name(),
+    provider.asProvider(),
+    team.asTeam(),
+    staff.user?.username,
+    staff.user?.email,
+    staff.isUnallocated()
+)
+
+fun PrisonManager.asManager() = Manager(
     staff.id,
     staff.code,
     staff.name(),

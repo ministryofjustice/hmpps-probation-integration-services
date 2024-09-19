@@ -54,6 +54,7 @@ class DataLoader(
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
         entityManager.persist(PersonGenerator.PERSON_ENDED_TEAM_LOCATION)
         entityManager.persist(PersonGenerator.DEFAULT_CM)
+        entityManager.persist(PersonGenerator.DEFAULT_PM)
         entityManager.persist(PersonGenerator.CM_ENDED_TEAM_LOCATION)
 
         val person = PersonGenerator.generatePerson("N123456").also(entityManager::persist)

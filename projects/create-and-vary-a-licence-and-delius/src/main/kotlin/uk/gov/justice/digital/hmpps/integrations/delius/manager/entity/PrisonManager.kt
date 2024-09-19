@@ -1,21 +1,18 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.manager.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 
-@Immutable
 @Entity
-@Table(name = "offender_manager")
+@Table(name = "prison_offender_manager")
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
-class PersonManager(
+class PrisonManager(
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -26,34 +23,25 @@ class PersonManager(
     val provider: Provider,
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "allocation_team_id")
     val team: Team,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
 
-    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
     @Id
-    @Column(name = "offender_manager_id")
-    val id: Long
+    @Column(name = "prison_offender_manager_id")
+    val id: Long = 0,
 )
 
-interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
+interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
     @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
-    fun findByPersonCrn(crn: String): PersonManager?
-
-    @EntityGraph(attributePaths = ["person", "staff.user"])
-    fun findByPersonCrnIn(crn: List<String>): List<PersonManager>
-
-    @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
-    fun findAllByPersonCrn(crn: String): List<PersonManager>
+    fun findAllByPersonCrn(crn: String): List<PrisonManager>
 }
-
-fun PersonManagerRepository.getByCrn(crn: String) =
-    findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

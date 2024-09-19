@@ -16,12 +16,16 @@ import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PrisonManagerRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class ResponsibleManagerServiceTest {
 
     @Mock
     lateinit var personManagerRepository: PersonManagerRepository
+
+    @Mock
+    lateinit var prisonManagerRepository: PrisonManagerRepository
 
     @Mock
     lateinit var ldapTemplate: LdapTemplate

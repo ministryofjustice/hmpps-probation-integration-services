@@ -12,12 +12,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.api.model.Manager
+import uk.gov.justice.digital.hmpps.api.model.OfficeAddress
+import uk.gov.justice.digital.hmpps.api.model.PDUHead
+import uk.gov.justice.digital.hmpps.api.model.StaffName
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.asAddress
-import uk.gov.justice.digital.hmpps.service.*
+import uk.gov.justice.digital.hmpps.service.asManager
+import uk.gov.justice.digital.hmpps.service.asPDUHead
+import uk.gov.justice.digital.hmpps.service.asStaffName
+import uk.gov.justice.digital.hmpps.service.asTeam
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -164,5 +170,17 @@ internal class IntegrationTest {
             .andExpect(jsonPath("$.username", equalTo("john-smith")))
             .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
             .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
+    }
+
+    @Test
+    fun `returns all offender managers (prison and probation) `() {
+        val crn = PersonGenerator.DEFAULT_PERSON.crn
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/all-offender-managers").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<List<Manager>>()
+        assertThat(response.size, equalTo(2))
+        assertThat(response[0], equalTo(PersonGenerator.DEFAULT_CM.asManager().copy(email = "john.smith@moj.gov.uk")))
+        assertThat(response[1], equalTo(PersonGenerator.DEFAULT_PM.asManager().copy(email = "john.smith@moj.gov.uk")))
     }
 }
