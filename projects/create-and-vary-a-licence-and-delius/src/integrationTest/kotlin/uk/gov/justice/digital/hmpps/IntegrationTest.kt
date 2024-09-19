@@ -155,4 +155,14 @@ internal class IntegrationTest {
 
         mockMvc.perform(get("/staff/byid/9999999").withToken()).andExpect(status().isNotFound)
     }
+
+    @Test
+    fun `returns staff by code`() {
+        mockMvc
+            .perform(get("/staff/bycode/${StaffGenerator.DEFAULT.code}").withToken())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.username", equalTo("john-smith")))
+            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
+            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
+    }
 }
