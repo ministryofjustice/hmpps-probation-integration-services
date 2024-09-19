@@ -21,10 +21,13 @@ class StaffService(
     private val boroughRepository: BoroughRepository,
     private val caseloadRepository: CaseloadRepository,
 ) {
-    fun findStaff(username: String): Staff =
-        staffRepository.findByUserUsername(username)
-            ?.let { ldapTemplate.populateUserDetails(it).asStaff() }
-            ?: throw NotFoundException("Staff", "username", username)
+    fun findStaff(username: String): Staff = staffRepository.findByUserUsername(username)
+        ?.let { ldapTemplate.populateUserDetails(it).asStaff() }
+        ?: throw NotFoundException("Staff", "username", username)
+
+    fun findStaffByCode(code: String): Staff = staffRepository.findByCode(code)
+        ?.let { ldapTemplate.populateUserDetails(it).asStaff() }
+        ?: throw NotFoundException("Staff", "code", code)
 
     fun findStaffById(id: Long): Staff {
         val staff = staffRepository.findById(id).orElseThrow { NotFoundException("Staff", "id", id) }

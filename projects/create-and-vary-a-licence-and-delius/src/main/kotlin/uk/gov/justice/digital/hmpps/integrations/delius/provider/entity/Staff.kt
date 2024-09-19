@@ -71,6 +71,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     fun findByUserUsername(username: String): Staff?
 
     @EntityGraph(attributePaths = ["user", "teams"])
+    fun findByCode(code: String): Staff?
+
+    @EntityGraph(attributePaths = ["user", "teams"])
     override fun findById(id: Long): Optional<Staff>
 
     @EntityGraph(attributePaths = ["user"])
