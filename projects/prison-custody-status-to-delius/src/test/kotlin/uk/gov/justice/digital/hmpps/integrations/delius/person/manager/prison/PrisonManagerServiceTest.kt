@@ -258,6 +258,7 @@ internal class PrisonManagerServiceTest {
         }
 
         assertEquals("Person has merged from record", exception.message)
+        assertEquals("B5295DZ", exception.additionalProperties["nomsNumber"])
 
         verify(prisonManagerRepository, never()).saveAndFlush(any())
         verify(prisonManagerRepository, never()).save(any())

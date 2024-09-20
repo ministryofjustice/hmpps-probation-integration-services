@@ -68,7 +68,7 @@ class PrisonManagerService(
             //where crn has a merged from record
             //we can ignore the IncorrectResultSizeDataAccessException and
             //process the record no further
-            throw IgnorableMessageException("Person has merged from record", mapOf("person id" to person.id.toString()))
+            throw IgnorableMessageException("Person has merged from record", mapOf("nomsNumber" to person.nomsNumber))
         }
 
         // end-date the previous prison manager
