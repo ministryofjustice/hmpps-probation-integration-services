@@ -62,7 +62,7 @@ class PrisonManagerService(
         try {
             activePrisonManager = prisonManagerRepository.findActiveManagerAtDate(person.id, allocationDate)
         } catch (e: IncorrectResultSizeDataAccessException) {
-            if (personRepository.findByMergedFromCrn(person.id) == null) {
+            if (personRepository.findByMergedFromCrn(person.id) == 0) {
                 throw e
             }
             //where crn has a merged from record

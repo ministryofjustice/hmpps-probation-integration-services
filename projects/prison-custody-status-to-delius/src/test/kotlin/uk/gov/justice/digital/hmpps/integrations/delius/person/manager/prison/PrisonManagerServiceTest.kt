@@ -250,7 +250,7 @@ internal class PrisonManagerServiceTest {
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
             .thenThrow(IncorrectResultSizeDataAccessException::class.java)
 
-        whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(PersonGenerator.MATCHABLE_WITH_POM)
+        whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(1)
 
         val exception = assertThrows<IgnorableMessageException> {
             prisonManagerService.allocateToProbationArea(
@@ -277,7 +277,7 @@ internal class PrisonManagerServiceTest {
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
             .thenThrow(IncorrectResultSizeDataAccessException::class.java)
 
-        whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(null)
+        whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(0)
 
         assertThrows<IncorrectResultSizeDataAccessException> {
             prisonManagerService.allocateToProbationArea(

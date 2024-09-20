@@ -35,16 +35,15 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query(
         """
-        SELECT p FROM Person p 
+        SELECT count(p) FROM Person p 
         LEFT JOIN p.manager
         JOIN p.additionalIdentifier ai
         WHERE ai.id = :id 
-        AND p.softDeleted = false 
-        AND p.manager.active = true 
+        AND p.softDeleted = false
         AND ai.mergeDetail.code = 'MFCRN'             
         """
     )
-    fun findByMergedFromCrn(id: Long): Person?
+    fun findByMergedFromCrn(id: Long): Int
 }
 
 @Immutable
