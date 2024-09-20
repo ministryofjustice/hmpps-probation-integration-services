@@ -56,7 +56,6 @@ internal class PrisonManagerServiceTest {
     @InjectMocks
     lateinit var prisonManagerService: PrisonManagerService
 
-
     @BeforeEach
     fun mockSaves() {
         doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
@@ -254,7 +253,11 @@ internal class PrisonManagerServiceTest {
         whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(PersonGenerator.MATCHABLE_WITH_POM)
 
         val exception = assertThrows<IgnorableMessageException> {
-            prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+            prisonManagerService.allocateToProbationArea(
+                event.disposal!!,
+                ProbationAreaGenerator.DEFAULT,
+                allocationDate
+            )
         }
 
         assertEquals("Person has merged from record", exception.message)
@@ -276,7 +279,11 @@ internal class PrisonManagerServiceTest {
         whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(null)
 
         assertThrows<IncorrectResultSizeDataAccessException> {
-            prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+            prisonManagerService.allocateToProbationArea(
+                event.disposal!!,
+                ProbationAreaGenerator.DEFAULT,
+                allocationDate
+            )
         }
 
         verify(prisonManagerRepository, never()).saveAndFlush(any())
