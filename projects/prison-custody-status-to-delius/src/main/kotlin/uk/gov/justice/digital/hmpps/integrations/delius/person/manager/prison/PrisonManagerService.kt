@@ -65,7 +65,8 @@ class PrisonManagerService(
                 throw e
             }
             //where crn has a merged from record
-            //we can ignore the error
+            //we can ignore the IncorrectResultSizeDataAccessException and
+            //process the record no further
             return
         }
 
