@@ -2,10 +2,9 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.AdditionalIdentifierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.entity.ProbationArea
@@ -29,7 +28,7 @@ class PrisonManagerService(
     private val prisonManagerRepository: PrisonManagerRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val personRepository: PersonRepository,
+    private val additionalIdentifierRepository: AdditionalIdentifierRepository,
 ) {
     fun allocateToProbationArea(
         disposal: Disposal,
@@ -62,13 +61,13 @@ class PrisonManagerService(
         try {
             activePrisonManager = prisonManagerRepository.findActiveManagerAtDate(person.id, allocationDate)
         } catch (e: IncorrectResultSizeDataAccessException) {
-            if (personRepository.findByMergedFromCrn(person.id) == 0) {
+            if (!additionalIdentifierRepository.personHasBeenMerged(person.id)) {
                 throw e
             }
             //where crn has a merged from record
             //we can ignore the IncorrectResultSizeDataAccessException and
             //process the record no further
-            throw IgnorableMessageException("MergedPrisonManagerHistory")
+            return
         }
 
         // end-date the previous prison manager

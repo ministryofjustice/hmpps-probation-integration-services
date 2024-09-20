@@ -15,12 +15,11 @@ import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
 import org.springframework.dao.IncorrectResultSizeDataAccessException
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.AdditionalIdentifierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -51,7 +50,7 @@ internal class PrisonManagerServiceTest {
     lateinit var contactTypeRepository: ContactTypeRepository
 
     @Mock
-    lateinit var personRepository: PersonRepository
+    lateinit var additionalIdentifierRepository: AdditionalIdentifierRepository
 
     @InjectMocks
     lateinit var prisonManagerService: PrisonManagerService
@@ -250,17 +249,9 @@ internal class PrisonManagerServiceTest {
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
             .thenThrow(IncorrectResultSizeDataAccessException::class.java)
 
-        whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(1)
+        whenever(additionalIdentifierRepository.personHasBeenMerged(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(true)
 
-        val exception = assertThrows<IgnorableMessageException> {
-            prisonManagerService.allocateToProbationArea(
-                event.disposal!!,
-                ProbationAreaGenerator.DEFAULT,
-                allocationDate
-            )
-        }
-
-        assertEquals("MergedPrisonManagerHistory", exception.message)
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
 
         verify(prisonManagerRepository, never()).saveAndFlush(any())
         verify(prisonManagerRepository, never()).save(any())
@@ -276,7 +267,7 @@ internal class PrisonManagerServiceTest {
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
             .thenThrow(IncorrectResultSizeDataAccessException::class.java)
 
-        whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(0)
+        whenever(additionalIdentifierRepository.personHasBeenMerged(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(false)
 
         assertThrows<IncorrectResultSizeDataAccessException> {
             prisonManagerService.allocateToProbationArea(

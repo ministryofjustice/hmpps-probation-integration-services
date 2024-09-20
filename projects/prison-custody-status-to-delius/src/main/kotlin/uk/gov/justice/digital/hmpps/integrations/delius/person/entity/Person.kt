@@ -5,7 +5,6 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 
 @Immutable
@@ -20,30 +19,12 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val nomsNumber: String,
 
-    @OneToMany(mappedBy = "person")
-    val additionalIdentifier: List<AdditionalIdentifier> = emptyList(),
-
-    @OneToOne(mappedBy = "person")
-    val manager: PersonManager? = null,
-
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByNomsNumberAndSoftDeletedIsFalse(nomsNumber: String): List<Person>
-
-    @Query(
-        """
-        SELECT count(p) FROM Person p 
-        LEFT JOIN p.manager
-        JOIN p.additionalIdentifier ai
-        WHERE ai.person.id = :id 
-        AND p.softDeleted = false
-        AND ai.mergeDetail.code = 'MFCRN'             
-        """
-    )
-    fun findByMergedFromCrn(id: Long): Int
 }
 
 @Immutable
@@ -55,18 +36,27 @@ class AdditionalIdentifier(
     @Column(name = "additional_identifier_id")
     val id: Long,
 
-    @Column(name = "identifier")
-    val mergedFromCrn: String,
-
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
-
-    @ManyToOne
-    @JoinColumn(name = "offender_id")
-    val person: Person,
+    @Column(name = "offender_id")
+    val personId: Long,
 
     @ManyToOne
     @JoinColumn(name = "identifier_name_id")
-    val mergeDetail: ReferenceData
+    val name: ReferenceData,
+
+    @Column(updatable = false, columnDefinition = "number")
+    val softDeleted: Boolean = false,
 )
+
+interface AdditionalIdentifierRepository: JpaRepository<AdditionalIdentifier, Long> {
+
+    @Query(
+        """
+        select count(ai) > 0 
+        from AdditionalIdentifier ai
+        where ai.personId = :personId
+        and ai.name.code = 'MFCRN'             
+        """
+    )
+    fun personHasBeenMerged(personId: Long): Boolean
+}
 
