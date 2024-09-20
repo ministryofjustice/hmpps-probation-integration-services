@@ -38,7 +38,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         SELECT count(p) FROM Person p 
         LEFT JOIN p.manager
         JOIN p.additionalIdentifier ai
-        WHERE ai.id = :id 
+        WHERE ai.person.id = :id 
         AND p.softDeleted = false
         AND ai.mergeDetail.code = 'MFCRN'             
         """
