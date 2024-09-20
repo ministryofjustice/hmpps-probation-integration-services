@@ -47,7 +47,7 @@ class AdditionalIdentifier(
     val softDeleted: Boolean = false,
 )
 
-interface AdditionalIdentifierRepository: JpaRepository<AdditionalIdentifier, Long> {
+interface AdditionalIdentifierRepository : JpaRepository<AdditionalIdentifier, Long> {
 
     @Query(
         """

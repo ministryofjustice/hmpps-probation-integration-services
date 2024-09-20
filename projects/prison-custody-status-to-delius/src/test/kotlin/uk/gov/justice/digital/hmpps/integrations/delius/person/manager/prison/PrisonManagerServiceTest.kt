@@ -249,7 +249,9 @@ internal class PrisonManagerServiceTest {
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
             .thenThrow(IncorrectResultSizeDataAccessException::class.java)
 
-        whenever(additionalIdentifierRepository.personHasBeenMerged(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(true)
+        whenever(additionalIdentifierRepository.personHasBeenMerged(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(
+            true
+        )
 
         prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
 
@@ -267,7 +269,9 @@ internal class PrisonManagerServiceTest {
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
             .thenThrow(IncorrectResultSizeDataAccessException::class.java)
 
-        whenever(additionalIdentifierRepository.personHasBeenMerged(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(false)
+        whenever(additionalIdentifierRepository.personHasBeenMerged(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(
+            false
+        )
 
         assertThrows<IncorrectResultSizeDataAccessException> {
             prisonManagerService.allocateToProbationArea(
