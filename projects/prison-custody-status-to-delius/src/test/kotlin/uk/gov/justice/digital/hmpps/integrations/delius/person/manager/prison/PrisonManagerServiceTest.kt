@@ -13,11 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
+import org.springframework.dao.IncorrectResultSizeDataAccessException
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -47,8 +49,12 @@ internal class PrisonManagerServiceTest {
     @Mock
     lateinit var contactTypeRepository: ContactTypeRepository
 
+    @Mock
+    lateinit var personRepository: PersonRepository
+
     @InjectMocks
     lateinit var prisonManagerService: PrisonManagerService
+
 
     @BeforeEach
     fun mockSaves() {
@@ -233,6 +239,26 @@ internal class PrisonManagerServiceTest {
                 assertFalse(newPrisonManager.active)
             }
         )
+    }
+
+    @Test
+    fun processMultiplePrisonerOffenderManagerCasesForMergedCrn() {
+        mockReferenceData()
+        val allocationDate = ZonedDateTime.now().minusDays(2)
+        val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
+
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate))
+            .thenThrow(IncorrectResultSizeDataAccessException::class.java)
+
+        whenever(personRepository.findByMergedFromCrn(PersonGenerator.RECALLABLE.id)).thenReturn(PersonGenerator.RECALLABLE)
+
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+
+
+        verify(prisonManagerRepository, never()).saveAndFlush(any())
+        verify(prisonManagerRepository, never()).save(any())
+        verify(prisonManagerRepository, never()).findFirstManagerAfterDate(any(), any(), any())
+
     }
 
     private fun mockReferenceData() {

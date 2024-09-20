@@ -10,7 +10,7 @@ object PersonManagerGenerator {
         staff: Staff = StaffGenerator.UNALLOCATED
     ): PersonManager = PersonManager(
         IdGenerator.getAndIncrement(),
-        person.id,
+        person,
         ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON,
         staff,
         TeamGenerator.DEFAULT,

@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.entity.ProbationArea
@@ -25,7 +27,8 @@ class PrisonManagerService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val prisonManagerRepository: PrisonManagerRepository,
     private val contactRepository: ContactRepository,
-    private val contactTypeRepository: ContactTypeRepository
+    private val contactTypeRepository: ContactTypeRepository,
+    private val personRepository: PersonRepository,
 ) {
     fun allocateToProbationArea(
         disposal: Disposal,
@@ -54,8 +57,19 @@ class PrisonManagerService(
     ) {
         val person = disposal.event.person
 
+        val activePrisonManager: PrisonManager?
+        try {
+            activePrisonManager = prisonManagerRepository.findActiveManagerAtDate(person.id, allocationDate)
+        } catch (e: IncorrectResultSizeDataAccessException) {
+            if (personRepository.findByMergedFromCrn(person.id) == null) {
+                throw e
+            }
+            //where crn has a merged from record
+            //we can ignore the error
+            return
+        }
+
         // end-date the previous prison manager
-        val activePrisonManager = prisonManagerRepository.findActiveManagerAtDate(person.id, allocationDate)
         if (activePrisonManager?.probationArea?.id == probationArea.id) return
         val activePrisonManagerEndDate = activePrisonManager?.endDate
             ?: prisonManagerRepository.findFirstManagerAfterDate(person.id, allocationDate).singleOrNull()?.date
