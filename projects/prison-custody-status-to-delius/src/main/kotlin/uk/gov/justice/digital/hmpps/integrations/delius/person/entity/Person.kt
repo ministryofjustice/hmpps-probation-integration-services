@@ -47,7 +47,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findByMergedFromCrn(id: Long): Person?
 }
 
-
 @Immutable
 @Entity
 @SQLRestriction("soft_deleted = 0")
