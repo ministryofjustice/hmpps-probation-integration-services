@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
@@ -67,7 +68,7 @@ class PrisonManagerService(
             //where crn has a merged from record
             //we can ignore the IncorrectResultSizeDataAccessException and
             //process the record no further
-            return
+            throw IgnorableMessageException("Person has merged from record", mapOf("person id" to person.id.toString()))
         }
 
         // end-date the previous prison manager

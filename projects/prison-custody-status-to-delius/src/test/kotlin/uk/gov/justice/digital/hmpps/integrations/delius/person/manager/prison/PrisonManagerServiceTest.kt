@@ -15,6 +15,7 @@ import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
 import org.springframework.dao.IncorrectResultSizeDataAccessException
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -252,7 +253,11 @@ internal class PrisonManagerServiceTest {
 
         whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(PersonGenerator.MATCHABLE_WITH_POM)
 
-        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+        val exception = assertThrows<IgnorableMessageException> {
+            prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+        }
+
+        assertEquals("Person has merged from record", exception.message)
 
         verify(prisonManagerRepository, never()).saveAndFlush(any())
         verify(prisonManagerRepository, never()).save(any())
