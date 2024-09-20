@@ -242,23 +242,41 @@ internal class PrisonManagerServiceTest {
     }
 
     @Test
-    fun processMultiplePrisonerOffenderManagerCasesForMergedCrn() {
+    fun processMultiplePrisonerOffenderManagerForMergedCrn() {
         mockReferenceData()
         val allocationDate = ZonedDateTime.now().minusDays(2)
-        val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
+        val event = EventGenerator.custodialEvent(PersonGenerator.MATCHABLE_WITH_POM, InstitutionGenerator.DEFAULT)
 
-        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate))
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
             .thenThrow(IncorrectResultSizeDataAccessException::class.java)
 
-        whenever(personRepository.findByMergedFromCrn(PersonGenerator.RECALLABLE.id)).thenReturn(PersonGenerator.RECALLABLE)
+        whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(PersonGenerator.MATCHABLE_WITH_POM)
 
         prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
-
 
         verify(prisonManagerRepository, never()).saveAndFlush(any())
         verify(prisonManagerRepository, never()).save(any())
         verify(prisonManagerRepository, never()).findFirstManagerAfterDate(any(), any(), any())
+    }
 
+    @Test
+    fun processMultiplePrisonerOffenderManagerForMergedCrnException() {
+        mockReferenceData()
+        val allocationDate = ZonedDateTime.now().minusDays(2)
+        val event = EventGenerator.custodialEvent(PersonGenerator.MATCHABLE_WITH_POM, InstitutionGenerator.DEFAULT)
+
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
+            .thenThrow(IncorrectResultSizeDataAccessException::class.java)
+
+        whenever(personRepository.findByMergedFromCrn(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(null)
+
+        assertThrows<IncorrectResultSizeDataAccessException> {
+            prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+        }
+
+        verify(prisonManagerRepository, never()).saveAndFlush(any())
+        verify(prisonManagerRepository, never()).save(any())
+        verify(prisonManagerRepository, never()).findFirstManagerAfterDate(any(), any(), any())
     }
 
     private fun mockReferenceData() {
