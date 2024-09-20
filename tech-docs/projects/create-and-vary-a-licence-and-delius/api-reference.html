@@ -118,6 +118,9 @@
         <a href="./api-reference.html#staff"><span>/staff</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-case-responsible-community-manager"><span>/probation-case/responsible-community-manager</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#team-teamcode-caseload-managed-offenders"><span>/team/{teamCode}/caseload/managed-offenders</span></a>
       </li>
       <li>
@@ -131,6 +134,12 @@
       </li>
       <li>
         <a href="./api-reference.html#staff-byid-id"><span>/staff/byid/{id}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#staff-byid-id-caseload-managed-offenders"><span>/staff/byid/{id}/caseload/managed-offenders</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#staff-bycode-code"><span>/staff/bycode/{code}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#probation-case-crn-responsible-community-manager"><span>/probation-case/{crn}/responsible-community-manager</span></a>
@@ -322,6 +331,45 @@
 
 
 
+<h2 id="probation-case-responsible-community-manager">/probation-case/responsible-community-manager</h2>
+
+<h3 id="probation-case-responsible-community-manager-post">post</h3>
+
+
+
+
+
+
+
+<h4 id="probation-case-responsible-community-manager-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="team-teamcode-caseload-managed-offenders">/team/{teamCode}/caseload/managed-offenders</h2>
 
 <h3 id="team-teamcode-caseload-managed-offenders-get">get</h3>
@@ -471,8 +519,13 @@
       "endDate": "string"
     }
   ],
+  "provider": {
+    "code": "string",
+    "description": "string"
+  },
   "username": "string",
   "email": "string",
+  "telephoneNumber": "string",
   "unallocated": "boolean"
 }</code></pre>
 
@@ -696,8 +749,184 @@
       "endDate": "string"
     }
   ],
+  "provider": {
+    "code": "string",
+    "description": "string"
+  },
   "username": "string",
   "email": "string",
+  "telephoneNumber": "string",
+  "unallocated": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-staff'>Staff</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff-byid-id-caseload-managed-offenders">/staff/byid/{id}/caseload/managed-offenders</h2>
+
+<h3 id="staff-byid-id-caseload-managed-offenders-get">get</h3>
+
+
+
+
+<h4 id="staff-byid-id-caseload-managed-offenders-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-byid-id-caseload-managed-offenders-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff-bycode-code">/staff/bycode/{code}</h2>
+
+<h3 id="staff-bycode-code-get">get</h3>
+
+
+
+
+<h4 id="staff-bycode-code-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-bycode-code-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "id": "integer",
+  "code": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "teams": [
+    {
+      "code": "string",
+      "description": "string",
+      "telephone": "string",
+      "emailAddress": "string",
+      "addresses": [
+        {
+          "officeName": "string",
+          "buildingName": "string",
+          "buildingNumber": "string",
+          "streetName": "string",
+          "district": "string",
+          "town": "string",
+          "county": "string",
+          "postcode": "string",
+          "ldu": "string",
+          "telephoneNumber": "string",
+          "from": "string",
+          "to": "string"
+        }
+      ],
+      "district": {
+        "code": "string",
+        "description": "string",
+        "borough": {
+          "code": "string",
+          "description": "string"
+        }
+      },
+      "borough": {
+        "code": "string",
+        "description": "string"
+      },
+      "startDate": "string",
+      "endDate": "string"
+    }
+  ],
+  "provider": {
+    "code": "string",
+    "description": "string"
+  },
+  "username": "string",
+  "email": "string",
+  "telephoneNumber": "string",
   "unallocated": "boolean"
 }</code></pre>
 
@@ -938,6 +1167,48 @@
 <td>code</td>
 <td>string</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffemail">StaffEmail</h3>
+
+
+<table class='schema-staffemail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -1215,6 +1486,38 @@
 </tbody>
 </table>
 
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-staff">Staff</h3>
 
 
@@ -1265,6 +1568,16 @@
 </tr>
 
 <tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
 <td>username</td>
 <td>string</td>
 <td>false</td>
@@ -1276,6 +1589,16 @@
 
 <tr>
 <td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -1513,38 +1836,6 @@
 <tr>
 <td>unallocated</td>
 <td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-provider">Provider</h3>
-
-
-<table class='schema-provider'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
 <td>true</td>
 <td></td>
 <td>

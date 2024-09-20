@@ -63,6 +63,28 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/StaffName"
+  /probation-case/responsible-community-manager:
+    post:
+      tags:
+      - probation-case-resource
+      operationId: findCommunityManagerEmails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StaffEmail"
   /team/{teamCode}/caseload/managed-offenders:
     get:
       tags:
@@ -160,6 +182,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Staff"
+  /staff/byid/{id}/caseload/managed-offenders:
+    get:
+      tags:
+      - staff-resource
+      operationId: getManagedOffenders_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ManagedOffender"
+  /staff/bycode/{code}:
+    get:
+      tags:
+      - staff-resource
+      operationId: findStaffByCode
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
   /probation-case/{crn}/responsible-community-manager:
     get:
       tags:
@@ -217,6 +278,17 @@ components:
         name:
           $ref: "#/components/schemas/Name"
         code:
+          type: string
+        username:
+          type: string
+    StaffEmail:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          type: string
+        email:
           type: string
     Borough:
       required:
@@ -292,11 +364,22 @@ components:
         to:
           type: string
           format: date
+    Provider:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
     Staff:
       required:
       - code
       - id
       - name
+      - provider
       - teams
       - unallocated
       type: object
@@ -312,9 +395,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Team"
+        provider:
+          $ref: "#/components/schemas/Provider"
         username:
           type: string
         email:
+          type: string
+        telephoneNumber:
           type: string
         unallocated:
           type: boolean
@@ -385,16 +472,6 @@ components:
           type: string
         unallocated:
           type: boolean
-    Provider:
-      required:
-      - code
-      - description
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
   securitySchemes:
     hmpps-auth-token:
       type: http
