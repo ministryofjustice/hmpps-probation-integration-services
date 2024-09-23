@@ -38,7 +38,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
 fun PersonRepository.getCrn(nomsId: String) =
     findByNomsId(nomsId) ?: throw NotFoundException("Person", "nomsId", nomsId)
 
-
 @Immutable
 @Entity
 @SQLRestriction("active_flag = 1")
