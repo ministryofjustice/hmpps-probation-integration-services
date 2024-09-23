@@ -26,10 +26,10 @@ jobs:
             {
               "blocks": ([
                 {
-                  "type": "header",
+                  "type": "section",
                   "text": {
-                    "type": "plain_text",
-                    "text": "⏳ Review pending deployments"
+                    "type": "mrkdwn",
+                    "text": "*⏳ Review pending deployments*"
                   }
                 },
                 {
@@ -37,7 +37,7 @@ jobs:
                   "elements": [
                     {
                       "type": "mrkdwn",
-                      "text": "There are production deployments waiting for approval. Approve them to unblock the pipeline."
+                      "text": "> There are production deployments waiting for approval. Approve them to unblock the pipeline."
                     }
                   ]
                 }
@@ -45,8 +45,8 @@ jobs:
               (. | map({
                 "type": "section",
                 "text": {
-                  "text": .displayTitle,
-                  "type": "mrkdwn"
+                  "text": ("• " + .displayTitle),
+                  "type": "plain_text"
                 },
                 "accessory": {
                   "type": "button",
