@@ -33,6 +33,8 @@ class CaseDetailsService(
 
     fun getCrnForNomsId(nomsId: String) = PersonIdentifier(personRepository.getCrn(nomsId), nomsId)
 
+    fun checkIfPersonExists(crn: String) = PersonExists(crn, personRepository.existsByCrn(crn))
+
     private fun PersonManager.toCommunityManagerResponse(): Manager {
         staff.user?.apply {
             ldapTemplate.findByUsername<LdapUser>(username)?.let {
