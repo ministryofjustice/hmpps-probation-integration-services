@@ -187,6 +187,7 @@ object PersonGenerator {
 
     val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, ContactGenerator.DEFAULT_TEAM)
     val CASELOAD_PERSON_2 = generateCaseload(PERSON_2, ContactGenerator.STAFF_1, ContactGenerator.DEFAULT_TEAM)
+    val CASELOAD_PERSON_3 = generateCaseload(PERSON_2, DEFAULT_STAFF, ContactGenerator.DEFAULT_TEAM)
 
     fun generateEvent(
         person: Person,
@@ -490,6 +491,13 @@ object PersonGenerator {
         )
 
     fun generateCaseloadPerson(id: Long, crn: String, forename: String, middleName: String?, surname: String) =
-        CaseloadPerson(id = id, crn = crn, forename = forename, secondName = middleName, surname = surname)
+        CaseloadPerson(
+            id = id,
+            crn = crn,
+            forename = forename,
+            secondName = middleName,
+            dateOfBirth = LocalDate.now().minusYears(50),
+            surname = surname
+        )
 }
 

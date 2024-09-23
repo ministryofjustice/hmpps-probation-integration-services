@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.api.model.user.Staff
 import uk.gov.justice.digital.hmpps.api.model.user.Team
@@ -26,7 +27,26 @@ class UserService(
             totalPages = caseload.totalPages,
             provider = user.staff.provider.description,
             caseload = caseload.content.map { it.toStaffCase() },
-            staff = Name(forename = user.staff.forename, surname = user.staff.surname)
+            staff = Name(forename = user.staff.forename, surname = user.staff.surname),
+        )
+    }
+
+    @Transactional
+    fun searchUserCaseload(username: String, searchFilter: UserSearchFilter, pageable: Pageable): StaffCaseload {
+        val user = userRepository.getUser(username)
+        val caseload = caseloadRepository.searchByStaffCode(
+            user.staff!!.code,
+            searchFilter.nameOrCrn,
+            searchFilter.nextContact,
+            searchFilter.sentence,
+            pageable
+        )
+        return StaffCaseload(
+            totalElements = caseload.totalElements.toInt(),
+            totalPages = caseload.totalPages,
+            provider = user.staff.provider.description,
+            caseload = caseload.content.map { it.toStaffCase() },
+            staff = Name(forename = user.staff.forename, surname = user.staff.surname),
         )
     }
 
@@ -68,6 +88,20 @@ fun Caseload.toStaffCase() = StaffCase(
         surname = person.surname
     ),
     crn = person.crn,
+    nextAppointment = nextAppointment?.let {
+        Appointment(
+            description = it.type.description,
+            date = it.appointmentDatetime
+        )
+    },
+    previousAppointment = previousAppointment?.let {
+        Appointment(
+            description = it.type.description,
+            date = it.appointmentDatetime
+        )
+    },
+    dob = person.dateOfBirth,
+    latestSentence = latestSentence?.mainOffence?.offence?.description
 )
 
 fun Caseload.toTeamCase() = TeamCase(
