@@ -37,10 +37,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - uses: gradle-update/update-gradle-wrapper-action@9268373d69bd0974b6318eb3b512b8e025060bbe # v1
+      - uses: gradle-update/update-gradle-wrapper-action@9268373d69bd0974b6318eb3b512b8e025060bbe # v2.0.0
         with:
           labels: dependencies
           repo-token: ${{ steps.app-token.outputs.token }}
+          merge-method: SQUASH
 
       - name: Reset commit author # workaround for https://github.com/gradle-update/update-gradle-wrapper-action/issues/124
         continue-on-error: true
