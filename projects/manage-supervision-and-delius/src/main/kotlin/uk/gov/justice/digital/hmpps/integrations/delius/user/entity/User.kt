@@ -459,9 +459,4 @@ class CaseloadPerson(
 
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate
-) {
-    val fullName: String = listOfNotNull(forename, secondName, thirdName, surname).joinToString { " " }
-}
-
-
-
+)
