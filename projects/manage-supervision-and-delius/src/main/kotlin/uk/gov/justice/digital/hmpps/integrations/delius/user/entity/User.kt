@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.MainOffence
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Offence
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -403,15 +404,15 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
           or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%'
           or upper(p.surname || ' ' || p.forename) like '%' || upper(:nameOrCrn) || '%'
           or upper(p.surname || ', ' || p.forename) like '%' || upper(:nameOrCrn) || '%')
-        and (:nextContact is null or (upper(naType.description) like '%' || upper(:nextContact) || '%'))
-        and (:sentence is null or (upper(moo.description) like '%' || upper(:sentence) || '%'))
+        and (:nextContactCode is null or (upper(trim(naType.code)) = upper(trim(:nextContactCode))))
+        and (:sentenceCode is null or (upper(trim(moo.code)) = upper(trim(:sentenceCode))))
     """
     )
     fun searchByStaffCode(
         staffCode: String,
         nameOrCrn: String?,
-        nextContact: String?,
-        sentence: String?,
+        nextContactCode: String?,
+        sentenceCode: String?,
         pageable: Pageable
     ): Page<Caseload>
 
@@ -424,6 +425,25 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     """
     )
     fun findByTeamCode(teamCode: String, pageable: Pageable): Page<Caseload>
+
+    @Query(
+        """
+            select distinct cont.type from Caseload c
+            join Contact cont on cont.personId = c.person.id
+            where c.staff.code = :staffCode and cont.type.attendanceContact = true
+        """
+    )
+    fun findContactTypesForStaff(staffCode: String): List<ContactType>
+
+    @Query(
+        """
+            select distinct e.mainOffence.offence from Caseload c
+            join Event e on e.personId = c.person.id and e.active = true and e.softDeleted = false 
+            where e.mainOffence.offence is not null 
+            and c.staff.code = :staffCode
+        """
+    )
+    fun findOffenceTypesForStaff(staffCode: String): List<Offence>
 }
 
 enum class CaseloadOrderType(val sortColumn: String) {

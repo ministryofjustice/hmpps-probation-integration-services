@@ -32,21 +32,33 @@ class UserService(
     }
 
     @Transactional
-    fun searchUserCaseload(username: String, searchFilter: UserSearchFilter, pageable: Pageable): StaffCaseload {
+    fun searchUserCaseload(
+        username: String,
+        searchFilter: UserSearchFilter,
+        pageable: Pageable,
+        sortedBy: String
+    ): StaffCaseload {
         val user = userRepository.getUser(username)
         val caseload = caseloadRepository.searchByStaffCode(
             user.staff!!.code,
             searchFilter.nameOrCrn,
-            searchFilter.nextContact,
-            searchFilter.sentence,
+            searchFilter.nextContactCode,
+            searchFilter.sentenceCode,
             pageable
         )
+        val sentenceTypes =
+            caseloadRepository.findOffenceTypesForStaff(user.staff.code).map { KeyPair(it.code.trim(), it.description) }
+        val contactTypes =
+            caseloadRepository.findContactTypesForStaff(user.staff.code).map { KeyPair(it.code.trim(), it.description) }
+
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
             provider = user.staff.provider.description,
             caseload = caseload.content.map { it.toStaffCase() },
             staff = Name(forename = user.staff.forename, surname = user.staff.surname),
+            metaData = MetaData(sentenceTypes = sentenceTypes, contactTypes = contactTypes),
+            sortedBy = sortedBy
         )
     }
 
