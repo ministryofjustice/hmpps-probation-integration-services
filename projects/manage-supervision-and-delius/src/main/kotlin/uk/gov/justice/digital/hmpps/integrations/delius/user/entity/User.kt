@@ -398,7 +398,11 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join fetch ls.mainOffence mo
         left join fetch mo.offence moo
         where c.staff.code = :staffCode
-        and ((:nameOrCrn is null or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%'))
+        and (:nameOrCrn is null 
+          or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' 
+          or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%'
+          or upper(p.surname || ' ' || p.forename) like '%' || upper(:nameOrCrn) || '%'
+          or upper(p.surname || ', ' || p.forename) like '%' || upper(:nameOrCrn) || '%')
         and (:nextContact is null or (upper(naType.description) like '%' || upper(:nextContact) || '%'))
         and (:sentence is null or (upper(moo.description) like '%' || upper(:sentence) || '%'))
     """

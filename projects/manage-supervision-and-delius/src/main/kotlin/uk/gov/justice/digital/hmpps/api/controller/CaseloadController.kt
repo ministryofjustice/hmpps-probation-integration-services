@@ -54,7 +54,7 @@ class CaseloadController(private val userService: UserService) {
 
     private fun sort(sortString: String): Sort {
 
-        val regex = Regex(pattern = "[A-Za-z0-9]+\\.(ASC|DESC)", options = setOf(RegexOption.IGNORE_CASE))
+        val regex = Regex(pattern = "[A-Z]+\\.(ASC|DESC)", options = setOf(RegexOption.IGNORE_CASE))
         if (!regex.matches(sortString)) {
             throw InvalidRequestException("Sort criteria invalid format")
         }
