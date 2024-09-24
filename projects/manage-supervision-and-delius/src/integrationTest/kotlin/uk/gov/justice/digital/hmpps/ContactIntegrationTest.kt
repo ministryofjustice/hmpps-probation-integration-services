@@ -85,7 +85,7 @@ class ContactIntegrationTest {
         val contact2 =
             Contact("Bruce Wayne", null, null, "Description of N01", "Leicestershire All", "OMU B", LocalDate.now())
 
-        val expected = ProfessionalContact(name, listOf(contact1, contact2))
+        val expected = ProfessionalContact(name, listOf(contact2, contact1))
 
         val response = mockMvc
             .perform(

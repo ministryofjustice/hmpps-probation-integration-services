@@ -33,7 +33,7 @@ class CaseloadController(private val userService: UserService) {
         @RequestParam(required = false, defaultValue = "100") size: Int,
         @RequestParam(required = false, defaultValue = "nextContact.desc") sortBy: String,
         @RequestBody body: UserSearchFilter
-    ) = userService.searchUserCaseload(username, body, PageRequest.of(page, size, sort(sortBy)))
+    ) = userService.searchUserCaseload(username, body, PageRequest.of(page, size, sort(sortBy)), sortBy)
 
     @GetMapping("/user/{username}/teams")
     @Operation(summary = "Gets the users teams")
