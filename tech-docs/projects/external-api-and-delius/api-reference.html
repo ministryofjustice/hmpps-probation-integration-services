@@ -112,6 +112,9 @@
         <a href="./api-reference.html#identifier-converter-noms-to-crn-nomsid"><span>/identifier-converter/noms-to-crn/{nomsId}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#exists-in-delius-crn-crn"><span>/exists-in-delius/crn/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#case-crn-supervisions"><span>/case/{crn}/supervisions</span></a>
       </li>
       <li>
@@ -245,6 +248,69 @@
 </td>
 <td>
 <a href='#schema-personidentifier'>PersonIdentifier</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="exists-in-delius-crn-crn">/exists-in-delius/crn/{crn}</h2>
+
+<h3 id="exists-in-delius-crn-crn-get">get</h3>
+
+  <p><em>Check if crn exists in delius for the provided crn</em></p>
+
+
+
+
+<h4 id="exists-in-delius-crn-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="exists-in-delius-crn-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "existsInDelius": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personexists'>PersonExists</a>
 </td>
 </tr>
 
@@ -499,6 +565,38 @@
 <tr>
 <td>nomsId</td>
 <td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personexists">PersonExists</h3>
+
+
+<table class='schema-personexists'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>existsInDelius</td>
+<td>boolean</td>
 <td>true</td>
 <td></td>
 <td>

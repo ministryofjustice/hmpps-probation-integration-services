@@ -51,6 +51,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonIdentifier"
+  /exists-in-delius/crn/{crn}:
+    get:
+      tags:
+      - Identifier Converter
+      summary: Check if crn exists in delius for the provided crn
+      operationId: checkIfPersonExists
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonExists"
   /case/{crn}/supervisions:
     get:
       tags:
@@ -108,6 +127,16 @@ components:
           type: string
         nomsId:
           type: string
+    PersonExists:
+      required:
+      - crn
+      - existsInDelius
+      type: object
+      properties:
+        crn:
+          type: string
+        existsInDelius:
+          type: boolean
     CourtAppearance:
       required:
       - court
