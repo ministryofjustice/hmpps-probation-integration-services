@@ -14,6 +14,51 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /caseload/user/{username}/search:
+    post:
+      tags:
+      - Caseload Info
+      summary: Gets caseloads for the user based on search filter
+      operationId: searchUserCaseload
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 100
+      - name: sortBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: nextContact.desc
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSearchFilter"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffCaseload"
   /user/{username}/access/{crn}:
     get:
       tags:
@@ -552,6 +597,108 @@ paths:
                 $ref: "#/components/schemas/PersonActivity"
 components:
   schemas:
+    UserSearchFilter:
+      type: object
+      properties:
+        nameOrCrn:
+          type: string
+        sentenceCode:
+          type: string
+        nextContactCode:
+          type: string
+    Appointment:
+      required:
+      - date
+      - description
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+    KeyPair:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    MetaData:
+      required:
+      - contactTypes
+      - sentenceTypes
+      type: object
+      properties:
+        sentenceTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/KeyPair"
+        contactTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/KeyPair"
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+    StaffCase:
+      required:
+      - caseName
+      - crn
+      - dob
+      type: object
+      properties:
+        caseName:
+          $ref: "#/components/schemas/Name"
+        crn:
+          type: string
+        dob:
+          type: string
+          format: date
+        nextAppointment:
+          $ref: "#/components/schemas/Appointment"
+        previousAppointment:
+          $ref: "#/components/schemas/Appointment"
+        latestSentence:
+          type: string
+    StaffCaseload:
+      required:
+      - caseload
+      - staff
+      - totalElements
+      - totalPages
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int32
+        sortedBy:
+          type: string
+        provider:
+          type: string
+        staff:
+          $ref: "#/components/schemas/Name"
+        caseload:
+          type: array
+          items:
+            $ref: "#/components/schemas/StaffCase"
+        metaData:
+          $ref: "#/components/schemas/MetaData"
     CaseAccess:
       required:
       - crn
@@ -611,18 +758,6 @@ components:
           type: string
           format: date
         documentName:
-          type: string
-    Name:
-      required:
-      - forename
-      - surname
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
           type: string
     Offence:
       required:
@@ -1638,38 +1773,6 @@ components:
           $ref: "#/components/schemas/Compliance"
         activity:
           $ref: "#/components/schemas/ActivityCount"
-    StaffCase:
-      required:
-      - caseName
-      - crn
-      type: object
-      properties:
-        caseName:
-          $ref: "#/components/schemas/Name"
-        crn:
-          type: string
-    StaffCaseload:
-      required:
-      - caseload
-      - staff
-      - totalElements
-      - totalPages
-      type: object
-      properties:
-        totalPages:
-          type: integer
-          format: int32
-        totalElements:
-          type: integer
-          format: int32
-        provider:
-          type: string
-        staff:
-          $ref: "#/components/schemas/Name"
-        caseload:
-          type: array
-          items:
-            $ref: "#/components/schemas/StaffCase"
     Team:
       required:
       - code
