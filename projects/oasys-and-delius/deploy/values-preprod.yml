@@ -14,7 +14,7 @@ generic-service:
     groups:
       - internal
       - unilink_staff
-      - mod-platform-non-live
+      - mod-platform-live
 
 generic-prometheus-alerts:
   businessHoursOnly: true
