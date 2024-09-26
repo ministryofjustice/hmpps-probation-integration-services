@@ -431,6 +431,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
             select distinct cont.type from Caseload c
             join Contact cont on cont.personId = c.person.id
             where c.staff.code = :staffCode and cont.type.attendanceContact = true
+            order by cont.type.description asc
         """
     )
     fun findContactTypesForStaff(staffCode: String): List<ContactType>
@@ -441,6 +442,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
             join Event e on e.personId = c.person.id and e.active = true and e.softDeleted = false 
             where e.mainOffence.offence is not null 
             and c.staff.code = :staffCode
+            order by e.mainOffence.offence.description asc
         """
     )
     fun findOffenceTypesForStaff(staffCode: String): List<Offence>
@@ -451,6 +453,7 @@ enum class CaseloadOrderType(val sortColumn: String) {
     LAST_CONTACT("paType.description"),
     SENTENCE("moo.description"),
     SURNAME("p.surname"),
+    NAME_OR_CRN("p.surname"),
     DOB("p.dateOfBirth")
 }
 
