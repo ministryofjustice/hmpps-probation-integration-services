@@ -19,7 +19,7 @@ jobs:
 
       - name: Transform results into Slack message
         id: transform
-        if: fromJson(steps.runs.outputs.pending) != '[]'
+        if: steps.runs.outputs.pending != '[]'
         shell: bash
         run: |
           echo "result=$(echo "$pending_runs" | jq -rc '. |
@@ -62,7 +62,7 @@ jobs:
           pending_runs: ${{ steps.runs.outputs.pending }}
 
       - name: Send message to Slack
-        if: fromJSON(steps.runs.outputs.pending) != '[]'
+        if: steps.runs.outputs.pending != '[]'
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
         with:
           channel-id: probation-integration-notifications
