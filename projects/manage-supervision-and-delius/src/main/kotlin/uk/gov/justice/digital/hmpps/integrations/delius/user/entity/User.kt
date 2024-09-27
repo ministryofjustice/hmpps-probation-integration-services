@@ -11,8 +11,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.MainOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Offence
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.DisposalType
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -249,13 +249,16 @@ data class Caseload(
 @Entity
 @Subselect(
     """
-        select * from(
-            select e.*,
+        select sub.* 
+        from
+          (select e.*,
+            count(e.event_id) over (partition by e.offender_id) as total_sentences,
             row_number() over (partition by e.offender_id order by cast(e.event_number as number) desc) as row_num 
-            from event e join main_offence mo on mo.event_id = e.event_id
+            from event e join disposal d on d.event_id = e.event_id
             where e.soft_deleted = 0 
             and e.active_flag = 1
             ) sub
+            
         where sub.row_num = 1
 """
 )
@@ -268,7 +271,10 @@ data class LatestSentence(
 
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
-    val mainOffence: MainOffence? = null,
+    val disposal: Disposal? = null,
+
+    @Column(name = "total_sentences")
+    val totalNumberOfSentences: Long,
 )
 
 @Entity
@@ -396,8 +402,8 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join fetch c.previousAppointment pa
         left join fetch pa.type paType
         left join fetch c.latestSentence ls
-        left join fetch ls.mainOffence mo
-        left join fetch mo.offence moo
+        left join fetch ls.disposal d
+        left join fetch d.type dt
         where c.staff.code = :staffCode
         and (:nameOrCrn is null 
           or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' 
@@ -405,7 +411,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
           or upper(p.surname || ' ' || p.forename) like '%' || upper(:nameOrCrn) || '%'
           or upper(p.surname || ', ' || p.forename) like '%' || upper(:nameOrCrn) || '%')
         and (:nextContactCode is null or (upper(trim(naType.code)) = upper(trim(:nextContactCode))))
-        and (:sentenceCode is null or (upper(trim(moo.code)) = upper(trim(:sentenceCode))))
+        and (:sentenceCode is null or (upper(trim(dt.code)) = upper(trim(:sentenceCode))))
     """
     )
     fun searchByStaffCode(
@@ -438,20 +444,20 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
 
     @Query(
         """
-            select distinct e.mainOffence.offence from Caseload c
+            select distinct e.disposal.type from Caseload c
             join Event e on e.personId = c.person.id and e.active = true and e.softDeleted = false 
-            where e.mainOffence.offence is not null 
+            where e.disposal is not null 
             and c.staff.code = :staffCode
-            order by e.mainOffence.offence.description asc
+            order by e.disposal.type.description asc
         """
     )
-    fun findOffenceTypesForStaff(staffCode: String): List<Offence>
+    fun findSentenceTypesForStaff(staffCode: String): List<DisposalType>
 }
 
 enum class CaseloadOrderType(val sortColumn: String) {
     NEXT_CONTACT("naType.description"),
     LAST_CONTACT("paType.description"),
-    SENTENCE("moo.description"),
+    SENTENCE("dt.description"),
     SURNAME("p.surname"),
     NAME_OR_CRN("p.surname"),
     DOB("p.dateOfBirth")
