@@ -258,7 +258,6 @@ data class Caseload(
             where e.soft_deleted = 0 
             and e.active_flag = 1
             ) sub
-            
         where sub.row_num = 1
 """
 )
