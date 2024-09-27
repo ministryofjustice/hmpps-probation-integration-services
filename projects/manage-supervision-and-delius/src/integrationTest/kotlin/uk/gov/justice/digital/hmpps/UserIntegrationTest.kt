@@ -181,14 +181,14 @@ internal class UserIntegrationTest {
         val res = mockMvc
             .perform(
                 post("/caseload/user/${user.username}/search").withToken()
-                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = "MAIN"))
+                    .withJson(UserSearchFilter(nameOrCrn = null, nextContactCode = null, sentenceCode = "DFS"))
             )
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<StaffCaseload>()
 
         assertThat(res.caseload.size, equalTo(1))
         assertThat(res.caseload[0].crn, equalTo("X000004"))
-        assertThat(res.caseload[0].latestSentence, equalTo("Murder"))
+        assertThat(res.caseload[0].latestSentence, equalTo("Default Sentence Type"))
     }
 
     @Test
@@ -275,7 +275,7 @@ internal class UserIntegrationTest {
         assertThat(res.caseload[0].crn, equalTo("X000004"))
         assertThat(res.caseload[0].caseName.surname, equalTo("Surname"))
         assertThat(res.metaData?.contactTypes?.size, equalTo(3))
-        assertThat(res.metaData?.sentenceTypes?.size, equalTo(2))
+        assertThat(res.metaData?.sentenceTypes?.size, equalTo(1))
     }
 
     @Test

@@ -10,5 +10,6 @@ data class StaffCase(
     val dob: LocalDate,
     val nextAppointment: Appointment? = null,
     val previousAppointment: Appointment? = null,
-    val latestSentence: String? = null
+    val latestSentence: String? = null,
+    val numberOfAdditionalSentences: Long
 )

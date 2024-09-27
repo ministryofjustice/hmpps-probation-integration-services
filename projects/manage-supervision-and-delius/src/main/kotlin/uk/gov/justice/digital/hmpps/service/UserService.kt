@@ -47,7 +47,8 @@ class UserService(
             pageable
         )
         val sentenceTypes =
-            caseloadRepository.findOffenceTypesForStaff(user.staff.code).map { KeyPair(it.code.trim(), it.description) }
+            caseloadRepository.findSentenceTypesForStaff(user.staff.code)
+                .map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
             caseloadRepository.findContactTypesForStaff(user.staff.code).map { KeyPair(it.code.trim(), it.description) }
 
@@ -102,18 +103,21 @@ fun Caseload.toStaffCase() = StaffCase(
     crn = person.crn,
     nextAppointment = nextAppointment?.let {
         Appointment(
+            id = it.id,
             description = it.type.description,
             date = it.appointmentDatetime
         )
     },
     previousAppointment = previousAppointment?.let {
         Appointment(
+            id = it.id,
             description = it.type.description,
             date = it.appointmentDatetime
         )
     },
     dob = person.dateOfBirth,
-    latestSentence = latestSentence?.mainOffence?.offence?.description
+    latestSentence = latestSentence?.disposal?.type?.description,
+    numberOfAdditionalSentences = latestSentence?.let { it.totalNumberOfSentences - 1L } ?: 0L
 )
 
 fun Caseload.toTeamCase() = TeamCase(
