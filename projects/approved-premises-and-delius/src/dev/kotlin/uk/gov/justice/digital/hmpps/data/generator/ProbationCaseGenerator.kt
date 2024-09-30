@@ -32,7 +32,18 @@ object ProbationCaseGenerator {
         currentExclusion = true,
         currentRestriction = true
     )
-    val CASE_SIMPLE = generate("S517283", "Teresa", "Green", LocalDate.of(1987, 8, 2))
+    val CASE_SIMPLE = generate(
+        crn = "S517283",
+        forename = "Teresa",
+        surname = "Green",
+        dateOfBirth = LocalDate.of(1987, 8, 2),
+        nomsId = "A1237AI",
+        gender = ReferenceDataGenerator.GENDER_FEMALE,
+        ethnicity = ReferenceDataGenerator.ETHNICITY_WHITE,
+        nationality = ReferenceDataGenerator.NATIONALITY_BRITISH,
+        religion = ReferenceDataGenerator.RELIGION_OTHER,
+        genderIdentity = ReferenceDataGenerator.GENDER_IDENTITY_PNS,
+    )
     val CASE_X320741 = generate(
         crn = "X320741",
         forename = "Aadland",

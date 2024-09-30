@@ -20,3 +20,13 @@ sn: Jim Snow
 givenname: Test
 mail: jim.snow@justice.gov.uk
 telephoneNumber: 07321165374
+
+dn: cn=cruwomensestate,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: cruwomensestate
+sn: Womens Estate
+givenname: CRU
+mail: cru.womens.estate@justice.gov.uk
+telephoneNumber: 07321165375
+
