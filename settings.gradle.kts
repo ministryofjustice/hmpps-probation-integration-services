@@ -71,8 +71,8 @@ dependencyResolutionManagement {
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.2.0")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.2.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.28.6")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.28.6")
+            library("aws-sts", "software.amazon.awssdk:sts:2.28.11")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.28.11")
             bundle(
                 "aws-messaging",
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
