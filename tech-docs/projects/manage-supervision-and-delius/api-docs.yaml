@@ -610,8 +610,12 @@ components:
       required:
       - date
       - description
+      - id
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         date:
           type: string
           format: date-time
@@ -658,6 +662,7 @@ components:
       - caseName
       - crn
       - dob
+      - numberOfAdditionalSentences
       type: object
       properties:
         caseName:
@@ -673,6 +678,9 @@ components:
           $ref: "#/components/schemas/Appointment"
         latestSentence:
           type: string
+        numberOfAdditionalSentences:
+          type: integer
+          format: int64
     StaffCaseload:
       required:
       - caseload
