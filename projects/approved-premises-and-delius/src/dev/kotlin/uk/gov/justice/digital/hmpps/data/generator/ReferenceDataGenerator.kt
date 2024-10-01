@@ -57,6 +57,7 @@ object ReferenceDataGenerator {
     val REFERRAL_COMPLETED = generate("APRC", ALL_DATASETS[DatasetCode.NSI_OUTCOME]!!.id)
 
     val ETHNICITY_WHITE = generate("W1", ETHNICITY.id, "White: British/English/Welsh/Scottish/Northern Irish")
+    val GENDER_FEMALE = generate("F", GENDER.id, "Female")
     val GENDER_MALE = generate("M", GENDER.id, "Male")
     val GENDER_IDENTITY_PNS = generate("GIRF", GENDER_IDENTITY.id, "Prefer not to say")
     val NATIONALITY_BRITISH = generate("BRIT", NATIONALITY.id, "British")
@@ -98,6 +99,7 @@ object ReferenceDataGenerator {
         NON_ARRIVAL,
         REFERRAL_COMPLETED,
         ETHNICITY_WHITE,
+        GENDER_FEMALE,
         GENDER_MALE,
         GENDER_IDENTITY_PNS,
         NATIONALITY_BRITISH,
