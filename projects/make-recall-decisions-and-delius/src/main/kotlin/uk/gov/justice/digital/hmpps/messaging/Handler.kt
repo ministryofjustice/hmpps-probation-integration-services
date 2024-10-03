@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import org.openfolder.kotlinasyncapi.annotation.Schema
 import org.openfolder.kotlinasyncapi.annotation.channel.Channel
 import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
@@ -24,12 +23,9 @@ class Handler(
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(
         messages = [
-            Message(name = "consider-a-recall/management_oversight"),
-            Message(title = "prison-recall.recommendation.deleted", payload = Schema(HmppsDomainEvent::class)),
-            Message(
-                title = "prison-recall.recommendation.consideration",
-                payload = Schema(HmppsDomainEvent::class)
-            ),
+            Message(name = "consider-a-recall/recommendation-consideration"),
+            Message(name = "consider-a-recall/recommendation-management-oversight"),
+            Message(name = "consider-a-recall/recommendation-deleted"),
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
