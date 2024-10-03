@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.ldap
 
+import io.opentelemetry.api.trace.Span
 import io.opentelemetry.instrumentation.annotations.SpanAttribute
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.ldap.NameAlreadyBoundException
@@ -87,11 +88,14 @@ fun LdapTemplate.removeRole(@SpanAttribute username: String, @SpanAttribute role
     }
 }
 
+@WithSpan
 fun LdapTemplate.exists(name: Name) = try {
     lookup(name)
     true
 } catch (_: NameNotFoundException) {
     false
+}.also {
+    Span.current().setAttribute("exists", it)
 }
 
 private fun DeliusRole.context(username: String? = null) =
