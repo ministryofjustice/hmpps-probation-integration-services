@@ -201,20 +201,22 @@ separate events.</p>
 <th>Message Class</th>
 <th>Message Event Type / Filter</th>
 </tr><tr>
-<td>Recommendation Process Started</td>
-<td>HMPPS Domain Event</td>
-<td>&ldquo;prison-recall.recommendation.started&rdquo;</td>
-</tr><tr>
-<td>Management Oversight of Recall</td>
-<td>HMPPS Domain Event</td>
-<td>&ldquo;prison-recall.recommendation.management-oversight&rdquo;</td>
-</tr><tr>
 <td>Recall being considered</td>
 <td>HMPPS Domain Event</td>
 <td>&ldquo;prison-recall.recommendation.consideration&rdquo;</td>
+</tr><tr>
+<td>Recall decision has been made</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;prison-recall.recommendation.management-oversight&rdquo;</td>
+</tr><tr>
+<td>Recommendation deleted or expired</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;prison-recall.recommendation.deleted&rdquo;</td>
 </tr>
         </table>
-      </div><h2 id="authorisation">Authorisation</h2>
+      </div><p>For more details of asynchronous events used by this service, see
+the <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/asyncapi-reference.html">AsyncAPI Reference</a></p>
+<h2 id="authorisation">Authorisation</h2>
 <p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
 the requests</p>
 <div class="table-container">
