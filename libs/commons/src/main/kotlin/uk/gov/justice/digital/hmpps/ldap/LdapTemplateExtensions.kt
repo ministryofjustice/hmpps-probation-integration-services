@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.ldap
 
 import io.opentelemetry.instrumentation.annotations.SpanAttribute
 import io.opentelemetry.instrumentation.annotations.WithSpan
+import org.springframework.ldap.NameAlreadyBoundException
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
@@ -11,6 +12,7 @@ import org.springframework.ldap.query.LdapQueryBuilder.query
 import org.springframework.ldap.query.SearchScope
 import org.springframework.ldap.support.LdapNameBuilder
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import javax.naming.Name
 import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
 import javax.naming.directory.BasicAttributes
@@ -36,7 +38,7 @@ fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanA
         AttributesMapper { it[attribute]?.get()?.toString() }
     ).singleOrNull()
 } catch (_: NameNotFoundException) {
-    throw NotFoundException("NDeliusUser of $username not found")
+    throw NotFoundException("User", "username", username)
 }
 
 @WithSpan
@@ -50,33 +52,47 @@ fun LdapTemplate.getRoles(@SpanAttribute username: String) = try {
         AttributesMapper { it["cn"]?.get()?.toString() }
     ).filterNotNull()
 } catch (_: NameNotFoundException) {
-    throw NotFoundException("NDeliusUser of $username not found")
+    throw NotFoundException("User", "username", username)
 }
 
 @WithSpan
 fun LdapTemplate.addRole(@SpanAttribute username: String, @SpanAttribute role: DeliusRole) {
-    val roleContext = lookupContext(role.context())
-        ?: throw NotFoundException("NDeliusRole of ${role.name} not found")
+    val roleContext = lookupContext(role.context()) ?: throw NotFoundException("Role", "name", role.name)
     val attributes: Attributes = BasicAttributes(true).apply {
         put(roleContext.nameInNamespace.asAttribute("aliasedObjectName"))
         put(role.name.asAttribute("cn"))
         put(listOf("NDRoleAssociation", "alias", "top").asAttribute("objectclass"))
     }
     val userRole = role.context(username)
-    try {
-        rebind(userRole, null, attributes)
-    } catch (_: NameNotFoundException) {
-        throw NotFoundException("NDeliusUser of $username not found")
+    if (!exists(userRole)) {
+        try {
+            rebind(userRole, null, attributes)
+        } catch (_: NameNotFoundException) {
+            throw NotFoundException("User", "username", username)
+        } catch (_: NameAlreadyBoundException) {
+            // role already assigned to user
+        }
     }
 }
 
 @WithSpan
-fun LdapTemplate.removeRole(@SpanAttribute username: String, @SpanAttribute role: DeliusRole) =
-    try {
-        unbind(role.context(username))
-    } catch (_: NameNotFoundException) {
-        throw NotFoundException("NDeliusUser of $username not found")
+fun LdapTemplate.removeRole(@SpanAttribute username: String, @SpanAttribute role: DeliusRole) {
+    val userRole = role.context(username)
+    if (exists(userRole)) {
+        try {
+            unbind(role.context(username))
+        } catch (_: NameNotFoundException) {
+            throw NotFoundException("User", "username", username)
+        }
     }
+}
+
+fun LdapTemplate.exists(name: Name) = try {
+    lookup(name)
+    true
+} catch (_: NameNotFoundException) {
+    false
+}
 
 private fun DeliusRole.context(username: String? = null) =
     LdapNameBuilder.newInstance()
