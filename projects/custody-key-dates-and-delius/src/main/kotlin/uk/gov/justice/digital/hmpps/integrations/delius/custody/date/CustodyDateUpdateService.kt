@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.findKeyDateType
@@ -22,7 +23,8 @@ class CustodyDateUpdateService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val keyDateRepository: KeyDateRepository,
     private val contactService: ContactService,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    private val featureFlags: FeatureFlags,
 ) {
     fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
         try {
@@ -49,6 +51,7 @@ class CustodyDateUpdateService(
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
         val updated = calculateKeyDateChanges(sentenceDetail, custody)
+            .filter { it.type.code != CustodyDateType.SUSPENSION_DATE_IF_RESET.code || featureFlags.enabled("suspension-date-if-reset") }
         if (updated.isEmpty()) {
             telemetryService.trackEvent(
                 "KeyDatesUnchanged",
