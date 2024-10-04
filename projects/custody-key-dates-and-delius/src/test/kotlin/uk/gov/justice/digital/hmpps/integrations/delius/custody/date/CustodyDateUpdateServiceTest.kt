@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -41,6 +42,9 @@ internal class CustodyDateUpdateServiceTest {
 
     @Mock
     lateinit var telemetryService: TelemetryService
+
+    @Mock
+    lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     lateinit var custodyDateUpdateService: CustodyDateUpdateService

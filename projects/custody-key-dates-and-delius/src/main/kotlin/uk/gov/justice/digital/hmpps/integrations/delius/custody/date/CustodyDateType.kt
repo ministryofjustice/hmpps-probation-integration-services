@@ -11,5 +11,6 @@ enum class CustodyDateType(val code: String, val field: KProperty<LocalDate?>) {
     SENTENCE_EXPIRY_DATE("SED", SentenceDetail::sentenceExpiryDate),
     EXPECTED_RELEASE_DATE("EXP", SentenceDetail::confirmedReleaseDate),
     HDC_EXPECTED_DATE("HDE", SentenceDetail::homeDetentionCurfewEligibilityDate),
-    POST_SENTENCE_SUPERVISION_END_DATE("PSSED", SentenceDetail::postSentenceSupervisionEndDate)
+    POST_SENTENCE_SUPERVISION_END_DATE("PSSED", SentenceDetail::postSentenceSupervisionEndDate),
+    SUSPENSION_DATE_IF_RESET("PR1", SentenceDetail::suspensionDateIfReset)
 }
