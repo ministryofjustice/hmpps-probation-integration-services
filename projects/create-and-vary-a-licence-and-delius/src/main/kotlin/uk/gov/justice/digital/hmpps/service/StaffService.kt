@@ -21,7 +21,7 @@ class StaffService(
     private val boroughRepository: BoroughRepository,
     private val caseloadRepository: CaseloadRepository,
 ) {
-    fun findStaff(username: String): Staff = staffRepository.findByUserUsername(username)
+    fun findStaff(username: String): Staff = staffRepository.findByUserUsernameIgnoreCase(username)
         ?.let { ldapTemplate.populateUserDetails(it).asStaff() }
         ?: throw NotFoundException("Staff", "username", username)
 
@@ -39,7 +39,7 @@ class StaffService(
         ?: listOf()
 
     fun findStaffForUsernames(usernames: List<String>): List<StaffName> =
-        staffRepository.findByUserUsernameIn(usernames).map { it.asStaffName() }
+        staffRepository.findByUserUsernameInIgnoreCase(usernames).map { it.asStaffName() }
 
     fun getManagedOffendersByStaffId(id: Long): List<ManagedOffender> =
         caseloadRepository.findByStaffIdAndRoleCode(

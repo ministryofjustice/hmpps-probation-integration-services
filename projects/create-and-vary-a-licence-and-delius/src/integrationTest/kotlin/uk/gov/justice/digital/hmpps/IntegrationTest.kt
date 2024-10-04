@@ -101,6 +101,17 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `username is case-insensitive`() {
+        val username = StaffGenerator.DEFAULT_STAFF_USER.username.uppercase()
+        mockMvc
+            .perform(get("/staff/$username").withToken())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.username", equalTo("john-smith")))
+            .andExpect(jsonPath("$.email", equalTo("john.smith@moj.gov.uk")))
+            .andExpect(jsonPath("$.telephoneNumber", equalTo("10101010101")))
+    }
+
+    @Test
     fun `returns pdu heads`() {
         val boroughCode = ProviderGenerator.DEFAULT_BOROUGH.code
 
@@ -123,6 +134,29 @@ internal class IntegrationTest {
     fun `returns staff names for usernames`() {
         val usernames =
             listOf(StaffGenerator.DEFAULT_PDUSTAFF_USER.username, StaffGenerator.DEFAULT_STAFF_USER.username)
+
+        val staffNames = mockMvc
+            .perform(post("/staff").withToken().withJson(usernames))
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<List<StaffName>>()
+
+        assertThat(
+            staffNames,
+            equalTo(
+                listOf(
+                    StaffGenerator.PDUHEAD.asStaffName(),
+                    StaffGenerator.DEFAULT.asStaffName()
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `usernames are case-insensitive`() {
+        val usernames = listOf(
+            StaffGenerator.DEFAULT_PDUSTAFF_USER.username.uppercase(),
+            StaffGenerator.DEFAULT_STAFF_USER.username.uppercase()
+        )
 
         val staffNames = mockMvc
             .perform(post("/staff").withToken().withJson(usernames))

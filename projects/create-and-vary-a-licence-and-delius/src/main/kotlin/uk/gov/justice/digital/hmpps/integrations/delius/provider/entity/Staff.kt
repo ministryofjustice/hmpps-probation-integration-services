@@ -68,7 +68,7 @@ class StaffUser(
 
 interface StaffRepository : JpaRepository<Staff, Long> {
     @EntityGraph(attributePaths = ["user", "teams"])
-    fun findByUserUsername(username: String): Staff?
+    fun findByUserUsernameIgnoreCase(username: String): Staff?
 
     @EntityGraph(attributePaths = ["user", "teams"])
     fun findByCode(code: String): Staff?
@@ -77,5 +77,5 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     override fun findById(id: Long): Optional<Staff>
 
     @EntityGraph(attributePaths = ["user"])
-    fun findByUserUsernameIn(usernames: List<String>): List<Staff>
+    fun findByUserUsernameInIgnoreCase(usernames: List<String>): List<Staff>
 }
