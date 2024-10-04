@@ -45,7 +45,8 @@ class ReferralResource(
                 "crn" to crn,
                 "referralId" to mergeAppointment.referralId.toString(),
                 "appointmentId" to mergeAppointment.id.toString(),
-                "deliusId" to deliusId.toString()
+                "deliusId" to deliusId.toString(),
+                "rescheduleRequestedBy" to mergeAppointment.rescheduleRequestedBy.toString(),
             )
         )
         mapOf("appointmentId" to deliusId)
