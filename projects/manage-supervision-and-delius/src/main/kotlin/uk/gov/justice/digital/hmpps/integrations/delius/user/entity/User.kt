@@ -403,7 +403,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join fetch c.latestSentence ls
         left join fetch ls.disposal d
         left join fetch d.type dt
-        where c.staff.code = :staffCode
+        where c.staff.id = :id
         and (:nameOrCrn is null 
           or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' 
           or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%'
@@ -413,8 +413,8 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         and (:sentenceCode is null or (upper(trim(dt.code)) = upper(trim(:sentenceCode))))
     """
     )
-    fun searchByStaffCode(
-        staffCode: String,
+    fun searchByStaffId(
+        id: Long,
         nameOrCrn: String?,
         nextContactCode: String?,
         sentenceCode: String?,

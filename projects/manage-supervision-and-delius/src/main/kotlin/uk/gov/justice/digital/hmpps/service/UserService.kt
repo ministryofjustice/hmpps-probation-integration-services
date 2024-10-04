@@ -39,8 +39,8 @@ class UserService(
         sortedBy: String
     ): StaffCaseload {
         val user = userRepository.getUser(username)
-        val caseload = caseloadRepository.searchByStaffCode(
-            user.staff!!.code,
+        val caseload = caseloadRepository.searchByStaffId(
+            user.staff!!.id,
             searchFilter.nameOrCrn,
             searchFilter.nextContactCode,
             searchFilter.sentenceCode,
