@@ -237,6 +237,7 @@ class ContactOutcome(
         FAILED_TO_COMPLY("AFTC"),
         FAILED_TO_ATTEND("AFTA"),
         RESCHEDULED_SERVICE_REQUEST("RSSR"),
+        RESCHEDULED_POP_REQUEST("RSOF"),
         SENT_HOME("ATSS"),
         WITHDRAWN("APPW")
     }

@@ -80,7 +80,8 @@ internal class AppointmentServiceTest {
             null,
             53L,
             null,
-            9562746271
+            9562746271,
+            null,
         )
         val nsi = NsiGenerator.generate(
             NsiGenerator.TYPES.values.first(),

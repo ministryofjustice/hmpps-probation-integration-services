@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome.Code
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.service.Outcome
 import java.time.ZonedDateTime
@@ -17,7 +18,8 @@ data class MergeAppointment(
     val outcome: Outcome?,
     val sentenceId: Long?,
     val previousId: UUID?,
-    val deliusId: Long?
+    val deliusId: Long?,
+    val rescheduleRequestedBy: String?,
 ) {
     val referralUrn
         get() = "urn:hmpps:interventions-referral:$referralId"
@@ -31,4 +33,10 @@ data class MergeAppointment(
         get() = if (countsTowardsRar) ContactType.Code.CRSAPT else ContactType.Code.CRSSAA
 
     val end: ZonedDateTime = start.plusMinutes(durationInMinutes)
+
+    val rescheduleOutcome
+        get() = when (rescheduleRequestedBy) {
+            null, "Service Provider" -> Code.RESCHEDULED_SERVICE_REQUEST.value
+            else -> Code.RESCHEDULED_POP_REQUEST.value
+        }
 }
