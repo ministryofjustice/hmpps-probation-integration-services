@@ -21,7 +21,7 @@ class UserService(
     @Transactional
     fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {
         val user = userRepository.getUser(username)
-        val caseload = caseloadRepository.findByStaffCode(user.staff!!.code, pageable)
+        val caseload = caseloadRepository.findByStaffId(user.staff!!.id, pageable)
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
@@ -47,10 +47,10 @@ class UserService(
             pageable
         )
         val sentenceTypes =
-            caseloadRepository.findSentenceTypesForStaff(user.staff.code)
+            caseloadRepository.findSentenceTypesForStaff(user.staff.id)
                 .map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
-            caseloadRepository.findContactTypesForStaff(user.staff.code).map { KeyPair(it.code.trim(), it.description) }
+            caseloadRepository.findContactTypesForStaff(user.staff.id).map { KeyPair(it.code.trim(), it.description) }
 
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
