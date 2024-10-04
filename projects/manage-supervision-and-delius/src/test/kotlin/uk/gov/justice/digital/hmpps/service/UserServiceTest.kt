@@ -43,7 +43,7 @@ internal class UserServiceTest {
     fun `calls get person activity function`() {
         val username = "username"
         whenever(userRepository.findByUsername(username)).thenReturn(USER)
-        whenever(caseloadRepository.findByStaffCode(USER.staff!!.code, Pageable.ofSize(1))).thenReturn(
+        whenever(caseloadRepository.findByStaffId(USER.staff!!.id, Pageable.ofSize(1))).thenReturn(
             PageImpl(
                 listOf(
                     CASELOAD_PERSON_1

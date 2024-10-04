@@ -386,10 +386,10 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         join fetch c.team t
         left join fetch c.nextAppointment na
         left join fetch c.previousAppointment pa
-        where c.staff.code = :staffCode
+        where c.staff.id = :id
     """
     )
-    fun findByStaffCode(staffCode: String, pageable: Pageable): Page<Caseload>
+    fun findByStaffId(id: Long, pageable: Pageable): Page<Caseload>
 
     @Query(
         """
@@ -403,7 +403,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join fetch c.latestSentence ls
         left join fetch ls.disposal d
         left join fetch d.type dt
-        where c.staff.code = :staffCode
+        where c.staff.id = :id
         and (:nameOrCrn is null 
           or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' 
           or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%'
@@ -413,8 +413,8 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         and (:sentenceCode is null or (upper(trim(dt.code)) = upper(trim(:sentenceCode))))
     """
     )
-    fun searchByStaffCode(
-        staffCode: String,
+    fun searchByStaffId(
+        id: Long,
         nameOrCrn: String?,
         nextContactCode: String?,
         sentenceCode: String?,
@@ -435,22 +435,22 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         """
             select distinct cont.type from Caseload c
             join Contact cont on cont.personId = c.person.id
-            where c.staff.code = :staffCode and cont.type.attendanceContact = true
+            where c.staff.id = :id and cont.type.attendanceContact = true
             order by cont.type.description asc
         """
     )
-    fun findContactTypesForStaff(staffCode: String): List<ContactType>
+    fun findContactTypesForStaff(id: Long): List<ContactType>
 
     @Query(
         """
             select distinct e.disposal.type from Caseload c
             join Event e on e.personId = c.person.id and e.active = true and e.softDeleted = false 
             where e.disposal is not null 
-            and c.staff.code = :staffCode
+            and c.staff.id = :id
             order by e.disposal.type.description asc
         """
     )
-    fun findSentenceTypesForStaff(staffCode: String): List<DisposalType>
+    fun findSentenceTypesForStaff(id: Long): List<DisposalType>
 }
 
 enum class CaseloadOrderType(val sortColumn: String) {
