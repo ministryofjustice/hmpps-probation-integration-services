@@ -37,7 +37,7 @@ object ContactGenerator {
                 compliantAcceptable = false
             )
 
-            ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST -> generateOutcome(
+            ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST, ContactOutcome.Code.RESCHEDULED_POP_REQUEST -> generateOutcome(
                 it.value,
                 attendance = false,
                 compliantAcceptable = true

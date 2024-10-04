@@ -68,7 +68,8 @@ internal class MergeAppointmentIntegrationTest {
             null,
             null,
             null,
-            null
+            null,
+            null,
         )
         val result = status().isOk
         makeRequest(person, referralId, mergeAppointment, result)
@@ -103,7 +104,8 @@ internal class MergeAppointmentIntegrationTest {
             null,
             null,
             null,
-            null
+            null,
+            null,
         )
 
         makeRequest(person, referralId, mergeAppointment, status().isConflict)
@@ -134,7 +136,8 @@ internal class MergeAppointmentIntegrationTest {
             null,
             null,
             appointmentId,
-            null
+            null,
+            "Joe Bloggs",
         )
         val result = status().isOk
 
@@ -142,7 +145,7 @@ internal class MergeAppointmentIntegrationTest {
 
         val existing =
             contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.previousUrn!!)!!
-        assertThat(existing.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST.value))
+        assertThat(existing.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_POP_REQUEST.value))
         assertFalse(existing.attended!!)
         assertThat(existing.rarActivity, equalTo(false))
 
@@ -184,7 +187,8 @@ internal class MergeAppointmentIntegrationTest {
             Outcome(Attended.YES, true, null, false),
             null,
             appointmentId,
-            null
+            null,
+            "Service Provider",
         )
         val result = status().isOk
 
@@ -229,7 +233,8 @@ internal class MergeAppointmentIntegrationTest {
             null,
             null,
             null,
-            null
+            null,
+            null,
         )
 
         makeRequest(person, referralId, mergeAppointment, status().isBadRequest)
@@ -253,7 +258,8 @@ internal class MergeAppointmentIntegrationTest {
             Outcome(Attended.LATE, false, NoSessionReasonType.POP_UNACCEPTABLE, true),
             null,
             null,
-            null
+            null,
+            null,
         )
         val result = status().isOk
 
@@ -292,7 +298,8 @@ internal class MergeAppointmentIntegrationTest {
             null,
             null,
             null,
-            null
+            null,
+            null,
         )
 
         makeRequest(person, referralId, mergeAppointment, status().isNotFound)
