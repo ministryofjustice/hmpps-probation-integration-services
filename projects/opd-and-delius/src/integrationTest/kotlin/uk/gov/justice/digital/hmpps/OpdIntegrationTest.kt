@@ -18,6 +18,8 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.message.PersonIdentifier
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -116,5 +118,25 @@ internal class OpdIntegrationTest {
         val opdContact = contactRepository.findAll()
             .firstOrNull { it.personId == com.person.id && it.type.code == ContactType.Code.PENDING_CONSULTATION.value }
         assertNotNull(opdContact!!)
+    }
+
+    @Test
+    fun `noms number not found`() {
+        val message = prepMessage("opd-assessment-new", wireMockServer.port())
+            .let {
+                it.copy(it.message.copy(personReference = PersonReference(listOf(PersonIdentifier("NOMS", "Z9999ZZ")))))
+            }
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        verify(telemetryService).trackEvent(
+            "OpdAssessmentIgnored",
+            mapOf(
+                "reason" to "PersonNotFound",
+                "noms" to "Z9999ZZ",
+                "date" to "30/10/2023 16:42:25",
+                "result" to "Screened In"
+            )
+        )
     }
 }
