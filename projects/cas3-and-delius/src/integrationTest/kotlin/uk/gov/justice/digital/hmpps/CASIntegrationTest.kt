@@ -19,7 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.*
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository

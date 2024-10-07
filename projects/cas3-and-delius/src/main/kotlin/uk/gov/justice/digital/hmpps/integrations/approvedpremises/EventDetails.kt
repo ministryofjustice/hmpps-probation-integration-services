@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.approvedpremesis
+package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType
