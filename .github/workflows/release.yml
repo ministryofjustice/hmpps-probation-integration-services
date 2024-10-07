@@ -25,6 +25,8 @@ jobs:
               "template": "#{{CHANGELOG}}\n\n<details>\n<summary>❓ Other changes</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
               "pr_template": "- #{{TITLE}} (##{{NUMBER}})",
               "empty_template": "- no changes",
+              "max_pull_requests": 300,
+              "max_back_track_time_days": 730,
               "categories": [
                 {
                   "title": "## ✨ Features",
