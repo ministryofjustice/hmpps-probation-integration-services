@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
@@ -60,9 +61,8 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByPersonNomsId(nomsId: String): PersonManager?
 }
 
-fun PersonManagerRepository.getByCrnOrNoms(crn: String?, nomsId: String?) =
-    crn?.let(::findByPersonCrn) ?: nomsId?.let(::findByPersonNomsId) ?: throw NotFoundException(
-        "Person",
-        crn?.let { "crn" } ?: nomsId?.let { "nomsId" } ?: "",
-        crn ?: nomsId ?: ""
-    )
+fun PersonManagerRepository.getByCrnOrNoms(crn: String?, nomsId: String?) = when {
+    crn != null -> findByPersonCrn(crn) ?: throw NotFoundException("Manager for person", "crn", crn)
+    nomsId != null -> findByPersonNomsId(nomsId) ?: throw IgnorableMessageException("PersonNotFound")
+    else -> throw IllegalArgumentException("No CRN or NOMS number provided")
+}

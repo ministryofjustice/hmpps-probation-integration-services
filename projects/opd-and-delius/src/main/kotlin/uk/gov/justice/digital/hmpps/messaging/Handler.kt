@@ -7,6 +7,7 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.NsiSubType
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -28,13 +29,20 @@ class Handler(
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         if (notification.message.eventType != OpdProduced) return
         val opdAssessment = notification.message.opdAssessment()
-        when (opdAssessment.result) {
-            OpdAssessment.Result.SCREENED_IN, OpdAssessment.Result.SCREENED_IN_OVERRIDE -> {
-                opdService.processAssessment(notification.message.opdAssessment())
-                telemetryService.trackEvent("OpdAssessmentScreenedIn", opdAssessment.telemetryProperties())
-            }
+        try {
+            when (opdAssessment.result) {
+                OpdAssessment.Result.SCREENED_IN, OpdAssessment.Result.SCREENED_IN_OVERRIDE -> {
+                    opdService.processAssessment(notification.message.opdAssessment())
+                    telemetryService.trackEvent("OpdAssessmentScreenedIn", opdAssessment.telemetryProperties())
+                }
 
-            else -> telemetryService.trackEvent("OpdAssessmentScreenedOut", opdAssessment.telemetryProperties())
+                else -> telemetryService.trackEvent("OpdAssessmentScreenedOut", opdAssessment.telemetryProperties())
+            }
+        } catch (e: IgnorableMessageException) {
+            telemetryService.trackEvent(
+                "OpdAssessmentIgnored",
+                mapOf("reason" to e.message) + e.additionalProperties + opdAssessment.telemetryProperties()
+            )
         }
     }
 }
