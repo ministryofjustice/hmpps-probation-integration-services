@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.NotFound
+import org.hibernate.annotations.NotFoundAction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
@@ -33,6 +35,7 @@ class OasysAssessment(
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "contact_id")
+    @NotFound(action = NotFoundAction.IGNORE) // No foreign key on contact_id
     val contact: Contact,
 
     @ManyToOne
