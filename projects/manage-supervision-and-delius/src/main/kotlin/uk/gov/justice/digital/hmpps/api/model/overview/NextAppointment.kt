@@ -6,3 +6,9 @@ data class NextAppointment(
     val date: ZonedDateTime,
     val description: String
 )
+
+data class Appointment(
+    val id: Long,
+    val date: ZonedDateTime,
+    val description: String
+)

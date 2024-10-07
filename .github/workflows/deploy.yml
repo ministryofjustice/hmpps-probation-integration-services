@@ -128,7 +128,7 @@ jobs:
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
           token: ${{ secrets.KUBE_TOKEN }}
-          github_token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          ip-allowlists: ${{ vars.HMPPS_IP_ALLOWLIST_GROUPS_YAML }}
 
       - uses: docker/login-action@v3
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}

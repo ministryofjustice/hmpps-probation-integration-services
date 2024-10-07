@@ -98,9 +98,9 @@ class AppointmentService(
             mergeAppointment.start,
             mergeAppointment.end,
             mergeAppointment.countsTowardsRar
-        )?.addNotes(mergeAppointment.notes)
-        replacement?.also {
-            appointment.outcome = outcomeRepository.getByCode(Code.RESCHEDULED_SERVICE_REQUEST.value)
+        )?.also {
+            it.addNotes(mergeAppointment.notes)
+            appointment.outcome = outcomeRepository.getByCode(mergeAppointment.rescheduleOutcome)
             appointment.rarActivity = false
             contactRepository.save(it)
         }

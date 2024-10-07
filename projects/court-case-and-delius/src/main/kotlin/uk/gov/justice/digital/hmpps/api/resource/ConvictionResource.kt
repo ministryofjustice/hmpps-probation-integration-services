@@ -4,9 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import jakarta.validation.constraints.NotEmpty
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import uk.gov.justice.digital.hmpps.integrations.delius.service.ConvictionService
-import uk.gov.justice.digital.hmpps.integrations.delius.service.InterventionService
-import uk.gov.justice.digital.hmpps.integrations.delius.service.RequirementService
+import uk.gov.justice.digital.hmpps.integrations.delius.service.*
 
 @RestController
 @RequestMapping("probation-case/{crn}/convictions")
@@ -15,6 +13,9 @@ class ConvictionResource(
     private val convictionService: ConvictionService,
     private val requirementService: RequirementService,
     private val interventionService: InterventionService,
+    private val attendanceService: AttendanceService,
+    private val courtAppearanceService: CourtAppearanceService,
+    private val courtReportService: CourtReportService
 ) {
 
     @GetMapping
@@ -57,9 +58,59 @@ class ConvictionResource(
         @NotEmpty @RequestParam(required = true) nsiCodes: List<String>
     ) = interventionService.getNsiByCodes(crn, convictionId, nsiCodes)
 
+    @GetMapping("/{convictionId}/nsis/{nsiId}")
+    fun getNsiByNsiId(
+        @Parameter(name = "crn", description = "CRN for the offender", example = "A123456", required = true)
+        @PathVariable crn: String,
+        @Parameter(
+            name = "convictionId",
+            description = "ID for the conviction / event",
+            example = "2500295345",
+            required = true
+        )
+        @PathVariable convictionId: Long,
+        @Parameter(
+            name = "nsiId",
+            description = "ID for the nsi",
+            example = "2500295123",
+            required = true
+        )
+        @PathVariable nsiId: Long
+    ) = interventionService.getNsiByNsiId(crn, convictionId, nsiId)
+
     @GetMapping("/{convictionId}/pssRequirements")
     fun getPssRequirementsByConvictionId(
         @PathVariable crn: String,
         @PathVariable convictionId: Long
     ) = requirementService.getPssRequirementsByConvictionId(crn, convictionId)
+
+    @GetMapping("/{convictionId}/attendancesFilter")
+    fun getConvictionAttendances(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = attendanceService.getAttendancesFor(crn, convictionId)
+
+    @GetMapping("/{convictionId}/courtAppearances")
+    fun getConvictionCourtAppearances(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = courtAppearanceService.getCourtAppearancesFor(crn, convictionId)
+
+    @GetMapping("/{convictionId}/courtReports")
+    fun getConvictionCourtReports(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = courtReportService.getCourtReportsFor(crn, convictionId)
+
+    @GetMapping("/{convictionId}/licenceConditions")
+    fun getConvictionLicenceConditions(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = requirementService.getLicenceConditionsForConvictionId(crn, convictionId)
+
+    @GetMapping("/{convictionId}/sentenceStatus")
+    fun getConvictionSentenceStatus(
+        @PathVariable crn: String,
+        @PathVariable convictionId: Long
+    ) = convictionService.sentenceStatusFor(crn, convictionId)
 }

@@ -204,6 +204,7 @@ class DataLoader(
         entityManager.flush()
         entityManager.persist(PersonGenerator.CASELOAD_PERSON_1)
         entityManager.persist(PersonGenerator.CASELOAD_PERSON_2)
+        entityManager.persist(PersonGenerator.CASELOAD_PERSON_3)
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {

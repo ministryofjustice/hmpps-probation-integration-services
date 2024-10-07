@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByNumber
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.Objective
-import uk.gov.justice.digital.hmpps.integrations.oasys.PurposeOfAssessmentMapping
 import java.time.LocalDate
 
 @Service
@@ -33,7 +32,8 @@ class AssessmentService(
         val previousAssessment = oasysAssessmentRepository.findByOasysId(summary.assessmentPk.toString())
 
         val eventNumber = summary.furtherInformation.cmsEventNumber?.toString()
-            ?: throw IgnorableMessageException("No Event Number provided")
+            ?: eventRepository.findActiveCustodialEvents(person.id).singleOrNull()
+            ?: throw IgnorableMessageException("No single active custodial event")
         val event = eventRepository.getByNumber(person.id, eventNumber)
         val manager = checkNotNull(person.manager) { "Community Manager Not Found" }
         val contactDate =
@@ -61,13 +61,12 @@ class AssessmentService(
             contact = contact,
             court = furtherInformation.courtCode
                 ?.let { courtRepository.getByCode(it) },
-            offence = offences.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
+            offence = offences
+                ?.firstOrNull { it.offenceCode != null && it.offenceSubcode != null }
                 ?.let { offenceRepository.findByCode(it.offenceCode + it.offenceSubcode) },
             totalScore = furtherInformation.totWeightedScore,
-            description = furtherInformation.pOAssessment?.let {
-                PurposeOfAssessmentMapping[it] ?: throw IllegalArgumentException("Unexpected 'pOAssessment' code '$it'")
-            },
-            assessedBy = furtherInformation.assessorName,
+            description = furtherInformation.pOAssessmentDesc,
+            assessedBy = furtherInformation.assessorName?.let { if (it.length > 35) initialiseName(it) else it },
             riskFlags = riskFlags.joinToString(","),
             concernFlags = concernFlags.joinToString(","),
             dateCreated = initiationDate,
@@ -87,6 +86,12 @@ class AssessmentService(
         sentencePlan?.objectives?.map { it.plan(person, assessment) }
             ?.forEach { assessment.withSentencePlan(it) }
         return assessment
+    }
+
+    private fun initialiseName(name: String): String {
+        val names = name.split(Regex("\\s+")).toMutableList()
+        for (i in 0 until names.size - 1) names[i] = "${names[i].first()}."
+        return names.joinToString(" ")
     }
 }
 

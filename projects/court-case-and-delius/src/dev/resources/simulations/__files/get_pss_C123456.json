@@ -1,0 +1,26 @@
+{
+  "pssRequirements": [
+    {
+      "type": {
+        "code": "PssMain",
+        "description": "pss main"
+      },
+      "subType": {
+        "code": "PssSub",
+        "description": "pss sub"
+      },
+      "active": true
+    },
+    {
+      "type": {
+        "code": "PssMain",
+        "description": "pss main"
+      },
+      "subType": {
+        "code": "PssSub",
+        "description": "pss sub"
+      },
+      "active": false
+    }
+  ]
+}

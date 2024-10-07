@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.config
 import org.openfolder.kotlinasyncapi.springweb.service.AsyncApiExtension
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
+import org.springframework.security.concurrent.DelegatingSecurityContextRunnable
 
 @Configuration
 class AsyncApiConfig {
@@ -26,5 +28,20 @@ class AsyncApiConfig {
         externalDocs {
             url("https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/court-case-and-delius/")
         }
+    }
+
+    @Bean
+    fun threadPoolTaskExecutor(): ThreadPoolTaskExecutor {
+        val executor = ThreadPoolTaskExecutor()
+        executor.corePoolSize = 10
+        executor.maxPoolSize = 100
+        executor.queueCapacity = 50
+        executor.setThreadNamePrefix("async-")
+        executor.setTaskDecorator { runnable: Runnable? ->
+            DelegatingSecurityContextRunnable(
+                runnable
+            )
+        }
+        return executor
     }
 }

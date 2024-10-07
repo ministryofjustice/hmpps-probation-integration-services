@@ -90,6 +90,7 @@ class DataLoader(
         addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002, AddressGenerator.Q710))
         boroughRepository.save(ProbationCaseGenerator.BOROUGH)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
+        probationAreaRepository.save(ProbationAreaGenerator.N58_SW)
         approvedPremisesRepository.save(ApprovedPremisesGenerator.DEFAULT)
         // add a duplicate AP for testing selectable query
         approvedPremisesRepository.save(
@@ -152,6 +153,9 @@ class DataLoader(
 
         staffRepository.save(StaffGenerator.LAO_RESTRICTED)
         staffUserRepository.save(StaffGenerator.LAO_RESTRICTED_USER)
+
+        staffRepository.save(StaffGenerator.CRU_WOMENS_ESTATE)
+        staffUserRepository.save(StaffGenerator.CRU_WOMENS_ESTATE_USER)
 
         val personManagerStaff = StaffGenerator.generate(code = "N54A001")
         staffRepository.save(personManagerStaff)

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.*
@@ -27,9 +28,11 @@ class ConvictionService(
         val person = personRepository.getPerson(crn)
 
         return when (activeOnly) {
-            true -> eventRepository.findAllByPersonAndActiveIsTrue(person)
-            else -> eventRepository.findAllByPerson(person)
-        }.map { it.toConviction() }
+            true -> eventRepository.findAllByPersonIdAndActiveIsTrue(person.id)
+            else -> eventRepository.findAllByPersonId(person.id)
+        }.filter { event -> !event.softDeleted }
+            .sortedBy(Event::referralDate).reversed()
+            .map { it.toConviction() }
     }
 
     fun getConvictionFor(crn: String, eventId: Long): Conviction? {
@@ -37,6 +40,13 @@ class ConvictionService(
         val event = eventRepository.getByPersonAndEventNumber(person, eventId)
 
         return event.toConviction()
+    }
+
+    fun sentenceStatusFor(crn: String, eventId: Long): SentenceStatus {
+        val person = personRepository.getPerson(crn)
+        val event = eventRepository.getByPersonAndEventNumber(person, eventId)
+        return event.disposal?.let(Disposal::toSentenceStatus)
+            ?: throw NotFoundException("Sentence not found for crn '$crn', convictionId '$eventId'")
     }
 
     fun Event.toConviction(): Conviction =
@@ -47,7 +57,7 @@ class ConvictionService(
             inBreach,
             failureToComplyCount,
             breachEnd,
-            eventRepository.awaitingPSR(id) == 1,
+            eventRepository.awaitingPSR(id) > 0,
             convictionDate,
             referralDate,
             toOffences(),
@@ -66,15 +76,21 @@ class ConvictionService(
     }
 
     fun Event.toLatestCourtAppearanceOutcome(): KeyValue? {
-        courtAppearances.maxByOrNull { it.appearanceDate }
-            ?.let { return KeyValue(it.outcome.code, it.outcome.description) }
-            ?: return null
+        return courtAppearances
+            .filter { courtAppearance -> courtAppearance.outcome != null }
+            .maxByOrNull(CourtAppearance::appearanceDate)?.let {
+                KeyValue(it.outcome!!.code, it.outcome.description)
+            }
     }
 
     fun Event.toLatestOrSentencingCourtAppearanceOf(): CourtAppearanceBasic? {
-        return courtAppearances.filter { it.isSentenceing() }.maxByOrNull { it.appearanceDate }
+        return courtAppearances.filter { it.isSentenceing() }
+            .sortedByDescending(CourtAppearance::appearanceDate)
+            .firstOrNull()
             ?.let { return it.toCourtAppearanceBasic() }
-            ?: courtAppearances.maxByOrNull { it.appearanceDate }?.let { return it.toCourtAppearanceBasic() }
+            ?: courtAppearances.sortedByDescending(CourtAppearance::appearanceDate)
+                .firstOrNull()
+                ?.let { return it.toCourtAppearanceBasic() }
     }
 
     fun CourtAppearance.toCourtAppearanceBasic(): CourtAppearanceBasic =
@@ -96,9 +112,9 @@ class ConvictionService(
             offenceCount = offenceCount,
             tics = tics,
             verdict = verdict,
-            offenderId = event.person.id,
-            createdDatetime = created,
-            lastUpdatedDatetime = updated
+            offenderId = event.personId,
+            createdDatetime = created.toLocalDateTime(),
+            lastUpdatedDatetime = updated.toLocalDateTime()
         )
 
     fun AdditionalOffence.toOffence(): Offence =
@@ -110,9 +126,9 @@ class ConvictionService(
             offenceCount = offenceCount,
             tics = null,
             verdict = null,
-            offenderId = event.person.id,
-            createdDatetime = created,
-            lastUpdatedDatetime = updated
+            offenderId = null,
+            createdDatetime = created.toLocalDateTime(),
+            lastUpdatedDatetime = updated.toLocalDateTime()
         )
 
     fun OffenceEntity.toOffenceDetail(): OffenceDetail =
@@ -148,7 +164,8 @@ class ConvictionService(
             terminationDate,
             terminationReason?.description,
             KeyValue(disposalType.sentenceType, disposalType.description),
-            additionalSentenceRepository.getAllByEventId(eventId).map { it.toAdditionalSentence() },
+            additionalSentenceRepository.getAllByEventId(eventId).map { it.toAdditionalSentence() }
+                .takeIf { it.isNotEmpty() },
             disposalType.failureToComplyLimit,
             disposalType.cja2003Order,
             disposalType.legacyOrder
@@ -177,7 +194,7 @@ class ConvictionService(
     fun CustodyEntity.toCustody(): Custody =
         Custody(
             prisonerNumber,
-            institution.toInstitution(),
+            institution?.toInstitution(),
             populateKeyDates(keyDates),
             KeyValue(status.code, status.description),
             disposal.startDate
@@ -240,8 +257,8 @@ class ConvictionService(
         postcode,
         country,
         courtTypeId,
-        createdDatetime,
-        lastUpdatedDatetime,
+        createdDatetime.toLocalDateTime(),
+        lastUpdatedDatetime.toLocalDateTime(),
         probationAreaId,
         secureEmailAddress,
         KeyValue(probationArea.code, probationArea.description),
@@ -255,8 +272,8 @@ class ConvictionService(
             id,
             staff?.getName(),
             staff?.code,
-            allocationDate,
-            endDate,
+            allocationDate.toLocalDateTime(),
+            endDate?.toLocalDateTime(),
             staff?.grade?.code,
             team?.code,
             probationArea.code
@@ -275,4 +292,18 @@ enum class KeyDateTypes(val code: String) {
     SENTENCE_EXPIRY_DATE("SED")
 }
 
+fun Disposal.toSentenceStatus() = SentenceStatus(
+    sentenceId = id,
+    custodialType = KeyValue(
+        custody?.status?.code ?: "NOT_IN_CUSTODY",
+        custody?.status?.description ?: "Not in custody"
+    ),
+    sentence = KeyValue(description = disposalType.description),
+    mainOffence = event.mainOffence?.let { KeyValue(description = it.offence.description) },
+    sentenceDate = startDate,
+    actualReleaseDate = custody?.releases?.maxByOrNull { it.date }?.date?.toLocalDate(),
+    licenceExpiryDate = custody?.pssStartDate,
+    length = length,
+    lengthUnit = "Months"
 
+)

@@ -1,23 +1,16 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Immutable
 @Table(name = "lic_condition")
 @Entity
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class LicenceCondition(
     @ManyToOne
     @JoinColumn(name = "disposal_id")
@@ -26,9 +19,26 @@ class LicenceCondition(
     @Column
     val startDate: LocalDate,
 
+    @Column
+    val commencementDate: LocalDate?,
+
+    @Lob
+    @Column
+    val commencementNotes: String?,
+
+    @Column
+    val terminationDate: LocalDate?,
+
+    @Lob
+    @Column
+    val terminationNotes: String?,
+
+    @Column(name = "created_datetime")
+    val createdDateTime: LocalDateTime,
+
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_main_cat_id")
-    val mainCategory: LicenceConditionMainCategory,
+    val mainCategory: LicenceConditionMainCategory?,
 
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_sub_cat_id")

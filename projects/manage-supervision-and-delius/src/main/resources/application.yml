@@ -1,5 +1,6 @@
 # Default config
 server.shutdown: graceful
+
 spring:
   jackson:
     default-property-inclusion: non_null
@@ -8,6 +9,8 @@ spring:
     database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
+        order_by:
+          default_null_ordering: last
         timezone.default_storage: NORMALIZE
         query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
         query.mutation_strategy.persistent:

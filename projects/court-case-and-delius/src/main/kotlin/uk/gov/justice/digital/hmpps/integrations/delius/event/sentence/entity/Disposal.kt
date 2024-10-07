@@ -10,11 +10,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
 @Immutable
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0")
 class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")
@@ -81,16 +82,24 @@ class Disposal(
     val id: Long
 )
 
-interface DisposalRepository : JpaRepository<Disposal, Long> {
+@Immutable
+@Entity
+@Table(name = "release")
+class Release(
+    @Id
+    @Column(name = "release_id")
+    val id: Long,
 
-    @Query(
-        """ 
-        select d from Disposal d where d.event.person.crn = :crn
-        and d.softDeleted = false
-    """
-    )
-    fun getByCrn(crn: String): List<Disposal>
-}
+    @ManyToOne
+    @JoinColumn(name = "custody_id")
+    val custody: Custody,
+
+    @Column(name = "actual_release_date")
+    val date: LocalDateTime,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false
+)
 
 @Entity
 @Table(name = "upw_details")
@@ -128,6 +137,10 @@ class UpwAppointment(
     val complied: String?,
 
     val softDeleted: Long,
+
+    val appointmentDate: LocalDate,
+
+    val upwProjectId: Long,
 
     @JoinColumn(name = "upw_details_id")
     @ManyToOne
@@ -210,10 +223,16 @@ class Custody(
         JoinColumn(name = "institution_id", referencedColumnName = "institution_id"),
         JoinColumn(name = "establishment", referencedColumnName = "establishment")
     )
-    val institution: Institution,
+    val institution: Institution? = null,
 
     @OneToMany(mappedBy = "custody")
     val keyDates: List<KeyDate> = listOf(),
+
+    @OneToMany(mappedBy = "custody")
+    val releases: List<Release> = emptyList(),
+
+    @Column(name = "pss_start_date")
+    val pssStartDate: LocalDate? = null,
 
     @Id
     @Column(name = "custody_id")

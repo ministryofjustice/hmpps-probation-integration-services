@@ -39,6 +39,8 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: CourtCaseAndDelius # Should match value in [deploy/database/access.yml].
 
+integrations.alfresco.url: http://localhost:${wiremock.port}/alfresco
+
 management:
   endpoints.web:
     base-path: /
@@ -48,7 +50,7 @@ management:
 info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/185
 
 lao-access:
-  ignore-exclusions: false
+  ignore-exclusions: true
   ignore-restrictions: true
 
 ---

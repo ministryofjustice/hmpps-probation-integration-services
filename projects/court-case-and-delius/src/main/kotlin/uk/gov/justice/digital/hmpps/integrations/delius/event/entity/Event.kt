@@ -2,31 +2,31 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Officer
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.ProviderEmployee
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Immutable
 @Entity
-@SQLRestriction("soft_deleted = 0")
 @Table(name = "event")
 class Event(
 
-    @ManyToOne
-    @JoinColumn(name = "offender_id", nullable = false)
-    val person: Person,
+    @Column(name = "offender_id", nullable = false)
+    val personId: Long,
 
-    @OneToOne(mappedBy = "event")
+    @OneToOne(mappedBy = "event", fetch = FetchType.EAGER)
     val mainOffence: MainOffence? = null,
 
     @Column(name = "in_breach", columnDefinition = "number")
@@ -69,6 +69,18 @@ class Event(
     @OneToMany(mappedBy = "event")
     val orderManagers: List<OrderManager> = emptyList(),
 
+    @Column(name = "created_by_user_id")
+    val createdByUserId: Long? = null,
+
+    @Column(name = "created_datetime")
+    val createdDatetime: LocalDateTime? = null,
+
+    @Column(name = "last_updated_user_id")
+    val lastUpdatedUserId: Long? = null,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDatetime: LocalDateTime? = null,
+
     @ManyToOne
     @JoinColumn(name = "court_id")
     val court: Court?,
@@ -77,16 +89,19 @@ class Event(
 
 interface EventRepository : JpaRepository<Event, Long> {
 
-    fun findAllByPerson(person: Person): List<Event>
+    @EntityGraph(attributePaths = ["mainOffence", "court", "disposal"])
+    fun findAllByPersonId(personId: Long): List<Event>
 
-    fun findAllByPersonAndActiveIsTrue(person: Person): List<Event>
+    @EntityGraph(attributePaths = ["mainOffence", "court", "disposal"])
+    fun findAllByPersonIdAndActiveIsTrue(personId: Long): List<Event>
 
-    fun findByPersonAndId(person: Person, id: Long): Event?
+    @EntityGraph(attributePaths = ["mainOffence", "court", "disposal"])
+    fun findByPersonIdAndId(personId: Long, id: Long): Event?
 
     @Query(
         """
         select
-        case when d.disposal_id is null and ca.outcome_code = '101' then 1 else 0 end as awaitingPsr
+        sum(case when d.disposal_id is null and ca.outcome_code = '101' then 1 else 0 end) as awaitingPsr
          from event e
          left join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
          left join (select ca.event_id, oc.code_value as outcome_code
@@ -100,12 +115,11 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun awaitingPSR(eventId: Long): Int
 }
 
-fun EventRepository.getByPersonAndEventNumber(person: Person, eventId: Long) = findByPersonAndId(person, eventId)
+fun EventRepository.getByPersonAndEventNumber(person: Person, eventId: Long) = findByPersonIdAndId(person.id, eventId)
     ?: throw NotFoundException("Conviction with ID $eventId for Offender with crn ${person.crn} not found")
 
 @Entity
 @Immutable
-@SQLRestriction("soft_deleted = 0")
 @Table(name = "order_manager")
 class OrderManager(
 
@@ -137,5 +151,93 @@ class OrderManager(
 
     @Id
     @Column(name = "order_manager_id")
-    val id: Long
+    val id: Long,
+
+    @OneToOne
+    @JoinColumn(name = "allocation_reason_id")
+    val allocationReason: ReferenceData? = null,
+
+    @OneToOne
+    @JoinColumn(name = "provider_employee_id")
+    val providerEmployee: ProviderEmployee? = null,
+
+    @OneToOne
+    @JoinColumn(name = "provider_team_id")
+    val providerTeam: ProviderTeam? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "transfer_reason_id")
+    val transferReason: TransferReason? = null,
+
+    @OneToOne
+    @JoinColumns(
+        JoinColumn(
+            name = "staff_employee_id",
+            referencedColumnName = "staff_employee_id",
+            insertable = false,
+            updatable = false
+        ),
+        JoinColumn(
+            name = "trust_provider_flag",
+            referencedColumnName = "trust_provider_flag",
+            insertable = false,
+            updatable = false
+        )
+    )
+    val officer: Officer? = null,
+
+    @JoinColumns(
+        JoinColumn(
+            name = "trust_provider_team_id",
+            referencedColumnName = "trust_provider_team_id",
+            insertable = false,
+            updatable = false
+        ),
+        JoinColumn(
+            name = "trust_provider_flag",
+            referencedColumnName = "trust_provider_flag",
+            insertable = false,
+            updatable = false
+        )
+    ) @OneToOne
+    val trustProviderTeam: AllTeam? = null,
+
+    )
+
+@Entity
+@Immutable
+@Table(name = "r_transfer_reason")
+class TransferReason(
+    @Id
+    @Column(name = "transfer_reason_id")
+    val id: Long,
+
+    @Column(name = "code")
+    val code: String
 )
+
+@Entity
+@Immutable
+class AllTeam(
+    @Column(name = "trust_provider_flag")
+    val trustProvideFlag: Long,
+
+    @Id
+    @Column(name = "trust_provider_team_id")
+    val trustProviderTeamId: Long,
+
+    @JoinColumn(name = "probation_area_id")
+    @OneToOne
+    val probationArea: ProbationAreaEntity? = null,
+
+    @Column(name = "description")
+    val description: String? = null,
+
+    @Column(name = "telephone")
+    val telephone: String? = null,
+
+    @JoinColumn(name = "district_id")
+    @OneToOne
+    val district: District? = null
+)
+

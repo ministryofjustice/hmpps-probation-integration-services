@@ -55,6 +55,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.previousSurname, equalTo("Smith"))
         assertThat(res.sexualOrientation, equalTo("Heterosexual"))
         assertThat(res.mainAddress?.status, equalTo("Main Address"))
+        assertThat(res.mainAddress?.notes, equalTo("Some Notes"))
         assertThat(res.mainAddress?.verified, equalTo(true))
         assertThat(res.mainAddress?.type, equalTo("Address type 1"))
         assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
@@ -109,7 +110,7 @@ internal class PersonalDetailsIntegrationTest {
             .andExpect(MockMvcResultMatchers.request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
-            .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/octet-stream"))
+            .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/msword;charset=UTF-8"))
             .andExpect(
                 MockMvcResultMatchers.header().string(
                     "Content-Disposition",

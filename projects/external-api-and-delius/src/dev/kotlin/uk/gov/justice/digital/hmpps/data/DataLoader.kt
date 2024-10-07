@@ -54,6 +54,10 @@ class DataLoader(
             persist(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE)
             persist(RegistrationGenerator.generate(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE))
             persist(RegistrationGenerator.MAPPA_TYPE)
+            persist(RegistrationGenerator.DATASET_TYPE_OTHER)
+            persist(RegistrationGenerator.DATASET_TYPE_GENDER)
+            persist(RegistrationGenerator.REFDATA_MALE)
+            persist(RegistrationGenerator.REFDATA_FEMALE)
             RegistrationGenerator.CATEGORIES.values.forEach(::persist)
             RegistrationGenerator.LEVELS.values.forEach(::persist)
             persist(

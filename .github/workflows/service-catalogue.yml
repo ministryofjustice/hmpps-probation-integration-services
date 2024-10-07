@@ -61,7 +61,7 @@ on:
     branches:
       - main
     paths:
-      - 'projects/**/deploy'
+      - 'projects/**/deploy/**'
 
 jobs:
   get-projects:
@@ -76,7 +76,7 @@ jobs:
         with:
           filters: |
             projects:
-              - 'projects/**/deploy'
+              - 'projects/**/deploy/**'
       - name: Get projects - changed
         if: github.event_name == 'push'
         run: echo "projects=$PROJECTS" | tee -a "$GITHUB_ENV"

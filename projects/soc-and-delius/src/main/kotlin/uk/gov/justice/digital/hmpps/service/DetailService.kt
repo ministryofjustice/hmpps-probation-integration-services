@@ -34,7 +34,7 @@ class DetailService(
         if (c != null) {
             mainOffence = c.mainOffence!!.offence.description
             if (c.disposal != null) {
-                val custody = custodyRepository.getCustodyByDisposalId(c.disposal.id)
+                val custody = c.disposal.custody
                 if (custody != null) {
                     val release = detailReleaseRepository.findFirstByCustodyIdOrderByDateDesc(custody.id)
                     releaseLocation = release?.institution?.name

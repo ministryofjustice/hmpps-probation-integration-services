@@ -20,12 +20,15 @@ class ProbationAreaEntity(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
+    val selectable: Boolean,
 
     val description: String,
 
     @Column(columnDefinition = "char(3)")
     val code: String,
+
+    @Column(columnDefinition = "char(1)")
+    val establishment: String?,
 
     @Id
     @Column(name = "probation_area_id")
@@ -42,7 +45,7 @@ class District(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
+    val selectable: Boolean,
 
     @Column(name = "code")
     val code: String,
@@ -65,7 +68,7 @@ class Borough(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
+    val selectable: Boolean,
 
     @Id
     @Column(name = "borough_id")
@@ -91,13 +94,25 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
         join d.borough b
         join b.probationArea pa
         where pa.description not like 'ZZ%'
-        and d.code <> '-1'
+        and (d.selectable = true or d.code like '%UAT' or d.code like '%UNA' or d.code like '%IAV')
         and pa.selectable = true
-        and d.selectable = true
-        and b.selectable = true
+        and (pa.establishment is null or pa.establishment <> 'Y')
     """
     )
     fun probationAreaDistricts(): List<ProbationAreaDistrict>
+
+    @Query(
+        """
+        select new uk.gov.justice.digital.hmpps.entity.ProbationAreaDistrict(pa.code, pa.description, d.code, d.description)
+        from District d
+        join d.borough b
+        join b.probationArea pa
+        where pa.description not like 'ZZ%'
+        and (d.selectable = true or d.code like '%UAT' or d.code like '%UNA' or d.code like '%IAV')
+        and (pa.establishment is null or pa.establishment <> 'Y')
+    """
+    )
+    fun probationAreaDistrictsNonSelectable(): List<ProbationAreaDistrict>
 }
 
 data class ProbationAreaDistrict(val pCode: String, val pDesc: String, val dCode: String, val dDesc: String)

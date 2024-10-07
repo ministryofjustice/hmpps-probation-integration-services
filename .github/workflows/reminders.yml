@@ -1,0 +1,71 @@
+name: Reminders
+
+on:
+  schedule:
+    - cron: "30 8 * * MON-FRI" # Every weekday at 08:30 UTC
+  workflow_dispatch:
+
+jobs:
+  pending-deployments:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get pending deployments
+        id: runs
+        run: echo "pending=$(gh run list --workflow pipeline.yml --branch main --status waiting --json displayTitle,url)" | tee -a "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Transform results into Slack message
+        id: transform
+        if: steps.runs.outputs.pending != '[]'
+        shell: bash
+        run: |
+          echo "result=$(echo "$pending_runs" | jq -rc '. |
+            {
+              "blocks": ([
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*⏳ Review pending deployments*"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "> There are production deployments waiting for approval. Approve them to unblock the pipeline."
+                    }
+                  ]
+                }
+              ] +
+              (. | map({
+                "type": "section",
+                "text": {
+                  "text": ("• " + .displayTitle),
+                  "type": "plain_text"
+                },
+                "accessory": {
+                  "type": "button",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🔎 Review"
+                  },
+                  "url": .url
+                }
+              })))
+            }')" | tee -a "$GITHUB_OUTPUT"
+        env:
+          pending_runs: ${{ steps.runs.outputs.pending }}
+
+      - name: Send message to Slack
+        if: steps.runs.outputs.pending != '[]'
+        uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
+        with:
+          channel-id: probation-integration-notifications
+          payload: ${{ steps.transform.outputs.result }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

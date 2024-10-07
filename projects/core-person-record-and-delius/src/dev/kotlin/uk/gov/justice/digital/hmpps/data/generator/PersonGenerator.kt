@@ -9,6 +9,7 @@ object PersonGenerator {
     val GENDER = generateReferenceData("GEN")
     val NATIONALITY = generateReferenceData("NAT")
     val TITLE = generateReferenceData("TIT")
+    val PREVIOUS_ADDRESS = generateReferenceData("P", "Previous Address")
     val MAIN_ADDRESS = generateReferenceData("M", "Main Address")
 
     val MIN_PERSON =
@@ -57,6 +58,14 @@ object PersonGenerator {
             "London",
             "PC1 1TS",
             LocalDate.now().minusDays(30)
+        ),
+        generateAddress(
+            FULL_PERSON.id,
+            PREVIOUS_ADDRESS,
+            postcode = "NF1 1NF",
+            noFixedAbode = true,
+            startDate = LocalDate.now().minusDays(60),
+            endDate = LocalDate.now().minusDays(30)
         )
     )
 
@@ -68,6 +77,13 @@ object PersonGenerator {
     val FULL_PERSON_RESTRICTIONS = listOf(
         generateRestriction(FULL_PERSON.id, "SomeUser2"),
         generateRestriction(FULL_PERSON.id, "FutureEndDatedUser", LocalDateTime.now().plusDays(30)),
+    )
+
+    val SENTENCES = listOf(
+        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 7), active = true, softDeleted = false),
+        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 5), active = false, softDeleted = false),
+        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 4), active = false, softDeleted = true),
+        generateDisposal(FULL_PERSON.id, LocalDate.of(2024, 8, 3), active = true, softDeleted = false)
     )
 
     fun generateReferenceData(
@@ -144,14 +160,15 @@ object PersonGenerator {
     fun generateAddress(
         personId: Long,
         status: ReferenceData,
-        addressNumber: String?,
-        buildingName: String?,
-        streetName: String?,
-        townCity: String?,
-        county: String?,
-        district: String?,
-        postcode: String?,
+        addressNumber: String? = null,
+        buildingName: String? = null,
+        streetName: String? = null,
+        townCity: String? = null,
+        county: String? = null,
+        district: String? = null,
+        postcode: String? = null,
         startDate: LocalDate,
+        noFixedAbode: Boolean = false,
         endDate: LocalDate? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
@@ -165,6 +182,7 @@ object PersonGenerator {
         county,
         district,
         postcode,
+        noFixedAbode,
         startDate,
         endDate,
         softDeleted,
@@ -184,4 +202,11 @@ object PersonGenerator {
         endDate: LocalDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Restriction(personId, LimitedAccessUser(username, IdGenerator.getAndIncrement()), endDate, id)
+
+    private fun generateDisposal(
+        personId: Long,
+        startDate: LocalDate,
+        active: Boolean,
+        softDeleted: Boolean
+    ) = Disposal(IdGenerator.getAndIncrement(), personId, startDate, active, softDeleted)
 }

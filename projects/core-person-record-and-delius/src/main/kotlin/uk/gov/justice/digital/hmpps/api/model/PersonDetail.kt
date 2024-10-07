@@ -16,6 +16,7 @@ data class PersonDetail(
     val addresses: List<Address>,
     val excludedFrom: LimitedAccess?,
     val restrictedTo: LimitedAccess?,
+    val sentences: List<Sentence>,
 )
 
 data class Identifiers(
@@ -51,4 +52,13 @@ data class CodeDescription(val code: String, val description: String)
 
 data class Alias(val name: Name, val dateOfBirth: LocalDate)
 
-data class Address(val fullAddress: String, val postcode: String)
+data class Address(
+    val fullAddress: String,
+    val postcode: String,
+    val noFixedAbode: Boolean,
+    val status: CodeDescription,
+    val startDate: LocalDate,
+    val endDate: LocalDate?,
+)
+
+data class Sentence(val date: LocalDate, val active: Boolean)

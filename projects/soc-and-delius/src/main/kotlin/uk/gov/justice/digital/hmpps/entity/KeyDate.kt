@@ -28,6 +28,10 @@ class Custody(
     @OneToMany(mappedBy = "custody")
     val keyDates: List<KeyDate> = listOf(),
 
+    @OneToOne
+    @JoinColumn(name = "disposal_id", updatable = false, insertable = false)
+    val disposal: Disposal,
+
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false
 )

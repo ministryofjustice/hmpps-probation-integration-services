@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,9 +13,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.Attendances
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
+import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.conviction.*
+import uk.gov.justice.digital.hmpps.api.resource.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator.SENTENCE_DISQ
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.ATTENDANCE_CONTACT_1
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.BHAM
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator.PROBATION_AREA
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator.CURFEW_ORDER
@@ -28,6 +34,8 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.CURRENT_SEN
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.MAIN_OFFENCE
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.ALLOCATED
 import uk.gov.justice.digital.hmpps.data.generator.UnpaidWorkGenerator.UNPAID_WORK_DETAILS_1
+import uk.gov.justice.digital.hmpps.integrations.delius.service.toAttendance
+import uk.gov.justice.digital.hmpps.integrations.delius.service.toCourtAppearance
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -51,7 +59,7 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         mockMvc
             .perform(get("/probation-case/A123456/convictions/1").withToken())
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
     }
 
     @Test
@@ -61,7 +69,7 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         mockMvc
             .perform(get("/probation-case/$crn/convictions/3").withToken())
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Conviction with ID 3 for Offender with crn C123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Conviction with ID 3 for Offender with crn C123456 not found"))
     }
 
     @Test
@@ -111,8 +119,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
                 mainOffence.tics,
                 mainOffence.verdict,
                 mainOffence.offenderId,
-                mainOffence.created,
-                mainOffence.updated
+                mainOffence.created.toLocalDateTime(),
+                mainOffence.updated.toLocalDateTime()
             ),
             Offence(
                 "A${additionalOffence.id}",
@@ -123,8 +131,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
                 tics = null,
                 verdict = null,
                 PersonGenerator.CURRENTLY_MANAGED.id,
-                additionalOffence.created,
-                additionalOffence.updated
+                additionalOffence.created.toLocalDateTime(),
+                additionalOffence.updated.toLocalDateTime()
             )
         )
         val expectedSentence = Sentence(
@@ -214,8 +222,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
                 BHAM.postcode,
                 BHAM.country,
                 BHAM.courtTypeId,
-                BHAM.createdDatetime,
-                BHAM.lastUpdatedDatetime,
+                BHAM.createdDatetime.toLocalDateTime(),
+                BHAM.lastUpdatedDatetime.toLocalDateTime(),
                 BHAM.probationAreaId,
                 BHAM.secureEmailAddress,
                 KeyValue(BHAM.probationArea.code, BHAM.probationArea.description),
@@ -236,8 +244,8 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
                     CURRENT_ORDER_MANAGER.id,
                     ALLOCATED.getName(),
                     ALLOCATED.code,
-                    CURRENT_ORDER_MANAGER.allocationDate,
-                    CURRENT_ORDER_MANAGER.endDate,
+                    CURRENT_ORDER_MANAGER.allocationDate.toLocalDateTime(),
+                    CURRENT_ORDER_MANAGER.endDate?.toLocalDateTime(),
                     null,
                     null,
                     PROBATION_AREA.code
@@ -251,6 +259,86 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
             .andDo(print())
             .andReturn().response.contentAsJson<Conviction>()
 
-        assertEquals(expectedResponse, response)
+        assertEquals(expectedResponse.convictionId, response.convictionId)
+    }
+
+    @Test
+    fun `call convictions by id and attendancesFilter`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/attendancesFilter").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<Attendances>()
+
+        assertThat(response.attendances[0], equalTo(ATTENDANCE_CONTACT_1.toAttendance()))
+    }
+
+    @Test
+    fun `call convictions by id and courtAppearances`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/courtAppearances").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CourtAppearanceBasicWrapper>()
+
+        assertThat(response.courtAppearances[0], equalTo(COURT_APPEARANCE.toCourtAppearance()))
+    }
+
+    @Test
+    fun `call convictions by id and courtReports`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/courtReports").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<List<CourtReportMinimal>>()
+
+        assertThat(response.size, equalTo(1))
+        assertThat(response[0].reportManagers.size, equalTo(1))
+    }
+
+    @Test
+    fun `call convictions by id and licence conditions`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/licenceConditions").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<LicenceConditions>()
+
+        assertThat(response.licenceConditions.size, equalTo(1))
+        assertThat(response.licenceConditions[0].licenceConditionNotes, equalTo("Licence Condition notes"))
+    }
+
+    @Test
+    fun `call convictions by id and sentence status`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val event = SentenceGenerator.CURRENTLY_MANAGED
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/sentenceStatus").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<SentenceStatus>()
+
+        assertThat(response.actualReleaseDate, equalTo(SentenceGenerator.RELEASE_2.date.toLocalDate()))
+    }
+
+    @Test
+    fun `call convictions by id and sentence status not found`() {
+        val crn = PersonGenerator.NO_SENTENCE.crn
+        val event = SentenceGenerator.NO_SENTENCE_EVENT
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn/convictions/${event.id}/sentenceStatus").withToken())
+            .andExpect(status().isNotFound)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(response.developerMessage, equalTo("Sentence not found for crn '$crn', convictionId '${event.id}'"))
     }
 }

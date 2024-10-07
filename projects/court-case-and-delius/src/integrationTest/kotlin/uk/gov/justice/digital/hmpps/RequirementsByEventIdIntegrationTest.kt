@@ -41,7 +41,7 @@ internal class RequirementsByEventIdIntegrationTest {
         mockMvc
             .perform(get("/probation-case/A123456/convictions/123/requirements").withToken())
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
     }
 
     @Test
@@ -51,7 +51,7 @@ internal class RequirementsByEventIdIntegrationTest {
         mockMvc
             .perform(get("/probation-case/$crn/convictions/3/requirements").withToken())
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Conviction with convictionId 3 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Conviction with convictionId 3 not found"))
     }
 
     @Test
@@ -70,7 +70,7 @@ internal class RequirementsByEventIdIntegrationTest {
                     requirement.terminationDate,
                     requirement.expectedStartDate,
                     requirement.expectedEndDate,
-                    requirement.createdDatetime,
+                    requirement.createdDatetime.toLocalDateTime(),
                     requirement.active,
                     requirement.subCategory?.let { KeyValue(it.code, it.description) },
                     requirement.mainCategory?.let { KeyValue(it.code, it.description) },

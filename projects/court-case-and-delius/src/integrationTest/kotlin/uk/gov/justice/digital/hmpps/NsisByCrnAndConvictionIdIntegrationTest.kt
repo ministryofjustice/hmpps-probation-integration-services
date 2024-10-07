@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,12 +14,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.api.resource.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.NsiManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.BREACH_NSIS
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.service.toNsi
 import uk.gov.justice.digital.hmpps.integrations.delius.service.toProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.service.toTeam
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -55,7 +59,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     .withToken()
             )
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
     }
 
     @Test
@@ -69,7 +73,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     .withToken()
             )
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Conviction with ID 3 for Offender with crn C123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Conviction with ID 3 for Offender with crn C123456 not found"))
     }
 
     @Test
@@ -117,7 +121,9 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
                     BREACH_NSIS.intendedProvider?.toProbationArea(false),
                     BREACH_NSIS.active,
                     BREACH_NSIS.softDeleted,
-                    BREACH_NSIS.externalReference
+                    BREACH_NSIS.externalReference,
+                    null,
+                    null
                 )
             )
         )
@@ -125,7 +131,7 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
         val response = mockMvc
             .perform(
                 get("/probation-case/$crn/convictions/${event.id}/nsis")
-                    .param("nsiCodes", "NSI type")
+                    .param("nsiCodes", "NSITYPE")
                     .withToken()
             )
             .andExpect(status().isOk)
@@ -140,8 +146,37 @@ internal class NsisByCrnAndConvictionIdIntegrationTest {
         code,
         id,
         Human(getForenames(), surname),
-        teams.map { it.toTeam() },
+        teams.map { it.toTeam() }.takeIf { it.isNotEmpty() },
         probationArea.toProbationArea(false),
         grade?.keyValueOf()
     )
+
+    @Test
+    fun `nsi by nsiId`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val expectedNsi = BREACH_NSIS.toNsi()
+        val actualNsi = mockMvc
+            .perform(
+                get("/probation-case/$crn/convictions/${BREACH_NSIS.eventId}/nsis/${BREACH_NSIS.id}")
+                    .withToken()
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<Nsi>()
+
+        MatcherAssert.assertThat(actualNsi.nsiOutcome, equalTo(expectedNsi.nsiOutcome))
+    }
+
+    @Test
+    fun `nsi by nsiId not found`() {
+        val crn = PersonGenerator.CURRENTLY_MANAGED.crn
+        val response = mockMvc
+            .perform(
+                get("/probation-case/$crn/convictions/${BREACH_NSIS.eventId}/nsis/999")
+                    .withToken()
+            )
+            .andExpect(status().isNotFound)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        MatcherAssert.assertThat(response.developerMessage, equalTo("NSI with id 999 not found"))
+    }
 }

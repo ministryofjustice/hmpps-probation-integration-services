@@ -1,0 +1,72 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/documents/grouped"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_documents_grouped_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/X123456/documents/grouped"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "documentsForOrderComApi.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/documents/alfrescoId"
+      },
+      "response": {
+        "headers": {
+          "content-type": "application/msword;charset=UTF-8",
+          "content-length": "14812",
+          "content-disposition": "attachment; filename=\"doc1\"; filename*=UTF-8''doc1",
+          "accept-ranges": "bytes",
+          "content-range": "bytes 0-14811/14812",
+          "cache-control": "max-age=0,  must-revalidate",
+          "etag": "1699630109776",
+          "last-modified": "Fri, 10 Nov 2023 15:28:29 GMT",
+          "Custom-Alfresco-Header": "should be ignored"
+        },
+        "status": 200,
+        "bodyFileName": "document.pdf"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/alfresco/fetch/alfrescoId"
+      },
+      "response": {
+        "headers": {
+          "content-type": "application/msword;charset=UTF-8",
+          "content-length": "14812",
+          "content-disposition": "attachment; filename=\"doc1\"; filename*=UTF-8''doc1",
+          "accept-ranges": "bytes",
+          "content-range": "bytes 0-14811/14812",
+          "cache-control": "max-age=0,  must-revalidate",
+          "etag": "1699630109776",
+          "last-modified": "Fri, 10 Nov 2023 15:28:29 GMT",
+          "Custom-Alfresco-Header": "should be ignored"
+        },
+        "status": 200,
+        "bodyFileName": "document.pdf"
+      }
+    }
+  ]
+}

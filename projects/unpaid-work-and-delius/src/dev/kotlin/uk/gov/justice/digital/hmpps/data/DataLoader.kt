@@ -4,51 +4,18 @@ import jakarta.annotation.PostConstruct
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseRepository
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.AliasGenerator
-import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseAddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisabilityGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceSubTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProvisionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.data.repository.AddressRepository
-import uk.gov.justice.digital.hmpps.data.repository.AliasRepository
-import uk.gov.justice.digital.hmpps.data.repository.CaseAddressRepository
-import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
-import uk.gov.justice.digital.hmpps.data.repository.DisabilityRepository
-import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
-import uk.gov.justice.digital.hmpps.data.repository.MainOffenceRepository
-import uk.gov.justice.digital.hmpps.data.repository.OffenceRepository
-import uk.gov.justice.digital.hmpps.data.repository.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceRepository
-import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceSubTypeRepository
-import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceTypeRepository
-import uk.gov.justice.digital.hmpps.data.repository.PersonalContactRepository
-import uk.gov.justice.digital.hmpps.data.repository.ProvisionRepository
-import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
-import uk.gov.justice.digital.hmpps.data.repository.RegistrationRepository
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.repository.*
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateExclusion
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateRestriction
+import uk.gov.justice.digital.hmpps.entity.Exclusion
+import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManagerRepository
@@ -83,13 +50,16 @@ class DataLoader(
     private val teamRepository: TeamRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val personWithManagerRepository: PersonWithManagerRepository,
-    private val contactTypeRepository: ContactTypeRepository
+    private val contactTypeRepository: ContactTypeRepository,
+    private val exclusionRepository: ExclusionRepository,
+    private val restrictionRepository: RestrictionRepository
 
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
     fun saveAuditUser() {
         auditUserRepository.save(UserGenerator.AUDIT_USER)
+        auditUserRepository.save(UserGenerator.LIMITED_ACCESS_USER)
     }
 
     @Transactional
@@ -136,6 +106,9 @@ class DataLoader(
         personalCircumstanceTypeRepository.save(PersonalCircumstanceTypeGenerator.DEFAULT)
         personalCircumstanceSubTypeRepository.save(PersonalCircumstanceSubTypeGenerator.DEFAULT)
         caseRepository.saveAndFlush(CaseGenerator.DEFAULT)
+        caseRepository.saveAndFlush(CaseGenerator.EXCLUSION)
+        caseRepository.saveAndFlush(CaseGenerator.RESTRICTION)
+        caseRepository.saveAndFlush(CaseGenerator.RESTRICTION_EXCLUSION)
         aliasRepository.save(AliasGenerator.DEFAULT)
         personalCircumstanceRepository.save(PersonalCircumstanceGenerator.DEFAULT)
         addressRepository.save(AddressGenerator.DEFAULT)
@@ -149,5 +122,13 @@ class DataLoader(
         disposalRepository.save(DisposalGenerator.DEFAULT)
         mainOffenceRepository.save(MainOffenceGenerator.DEFAULT)
         personManagerRepository.save(PersonManagerGenerator.DEFAULT)
+
+        exclusionRepository.save(LimitedAccessGenerator.EXCLUSION)
+        restrictionRepository.save(LimitedAccessGenerator.RESTRICTION)
+        exclusionRepository.save(generateExclusion(person = CaseGenerator.RESTRICTION_EXCLUSION))
+        restrictionRepository.save(generateRestriction(person = CaseGenerator.RESTRICTION_EXCLUSION))
     }
 }
+
+interface RestrictionRepository : JpaRepository<Restriction, Long>
+interface ExclusionRepository : JpaRepository<Exclusion, Long>

@@ -15,7 +15,6 @@ import java.time.ZonedDateTime
 @Immutable
 @Entity
 @Table(name = "offender")
-@SQLRestriction("soft_deleted = 0")
 class Person(
 
     @Id
@@ -232,7 +231,7 @@ class PersonAddress(
 
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData,
+    val type: ReferenceData? = null,
 
     @ManyToOne
     @JoinColumn(name = "address_status_id")
@@ -347,7 +346,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
             left join fetch p.partitionArea pa
             left join fetch p.title title
             where p.crn = :crn
-            and p.softDeleted = false
         """
     )
     fun findByCrn(crn: String): Person?

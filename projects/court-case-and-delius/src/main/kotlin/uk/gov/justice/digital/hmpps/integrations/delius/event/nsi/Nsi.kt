@@ -2,18 +2,19 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.nsi
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 @Entity
+@Immutable
 @Table(name = "nsi")
 class Nsi(
 
@@ -21,7 +22,7 @@ class Nsi(
     val personId: Long,
 
     @Column(name = "event_id")
-    val eventId: Long,
+    val eventId: Long?,
 
     @ManyToOne
     @JoinColumn(name = "nsi_type_id")
@@ -35,7 +36,7 @@ class Nsi(
     val referralDate: LocalDate,
 
     @Column(name = "nsi_status_date")
-    val statusDate: ZonedDateTime,
+    val statusDate: LocalDateTime,
 
     @ManyToOne
     @JoinColumn(name = "nsi_sub_type_id")
@@ -171,6 +172,17 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     )
     fun findAllBreachNSIByEventId(eventId: Long): List<Nsi>
 
+    @Query(
+        """
+            select nsi from Nsi nsi
+            where nsi.id = :nsiId
+        """
+    )
+    fun findByNsiId(nsiId: Long): Nsi?
+
     fun findByPersonIdAndEventIdAndTypeCodeIn(personId: Long, eventId: Long, codes: List<String>): List<Nsi>
 }
+
+fun NsiRepository.getByNsiId(nsiId: Long) =
+    findByNsiId(nsiId) ?: throw NotFoundException("NSI with id $nsiId not found")
 

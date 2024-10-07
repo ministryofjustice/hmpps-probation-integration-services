@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class ComplianceServiceTest {
@@ -72,7 +73,8 @@ internal class ComplianceServiceTest {
                 personId = OVERVIEW.id,
                 convictionDate = LocalDate.now(),
                 inBreach = false,
-                notes = ""
+                notes = "",
+                dateCreated = ZonedDateTime.now()
             ),
             Event(
                 id = BREACH_PREVIOUS_ORDER_2.eventId ?: 0,
@@ -83,7 +85,8 @@ internal class ComplianceServiceTest {
                 personId = OVERVIEW.id,
                 convictionDate = LocalDate.now(),
                 inBreach = false,
-                notes = ""
+                notes = "",
+                dateCreated = ZonedDateTime.now()
             ),
             Event(
                 id = 3,
@@ -95,7 +98,8 @@ internal class ComplianceServiceTest {
                 personId = OVERVIEW.id,
                 convictionDate = LocalDate.now(),
                 inBreach = false,
-                notes = ""
+                notes = "",
+                dateCreated = ZonedDateTime.now()
             ),
             Event(
                 id = 4,
@@ -107,7 +111,8 @@ internal class ComplianceServiceTest {
                 personId = OVERVIEW.id,
                 convictionDate = LocalDate.now(),
                 inBreach = false,
-                notes = ""
+                notes = "",
+                dateCreated = ZonedDateTime.now()
             ),
         )
 

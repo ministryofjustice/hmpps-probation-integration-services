@@ -75,13 +75,13 @@ class AllocationValidatorTest {
         whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         val exception =
-            assertThrows<NotActiveException> {
+            assertThrows<IgnorableMessageException> {
                 allocationValidator.initialValidations(
                     ProviderGenerator.DEFAULT.id,
                     allocationDetail
                 )
             }
-        assert(exception.message!!.contains("Team with code of ${team.code} not active"))
+        assert(exception.message.contains("Team is not active"))
     }
 
     @Test

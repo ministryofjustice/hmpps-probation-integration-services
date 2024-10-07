@@ -1,0 +1,184 @@
+{
+  "nsis": [
+    {
+      "nsiId": 0,
+      "nsiType": {
+        "code": "NSITYPE",
+        "description": "NSI Type desc"
+      },
+      "nsiOutcome": {
+        "code": "BRE01",
+        "description": "this NSI is in breach"
+      },
+      "requirement": {
+        "requirementId": 93,
+        "requirementNotes": "notes",
+        "commencementDate": "2024-01-01",
+        "startDate": "2024-01-02",
+        "terminationDate": "2024-01-03",
+        "expectedStartDate": "2024-01-04",
+        "expectedEndDate": "2024-01-05",
+        "createdDatetime": "2023-12-31T12:00:00Z",
+        "active": true,
+        "requirementTypeSubCategory": {
+          "code": "Sub",
+          "description": "Sub cat"
+        },
+        "requirementTypeMainCategory": {
+          "code": "Main",
+          "description": "Main cat"
+        },
+        "adRequirementTypeMainCategory": {
+          "code": "AdMain",
+          "description": "AdMain cat"
+        },
+        "adRequirementTypeSubCategory": {
+          "code": "AdSub",
+          "description": "AdSub cat"
+        },
+        "terminationReason": {
+          "code": "R1",
+          "description": "Released"
+        },
+        "length": 3,
+        "lengthUnit": "months",
+        "restrictive": false,
+        "softDeleted": false
+      },
+      "nsiStatus": {
+        "code": "SLI01",
+        "description": "Active"
+      },
+      "statusDateTime": "2024-07-01T12:00:00+01:00",
+      "actualStartDate": "2024-07-26",
+      "expectedStartDate": "2024-01-01",
+      "actualEndDate": "2024-07-26",
+      "expectedEndDate": "2024-07-25",
+      "referralDate": "2024-07-27",
+      "length": 7,
+      "lengthUnit": "Months",
+      "nsiManagers": [
+        {
+          "probationArea": {
+            "probationAreaId": 78,
+            "code": "N52",
+            "description": "West Midlands Region",
+            "organisation": {
+              "code": "ORG1",
+              "description": "Org 1"
+            }
+          },
+          "team": {
+            "code": "T1",
+            "description": "Team1",
+            "telephone": "123",
+            "localDeliveryUnit": {
+              "code": "London",
+              "description": "LN1"
+            },
+            "district": {
+              "code": "London",
+              "description": "LN1"
+            },
+            "borough": {
+              "code": "LN1",
+              "description": "Default"
+            },
+            "teamType": {
+              "code": "London",
+              "description": "LN1"
+            },
+            "startDate": "2024-07-26"
+          },
+          "staff": {
+            "username": "JoeBloggs",
+            "staffCode": "N01ABBA",
+            "staffIdentifier": 80,
+            "staff": {
+              "forenames": "Bob Micheal",
+              "surname": "Smith"
+            },
+            "teams": [],
+            "probationArea": {
+              "probationAreaId": 78,
+              "code": "N52",
+              "description": "West Midlands Region",
+              "organisation": {
+                "code": "ORG1",
+                "description": "Org 1"
+              }
+            }
+          },
+          "startDate": "2024-07-26"
+        },
+        {
+          "probationArea": {
+            "probationAreaId": 78,
+            "code": "N52",
+            "description": "West Midlands Region",
+            "organisation": {
+              "code": "ORG1",
+              "description": "Org 1"
+            }
+          },
+          "team": {
+            "code": "T1",
+            "description": "Team1",
+            "telephone": "123",
+            "localDeliveryUnit": {
+              "code": "London",
+              "description": "LN1"
+            },
+            "district": {
+              "code": "London",
+              "description": "LN1"
+            },
+            "borough": {
+              "code": "LN1",
+              "description": "Default"
+            },
+            "teamType": {
+              "code": "London",
+              "description": "LN1"
+            },
+            "startDate": "2024-07-26"
+          },
+          "staff": {
+            "username": "JoeBloggs",
+            "staffCode": "N01ABBA",
+            "staffIdentifier": 80,
+            "staff": {
+              "forenames": "Bob Micheal",
+              "surname": "Smith"
+            },
+            "teams": [],
+            "probationArea": {
+              "probationAreaId": 78,
+              "code": "N52",
+              "description": "West Midlands Region",
+              "organisation": {
+                "code": "ORG1",
+                "description": "Org 1"
+              }
+            }
+          },
+          "startDate": "2024-07-19",
+          "endDate": "2024-07-25"
+        }
+      ],
+      "notes": "notes",
+      "intendedProvider": {
+        "probationAreaId": 78,
+        "code": "N52",
+        "description": "West Midlands Region",
+        "organisation": {
+          "code": "ORG1",
+          "description": "Org 1"
+        }
+      },
+      "active": true,
+      "softDeleted": false,
+      "externalReference": "external ref"
+    }
+  ]
+}

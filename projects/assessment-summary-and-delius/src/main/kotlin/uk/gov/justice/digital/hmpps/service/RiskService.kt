@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.DEREGISTRATION
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData.Code.OASYS_RISK_FLAG
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -20,30 +22,26 @@ class RiskService(
     private val contactService: ContactService
 ) {
     fun recordRisk(person: Person, summary: AssessmentSummary): List<HmppsDomainEvent> {
-        val highestRisk = summary.riskFlags.mapNotNull(Risk::of).sortedByDescending(Risk::ordinal).firstOrNull()
+        val highestRisk = summary.riskFlags.mapNotNull(Risk::of).maxByOrNull { it.ordinal } ?: return emptyList()
 
-        val registrations = registrationRepository.findByPersonIdAndTypeFlagCode(
-            person.id,
-            ReferenceData.Code.OASYS_RISK_FLAG.value
-        ).toMutableList()
+        val registrations = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, OASYS_RISK_FLAG.value)
+            .toMutableList()
 
-        val deRegEvents = registrations.filter { Risk.from(it.type) != highestRisk }.map {
-            val contact: Contact = contactService.createContact(
-                ContactDetail(ContactType.Code.DEREGISTRATION, notes = it.notes()),
-                person
-            )
+        val (matchingRegistrations, registrationsToRemove) = registrations.partition { Risk.from(it.type) == highestRisk }
+
+        val deRegEvents = registrationsToRemove.map {
+            val contact = contactService.createContact(ContactDetail(DEREGISTRATION, notes = it.notes()), person)
             it.deregister(contact)
             it.deRegEvent(person.crn)
         }
-
-        val regEvent: HmppsDomainEvent? = highestRisk?.let { risk ->
-            val matchingReg = registrations.firstOrNull { risk == Risk.from(it.type) }
-            if (matchingReg == null) createRegistration(person, registrations, risk) else null
-        }
+        val regEvent = if (matchingRegistrations.isEmpty()) {
+            createRegistration(person, registrations, highestRisk)
+        } else null
 
         person.highestRiskColour = registrations.firstOrNull { !it.deregistered }?.type?.colour
 
-        return regEvent?.let { deRegEvents + it } ?: deRegEvents
+        return listOfNotNull(regEvent) + deRegEvents
     }
 
     private fun createRegistration(

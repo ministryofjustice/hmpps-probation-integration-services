@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 
@@ -96,9 +97,13 @@ class DataLoader(
             ReferenceDataGenerator.SED,
             ReferenceDataGenerator.CRN,
             ReferenceDataGenerator.TRIAL,
+            ReferenceDataGenerator.REG_CATEGORY,
+            ReferenceDataGenerator.REG_LEVEL,
+            ReferenceDataGenerator.REG_FLAG,
             CourtGenerator.PROBATION_AREA,
             CourtGenerator.BHAM,
             PersonGenerator.NEW_TO_PROBATION,
+            PersonGenerator.SOFT_DELETED,
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
             PersonGenerator.NO_SENTENCE,
@@ -124,19 +129,18 @@ class DataLoader(
             PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED),
         )
 
-        val noSentenceEvent =
-            SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
         val noSentenceManager =
             SentenceGenerator.generateOrderManager(
-                noSentenceEvent,
+                SentenceGenerator.NO_SENTENCE_EVENT,
                 StaffGenerator.UNALLOCATED,
                 CourtGenerator.PROBATION_AREA,
                 ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon),
                 ZonedDateTime.of(LocalDate.now().minusDays(1), LocalTime.NOON, EuropeLondon)
             )
         val outcome = SentenceGenerator.OUTCOME
-        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome, ZonedDateTime.now())
-        em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
+        val courtAppearance =
+            SentenceGenerator.generateCourtAppearance(SentenceGenerator.NO_SENTENCE_EVENT, outcome, LocalDateTime.now())
+        em.saveAll(SentenceGenerator.NO_SENTENCE_EVENT, noSentenceManager, outcome, courtAppearance)
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION, referralDate = LocalDate.now())
         val newSentence =
@@ -162,7 +166,8 @@ class DataLoader(
         val activePssRequirement = SentenceGenerator.generatePssRequirement(custody.id, active = true)
         val inactivePssRequirement = SentenceGenerator.generatePssRequirement(custody.id, active = false)
         val currentCourtAppearance = SentenceGenerator.COURT_APPEARANCE
-        val currentCourtReport = SentenceGenerator.generateCourtReport(currentCourtAppearance)
+        val currentCourtReport =
+            SentenceGenerator.generateCourtReport(currentCourtAppearance, PersonGenerator.CURRENTLY_MANAGED.id)
         val reportManager = SentenceGenerator.generateCourtReportManager(currentCourtReport)
 
         em.saveAll(
@@ -186,6 +191,8 @@ class DataLoader(
             UnpaidWorkGenerator.APPT7,
             currentManager,
             custody,
+            SentenceGenerator.RELEASE_1,
+            SentenceGenerator.RELEASE_2,
             SentenceGenerator.CONDITIONAL_RELEASE_KEY_DATE,
             SentenceGenerator.LED_KEY_DATE,
             SentenceGenerator.HDC_KEY_DATE,
@@ -241,12 +248,33 @@ class DataLoader(
                 PersonGenerator.CURRENTLY_MANAGED.id,
                 currentEvent.id,
                 DocumentType.CONVICTION_DOCUMENT.name,
-                "EVENT"
+                "EVENT",
+                alfrescoId = "alfrescoId"
             )
         )
 
         em.persist(PersonGenerator.PRISON_MANAGER)
         em.persist(PersonGenerator.RESPONSIBLE_OFFICER)
+
+        em.saveAll(
+            ContactGenerator.ATTENDANCE_OUTCOME,
+            ContactGenerator.ATTENDANCE_CONTACT_TYPE,
+            ContactGenerator.ATTENDANCE_CONTACT_1,
+            ContactGenerator.ATTENDANCE_CONTACT_2
+        )
+
+        //Registrations
+        em.saveAll(
+            RegistrationsGenerator.REG_TYPE,
+            RegistrationsGenerator.ACTIVE_REG,
+            RegistrationsGenerator.INACTIVE_REG,
+            RegistrationsGenerator.REG_NO_DEREG,
+            RegistrationsGenerator.DEREG_1,
+            RegistrationsGenerator.DEREG_2,
+            RegistrationsGenerator.DEREG_3,
+            RegistrationsGenerator.DEREG_4,
+            RegistrationsGenerator.DEREG_5,
+        )
     }
 }
 

@@ -1,19 +1,17 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Immutable
 @Entity
@@ -36,11 +34,21 @@ class Registration(
     @Column(name = "registration_date")
     val date: LocalDate,
 
+    @Column(name = "next_review_date")
+    val nextReviewDate: LocalDate? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "register_category_id")
+    val category: ReferenceData?,
+
     @Column(name = "deregistered", columnDefinition = "number")
     val deRegistered: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
+
+    @Column(name = "created_datetime")
+    val createdDatetime: LocalDateTime,
 
     @Id
     @Column(name = "registration_id")
@@ -88,6 +96,18 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         """
     )
     fun hasVloAssigned(personId: Long): Boolean
+
+    @Query(
+        """
+        select registration from Registration registration
+        where registration.type.code = 'MAPP'
+        and registration.person.id = :offenderId
+        and registration.softDeleted = false
+        and registration.deRegistered = false
+        order by registration.createdDatetime desc
+    """
+    )
+    fun findActiveMappaRegistrationByOffenderId(offenderId: Long, pageable: Pageable): Page<Registration>
 }
 
 fun RegistrationRepository.findMappaRegistration(personId: Long) =

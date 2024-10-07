@@ -16,6 +16,7 @@ generic-service:
 
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     COMMUNITY-API_URL: https://community-api.test.probation.service.justice.gov.uk
+    INTEGRATIONS_ALFRESCO_URL: https://hmpps-delius-alfresco-test.apps.live.cloud-platform.service.justice.gov.uk/alfresco/service/noms-spg/
 
 generic-prometheus-alerts:
   businessHoursOnly: true

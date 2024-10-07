@@ -1,36 +1,25 @@
 name: Create a signed pull request
-description: Set up GPG commit verification, then create a pull request
+description: Create a pull request with signed commits, using a GitHub app
 
 inputs:
   add-paths:
-    description: >
-      A comma or newline-separated list of file paths to commit.
-      Paths should follow git's pathspec syntax.
-      Defaults to adding all new and modified files.
+    description: A newline-separated list of file paths to commit. Paths should follow git's pathspec syntax.
   body:
-    description: 'The body of the pull request.'
-    default: 'Automated changes by GitHub Actions workflow'
+    description: The body of the pull request. Defaults to "Automated changes by a GitHub Actions workflow.", with a link to the current run.
   branch:
-    description: 'The pull request branch name.'
-  committer:
-    description: >
-      The committer name and email address in the format `Display Name <email@address.com>`.
-      Defaults to the GitHub Actions bot user.
-    default: 'probation-integration-bot <probation-integration-team@digital.justice.gov.uk>'
+    description: The pull request target branch name.
   commit-message:
-    description: 'The message to use when committing changes.'
+    description: The message to use when committing changes.
   labels:
-    description: 'A comma or newline separated list of labels.'
+    description: A comma or newline separated list of labels.
   path:
-    description: >
-      Relative path under $GITHUB_WORKSPACE to the repository.
-      Defaults to $GITHUB_WORKSPACE.
-  private-key:
-    description: 'GPG private key exported as an ASCII armored version or its base64 encoding'
-  passphrase:
-    description: 'Passphrase of the GPG private key'
+    description: Relative path under $GITHUB_WORKSPACE to the repository. Defaults to $GITHUB_WORKSPACE.
   token:
-    description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
+    description: A GitHub app token
+  owner:
+    description: GitHub repository owner, defaults to current repository
+  repository:
+    description: GitHub repository name, defaults to current repository
 
 outputs:
   pull-request-number:
@@ -39,9 +28,6 @@ outputs:
   pull-request-url:
     description: 'The URL of the pull request.'
     value: ${{ steps.pr.outputs.pull-request-url }}
-  pull-request-operation:
-    description: 'The pull request operation performed by the action, `created`, `updated` or `closed`.'
-    value: ${{ steps.pr.outputs.pull-request-operation }}
   pull-request-head-sha:
     description: 'The commit SHA of the pull request branch.'
     value: ${{ steps.pr.outputs.pull-request-head-sha }}
@@ -49,26 +35,67 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Setup GPG commit verification
-      uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4 # v6.1.0
+    - name: Get working directory or default
+      run: echo "path=${path:-$GITHUB_WORKSPACE}" | tee -a "$GITHUB_ENV"
+      shell: bash
+      env:
+        path: ${{ inputs.path }}
+
+    - name: Get pull request body or default
+      run: echo "body=${body:-"Automated changes by a [GitHub Actions workflow]($url)."}" | tee -a "$GITHUB_ENV"
+      shell: bash
+      env:
+        body: ${{ inputs.body }}
+        url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    - name: Get repository info
+      run: |
+        echo "owner=$(gh repo view "$(git remote get-url origin)" --json owner --jq .owner.login)" | tee -a "$GITHUB_ENV"
+        echo "repository=$(gh repo view "$(git remote get-url origin)" --json name --jq .name)" | tee -a "$GITHUB_ENV"
+      shell: bash
+      working-directory: ${{ env.path }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+
+    - name: Git add
+      run: |
+        while IFS= read -r add_path; do 
+          if [ -n "$add_path" ]; then
+            echo Adding "$add_path"
+            git add "$add_path"
+          fi
+        done <<< "$add_paths"
+        git status
+      shell: bash
+      working-directory: ${{ env.path }}
+      env:
+        add_paths: ${{ inputs.add-paths }}
+
+    - name: Commit and push
+      uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac # v1.5.0
       with:
-        gpg_private_key: ${{ inputs.private-key }}
-        passphrase: ${{ inputs.passphrase }}
-        git_user_signingkey: true
-        git_commit_gpgsign: true
-        workdir: ${{ inputs.path }}
+        owner: ${{ env.owner }}
+        repository: ${{ env.repository }}
+        working-directory: ${{ env.path }}
+        ref: ${{ inputs.branch }}
+        fail-on-no-changes: false
+        message: ${{ inputs.commit-message }}
+        token: ${{ inputs.token }}
 
     - name: Create pull request
       id: pr
-      uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c #v6.1.0
-      with:
-        add-paths: ${{ inputs.add-paths }}
-        author: ${{ inputs.committer }}
-        base: main
-        body: ${{ inputs.body }}
+      run: |
+        git fetch origin "$branch"
+        git checkout "$branch"
+        url=$(gh pr create --title "$commit_message" --body "$body" --label "$labels")
+        echo "pull-request-url=$url" | tee -a "$GITHUB_OUTPUT"
+        echo "pull-request-number=$(gh pr view "$url" --json number --jq .number)" | tee -a "$GITHUB_OUTPUT"
+        echo "pull-request-head-sha=$(gh pr view "$url" --json headRefOid --jq .headRefOid)" | tee -a "$GITHUB_OUTPUT"
+      shell: bash
+      working-directory: ${{ env.path }}
+      env:
         branch: ${{ inputs.branch }}
-        committer: ${{ inputs.committer }}
-        commit-message: ${{ inputs.commit-message }}
-        path: ${{ inputs.path }}
-        title: ${{ inputs.commit-message }}
-        token: ${{ inputs.token }}
+        body: ${{ env.body }}
+        commit_message: ${{ inputs.commit-message }}
+        labels: ${{ inputs.labels }}
+        GITHUB_TOKEN: ${{ inputs.token }}

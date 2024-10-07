@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasKey
+import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
@@ -9,13 +11,16 @@ import org.mockito.kotlin.check
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.annotation.DirtiesContext
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
@@ -47,10 +52,14 @@ internal class IntegrationTest {
     @Autowired
     lateinit var custodyRepository: CustodyRepository
 
+    @MockBean
+    lateinit var featureFlags: FeatureFlags
+
     private val sedDate = "2025-09-10"
 
     @Test
     fun `Custody Key Dates updated as expected`() {
+        whenever(featureFlags.enabled("suspension-date-if-reset")).thenReturn(true)
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
         val first = CompletableFuture.runAsync {
@@ -86,6 +95,7 @@ internal class IntegrationTest {
 
     @Test
     fun `Custody Key Dates updated from SENTENCE_CHANGED event`() {
+        whenever(featureFlags.enabled("suspension-date-if-reset")).thenReturn(true)
         val notification = Notification(
             message = MessageGenerator.SENTENCE_CHANGED,
             attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
@@ -130,18 +140,37 @@ internal class IntegrationTest {
         )
     }
 
+    @Test
+    @DirtiesContext
+    fun `no suspension date if feature flag is disabled`() {
+        whenever(featureFlags.enabled("suspension-date-if-reset")).thenReturn(false)
+        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            eq("KeyDatesUpdated"),
+            check {
+                assertThat(it, not(hasKey(CustodyDateType.SUSPENSION_DATE_IF_RESET.code)))
+            },
+            anyMap()
+        )
+    }
+
     private fun verifyUpdatedKeyDates(custody: Custody) {
         val sed = custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)
         val crd = custody.keyDate(CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE.code)
         val led = custody.keyDate(CustodyDateType.LICENCE_EXPIRY_DATE.code)
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
+        val pr1 = custody.keyDate(CustodyDateType.SUSPENSION_DATE_IF_RESET.code)
 
         assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
         assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
         assertThat(led?.date, equalTo(LocalDate.parse("2025-09-11")))
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
+        assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
@@ -167,6 +196,7 @@ internal class IntegrationTest {
             SED 10/09/2025
             EXP 27/11/2022
             HDE 28/10/2022
+            PR1 05/10/2024
                 """.trimIndent()
             )
         )

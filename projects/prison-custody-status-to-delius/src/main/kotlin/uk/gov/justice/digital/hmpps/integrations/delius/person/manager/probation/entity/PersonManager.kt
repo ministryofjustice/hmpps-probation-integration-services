@@ -1,14 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.Staff
@@ -22,8 +18,9 @@ class PersonManager(
     @Column(name = "offender_manager_id", nullable = false)
     val id: Long,
 
-    @Column(name = "offender_id", nullable = false)
-    val personId: Long,
+    @OneToOne
+    @JoinColumn(updatable = false, name = "offender_id")
+    val person: Person,
 
     @ManyToOne
     @JoinColumn(name = "allocation_reason_id", nullable = false)

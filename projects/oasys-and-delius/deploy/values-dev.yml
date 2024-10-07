@@ -15,5 +15,11 @@ generic-service:
 
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
+  allowlist:
+    groups:
+      - internal
+      - unilink_staff
+      - mod-platform-non-live
+
 generic-prometheus-alerts:
   businessHoursOnly: true

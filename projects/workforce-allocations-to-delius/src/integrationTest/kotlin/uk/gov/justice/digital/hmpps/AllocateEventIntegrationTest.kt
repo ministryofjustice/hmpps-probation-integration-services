@@ -184,9 +184,9 @@ class AllocateEventIntegrationTest {
             assertThat(spoContact!!.staffId, equalTo(staffId))
             assertThat(
                 spoContact.isSensitive,
-                equalTo((allocationDetail as AllocationDetail.EventAllocation).sensitive)
+                equalTo((allocationDetail as AllocationDetail.EventAllocation).sensitiveOversightNotes)
             )
-            assertThat(spoContact.notes, equalTo(allocationDetail.notes))
+            assertThat(spoContact.notes, equalTo(allocationDetail.spoOversightNotes))
         } else {
             val cadeContact = contactRepository.findAll()
                 .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value }

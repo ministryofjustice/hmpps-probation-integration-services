@@ -57,6 +57,7 @@ object ReferenceDataGenerator {
     val REFERRAL_COMPLETED = generate("APRC", ALL_DATASETS[DatasetCode.NSI_OUTCOME]!!.id)
 
     val ETHNICITY_WHITE = generate("W1", ETHNICITY.id, "White: British/English/Welsh/Scottish/Northern Irish")
+    val GENDER_FEMALE = generate("F", GENDER.id, "Female")
     val GENDER_MALE = generate("M", GENDER.id, "Male")
     val GENDER_IDENTITY_PNS = generate("GIRF", GENDER_IDENTITY.id, "Prefer not to say")
     val NATIONALITY_BRITISH = generate("BRIT", NATIONALITY.id, "British")
@@ -68,6 +69,8 @@ object ReferenceDataGenerator {
     val REGISTER_LEVELS: Map<String, ReferenceData> = Level.entries.map {
         generate(it.name, REGISTER_LEVEL.id, "MAPPA Level ${it.name}")
     }.associateBy { it.code }
+
+    val NON_MAPPA_CATEGORY = generate("RC07", REGISTER_CATEGORY.id, "Other category")
 
     fun generate(
         code: String,
@@ -96,10 +99,12 @@ object ReferenceDataGenerator {
         NON_ARRIVAL,
         REFERRAL_COMPLETED,
         ETHNICITY_WHITE,
+        GENDER_FEMALE,
         GENDER_MALE,
         GENDER_IDENTITY_PNS,
         NATIONALITY_BRITISH,
-        RELIGION_OTHER
+        RELIGION_OTHER,
+        NON_MAPPA_CATEGORY,
     ) + REGISTER_CATEGORIES.values + REGISTER_LEVELS.values + REFERRAL_CATEGORIES.values
 
     fun generateReferralSource(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferralSource(id, code)

@@ -13,11 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
+import org.springframework.dao.IncorrectResultSizeDataAccessException
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.AdditionalIdentifierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -46,6 +48,9 @@ internal class PrisonManagerServiceTest {
 
     @Mock
     lateinit var contactTypeRepository: ContactTypeRepository
+
+    @Mock
+    lateinit var additionalIdentifierRepository: AdditionalIdentifierRepository
 
     @InjectMocks
     lateinit var prisonManagerService: PrisonManagerService
@@ -233,6 +238,52 @@ internal class PrisonManagerServiceTest {
                 assertFalse(newPrisonManager.active)
             }
         )
+    }
+
+    @Test
+    fun processMultiplePrisonerOffenderManagerForMergedCrn() {
+        mockReferenceData()
+        val allocationDate = ZonedDateTime.now().minusDays(2)
+        val event = EventGenerator.custodialEvent(PersonGenerator.MATCHABLE_WITH_POM, InstitutionGenerator.DEFAULT)
+
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
+            .thenThrow(IncorrectResultSizeDataAccessException::class.java)
+
+        whenever(additionalIdentifierRepository.personHasBeenMerged(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(
+            true
+        )
+
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+
+        verify(prisonManagerRepository, never()).saveAndFlush(any())
+        verify(prisonManagerRepository, never()).save(any())
+        verify(prisonManagerRepository, never()).findFirstManagerAfterDate(any(), any(), any())
+    }
+
+    @Test
+    fun processMultiplePrisonerOffenderManagerForMergedCrnException() {
+        mockReferenceData()
+        val allocationDate = ZonedDateTime.now().minusDays(2)
+        val event = EventGenerator.custodialEvent(PersonGenerator.MATCHABLE_WITH_POM, InstitutionGenerator.DEFAULT)
+
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.MATCHABLE_WITH_POM.id, allocationDate))
+            .thenThrow(IncorrectResultSizeDataAccessException::class.java)
+
+        whenever(additionalIdentifierRepository.personHasBeenMerged(PersonGenerator.MATCHABLE_WITH_POM.id)).thenReturn(
+            false
+        )
+
+        assertThrows<IncorrectResultSizeDataAccessException> {
+            prisonManagerService.allocateToProbationArea(
+                event.disposal!!,
+                ProbationAreaGenerator.DEFAULT,
+                allocationDate
+            )
+        }
+
+        verify(prisonManagerRepository, never()).saveAndFlush(any())
+        verify(prisonManagerRepository, never()).save(any())
+        verify(prisonManagerRepository, never()).findFirstManagerAfterDate(any(), any(), any())
     }
 
     private fun mockReferenceData() {

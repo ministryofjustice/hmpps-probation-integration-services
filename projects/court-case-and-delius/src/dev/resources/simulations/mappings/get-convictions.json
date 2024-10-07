@@ -3,6 +3,149 @@
     {
       "request": {
         "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/sentenceStatus"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_sentence_status_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/licenceConditions"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_licence_conditions_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/courtReports"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_court_reports_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/courtAppearances"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_court_appearances_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/attendancesFilter"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_attendances_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_pss_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/requirements"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_requirements_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/nsis"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_nsi_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}/nsis/{nsiId}"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "get_single_nsi_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_convictions_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathTemplate": "/secure/offenders/crn/{crn}/convictions/{convictionId}"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_conviction_C123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPathTemplate": "/secure/offenders/crn/{crn}/{convictionId}/requirements"
       },
       "response": {

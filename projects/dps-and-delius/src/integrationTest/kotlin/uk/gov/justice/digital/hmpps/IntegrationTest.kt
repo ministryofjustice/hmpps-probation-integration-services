@@ -96,7 +96,7 @@ internal class IntegrationTest {
             .andExpect(request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
-            .andExpect(header().string("Content-Type", "application/octet-stream"))
+            .andExpect(header().string("Content-Type", "application/msword;charset=UTF-8"))
             .andExpect(
                 header().string(
                     "Content-Disposition",

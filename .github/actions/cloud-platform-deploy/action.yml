@@ -26,8 +26,8 @@ inputs:
   token:
     description: The KUBE_TOKEN
     required: true
-  github_token:
-    description: A GitHub token, to pull the IP allow list groups
+  ip-allowlists:
+    description: The HMPPS IP allow list groups to apply, in base64-encoded YAML format
     required: true
 
 runs:
@@ -82,7 +82,7 @@ runs:
             --set "generic-service.env.BUILD_INFO=$([ -r "$BUILD_INFO" ] && cat "$BUILD_INFO" | base64 -w0 || echo)" \
             --set "generic-service.env.GIT_INFO=$([ -r "$GIT_INFO" ] && cat "$GIT_INFO" | base64 -w0 || echo)" \
             --timeout 10m \
-            --values <(curl -fsSL "$(gh api '/repos/ministryofjustice/hmpps-ip-allowlists/contents/ip-allowlist-groups.yaml' | jq -r '.download_url')") \
+            --values <(echo "$IP_ALLOWLISTS" | base64 -d) \
             --values templates/helm-defaults.yml \
             --values 'projects/${{ inputs.project }}/deploy/values.yaml' \
             --values 'projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }}' \
@@ -96,7 +96,7 @@ runs:
         done
         if [ $exit_code -ne 0 ]; then exit $exit_code; fi
       env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
         BUILD_INFO: projects/${{ inputs.project }}/build-info.properties
         GIT_INFO: projects/${{ inputs.project }}/git.properties
+        IP_ALLOWLISTS: ${{ inputs.ip-allowlists }}
         MAX_ATTEMPTS: '3'

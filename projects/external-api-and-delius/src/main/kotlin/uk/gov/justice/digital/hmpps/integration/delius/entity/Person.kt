@@ -31,6 +31,8 @@ data class Person(
 interface PersonRepository : JpaRepository<Person, Long> {
     @Query("select p.crn from Person p where p.nomsId = :nomsId and p.softDeleted = false")
     fun findByNomsId(nomsId: String): String?
+
+    fun existsByCrn(crn: String): Boolean
 }
 
 fun PersonRepository.getCrn(nomsId: String) =

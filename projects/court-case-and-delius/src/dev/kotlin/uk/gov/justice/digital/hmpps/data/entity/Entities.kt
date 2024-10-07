@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.entity
 import jakarta.persistence.*
 import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 class ApprovedPremisesReferral(
@@ -35,7 +36,9 @@ class InstitutionalReport(
     @Convert(converter = YesNoConverter::class)
     val establishment: Boolean,
     val custodyId: Long,
-    val dateRequested: LocalDate
+    val dateRequested: LocalDate,
+    val dateRequired: LocalDate,
+    val dateCompleted: LocalDateTime,
 )
 
 @Entity

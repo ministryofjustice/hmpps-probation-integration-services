@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -104,7 +105,24 @@ internal class CorePersonIntegrationTest {
                       "addresses": [
                         {
                           "fullAddress": "1 Main Street, London, PC1 1TS",
-                          "postcode": "PC1 1TS"
+                          "postcode": "PC1 1TS",
+                          "noFixedAbode": false,
+                          "status": {
+                              "code": "M",
+                              "description": "Main Address"
+                          },
+                          "startDate": "${LocalDate.now().minusDays(30)}"
+                        },
+                        {
+                          "fullAddress": "NF1 1NF",
+                          "postcode": "NF1 1NF",
+                          "noFixedAbode": true,
+                          "status": {
+                              "code": "P",
+                              "description": "Previous Address"
+                          },
+                          "startDate": "${LocalDate.now().minusDays(60)}",
+                          "endDate": "${LocalDate.now().minusDays(30)}"
                         }
                       ],
                       "excludedFrom": {
@@ -117,7 +135,21 @@ internal class CorePersonIntegrationTest {
                           { "username": "SomeUser2" },
                           { "username": "FutureEndDatedUser" }
                         ]
-                      }
+                      },
+                      "sentences": [
+                        {
+                          "date": "2024-08-07",
+                          "active": true
+                        },
+                        {
+                          "date": "2024-08-05",
+                          "active": false
+                        },
+                        {
+                          "date": "2024-08-03",
+                          "active": true
+                        }
+                      ]
                     }
                     """.trimIndent()
                 )

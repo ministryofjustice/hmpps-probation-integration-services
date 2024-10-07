@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.OfficeAddress
+import uk.gov.justice.digital.hmpps.api.model.StaffEmail
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
@@ -24,9 +25,15 @@ class ManagerService(
             }
             ro.asManager()
         } ?: throw NotFoundException("CommunityManager", "crn", crn)
+
+    fun findCommunityManagerEmails(crns: List<String>): List<StaffEmail> =
+        personManagerRepository.findByPersonCrnIn(crns).map {
+            StaffEmail(it.staff.code, it.staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) })
+        }
 }
 
 fun PersonManager.asManager() = Manager(
+    staff.id,
     staff.code,
     staff.name(),
     provider.asProvider(),

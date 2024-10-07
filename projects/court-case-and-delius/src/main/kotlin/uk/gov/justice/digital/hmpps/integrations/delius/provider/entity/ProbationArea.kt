@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Institution
 
@@ -23,7 +22,8 @@ class ProbationAreaEntity(
     @Column(name = "private", columnDefinition = "number")
     val privateSector: Boolean,
 
-    @ManyToOne @JoinColumn(name = "organisation_id")
+    @ManyToOne
+    @JoinColumn(name = "organisation_id")
     val organisation: Organisation,
 
     @Id
@@ -160,7 +160,6 @@ class Borough(
 @Immutable
 @Entity
 @Table
-@SQLRestriction("active_flag = 1")
 class Organisation(
 
     @Id

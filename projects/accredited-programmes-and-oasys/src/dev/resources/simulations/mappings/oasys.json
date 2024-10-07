@@ -86,6 +86,24 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/eor/oasys/ass/riskscrass/ALLOW/90123456",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer oasys.token$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "risk-predictors-90123456.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

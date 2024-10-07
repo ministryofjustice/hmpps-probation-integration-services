@@ -1,0 +1,25 @@
+[
+  {
+    "courtReportId": 125,
+    "offenderId": 65,
+    "requestedDate": "2024-08-06T18:59:19.420309",
+    "requiredDate": "2024-08-11T18:59:19.420318",
+    "allocationDate": "2024-08-06T18:59:19.420326",
+    "sentToCourtDate": "2024-08-06T18:59:19.420329",
+    "receivedByCourtDate": "2024-08-06T18:59:19.420332",
+    "courtReportType": {
+      "code": "CR1",
+      "description": "court report"
+    },
+    "reportManagers": [
+      {
+        "staff": {
+          "code": "N01ABBA",
+          "forenames": "Bob Micheal",
+          "surname": "Smith"
+        },
+        "active": true
+      }
+    ]
+  }
+]

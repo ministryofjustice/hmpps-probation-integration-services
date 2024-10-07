@@ -4,6 +4,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/secure/offenders/crn/Y123456/all"
+      },
+      "response": {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_offender_all_Y123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPath": "/secure/offenders/crn/C123456/allOffenderManagers",
         "headers": {
           "Content-Type": {
@@ -40,6 +53,24 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/secure/offenders/crn/U123456/all",
+        "headers": {
+          "Content-Type": {
+            "equalTo": "application/json;charset=UTF-8"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_offender_all_U123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPath": "/secure/offenders/crn/C123456",
         "headers": {
             "Content-Type": {
@@ -54,6 +85,24 @@
           },
           "bodyFileName": "GET_offender_C123456.json"
         }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/secure/offenders/crn/U123456",
+        "headers": {
+          "Content-Type": {
+            "equalTo": "application/json;charset=UTF-8"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "GET_offender_U123456.json"
+      }
     },
     {
       "request": {

@@ -67,12 +67,12 @@ rootProject.allChildren()
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.1.1")
-            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.1.1")
-            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.1.1")
-            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.1")
-            library("aws-sts", "software.amazon.awssdk:sts:2.26.5")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.26.4")
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.2.0")
+            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.2.0")
+            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.2.0")
+            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.0")
+            library("aws-sts", "software.amazon.awssdk:sts:2.28.11")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.28.11")
             bundle(
                 "aws-messaging",
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
@@ -80,24 +80,22 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
-            library("insights", "com.microsoft.azure:applicationinsights-web:3.5.3")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.12.1")
+            library("insights", "com.microsoft.azure:applicationinsights-web:3.5.4")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.14.0")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.6.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.8.0"
             )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.3")
             library("wiremock", "org.wiremock:wiremock-standalone:3.9.1")
             library("flipt", "io.flipt:flipt-java:1.1.1")
-            library("jakarta-json", "jakarta.json:jakarta.json-api:2.0.2")
-            library("glassfish-json", "org.glassfish:jakarta.json:2.0.1")
         }
     }
 }
 
-plugins { id("com.gradle.develocity") version "3.17.6" }
+plugins { id("com.gradle.develocity") version "3.18.1" }
 develocity {
     buildScan {
         publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }

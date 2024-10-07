@@ -34,11 +34,6 @@ on:
         default: true
         required: true
         type: boolean
-      create_ingress:
-        description: Will the service provide a HTTP API?
-        default: false
-        required: true
-        type: boolean
       create_queue:
         description: Will the service consume HMPPS domain event messages?
         default: true
@@ -71,9 +66,17 @@ jobs:
     if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          repositories: hmpps-probation-integration-services,hmpps-probation-integration-e2e-tests
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Render project template
         uses: ./.github/actions/render-project-template
@@ -93,15 +96,14 @@ jobs:
             projects/${{ inputs.project_name }}
           branch: bootstrap/${{ inputs.project_name }}
           commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/checkout@v4
         with:
+          ref: main
           path: hmpps-probation-integration-e2e-tests
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Update e2e test repo
         run: sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/test-single-project.yml
@@ -114,9 +116,7 @@ jobs:
           add-paths: .github/workflows
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-project
           commit-message: ${{ inputs.issue_number }} Add option to run tests for ${{ inputs.project_name }}
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create issue for manual steps
         run: |
@@ -209,57 +209,6 @@ jobs:
           SLUG: ${{ steps.project.outputs.slug }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
-      - name: Create alerts for high throughput
-        run: |
-          curl "https://sentry.io/api/0/organizations/ministryofjustice/alert-rules/?duplicateRule=true&wizardV3=true" --fail \
-            -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-            -H 'Content-Type: application/json' --data "$(jq --arg project_slug "$SLUG" --arg project_name "$PROJECT_NAME" -n '{
-              "aggregate": "count()",
-              "alertType": "throughput",
-              "comparisonDelta": 10080,
-              "dataset": "generic_metrics",
-              "environment": null,
-              "eventTypes": [
-                "transaction"
-              ],
-              "name": ($project_name + " throughput"),
-              "owner": "team:1611212",
-              "projects": [
-                $project_slug
-              ],
-              "query": "",
-              "queryType": 1,
-              "resolveThreshold": null,
-              "thresholdPeriod": 1,
-              "thresholdType": 0,
-              "timeWindow": 1440,
-              "triggers": [
-                {
-                  "actions": [],
-                  "alertThreshold": 500,
-                  "label": "critical"
-                },
-                {
-                  "actions": [
-                    {
-                      "inputChannelId": "C033HPR0W91",
-                      "integrationId": 50134,
-                      "options": null,
-                      "targetIdentifier": "#probation-integration-notifications",
-                      "targetType": "specific",
-                      "type": "slack"
-                    }
-                  ],
-                  "alertThreshold": 200,
-                  "label": "warning"
-                }
-              ]
-            }')"
-        env:
-          SLUG: ${{ steps.project.outputs.slug }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          PROJECT_NAME: ${{ inputs.project_name }}
-
   sentry-secrets:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_sentry_project }}
@@ -305,27 +254,32 @@ jobs:
       - id: project_name
         run: echo "with_underscores_uppercase=$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v4
+      - uses: actions/create-github-app-token@v1
+        id: app-token
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          repositories: cloud-platform-environments
+          app-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-dev
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-preprod
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-prod
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Render Terraform queue template
         run: |
@@ -350,9 +304,7 @@ jobs:
           add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-dev
           commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (dev)
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create preprod pull request
         id: preprod-pr
@@ -362,9 +314,7 @@ jobs:
           add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-preprod
           commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (preprod)
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create prod pull request
         id: prod-pr
@@ -374,9 +324,7 @@ jobs:
           add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-prod
           commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (prod)
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create issue for manual steps
         run: |
@@ -402,27 +350,32 @@ jobs:
       - id: project_name
         run: echo "hash=$(echo -n '${{ inputs.project_name }}' | sha1sum | head -c 8)" | tee -a "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v4
+      - uses: actions/create-github-app-token@v1
+        id: app-token
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          repositories: cloud-platform-environments
+          app-id: ${{ secrets.BOT_EXTERNAL_REPOS_APP_ID }}
+          private-key: ${{ secrets.BOT_EXTERNAL_REPOS_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-dev
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-preprod
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-prod
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Add Pingdom check
         run: sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
@@ -441,9 +394,7 @@ jobs:
           add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-dev
           commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (dev)
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create preprod pull request
         id: preprod-pr
@@ -453,9 +404,7 @@ jobs:
           add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-preprod
           commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (preprod)
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create prod pull request
         id: prod-pr
@@ -465,9 +414,7 @@ jobs:
           add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod
           branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-prod
           commit-message: ${{ inputs.issue_number }} Create Pingdom check and certificate for ${{ inputs.project_name }} (prod)
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Create issue for manual steps
         run: |

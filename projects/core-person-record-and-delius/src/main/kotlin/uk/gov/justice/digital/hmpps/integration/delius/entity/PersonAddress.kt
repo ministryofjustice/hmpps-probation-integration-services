@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
@@ -10,7 +11,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "offender_address")
-@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
+@SQLRestriction("soft_deleted = 0")
 class PersonAddress(
     @Column(name = "offender_id")
     val personId: Long,
@@ -24,7 +25,9 @@ class PersonAddress(
     var county: String?,
     var district: String?,
     val postcode: String?,
-    val startDate: LocalDate?,
+    @Convert(converter = YesNoConverter::class)
+    val noFixedAbode: Boolean,
+    val startDate: LocalDate,
     val endDate: LocalDate?,
     val softDeleted: Boolean,
     @Id
@@ -34,11 +37,7 @@ class PersonAddress(
 
 interface AddressRepository : JpaRepository<PersonAddress, Long> {
     @EntityGraph(attributePaths = ["status"])
-    fun findAllByPersonIdAndStatusCodeInOrderByStartDateDesc(
-        personId: Long,
-        statusCodes: List<String>
+    fun findAllByPersonIdOrderByStartDateDesc(
+        personId: Long
     ): List<PersonAddress>
 }
-
-fun AddressRepository.mainAddresses(personId: Long) =
-    findAllByPersonIdAndStatusCodeInOrderByStartDateDesc(personId, listOf("M"))

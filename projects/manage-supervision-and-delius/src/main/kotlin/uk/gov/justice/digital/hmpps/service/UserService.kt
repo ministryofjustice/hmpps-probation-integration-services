@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.api.model.user.Staff
 import uk.gov.justice.digital.hmpps.api.model.user.Team
@@ -20,13 +21,45 @@ class UserService(
     @Transactional
     fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {
         val user = userRepository.getUser(username)
-        val caseload = caseloadRepository.findByStaffCode(user.staff!!.code, pageable)
+        val caseload = caseloadRepository.findByStaffId(user.staff!!.id, pageable)
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
             provider = user.staff.provider.description,
             caseload = caseload.content.map { it.toStaffCase() },
-            staff = Name(forename = user.staff.forename, surname = user.staff.surname)
+            staff = Name(forename = user.staff.forename, surname = user.staff.surname),
+        )
+    }
+
+    @Transactional
+    fun searchUserCaseload(
+        username: String,
+        searchFilter: UserSearchFilter,
+        pageable: Pageable,
+        sortedBy: String
+    ): StaffCaseload {
+        val user = userRepository.getUser(username)
+        val caseload = caseloadRepository.searchByStaffId(
+            user.staff!!.id,
+            searchFilter.nameOrCrn,
+            searchFilter.nextContactCode,
+            searchFilter.sentenceCode,
+            pageable
+        )
+        val sentenceTypes =
+            caseloadRepository.findSentenceTypesForStaff(user.staff.id)
+                .map { KeyPair(it.code.trim(), it.description) }
+        val contactTypes =
+            caseloadRepository.findContactTypesForStaff(user.staff.id).map { KeyPair(it.code.trim(), it.description) }
+
+        return StaffCaseload(
+            totalElements = caseload.totalElements.toInt(),
+            totalPages = caseload.totalPages,
+            provider = user.staff.provider.description,
+            caseload = caseload.content.map { it.toStaffCase() },
+            staff = Name(forename = user.staff.forename, surname = user.staff.surname),
+            metaData = MetaData(sentenceTypes = sentenceTypes, contactTypes = contactTypes),
+            sortedBy = sortedBy
         )
     }
 
@@ -68,6 +101,23 @@ fun Caseload.toStaffCase() = StaffCase(
         surname = person.surname
     ),
     crn = person.crn,
+    nextAppointment = nextAppointment?.let {
+        Appointment(
+            id = it.id,
+            description = it.type.description,
+            date = it.appointmentDatetime
+        )
+    },
+    previousAppointment = previousAppointment?.let {
+        Appointment(
+            id = it.id,
+            description = it.type.description,
+            date = it.appointmentDatetime
+        )
+    },
+    dob = person.dateOfBirth,
+    latestSentence = latestSentence?.disposal?.type?.description,
+    numberOfAdditionalSentences = latestSentence?.let { it.totalNumberOfSentences - 1L } ?: 0L
 )
 
 fun Caseload.toTeamCase() = TeamCase(

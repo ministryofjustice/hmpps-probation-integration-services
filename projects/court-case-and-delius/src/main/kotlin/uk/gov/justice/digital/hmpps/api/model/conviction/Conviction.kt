@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model.conviction
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 data class Conviction(
     val convictionId: Long,
@@ -28,13 +28,13 @@ data class Offence(
     val offenceId: String,
     val mainOffence: Boolean,
     val detail: OffenceDetail,
-    val offenceDate: LocalDate?,
+    val offenceDate: LocalDateTime?,
     val offenceCount: Long?,
     val tics: Long?,
     val verdict: String?,
-    val offenderId: Long,
-    val createdDatetime: ZonedDateTime,
-    val lastUpdatedDatetime: ZonedDateTime,
+    val offenderId: Long?,
+    val createdDatetime: LocalDateTime,
+    val lastUpdatedDatetime: LocalDateTime,
 )
 
 data class OffenceDetail(
@@ -68,7 +68,7 @@ data class Sentence(
     val terminationDate: LocalDate? = null,
     val terminationReason: String? = null,
     val sentenceType: KeyValue,
-    val additionalSentences: List<AdditionalSentence>,
+    val additionalSentences: List<AdditionalSentence>? = null,
     val failureToComplyLimit: Long?,
     val cja2003Order: Boolean,
     val legacyOrder: Boolean,
@@ -99,7 +99,7 @@ data class AdditionalSentence(
 
 data class Custody(
     val bookingNumber: String?,
-    val institution: Institution,
+    val institution: Institution?,
     val keyDates: CustodyRelatedKeyDates,
     val status: KeyValue,
     val sentenceStartDate: LocalDate
@@ -143,17 +143,21 @@ data class Court(
     val postcode: String?,
     val country: String?,
     val courtTypeId: Long,
-    val createdDatetime: ZonedDateTime,
-    val lastUpdatedDatetime: ZonedDateTime,
+    val createdDatetime: LocalDateTime,
+    val lastUpdatedDatetime: LocalDateTime,
     val probationAreaId: Long,
     val secureEmailAddress: String?,
     val probationArea: KeyValue,
     val courtType: KeyValue
 )
 
+data class CourtAppearanceBasicWrapper(
+    val courtAppearances: List<CourtAppearanceBasic> = emptyList()
+)
+
 data class CourtAppearanceBasic(
     val courtAppearanceId: Long,
-    val appearanceDate: ZonedDateTime,
+    val appearanceDate: LocalDateTime,
     val courtCode: String,
     val courtName: String?,
     val appearanceType: KeyValue,
@@ -166,8 +170,8 @@ data class OrderManager(
     val officerId: Long,
     val name: String?,
     val staffCode: String?,
-    val dateStartOfAllocation: ZonedDateTime,
-    val dateEndOfAllocation: ZonedDateTime?,
+    val dateStartOfAllocation: LocalDateTime,
+    val dateEndOfAllocation: LocalDateTime?,
     val gradeCode: String?,
     val teamCode: String?,
     val probationAreaCode: String

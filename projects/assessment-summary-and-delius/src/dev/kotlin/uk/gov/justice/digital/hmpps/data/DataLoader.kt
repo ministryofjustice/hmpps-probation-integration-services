@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.service.Risk
 import uk.gov.justice.digital.hmpps.set
@@ -40,24 +41,27 @@ class DataLoader(
             ReferenceDataGenerator.DOMAIN_EVENT_TYPE_DATASET,
             *ReferenceDataGenerator.DOMAIN_EVENT_TYPES.toTypedArray()
         )
+        saveAll(ReferenceDataGenerator.DISPOSAL_TYPE)
 
         PersonGenerator.NO_RISK.withEvent().withRisk(Risk.M, Risk.L)
         PersonGenerator.LOW_RISK
             .withEvent()
-            .withRisk(Risk.H)
+            .withRisk(Risk.M, Risk.H)
             .withAssessment("10096930")
             .withAccreditedProgramRequirement()
         PersonGenerator.MEDIUM_RISK.withEvent().withRisk(Risk.M)
         PersonGenerator.HIGH_RISK.withEvent().withRisk(Risk.L, Risk.H)
         PersonGenerator.VERY_HIGH_RISK.withEvent().withRisk(Risk.L, Risk.M, Risk.H)
-        PersonGenerator.PERSON_NO_EVENT
+        saveAll(PersonGenerator.PERSON_NO_EVENT)
         PersonGenerator.PERSON_SOFT_DELETED_EVENT.withEvent(softDeleted = true).withRisk(Risk.L, Risk.M, Risk.H)
+        PersonGenerator.PRISON_ASSESSMENT.withEvent(custodial = true)
     }
 
-    private fun Person.withEvent(softDeleted: Boolean = false): Person {
+    private fun Person.withEvent(softDeleted: Boolean = false, custodial: Boolean = false): Person {
         val personManager = PersonGenerator.generateManager(this)
         val event = PersonGenerator.generateEvent(this, softDeleted = softDeleted)
-        saveAll(this, personManager, event)
+        if (custodial) event.set(Event::disposal, PersonGenerator.generateDisposal(event))
+        saveAll(this, personManager, event, event.disposal)
         this.set(Person::manager, personManager)
         return this
     }
@@ -92,5 +96,5 @@ class DataLoader(
         return this
     }
 
-    private fun saveAll(vararg entities: Any) = entities.forEach(entityManager::merge)
+    private fun saveAll(vararg entities: Any?) = entities.filterNotNull().forEach(entityManager::merge)
 }

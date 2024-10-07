@@ -34,11 +34,14 @@ Allocation domain events are raised in real time as probation cases are
 allocated to a practitioner. The individual elements of the case are raised as
 separate events.
 
-| Business Event                 | Message Class      | Message Event Type / Filter                         |
-|--------------------------------|--------------------|-----------------------------------------------------|
-| Recommendation Process Started | HMPPS Domain Event | "prison-recall.recommendation.started"              |
-| Management Oversight of Recall | HMPPS Domain Event | "prison-recall.recommendation.management-oversight" |
-| Recall being considered        | HMPPS Domain Event | "prison-recall.recommendation.consideration" |
+| Business Event                    | Message Class      | Message Event Type / Filter                         |
+|-----------------------------------|--------------------|-----------------------------------------------------|
+| Recall being considered           | HMPPS Domain Event | "prison-recall.recommendation.consideration"        |
+| Recall decision has been made     | HMPPS Domain Event | "prison-recall.recommendation.management-oversight" |
+| Recommendation deleted or expired | HMPPS Domain Event | "prison-recall.recommendation.deleted"              |
+
+For more details of asynchronous events used by this service, see
+the [AsyncAPI Reference](https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/asyncapi-reference.html)
 
 ## Authorisation
 

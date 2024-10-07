@@ -56,7 +56,8 @@ internal class ReferralResourceTest {
             null,
             null,
             null,
-            null
+            null,
+            null,
         )
         val ex = assertThrows<ResponseStatusException> {
             referralResource.mergeAppointment(

@@ -59,4 +59,16 @@ internal class UserIntegrationTest {
         mockMvc.perform(delete("/users/test.user/roles/LHDCBT003").withToken())
             .andExpect(status().isOk)
     }
+
+    @Test
+    fun `non existent user returns not found`() {
+        mockMvc.perform(put("/users/nonexistent.user/roles/LHDCBT003").withToken())
+            .andExpect(status().isNotFound)
+        mockMvc
+            .perform(delete("/users/nonexistent.user/roles/LHDCBT003").withToken())
+            .andExpect(status().isOk)
+        mockMvc
+            .perform(get("/users/nonexistent.user/details").withToken())
+            .andExpect(status().isNotFound)
+    }
 }

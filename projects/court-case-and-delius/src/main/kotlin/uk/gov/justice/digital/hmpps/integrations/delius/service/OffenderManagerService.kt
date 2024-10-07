@@ -44,7 +44,7 @@ class OffenderManagerService(
             .map<LdapUser> { u -> ldapTemplate.findByUsername<LdapUser>(u.username) }
             .ifPresent { staffDetails: LdapUser ->
                 offenderManager.telephoneNumber = staffDetails.telephoneNumber
-                offenderManager.emailAddress = staffDetails.email
+                offenderManager.emailAddress = staffDetails.email?.takeIf { email -> email.isNotBlank() }
             }
         return offenderManager
     }
@@ -84,14 +84,14 @@ fun PrisonManager.toOffenderManager(includeProbationAreaTeams: Boolean) = Commun
     isPrisonOffenderManager = true,
     probationArea = probationArea.toProbationArea(includeProbationAreaTeams),
     isResponsibleOfficer = responsibleOfficer() != null,
-    fromDate = date.toLocalDate(),
-    grade = staff.grade?.keyValueOf()
+    fromDate = date.toLocalDate()
 )
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() = Team(
     code = code.trim(),
     description = description,
     telephone = telephone,
+    emailAddress = emailAddress,
     borough = KeyValue(district.borough.code, district.borough.description),
     district = KeyValue(district.code, district.description),
     localDeliveryUnit = KeyValue(district.code, district.description),

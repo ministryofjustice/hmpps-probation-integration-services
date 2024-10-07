@@ -70,7 +70,12 @@ class ReferralService(
                     ContactDetails(
                         date = details.bookingMadeAt,
                         type = ContactTypeCode.BOOKING_MADE,
-                        notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
+                        notes = """
+                            Expected arrival: ${DeliusDateFormatter.format(details.arrivalOn)}
+                            Expected departure: ${DeliusDateFormatter.format(details.departureOn)}
+                            
+                            To view details of the Approved Premises booking, click here: ${details.applicationUrl}
+                            """.trimIndent(),
                         description = "Approved Premises Booking for ${details.premises.name}",
                         locationCode = ap.locationCode()
                     ),
@@ -137,7 +142,8 @@ class ReferralService(
         }
         contactService.createContact(
             ContactDetails(
-                date = details.cancelledAt,
+                date = details.cancellationRecordedAt,
+                cancellationRecordedAt = details.cancelledAtDate,
                 type = ContactTypeCode.BOOKING_CANCELLED,
                 locationCode = ap.locationCode(),
                 description = "Booking cancelled for ${details.premises.name}",

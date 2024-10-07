@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Probatio
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.*
+import java.time.temporal.ChronoUnit
 
 object SentenceGenerator {
 
@@ -53,12 +54,17 @@ object SentenceGenerator {
         lengthInDays = 99
     )
 
+    val NO_SENTENCE_EVENT = generateEvent(PersonGenerator.NO_SENTENCE, referralDate = LocalDate.now())
+
     val CURRENT_CUSTODY = generateCustody(
         CURRENT_SENTENCE,
         ReferenceDataGenerator.CUSTODIAL_STATUS,
         "FD1234",
         InstitutionGenerator.WSIHMP
     )
+
+    val RELEASE_1 = generateRelease(LocalDateTime.now().minusDays(3))
+    val RELEASE_2 = generateRelease(LocalDateTime.now().minusDays(2))
 
     val OUTCOME = Outcome(
         Outcome.Code.AWAITING_PSR.value,
@@ -69,7 +75,7 @@ object SentenceGenerator {
     val COURT_APPEARANCE = generateCourtAppearance(
         CURRENTLY_MANAGED,
         OUTCOME,
-        ZonedDateTime.of(LocalDate.now(), LocalTime.NOON, EuropeLondon)
+        LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)
     )
 
     val CURRENT_ORDER_MANAGER = generateOrderManager(
@@ -152,7 +158,7 @@ object SentenceGenerator {
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Event(
-        person,
+        person.id,
         mainOffence,
         inBreach,
         breachDate,
@@ -182,7 +188,7 @@ object SentenceGenerator {
     fun generateCourtAppearance(
         event: Event,
         outcome: Outcome,
-        appearanceDate: ZonedDateTime,
+        appearanceDate: LocalDateTime,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = CourtAppearance(
@@ -200,7 +206,7 @@ object SentenceGenerator {
         disposal: Disposal,
         custodialStatus: ReferenceData,
         prisonerNumber: String,
-        institution: Institution,
+        institution: Institution?,
         id: Long = IdGenerator.getAndIncrement()
     ) = Custody(disposal, custodialStatus, prisonerNumber = prisonerNumber, institution = institution, id = id)
 
@@ -232,7 +238,7 @@ object SentenceGenerator {
         generateMainOffence(
             CURRENTLY_MANAGED,
             MAIN_OFFENCE,
-            LocalDate.now(),
+            LocalDate.now().atStartOfDay(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
             ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
@@ -243,7 +249,7 @@ object SentenceGenerator {
         generateMainOffence(
             INACTIVE_EVENT,
             MAIN_OFFENCE,
-            LocalDate.now(),
+            LocalDate.now().atStartOfDay(),
             offenceCount = 1,
             PersonGenerator.CURRENTLY_MANAGED.id,
             ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
@@ -254,7 +260,7 @@ object SentenceGenerator {
         generateMainOffence(
             INACTIVE_EVENT_1,
             MAIN_OFFENCE,
-            LocalDate.now(),
+            LocalDate.now().atStartOfDay(),
             offenceCount = 1,
             PersonGenerator.NO_ACTIVE_EVENTS.id,
             ZonedDateTime.of(LocalDate.now().minusDays(3), LocalTime.NOON, EuropeLondon),
@@ -264,7 +270,7 @@ object SentenceGenerator {
     val ADDITIONAL_OFFENCE_DEFAULT = generateAdditionalOffence(
         CURRENTLY_MANAGED,
         ADDITIONAL_OFFENCE,
-        LocalDate.now(),
+        LocalDate.now().atStartOfDay(),
         ZonedDateTime.of(LocalDate.now().minusMonths(1), LocalTime.NOON, EuropeLondon),
         ZonedDateTime.of(LocalDate.now().plusMonths(1), LocalTime.NOON, EuropeLondon),
     )
@@ -303,7 +309,7 @@ object SentenceGenerator {
     fun generateMainOffence(
         event: Event,
         offence: Offence,
-        date: LocalDate,
+        date: LocalDateTime,
         offenceCount: Long,
         offenderId: Long,
         created: ZonedDateTime,
@@ -317,7 +323,7 @@ object SentenceGenerator {
     fun generateAdditionalOffence(
         event: Event,
         offence: Offence,
-        date: LocalDate,
+        date: LocalDateTime,
         created: ZonedDateTime,
         updated: ZonedDateTime,
         id: Long = IdGenerator.getAndIncrement(),
@@ -331,21 +337,30 @@ object SentenceGenerator {
     ) = LicenceCondition(
         disposal,
         LocalDate.now(),
+        LocalDate.now(),
+        "commencement notes",
+        LocalDate.now(),
+        "termination notes",
+        LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
         ReferenceDataGenerator.LIC_COND_MAIN_CAT,
         ReferenceDataGenerator.LIC_COND_SUB_CAT,
         "Licence Condition notes",
         id
     )
 
-    fun generateBreachNsi(disposal: Disposal) = Nsi(
-        disposal.event.person.id,
+    fun generateBreachNsi(
+        disposal: Disposal,
+        outcome: ReferenceData? = ReferenceDataGenerator.NSI_BREACH_OUTCOME,
+        status: NsiStatus = ACTIVE_NSI_STATUS
+    ) = Nsi(
+        disposal.event.personId,
         disposal.event.id,
         ReferenceDataGenerator.NSI_TYPE,
-        ACTIVE_NSI_STATUS,
+        status,
         referralDate = LocalDate.now().plusDays(1),
-        statusDate = ZonedDateTime.of(LocalDate.of(2024, 7, 1), LocalTime.NOON, EuropeLondon),
+        statusDate = LocalDateTime.of(2024, 7, 1, 12, 0, 0, 0),
         null,
-        ReferenceDataGenerator.NSI_BREACH_OUTCOME,
+        outcome,
         actualStartDate = LocalDate.now(),
         expectedStartDate = LocalDate.of(2024, 1, 1),
         actualEndDate = LocalDate.now(),
@@ -366,11 +381,19 @@ object SentenceGenerator {
             id = id
         )
 
-    fun generateCourtReport(courtAppearance: CourtAppearance, id: Long = IdGenerator.getAndIncrement()) =
+    fun generateCourtReport(
+        courtAppearance: CourtAppearance,
+        personId: Long,
+        id: Long = IdGenerator.getAndIncrement()
+    ) =
         CourtReport(
-            LocalDate.now(),
-            LocalDate.now().plusDays(5),
+            personId,
+            LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
+            LocalDateTime.now().plusDays(5).truncatedTo(ChronoUnit.MICROS),
             null,
+            LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
+            LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
+            LocalDateTime.now().truncatedTo(ChronoUnit.MICROS),
             ReferenceDataGenerator.COURT_REPORT_TYPE,
             null,
             courtAppearance,
@@ -389,4 +412,10 @@ object SentenceGenerator {
 
     fun generateKeyDates(date: LocalDate, custody: Custody, keyDateType: ReferenceData) =
         KeyDate(IdGenerator.getAndIncrement(), date, custody, keyDateType)
+
+    fun generateRelease(date: LocalDateTime) = Release(
+        id = IdGenerator.getAndIncrement(),
+        custody = CURRENT_CUSTODY,
+        date = date
+    )
 }

@@ -1,0 +1,36 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+context-delius: Delius Context {
+
+  entities: Entities {
+    grid-columns: 3
+    delius-user: Delius User
+    delius-role: Delius Role
+    provider: Provider
+    pdu: Probation Delivery Unit
+    lau: Local Admin Unit
+    staff: Staff
+    team: Team
+    pop: Person on Probation
+    com: Community Offender Manager
+    pom: Prison Offender Manager
+  }
+
+  interface: HDC Licences and Delius {
+    type: Anti-Corruption\nLayer
+  }
+}
+
+context-hdc-licences: HDC Licences Context {
+  entities: Entities {
+    grid-columns: 3
+    user: HDC Licences User
+    pip: Person in Prison
+    probation-team: Probation Team
+  }
+}
+
+context-delius.interface--context-hdc-licences: Upstream\n\n\nDownstream

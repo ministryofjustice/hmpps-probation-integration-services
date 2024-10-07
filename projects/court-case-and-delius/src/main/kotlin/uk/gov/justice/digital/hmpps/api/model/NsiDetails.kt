@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.api.model.conviction.Requirement
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 data class NsiDetails(
     val nsis: List<Nsi>
@@ -16,7 +16,7 @@ data class Nsi(
     val nsiOutcome: KeyValue?,
     val requirement: Requirement? = null,
     val nsiStatus: KeyValue,
-    val statusDateTime: ZonedDateTime,
+    val statusDateTime: LocalDateTime,
     val actualStartDate: LocalDate?,
     val expectedStartDate: LocalDate?,
     val actualEndDate: LocalDate?,
@@ -29,7 +29,9 @@ data class Nsi(
     val intendedProvider: ProbationArea?,
     val active: Boolean,
     val softDeleted: Boolean,
-    val externalReference: String?
+    val externalReference: String?,
+    val recallRejectedOrWithdrawn: Boolean?,
+    val outcomeRecall: Boolean?
 )
 
 data class NsiManager(
@@ -53,7 +55,7 @@ data class StaffDetails(
     @Schema(description = "staff name details")
     val staff: Human,
     @Schema(description = "all teams related to this staff member")
-    val teams: List<Team>,
+    val teams: List<Team>? = null,
     @Schema(description = "provider this staff member is associated with")
     val probationArea: ProbationArea,
     @Schema(description = "Staff Grade", example = "PO,CRC - PO")

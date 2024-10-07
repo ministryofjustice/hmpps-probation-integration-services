@@ -7,7 +7,9 @@ data class CourtAppearance(
     val type: Type,
     val courtCode: String,
     val courtName: String,
-    val crn: String
+    val crn: String,
+    val courtAppearanceId: Long,
+    val offenderId: Long
 )
 
 data class Type(
@@ -17,4 +19,8 @@ data class Type(
 
 data class CourtAppearancesContainer(
     val courtAppearances: List<CourtAppearance> = listOf()
+)
+
+data class AllCourtAppearancesContainer(
+    val courtAppearances: Map<String, List<CourtAppearance>> = mapOf()
 )

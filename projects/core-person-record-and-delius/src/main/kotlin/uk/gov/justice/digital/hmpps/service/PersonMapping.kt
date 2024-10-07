@@ -10,6 +10,7 @@ fun Person.detail(
     addresses: List<Address>,
     exclusions: LimitedAccess? = null,
     restrictions: LimitedAccess? = null,
+    sentences: List<Sentence>,
 ) = PersonDetail(
     identifiers = identifiers(),
     name = name(),
@@ -24,6 +25,7 @@ fun Person.detail(
     addresses = addresses,
     excludedFrom = exclusions,
     restrictedTo = restrictions,
+    sentences = sentences,
 )
 
 fun Person.identifiers() =
@@ -51,6 +53,11 @@ fun uk.gov.justice.digital.hmpps.integration.delius.entity.Alias.asModel() = Ali
     dateOfBirth
 )
 
+fun Disposal.asModel() = Sentence(
+    startDate,
+    active
+)
+
 fun PersonAddress.asAddress() = postcode?.let {
     Address(
         fullAddress = listOf(
@@ -61,7 +68,11 @@ fun PersonAddress.asAddress() = postcode?.let {
             county,
             postcode
         ).trimAndJoin(),
-        postcode = postcode
+        postcode = postcode,
+        noFixedAbode = noFixedAbode,
+        status = status.asCodeDescription(),
+        startDate = startDate,
+        endDate = endDate,
     )
 }
 

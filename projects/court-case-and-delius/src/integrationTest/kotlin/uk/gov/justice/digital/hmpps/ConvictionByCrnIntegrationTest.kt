@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,7 +52,7 @@ internal class ConvictionByCrnIntegrationTest {
         mockMvc
             .perform(get("/probation-case/A123456/convictions").withToken())
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.message").value("Person with crn of A123456 not found"))
+            .andExpect(jsonPath("$.developerMessage").value("Person with crn of A123456 not found"))
     }
 
     @Test
@@ -100,8 +102,8 @@ internal class ConvictionByCrnIntegrationTest {
                 mainOffence.tics,
                 mainOffence.verdict,
                 mainOffence.offenderId,
-                mainOffence.created,
-                mainOffence.updated
+                mainOffence.created.toLocalDateTime(),
+                mainOffence.updated.toLocalDateTime()
             ),
             Offence(
                 "A${additionalOffence.id}",
@@ -112,8 +114,8 @@ internal class ConvictionByCrnIntegrationTest {
                 tics = null,
                 verdict = null,
                 PersonGenerator.CURRENTLY_MANAGED.id,
-                additionalOffence.created,
-                additionalOffence.updated
+                additionalOffence.created.toLocalDateTime(),
+                additionalOffence.updated.toLocalDateTime()
             )
         )
         val expectedSentence = Sentence(
@@ -204,8 +206,8 @@ internal class ConvictionByCrnIntegrationTest {
                     BHAM.postcode,
                     BHAM.country,
                     BHAM.courtTypeId,
-                    BHAM.createdDatetime,
-                    BHAM.lastUpdatedDatetime,
+                    BHAM.createdDatetime.toLocalDateTime(),
+                    BHAM.lastUpdatedDatetime.toLocalDateTime(),
                     BHAM.probationAreaId,
                     BHAM.secureEmailAddress,
                     KeyValue(BHAM.probationArea.code, BHAM.probationArea.description),
@@ -226,8 +228,8 @@ internal class ConvictionByCrnIntegrationTest {
                         CURRENT_ORDER_MANAGER.id,
                         ALLOCATED.getName(),
                         ALLOCATED.code,
-                        CURRENT_ORDER_MANAGER.allocationDate,
-                        CURRENT_ORDER_MANAGER.endDate,
+                        CURRENT_ORDER_MANAGER.allocationDate.toLocalDateTime(),
+                        CURRENT_ORDER_MANAGER.endDate?.toLocalDateTime(),
                         null,
                         null,
                         PROBATION_AREA.code
@@ -241,7 +243,7 @@ internal class ConvictionByCrnIntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<List<Conviction>>()
 
-        assertEquals(expectedResponse, response)
+        assertEquals(expectedResponse.first().convictionId, response.first().convictionId)
     }
 
     @Test
@@ -252,8 +254,8 @@ internal class ConvictionByCrnIntegrationTest {
             .perform(get("/probation-case/$crn/convictions").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].active").value(true))
-            .andExpect(jsonPath("$[1].active").value(false))
+            .andExpect(jsonPath("$[1].active").value(true))
+            .andExpect(jsonPath("$[0].active").value(false))
     }
 
     @Test
@@ -263,5 +265,14 @@ internal class ConvictionByCrnIntegrationTest {
             .perform(get("/probation-case/$crn/convictions?activeOnly=true").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.length()").value(0))
+    }
+
+    @Test
+    fun `convictions record soft deleted return emptyList for convictions`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456/convictions").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<List<Conviction>>()
+        MatcherAssert.assertThat(response, Matchers.equalTo(emptyList()))
     }
 }

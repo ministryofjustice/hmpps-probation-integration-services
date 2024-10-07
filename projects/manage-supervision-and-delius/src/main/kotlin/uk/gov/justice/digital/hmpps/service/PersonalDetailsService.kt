@@ -210,7 +210,8 @@ fun PersonAddress.toAddress() = Address.from(
     status = status.description,
     type = type?.description,
     telephoneNumber = telephoneNumber,
-    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
+    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
+    notes = notes
 
 )
 

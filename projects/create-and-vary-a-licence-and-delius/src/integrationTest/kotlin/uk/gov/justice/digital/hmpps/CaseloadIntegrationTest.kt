@@ -53,6 +53,11 @@ internal class CaseloadIntegrationTest {
                     generateManagedOffender(CASELOAD_ROLE_OM_4, STAFF2, TEAM1)
                 )
             ), Arguments.of(
+                "/staff/byid/${STAFF2.id}/caseload/managed-offenders", listOf(
+                    generateManagedOffender(CASELOAD_ROLE_OM_3, STAFF2, DEFAULT_TEAM),
+                    generateManagedOffender(CASELOAD_ROLE_OM_4, STAFF2, TEAM1)
+                )
+            ), Arguments.of(
                 "/team/N01BDT/caseload/managed-offenders", listOf(
                     generateManagedOffender(CASELOAD_ROLE_OM_3, STAFF2, DEFAULT_TEAM),
                     generateManagedOffender(CASELOAD_ROLE_OM_2, STAFF1, DEFAULT_TEAM),

@@ -1,0 +1,49 @@
+{
+  "assessments": [
+    {
+      "OGP": {
+        "ogpStWesc": 38,
+        "ogpDyWesc": 7,
+        "ogpTotWesc": 45,
+        "ogp1Year": 29,
+        "ogp2Year": 42,
+        "ogpRisk": "High"
+      },
+      "OVP": {
+        "ovpStWesc": 34,
+        "ovpDyWesc": 12,
+        "ovpTotWesc": 46,
+        "ovp1Year": 23,
+        "ovp2Year": 36,
+        "ovpRisk": "Medium",
+        "ovpPrevWesc": 5,
+        "ovpNonVioWesc": 3,
+        "ovpAgeWesc": 10,
+        "ovpVioWesc": 11,
+        "ovpSexWesc": 5
+      },
+      "OGRS": {
+        "ogrs31Year": 45,
+        "ogrs32Year": 63,
+        "ogrs3RiskRecon": "High"
+      },
+      "RSR": {
+        "rsrStaticOrDynamic": "DYNAMIC",
+        "rsrExceptionError": null,
+        "rsrAlgorithmVersion": 4,
+        "rsrPercentageScore": 3.45,
+        "rsrScoreLevel": "Low"
+      },
+      "OSP": {
+        "ospImagePercentageScore": 0.11,
+        "ospContactPercentageScore": 2,
+        "ospImageScoreLevel": "Low",
+        "ospContactScoreLevel": "High",
+        "ospIndirectImagesChildrenPercentageScore": null,
+        "ospDirectContactPercentageScore": null,
+        "ospIndirectImagesChildrenScoreLevel": null,
+        "ospDirectContactScoreLevel": null
+      }
+    }
+  ]
+}

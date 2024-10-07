@@ -14,7 +14,7 @@ data class OffenderDetailSummary(
     val dateOfBirth: LocalDate,
     val firstName: String,
     val gender: String,
-    val middleNames: List<String>,
+    val middleNames: List<String>? = null,
     val offenderId: Long,
     val offenderProfile: OffenderProfile,
     val otherIds: OtherIds,
@@ -37,11 +37,11 @@ data class OffenderDetail(
     val dateOfBirth: LocalDate,
     val firstName: String,
     val gender: String,
-    val middleNames: List<String>,
+    val middleNames: List<String>? = null,
     val offenderId: Long,
     val offenderProfile: OffenderProfile,
     val offenderAliases: List<OffenderAlias>?,
-    val offenderManagers: List<OffenderManager>,
+    val offenderManagers: List<OffenderManager>? = null,
     val otherIds: OtherIds,
     val partitionArea: String,
     val currentTier: String?,
@@ -82,7 +82,7 @@ data class StaffHuman(
     val code: String,
     val forenames: String,
     val surname: String,
-    val unallocated: Boolean
+    val unallocated: Boolean? = null
 )
 
 data class Institution(
@@ -180,7 +180,7 @@ data class OtherIds(
 
 data class Disability(
     val lastUpdatedDateTime: LocalDateTime,
-    val disabilityCondition: KeyValue,
+    val disabilityCondition: KeyValue?,
     val disabilityId: Long,
     val disabilityType: KeyValue,
     val endDate: LocalDate?,

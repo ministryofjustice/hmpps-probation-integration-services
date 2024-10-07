@@ -126,6 +126,7 @@ internal class MessagingIntegrationTest {
             )
         )
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(contact.date, equalTo(LocalDate.of(2022, 11, 30)))
     }
 
     @Test
@@ -150,10 +151,18 @@ internal class MessagingIntegrationTest {
         assertThat(contact.description, equalTo("Approved Premises Booking for Hope House"))
         assertThat(
             contact.notes,
-            equalTo("To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713")
+            equalTo(
+                """
+                Expected arrival: 30/01/2023
+                Expected departure: 30/04/2023
+                
+                To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
+                """.trimIndent()
+            )
         )
         assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(contact.date, equalTo(LocalDate.of(2022, 11, 30)))
 
         val referrals = referralRepository.findAll()
             .filter { it.personId == contact.person.id && it.createdByUserId == UserGenerator.AUDIT_USER.id && it.eventId == contact.eventId }
@@ -209,6 +218,7 @@ internal class MessagingIntegrationTest {
         assertThat(contact.description, equalTo("Non Arrival Reason"))
         assertThat(contact.outcome?.code, equalTo(ContactOutcome.AP_NON_ARRIVAL_PREFIX + "D"))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(contact.date, equalTo(LocalDate.of(2022, 11, 30)))
 
         val referral =
             referralRepository.findAll().first { it.personId == contact.person.id && it.nonArrivalDate != null }
@@ -319,6 +329,7 @@ internal class MessagingIntegrationTest {
         assertThat(contact.outcome?.code, equalTo("AP_N"))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.description, equalTo("Departed from Hope House"))
+        assertThat(contact.date, equalTo(LocalDate.of(2023, 1, 16)))
 
         val nsi = nsiRepository.findByPersonIdAndExternalReference(
             contact.person.id,
@@ -378,6 +389,7 @@ internal class MessagingIntegrationTest {
         )
         assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(contact.date, equalTo(LocalDate.of(2023, 7, 25)))
     }
 
     @Test
@@ -433,6 +445,7 @@ internal class MessagingIntegrationTest {
             )
         )
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(contact.date, equalTo(LocalDate.of(2023, 7, 24)))
     }
 
     @Test
@@ -471,6 +484,7 @@ internal class MessagingIntegrationTest {
         assertThat(contact.description, equalTo("Booking cancelled for Hope House"))
         assertNull(contact.outcome)
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(contact.date, equalTo(LocalDate.of(2023, 7, 25)))
 
         val referral = referralRepository.findAll().firstOrNull {
             it.personId == contact.person.id && it.eventId == contact.eventId

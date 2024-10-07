@@ -8,13 +8,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import software.amazon.awssdk.utils.ImmutableMap
-import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.api.resource.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.AreaGenerator.PARTITION_AREA
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDRESS
@@ -33,6 +34,7 @@ import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@TestPropertySource(properties = ["lao-access.ignore-exclusions = false", "lao-access.ignore-restrictions = true"])
 internal class OffenderIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -221,16 +223,16 @@ internal class OffenderIntegrationTest {
         assertThat(detailResponse.offenderAliases?.get(0)?.dateOfBirth, equalTo(LocalDate.of(1968, 1, 1)))
         assertThat(detailResponse.offenderAliases?.get(0)?.firstName, equalTo("Bob"))
         assertThat(
-            detailResponse.offenderManagers[0].providerEmployee,
+            detailResponse.offenderManagers?.get(0)?.providerEmployee,
             equalTo(Human("ProvEmpForename1 ProvEmpForename2", "ProvEmpSurname"))
         )
-        assertThat(detailResponse.offenderManagers[0].trustOfficer, equalTo(Human("Off1 Off2", "OffSurname")))
+        assertThat(detailResponse.offenderManagers?.get(0)?.trustOfficer, equalTo(Human("Off1 Off2", "OffSurname")))
         assertThat(
-            detailResponse.offenderManagers[0].probationArea.description,
+            detailResponse.offenderManagers?.get(0)?.probationArea?.description,
             equalTo(ProviderGenerator.DEFAULT.description)
         )
         assertThat(
-            detailResponse.offenderManagers[0].staff,
+            detailResponse.offenderManagers?.get(0)?.staff,
             equalTo(
                 StaffHuman(
                     ALLOCATED.code,
@@ -240,10 +242,16 @@ internal class OffenderIntegrationTest {
                 )
             )
         )
-        assertThat(detailResponse.offenderManagers[0].allocationReason, equalTo(DEFAULT_ALLOCATION_REASON.keyValueOf()))
-        assertThat(detailResponse.offenderManagers[0].partitionArea, equalTo(PARTITION_AREA.area))
-        assertThat(detailResponse.offenderManagers[0].team!!.code.trim(), equalTo(TeamGenerator.DEFAULT.code.trim()))
-        assertThat(detailResponse.offenderManagers[0].team!!.description, equalTo(TeamGenerator.DEFAULT.description))
+        assertThat(
+            detailResponse.offenderManagers?.get(0)?.allocationReason,
+            equalTo(DEFAULT_ALLOCATION_REASON.keyValueOf())
+        )
+        assertThat(detailResponse.offenderManagers?.get(0)?.partitionArea, equalTo(PARTITION_AREA.area))
+        assertThat(
+            detailResponse.offenderManagers?.get(0)?.team!!.code.trim(),
+            equalTo(TeamGenerator.DEFAULT.code.trim())
+        )
+        assertThat(detailResponse.offenderManagers!![0].team!!.description, equalTo(TeamGenerator.DEFAULT.description))
         assertThat(detailResponse.offenderProfile.religion, equalTo(RELIGION.description))
         assertThat(detailResponse.offenderProfile.remandStatus, equalTo("Remand Status"))
         assertThat(detailResponse.offenderProfile.riskColour, equalTo("RED"))
@@ -267,6 +275,33 @@ internal class OffenderIntegrationTest {
         mockMvc
             .perform(get("/probation-case/A123456/all").withToken())
             .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `probation summary record that is soft deleted still returns`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<OffenderDetailSummary>()
+        assertThat(response.softDeleted, equalTo(true))
+    }
+
+    @Test
+    fun `probation detail record that is soft deleted still returns`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456/all").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<OffenderDetail>()
+        assertThat(response.softDeleted, equalTo(true))
+    }
+
+    @Test
+    fun `Detail API call allOffenderManagers record soft deleted`() {
+        val response = mockMvc
+            .perform(get("/probation-case/S123456/allOffenderManagers").withToken())
+            .andExpect(status().isOk).andReturn()
+            .response.contentAsJson<List<OffenderManager>>()
+        assertThat(response, equalTo(emptyList()))
     }
 
     @Test
@@ -330,7 +365,7 @@ internal class OffenderIntegrationTest {
             .andExpect(status().isEqualTo(HttpStatus.FORBIDDEN.value()))
             .andReturn().response.contentAsJson<ErrorResponse>()
 
-        assertThat(resp.message, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
+        assertThat(resp.developerMessage, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
     }
 
     @Test
@@ -347,7 +382,7 @@ internal class OffenderIntegrationTest {
             .andExpect(status().isEqualTo(HttpStatus.FORBIDDEN.value()))
             .andReturn().response.contentAsJson<ErrorResponse>()
 
-        assertThat(resp.message, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
+        assertThat(resp.developerMessage, equalTo(PersonGenerator.EXCLUDED_CASE.exclusionMessage))
     }
 
     @Test
