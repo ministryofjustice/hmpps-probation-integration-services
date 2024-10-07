@@ -49,7 +49,7 @@ class Handler(
             is CustodyDateChanged -> cduService.updateCustodyKeyDates(message.bookingId)
             is ProbationOffenderEvent -> when (notification.eventType) {
                 "SENTENCE_CHANGED",
-                -> personRepository.findNomsIdByCrn(message.crn)?.let { cduService.updateCustodyKeyDates(it) }
+                    -> personRepository.findNomsIdByCrn(message.crn)?.let { cduService.updateCustodyKeyDates(it) }
 
                 else -> throw IllegalArgumentException("Unexpected offender event type: ${notification.eventType}")
             }
