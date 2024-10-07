@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.approvedpremesis
+package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo

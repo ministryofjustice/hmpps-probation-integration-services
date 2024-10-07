@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.By
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3Event
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.EventDetails
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Recordable
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.By
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Cas3Event
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Recordable
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService

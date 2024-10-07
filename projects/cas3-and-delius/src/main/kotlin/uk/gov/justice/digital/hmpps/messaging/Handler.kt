@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Cas3ApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.AddressService
 import uk.gov.justice.digital.hmpps.integrations.delius.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
@@ -118,7 +118,7 @@ class Handler(
                 contactService.createOrUpdateContact(event.crn(), person) {
                     detail
                 }
-                addressService.endMainCAS3Address(person, detail.eventDetails.departedAt)
+                addressService.endMainCAS3Address(person, detail.eventDetails.departedAt.toLocalDate())
                 telemetryService.trackEvent("PersonDeparted", event.telemetryProperties())
             }
 

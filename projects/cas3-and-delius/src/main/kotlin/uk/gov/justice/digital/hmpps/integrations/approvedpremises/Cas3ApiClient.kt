@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.approvedpremesis
+package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
 import org.springframework.web.service.annotation.GetExchange
 import java.net.URI

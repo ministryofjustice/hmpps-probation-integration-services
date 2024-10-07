@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.By
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.By
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.TeamRepository

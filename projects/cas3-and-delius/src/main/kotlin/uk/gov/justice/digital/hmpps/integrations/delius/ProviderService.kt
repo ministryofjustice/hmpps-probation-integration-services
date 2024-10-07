@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.By
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.By
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
