@@ -1,0 +1,15 @@
+enabled: false # TODO set this to true when you're ready to deploy your service
+
+generic-service:
+  ingress:
+    host: common-platform-and-delius-preprod.hmpps.service.justice.gov.uk
+
+  scheduledDowntime:
+    enabled: true
+
+  env:
+    SENTRY_ENVIRONMENT: preprod
+    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/oauth/token
+
+generic-prometheus-alerts:
+  businessHoursOnly: true
