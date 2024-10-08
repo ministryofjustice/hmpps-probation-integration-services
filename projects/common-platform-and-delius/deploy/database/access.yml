@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /common-platform-and-delius/db-username
+    password_key: /common-platform-and-delius/db-password
+
+  audit:
+    username: CommonPlatformAndDelius
+    forename: Common Platform
+    surname: Service
