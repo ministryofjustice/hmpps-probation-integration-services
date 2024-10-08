@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
@@ -667,6 +668,26 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
                 "reason" to "RELEASED",
                 "movementReason" to "MRG",
                 "movementType" to "Released"
+            )
+        }
+    }
+
+    @Test
+    fun `missing booking is ignored`() {
+        val notification = NotificationGenerator.PRISONER_RELEASED
+        wireMockServer.stubFor(
+            get(urlPathEqualTo("/api/bookings/offenderNo/${BookingGenerator.RELEASED.personReference}"))
+                .willReturn(aResponse().withStatus(404))
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verifyTelemetry("BookingNotFound") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0001AA",
+                "institution" to "WSI",
+                "details" to "Movement reason code NCS"
             )
         }
     }
