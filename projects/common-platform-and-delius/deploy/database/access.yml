@@ -5,5 +5,5 @@ database:
 
   audit:
     username: CommonPlatformAndDelius
-    forename: Probation Integration # TODO change this to something meaningful for your service
+    forename: Common Platform
     surname: Service
