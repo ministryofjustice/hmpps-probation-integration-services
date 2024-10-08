@@ -6,6 +6,7 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -115,9 +116,12 @@ class Handler(
         }
     }
 
-    private fun PrisonApiClient.bookingFromNomsId(nomsId: String) =
-        getBookingByNomsId(nomsId).takeIf { it.active || it.movementType == "REL" }
-            ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsNumber" to nomsId))
+    private fun PrisonApiClient.bookingFromNomsId(nomsId: String) = try {
+        getBookingByNomsId(nomsId)
+    } catch (e: HttpClientErrorException.NotFound) {
+        throw IgnorableMessageException("BookingNotFound", mapOf("nomsNumber" to nomsId))
+    }.takeIf { it.active || it.movementType == "REL" }
+        ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsNumber" to nomsId))
 }
 
 fun HmppsDomainEvent.prisonId() = additionalInformation["prisonId"] as String?
