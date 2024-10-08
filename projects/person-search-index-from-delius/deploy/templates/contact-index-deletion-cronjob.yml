@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: contact-index-deletion-script
+    data:
+      script.sh: |
+        #!/bin/bash
+        set -euo pipefail
+        curl -fsSL "$OPENSEARCH_URL/_cat/indices?format=json" \
+        | jq -r '.[].index' \
+        | grep '^contact-semantic-search' \
+        | xargs -I{} sh -c 'echo "Deleting {}..." && curl -fsSL -XDELETE "$OPENSEARCH_URL/{}"'
+  - apiVersion: batch/v1
+    kind: CronJob
+    metadata:
+      name: contact-index-deletion
+    spec:
+      schedule: 0 5 * * 1-5 # Every weekday at 5am UTC
+      concurrencyPolicy: Replace
+      jobTemplate:
+        spec:
+          template:
+            spec:
+              serviceAccountName: person-search-index-from-delius
+              volumes:
+                - name: script-volume
+                  configMap:
+                    name: contact-index-deletion-script
+              containers:
+                - name: contact-index-deletion
+                  image: "ghcr.io/ministryofjustice/hmpps-devops-tools:latest"
+                  command: [ "bash", "/script.sh" ]
+                  volumeMounts:
+                    - name: script-volume
+                      mountPath: /script.sh
+                      subPath: script.sh
+                  env:
+                    - name: OPENSEARCH_URL
+                      valueFrom:
+                        secretKeyRef:
+                          name: person-search-index-from-delius-opensearch
+                          key: url
+                          optional: false
+                  securityContext:
+                    capabilities:
+                      drop:
+                        - ALL
+                    runAsNonRoot: true
+                    allowPrivilegeEscalation: false
+                    seccompProfile:
+                      type: RuntimeDefault
+              restartPolicy: Never
