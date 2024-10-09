@@ -1,0 +1,24 @@
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=test.user,ou=Users,dc=moj,dc=com
+cn: test.user
+objectclass: NDUser
+objectclass: inetOrgPerson
+objectclass: top
+givenName: Test
+sn: User
+mail: test.user@example.com
+
+dn: cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com
+description: Role Catalogue
+objectclass: top
+cn: ndRoleCatalogue
+
+dn: cn=IMSBT001,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com
+description: Navigate to Intelligence Management System
+objectClass: NDRole
+objectClass: top
+cn: IMSBT001
