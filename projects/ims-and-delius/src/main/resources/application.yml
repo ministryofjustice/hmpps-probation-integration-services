@@ -17,9 +17,13 @@ spring:
             create_tables: false
             drop_tables: false
   threads.virtual.enabled: true
+  ldap:
+    base: ou=Users,dc=moj,dc=com
+    base-environment:
+      java.naming.ldap.derefAliases: never
 
 oauth2.roles:
-  - EXAMPLE
+  - PROBATION_API__PATHFINDER__USER_ROLES__RW
 
 springdoc.default-produces-media-type: application/json
 
@@ -41,6 +45,9 @@ server.shutdown: immediate
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
+  ldap.embedded:
+    base-dn: ${spring.ldap.base}
+    validation.enabled: false
 
 seed.database: true
 wiremock.enabled: true
