@@ -496,6 +496,96 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td><span id="LENGTH_2_FLAG">LENGTH_2_FLAG</span></td>
+                                    <td>CHAR</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="LENGTH_2_DESCRIPTION">LENGTH_2_DESCRIPTION</span></td>
+                                    <td>VARCHAR2</td>
+                                    <td>30</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="MINIMUM_LENGTH_2">MINIMUM_LENGTH_2</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="MAXIMUM_LENGTH_2">MAXIMUM_LENGTH_2</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LENGTH_2_UNITS_ID">LENGTH_2_UNITS_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="R_RQMNT_TYPE_MAIN_CATEGORY.LENGTH_2_UNITS_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1404"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">R_1404</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -550,6 +640,12 @@
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>UNITS_ID</td>
                                 </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF3R_RQMNT_TYPE_MAIN_CATEGORY</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>LENGTH_2_UNITS_ID</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div><!-- /.box-body -->
@@ -583,8 +679,12 @@
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_191134824</td>
-                                    <td>SUB_TYPE_CHANGE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_ONLY_1222623488</td>
+                                    <td>RESTRICTIVE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TERM_COUNT_D_S_980137180</td>
+                                    <td>TERM_COUNT IN (&#39;D&#39;,&#39;S&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY39</td>
@@ -595,12 +695,12 @@
                                     <td>ALLOW_DUPLICATES IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>TERM_COUNT_D_S_980137180</td>
-                                    <td>TERM_COUNT IN (&#39;D&#39;,&#39;S&#39;)</td>
+                                    <td>YES_OR_NO_ONLY_137910355</td>
+                                    <td>LENGTH_2_FLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_1222623488</td>
-                                    <td>RESTRICTIVE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_ONLY_191134824</td>
+                                    <td>SUB_TYPE_CHANGE IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -626,9 +726,9 @@
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1232,77,1581,1045">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1403,324,1667">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1639,324,1903">
 <area shape="rect" id="node3" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="839,5,1188,621">
-<area shape="rect" id="node4" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="368,1025,795,1652">
+<area shape="rect" id="node4" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="368,961,795,1735">
 <area shape="rect" id="node5" href="DISPOSAL_TYPE_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_RQMNT_TYPE" alt="" coords="853,747,1173,981">
 <area shape="rect" id="node6" href="PROPOSED_RQMNT.html" target="_top" title="PROPOSED_RQMNT" alt="" coords="839,1356,1188,1737">
 <area shape="rect" id="node7" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="842,999,1185,1175">
@@ -643,18 +743,18 @@
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
 <area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1624,45,1973,1013">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,1091,716,1355">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,1048,716,1312">
 <area shape="rect" id="node3" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="1231,5,1580,621">
-<area shape="rect" id="node4" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="760,1288,1187,1915">
-<area shape="rect" id="node6" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1629,353,1952">
+<area shape="rect" id="node4" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="760,1124,1187,1897">
+<area shape="rect" id="node6" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1465,353,1788">
 <area shape="rect" id="node5" href="DISPOSAL_TYPE_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_RQMNT_TYPE" alt="" coords="1245,2247,1565,2481">
 <area shape="rect" id="node7" href="PROPOSED_RQMNT.html" target="_top" title="PROPOSED_RQMNT" alt="" coords="1231,1848,1580,2229">
-<area shape="rect" id="node8" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="1234,1655,1577,1831">
+<area shape="rect" id="node8" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="1234,1297,1577,1473">
 <area shape="rect" id="node9" href="R_RQMNT_NSI_TYPE.html" target="_top" title="R_RQMNT_NSI_TYPE" alt="" coords="1245,1491,1565,1637">
-<area shape="rect" id="node10" href="R_RQMNT_REJECTION_REASON.html" target="_top" title="R_RQMNT_REJECTION_REASON" alt="" coords="1245,1127,1565,1273">
-<area shape="rect" id="node11" href="R_RQMNT_TRANSFER_REASON.html" target="_top" title="R_RQMNT_TRANSFER_REASON" alt="" coords="1245,1291,1565,1437">
-<area shape="rect" id="node12" href="R_RQMNT_TYPE.html" target="_top" title="R_RQMNT_TYPE" alt="" coords="1245,711,1565,916">
-<area shape="rect" id="node13" href="R_RQMNT_TYPE_TERMINATION.html" target="_top" title="R_RQMNT_TYPE_TERMINATION" alt="" coords="1243,933,1568,1109">
+<area shape="rect" id="node10" href="R_RQMNT_REJECTION_REASON.html" target="_top" title="R_RQMNT_REJECTION_REASON" alt="" coords="1245,711,1565,857">
+<area shape="rect" id="node11" href="R_RQMNT_TRANSFER_REASON.html" target="_top" title="R_RQMNT_TRANSFER_REASON" alt="" coords="1245,875,1565,1021">
+<area shape="rect" id="node12" href="R_RQMNT_TYPE.html" target="_top" title="R_RQMNT_TYPE" alt="" coords="1245,1039,1565,1244">
+<area shape="rect" id="node13" href="R_RQMNT_TYPE_TERMINATION.html" target="_top" title="R_RQMNT_TYPE_TERMINATION" alt="" coords="1243,1655,1568,1831">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/R_RQMNT_TYPE_MAIN_CATEGORY.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

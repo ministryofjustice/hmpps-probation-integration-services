@@ -1396,6 +1396,23 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="EXTERNAL_REFERENCE">EXTERNAL_REFERENCE</span></td>
+                                    <td>VARCHAR2</td>
+                                    <td>200</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1431,6 +1448,12 @@
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>APPROVED_PREMISES_REFERRAL_ID</td>
+                                </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> XAK1APPPROVED_PREMISES_REFERRAL</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>EXTERNAL_REFERENCE</td>
                                 </tr>
                                 <tr>
                                     <td title='Indexed'>XIE1APPROVED_PREMISES_REFERRAL</td>
@@ -1683,24 +1706,24 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>APPROVED_PREMISES_REFERRAL_TYP</td>
+                                    <td> (REFERRAL_GROUP_ID IS NULL AND APPROVED_PREMISES_ID IS NOT NULL)&#10;OR&#10;(REFERRAL_GROUP_ID IS NOT NULL AND  APPROVED_PREMISES_ID  IS NULL)&#10;OR&#10;(REFERRAL_GROUP_ID IS NOT NULL AND APPROVED_PREMISES_ID  IS NOT NULL) </td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE14</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_31189800</td>
-                                    <td>SEX_OFFENDER IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_ONLY_818527117</td>
+                                    <td>GANG_AFFILIATED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>AP_REF_CUS_INSTITUTION</td>
                                     <td> (&#10;( INSTITUTION_ID IS NOT NULL AND ESTABLISHMENT &#61; &#39;Y&#39;) OR (   INSTITUTION_ID IS NULL AND ESTABLISHMENT IS NULL)&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>APPROVED_PREMISES_REFERRAL_TYP</td>
-                                    <td> (REFERRAL_GROUP_ID IS NULL AND APPROVED_PREMISES_ID IS NOT NULL)&#10;OR&#10;(REFERRAL_GROUP_ID IS NOT NULL AND  APPROVED_PREMISES_ID  IS NULL)&#10;OR&#10;(REFERRAL_GROUP_ID IS NOT NULL AND APPROVED_PREMISES_ID  IS NOT NULL) </td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_818527117</td>
-                                    <td>GANG_AFFILIATED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_ONLY_31189800</td>
+                                    <td>SEX_OFFENDER IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY7</td>
@@ -1730,8 +1753,8 @@
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="APPROVED_PREMISES_PREFERRED.html" target="_top" title="APPROVED_PREMISES_PREFERRED" alt="" coords="2016,5,2360,328">
-<area shape="rect" id="node2" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="1103,2409,1409,2791">
-<area shape="rect" id="node3" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1453,420,1972,2367">
+<area shape="rect" id="node2" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="1103,2427,1409,2808">
+<area shape="rect" id="node3" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1453,420,1972,2396">
 <area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,2755,324,3019">
 <area shape="rect" id="node10" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="413,2209,637,2356">
 <area shape="rect" id="node12" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="731,1399,1054,1927">
@@ -1742,27 +1765,27 @@
 <area shape="rect" id="node9" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="727,2160,1059,3363">
 <area shape="rect" id="node11" href="R_REFERRAL_SOURCE.html" target="_top" title="R_REFERRAL_SOURCE" alt="" coords="765,1009,1020,1273">
 <area shape="rect" id="node13" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="1129,1081,1383,1316">
-<area shape="rect" id="node14" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="2017,2285,2359,2813">
+<area shape="rect" id="node14" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="2017,2315,2359,2843">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/APPROVED_PREMISES_REFERRAL.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="APPROVED_PREMISES_PREFERRED.html" target="_top" title="APPROVED_PREMISES_PREFERRED" alt="" coords="3074,17,3418,340">
-<area shape="rect" id="node2" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="1815,1883,2122,2264">
-<area shape="rect" id="node3" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="2512,512,3030,2459">
-<area shape="rect" id="node4" href="USER_.html" target="_top" title="USER_" alt="" coords="1410,1555,1758,1877">
-<area shape="rect" id="node5" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="24,2653,342,2917">
-<area shape="rect" id="node11" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="1472,989,1696,1136">
-<area shape="rect" id="node13" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="745,1328,1068,1856">
-<area shape="rect" id="node6" href="STAFF.html" target="_top" title="STAFF" alt="" coords="1112,845,1366,1285">
-<area shape="rect" id="node7" href="TEAM.html" target="_top" title="TEAM" alt="" coords="400,1105,688,1457">
-<area shape="rect" id="node8" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="386,1716,701,2039">
-<area shape="rect" id="node9" href="EVENT.html" target="_top" title="EVENT" alt="" coords="2178,1115,2468,1613">
-<area shape="rect" id="node10" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1802,2281,2134,3484">
-<area shape="rect" id="node12" href="R_REFERRAL_SOURCE.html" target="_top" title="R_REFERRAL_SOURCE" alt="" coords="1841,1061,2096,1325">
-<area shape="rect" id="node14" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="1841,1343,2096,1577">
-<area shape="rect" id="node15" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="3076,3132,3417,3660">
+<area shape="rect" id="node1" href="APPROVED_PREMISES_PREFERRED.html" target="_top" title="APPROVED_PREMISES_PREFERRED" alt="" coords="3075,5,3419,328">
+<area shape="rect" id="node2" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="1816,1871,2122,2252">
+<area shape="rect" id="node3" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="2512,401,3031,2377">
+<area shape="rect" id="node4" href="USER_.html" target="_top" title="USER_" alt="" coords="1411,1559,1759,1881">
+<area shape="rect" id="node5" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="24,2663,343,2927">
+<area shape="rect" id="node11" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="1473,1013,1697,1160">
+<area shape="rect" id="node13" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="746,1405,1068,1933">
+<area shape="rect" id="node6" href="STAFF.html" target="_top" title="STAFF" alt="" coords="1112,761,1367,1201">
+<area shape="rect" id="node7" href="TEAM.html" target="_top" title="TEAM" alt="" coords="400,1200,688,1552">
+<area shape="rect" id="node8" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="387,1911,702,2233">
+<area shape="rect" id="node9" href="EVENT.html" target="_top" title="EVENT" alt="" coords="2179,1112,2468,1611">
+<area shape="rect" id="node10" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1803,2269,2135,3472">
+<area shape="rect" id="node12" href="R_REFERRAL_SOURCE.html" target="_top" title="R_REFERRAL_SOURCE" alt="" coords="1842,1049,2096,1313">
+<area shape="rect" id="node14" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="1842,1331,2096,1565">
+<area shape="rect" id="node15" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="3076,2061,3418,2589">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/APPROVED_PREMISES_REFERRAL.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

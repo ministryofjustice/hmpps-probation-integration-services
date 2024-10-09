@@ -664,6 +664,23 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td><span id="LENGTH_2">LENGTH_2</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -795,20 +812,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>REQUIREMENT_TYPE</td>
-                                    <td> (RQMNT_TYPE_MAIN_CATEGORY_ID IS NULL AND RQMNT_TYPE_SUB_CATEGORY_ID IS NULL AND AD_RQMNT_TYPE_MAIN_CATEGORY_ID IS NOT NULL)&#10;OR&#10;(AD_RQMNT_TYPE_MAIN_CATEGORY_ID IS NULL AND AD_RQMNT_TYPE_SUB_CATEGORY_ID IS NULL AND RQMNT_TYPE_MAIN_CATEGORY_ID IS NOT NULL) </td>
+                                    <td>TRUE_OR_FALSE12</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>ACTIVE_FLAG_TERMINATION_DATE2</td>
                                     <td> (ACTIVE_FLAG &#61; 0 AND TERMINATION_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND TERMINATION_DATE IS NULL)&#10; </td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE12</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_1549722321</td>
                                     <td>PENDING_TRANSFER IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>REQUIREMENT_TYPE</td>
+                                    <td> (RQMNT_TYPE_MAIN_CATEGORY_ID IS NULL AND RQMNT_TYPE_SUB_CATEGORY_ID IS NULL AND AD_RQMNT_TYPE_MAIN_CATEGORY_ID IS NOT NULL)&#10;OR&#10;(AD_RQMNT_TYPE_MAIN_CATEGORY_ID IS NULL AND AD_RQMNT_TYPE_SUB_CATEGORY_ID IS NULL AND RQMNT_TYPE_MAIN_CATEGORY_ID IS NOT NULL) </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -833,38 +850,38 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2487,1806,2836,2774">
-<area shape="rect" id="node2" href="R_AD_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_AD_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="744,2859,1117,3123">
-<area shape="rect" id="node3" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="760,453,1101,1039">
-<area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,2178,324,2442">
-<area shape="rect" id="node5" href="NSI.html" target="_top" title="NSI" alt="" coords="1767,2931,2051,3518">
-<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,998,700,2201">
-<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,341,277,487">
-<area shape="rect" id="node8" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="1161,1382,1699,2273">
-<area shape="rect" id="node9" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="2151,1461,2411,2165">
-<area shape="rect" id="node10" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="759,2542,1103,2806">
-<area shape="rect" id="node13" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="1743,2073,2076,2806">
-<area shape="rect" id="node11" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2120,146,2443,1407">
-<area shape="rect" id="node12" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2121,2182,2441,3033">
+<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2499,1456,2848,2424">
+<area shape="rect" id="node2" href="R_AD_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_AD_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="756,2716,1129,2980">
+<area shape="rect" id="node3" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="772,407,1113,994">
+<area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,2060,324,2324">
+<area shape="rect" id="node5" href="NSI.html" target="_top" title="NSI" alt="" coords="1779,3090,2063,3676">
+<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="374,862,706,2064">
+<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,295,277,442">
+<area shape="rect" id="node8" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="1173,1491,1711,2411">
+<area shape="rect" id="node9" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="2163,1467,2423,2171">
+<area shape="rect" id="node10" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="368,2154,712,2447">
+<area shape="rect" id="node13" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="1755,2231,2088,2964">
+<area shape="rect" id="node11" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2132,152,2455,1414">
+<area shape="rect" id="node12" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2133,2224,2453,3075">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/RQMNT.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2888,1464,3237,2432">
-<area shape="rect" id="node2" href="R_AD_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_AD_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="760,3207,1133,3471">
-<area shape="rect" id="node3" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1177,807,1519,1393">
-<area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,2211,716,2475">
-<area shape="rect" id="node5" href="NSI.html" target="_top" title="NSI" alt="" coords="2169,2869,2453,3456">
-<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="781,1771,1113,2973">
-<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="445,663,669,809">
-<area shape="rect" id="node8" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="1563,936,2100,1827">
+<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2888,1641,3237,2609">
+<area shape="rect" id="node2" href="R_AD_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_AD_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="760,3236,1133,3500">
+<area shape="rect" id="node3" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1177,836,1519,1423">
+<area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,2189,716,2453">
+<area shape="rect" id="node5" href="NSI.html" target="_top" title="NSI" alt="" coords="2169,2804,2453,3391">
+<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="781,1764,1113,2967">
+<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="445,580,669,727">
+<area shape="rect" id="node8" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="1563,1187,2100,2107">
 <area shape="rect" id="node9" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="2553,5,2813,709">
-<area shape="rect" id="node10" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="775,949,1119,1213">
-<area shape="rect" id="node12" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1820,353,2143">
-<area shape="rect" id="node14" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="2144,591,2477,1324">
-<area shape="rect" id="node11" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2521,2353,2844,3615">
-<area shape="rect" id="node13" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2523,1413,2843,2264">
+<area shape="rect" id="node10" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="775,1057,1119,1351">
+<area shape="rect" id="node12" href="USER_.html" target="_top" title="USER_" alt="" coords="5,2068,353,2391">
+<area shape="rect" id="node14" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="2144,548,2477,1281">
+<area shape="rect" id="node11" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2521,2311,2844,3572">
+<area shape="rect" id="node13" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2523,1407,2843,2257">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/RQMNT.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
