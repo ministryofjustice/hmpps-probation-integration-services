@@ -1,0 +1,23 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: ims-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/ims-and-delius
+
+  ingress:
+    tlsSecretName: ims-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    ims-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    ims-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: ims-and-delius
+
