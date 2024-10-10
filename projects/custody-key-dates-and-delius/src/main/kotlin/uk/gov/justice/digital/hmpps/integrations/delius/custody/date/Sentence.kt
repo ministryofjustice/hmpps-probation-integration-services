@@ -1,17 +1,11 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -25,6 +19,9 @@ class Event(
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
+
+    @Column
+    val firstReleaseDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean = true,
@@ -51,12 +48,30 @@ class Disposal(
     @JoinColumn(name = "event_id", updatable = false)
     val event: Event,
 
+    @ManyToOne
+    @JoinColumn(name = "disposal_type_id")
+    val type: DisposalType,
+
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
 )
+
+@Entity
+@Immutable
+@Table(name = "r_disposal_type")
+data class DisposalType(
+    @Id
+    @Column(name = "disposal_type_id")
+    val id: Long,
+
+    @Column
+    val requiredInformation: String,
+) {
+    val determinateSentence: Boolean = requiredInformation == "L1"
+}
 
 @Immutable
 @Entity

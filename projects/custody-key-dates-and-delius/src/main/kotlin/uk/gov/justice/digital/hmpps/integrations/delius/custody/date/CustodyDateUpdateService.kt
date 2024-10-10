@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.findKeyDateType
@@ -13,6 +14,8 @@ import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit.DAYS
 
 @Service
 @Transactional
@@ -51,39 +54,47 @@ class CustodyDateUpdateService(
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
         val updated = calculateKeyDateChanges(sentenceDetail, custody)
-            .filter { it.type.code != CustodyDateType.SUSPENSION_DATE_IF_RESET.code || featureFlags.enabled("suspension-date-if-reset") }
         if (updated.isEmpty()) {
-            telemetryService.trackEvent(
-                "KeyDatesUnchanged",
-                booking.telemetry(clientSource)
-            )
+            telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
             if (!dryRun) {
-                updated.ifNotEmpty(keyDateRepository::saveAll)
+                keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
             }
             telemetryService.trackEvent(
                 if (dryRun) "KeyDatesDryRun" else "KeyDatesUpdated",
-                booking.telemetry(clientSource) +
-                    updated.associateBy({ it.type.code }, { it.date.toString() })
+                booking.telemetry(clientSource) + updated.associateBy({ it.type.code }, { it.date.toString() })
             )
         }
     }
 
-    private fun List<KeyDate>.ifNotEmpty(code: (List<KeyDate>) -> Unit) = code(this)
+    private fun calculateKeyDateChanges(sentenceDetail: SentenceDetail, custody: Custody) = listOfNotNull(
+        custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
+        custody.keyDate(AUTOMATIC_CONDITIONAL_RELEASE_DATE.code, sentenceDetail.conditionalReleaseDate),
+        custody.keyDate(PAROLE_ELIGIBILITY_DATE.code, sentenceDetail.paroleEligibilityDate),
+        custody.keyDate(SENTENCE_EXPIRY_DATE.code, sentenceDetail.sentenceExpiryDate),
+        custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
+        custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
+        custody.keyDate(POST_SENTENCE_SUPERVISION_END_DATE.code, sentenceDetail.postSentenceSupervisionEndDate),
+        custody.keyDate(SUSPENSION_DATE_IF_RESET.code, suspensionDateIfReset(sentenceDetail, custody)),
+    )
 
-    private fun calculateKeyDateChanges(
-        sentenceDetail: SentenceDetail,
-        custody: Custody
-    ): List<KeyDate> = CustodyDateType.entries.mapNotNull { cdt ->
-        cdt.field.getter.call(sentenceDetail)?.let {
-            val existing = custody.keyDates.find(cdt.code)
-            if (existing != null) {
-                existing.changeDate(it)
-            } else {
-                val kdt = referenceDataRepository.findKeyDateType(cdt.code)
-                KeyDate(null, custody, kdt, it)
-            }
+    fun suspensionDateIfReset(sentenceDetail: SentenceDetail, custody: Custody): LocalDate? = custody.disposal
+        ?.takeIf { featureFlags.enabled("suspension-date-if-reset") }
+        ?.takeIf { it.type.determinateSentence }
+        ?.let {
+            val startDate = sentenceDetail.conditionalReleaseDate ?: it.event.firstReleaseDate ?: return null
+            val endDate = sentenceDetail.sentenceExpiryDate ?: return null
+            return if (startDate < endDate) startDate.plusDays(DAYS.between(startDate, endDate) * 2 / 3) else null
+        }
+
+    private fun Custody.keyDate(code: String, date: LocalDate?): KeyDate? = date?.let {
+        val existing = keyDates.find(code)
+        return if (existing != null) {
+            existing.changeDate(date)
+        } else {
+            val kdt = referenceDataRepository.findKeyDateType(code)
+            KeyDate(null, this, kdt, date)
         }
     }
 

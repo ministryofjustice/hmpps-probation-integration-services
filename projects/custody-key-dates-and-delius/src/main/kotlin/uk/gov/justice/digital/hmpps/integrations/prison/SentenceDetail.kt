@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.prison
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit.DAYS
 
 class SentenceDetail(
     val sentenceExpiryDate: LocalDate? = null,
@@ -16,9 +15,4 @@ class SentenceDetail(
     val homeDetentionCurfewEligibilityDate: LocalDate? = null
 ) {
     val conditionalReleaseDate = conditionalReleaseOverrideDate ?: conditionalReleaseDate
-
-    val suspensionDateIfReset =
-        if (conditionalReleaseDate != null && sentenceExpiryDate != null && sentenceExpiryDate > conditionalReleaseDate) {
-            conditionalReleaseDate.plusDays(DAYS.between(conditionalReleaseDate, sentenceExpiryDate) * 2 / 3)
-        } else null
 }
