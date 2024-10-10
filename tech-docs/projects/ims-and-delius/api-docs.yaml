@@ -14,13 +14,26 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
-    get:
+  /user/{username}/role:
+    put:
       tags:
-      - api-controller
-      operationId: handle
+      - user-controller
+      operationId: addRole
       parameters:
-      - name: inputId
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - user-controller
+      operationId: removeRole
+      parameters:
+      - name: username
         in: path
         required: true
         schema:

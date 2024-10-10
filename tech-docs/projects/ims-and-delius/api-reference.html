@@ -98,7 +98,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#user-username-role"><span>/user/{username}/role</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +134,14 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="user-username-role">/user/{username}/role</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
+<h3 id="user-username-role-put">put</h3>
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+
+
+<h4 id="user-username-role-put-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,7 +149,7 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>username</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
@@ -164,7 +164,59 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="user-username-role-put-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="user-username-role-delete">delete</h3>
+
+
+
+
+<h4 id="user-username-role-delete-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-role-delete-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
