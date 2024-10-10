@@ -29,7 +29,8 @@ generic-service:
     CONTACT_INDEX_PREFIX: contact-search
     PERSON_INDEX_PREFIX: person-search
     PIPELINES_ENABLED: person-incremental,contact-incremental
-    JDK_JAVA_OPTIONS: -XX:MaxRAMPercentage=75.0
+    JDK_JAVA_OPTIONS: ''
+    LS_JAVA_OPTS: -Xms1536m -Xmx1536m # = 75% of pod memory limit (see above)
 
   namespace_secrets:
     common:
