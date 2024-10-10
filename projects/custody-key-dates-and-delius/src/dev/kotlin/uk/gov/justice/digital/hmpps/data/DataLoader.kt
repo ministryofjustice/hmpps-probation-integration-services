@@ -12,10 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCus
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateOrderManager
-import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
-import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
-import uk.gov.justice.digital.hmpps.data.repository.EventRepository
-import uk.gov.justice.digital.hmpps.data.repository.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.data.repository.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateRepository
@@ -37,6 +34,7 @@ class DataLoader(
     private val eventRepository: EventRepository,
     private val orderManagerRepository: OrderManagerRepository,
     private val disposalRepository: DisposalRepository,
+    private val disposalTypeRepository: DisposalTypeRepository,
     private val custodyRepository: CustodyRepository,
     private val keyDateRepository: KeyDateRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
@@ -57,6 +55,7 @@ class DataLoader(
         referenceDataRepository.save(ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS)
         referenceDataRepository.saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values)
         contactTypeRepository.save(ContactTypeGenerator.EDSS)
+        disposalTypeRepository.save(SentenceGenerator.DEFAULT_DISPOSAL_TYPE)
 
         personRepository.save(PersonGenerator.DEFAULT)
 
