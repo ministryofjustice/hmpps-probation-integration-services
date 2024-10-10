@@ -49,6 +49,9 @@ class SentenceServiceTest {
     @Mock
     lateinit var upwAppointmentRepository: UpwAppointmentRepository
 
+    @Mock
+    lateinit var licenceConditionRepository: LicenceConditionRepository
+
     @InjectMocks
     lateinit var service: SentenceService
 
@@ -263,7 +266,8 @@ class SentenceServiceTest {
                         )
                     ),
                     listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
-                    "65 hours 36 minutes completed (of 70 hours)"
+                    "65 hours 36 minutes completed (of 70 hours)",
+                    null
                 )
             ),
             ProbationHistory(0, null, 0, 0)

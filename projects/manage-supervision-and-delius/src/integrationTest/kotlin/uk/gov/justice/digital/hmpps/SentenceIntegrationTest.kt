@@ -62,6 +62,7 @@ class SentenceIntegrationTest {
                     null,
                     listOf(),
                     listOf(),
+                    null,
                     null
                 ),
                 Sentence(
@@ -114,7 +115,21 @@ class SentenceIntegrationTest {
                         CourtDocument(COURT_DOCUMENT.alfrescoId, LocalDate.now().minusDays(1), "court report"),
                         CourtDocument(EVENT_DOCUMENT.alfrescoId, LocalDate.now().minusDays(3), "event report")
                     ),
-                    "3 minutes completed (of 12 hours)"
+                    "3 minutes completed (of 12 hours)",
+                    listOf(
+                        LicenceCondition(
+                            "lic cond main",
+                            "Lic Sub cat",
+                            LocalDate.now().minusDays(7),
+                            LocalDate.now(),
+                            "licence condition notes",
+                            false,
+                            ),
+                        LicenceCondition(
+                            "lic cond main",
+                            imposedReleasedDate = LocalDate.now().minusDays(14),
+                        )
+                    )
                 )
             ),
             ProbationHistory(2, LocalDate.now().minusDays(7), 2, 2)

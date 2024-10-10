@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as EntityLicenceCondition
 import java.time.Duration
 import java.time.LocalDate
 import kotlin.time.toKotlinDuration
@@ -24,7 +25,8 @@ class SentenceService(
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
     private val offenderManagerRepository: OffenderManagerRepository,
-    private val upwAppointmentRepository: UpwAppointmentRepository
+    private val upwAppointmentRepository: UpwAppointmentRepository,
+    private val licenceConditionRepository: LicenceConditionRepository
 ) {
     fun getEvents(crn: String): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -67,8 +69,20 @@ class SentenceService(
             requirements = requirementRepository.getRequirements(id, eventNumber)
                 .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
-            disposal?.id?.let { getUnpaidWorkTime(it) }
+            disposal?.id?.let { getUnpaidWorkTime(it) },
+            licenceConditions = disposal?.let { licenceConditionRepository.findAllByDisposalId(disposal.id).map {
+                it.toLicenceCondition()
+            } }?.ifEmpty { null },
         )
+
+    fun EntityLicenceCondition.toLicenceCondition() =
+        LicenceCondition(
+            mainCategory.description,
+            subCategory?.description,
+            imposedReleasedDate,
+            actualStartDate,
+            getTruncatedNotes(),
+            hasNotesBeenTruncated())
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
@@ -152,4 +166,5 @@ class SentenceService(
         }
         return null
     }
+
 }
