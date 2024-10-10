@@ -63,7 +63,7 @@ class SentenceIntegrationTest {
                     listOf(),
                     listOf(),
                     null,
-                    null
+                    listOf()
                 ),
                 Sentence(
                     OffenceDetails(

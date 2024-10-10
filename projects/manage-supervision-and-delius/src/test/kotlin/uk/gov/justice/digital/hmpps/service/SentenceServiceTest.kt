@@ -267,7 +267,7 @@ class SentenceServiceTest {
                     ),
                     listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
                     "65 hours 36 minutes completed (of 70 hours)",
-                    null
+                    listOf()
                 )
             ),
             ProbationHistory(0, null, 0, 0)

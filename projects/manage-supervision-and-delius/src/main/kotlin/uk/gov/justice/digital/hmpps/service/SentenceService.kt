@@ -72,7 +72,7 @@ class SentenceService(
             disposal?.id?.let { getUnpaidWorkTime(it) },
             licenceConditions = disposal?.let { licenceConditionRepository.findAllByDisposalId(disposal.id).map {
                 it.toLicenceCondition()
-            } }?.ifEmpty { null },
+            } } ?: emptyList(),
         )
 
     fun EntityLicenceCondition.toLicenceCondition() =
