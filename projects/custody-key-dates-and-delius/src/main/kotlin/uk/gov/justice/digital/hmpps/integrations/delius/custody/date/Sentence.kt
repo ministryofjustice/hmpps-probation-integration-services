@@ -70,7 +70,7 @@ data class DisposalType(
     @Column
     val requiredInformation: String,
 ) {
-    val determinateSentence: Boolean = requiredInformation == "L1"
+    val determinateSentence: Boolean get() = requiredInformation == "L1"
 }
 
 @Immutable
