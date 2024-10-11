@@ -147,7 +147,7 @@ internal class CustodyDateUpdateServiceTest {
     }
 
     @Test
-    fun `two-thirds point uses event first release date if no conditional release date is available`() {
+    fun `two-thirds point uses event first release date if present`() {
         whenever(featureFlags.enabled("suspension-date-if-reset")).thenReturn(true)
         val event = generateEvent(firstReleaseDate = LocalDate.of(2025, 1, 1))
         val disposal = generateDisposal(event)
@@ -155,7 +155,7 @@ internal class CustodyDateUpdateServiceTest {
 
         val suspensionDateIfReset = custodyDateUpdateService.suspensionDateIfReset(
             SentenceDetail(
-                conditionalReleaseDate = null,
+                conditionalReleaseDate = LocalDate.of(2026, 1, 1),
                 sentenceExpiryDate = LocalDate.of(2026, 1, 1)
             ), custody
         )
