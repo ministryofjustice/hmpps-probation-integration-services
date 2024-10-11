@@ -12,4 +12,4 @@ USER 1000
 
 COPY --chown=app /scripts /scripts
 
-ENTRYPOINT ["/scripts/startup.sh"]
+ENTRYPOINT ["bash"]
