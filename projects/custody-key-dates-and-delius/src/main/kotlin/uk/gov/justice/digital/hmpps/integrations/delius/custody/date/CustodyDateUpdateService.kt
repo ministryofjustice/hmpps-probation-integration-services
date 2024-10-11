@@ -83,7 +83,7 @@ class CustodyDateUpdateService(
         ?.takeIf { featureFlags.enabled("suspension-date-if-reset") }
         ?.takeIf { it.type.determinateSentence }
         ?.let {
-            val startDate = sentenceDetail.conditionalReleaseDate ?: it.event.firstReleaseDate ?: return null
+            val startDate = it.event.firstReleaseDate ?: sentenceDetail.conditionalReleaseDate ?: return null
             val endDate = sentenceDetail.sentenceExpiryDate ?: return null
             return if (startDate < endDate) startDate.plusDays(DAYS.between(startDate, endDate) * 2 / 3) else null
         }
