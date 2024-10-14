@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.Movement
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
@@ -40,6 +41,9 @@ internal class HandlerTest {
     @Mock
     lateinit var actionProcessor: ActionProcessor
 
+    @Mock
+    lateinit var personRepository: PersonRepository
+
     private val configs = PrisonerMovementConfigs(
         listOf(
             PrisonerMovementConfig(
@@ -58,7 +62,15 @@ internal class HandlerTest {
 
     @BeforeEach
     fun setup() {
-        handler = Handler(configs, featureFlags, telemetryService, prisonApiClient, actionProcessor, converter)
+        handler = Handler(
+            configs,
+            featureFlags,
+            telemetryService,
+            prisonApiClient,
+            actionProcessor,
+            personRepository,
+            converter
+        )
     }
 
     private val notification = Notification(
@@ -290,6 +302,25 @@ internal class HandlerTest {
                 "movementType" to "Released"
             )
         )
+    }
+
+    @Test
+    fun `lookup noms number by crn`() {
+        whenever(personRepository.findNomsNumberByCrn("X123456")).thenReturn("A1234AA")
+        whenever(prisonApiClient.getBookingByNomsId("A1234AA")).thenReturn(booking.copy(active = false))
+
+        handler.handle(
+            notification.copy(
+                message = notification.message.copy(
+                    personReference = PersonReference(listOf(PersonIdentifier("CRN", "X123456"))),
+                )
+            )
+        )
+
+        verify(personRepository).findNomsNumberByCrn("X123456")
+        verify(telemetryService).trackEvent(eq("BookingInactive"), check {
+            assertThat(it["nomsNumber"], equalTo("A1234AA"))
+        }, any())
     }
 
     private fun Booking.movement() = Movement(
