@@ -55,6 +55,8 @@ prisoner.movement.configs:
       # Do nothing for the following movement reasons
       - MRG # Merged
       - RE  # Repatriated
+      - BL  # Bailed
+      - BD  # Bailed Detainee
   - types:
       - RELEASED
     actionNames:
