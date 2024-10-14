@@ -61,7 +61,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: common
-                      key: DB_STANDBY_URL
+                      key: {{ index .Values "generic-service" "namespace_secrets" "common" "JDBC_CONNECTION_STRING" }}
                       optional: false
                 - name: JDBC_USER
                   valueFrom:
