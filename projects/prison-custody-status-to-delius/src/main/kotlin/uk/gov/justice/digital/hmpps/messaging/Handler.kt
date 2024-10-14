@@ -11,6 +11,8 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getNomsNumberByCrn
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.Movement
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
@@ -30,7 +32,8 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val prisonApiClient: PrisonApiClient,
     private val actionProcessor: ActionProcessor,
-    override val converter: NotificationConverter<HmppsDomainEvent>
+    private val personRepository: PersonRepository,
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
     private val configs = configContainer.configs
 
@@ -46,10 +49,12 @@ class Handler(
         telemetryService.notificationReceived(notification)
         val message = notification.message
         val eventType = DomainEventType.of(message.eventType)
+        val nomsId = message.personReference.findNomsNumber()
+            ?: personRepository.getNomsNumberByCrn(requireNotNull(message.personReference.findCrn()))
+
         try {
             val movement = when (eventType) {
                 IdentifierAdded, IdentifierUpdated, PrisonerReceived, PrisonerReleased -> {
-                    val nomsId = message.personReference.findNomsNumber()!!
                     val booking = prisonApiClient.bookingFromNomsId(nomsId)
                     val movement = prisonApiClient.getLatestMovement(listOf(nomsId)).firstOrNull()
                     movement?.let { booking.prisonerMovement(it) }
@@ -63,7 +68,7 @@ class Handler(
             if (movement == null) {
                 throw IgnorableMessageException(
                     "NoMovementInNomis", mapOf(
-                        "nomsNumber" to message.personReference.findNomsNumber()!!
+                        "nomsNumber" to nomsId
                     )
                 )
             }
@@ -109,10 +114,7 @@ class Handler(
                 throw failure.exception
             }
         } catch (e: IgnorableMessageException) {
-            telemetryService.trackEvent(
-                e.message,
-                message.telemetryProperties() + e.additionalProperties
-            )
+            telemetryService.trackEvent(e.message, message.telemetryProperties(nomsId) + e.additionalProperties)
         }
     }
 
@@ -126,9 +128,9 @@ class Handler(
 
 fun HmppsDomainEvent.prisonId() = additionalInformation["prisonId"] as String?
 fun HmppsDomainEvent.details() = additionalInformation["details"] as String?
-fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
+fun HmppsDomainEvent.telemetryProperties(nomsId: String) = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
-    "nomsNumber" to personReference.findNomsNumber()!!,
+    "nomsNumber" to nomsId,
     prisonId()?.let { "institution" to it },
     details()?.let { "details" to it }
 ).toMap()

@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 
 @Immutable
@@ -17,6 +18,9 @@ class Person(
     val id: Long,
 
     @Column(columnDefinition = "char(7)")
+    val crn: String,
+
+    @Column(columnDefinition = "char(7)")
     val nomsNumber: String,
 
     @Column(updatable = false, columnDefinition = "number")
@@ -25,7 +29,13 @@ class Person(
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByNomsNumberAndSoftDeletedIsFalse(nomsNumber: String): List<Person>
+
+    @Query("select p.nomsNumber from Person p where p.crn = :crn and p.softDeleted = false")
+    fun findNomsNumberByCrn(crn: String): String?
 }
+
+fun PersonRepository.getNomsNumberByCrn(crn: String) =
+    findNomsNumberByCrn(crn) ?: throw NotFoundException("NOMS number for case", "crn", crn)
 
 @Immutable
 @Entity
