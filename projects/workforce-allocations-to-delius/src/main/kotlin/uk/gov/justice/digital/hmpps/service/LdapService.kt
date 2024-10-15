@@ -27,17 +27,17 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
     @WithSpan
     fun findEmailsForStaffIn(@SpanAttribute staff: List<StaffWithUser>) =
         staff.asSequence().mapNotNull { it.user?.username }
-        .distinct()
-        .chunked(LDAP_MAX_RESULTS_PER_QUERY)
-        .flatMap {
-            val filter = it.map { username -> EqualsFilter("cn", username) }.fold(OrFilter()) { a, b -> a.or(b) }
-            val query = LdapQueryBuilder.query()
-                .attributes("mail")
-                .searchScope(SearchScope.ONELEVEL)
-                .filter(filter)
-            ldapTemplate.find(query, LdapUser::class.java)
-        }
-        .associate { it.username to it.email }
+            .distinct()
+            .chunked(LDAP_MAX_RESULTS_PER_QUERY)
+            .flatMap {
+                val filter = it.map { username -> EqualsFilter("cn", username) }.fold(OrFilter()) { a, b -> a.or(b) }
+                val query = LdapQueryBuilder.query()
+                    .attributes("mail")
+                    .searchScope(SearchScope.ONELEVEL)
+                    .filter(filter)
+                ldapTemplate.find(query, LdapUser::class.java)
+            }
+            .associate { it.username to it.email }
 
     @WithSpan
     fun findAllUsersWithRole(role: String = "MAABT001"): List<String> = ldapTemplate.search(LdapQueryBuilder.query()
