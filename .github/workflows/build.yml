@@ -107,7 +107,11 @@ jobs:
 
       - name: Push images
         if: env.push == 'true'
-        run: ./gradlew ${{ matrix.project }}:jib
+        uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
+        with:
+          max_attempts: 3 # Pushing lots of new image versions at once can result in GitHub rate-limiting so we retry this step
+          timeout_minutes: 15
+          command: ./gradlew ${{ matrix.project }}:jib
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_PASSWORD: ${{ github.token }}
