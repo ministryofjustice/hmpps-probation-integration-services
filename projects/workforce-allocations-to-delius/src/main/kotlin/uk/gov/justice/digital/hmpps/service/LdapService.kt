@@ -2,11 +2,13 @@ package uk.gov.justice.digital.hmpps.service
 
 import io.opentelemetry.instrumentation.annotations.SpanAttribute
 import io.opentelemetry.instrumentation.annotations.WithSpan
+import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.filter.EqualsFilter
 import org.springframework.ldap.filter.OrFilter
 import org.springframework.ldap.query.LdapQueryBuilder
 import org.springframework.ldap.query.SearchScope
+import org.springframework.ldap.support.LdapUtils
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUser
@@ -23,7 +25,8 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
         staff?.user?.username?.let { ldapTemplate.findEmailByUsername(it) }
 
     @WithSpan
-    fun findEmailsForStaffIn(@SpanAttribute staff: List<StaffWithUser>) = staff.mapNotNull { it.user?.username }
+    fun findEmailsForStaffIn(@SpanAttribute staff: List<StaffWithUser>) =
+        staff.asSequence().mapNotNull { it.user?.username }
         .distinct()
         .chunked(LDAP_MAX_RESULTS_PER_QUERY)
         .flatMap {
@@ -35,4 +38,15 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
             ldapTemplate.find(query, LdapUser::class.java)
         }
         .associate { it.username to it.email }
+
+    @WithSpan
+    fun findAllUsersWithRole(role: String = "MAABT001"): List<String> = ldapTemplate.search(LdapQueryBuilder.query()
+        .attributes("entryDN")
+        .searchScope(SearchScope.SUBTREE)
+        .where("cn").`is`(role)
+        .and("objectclass").`is`("NDRoleAssociation"),
+        AttributesMapper {
+            LdapUtils.getStringValue(LdapUtils.newLdapName(it["entryDN"]?.get()?.toString()), 3)
+        }
+    )
 }

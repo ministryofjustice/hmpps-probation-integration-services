@@ -9,3 +9,11 @@ data class CaseAccess(
     val exclusionMessage: String? = null,
     val restrictionMessage: String? = null
 )
+
+data class CaseAccessList(
+    val crn: String,
+    val excludedFrom: List<User>,
+    val restrictedTo: List<User>,
+    val exclusionMessage: String? = null,
+    val restrictionMessage: String? = null,
+)

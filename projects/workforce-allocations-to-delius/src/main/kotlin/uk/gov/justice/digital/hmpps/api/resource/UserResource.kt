@@ -3,16 +3,18 @@ package uk.gov.justice.digital.hmpps.api.resource
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.api.model.User
+import uk.gov.justice.digital.hmpps.service.LdapService
 import uk.gov.justice.digital.hmpps.service.UserAccessService
+import uk.gov.justice.digital.hmpps.service.UserService
 
 @RestController
-@RequestMapping("/users")
-class UserResource(private val userAccessService: UserAccessService) {
+class UserResource(
+    private val userAccessService: UserAccessService,
+    private val userService: UserService,
+    private val ldapService: LdapService,
+) {
 
     @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
@@ -27,9 +29,25 @@ class UserResource(private val userAccessService: UserAccessService) {
             has a restriction in place
         """
     )
-    @RequestMapping("/limited-access", method = [RequestMethod.GET, RequestMethod.POST])
+    @RequestMapping("/users/limited-access", method = [RequestMethod.GET, RequestMethod.POST])
     fun limitedAccessCheck(
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>,
         @RequestParam(required = false) username: String?
     ) = username?.let { userAccessService.userAccessFor(it, crns) } ?: userAccessService.checkLimitedAccessFor(crns)
+
+    @GetMapping("/users")
+    @Operation(summary = "Returns all users with the Delius `MAABT001` role")
+    fun allUsers() = ldapService.findAllUsersWithRole().map { User(it) }
+
+    @GetMapping("/person/{crn}/limited-access/all")
+    @Operation(summary = "Returns all limited access information (restrictions and exclusions) for a Delius CRN")
+    fun allAccessLimitationsForCrn(@PathVariable crn: String) = userService.getAllAccessLimitations(crn)
+
+    @PostMapping("/person/{crn}/limited-access")
+    @Operation(summary = "Returns limited access information (restrictions and exclusions) for a Delius CRN, given a list of staff codes")
+    fun allAccessLimitationsForCrnAndUserList(
+        @PathVariable crn: String,
+        @Size(min = 0, max = 500, message = "Please provide up to 500 usernames to filter by")
+        @RequestBody(required = false) usernames: List<String>? = null,
+    ) = userService.getAllAccessLimitations(crn, usernames)
 }
