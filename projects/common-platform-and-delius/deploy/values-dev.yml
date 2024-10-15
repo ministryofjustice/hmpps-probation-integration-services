@@ -1,3 +1,5 @@
+enabled: false
+
 generic-service:
   ingress:
     host: common-platform-and-delius-dev.hmpps.service.justice.gov.uk
