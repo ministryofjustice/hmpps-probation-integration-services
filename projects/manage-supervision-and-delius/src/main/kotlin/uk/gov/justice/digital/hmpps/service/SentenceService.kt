@@ -105,7 +105,7 @@ class SentenceService(
                 LicenceConditionNote(
                     createdBy,
                     dateCreatedBy?.let { LocalDate.parse(it, DateTimeFormatter.ofPattern("d/MM/yyyy")) },
-                    noteText.removeSuffix(System.lineSeparator()),
+                    noteText.removeSuffix(System.lineSeparator()).chunked(1500)[0],
                     note.let { n ->
                         when {
                             n.length > noteLength -> true
