@@ -454,8 +454,8 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
 }
 
 enum class CaseloadOrderType(val sortColumn: String) {
-    NEXT_CONTACT("naType.description"),
-    LAST_CONTACT("paType.description"),
+    NEXT_CONTACT("na.appointmentDatetime"),
+    LAST_CONTACT("pa.appointmentDatetime"),
     SENTENCE("dt.description"),
     SURNAME("p.surname"),
     NAME_OR_CRN("p.surname"),

@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 eval "$(sentry-cli bash-hook --no-environ)"
 
-queue_urls=$(aws sqs list-queues --queue-name-prefix "probation-integration-$ENVIRONMENT" | jq -r '.QueueUrls[] | select(endswith("-dlq"))')
+queue_urls=$(aws sqs list-queues --queue-name-prefix "$QUEUE_NAME_PREFIX" | jq -r '.QueueUrls[] | select(endswith("-dlq"))')
 
 for queue_url in $queue_urls
 do

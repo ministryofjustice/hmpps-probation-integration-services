@@ -4,6 +4,7 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Channel
 import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
 import uk.gov.justice.digital.hmpps.integrations.tier.TierClient
@@ -25,8 +26,14 @@ class Handler(
     @Publish(messages = [Message(name = "tiering/tier_calculation_complete")])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
-        val crn = notification.message.personReference.findCrn()!!
-        val tierCalculation = tierClient.getTierCalculation(URI.create(notification.message.detailUrl!!))
+        val crn = requireNotNull(notification.message.personReference.findCrn())
+        val detailUrl = requireNotNull(notification.message.detailUrl)
+        val tierCalculation = try {
+            tierClient.getTierCalculation(URI.create(detailUrl))
+        } catch (e: HttpClientErrorException.NotFound) {
+            telemetryService.trackEvent("TierCalculationNotFound", mapOf("crn" to crn, "detailUrl" to detailUrl))
+            return
+        }
         tierService.updateTier(crn, tierCalculation)
         telemetryService.trackEvent("TierUpdateSuccess", tierCalculation.telemetryProperties(crn))
     }

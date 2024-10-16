@@ -9,3 +9,9 @@ objectclass: inetOrgPerson
 cn: JoeBloggs
 sn: Bloggs
 mail: example@example.com
+
+dn: cn=MAABT001,cn=JoeBloggs,ou=Users,dc=moj,dc=com
+objectclass: NDRoleAssociation
+objectclass: alias
+cn: MAABT001
+aliasedObjectName: cn=MAABT001,cn=NDRoleAssociation,ou=Users,dc=moj,dc=com

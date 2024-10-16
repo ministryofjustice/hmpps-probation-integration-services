@@ -14,6 +14,8 @@ if [ -z "$model_group_id" ]; then
   }')
   if [ "$(jq -r '.status' <<<"$model_group")" != "CREATED" ]; then fail "Failed to create model group: $model_group"; fi
   model_group_id=$(jq -r '.model_group_id' <<<"$model_group")
+else
+  echo "Found model group with id=$model_group_id"
 fi
 
 ## Create Bedrock connector if it doesn't exist
@@ -23,6 +25,8 @@ if [ -z "$connector_id" ]; then
   echo Creating connector...
   connector_body=$(envsubst < /pipelines/contact/index/bedrock-connector.json)
   connector_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/connectors/_create" --data "$connector_body" | jq -r '.connector_id')
+else
+  echo "Found connector with id=$connector_id"
 fi
 
 ## Register model if it doesn't exist
@@ -39,7 +43,7 @@ if [ -z "$model_id" ]; then
   curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/_register" --data "${model_body}"
 else
   echo Updating model...
-  curl_json -XPUT "${SEARCH_INDEX_HOST}/_plugins/_ml/models/${model_id}" --data "${model_body}"
+  curl_json -XPUT "${SEARCH_INDEX_HOST}/_plugins/_ml/models/${model_id}" --data "${model_body}" || echo 'Warning: Failed to update model' >&2
 fi
 
 ## Deploy model

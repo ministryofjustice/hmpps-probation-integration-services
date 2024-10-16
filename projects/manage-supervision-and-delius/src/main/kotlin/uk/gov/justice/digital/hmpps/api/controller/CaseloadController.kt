@@ -31,7 +31,7 @@ class CaseloadController(private val userService: UserService) {
         @PathVariable username: String,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "100") size: Int,
-        @RequestParam(required = false, defaultValue = "nextContact.desc") sortBy: String,
+        @RequestParam(required = false, defaultValue = "nextContact.asc") sortBy: String,
         @RequestBody body: UserSearchFilter
     ) = userService.searchUserCaseload(username, body, PageRequest.of(page, size, sort(sortBy)), sortBy)
 
