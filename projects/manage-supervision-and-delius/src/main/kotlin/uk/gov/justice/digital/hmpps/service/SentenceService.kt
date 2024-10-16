@@ -100,7 +100,8 @@ class SentenceService(
                 val noteText = addedBy?.let { note.removePrefix(addedBy) } ?: note
 
                 val createdBy = addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(23)?.reversed()
-                val dateCreatedBy = addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(9,19)?.reversed()
+                val dateCreatedBy =
+                    addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(9, 19)?.reversed()
 
                 LicenceConditionNote(
                     createdBy,
