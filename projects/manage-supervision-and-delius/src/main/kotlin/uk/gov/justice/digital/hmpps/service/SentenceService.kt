@@ -97,9 +97,10 @@ class SentenceService(
                     + System.lineSeparator()).find(note)?.value
                 val noteText = addedBy?.let { note.removePrefix(addedBy) } ?: note
 
+
                 LicenceConditionNote(
-                    addedBy,
-                    noteText,
+                    addedBy?.removeSuffix(System.lineSeparator()),
+                    noteText.removeSuffix(System.lineSeparator()),
                     note.let { n ->
                         when {
                             n.length > noteLength -> true
