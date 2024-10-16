@@ -100,7 +100,7 @@ class SentenceService(
 
 
                 LicenceConditionNote(
-                    addedBy?.removeSuffix(System.lineSeparator()),
+                    addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(23)?.reversed(),
                     noteText.removeSuffix(System.lineSeparator()),
                     note.let { n ->
                         when {
