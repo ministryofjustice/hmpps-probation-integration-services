@@ -70,9 +70,11 @@ class SentenceService(
                 .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
             disposal?.id?.let { getUnpaidWorkTime(it) },
-            licenceConditions = disposal?.let { licenceConditionRepository.findAllByDisposalId(disposal.id).map {
-                it.toLicenceCondition()
-            } } ?: emptyList(),
+            licenceConditions = disposal?.let {
+                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
+                    it.toLicenceCondition()
+                }
+            } ?: emptyList(),
         )
 
     fun EntityLicenceCondition.toLicenceCondition() =
@@ -94,14 +96,14 @@ class SentenceService(
                 val note = noteSplitList.drop(1).joinToString(System.lineSeparator())
 
                 LicenceConditionNote(
-                        noteSplitList.first(),
-                        note.chunked(noteLength)[0],
-                        note.let { n ->
-                            when {
-                                n.length > noteLength -> true
-                                else -> false
-                            }
+                    noteSplitList.first(),
+                    note.chunked(noteLength)[0],
+                    note.let { n ->
+                        when {
+                            n.length > noteLength -> true
+                            else -> false
                         }
+                    }
                 )
             }
 
@@ -200,5 +202,4 @@ class SentenceService(
         }
         return null
     }
-
 }

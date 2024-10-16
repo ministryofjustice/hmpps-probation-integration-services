@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
-
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SentenceIntegrationTest {
@@ -132,7 +131,7 @@ class SentenceIntegrationTest {
                                         
                                     """.trimIndent(),
                                     false
-                                    ),
+                                ),
                                 LicenceConditionNote(
                                     "Comment added by Joe Root on 23/04/2024 at 13:45",
                                     """
@@ -143,7 +142,7 @@ class SentenceIntegrationTest {
                                     false
                                 )
                             )
-                            ),
+                        ),
                         LicenceCondition(
                             "lic cond main",
                             imposedReleasedDate = LocalDate.now().minusDays(14),

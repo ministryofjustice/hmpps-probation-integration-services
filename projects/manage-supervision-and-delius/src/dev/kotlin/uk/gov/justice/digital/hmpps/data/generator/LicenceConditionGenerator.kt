@@ -48,5 +48,4 @@ object LicenceConditionGenerator {
             we can check this.
         """.trimIndent()
     )
-
 }
