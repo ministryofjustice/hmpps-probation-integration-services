@@ -9,6 +9,7 @@ import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
 import io.sentry.Sentry
 import io.sentry.spring.jakarta.tracing.SentryTransaction
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Conditional
 import org.springframework.dao.CannotAcquireLockException
@@ -31,7 +32,9 @@ import java.util.concurrent.CompletionException
 @ConditionalOnExpression("\${messaging.consumer.enabled:true} and '\${messaging.consumer.queue:}' != ''")
 class AwsNotificationListener(
     private val handler: NotificationHandler<*>,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    @Value("\${messaging.consumer.sensitive-event-types:[]}") private val sensitiveEventTypes: List<String>,
+    @Value("\${messaging.consumer.queue}") private val queueName: String
 ) {
     @SentryTransaction(operation = "messaging")
     @SqsListener("\${messaging.consumer.queue}")
@@ -39,8 +42,15 @@ class AwsNotificationListener(
         val notification = objectMapper.readValue(message, jacksonTypeRef<Notification<String>>())
         notification.attributes
             .extractTelemetryContext()
-            .withSpan(this::class.java.simpleName, "RECEIVE ${notification.eventType}", SpanKind.CONSUMER) {
-                Span.current().setAttribute("message", message)
+            .withSpan(
+                this::class.java.simpleName,
+                "RECEIVE ${notification.eventType ?: "unknown event type"}",
+                SpanKind.CONSUMER
+            ) {
+                Span.current().setAttribute("queue", queueName)
+                if (notification.eventType != null && notification.eventType !in sensitiveEventTypes) {
+                    Span.current().setAttribute("message", message)
+                }
                 try {
                     retry(3, RETRYABLE_EXCEPTIONS) { handler.handle(message) }
                 } catch (e: Throwable) {
