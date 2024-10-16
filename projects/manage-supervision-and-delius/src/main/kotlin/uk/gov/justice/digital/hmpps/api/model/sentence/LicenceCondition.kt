@@ -12,7 +12,7 @@ data class LicenceCondition(
 
 data class LicenceConditionNote(
     val createdBy: String? = null,
-//    val createdByDate: String? = null,
+    val createdByDate: LocalDate? = null,
     val note: String,
     val hasNotesBeenTruncated: Boolean? = null
 )

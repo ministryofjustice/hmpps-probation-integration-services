@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as EntityLicenceCondition
 import java.time.Duration
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.time.toKotlinDuration
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
 
@@ -98,9 +99,12 @@ class SentenceService(
                 ).find(note)?.value
                 val noteText = addedBy?.let { note.removePrefix(addedBy) } ?: note
 
+                val createdBy = addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(23)?.reversed()
+                val dateCreatedBy = addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(9,19)?.reversed()
 
                 LicenceConditionNote(
-                    addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(23)?.reversed(),
+                    createdBy,
+                    dateCreatedBy?.let { LocalDate.parse(it, DateTimeFormatter.ofPattern("d/MM/yyyy")) },
                     noteText.removeSuffix(System.lineSeparator()),
                     note.let { n ->
                         when {
