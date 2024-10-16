@@ -9,5 +9,4 @@ object MessageGenerator {
         ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-validation-error")
     val COMMON_PLATFORM_EVENT_NO_CASES =
         ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-no-cases")
-
 }

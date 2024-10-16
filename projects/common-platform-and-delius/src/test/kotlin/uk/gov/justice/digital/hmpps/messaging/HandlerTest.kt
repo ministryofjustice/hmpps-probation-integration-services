@@ -41,7 +41,12 @@ internal class HandlerTest {
 
     @Test
     fun `message is logged to telemetry`() {
-        whenever(probationSearchClient.match(any())).thenReturn(ProbationMatchResponse(matches = emptyList(), matchedBy = "NONE"))
+        whenever(probationSearchClient.match(any())).thenReturn(
+            ProbationMatchResponse(
+                matches = emptyList(),
+                matchedBy = "NONE"
+            )
+        )
         whenever(personService.generateCrn()).thenReturn("A000001")
         whenever(referenceDataRepository.findByCode("M")).thenReturn(ReferenceDataGenerator.GENDER_MALE)
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
