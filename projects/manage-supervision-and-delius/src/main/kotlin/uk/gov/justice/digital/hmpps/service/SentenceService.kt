@@ -81,8 +81,42 @@ class SentenceService(
             subCategory?.description,
             imposedReleasedDate,
             actualStartDate,
-            getTruncatedNotes(),
-            hasNotesBeenTruncated())
+            populateLicenceConditionNotes(notes)
+        )
+
+    fun populateLicenceConditionNotes(notes: String?): List<LicenceConditionNote> {
+        val noteLength = 1500
+
+        notes?.let {
+            val splitParam = "---------------------------------------------------------" + System.lineSeparator()
+            return notes.split(splitParam).map {
+                val noteSplitList = it.split(System.lineSeparator())
+                val note = noteSplitList.drop(1).joinToString(System.lineSeparator())
+
+                LicenceConditionNote(
+                        noteSplitList.first(),
+                        note.chunked(noteLength)[0],
+                        note.let { n ->
+                            when {
+                                n.length > noteLength -> true
+                                else -> false
+                            }
+                        }
+                )
+            }
+
+        }
+        return listOf()
+    }
+
+    fun hasNotesBeenTruncated(notes: String): Boolean? {
+        return notes.let {
+            when {
+                it.length > 1500 -> true
+                else -> false
+            }
+        }
+    }
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)

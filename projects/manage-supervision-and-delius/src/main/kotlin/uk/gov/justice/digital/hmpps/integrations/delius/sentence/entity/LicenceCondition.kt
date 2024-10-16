@@ -41,20 +41,7 @@ class LicenceCondition(
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
-) {
-    fun getTruncatedNotes(): String? {
-        notes?.let { return it.chunked(1500)[0] } ?: return null
-    }
-
-    fun hasNotesBeenTruncated(): Boolean? {
-        return notes?.let {
-            when {
-                it.length > 1500 -> true
-                else -> false
-            }
-        }
-    }
-}
+)
 
 interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
     fun findAllByDisposalId(disposalId: Long): List<LicenceCondition>
