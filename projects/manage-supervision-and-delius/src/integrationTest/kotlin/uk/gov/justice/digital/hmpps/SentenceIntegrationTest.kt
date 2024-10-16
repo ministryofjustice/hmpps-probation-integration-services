@@ -124,7 +124,7 @@ class SentenceIntegrationTest {
                             LocalDate.now(),
                             listOf(
                                 LicenceConditionNote(
-                                    "Comment added by CVL Service on 22/04/2024 at 10:00",
+                                    "Comment added by CVL Service on 22/04/2024 at 10:00" + System.lineSeparator(),
                                     """
                                         Licence Condition created automatically from the Create and Vary a licence system of
                                         Allow person(s) as designated by your supervising officer to install an electronic monitoring tag on you and access to install any associated equipment in your property, and for the purpose of ensuring that equipment is functioning correctly. You must not damage or tamper with these devices and ensure that the tag is charged, and report to your supervising officer and the EM provider immediately if the tag or the associated equipment are not working correctly. This will be for the purpose of monitoring your alcohol abstinence licence condition(s) unless otherwise authorised by your supervising officer.
@@ -133,25 +133,37 @@ class SentenceIntegrationTest {
                                     false
                                 ),
                                 LicenceConditionNote(
-                                    "Comment added by Joe Root on 23/04/2024 at 13:45",
+                                    "Comment added by Joe Root on 23/04/2024 at 13:45" + System.lineSeparator(),
                                     """
                                         You must not drink any alcohol until Wednesday 7th August 2024 unless your
                                         probation officer says you can. You will need to wear an electronic tag all the time so
                                         we can check this.
                                     """.trimIndent(),
                                     false
-                                )
+                                ),
                             )
                         ),
                         LicenceCondition(
                             "lic cond main",
                             imposedReleasedDate = LocalDate.now().minusDays(14),
+                        ),
+                        LicenceCondition(
+                            "lic cond main",
+                            "Lic Sub cat",
+                            LocalDate.now().minusDays(7),
+                            LocalDate.now(),
+                            listOf(
+                                LicenceConditionNote(
+                                note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
+                                hasNotesBeenTruncated = false)
+                            )
                         )
                     )
                 )
             ),
             ProbationHistory(2, LocalDate.now().minusDays(7), 2, 2)
         )
+
 
         assertEquals(expected, response)
     }

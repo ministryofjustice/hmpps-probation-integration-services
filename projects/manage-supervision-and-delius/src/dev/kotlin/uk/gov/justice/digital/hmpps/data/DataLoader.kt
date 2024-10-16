@@ -99,6 +99,7 @@ class DataLoader(
             LicenceConditionGenerator.LIC_COND_SUB_CAT,
             LicenceConditionGenerator.LC_WITH_NOTES,
             LicenceConditionGenerator.LC_WITHOUT_NOTES,
+            LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY,
             PersonGenerator.TERMINATION_REASON,
             PersonGenerator.REF_DATA_YEARS,
             PersonGenerator.INACTIVE_ORDER_1,

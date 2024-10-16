@@ -48,4 +48,16 @@ object LicenceConditionGenerator {
             we can check this.
         """.trimIndent()
     )
+
+    val LC_WITH_NOTES_WITHOUT_ADDED_BY = LicenceCondition(
+        IdGenerator.getAndIncrement(),
+        LIC_COND_MAIN_CAT,
+        LIC_COND_SUB_CAT,
+        ACTIVE_ORDER.id,
+        LocalDate.now().minusDays(7),
+        LocalDate.now(),
+        """
+            He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;
+        """.trimIndent()
+    )
 }

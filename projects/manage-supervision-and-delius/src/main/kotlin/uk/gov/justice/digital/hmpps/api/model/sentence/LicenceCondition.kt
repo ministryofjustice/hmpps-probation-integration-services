@@ -11,7 +11,7 @@ data class LicenceCondition(
 )
 
 data class LicenceConditionNote(
-    val createdBy: String,
+    val createdBy: String? = null,
     val note: String,
     val hasNotesBeenTruncated: Boolean? = null
 )
