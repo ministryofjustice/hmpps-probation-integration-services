@@ -35,6 +35,10 @@ class Handler(
     override fun handle(notification: Notification<CommonPlatformHearing>) {
         telemetryService.notificationReceived(notification)
 
+        val defendant = notification.message.hearing.prosecutionCases.firstOrNull()?.defendants?.firstOrNull()
+            ?: throw IllegalArgumentException("No prosecution cases found")
+        val courtCode = notification.message.hearing.courtCentre.code.toDeliusCourtCode()
+
         val dateOfBirth = notification.message.hearing.prosecutionCases
             .firstOrNull()?.defendants?.firstOrNull()
             ?.personDefendant?.personDetails?.dateOfBirth
@@ -47,10 +51,6 @@ class Handler(
                 "Date of birth would indicate person is under ten years old: $it"
             }
         }
-
-        val defendant = notification.message.hearing.prosecutionCases.firstOrNull()?.defendants?.firstOrNull()
-            ?: throw IllegalArgumentException("No prosecution cases found")
-        val courtCode = notification.message.hearing.courtCentre.code.toDeliusCourtCode()
 
         val matchRequest = notification.message.toProbationMatchRequest()
         val matchedPersonResponse = probationSearchClient.match(matchRequest)
