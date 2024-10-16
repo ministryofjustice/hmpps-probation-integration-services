@@ -121,10 +121,16 @@
         <a href="./api-reference.html#staff-code-active-cases"><span>/staff/{code}/active-cases</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#person-crn-limited-access"><span>/person/{crn}/limited-access</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#allocation-details"><span>/allocation/details</span></a>
       </li>
       <li>
         <a href="./api-reference.html#allocation-demand"><span>/allocation-demand</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#users"><span>/users</span></a>
       </li>
       <li>
         <a href="./api-reference.html#staff-code-officer-view"><span>/staff/{code}/officer-view</span></a>
@@ -134,6 +140,9 @@
       </li>
       <li>
         <a href="./api-reference.html#person-value"><span>/person/{value}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#person-crn-limited-access-all"><span>/person/{crn}/limited-access/all</span></a>
       </li>
       <li>
         <a href="./api-reference.html#offenders-crn-documents"><span>/offenders/{crn}/documents</span></a>
@@ -465,6 +474,80 @@
 
 
 
+<h2 id="person-crn-limited-access">/person/{crn}/limited-access</h2>
+
+<h3 id="person-crn-limited-access-post">post</h3>
+
+  <p><em>Returns limited access information (restrictions and exclusions) for a Delius CRN, given a list of staff codes</em></p>
+
+
+
+
+<h4 id="person-crn-limited-access-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="person-crn-limited-access-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "excludedFrom": [
+    {
+      "username": "string"
+    }
+  ],
+  "restrictedTo": [
+    {
+      "username": "string"
+    }
+  ],
+  "exclusionMessage": "string",
+  "restrictionMessage": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-caseaccesslist'>CaseAccessList</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="allocation-details">/allocation/details</h2>
 
 <h3 id="allocation-details-post">post</h3>
@@ -631,6 +714,47 @@
 </td>
 <td>
 <a href='#schema-allocationdemandresponse'>AllocationDemandResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="users">/users</h2>
+
+<h3 id="users-get">get</h3>
+
+  <p><em>Returns all users with the Delius `MAABT001` role</em></p>
+
+
+
+
+
+
+
+<h4 id="users-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
 </td>
 </tr>
 
@@ -882,6 +1006,80 @@
 </td>
 <td>
 <a href='#schema-person'>Person</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="person-crn-limited-access-all">/person/{crn}/limited-access/all</h2>
+
+<h3 id="person-crn-limited-access-all-get">get</h3>
+
+  <p><em>Returns all limited access information (restrictions and exclusions) for a Delius CRN</em></p>
+
+
+
+
+<h4 id="person-crn-limited-access-all-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="person-crn-limited-access-all-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "excludedFrom": [
+    {
+      "username": "string"
+    }
+  ],
+  "restrictedTo": [
+    {
+      "username": "string"
+    }
+  ],
+  "exclusionMessage": "string",
+  "restrictionMessage": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-caseaccesslist'>CaseAccessList</a>
 </td>
 </tr>
 
@@ -2383,6 +2581,90 @@
 
 <tr>
 <td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-caseaccesslist">CaseAccessList</h3>
+
+
+<table class='schema-caseaccesslist'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>excludedFrom</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-user'>User</a>
+</td>
+</tr>
+
+<tr>
+<td>restrictedTo</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-user'>User</a>
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-user">User</h3>
+
+
+<table class='schema-user'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
 <td>string</td>
 <td>true</td>
 <td></td>

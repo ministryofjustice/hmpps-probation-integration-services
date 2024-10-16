@@ -124,6 +124,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ActiveCasesResponse"
+  /person/{crn}/limited-access:
+    post:
+      tags:
+      - user-resource
+      summary: "Returns limited access information (restrictions and exclusions) for\
+        \ a Delius CRN, given a list of staff codes"
+      operationId: allAccessLimitationsForCrnAndUserList
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              maxItems: 500
+              minItems: 0
+              type: array
+              items:
+                type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseAccessList"
   /allocation/details:
     post:
       tags:
@@ -171,6 +200,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AllocationDemandResponse"
+  /users:
+    get:
+      tags:
+      - user-resource
+      summary: Returns all users with the Delius `MAABT001` role
+      operationId: allUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
   /staff/{code}/officer-view:
     get:
       tags:
@@ -247,6 +291,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Person"
+  /person/{crn}/limited-access/all:
+    get:
+      tags:
+      - user-resource
+      summary: Returns all limited access information (restrictions and exclusions)
+        for a Delius CRN
+      operationId: allAccessLimitationsForCrn
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseAccessList"
   /offenders/{crn}/documents:
     get:
       tags:
@@ -668,6 +732,34 @@ components:
         middleName:
           type: string
         surname:
+          type: string
+    CaseAccessList:
+      required:
+      - crn
+      - excludedFrom
+      - restrictedTo
+      type: object
+      properties:
+        crn:
+          type: string
+        excludedFrom:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        restrictedTo:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+    User:
+      required:
+      - username
+      type: object
+      properties:
+        username:
           type: string
     AllocationDetailRequest:
       required:
