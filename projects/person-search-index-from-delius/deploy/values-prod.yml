@@ -5,6 +5,12 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
 
+  namespace_secrets:
+    common:
+      # In production, only a single standby DB is readable during normal operation, due to availability of Active Data
+      # Guard licences. This standby DB is different to the one used while Delius is in read-only mode (DB_STANDBY_URL).
+      JDBC_CONNECTION_STRING: DB_STANDBY_2_URL
+
 reindexing:
   person_schedule: 0 3 * * 1-5
   contact_schedule: 0 7 * * 2

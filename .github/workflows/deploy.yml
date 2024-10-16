@@ -158,3 +158,4 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         with:
           environment: ${{ inputs.environment }}
+          version: ${{ inputs.version }}

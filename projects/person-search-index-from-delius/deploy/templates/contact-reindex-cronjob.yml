@@ -31,8 +31,8 @@ spec:
               env:
                 - name: AWS_REGION
                   value: eu-west-2
-                - name: JDK_JAVA_OPTIONS
-                  value: -XX:MaxRAMPercentage=75.0
+                - name: LS_JAVA_OPTS
+                  value: -Xms3g -Xmx3g # = 75% of pod memory limit (see above)
                 - name: SENTRY_ENVIRONMENT
                   value: {{ .Values.reindexing.sentry_environment }}
                 - name: CONTACT_INDEX_PREFIX
@@ -61,7 +61,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: common
-                      key: DB_STANDBY_URL
+                      key: {{ index .Values "generic-service" "namespace_secrets" "common" "JDBC_CONNECTION_STRING" }}
                       optional: false
                 - name: JDBC_USER
                   valueFrom:
