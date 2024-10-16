@@ -1,0 +1,29 @@
+{
+  "Type": "Notification",
+  "MessageId": "aa2c2828-167f-529b-8e19-73735a2fb85c",
+  "TopicArn": "arn:aws:sns:eu-west-2:000000000000:example",
+  "Message" : "{\"hearing\":{\"id\":\"00000000-0000-0000-0000-000000000000\",\"courtCentre\":{\"id\":\"00000000-0000-0000-0000-000000000000\",\"code\":\"A00AA00\",\"roomId\":\"00000000-0000-0000-0000-000000000000\",\"roomName\":\"Courtroom 01\"},\"type\":{\"id\":\"00000000-0000-0000-0000-000000000000\",\"description\":\"First hearing\",\"welshDescription\":null},\"jurisdictionType\":\"MAGISTRATES\",\"hearingDays\":[{\"sittingDay\":\"2024-01-01T12:00:00\",\"listedDurationMinutes\":30,\"listingSequence\":1}],\"prosecutionCases\":[{\"id\":\"00000000-0000-0000-0000-000000000000\",\"initiationCode\":\"A\",\"prosecutionCaseIdentifier\":{\"prosecutionAuthorityCode\":\"AAAAA\",\"prosecutionAuthorityId\":\"00000000-0000-0000-0000-000000000000\",\"caseURN\":\"00AA000000\"},\"defendants\":[{\"id\":\"00000000-0000-0000-0000-000000000000\",\"offences\":[{\"id\":\"00000000-0000-0000-0000-000000000000\",\"offenceDefinitionId\":\"00000000-0000-0000-0000-000000000000\",\"offenceCode\":\"AA00000\",\"offenceTitle\":\"Example Offense Title\",\"wording\":\"Example of the offense committed\",\"offenceLegislation\":\"Example legislation\",\"listingNumber\":1,\"judicialResults\":[],\"plea\":null,\"verdict\":null}],\"prosecutionCaseId\":\"00000000-0000-0000-0000-000000000000\",\"personDefendant\":{\"personDetails\":{\"gender\":\"MALE\",\"lastName\":\"Example Last Name\",\"middleName\":null,\"firstName\":\"Example First Name\",\"dateOfBirth\":\"2015-01-01\",\"address\":{\"address1\":\"Example Address Line 1\",\"address2\":\"Example Address Line 2\",\"address3\":\"Example Address Line 3\",\"address4\":null,\"address5\":null,\"postcode\":\"AA1 1AA\"},\"contact\":{\"home\":null,\"mobile\":\"07000000000\",\"work\":null},\"ethnicity\":{\"observedEthnicityDescription\":\"White\",\"selfDefinedEthnicityDescription\":\"British\"}}},\"legalEntityDefendant\":null,\"masterDefendantId\":\"00000000-0000-0000-0000-000000000000\",\"pncId\":\"00000000000A\",\"croNumber\":\"000000/00A\"}],\"caseStatus\":\"ACTIVE\",\"caseMarkers\":[]}]}}",
+  "Timestamp": "2022-07-27T14:22:08.509Z",
+  "SignatureVersion": "1",
+  "Signature": "EXAMPLE",
+  "SigningCertURL": "https://sns.eu-west-2.amazonaws.com/EXAMPLE.pem",
+  "UnsubscribeURL": "https://sns.eu-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=EXAMPLE",
+  "MessageAttributes": {
+    "tracestate": {
+      "Type": "String",
+      "Value": "00-01a234b56c7de8f9g01h234i56789j0k-1l234m567n8o9p01-01"
+    },
+    "eventType": {
+      "Type": "String",
+      "Value": "COMMON_PLATFORM_HEARING"
+    },
+    "hearingEventType": {
+      "Type": "String",
+      "Value": "ConfirmedOrUpdated"
+    },
+    "traceparent": {
+      "Type": "String",
+      "Value": "00-01a234b56c7de8f9g01h234i56789j0k-1l234m567n8o9p01-01"
+    }
+  }
+}

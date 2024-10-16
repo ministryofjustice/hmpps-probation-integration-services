@@ -8,10 +8,9 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
@@ -19,24 +18,15 @@ internal class HandlerTest {
     lateinit var telemetryService: TelemetryService
 
     @Mock
-    lateinit var converter: NotificationConverter<HmppsDomainEvent>
+    lateinit var converter: NotificationConverter<CommonPlatformHearing>
 
     @InjectMocks
     lateinit var handler: Handler
 
     @Test
     fun `message is logged to telemetry`() {
-        // Given a message
-        val notification = Notification(message = MessageGenerator.EXAMPLE)
-
-        // When it is received
-        try {
-            handler.handle(notification)
-        } catch (_: NotImplementedError) {
-            // Note: Remove this try/catch when the Handler logic has been implemented
-        }
-
-        // Then it is logged to telemetry
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
     }
 }
