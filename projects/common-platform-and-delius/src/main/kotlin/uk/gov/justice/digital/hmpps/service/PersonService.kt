@@ -41,7 +41,7 @@ class PersonService(
         // Person record
         val savedPerson = personRepository.save(person)
 
-        val courtLinkedProvider = courtRepository.findByCode(courtCode).probationArea
+        val courtLinkedProvider = courtRepository.findByNationalCourtCode(courtCode).probationArea
         val initialAllocation = referenceDataRepository.initialAllocationReason()
         val unallocatedTeam = teamRepository.findByCode(courtLinkedProvider.code + "UAT")
         val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
@@ -72,7 +72,6 @@ class PersonService(
         equalityRepository.save(equality)
 
         audit["offenderId"] = savedPerson.id
-        true
     }
 
     fun generateCrn(): String {

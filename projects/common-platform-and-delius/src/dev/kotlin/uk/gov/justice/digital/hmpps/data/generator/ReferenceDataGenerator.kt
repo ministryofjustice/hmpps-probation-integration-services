@@ -22,11 +22,10 @@ object DatasetGenerator {
     val ALL_DATASETS = DatasetCode.entries.map { Dataset(IdGenerator.getAndIncrement(), it) }.associateBy { it.code }
     val GENDER = ALL_DATASETS[DatasetCode.GENDER]!!
     val OM_ALLOCATION_REASON = ALL_DATASETS[DatasetCode.OM_ALLOCATION_REASON]!!
-    fun all() = ALL_DATASETS.values
 }
 
 object CourtGenerator {
-    val UNKNOWN_COURT_N07_PROVIDER = generate(code = "UNKNCT")
+    val UNKNOWN_COURT_N07_PROVIDER = generate(code = "UNKNCT", nationalCourtCode = "A00AA00")
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
@@ -34,5 +33,13 @@ object CourtGenerator {
         selectable: Boolean = true,
         courtName: String = "Court not known",
         provider: Provider = ProviderGenerator.DEFAULT,
-    ) = Court(id = id, code = code, selectable = selectable, courtName = courtName, probationArea = provider)
+        nationalCourtCode: String? = null,
+    ) = Court(
+        id = id,
+        code = code,
+        selectable = selectable,
+        courtName = courtName,
+        probationArea = provider,
+        nationalCourtCode = nationalCourtCode
+    )
 }

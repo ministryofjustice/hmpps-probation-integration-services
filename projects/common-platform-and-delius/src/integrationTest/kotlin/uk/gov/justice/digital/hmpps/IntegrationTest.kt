@@ -4,9 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.*
@@ -16,13 +15,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.repository.CourtRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.repository.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.repository.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.PersonService
@@ -41,23 +39,22 @@ internal class IntegrationTest {
     @Autowired
     lateinit var wireMockServer: WireMockServer
 
-    @Mock
-    lateinit var auditedInteractionService: AuditedInteractionService
-
     @MockBean
     lateinit var telemetryService: TelemetryService
 
-    @MockBean
-    lateinit var referenceDataRepository: ReferenceDataRepository
-
-    @MockBean
-    lateinit var courtRepository: CourtRepository
+    @SpyBean
+    lateinit var auditedInteractionService: AuditedInteractionService
 
     @SpyBean
     lateinit var personRepository: PersonRepository
 
     @SpyBean
     lateinit var personService: PersonService
+
+    @BeforeEach
+    fun setup() {
+        doReturn("A000001").whenever(personService).generateCrn()
+    }
 
     @Test
     fun `Message is logged to telemetry`() {
@@ -92,7 +89,7 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `When a person is 10 years old or under a person is not inserted`() {
+    fun `When a message with no prosecution cases is found no insert is performed`() {
         wireMockServer.stubFor(
             post(urlPathEqualTo("/probation-search/match"))
                 .willReturn(
@@ -103,12 +100,9 @@ internal class IntegrationTest {
                 )
         )
 
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_VALIDATION_ERROR)
-        val exception = assertThrows<IllegalArgumentException> {
-            channelManager.getChannel(queueName).publishAndWait(notification)
-        }
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_CASES)
 
-        assert(exception.message!!.contains("Date of birth would indicate person is under ten years old"))
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(personService, never()).insertPerson(any(), any())
         verify(personRepository, never()).save(any())
@@ -137,10 +131,11 @@ internal class IntegrationTest {
             assertThat(it.forename, Matchers.equalTo("Example First Name"))
             assertThat(it.surname, Matchers.equalTo("Example Last Name"))
         })
+
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.INSERT_PERSON),
             any(),
-            any(),
+            eq(AuditedInteraction.Outcome.SUCCESS),
             any(),
             anyOrNull()
         )

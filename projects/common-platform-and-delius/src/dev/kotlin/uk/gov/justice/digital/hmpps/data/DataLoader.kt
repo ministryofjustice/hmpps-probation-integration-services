@@ -7,10 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -28,9 +25,17 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         entityManager.run {
-            persist(ProviderGenerator.DEFAULT)
+            persist(BusinessInteractionGenerator.INSERT_PERSON)
+            persist(DatasetGenerator.GENDER)
+            persist(DatasetGenerator.OM_ALLOCATION_REASON)
             persist(ReferenceDataGenerator.GENDER_MALE)
             persist(ReferenceDataGenerator.GENDER_FEMALE)
+            persist(ReferenceDataGenerator.INITIAL_ALLOCATION)
+            persist(ProviderGenerator.DEFAULT)
+            persist(TeamGenerator.ALLOCATED)
+            persist(TeamGenerator.UNALLOCATED)
+            persist(StaffGenerator.UNALLOCATED)
+            persist(StaffGenerator.ALLOCATED)
             persist(CourtGenerator.UNKNOWN_COURT_N07_PROVIDER)
         }
     }

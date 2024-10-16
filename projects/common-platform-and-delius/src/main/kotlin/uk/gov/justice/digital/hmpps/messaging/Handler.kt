@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.repository.ReferenceDataRepository
@@ -37,7 +36,8 @@ class Handler(
 
         val defendant = notification.message.hearing.prosecutionCases.firstOrNull()?.defendants?.firstOrNull()
             ?: throw IllegalArgumentException("No prosecution cases found")
-        val courtCode = notification.message.hearing.courtCentre.code.toDeliusCourtCode()
+
+        val courtCode = notification.message.hearing.courtCentre.code
 
         val dateOfBirth = notification.message.hearing.prosecutionCases
             .firstOrNull()?.defendants?.firstOrNull()
@@ -99,9 +99,6 @@ class Handler(
 
     fun String.toDeliusGender() = ReferenceData.GenderCode.entries.find { it.commonPlatformValue == this }?.deliusValue
         ?: throw IllegalStateException("Gender not found: $this")
-
-    fun String.toDeliusCourtCode() = Court.CourtCode.entries.find { it.commonPlatformValue == this }?.deliusValue
-        ?: throw IllegalStateException("Court not found: $this")
 }
 
 

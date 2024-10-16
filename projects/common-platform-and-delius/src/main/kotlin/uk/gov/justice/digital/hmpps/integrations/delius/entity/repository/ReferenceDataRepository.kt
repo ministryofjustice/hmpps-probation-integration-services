@@ -25,5 +25,5 @@ fun ReferenceDataRepository.initialAllocationReason() =
         ?: throw NotFoundException("Allocation Reason", "code", ReferenceData.AllocationCode.INITIAL_ALLOCATION.code)
 
 interface CourtRepository : JpaRepository<Court, Long> {
-    fun findByCode(code: String): Court
+    fun findByNationalCourtCode(nationalCourtCode: String): Court
 }

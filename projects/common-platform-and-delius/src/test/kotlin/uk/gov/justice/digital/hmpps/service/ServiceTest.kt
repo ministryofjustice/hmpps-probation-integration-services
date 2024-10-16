@@ -63,7 +63,7 @@ class PersonServiceTest {
         val initialAllocation = ReferenceDataGenerator.INITIAL_ALLOCATION
 
         whenever(personRepository.save(person)).thenReturn(savedPerson)
-        whenever(courtRepository.findByCode(anyString())).thenReturn(court)
+        whenever(courtRepository.findByNationalCourtCode(anyString())).thenReturn(court)
         whenever(referenceDataRepository.findByCodeAndDatasetCode(anyString(), any())).thenReturn(initialAllocation)
         whenever(teamRepository.findByCode(anyString())).thenReturn(unallocatedTeam)
         whenever(staffRepository.findByCode(anyString())).thenReturn(unallocatedStaff)

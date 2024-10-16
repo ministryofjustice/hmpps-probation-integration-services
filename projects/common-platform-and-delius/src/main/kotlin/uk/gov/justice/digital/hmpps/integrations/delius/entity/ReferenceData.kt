@@ -106,8 +106,7 @@ class Court(
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val probationArea: Provider,
-) {
-    enum class CourtCode(val commonPlatformValue: String, val deliusValue: String) {
-        TEST("A00AA00", "UNKNCT")
-    }
-}
+
+    @Column(name = "national_court_code")
+    val nationalCourtCode: String?
+)
