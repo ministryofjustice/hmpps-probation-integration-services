@@ -153,8 +153,9 @@ class SentenceIntegrationTest {
                             LocalDate.now(),
                             listOf(
                                 LicenceConditionNote(
-                                note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
-                                hasNotesBeenTruncated = false)
+                                    note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
+                                    hasNotesBeenTruncated = false
+                                )
                             )
                         )
                     )

@@ -91,10 +91,11 @@ class SentenceService(
 
         notes?.let {
             val splitParam = "---------------------------------------------------------" + System.lineSeparator()
-            return notes.split(splitParam).map {
-                note ->
-                val addedBy = Regex("^Comment added by .+? on \\d{2}\\/\\d{2}\\/\\d{4} at \\d{2}:\\d{2}"
-                    + System.lineSeparator()).find(note)?.value
+            return notes.split(splitParam).map { note ->
+                val addedBy = Regex(
+                    "^Comment added by .+? on \\d{2}\\/\\d{2}\\/\\d{4} at \\d{2}:\\d{2}"
+                        + System.lineSeparator()
+                ).find(note)?.value
                 val noteText = addedBy?.let { note.removePrefix(addedBy) } ?: note
 
 
