@@ -29,6 +29,8 @@ generic-service:
     JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar -XX:MaxRAMPercentage=75.0
     SENTRY_TRACES_SAMPLE_RATE: '0.05'
     SENTRY_IGNORED_EXCEPTIONS_FOR_TYPE: "org.apache.catalina.connector.ClientAbortException"
+    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 10
+    SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 1
 
   namespace_secrets:
     common:
