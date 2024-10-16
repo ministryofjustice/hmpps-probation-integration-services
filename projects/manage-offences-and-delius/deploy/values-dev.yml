@@ -7,13 +7,9 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: dev
+    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/oauth/token
     INTEGRATIONS_MANAGE-OFFENCES_URL: https://manage-offences-api-dev.hmpps.service.justice.gov.uk
-
-    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
-    SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 0
-
-    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 generic-prometheus-alerts:
   businessHoursOnly: true

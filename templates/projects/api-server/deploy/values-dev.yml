@@ -9,13 +9,9 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: dev
+    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
-
-    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
-    SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 0
-
-    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 generic-prometheus-alerts:
   businessHoursOnly: true
