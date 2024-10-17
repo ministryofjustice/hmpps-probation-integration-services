@@ -1,20 +1,34 @@
 package uk.gov.justice.digital.hmpps
 
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.mock.mockito.SpyBean
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.repository.PersonRepository
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
-import java.util.concurrent.TimeoutException
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
-@SpringBootTest
+@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
@@ -22,22 +36,108 @@ internal class IntegrationTest {
     @Autowired
     lateinit var channelManager: HmppsChannelManager
 
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
+
     @MockBean
     lateinit var telemetryService: TelemetryService
 
+    @SpyBean
+    lateinit var auditedInteractionService: AuditedInteractionService
+
+    @SpyBean
+    lateinit var personRepository: PersonRepository
+
+    @SpyBean
+    lateinit var personService: PersonService
+
+    @BeforeEach
+    fun setup() {
+        doReturn("A000001").whenever(personService).generateCrn()
+    }
+
     @Test
-    fun `message is logged to telemetry`() {
-        // Given a message
-        val notification = Notification(message = MessageGenerator.EXAMPLE)
-
-        // When it is received
-        try {
-            channelManager.getChannel(queueName).publishAndWait(notification)
-        } catch (_: TimeoutException) {
-            // Note: Remove this try/catch when the MessageListener logic has been implemented
-        }
-
-        // Then it is logged to telemetry
+    fun `Message is logged to telemetry`() {
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+    }
+
+    @Test
+    fun `When a probation search match is detected then a person is not inserted`() {
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/probation-search/match"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("probation-search-single-result.json")
+                )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(personService, never()).insertPerson(any(), any())
+        verify(personRepository, never()).save(any())
+        verify(auditedInteractionService, Mockito.never()).createAuditedInteraction(
+            any(),
+            any(),
+            any(),
+            any(),
+            anyOrNull()
+        )
+    }
+
+    @Test
+    fun `When a message with no prosecution cases is found no insert is performed`() {
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/probation-search/match"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("probation-search-no-results.json")
+                )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_CASES)
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(personService, never()).insertPerson(any(), any())
+        verify(personRepository, never()).save(any())
+        verify(auditedInteractionService, Mockito.never())
+            .createAuditedInteraction(any(), any(), any(), any(), anyOrNull())
+    }
+
+    @Test
+    fun `When a probation search match is not detected then a person is inserted`() {
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/probation-search/match"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("probation-search-no-results.json")
+                )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(personService).insertPerson(any(), any())
+
+        verify(personRepository).save(check<Person> {
+            assertThat(it.forename, Matchers.equalTo("Example First Name"))
+            assertThat(it.surname, Matchers.equalTo("Example Last Name"))
+        })
+
+        verify(auditedInteractionService).createAuditedInteraction(
+            eq(BusinessInteractionCode.INSERT_PERSON),
+            any(),
+            eq(AuditedInteraction.Outcome.SUCCESS),
+            any(),
+            anyOrNull()
+        )
     }
 }

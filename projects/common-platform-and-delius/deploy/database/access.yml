@@ -3,6 +3,14 @@ database:
     username_key: /common-platform-and-delius/db-username
     password_key: /common-platform-and-delius/db-password
 
+    tables:
+      - offender
+      - offender_manager
+      - equality
+      - audited_interaction
+    packages:
+      - offender_support_api # for generating crn
+
   audit:
     username: CommonPlatformAndDelius
     forename: Common Platform
