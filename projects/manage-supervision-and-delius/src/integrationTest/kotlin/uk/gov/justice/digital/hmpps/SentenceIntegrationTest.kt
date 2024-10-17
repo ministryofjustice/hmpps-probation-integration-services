@@ -13,6 +13,9 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.EVENT_DOCUMENT
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
@@ -120,6 +123,7 @@ class SentenceIntegrationTest {
                     "3 minutes completed (of 12 hours)",
                     listOf(
                         LicenceCondition(
+                            LC_WITH_NOTES.id,
                             LIC_COND_MAIN_CAT.description,
                             LIC_COND_SUB_CAT.description,
                             LocalDate.now().minusDays(7),
@@ -148,10 +152,12 @@ class SentenceIntegrationTest {
                             )
                         ),
                         LicenceCondition(
+                            LC_WITHOUT_NOTES.id,
                             LIC_COND_MAIN_CAT.description,
                             imposedReleasedDate = LocalDate.now().minusDays(14),
                         ),
                         LicenceCondition(
+                            LC_WITH_NOTES_WITHOUT_ADDED_BY.id,
                             LIC_COND_MAIN_CAT.description,
                             LIC_COND_SUB_CAT.description,
                             LocalDate.now().minusDays(7),

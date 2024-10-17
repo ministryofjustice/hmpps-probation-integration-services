@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model.sentence
 import java.time.LocalDate
 
 data class LicenceCondition(
+    val id: Long,
     val mainDescription: String,
     val subTypeDescription: String? = null,
     val imposedReleasedDate: LocalDate,

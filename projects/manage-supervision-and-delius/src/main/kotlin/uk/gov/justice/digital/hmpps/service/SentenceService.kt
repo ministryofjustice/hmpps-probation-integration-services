@@ -80,6 +80,7 @@ class SentenceService(
 
     fun EntityLicenceCondition.toLicenceCondition() =
         LicenceCondition(
+            id,
             mainCategory.description,
             subCategory?.description,
             imposedReleasedDate,
