@@ -7,19 +7,14 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: dev
+    LOGGING_LEVEL_COM_AMAZON_SQS: DEBUG
+    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
-
     INTEGRATIONS_ALFRESCO_URL: https://hmpps-delius-alfresco-test.apps.live.cloud-platform.service.justice.gov.uk/alfresco/service/noms-spg/
     INTEGRATIONS_PRE-SENTENCE-REPORTS_BASE-URL: https://pre-sentence-service-dev.hmpps.service.justice.gov.uk
     INTEGRATIONS_NEW-TECH_BASE-URL: https://ndelius.test.probation.service.justice.gov.uk/newTech
-
-    LOGGING_LEVEL_COM_AMAZON_SQS: DEBUG
-    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
-    SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 0
-
-    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 generic-prometheus-alerts:
   businessHoursOnly: true

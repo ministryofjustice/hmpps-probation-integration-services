@@ -7,14 +7,10 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: dev
+    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/oauth/token
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/.well-known/jwks.json
     INTEGRATIONS_ALFRESCO_URL: https://hmpps-delius-alfresco-test.apps.live.cloud-platform.service.justice.gov.uk/alfresco/service/noms-spg/
-
-    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 5
-    SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 0
-
-    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 
 generic-prometheus-alerts:
   businessHoursOnly: true
