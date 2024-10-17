@@ -126,6 +126,7 @@ class SentenceIntegrationTest {
                             LocalDate.now(),
                             listOf(
                                 LicenceConditionNote(
+                                    0,
                                     "CVL Service",
                                     LocalDate.of(2024, 4, 22),
                                     """
@@ -134,6 +135,7 @@ class SentenceIntegrationTest {
                                     true
                                 ),
                                 LicenceConditionNote(
+                                    1,
                                     "Joe Root",
                                     LocalDate.of(2024, 4, 23),
                                     """
@@ -156,6 +158,7 @@ class SentenceIntegrationTest {
                             LocalDate.now(),
                             listOf(
                                 LicenceConditionNote(
+                                    0,
                                     note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
                                     hasNotesBeenTruncated = false
                                 )

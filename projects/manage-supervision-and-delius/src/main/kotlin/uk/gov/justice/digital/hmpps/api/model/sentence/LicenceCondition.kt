@@ -11,6 +11,7 @@ data class LicenceCondition(
 )
 
 data class LicenceConditionNote(
+    val id: Int,
     val createdBy: String? = null,
     val createdByDate: LocalDate? = null,
     val note: String,

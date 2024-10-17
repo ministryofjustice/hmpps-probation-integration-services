@@ -92,7 +92,7 @@ class SentenceService(
 
         notes?.let {
             val splitParam = "---------------------------------------------------------" + System.lineSeparator()
-            return notes.split(splitParam).map { note ->
+            return notes.split(splitParam).mapIndexed { index, note ->
                 val matchResult = Regex(
                     "^Comment added by (.+?) on (\\d{2}/\\d{2}/\\d{4}) at \\d{2}:\\d{2}"
                         + System.lineSeparator()
@@ -106,6 +106,7 @@ class SentenceService(
 
 
                 LicenceConditionNote(
+                    index,
                     userCreatedBy,
                     dateCreatedBy,
                     commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0],
