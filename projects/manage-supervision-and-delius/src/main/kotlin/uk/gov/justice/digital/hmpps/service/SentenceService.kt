@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
@@ -14,6 +15,7 @@ import java.time.Duration
 import java.time.LocalDate
 import kotlin.time.toKotlinDuration
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as EntityLicenceCondition
 
 @Service
 class SentenceService(
@@ -24,7 +26,8 @@ class SentenceService(
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
     private val offenderManagerRepository: OffenderManagerRepository,
-    private val upwAppointmentRepository: UpwAppointmentRepository
+    private val upwAppointmentRepository: UpwAppointmentRepository,
+    private val licenceConditionRepository: LicenceConditionRepository
 ) {
     fun getEvents(crn: String): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -67,8 +70,52 @@ class SentenceService(
             requirements = requirementRepository.getRequirements(id, eventNumber)
                 .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
-            disposal?.id?.let { getUnpaidWorkTime(it) }
+            disposal?.id?.let { getUnpaidWorkTime(it) },
+            licenceConditions = disposal?.let {
+                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
+                    it.toLicenceCondition()
+                }
+            } ?: emptyList(),
         )
+
+    fun EntityLicenceCondition.toLicenceCondition() =
+        LicenceCondition(
+            mainCategory.description,
+            subCategory?.description,
+            imposedReleasedDate,
+            actualStartDate,
+            populateLicenceConditionNotes(notes)
+        )
+
+    fun populateLicenceConditionNotes(notes: String?): List<LicenceConditionNote> {
+        val noteLength = 1500
+
+        notes?.let {
+            val splitParam = "---------------------------------------------------------" + System.lineSeparator()
+            return notes.split(splitParam).map { note ->
+                val matchResult = Regex(
+                    "^Comment added by (.+?) on (\\d{2}/\\d{2}/\\d{4}) at \\d{2}:\\d{2}"
+                        + System.lineSeparator()
+                ).find(note)
+                val commentLine = matchResult?.value
+                val commentText = commentLine?.let { note.removePrefix(commentLine) } ?: note
+
+                val userCreatedBy = matchResult?.groupValues?.get(1)
+                val dateCreatedBy = matchResult?.groupValues?.get(2)
+                    ?.let { LocalDate.parse(it, DeliusDateFormatter) }
+
+
+                LicenceConditionNote(
+                    userCreatedBy,
+                    dateCreatedBy,
+                    commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0],
+                    note.length > noteLength
+                )
+            }
+
+        }
+        return listOf()
+    }
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
