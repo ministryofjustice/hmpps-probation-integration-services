@@ -7,7 +7,7 @@ data class LicenceCondition(
     val subTypeDescription: String? = null,
     val imposedReleasedDate: LocalDate,
     val actualStartDate: LocalDate? = null,
-    val notes: List<LicenceConditionNote> = listOf()
+    val notes: List<LicenceConditionNote>? = null
 )
 
 data class LicenceConditionNote(

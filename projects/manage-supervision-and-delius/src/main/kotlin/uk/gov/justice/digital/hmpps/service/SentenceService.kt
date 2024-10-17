@@ -87,7 +87,7 @@ class SentenceService(
             populateLicenceConditionNotes(notes)
         )
 
-    fun populateLicenceConditionNotes(notes: String?): List<LicenceConditionNote> {
+    fun populateLicenceConditionNotes(notes: String?): List<LicenceConditionNote>? {
         val noteLength = 1500
 
         notes?.let {
@@ -115,7 +115,8 @@ class SentenceService(
             }
 
         }
-        return listOf()
+
+        return null
     }
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
