@@ -6,16 +6,16 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as EntityLicenceCondition
 import java.time.Duration
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlin.time.toKotlinDuration
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as EntityLicenceCondition
 
 @Service
 class SentenceService(
@@ -93,40 +93,28 @@ class SentenceService(
         notes?.let {
             val splitParam = "---------------------------------------------------------" + System.lineSeparator()
             return notes.split(splitParam).map { note ->
-                val addedBy = Regex(
-                    "^Comment added by .+? on \\d{2}/\\d{2}/\\d{4} at \\d{2}:\\d{2}"
+                val matchResult = Regex(
+                    "^Comment added by (.+?) on (\\d{2}/\\d{2}/\\d{4}) at \\d{2}:\\d{2}"
                         + System.lineSeparator()
-                ).find(note)?.value
-                val noteText = addedBy?.let { note.removePrefix(addedBy) } ?: note
+                ).find(note)
+                val commentLine = matchResult?.value
+                val commentText = commentLine?.let { note.removePrefix(commentLine) } ?: note
 
-                val createdBy = addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(23)?.reversed()
-                val dateCreatedBy =
-                    addedBy?.removeSuffix(System.lineSeparator())?.reversed()?.substring(9, 19)?.reversed()
+                val userCreatedBy = matchResult?.groupValues?.get(1)
+                val dateCreatedBy = matchResult?.groupValues?.get(2)
+                    ?.let { LocalDate.parse(it, DeliusDateFormatter) }
+
 
                 LicenceConditionNote(
-                    createdBy,
-                    dateCreatedBy?.let { LocalDate.parse(it, DateTimeFormatter.ofPattern("d/MM/yyyy")) },
-                    noteText.removeSuffix(System.lineSeparator()).chunked(1500)[0],
-                    note.let { n ->
-                        when {
-                            n.length > noteLength -> true
-                            else -> false
-                        }
-                    }
+                    userCreatedBy,
+                    dateCreatedBy,
+                    commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0],
+                    note.length > noteLength
                 )
             }
 
         }
         return listOf()
-    }
-
-    fun hasNotesBeenTruncated(notes: String): Boolean? {
-        return notes.let {
-            when {
-                it.length > 1500 -> true
-                else -> false
-            }
-        }
     }
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
