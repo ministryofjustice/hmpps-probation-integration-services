@@ -22,5 +22,5 @@ data class LicenceConditionNote(
 
 data class LicenceConditionNoteDetail(
     val personSummary: PersonSummary,
-    val note: LicenceConditionNote? = null
+    val licenceConditionNote: LicenceConditionNote? = null
 )

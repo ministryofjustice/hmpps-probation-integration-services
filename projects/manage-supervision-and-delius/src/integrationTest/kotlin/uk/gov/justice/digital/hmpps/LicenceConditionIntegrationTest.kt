@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -67,6 +68,7 @@ class LicenceConditionIntegrationTest {
                 MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LicenceConditionGenerator.LC_WITH_NOTES.id}/note/0")
                     .withToken()
             )
+            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<LicenceConditionNoteDetail>()
 
