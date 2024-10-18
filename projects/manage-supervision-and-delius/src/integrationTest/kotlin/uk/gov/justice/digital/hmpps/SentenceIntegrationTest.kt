@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_SUB_CAT
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -49,6 +50,7 @@ class SentenceIntegrationTest {
     fun `get active sentences`() {
         val response = mockMvc
             .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}").withToken())
+            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<SentenceOverview>()
 

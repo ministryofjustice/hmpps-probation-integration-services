@@ -34,7 +34,7 @@ class LicenceConditionService(
     }
 }
 
-fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<LicenceConditionNote>? {
+fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<LicenceConditionNote> {
 
     return  notes?.let {
         val splitParam = "---------------------------------------------------------" + System.lineSeparator()
@@ -65,5 +65,5 @@ fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<L
                 }
             )
         }
-    }
+    } ?: listOf()
 }
