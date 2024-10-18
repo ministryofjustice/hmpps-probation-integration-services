@@ -44,8 +44,11 @@ class LicenceCondition(
 )
 
 interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
+
     fun findAllByDisposalId(disposalId: Long): List<LicenceCondition>
 }
+
+fun LicenceConditionRepository.getByLicenceConditionId(id: Long) = findById(id)
 
 @Immutable
 @Table(name = "r_lic_cond_type_main_cat")

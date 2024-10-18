@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model.sentence
 
+import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import java.time.LocalDate
 
 data class LicenceCondition(
@@ -17,4 +18,9 @@ data class LicenceConditionNote(
     val createdByDate: LocalDate? = null,
     val note: String,
     val hasNotesBeenTruncated: Boolean? = null
+)
+
+data class LicenceConditionNoteDetail(
+    val personSummary: PersonSummary,
+    val note: LicenceConditionNote? = null
 )
