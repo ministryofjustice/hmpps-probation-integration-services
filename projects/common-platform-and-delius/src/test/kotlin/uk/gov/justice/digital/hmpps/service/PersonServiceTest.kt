@@ -15,10 +15,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.jdbc.core.JdbcTemplate
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Equality
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.repository.*
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -64,7 +61,7 @@ class PersonServiceTest {
 
         whenever(personRepository.save(person)).thenReturn(savedPerson)
         whenever(courtRepository.findByNationalCourtCode(anyString())).thenReturn(court)
-        whenever(referenceDataRepository.findByCodeAndDatasetCode(anyString(), any())).thenReturn(initialAllocation)
+        whenever(referenceDataRepository.findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code, DatasetCode.OM_ALLOCATION_REASON)).thenReturn(initialAllocation)
         whenever(teamRepository.findByCode(anyString())).thenReturn(unallocatedTeam)
         whenever(staffRepository.findByCode(anyString())).thenReturn(unallocatedStaff)
 

@@ -5,6 +5,7 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.ZonedDateTime
 
 @Entity
@@ -38,3 +39,5 @@ class Equality(
     @Version
     val rowVersion: Long = 0L
 )
+
+interface EqualityRepository : JpaRepository<Equality, Long>

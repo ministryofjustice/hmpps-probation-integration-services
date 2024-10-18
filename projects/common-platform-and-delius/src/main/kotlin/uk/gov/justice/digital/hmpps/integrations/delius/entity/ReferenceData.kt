@@ -3,6 +3,9 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Entity
@@ -29,8 +32,10 @@ class ReferenceData(
         NOT_KNOWN("NOT KNOWN", "N")
     }
 
-    enum class AllocationCode(val code: String) {
-        INITIAL_ALLOCATION("IN1")
+    enum class StandardRefDataCode(val code: String) {
+        INITIAL_ALLOCATION("IN1"),
+        ADDRESS_MAIN_STATUS("M"),
+        AWAITING_ASSESSMENT("A16")
     }
 }
 
@@ -49,6 +54,8 @@ class Dataset(
 
 enum class DatasetCode(val value: String) {
     OM_ALLOCATION_REASON("OM ALLOCATION REASON"),
+    ADDRESS_STATUS("ADDRESS STATUS"),
+    ADDRESS_TYPE("ADDRESS TYPE"),
     GENDER("GENDER");
 
     companion object {
@@ -110,3 +117,30 @@ class Court(
     @Column(name = "national_court_code")
     val nationalCourtCode: String?
 )
+
+interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
+    @Query(
+        """
+        select rd from ReferenceData rd
+        join Dataset ds on rd.datasetId = ds.id
+        where ds.code = :datasetCode and rd.code = :code
+    """
+    )
+    fun findByCodeAndDatasetCode(code: String, datasetCode: DatasetCode): ReferenceData?
+}
+
+fun ReferenceDataRepository.initialAllocationReason() =
+    findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code, DatasetCode.OM_ALLOCATION_REASON)
+        ?: throw NotFoundException("Allocation Reason", "code", ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code)
+
+fun ReferenceDataRepository.mainAddressStatus() =
+    findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code, DatasetCode.ADDRESS_STATUS)
+        ?: throw NotFoundException("Address Status", "code", ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code)
+
+fun ReferenceDataRepository.awaitingAssessmentAddressType() =
+    findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code, DatasetCode.ADDRESS_TYPE)
+        ?: throw NotFoundException("Address Type", "code", ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code)
+
+interface CourtRepository : JpaRepository<Court, Long> {
+    fun findByNationalCourtCode(nationalCourtCode: String): Court
+}

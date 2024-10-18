@@ -26,11 +26,16 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         entityManager.run {
             persist(BusinessInteractionGenerator.INSERT_PERSON)
+            persist(BusinessInteractionGenerator.INSERT_ADDRESS)
             persist(DatasetGenerator.GENDER)
             persist(DatasetGenerator.OM_ALLOCATION_REASON)
+            persist(DatasetGenerator.ADDRESS_STATUS)
+            persist(DatasetGenerator.ADDRESS_TYPE)
             persist(ReferenceDataGenerator.GENDER_MALE)
             persist(ReferenceDataGenerator.GENDER_FEMALE)
             persist(ReferenceDataGenerator.INITIAL_ALLOCATION)
+            persist(ReferenceDataGenerator.MAIN_ADDRESS_STATUS)
+            persist(ReferenceDataGenerator.AWAITING_ASSESSMENT)
             persist(ProviderGenerator.DEFAULT)
             persist(TeamGenerator.ALLOCATED)
             persist(TeamGenerator.UNALLOCATED)

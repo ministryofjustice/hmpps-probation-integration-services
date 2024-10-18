@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Equality
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.repository.*
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.sql.Types
 import java.time.LocalDateTime
 
@@ -37,7 +34,7 @@ class PersonService(
         )
 
     @Transactional
-    fun insertPerson(person: Person, courtCode: String) = audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
+    fun insertPerson(person: Person, courtCode: String): Person = audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
         // Person record
         val savedPerson = personRepository.save(person)
 
@@ -72,6 +69,7 @@ class PersonService(
         equalityRepository.save(equality)
 
         audit["offenderId"] = savedPerson.id
+        savedPerson
     }
 
     fun generateCrn(): String {

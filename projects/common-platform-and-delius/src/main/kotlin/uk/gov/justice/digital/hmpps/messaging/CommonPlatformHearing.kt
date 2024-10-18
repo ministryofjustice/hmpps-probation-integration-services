@@ -68,17 +68,17 @@ data class PersonDetails(
     val firstName: String,
     val dateOfBirth: LocalDate,
     val address: Address,
-    val contact: Contact,
+    val contact: Contact?,
     val ethnicity: Ethnicity
 )
 
 data class Address(
-    val address1: String,
-    val address2: String,
-    val address3: String,
+    val address1: String? = null,
+    val address2: String? = null,
+    val address3: String? = null,
     val address4: String? = null,
     val address5: String? = null,
-    val postcode: String
+    val postcode: String? = null
 )
 
 data class Contact(

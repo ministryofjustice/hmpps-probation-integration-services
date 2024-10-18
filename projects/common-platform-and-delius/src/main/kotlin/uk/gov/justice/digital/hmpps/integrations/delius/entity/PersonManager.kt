@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -102,3 +103,13 @@ class Team(
     @Column
     val description: String,
 )
+
+interface PersonManagerRepository : JpaRepository<PersonManager, Long>
+
+interface TeamRepository : JpaRepository<Team, Long> {
+    fun findByCode(code: String): Team
+}
+
+interface StaffRepository : JpaRepository<Staff, Long> {
+    fun findByCode(code: String): Staff
+}

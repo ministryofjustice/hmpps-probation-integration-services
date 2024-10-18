@@ -10,4 +10,9 @@ object BusinessInteractionGenerator {
         BusinessInteractionCode.INSERT_PERSON.code,
         ZonedDateTime.now().minusMonths(6)
     )
+    val INSERT_ADDRESS = BusinessInteraction(
+        IdGenerator.getAndIncrement(),
+        BusinessInteractionCode.INSERT_ADDRESS.code,
+        ZonedDateTime.now().minusMonths(6)
+    )
 }

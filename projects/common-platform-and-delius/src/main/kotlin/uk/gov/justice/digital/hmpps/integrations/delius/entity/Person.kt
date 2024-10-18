@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -46,8 +47,23 @@ class Person(
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData,
 
+    @Column(name = "telephone_number")
+    val telephoneNumber: String? = null,
+
+    @Column(name = "mobile_number")
+    val mobileNumber: String? = null,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
+
+    @Column(name="current_disposal", columnDefinition = "number")
+    val currentDisposal: Boolean = false,
+
+    @Column(name="current_restriction", columnDefinition = "number")
+    val currentRestriction: Boolean = false,
+
+    @Column(name="pending_transfer", columnDefinition = "number")
+    val pendingTransfer: Boolean = false,
 
     @Column
     @Version
@@ -65,3 +81,5 @@ class Person(
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
 )
+
+interface PersonRepository : JpaRepository<Person, Long>
