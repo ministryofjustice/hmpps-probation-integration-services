@@ -1,0 +1,33 @@
+{
+  "matches": [
+    {
+      "offender": {
+        "offenderId": 1,
+        "title": "Mr",
+        "firstName": "Bill",
+        "middleNames": [],
+        "surname": "Jones",
+        "dateOfBirth": "1960-04-07",
+        "gender": "Male",
+        "otherIds": {
+          "crn": "A000002"
+        }
+      }
+    },
+    {
+      "offender": {
+        "offenderId": 2,
+        "title": "Mr",
+        "firstName": "Bob",
+        "middleNames": [],
+        "surname": "Smith",
+        "dateOfBirth": "1960-04-07",
+        "gender": "Male",
+        "otherIds": {
+          "crn": "A000001"
+        }
+      }
+    }
+  ],
+  "matchedBy": "ALL_SUPPLIED"
+}
