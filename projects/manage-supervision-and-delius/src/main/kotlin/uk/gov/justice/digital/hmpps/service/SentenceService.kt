@@ -84,7 +84,7 @@ class SentenceService(
             subCategory?.description,
             imposedReleasedDate,
             actualStartDate,
-            toLicenceConditionNote()
+            toLicenceConditionNote(true)
         )
 
 

@@ -23,7 +23,7 @@ class LicenceConditionService(
 
         return LicenceConditionNoteDetail(
             person.toSummary(),
-            licenceCondition?.toLicenceConditionNote()?.let {
+            licenceCondition?.toLicenceConditionNote(false)?.let {
                 when {
                     it.size > noteId -> it[noteId]
                     else -> null
@@ -34,7 +34,7 @@ class LicenceConditionService(
     }
 }
 
-fun EntityLicenceCondition.toLicenceConditionNote(): List<LicenceConditionNote>? {
+fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<LicenceConditionNote>? {
 
     return  notes?.let {
         val splitParam = "---------------------------------------------------------" + System.lineSeparator()
@@ -55,8 +55,14 @@ fun EntityLicenceCondition.toLicenceConditionNote(): List<LicenceConditionNote>?
                 index,
                 userCreatedBy,
                 dateCreatedBy,
-                commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0],
-                note.length > 1500
+                when (truncateNote) {
+                    true -> commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0]
+                    else -> commentText
+                },
+                when (truncateNote) {
+                    true -> note.length > 1500
+                    else -> null
+                }
             )
         }
     }
