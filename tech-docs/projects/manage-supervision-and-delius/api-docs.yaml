@@ -767,6 +767,41 @@ components:
           format: date
         documentName:
           type: string
+    LicenceCondition:
+      required:
+      - imposedReleasedDate
+      - mainDescription
+      - notes
+      type: object
+      properties:
+        mainDescription:
+          type: string
+        subTypeDescription:
+          type: string
+        imposedReleasedDate:
+          type: string
+          format: date
+        actualStartDate:
+          type: string
+          format: date
+        notes:
+          type: array
+          items:
+            $ref: "#/components/schemas/LicenceConditionNote"
+    LicenceConditionNote:
+      required:
+      - note
+      type: object
+      properties:
+        createdBy:
+          type: string
+        createdByDate:
+          type: string
+          format: date
+        note:
+          type: string
+        hasNotesBeenTruncated:
+          type: boolean
     Offence:
       required:
       - count
@@ -913,6 +948,7 @@ components:
     Sentence:
       required:
       - courtDocuments
+      - licenceConditions
       - offenceDetails
       - requirements
       type: object
@@ -933,6 +969,10 @@ components:
             $ref: "#/components/schemas/CourtDocument"
         unpaidWorkProgress:
           type: string
+        licenceConditions:
+          type: array
+          items:
+            $ref: "#/components/schemas/LicenceCondition"
     SentenceOverview:
       required:
       - personSummary
