@@ -61,7 +61,12 @@ class PersonServiceTest {
 
         whenever(personRepository.save(person)).thenReturn(savedPerson)
         whenever(courtRepository.findByNationalCourtCode(anyString())).thenReturn(court)
-        whenever(referenceDataRepository.findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code, DatasetCode.OM_ALLOCATION_REASON)).thenReturn(initialAllocation)
+        whenever(
+            referenceDataRepository.findByCodeAndDatasetCode(
+                ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code,
+                DatasetCode.OM_ALLOCATION_REASON
+            )
+        ).thenReturn(initialAllocation)
         whenever(teamRepository.findByCode(anyString())).thenReturn(unallocatedTeam)
         whenever(staffRepository.findByCode(anyString())).thenReturn(unallocatedStaff)
 

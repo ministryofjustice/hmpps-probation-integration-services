@@ -130,8 +130,15 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
 }
 
 fun ReferenceDataRepository.initialAllocationReason() =
-    findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code, DatasetCode.OM_ALLOCATION_REASON)
-        ?: throw NotFoundException("Allocation Reason", "code", ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code)
+    findByCodeAndDatasetCode(
+        ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code,
+        DatasetCode.OM_ALLOCATION_REASON
+    )
+        ?: throw NotFoundException(
+            "Allocation Reason",
+            "code",
+            ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code
+        )
 
 fun ReferenceDataRepository.mainAddressStatus() =
     findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code, DatasetCode.ADDRESS_STATUS)

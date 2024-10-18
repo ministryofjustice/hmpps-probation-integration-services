@@ -58,9 +58,24 @@ internal class HandlerTest {
         )
         whenever(personService.generateCrn()).thenReturn("A000001")
         whenever(personService.insertPerson(any(), any())).thenReturn(PersonGenerator.DEFAULT)
-        whenever(referenceDataRepository.findByCodeAndDatasetCode(ReferenceData.GenderCode.MALE.deliusValue, DatasetCode.GENDER)).thenReturn(ReferenceDataGenerator.GENDER_MALE)
-        whenever(referenceDataRepository.findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code, DatasetCode.ADDRESS_STATUS)).thenReturn(ReferenceDataGenerator.MAIN_ADDRESS_STATUS)
-        whenever(referenceDataRepository.findByCodeAndDatasetCode(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code, DatasetCode.ADDRESS_TYPE)).thenReturn(ReferenceDataGenerator.AWAITING_ASSESSMENT)
+        whenever(
+            referenceDataRepository.findByCodeAndDatasetCode(
+                ReferenceData.GenderCode.MALE.deliusValue,
+                DatasetCode.GENDER
+            )
+        ).thenReturn(ReferenceDataGenerator.GENDER_MALE)
+        whenever(
+            referenceDataRepository.findByCodeAndDatasetCode(
+                ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code,
+                DatasetCode.ADDRESS_STATUS
+            )
+        ).thenReturn(ReferenceDataGenerator.MAIN_ADDRESS_STATUS)
+        whenever(
+            referenceDataRepository.findByCodeAndDatasetCode(
+                ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code,
+                DatasetCode.ADDRESS_TYPE
+            )
+        ).thenReturn(ReferenceDataGenerator.AWAITING_ASSESSMENT)
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)

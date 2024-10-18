@@ -34,43 +34,44 @@ class PersonService(
         )
 
     @Transactional
-    fun insertPerson(person: Person, courtCode: String): Person = audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
-        // Person record
-        val savedPerson = personRepository.save(person)
+    fun insertPerson(person: Person, courtCode: String): Person =
+        audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
+            // Person record
+            val savedPerson = personRepository.save(person)
 
-        val courtLinkedProvider = courtRepository.findByNationalCourtCode(courtCode).probationArea
-        val initialAllocation = referenceDataRepository.initialAllocationReason()
-        val unallocatedTeam = teamRepository.findByCode(courtLinkedProvider.code + "UAT")
-        val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
+            val courtLinkedProvider = courtRepository.findByNationalCourtCode(courtCode).probationArea
+            val initialAllocation = referenceDataRepository.initialAllocationReason()
+            val unallocatedTeam = teamRepository.findByCode(courtLinkedProvider.code + "UAT")
+            val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
 
-        // Person manager record
-        val manager = PersonManager(
-            person = savedPerson,
-            staff = unallocatedStaff,
-            team = unallocatedTeam,
-            provider = courtLinkedProvider,
-            softDeleted = false,
-            active = true,
-            allocationReason = initialAllocation,
-            staffEmployeeID = unallocatedStaff.id,
-            trustProviderTeamId = unallocatedTeam.id,
-            allocationDate = LocalDateTime.of(1900, 1, 1, 0, 0)
+            // Person manager record
+            val manager = PersonManager(
+                person = savedPerson,
+                staff = unallocatedStaff,
+                team = unallocatedTeam,
+                provider = courtLinkedProvider,
+                softDeleted = false,
+                active = true,
+                allocationReason = initialAllocation,
+                staffEmployeeID = unallocatedStaff.id,
+                trustProviderTeamId = unallocatedTeam.id,
+                allocationDate = LocalDateTime.of(1900, 1, 1, 0, 0)
 
-        )
-        personManagerRepository.save(manager)
+            )
+            personManagerRepository.save(manager)
 
-        // Equality record
-        val equality = Equality(
-            id = null,
-            personId = savedPerson.id!!,
-            softDeleted = false,
-        )
+            // Equality record
+            val equality = Equality(
+                id = null,
+                personId = savedPerson.id!!,
+                softDeleted = false,
+            )
 
-        equalityRepository.save(equality)
+            equalityRepository.save(equality)
 
-        audit["offenderId"] = savedPerson.id
-        savedPerson
-    }
+            audit["offenderId"] = savedPerson.id
+            savedPerson
+        }
 
     fun generateCrn(): String {
         return generateCrn.execute()["CRN"] as String

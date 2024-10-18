@@ -10,9 +10,15 @@ object ReferenceDataGenerator {
 
     val GENDER_FEMALE = generate(ReferenceData.GenderCode.FEMALE.deliusValue, GENDER.id, "Female")
     val GENDER_MALE = generate(ReferenceData.GenderCode.MALE.deliusValue, GENDER.id, "Male")
-    val INITIAL_ALLOCATION = generate(ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code, OM_ALLOCATION_REASON.id, "Initial Allocation")
-    val MAIN_ADDRESS_STATUS = generate(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code, ADDRESS_STATUS.id, "Main")
-    val AWAITING_ASSESSMENT = generate(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code, ADDRESS_TYPE.id, "Awaiting Assessment")
+    val INITIAL_ALLOCATION = generate(
+        ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code,
+        OM_ALLOCATION_REASON.id,
+        "Initial Allocation"
+    )
+    val MAIN_ADDRESS_STATUS =
+        generate(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code, ADDRESS_STATUS.id, "Main")
+    val AWAITING_ASSESSMENT =
+        generate(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code, ADDRESS_TYPE.id, "Awaiting Assessment")
 
     fun generate(
         code: String,

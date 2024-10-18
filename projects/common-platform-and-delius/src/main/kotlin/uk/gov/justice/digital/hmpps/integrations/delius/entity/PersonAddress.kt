@@ -105,7 +105,6 @@ class PersonAddress(
 
     @Column(name = "approved_premises_residence_id")
     val approvedPremisesResidenceId: Long? = null,
-    )
-
+)
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long>

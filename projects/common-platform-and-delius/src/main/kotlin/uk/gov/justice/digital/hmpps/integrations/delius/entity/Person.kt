@@ -56,13 +56,13 @@ class Person(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
 
-    @Column(name="current_disposal", columnDefinition = "number")
+    @Column(name = "current_disposal", columnDefinition = "number")
     val currentDisposal: Boolean = false,
 
-    @Column(name="current_restriction", columnDefinition = "number")
+    @Column(name = "current_restriction", columnDefinition = "number")
     val currentRestriction: Boolean = false,
 
-    @Column(name="pending_transfer", columnDefinition = "number")
+    @Column(name = "pending_transfer", columnDefinition = "number")
     val pendingTransfer: Boolean = false,
 
     @Column
