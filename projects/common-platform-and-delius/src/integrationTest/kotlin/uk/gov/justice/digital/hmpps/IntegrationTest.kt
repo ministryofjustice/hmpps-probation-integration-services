@@ -282,7 +282,8 @@ internal class IntegrationTest {
         val topic = hmppsChannelManager.getChannel(topicName)
         val messages = topic.pollFor(1)
 
-        val engagementCreated = messages.first { it.eventType == "probation-case.engagement.created" }.message as HmppsDomainEvent
+        val engagementCreated =
+            messages.first { it.eventType == "probation-case.engagement.created" }.message as HmppsDomainEvent
 
         assertEquals("probation-case.engagement.created", engagementCreated.eventType)
         assertEquals(1, engagementCreated.version)
