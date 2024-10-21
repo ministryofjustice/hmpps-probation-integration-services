@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
@@ -58,9 +57,6 @@ internal class NsiServiceTest {
 
     @Mock
     lateinit var telemetryService: TelemetryService
-
-    @Mock
-    lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     lateinit var nsiService: NsiService
