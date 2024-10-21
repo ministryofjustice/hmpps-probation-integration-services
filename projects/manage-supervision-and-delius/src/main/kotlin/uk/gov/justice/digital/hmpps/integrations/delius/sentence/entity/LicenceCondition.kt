@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
@@ -45,7 +46,17 @@ class LicenceCondition(
 
 interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
 
+    @Query(
+        """
+            SELECT lc FROM LicenceCondition lc 
+            JOIN FETCH lc.mainCategory mc
+            LEFT JOIN FETCH lc.subCategory
+            WHERE lc.disposalId = :disposalId
+            ORDER BY mc.description ASC
+        """
+    )
     fun findAllByDisposalId(disposalId: Long): List<LicenceCondition>
+
 }
 
 fun LicenceConditionRepository.getByLicenceConditionId(id: Long) = findById(id)
