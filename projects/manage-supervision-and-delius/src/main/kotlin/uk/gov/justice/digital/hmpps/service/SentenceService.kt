@@ -76,7 +76,6 @@ class SentenceService(
             } ?: emptyList(),
         )
 
-
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
 

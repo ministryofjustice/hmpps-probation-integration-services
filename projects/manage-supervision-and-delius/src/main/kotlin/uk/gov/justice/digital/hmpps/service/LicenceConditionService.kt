@@ -15,7 +15,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceC
 @Service
 class LicenceConditionService(
     private val personRepository: PersonRepository,
-    private val licenceConditionRepository: LicenceConditionRepository) {
+    private val licenceConditionRepository: LicenceConditionRepository
+) {
 
     fun getLicenceConditionNote(crn: String, licenceConditionId: Long, noteId: Int): LicenceConditionNoteDetail {
         val person = personRepository.getPerson(crn)
@@ -26,7 +27,6 @@ class LicenceConditionService(
             person.toSummary(),
             licenceCondition?.toLicenceConditionSingleNote(noteId, false)
         )
-
     }
 }
 
@@ -52,7 +52,7 @@ fun EntityLicenceCondition.toLicenceConditionSingleNote(noteId: Int, truncateNot
 
 fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<LicenceConditionNote> {
 
-    return  notes?.let {
+    return notes?.let {
         val splitParam = "---------------------------------------------------------" + System.lineSeparator()
         notes.split(splitParam).mapIndexed { index, note ->
             val matchResult = Regex(

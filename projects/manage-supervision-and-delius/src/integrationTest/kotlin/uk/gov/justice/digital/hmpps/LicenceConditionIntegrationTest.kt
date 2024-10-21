@@ -92,12 +92,13 @@ class LicenceConditionIntegrationTest {
                 LocalDate.now().minusDays(7),
                 LocalDate.now(),
                 note = LicenceConditionNote(
-                0,
-                "CVL Service",
-                LocalDate.of(2024, 4, 22),
-                """
+                    0,
+                    "CVL Service",
+                    LocalDate.of(2024, 4, 22),
+                    """
                    ${LicenceConditionGenerator.LONG_NOTE}
-                """.trimIndent() + System.lineSeparator())
+                """.trimIndent() + System.lineSeparator()
+                )
             )
         )
 

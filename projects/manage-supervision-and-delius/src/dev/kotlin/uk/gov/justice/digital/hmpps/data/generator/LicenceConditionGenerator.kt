@@ -63,6 +63,4 @@ object LicenceConditionGenerator {
             He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;
         """.trimIndent()
     )
-
-
 }

@@ -43,5 +43,6 @@ class SentenceController(
     fun getLicenceConditionNote(
         @PathVariable crn: String,
         @PathVariable licenceConditionId: Long,
-        @PathVariable noteId: Int) = licenceConditionService.getLicenceConditionNote(crn, licenceConditionId, noteId)
+        @PathVariable noteId: Int
+    ) = licenceConditionService.getLicenceConditionNote(crn, licenceConditionId, noteId)
 }
