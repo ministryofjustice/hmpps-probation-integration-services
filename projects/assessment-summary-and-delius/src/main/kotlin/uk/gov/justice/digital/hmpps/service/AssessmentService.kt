@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessment
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.SentencePlan
@@ -26,7 +25,6 @@ class AssessmentService(
     private val oasysAssessmentRepository: OasysAssessmentRepository,
     private val eventRepository: EventRepository,
     private val contactService: ContactService,
-    private val featureFlags: FeatureFlags,
 ) {
     fun recordAssessment(person: Person, summary: AssessmentSummary) {
         val previousAssessment = oasysAssessmentRepository.findByOasysId(summary.assessmentPk.toString())
@@ -36,14 +34,12 @@ class AssessmentService(
             ?: throw IgnorableMessageException("No single active custodial event")
         val event = eventRepository.getByNumber(person.id, eventNumber)
         val manager = checkNotNull(person.manager) { "Community Manager Not Found" }
-        val contactDate =
-            if (featureFlags.enabled("assessment-summary-contact-date")) summary.dateCompleted else LocalDate.now()
         val contact = previousAssessment?.contact?.withDateTeamAndStaff(
-            contactDate,
+            summary.dateCompleted,
             manager.teamId,
             manager.staffId
         ) ?: contactService.createContact(
-            summary.contactDetail(contactDate),
+            summary.contactDetail(summary.dateCompleted),
             person,
             event
         )

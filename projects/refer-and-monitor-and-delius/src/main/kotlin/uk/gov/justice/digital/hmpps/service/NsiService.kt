@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -40,7 +39,6 @@ class NsiService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
     private val createNsi: CreateNsi,
-    private val featureFlags: FeatureFlags,
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -77,9 +75,7 @@ class NsiService(
     fun terminateNsi(termination: NsiTermination) = audit(MANAGE_NSI) { audit ->
         val nsi = findNsi(termination)
         val status = nsiStatusRepository.getByCode(END.value)
-        val outcomeCode = termination.withdrawalOutcome?.name
-            ?.takeIf { featureFlags.enabled("referral-withdrawal-reason") }
-            ?: termination.endType.outcome
+        val outcomeCode = termination.withdrawalOutcome?.name ?: termination.endType.outcome
         val outcome = nsiOutcomeRepository.nsiOutcome(outcomeCode)
 
         audit["offenderId"] = nsi.person.id

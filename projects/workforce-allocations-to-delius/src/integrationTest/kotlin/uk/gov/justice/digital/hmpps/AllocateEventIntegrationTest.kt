@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,7 +16,6 @@ import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
@@ -47,9 +45,6 @@ class AllocateEventIntegrationTest {
     @MockBean
     private lateinit var telemetryService: TelemetryService
 
-    @MockBean
-    private lateinit var featureFlags: FeatureFlags
-
     @Autowired
     private lateinit var contactRepository: ContactRepository
 
@@ -65,7 +60,6 @@ class AllocateEventIntegrationTest {
             event,
             1,
             StaffGenerator.SPO_STAFF.id,
-            false
         )
 
         verify(telemetryService).trackEvent(
@@ -103,7 +97,6 @@ class AllocateEventIntegrationTest {
             event,
             2,
             StaffGenerator.STAFF_WITH_USER.id,
-            false
         )
 
         val insertedPm = orderManagerRepository.findActiveManagerAtDate(event.id, ZonedDateTime.now().minusDays(2))
@@ -122,10 +115,7 @@ class AllocateEventIntegrationTest {
     }
 
     @Test
-    fun `spo contact is created when feature flag is enabled`() {
-
-        whenever(featureFlags.enabled("produce-spod03-contact")).thenReturn(true)
-
+    fun `spo contact is created`() {
         val event = EventGenerator.DEFAULT
 
         val firstOm = orderManagerRepository.save(
@@ -141,7 +131,6 @@ class AllocateEventIntegrationTest {
             event,
             1,
             StaffGenerator.STAFF_WITH_USER.id,
-            true
         )
 
         verify(telemetryService).trackEvent(
@@ -162,8 +151,7 @@ class AllocateEventIntegrationTest {
         existingOm: OrderManager,
         event: Event,
         originalOmCount: Int,
-        staffId: Long,
-        spoEnabled: Boolean
+        staffId: Long
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(allocationEvent)
@@ -176,28 +164,15 @@ class AllocateEventIntegrationTest {
         val updatedOmCount = orderManagerRepository.findAll().count { it.eventId == event.id }
         assertThat(updatedOmCount, equalTo(originalOmCount + 1))
 
-        if (spoEnabled) {
-            val spoContact = contactRepository.findAll()
-                .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value }
+        val spoContact = contactRepository.findAll()
+            .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_SPO_OVERSIGHT.value }
 
-            assertNotNull(spoContact)
-            assertThat(spoContact!!.staffId, equalTo(staffId))
-            assertThat(
-                spoContact.isSensitive,
-                equalTo((allocationDetail as AllocationDetail.EventAllocation).sensitiveOversightNotes)
-            )
-            assertThat(spoContact.notes, equalTo(allocationDetail.spoOversightNotes))
-        } else {
-            val cadeContact = contactRepository.findAll()
-                .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value }
-
-            assertNotNull(cadeContact)
-            assertThat(cadeContact!!.staffId, equalTo(staffId))
-            assertThat(
-                cadeContact.isSensitive,
-                equalTo((allocationDetail as AllocationDetail.EventAllocation).sensitive)
-            )
-            assertThat(cadeContact.notes, equalTo(allocationDetail.notes))
-        }
+        assertNotNull(spoContact)
+        assertThat(spoContact!!.staffId, equalTo(staffId))
+        assertThat(
+            spoContact.isSensitive,
+            equalTo((allocationDetail as AllocationDetail.EventAllocation).sensitiveOversightNotes ?: true)
+        )
+        assertThat(spoContact.notes, equalTo(allocationDetail.spoOversightNotes))
     }
 }
