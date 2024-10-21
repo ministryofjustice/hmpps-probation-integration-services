@@ -14,7 +14,6 @@ import java.time.Duration
 import java.time.LocalDate
 import kotlin.time.toKotlinDuration
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentence as ExtraSentence
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition as EntityLicenceCondition
 
 @Service
 class SentenceService(
@@ -75,16 +74,6 @@ class SentenceService(
                     it.toLicenceCondition()
                 }
             } ?: emptyList(),
-        )
-
-    fun EntityLicenceCondition.toLicenceCondition() =
-        LicenceCondition(
-            id,
-            mainCategory.description,
-            subCategory?.description,
-            imposedReleasedDate,
-            actualStartDate,
-            toLicenceConditionNote(true)
         )
 
 

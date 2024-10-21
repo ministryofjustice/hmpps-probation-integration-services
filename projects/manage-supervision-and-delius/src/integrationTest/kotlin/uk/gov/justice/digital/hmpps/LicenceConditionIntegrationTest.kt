@@ -16,7 +16,10 @@ import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceCondition
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_SUB_CAT
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,13 +53,22 @@ class LicenceConditionIntegrationTest {
     fun `note not found`() {
         val response = mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LicenceConditionGenerator.LC_WITH_NOTES.id}/note/7")
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LC_WITH_NOTES.id}/note/7")
                     .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<LicenceConditionNoteDetail>()
 
-        val expected = LicenceConditionNoteDetail(PersonGenerator.OVERVIEW.toSummary())
+        val expected = LicenceConditionNoteDetail(
+            PersonGenerator.OVERVIEW.toSummary(),
+            LicenceCondition(
+                LC_WITH_NOTES.id,
+                LIC_COND_MAIN_CAT.description,
+                LIC_COND_SUB_CAT.description,
+                LocalDate.now().minusDays(7),
+                LocalDate.now()
+            )
+        )
 
         assertEquals(expected, response)
     }
@@ -65,22 +77,27 @@ class LicenceConditionIntegrationTest {
     fun `get note for licence condition`() {
         val response = mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LicenceConditionGenerator.LC_WITH_NOTES.id}/note/0")
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LC_WITH_NOTES.id}/note/0")
                     .withToken()
             )
-            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<LicenceConditionNoteDetail>()
 
         val expected = LicenceConditionNoteDetail(
             PersonGenerator.OVERVIEW.toSummary(),
-            LicenceConditionNote(
+            LicenceCondition(
+                LC_WITH_NOTES.id,
+                LIC_COND_MAIN_CAT.description,
+                LIC_COND_SUB_CAT.description,
+                LocalDate.now().minusDays(7),
+                LocalDate.now(),
+                note = LicenceConditionNote(
                 0,
                 "CVL Service",
                 LocalDate.of(2024, 4, 22),
                 """
                    ${LicenceConditionGenerator.LONG_NOTE}
-                """.trimIndent() + System.lineSeparator()
+                """.trimIndent() + System.lineSeparator())
             )
         )
 

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNote
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNoteDetail
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
@@ -23,16 +24,31 @@ class LicenceConditionService(
 
         return LicenceConditionNoteDetail(
             person.toSummary(),
-            licenceCondition?.toLicenceConditionNote(false)?.let {
-                when {
-                    it.size > noteId -> it[noteId]
-                    else -> null
-                }
-            }
+            licenceCondition?.toLicenceConditionSingleNote(noteId, false)
         )
 
     }
 }
+
+fun EntityLicenceCondition.toLicenceCondition() =
+    LicenceCondition(
+        id,
+        mainCategory.description,
+        subCategory?.description,
+        imposedReleasedDate,
+        actualStartDate,
+        toLicenceConditionNote(true)
+    )
+
+fun EntityLicenceCondition.toLicenceConditionSingleNote(noteId: Int, truncateNote: Boolean) =
+    LicenceCondition(
+        id,
+        mainCategory.description,
+        subCategory?.description,
+        imposedReleasedDate,
+        actualStartDate,
+        note = toLicenceConditionNote(truncateNote).elementAtOrNull(noteId)
+    )
 
 fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<LicenceConditionNote> {
 
