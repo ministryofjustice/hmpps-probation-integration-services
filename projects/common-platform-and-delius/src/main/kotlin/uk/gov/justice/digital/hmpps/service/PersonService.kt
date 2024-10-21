@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.sql.Types
 import java.time.LocalDateTime
 
@@ -16,13 +17,14 @@ import java.time.LocalDateTime
 class PersonService(
     jdbcTemplate: JdbcTemplate,
     auditedInteractionService: AuditedInteractionService,
+    private val notifier: Notifier,
     private val personRepository: PersonRepository,
     private val courtRepository: CourtRepository,
     private val equalityRepository: EqualityRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
-    private val referenceDataRepository: ReferenceDataRepository,
+    private val referenceDataRepository: ReferenceDataRepository
 ) : AuditableService(auditedInteractionService) {
 
     private val generateCrn = SimpleJdbcCall(jdbcTemplate)
@@ -43,6 +45,8 @@ class PersonService(
             val initialAllocation = referenceDataRepository.initialAllocationReason()
             val unallocatedTeam = teamRepository.findByCode(courtLinkedProvider.code + "UAT")
             val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
+
+            notifier.caseCreated(savedPerson)
 
             // Person manager record
             val manager = PersonManager(

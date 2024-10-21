@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -56,7 +55,7 @@ internal class HandlerTest {
                 matchedBy = "NONE"
             )
         )
-        whenever(personService.generateCrn()).thenReturn("A000001")
+        whenever(personService.generateCrn()).thenReturn("A111111")
         whenever(personService.insertPerson(any(), any())).thenReturn(PersonGenerator.DEFAULT)
         whenever(
             referenceDataRepository.findByCodeAndDatasetCode(

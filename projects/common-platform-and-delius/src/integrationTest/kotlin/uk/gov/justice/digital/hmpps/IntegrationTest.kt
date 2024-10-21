@@ -4,8 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -26,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.AddressService
@@ -40,8 +40,14 @@ internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
 
+    @Value("\${messaging.producer.topic}")
+    lateinit var topicName: String
+
     @Autowired
     lateinit var channelManager: HmppsChannelManager
+
+    @Autowired
+    lateinit var hmppsChannelManager: HmppsChannelManager
 
     @Autowired
     lateinit var wireMockServer: WireMockServer
@@ -66,7 +72,7 @@ internal class IntegrationTest {
 
     @BeforeEach
     fun setup() {
-        doReturn("A000001").whenever(personService).generateCrn()
+        doReturn("A111111").whenever(personService).generateCrn()
     }
 
     @Test
@@ -247,5 +253,41 @@ internal class IntegrationTest {
             any(),
             anyOrNull()
         )
+    }
+
+    @Test
+    fun `engagement created message is published on insert person`() {
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/probation-search/match"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("probation-search-no-results.json")
+                )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(personService).insertPerson(any(), any())
+
+        verify(personRepository).save(check<Person> {
+            assertThat(it.forename, Matchers.equalTo("Example First Name"))
+            assertThat(it.surname, Matchers.equalTo("Example Last Name"))
+            assertThat(it.mobileNumber, Matchers.equalTo("07000000000"))
+            assertThat(it.telephoneNumber, Matchers.equalTo("01234567890"))
+        })
+
+        val topic = hmppsChannelManager.getChannel(topicName)
+        val messages = topic.pollFor(1)
+
+        val engagementCreated = messages.first { it.eventType == "probation-case.engagement.created" }.message as HmppsDomainEvent
+
+        assertEquals("probation-case.engagement.created", engagementCreated.eventType)
+        assertEquals(1, engagementCreated.version)
+        assertEquals("A probation case record for a person has been created in Delius", engagementCreated.description)
+        assertEquals("A111111", engagementCreated.personReference.findCrn()!!)
+        assertNull(engagementCreated.detailUrl)
     }
 }

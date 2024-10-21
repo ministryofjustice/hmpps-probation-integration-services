@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -45,6 +46,9 @@ class PersonServiceTest {
     private lateinit var referenceDataRepository: ReferenceDataRepository
 
     @Mock
+    lateinit var notifier: Notifier
+
+    @Mock
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @InjectMocks
@@ -71,7 +75,7 @@ class PersonServiceTest {
         whenever(staffRepository.findByCode(anyString())).thenReturn(unallocatedStaff)
 
         personService.insertPerson(person, court.code)
-
+        verify(notifier).caseCreated(any())
         verify(personRepository).save(person)
         verify(personManagerRepository).save(any())
         verify(equalityRepository).save(any())
