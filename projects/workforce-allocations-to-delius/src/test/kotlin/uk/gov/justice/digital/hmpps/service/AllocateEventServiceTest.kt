@@ -22,7 +22,6 @@ import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
@@ -63,9 +62,6 @@ internal class AllocateEventServiceTest {
 
     @Mock
     private lateinit var staffRepository: StaffRepository
-
-    @Mock
-    private lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     private lateinit var allocateEventService: AllocateEventService

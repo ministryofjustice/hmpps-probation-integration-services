@@ -4,10 +4,12 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -16,7 +18,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
@@ -63,14 +64,6 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Autowired
     lateinit var eventRepository: EventRepository
-
-    @MockBean
-    lateinit var featureFlags: FeatureFlags
-
-    @BeforeEach
-    fun setup() {
-        whenever(featureFlags.enabled("referral-withdrawal-reason")).thenReturn(true)
-    }
 
     @Test
     @Order(1)

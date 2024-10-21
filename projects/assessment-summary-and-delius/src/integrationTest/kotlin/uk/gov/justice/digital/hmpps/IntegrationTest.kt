@@ -7,7 +7,10 @@ import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
-import org.mockito.kotlin.*
+import org.mockito.kotlin.check
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.timeout
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,7 +21,6 @@ import uk.gov.justice.digital.hmpps.data.entity.IapsPersonRepository
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -64,28 +66,11 @@ internal class IntegrationTest {
     @MockBean
     lateinit var telemetryService: TelemetryService
 
-    @MockBean
-    lateinit var featureFlags: FeatureFlags
-
     lateinit var transactionTemplate: TransactionTemplate
 
     @BeforeEach
     fun setUp() {
         transactionTemplate = TransactionTemplate(transactionManager)
-        whenever(featureFlags.enabled(any())).thenReturn(true)
-    }
-
-    @Test
-    fun `contact date is set to current date when flag is off`() {
-        whenever(featureFlags.enabled("assessment-summary-contact-date")).thenReturn(false)
-        val message = notification<HmppsDomainEvent>("assessment-summary-produced-${PersonGenerator.NO_RISK.crn}")
-        channelManager.getChannel(queueName).publishAndWait(prepNotification(message, wireMockServer.port()))
-
-        val person = personRepository.getByCrn(PersonGenerator.NO_RISK.crn)
-
-        val contact = contactRepository.findAll()
-            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT.value }
-        assertThat(contact.date, equalTo(LocalDate.now()))
     }
 
     @Test
