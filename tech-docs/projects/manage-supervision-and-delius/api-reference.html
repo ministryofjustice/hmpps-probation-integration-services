@@ -113,6 +113,9 @@
         <a href="./api-reference.html#sentence-crn-offences-eventnumber"><span>/sentence/{crn}/offences/{eventNumber}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#sentence-crn-licence-condition-licenceconditionid-note-noteid"><span>/sentence/{crn}/licence-condition/{licenceConditionId}/note/{noteId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#sentence-crn-contacts"><span>/sentence/{crn}/contacts</span></a>
       </li>
       <li>
@@ -546,18 +549,27 @@
       "unpaidWorkProgress": "string",
       "licenceConditions": [
         {
+          "id": "integer",
           "mainDescription": "string",
           "subTypeDescription": "string",
           "imposedReleasedDate": "string",
           "actualStartDate": "string",
           "notes": [
             {
+              "id": "integer",
               "createdBy": "string",
               "createdByDate": "string",
               "note": "string",
               "hasNotesBeenTruncated": "boolean"
             }
-          ]
+          ],
+          "note": {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNotesBeenTruncated": "boolean"
+          }
         }
       ]
     }
@@ -732,6 +744,121 @@
 </td>
 <td>
 <a href='#schema-offences'>Offences</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="sentence-crn-licence-condition-licenceconditionid-note-noteid">/sentence/{crn}/licence-condition/{licenceConditionId}/note/{noteId}</h2>
+
+<h3 id="sentence-crn-licence-condition-licenceconditionid-note-noteid-get">get</h3>
+
+  <p><em>Get licence condition note</em></p>
+
+
+
+
+<h4 id="sentence-crn-licence-condition-licenceconditionid-note-noteid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>licenceConditionId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>noteId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="sentence-crn-licence-condition-licenceconditionid-note-noteid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "licenceCondition": {
+    "id": "integer",
+    "mainDescription": "string",
+    "subTypeDescription": "string",
+    "imposedReleasedDate": "string",
+    "actualStartDate": "string",
+    "notes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNotesBeenTruncated": "boolean"
+      }
+    ],
+    "note": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNotesBeenTruncated": "boolean"
+    }
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-licenceconditionnotedetail'>LicenceConditionNoteDetail</a>
 </td>
 </tr>
 
@@ -2707,18 +2834,27 @@
       "unpaidWorkProgress": "string",
       "licenceConditions": [
         {
+          "id": "integer",
           "mainDescription": "string",
           "subTypeDescription": "string",
           "imposedReleasedDate": "string",
           "actualStartDate": "string",
           "notes": [
             {
+              "id": "integer",
               "createdBy": "string",
               "createdByDate": "string",
               "note": "string",
               "hasNotesBeenTruncated": "boolean"
             }
-          ]
+          ],
+          "note": {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNotesBeenTruncated": "boolean"
+          }
         }
       ]
     }
@@ -3968,6 +4104,16 @@
 <tbody>
 
 <tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>mainDescription</td>
 <td>string</td>
 <td>true</td>
@@ -4010,7 +4156,17 @@
 <tr>
 <td>notes</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-licenceconditionnote'>LicenceConditionNote</a>
+</td>
+</tr>
+
+<tr>
+<td>note</td>
+<td>object</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-licenceconditionnote'>LicenceConditionNote</a>
@@ -4028,6 +4184,16 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>createdBy</td>
@@ -4760,6 +4926,38 @@
 <td></td>
 <td>
   <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-licenceconditionnotedetail">LicenceConditionNoteDetail</h3>
+
+
+<table class='schema-licenceconditionnotedetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>licenceCondition</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-licencecondition'>LicenceCondition</a>
 </td>
 </tr>
 

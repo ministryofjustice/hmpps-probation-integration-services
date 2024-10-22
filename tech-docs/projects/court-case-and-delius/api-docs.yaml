@@ -14,42 +14,6 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /secure/compare:
-    post:
-      tags:
-      - community-api-controller
-      operationId: compare
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Compare"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CompareReport"
-  /secure/compareAll:
-    post:
-      tags:
-      - community-api-controller
-      operationId: compareAll
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CompareAll"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CompareAllReport"
   /secure/offenders/crn/{crn}:
     get:
       tags:
@@ -67,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/OffenderDetailSummary"
   /secure/offenders/crn/{crn}/registrations:
     get:
       tags:
@@ -91,7 +55,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/Registrations"
   /secure/offenders/crn/{crn}/documents/{documentId}:
     get:
       tags:
@@ -142,7 +106,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/OffenderDocuments"
   /secure/offenders/crn/{crn}/convictions:
     get:
       tags:
@@ -166,7 +130,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conviction"
   /secure/offenders/crn/{crn}/convictions/{convictionId}:
     get:
       tags:
@@ -190,7 +156,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/Conviction"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/sentenceStatus:
     get:
       tags:
@@ -214,7 +180,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/SentenceStatus"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/requirements:
     get:
       tags:
@@ -250,7 +216,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/ConvictionRequirements"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/pssRequirements:
     get:
       tags:
@@ -274,7 +240,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/PssRequirements"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/nsis:
     get:
       tags:
@@ -305,7 +271,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/NsiDetails"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/nsis/{nsiId}:
     get:
       tags:
@@ -335,7 +301,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/Nsi"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/licenceConditions:
     get:
       tags:
@@ -359,7 +325,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/LicenceConditions"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/courtReports:
     get:
       tags:
@@ -383,7 +349,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: "#/components/schemas/CourtReportMinimal"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/courtAppearances:
     get:
       tags:
@@ -407,7 +375,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/CourtAppearanceBasicWrapper"
   /secure/offenders/crn/{crn}/convictions/{convictionId}/attendancesFilter:
     get:
       tags:
@@ -431,7 +399,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/Attendances"
   /secure/offenders/crn/{crn}/all:
     get:
       tags:
@@ -449,7 +417,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: "#/components/schemas/OffenderDetail"
   /secure/offenders/crn/{crn}/allOffenderManagers:
     get:
       tags:
@@ -473,7 +441,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommunityOrPrisonOffenderManager"
   /probation-case/{crn}:
     get:
       tags:
@@ -948,107 +918,6 @@ paths:
                 type: string
 components:
   schemas:
-    Compare:
-      required:
-      - params
-      - uri
-      type: object
-      properties:
-        params:
-          type: object
-          additionalProperties:
-            type: object
-        uri:
-          type: string
-    CompareReport:
-      required:
-      - endPointName
-      - message
-      - success
-      type: object
-      properties:
-        endPointName:
-          type: string
-        message:
-          type: string
-        url:
-          type: string
-        testExecuted:
-          type: boolean
-        success:
-          type: boolean
-    CompareAll:
-      required:
-      - pageNumber
-      - pageSize
-      - uriConfig
-      type: object
-      properties:
-        crns:
-          type: array
-          items:
-            type: string
-        uriConfig:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              type: object
-        pageNumber:
-          type: integer
-          format: int32
-        pageSize:
-          type: integer
-          format: int32
-    CompareAllReport:
-      required:
-      - currentPageNumber
-      - endpointsCovered
-      - endpointsRequestedButNotCovered
-      - failureReports
-      - numberOfSuccessfulRequests
-      - numberOfUnsuccessfulRequests
-      - totalNumberOfCrns
-      - totalNumberOfRequests
-      - totalPages
-      - unableToBeExecuted
-      type: object
-      properties:
-        totalNumberOfCrns:
-          type: integer
-          format: int32
-        totalPages:
-          type: integer
-          format: int32
-        currentPageNumber:
-          type: integer
-          format: int32
-        totalNumberOfRequests:
-          type: integer
-          format: int32
-        numberOfSuccessfulRequests:
-          type: integer
-          format: int32
-        numberOfUnsuccessfulRequests:
-          type: integer
-          format: int32
-        unableToBeExecuted:
-          type: integer
-          format: int32
-        failureReports:
-          type: array
-          items:
-            $ref: "#/components/schemas/CompareReport"
-        endpointsCovered:
-          type: array
-          items:
-            type: string
-        endpointsRequestedButNotCovered:
-          type: array
-          items:
-            type: string
-    StreamingResponseBody:
-      type: object
     ContactDetailsSummary:
       type: object
       properties:
@@ -1277,30 +1146,6 @@ components:
         startDate:
           type: string
           format: date
-    ProbationStatusDetail:
-      required:
-      - awaitingPsr
-      - inBreach
-      - preSentenceActivity
-      - status
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - NO_RECORD
-          - NOT_SENTENCED
-          - PREVIOUSLY_KNOWN
-          - CURRENT
-        terminationDate:
-          type: string
-          format: date
-        inBreach:
-          type: boolean
-        preSentenceActivity:
-          type: boolean
-        awaitingPsr:
-          type: boolean
     Registration:
       required:
       - active
@@ -1381,6 +1226,8 @@ components:
           type: string
         unallocated:
           type: boolean
+    StreamingResponseBody:
+      type: object
     ConvictionDocuments:
       required:
       - convictionId
@@ -2625,6 +2472,30 @@ components:
           description: Phone number
           example: "0123411278"
       description: staff name and contact details
+    ProbationStatusDetail:
+      required:
+      - awaitingPsr
+      - inBreach
+      - preSentenceActivity
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - NO_RECORD
+          - NOT_SENTENCED
+          - PREVIOUSLY_KNOWN
+          - CURRENT
+        terminationDate:
+          type: string
+          format: date
+        inBreach:
+          type: boolean
+        preSentenceActivity:
+          type: boolean
+        awaitingPsr:
+          type: boolean
   securitySchemes:
     hmpps-auth-token:
       type: http

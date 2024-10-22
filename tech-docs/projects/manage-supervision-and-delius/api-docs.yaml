@@ -144,6 +144,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Offences"
+  /sentence/{crn}/licence-condition/{licenceConditionId}/note/{noteId}:
+    get:
+      tags:
+      - Sentence
+      summary: Get licence condition note
+      operationId: getLicenceConditionNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: licenceConditionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenceConditionNoteDetail"
   /sentence/{crn}/contacts:
     get:
       tags:
@@ -769,11 +800,14 @@ components:
           type: string
     LicenceCondition:
       required:
+      - id
       - imposedReleasedDate
       - mainDescription
-      - notes
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         mainDescription:
           type: string
         subTypeDescription:
@@ -788,11 +822,17 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LicenceConditionNote"
+        note:
+          $ref: "#/components/schemas/LicenceConditionNote"
     LicenceConditionNote:
       required:
+      - id
       - note
       type: object
       properties:
+        id:
+          type: integer
+          format: int32
         createdBy:
           type: string
         createdByDate:
@@ -1027,6 +1067,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Offence"
+    LicenceConditionNoteDetail:
+      required:
+      - personSummary
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        licenceCondition:
+          $ref: "#/components/schemas/LicenceCondition"
     Contact:
       required:
       - name

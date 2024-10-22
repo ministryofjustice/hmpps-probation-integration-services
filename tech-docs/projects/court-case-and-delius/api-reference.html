@@ -98,12 +98,6 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#secure-compare"><span>/secure/compare</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#secure-compareall"><span>/secure/compareAll</span></a>
-      </li>
-      <li>
         <a href="./api-reference.html#secure-offenders-crn-crn"><span>/secure/offenders/crn/{crn}</span></a>
       </li>
       <li>
@@ -248,113 +242,6 @@
 
 
 
-<h2 id="secure-compare">/secure/compare</h2>
-
-<h3 id="secure-compare-post">post</h3>
-
-
-
-
-
-
-
-<h4 id="secure-compare-post-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "endPointName": "string",
-  "message": "string",
-  "url": "string",
-  "testExecuted": "boolean",
-  "success": "boolean"
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-comparereport'>CompareReport</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h2 id="secure-compareall">/secure/compareAll</h2>
-
-<h3 id="secure-compareall-post">post</h3>
-
-
-
-
-
-
-
-<h4 id="secure-compareall-post-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "totalNumberOfCrns": "integer",
-  "totalPages": "integer",
-  "currentPageNumber": "integer",
-  "totalNumberOfRequests": "integer",
-  "numberOfSuccessfulRequests": "integer",
-  "numberOfUnsuccessfulRequests": "integer",
-  "unableToBeExecuted": "integer",
-  "failureReports": [
-    {
-      "endPointName": "string",
-      "message": "string",
-      "url": "string",
-      "testExecuted": "boolean",
-      "success": "boolean"
-    }
-  ],
-  "endpointsCovered": [
-    {
-    }
-  ],
-  "endpointsRequestedButNotCovered": [
-    {
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-compareallreport'>CompareAllReport</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
 <h2 id="secure-offenders-crn-crn">/secure/offenders/crn/{crn}</h2>
 
 <h3 id="secure-offenders-crn-crn-get">get</h3>
@@ -400,11 +287,129 @@
 
 
 <pre><code>{
+  "preferredName": "string",
+  "activeProbationManagedSentence": "boolean",
+  "contactDetails": {
+    "allowSMS": "boolean",
+    "emailAddresses": [
+      {
+      }
+    ],
+    "phoneNumbers": [
+      {
+        "number": "string",
+        "type": "string"
+      }
+    ]
+  },
+  "currentDisposal": "string",
+  "currentExclusion": "boolean",
+  "currentRestriction": "boolean",
+  "dateOfBirth": "string",
+  "firstName": "string",
+  "gender": "string",
+  "middleNames": [
+    {
+    }
+  ],
+  "offenderId": "integer",
+  "offenderProfile": {
+    "genderIdentity": "string",
+    "selfDescribedGender": "string",
+    "disabilities": [
+      {
+        "lastUpdatedDateTime": "string",
+        "disabilityCondition": {
+          "code": "string",
+          "description": "string"
+        },
+        "disabilityId": "integer",
+        "disabilityType": {
+          "code": "string",
+          "description": "string"
+        },
+        "endDate": "string",
+        "isActive": "boolean",
+        "notes": "string",
+        "provisions": [
+          {
+            "category": {
+              "code": "string",
+              "description": "string"
+            },
+            "finishDate": "string",
+            "notes": "string",
+            "provisionId": "integer",
+            "provisionType": {
+              "code": "string",
+              "description": "string"
+            },
+            "startDate": "string"
+          }
+        ],
+        "startDate": "string"
+      }
+    ],
+    "ethnicity": "string",
+    "immigrationStatus": "string",
+    "nationality": "string",
+    "notes": "string",
+    "offenderDetails": "string",
+    "offenderLanguages": {
+      "languageConcerns": "string",
+      "otherLanguages": [
+        {
+        }
+      ],
+      "primaryLanguage": "string",
+      "requiresInterpreter": "boolean"
+    },
+    "previousConviction": {
+      "convictionDate": "string",
+      "detail": {
+      }
+    },
+    "provisions": [
+      {
+        "category": {
+          "code": "string",
+          "description": "string"
+        },
+        "finishDate": "string",
+        "notes": "string",
+        "provisionId": "integer",
+        "provisionType": {
+          "code": "string",
+          "description": "string"
+        },
+        "startDate": "string"
+      }
+    ],
+    "religion": "string",
+    "remandStatus": "string",
+    "riskColour": "string",
+    "secondaryNationality": "string",
+    "sexualOrientation": "string"
+  },
+  "otherIds": {
+    "crn": "string",
+    "croNumber": "string",
+    "immigrationNumber": "string",
+    "mostRecentPrisonerNumber": "string",
+    "niNumber": "string",
+    "nomsNumber": "string",
+    "pncNumber": "string"
+  },
+  "partitionArea": "string",
+  "previousSurname": "string",
+  "softDeleted": "boolean",
+  "surname": "string",
+  "title": "string"
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-offenderdetailsummary'>OffenderDetailSummary</a>
 </td>
 </tr>
 
@@ -469,11 +474,71 @@
 
 
 <pre><code>{
+  "registrations": [
+    {
+      "registrationId": "integer",
+      "offenderId": "integer",
+      "register": {
+        "code": "string",
+        "description": "string"
+      },
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "riskColour": "string",
+      "startDate": "string",
+      "nextReviewDate": "string",
+      "reviewPeriodMonths": "integer",
+      "notes": "string",
+      "registeringTeam": {
+        "code": "string",
+        "description": "string"
+      },
+      "registeringOfficer": {
+        "code": "string",
+        "forenames": "string",
+        "surname": "string",
+        "unallocated": "boolean"
+      },
+      "registeringProbationArea": {
+        "code": "string",
+        "description": "string"
+      },
+      "registerLevel": {
+        "code": "string",
+        "description": "string"
+      },
+      "registerCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "warnUser": "boolean",
+      "active": "boolean",
+      "endDate": "string",
+      "deregisteringTeam": {
+        "code": "string",
+        "description": "string"
+      },
+      "deregisteringOfficer": {
+        "code": "string",
+        "forenames": "string",
+        "surname": "string",
+        "unallocated": "boolean"
+      },
+      "deregisteringProbationArea": {
+        "code": "string",
+        "description": "string"
+      },
+      "deregisteringNotes": "string",
+      "numberOfPreviousDeregistrations": "integer"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-registrations'>Registrations</a>
 </td>
 </tr>
 
@@ -617,11 +682,64 @@
 
 
 <pre><code>{
+  "documents": [
+    {
+      "id": "string",
+      "documentName": "string",
+      "author": "string",
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "extendedDescription": "string",
+      "lastModifiedAt": "string",
+      "createdAt": "string",
+      "parentPrimaryKeyId": "integer",
+      "subType": {
+        "code": "string",
+        "description": "string"
+      },
+      "reportDocumentDates": {
+        "requestedDate": "string",
+        "requiredDate": "string",
+        "completedDate": "string"
+      }
+    }
+  ],
+  "convictions": [
+    {
+      "convictionId": "string",
+      "documents": [
+        {
+          "id": "string",
+          "documentName": "string",
+          "author": "string",
+          "type": {
+            "code": "string",
+            "description": "string"
+          },
+          "extendedDescription": "string",
+          "lastModifiedAt": "string",
+          "createdAt": "string",
+          "parentPrimaryKeyId": "integer",
+          "subType": {
+            "code": "string",
+            "description": "string"
+          },
+          "reportDocumentDates": {
+            "requestedDate": "string",
+            "requiredDate": "string",
+            "completedDate": "string"
+          }
+        }
+      ]
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-offenderdocuments'>OffenderDocuments</a>
 </td>
 </tr>
 
@@ -755,11 +873,182 @@
 
 
 <pre><code>{
+  "convictionId": "integer",
+  "index": "string",
+  "active": "boolean",
+  "inBreach": "boolean",
+  "failureToComplyCount": "integer",
+  "breachEnd": "string",
+  "awaitingPsr": "boolean",
+  "convictionDate": "string",
+  "referralDate": "string",
+  "offences": [
+    {
+      "offenceId": "string",
+      "mainOffence": "boolean",
+      "detail": {
+        "code": "string",
+        "description": "string",
+        "abbreviation": "string",
+        "mainCategoryCode": "string",
+        "mainCategoryDescription": "string",
+        "mainCategoryAbbreviation": "string",
+        "ogrsOffenceCategory": "string",
+        "subCategoryCode": "string",
+        "subCategoryDescription": "string",
+        "form20Code": "string",
+        "subCategoryAbbreviation": "string",
+        "cjitCode": "string"
+      },
+      "offenceDate": "string",
+      "offenceCount": "integer",
+      "tics": "integer",
+      "verdict": "string",
+      "offenderId": "integer",
+      "createdDatetime": "string",
+      "lastUpdatedDatetime": "string"
+    }
+  ],
+  "sentence": {
+    "sentenceId": "integer",
+    "description": "string",
+    "originalLength": "integer",
+    "originalLengthUnits": "string",
+    "secondLength": "integer",
+    "secondLengthUnits": "string",
+    "defaultLength": "integer",
+    "effectiveLength": "integer",
+    "lengthInDays": "integer",
+    "expectedSentenceEndDate": "string",
+    "unpaidWork": {
+      "minutesOrdered": "integer",
+      "minutesCompleted": "integer",
+      "appointments": {
+        "total": "integer",
+        "attended": "integer",
+        "acceptableAbsences": "integer",
+        "unacceptableAbsences": "integer",
+        "noOutcomeRecorded": "integer"
+      },
+      "status": "string"
+    },
+    "startDate": "string",
+    "terminationDate": "string",
+    "terminationReason": "string",
+    "sentenceType": {
+      "code": "string",
+      "description": "string"
+    },
+    "additionalSentences": [
+      {
+        "additionalSentenceId": "integer",
+        "type": {
+          "code": "string",
+          "description": "string"
+        },
+        "amount": "number",
+        "length": "integer",
+        "notes": "string"
+      }
+    ],
+    "failureToComplyLimit": "integer",
+    "cja2003Order": "boolean",
+    "legacyOrder": "boolean"
+  },
+  "latestCourtAppearanceOutcome": {
+    "code": "string",
+    "description": "string"
+  },
+  "custody": {
+    "bookingNumber": "string",
+    "institution": {
+      "institutionId": "integer",
+      "isEstablishment": "boolean",
+      "code": "string",
+      "description": "string",
+      "institutionName": "string",
+      "establishmentType": {
+        "code": "string",
+        "description": "string"
+      },
+      "isPrivate": "boolean",
+      "nomsPrisonInstitutionCode": "string"
+    },
+    "keyDates": {
+      "conditionalReleaseDate": "string",
+      "licenceExpiryDate": "string",
+      "hdcEligibilityDate": "string",
+      "paroleEligibilityDate": "string",
+      "sentenceExpiryDate": "string",
+      "expectedReleaseDate": "string",
+      "postSentenceSupervisionEndDate": "string",
+      "expectedPrisonOffenderManagerHandoverStartDate": "string",
+      "expectedPrisonOffenderManagerHandoverDate": "string"
+    },
+    "status": {
+      "code": "string",
+      "description": "string"
+    },
+    "sentenceStartDate": "string"
+  },
+  "responsibleCourt": {
+    "courtId": "integer",
+    "code": "string",
+    "selectable": "boolean",
+    "courtName": "string",
+    "telephoneNumber": "string",
+    "fax": "string",
+    "buildingName": "string",
+    "street": "string",
+    "locality": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "country": "string",
+    "courtTypeId": "integer",
+    "createdDatetime": "string",
+    "lastUpdatedDatetime": "string",
+    "probationAreaId": "integer",
+    "secureEmailAddress": "string",
+    "probationArea": {
+      "code": "string",
+      "description": "string"
+    },
+    "courtType": {
+      "code": "string",
+      "description": "string"
+    }
+  },
+  "courtAppearance": {
+    "courtAppearanceId": "integer",
+    "appearanceDate": "string",
+    "courtCode": "string",
+    "courtName": "string",
+    "appearanceType": {
+      "code": "string",
+      "description": "string"
+    },
+    "crn": "string"
+  },
+  "orderManagers": [
+    {
+      "probationAreaId": "integer",
+      "teamId": "integer",
+      "officerId": "integer",
+      "name": "string",
+      "staffCode": "string",
+      "dateStartOfAllocation": "string",
+      "dateEndOfAllocation": "string",
+      "gradeCode": "string",
+      "teamCode": "string",
+      "probationAreaCode": "string"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-conviction'>Conviction</a>
 </td>
 </tr>
 
@@ -824,11 +1113,30 @@
 
 
 <pre><code>{
+  "sentenceId": "integer",
+  "custodialType": {
+    "code": "string",
+    "description": "string"
+  },
+  "sentence": {
+    "code": "string",
+    "description": "string"
+  },
+  "mainOffence": {
+    "code": "string",
+    "description": "string"
+  },
+  "sentenceDate": "string",
+  "actualReleaseDate": "string",
+  "licenceExpiryDate": "string",
+  "pssEndDate": "string",
+  "length": "integer",
+  "lengthUnit": "string"
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-sentencestatus'>SentenceStatus</a>
 </td>
 </tr>
 
@@ -913,11 +1221,49 @@
 
 
 <pre><code>{
+  "requirements": [
+    {
+      "requirementId": "integer",
+      "requirementNotes": "string",
+      "commencementDate": "string",
+      "startDate": "string",
+      "terminationDate": "string",
+      "expectedStartDate": "string",
+      "expectedEndDate": "string",
+      "createdDatetime": "string",
+      "active": "boolean",
+      "requirementTypeSubCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "requirementTypeMainCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "adRequirementTypeMainCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "adRequirementTypeSubCategory": {
+        "code": "string",
+        "description": "string"
+      },
+      "terminationReason": {
+        "code": "string",
+        "description": "string"
+      },
+      "length": "integer",
+      "lengthUnit": "string",
+      "restrictive": "boolean",
+      "softDeleted": "boolean",
+      "rarCount": "integer"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-convictionrequirements'>ConvictionRequirements</a>
 </td>
 </tr>
 
@@ -982,11 +1328,24 @@
 
 
 <pre><code>{
+  "pssRequirements": [
+    {
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "subType": {
+        "code": "string",
+        "description": "string"
+      },
+      "active": "boolean"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-pssrequirements'>PssRequirements</a>
 </td>
 </tr>
 
@@ -1061,11 +1420,310 @@
 
 
 <pre><code>{
+  "nsis": [
+    {
+      "nsiId": "integer",
+      "nsiType": {
+        "code": "string",
+        "description": "string"
+      },
+      "nsiSubType": {
+        "code": "string",
+        "description": "string"
+      },
+      "nsiOutcome": {
+        "code": "string",
+        "description": "string"
+      },
+      "requirement": {
+        "requirementId": "integer",
+        "requirementNotes": "string",
+        "commencementDate": "string",
+        "startDate": "string",
+        "terminationDate": "string",
+        "expectedStartDate": "string",
+        "expectedEndDate": "string",
+        "createdDatetime": "string",
+        "active": "boolean",
+        "requirementTypeSubCategory": {
+          "code": "string",
+          "description": "string"
+        },
+        "requirementTypeMainCategory": {
+          "code": "string",
+          "description": "string"
+        },
+        "adRequirementTypeMainCategory": {
+          "code": "string",
+          "description": "string"
+        },
+        "adRequirementTypeSubCategory": {
+          "code": "string",
+          "description": "string"
+        },
+        "terminationReason": {
+          "code": "string",
+          "description": "string"
+        },
+        "length": "integer",
+        "lengthUnit": "string",
+        "restrictive": "boolean",
+        "softDeleted": "boolean",
+        "rarCount": "integer"
+      },
+      "nsiStatus": {
+        "code": "string",
+        "description": "string"
+      },
+      "statusDateTime": "string",
+      "actualStartDate": "string",
+      "expectedStartDate": "string",
+      "actualEndDate": "string",
+      "expectedEndDate": "string",
+      "referralDate": "string",
+      "length": "integer",
+      "lengthUnit": "string",
+      "nsiManagers": [
+        {
+          "probationArea": {
+            "probationAreaId": "integer",
+            "code": "string",
+            "description": "string",
+            "organisation": {
+              "code": "string",
+              "description": "string"
+            },
+            "institution": {
+              "institutionId": "integer",
+              "isEstablishment": "boolean",
+              "code": "string",
+              "description": "string",
+              "institutionName": "string",
+              "establishmentType": {
+                "code": "string",
+                "description": "string"
+              },
+              "isPrivate": "boolean",
+              "nomsPrisonInstitutionCode": "string"
+            },
+            "nps": "boolean",
+            "teams": [
+              {
+                "providerTeamId": "integer",
+                "teamId": "integer",
+                "code": "string",
+                "description": "string",
+                "name": "string",
+                "isPrivate": "boolean",
+                "externalProvider": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "scProvider": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "localDeliveryUnit": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "district": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "borough": {
+                  "code": "string",
+                  "description": "string"
+                }
+              }
+            ]
+          },
+          "team": {
+            "code": "string",
+            "description": "string",
+            "telephone": "string",
+            "emailAddress": "string",
+            "localDeliveryUnit": {
+              "code": "string",
+              "description": "string"
+            },
+            "district": {
+              "code": "string",
+              "description": "string"
+            },
+            "borough": {
+              "code": "string",
+              "description": "string"
+            },
+            "teamType": {
+              "code": "string",
+              "description": "string"
+            },
+            "startDate": "string",
+            "endDate": "string"
+          },
+          "staff": {
+            "username": "SheilaHancockNPS",
+            "staffCode": "SH00001",
+            "staffIdentifier": 123456,
+            "staff": {
+              "forenames": "string",
+              "surname": "string"
+            },
+            "teams": [
+              {
+                "code": "string",
+                "description": "string",
+                "telephone": "string",
+                "emailAddress": "string",
+                "localDeliveryUnit": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "district": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "borough": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "teamType": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "startDate": "string",
+                "endDate": "string"
+              }
+            ],
+            "probationArea": {
+              "probationAreaId": "integer",
+              "code": "string",
+              "description": "string",
+              "organisation": {
+                "code": "string",
+                "description": "string"
+              },
+              "institution": {
+                "institutionId": "integer",
+                "isEstablishment": "boolean",
+                "code": "string",
+                "description": "string",
+                "institutionName": "string",
+                "establishmentType": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "isPrivate": "boolean",
+                "nomsPrisonInstitutionCode": "string"
+              },
+              "nps": "boolean",
+              "teams": [
+                {
+                  "providerTeamId": "integer",
+                  "teamId": "integer",
+                  "code": "string",
+                  "description": "string",
+                  "name": "string",
+                  "isPrivate": "boolean",
+                  "externalProvider": {
+                    "code": "string",
+                    "description": "string"
+                  },
+                  "scProvider": {
+                    "code": "string",
+                    "description": "string"
+                  },
+                  "localDeliveryUnit": {
+                    "code": "string",
+                    "description": "string"
+                  },
+                  "district": {
+                    "code": "string",
+                    "description": "string"
+                  },
+                  "borough": {
+                    "code": "string",
+                    "description": "string"
+                  }
+                }
+              ]
+            },
+            "staffGrade": {
+              "code": "string",
+              "description": "string"
+            }
+          },
+          "startDate": "string",
+          "endDate": "string"
+        }
+      ],
+      "notes": "string",
+      "intendedProvider": {
+        "probationAreaId": "integer",
+        "code": "string",
+        "description": "string",
+        "organisation": {
+          "code": "string",
+          "description": "string"
+        },
+        "institution": {
+          "institutionId": "integer",
+          "isEstablishment": "boolean",
+          "code": "string",
+          "description": "string",
+          "institutionName": "string",
+          "establishmentType": {
+            "code": "string",
+            "description": "string"
+          },
+          "isPrivate": "boolean",
+          "nomsPrisonInstitutionCode": "string"
+        },
+        "nps": "boolean",
+        "teams": [
+          {
+            "providerTeamId": "integer",
+            "teamId": "integer",
+            "code": "string",
+            "description": "string",
+            "name": "string",
+            "isPrivate": "boolean",
+            "externalProvider": {
+              "code": "string",
+              "description": "string"
+            },
+            "scProvider": {
+              "code": "string",
+              "description": "string"
+            },
+            "localDeliveryUnit": {
+              "code": "string",
+              "description": "string"
+            },
+            "district": {
+              "code": "string",
+              "description": "string"
+            },
+            "borough": {
+              "code": "string",
+              "description": "string"
+            }
+          }
+        ]
+      },
+      "active": "boolean",
+      "softDeleted": "boolean",
+      "externalReference": "string",
+      "recallRejectedOrWithdrawn": "boolean",
+      "outcomeRecall": "boolean"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-nsidetails'>NsiDetails</a>
 </td>
 </tr>
 
@@ -1140,11 +1798,306 @@
 
 
 <pre><code>{
+  "nsiId": "integer",
+  "nsiType": {
+    "code": "string",
+    "description": "string"
+  },
+  "nsiSubType": {
+    "code": "string",
+    "description": "string"
+  },
+  "nsiOutcome": {
+    "code": "string",
+    "description": "string"
+  },
+  "requirement": {
+    "requirementId": "integer",
+    "requirementNotes": "string",
+    "commencementDate": "string",
+    "startDate": "string",
+    "terminationDate": "string",
+    "expectedStartDate": "string",
+    "expectedEndDate": "string",
+    "createdDatetime": "string",
+    "active": "boolean",
+    "requirementTypeSubCategory": {
+      "code": "string",
+      "description": "string"
+    },
+    "requirementTypeMainCategory": {
+      "code": "string",
+      "description": "string"
+    },
+    "adRequirementTypeMainCategory": {
+      "code": "string",
+      "description": "string"
+    },
+    "adRequirementTypeSubCategory": {
+      "code": "string",
+      "description": "string"
+    },
+    "terminationReason": {
+      "code": "string",
+      "description": "string"
+    },
+    "length": "integer",
+    "lengthUnit": "string",
+    "restrictive": "boolean",
+    "softDeleted": "boolean",
+    "rarCount": "integer"
+  },
+  "nsiStatus": {
+    "code": "string",
+    "description": "string"
+  },
+  "statusDateTime": "string",
+  "actualStartDate": "string",
+  "expectedStartDate": "string",
+  "actualEndDate": "string",
+  "expectedEndDate": "string",
+  "referralDate": "string",
+  "length": "integer",
+  "lengthUnit": "string",
+  "nsiManagers": [
+    {
+      "probationArea": {
+        "probationAreaId": "integer",
+        "code": "string",
+        "description": "string",
+        "organisation": {
+          "code": "string",
+          "description": "string"
+        },
+        "institution": {
+          "institutionId": "integer",
+          "isEstablishment": "boolean",
+          "code": "string",
+          "description": "string",
+          "institutionName": "string",
+          "establishmentType": {
+            "code": "string",
+            "description": "string"
+          },
+          "isPrivate": "boolean",
+          "nomsPrisonInstitutionCode": "string"
+        },
+        "nps": "boolean",
+        "teams": [
+          {
+            "providerTeamId": "integer",
+            "teamId": "integer",
+            "code": "string",
+            "description": "string",
+            "name": "string",
+            "isPrivate": "boolean",
+            "externalProvider": {
+              "code": "string",
+              "description": "string"
+            },
+            "scProvider": {
+              "code": "string",
+              "description": "string"
+            },
+            "localDeliveryUnit": {
+              "code": "string",
+              "description": "string"
+            },
+            "district": {
+              "code": "string",
+              "description": "string"
+            },
+            "borough": {
+              "code": "string",
+              "description": "string"
+            }
+          }
+        ]
+      },
+      "team": {
+        "code": "string",
+        "description": "string",
+        "telephone": "string",
+        "emailAddress": "string",
+        "localDeliveryUnit": {
+          "code": "string",
+          "description": "string"
+        },
+        "district": {
+          "code": "string",
+          "description": "string"
+        },
+        "borough": {
+          "code": "string",
+          "description": "string"
+        },
+        "teamType": {
+          "code": "string",
+          "description": "string"
+        },
+        "startDate": "string",
+        "endDate": "string"
+      },
+      "staff": {
+        "username": "SheilaHancockNPS",
+        "staffCode": "SH00001",
+        "staffIdentifier": 123456,
+        "staff": {
+          "forenames": "string",
+          "surname": "string"
+        },
+        "teams": [
+          {
+            "code": "string",
+            "description": "string",
+            "telephone": "string",
+            "emailAddress": "string",
+            "localDeliveryUnit": {
+              "code": "string",
+              "description": "string"
+            },
+            "district": {
+              "code": "string",
+              "description": "string"
+            },
+            "borough": {
+              "code": "string",
+              "description": "string"
+            },
+            "teamType": {
+              "code": "string",
+              "description": "string"
+            },
+            "startDate": "string",
+            "endDate": "string"
+          }
+        ],
+        "probationArea": {
+          "probationAreaId": "integer",
+          "code": "string",
+          "description": "string",
+          "organisation": {
+            "code": "string",
+            "description": "string"
+          },
+          "institution": {
+            "institutionId": "integer",
+            "isEstablishment": "boolean",
+            "code": "string",
+            "description": "string",
+            "institutionName": "string",
+            "establishmentType": {
+              "code": "string",
+              "description": "string"
+            },
+            "isPrivate": "boolean",
+            "nomsPrisonInstitutionCode": "string"
+          },
+          "nps": "boolean",
+          "teams": [
+            {
+              "providerTeamId": "integer",
+              "teamId": "integer",
+              "code": "string",
+              "description": "string",
+              "name": "string",
+              "isPrivate": "boolean",
+              "externalProvider": {
+                "code": "string",
+                "description": "string"
+              },
+              "scProvider": {
+                "code": "string",
+                "description": "string"
+              },
+              "localDeliveryUnit": {
+                "code": "string",
+                "description": "string"
+              },
+              "district": {
+                "code": "string",
+                "description": "string"
+              },
+              "borough": {
+                "code": "string",
+                "description": "string"
+              }
+            }
+          ]
+        },
+        "staffGrade": {
+          "code": "string",
+          "description": "string"
+        }
+      },
+      "startDate": "string",
+      "endDate": "string"
+    }
+  ],
+  "notes": "string",
+  "intendedProvider": {
+    "probationAreaId": "integer",
+    "code": "string",
+    "description": "string",
+    "organisation": {
+      "code": "string",
+      "description": "string"
+    },
+    "institution": {
+      "institutionId": "integer",
+      "isEstablishment": "boolean",
+      "code": "string",
+      "description": "string",
+      "institutionName": "string",
+      "establishmentType": {
+        "code": "string",
+        "description": "string"
+      },
+      "isPrivate": "boolean",
+      "nomsPrisonInstitutionCode": "string"
+    },
+    "nps": "boolean",
+    "teams": [
+      {
+        "providerTeamId": "integer",
+        "teamId": "integer",
+        "code": "string",
+        "description": "string",
+        "name": "string",
+        "isPrivate": "boolean",
+        "externalProvider": {
+          "code": "string",
+          "description": "string"
+        },
+        "scProvider": {
+          "code": "string",
+          "description": "string"
+        },
+        "localDeliveryUnit": {
+          "code": "string",
+          "description": "string"
+        },
+        "district": {
+          "code": "string",
+          "description": "string"
+        },
+        "borough": {
+          "code": "string",
+          "description": "string"
+        }
+      }
+    ]
+  },
+  "active": "boolean",
+  "softDeleted": "boolean",
+  "externalReference": "string",
+  "recallRejectedOrWithdrawn": "boolean",
+  "outcomeRecall": "boolean"
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-nsi'>Nsi</a>
 </td>
 </tr>
 
@@ -1209,11 +2162,31 @@
 
 
 <pre><code>{
+  "licenceConditions": [
+    {
+      "licenceConditionNotes": "string",
+      "startDate": "string",
+      "commencementDate": "string",
+      "commencementNotes": "string",
+      "terminationDate": "string",
+      "terminationNotes": "string",
+      "createdDateTime": "string",
+      "active": "boolean",
+      "licenceConditionTypeMainCat": {
+        "code": "string",
+        "description": "string"
+      },
+      "licenceConditionTypeSubCat": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-licenceconditions'>LicenceConditions</a>
 </td>
 </tr>
 
@@ -1347,11 +2320,24 @@
 
 
 <pre><code>{
+  "courtAppearances": [
+    {
+      "courtAppearanceId": "integer",
+      "appearanceDate": "string",
+      "courtCode": "string",
+      "courtName": "string",
+      "appearanceType": {
+        "code": "string",
+        "description": "string"
+      },
+      "crn": "string"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-courtappearancebasicwrapper'>CourtAppearanceBasicWrapper</a>
 </td>
 </tr>
 
@@ -1416,11 +2402,24 @@
 
 
 <pre><code>{
+  "attendances": [
+    {
+      "attended": "boolean",
+      "complied": "boolean",
+      "attendanceDate": "string",
+      "contactId": "integer",
+      "outcome": "string",
+      "contactType": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-attendances'>Attendances</a>
 </td>
 </tr>
 
@@ -1475,11 +2474,277 @@
 
 
 <pre><code>{
+  "preferredName": "string",
+  "activeProbationManagedSentence": "boolean",
+  "contactDetails": {
+    "allowSMS": "boolean",
+    "emailAddresses": [
+      {
+      }
+    ],
+    "phoneNumbers": [
+      {
+        "number": "string",
+        "type": "string"
+      }
+    ],
+    "addresses": [
+      {
+        "from": "string",
+        "to": "string",
+        "noFixedAbode": "boolean",
+        "notes": "string",
+        "addressNumber": "string",
+        "buildingName": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string",
+        "telephoneNumber": "string",
+        "status": {
+          "code": "string",
+          "description": "string"
+        },
+        "type": {
+          "code": "string",
+          "description": "string"
+        },
+        "typeVerified": "boolean",
+        "latestAssessmentDate": "string",
+        "createdDatetime": "string",
+        "lastUpdatedDatetime": "string"
+      }
+    ]
+  },
+  "currentDisposal": "string",
+  "currentExclusion": "boolean",
+  "exclusionMessage": "string",
+  "currentRestriction": "boolean",
+  "restrictionMessage": "string",
+  "dateOfBirth": "string",
+  "firstName": "string",
+  "gender": "string",
+  "middleNames": [
+    {
+    }
+  ],
+  "offenderId": "integer",
+  "offenderProfile": {
+    "genderIdentity": "string",
+    "selfDescribedGender": "string",
+    "disabilities": [
+      {
+        "lastUpdatedDateTime": "string",
+        "disabilityCondition": {
+          "code": "string",
+          "description": "string"
+        },
+        "disabilityId": "integer",
+        "disabilityType": {
+          "code": "string",
+          "description": "string"
+        },
+        "endDate": "string",
+        "isActive": "boolean",
+        "notes": "string",
+        "provisions": [
+          {
+            "category": {
+              "code": "string",
+              "description": "string"
+            },
+            "finishDate": "string",
+            "notes": "string",
+            "provisionId": "integer",
+            "provisionType": {
+              "code": "string",
+              "description": "string"
+            },
+            "startDate": "string"
+          }
+        ],
+        "startDate": "string"
+      }
+    ],
+    "ethnicity": "string",
+    "immigrationStatus": "string",
+    "nationality": "string",
+    "notes": "string",
+    "offenderDetails": "string",
+    "offenderLanguages": {
+      "languageConcerns": "string",
+      "otherLanguages": [
+        {
+        }
+      ],
+      "primaryLanguage": "string",
+      "requiresInterpreter": "boolean"
+    },
+    "previousConviction": {
+      "convictionDate": "string",
+      "detail": {
+      }
+    },
+    "provisions": [
+      {
+        "category": {
+          "code": "string",
+          "description": "string"
+        },
+        "finishDate": "string",
+        "notes": "string",
+        "provisionId": "integer",
+        "provisionType": {
+          "code": "string",
+          "description": "string"
+        },
+        "startDate": "string"
+      }
+    ],
+    "religion": "string",
+    "remandStatus": "string",
+    "riskColour": "string",
+    "secondaryNationality": "string",
+    "sexualOrientation": "string"
+  },
+  "offenderAliases": [
+    {
+      "id": "string",
+      "dateOfBirth": "string",
+      "firstName": "string",
+      "middleNames": [
+        {
+        }
+      ],
+      "surname": "string",
+      "gender": "string"
+    }
+  ],
+  "offenderManagers": [
+    {
+      "trustOfficer": {
+        "forenames": "string",
+        "surname": "string"
+      },
+      "staff": {
+        "code": "string",
+        "forenames": "string",
+        "surname": "string",
+        "unallocated": "boolean"
+      },
+      "providerEmployee": {
+        "forenames": "string",
+        "surname": "string"
+      },
+      "partitionArea": "string",
+      "softDeleted": "boolean",
+      "team": {
+        "code": "string",
+        "description": "string",
+        "telephone": "string",
+        "emailAddress": "string",
+        "localDeliveryUnit": {
+          "code": "string",
+          "description": "string"
+        },
+        "district": {
+          "code": "string",
+          "description": "string"
+        },
+        "borough": {
+          "code": "string",
+          "description": "string"
+        },
+        "teamType": {
+          "code": "string",
+          "description": "string"
+        },
+        "startDate": "string",
+        "endDate": "string"
+      },
+      "probationArea": {
+        "probationAreaId": "integer",
+        "code": "string",
+        "description": "string",
+        "organisation": {
+          "code": "string",
+          "description": "string"
+        },
+        "institution": {
+          "institutionId": "integer",
+          "isEstablishment": "boolean",
+          "code": "string",
+          "description": "string",
+          "institutionName": "string",
+          "establishmentType": {
+            "code": "string",
+            "description": "string"
+          },
+          "isPrivate": "boolean",
+          "nomsPrisonInstitutionCode": "string"
+        },
+        "nps": "boolean",
+        "teams": [
+          {
+            "providerTeamId": "integer",
+            "teamId": "integer",
+            "code": "string",
+            "description": "string",
+            "name": "string",
+            "isPrivate": "boolean",
+            "externalProvider": {
+              "code": "string",
+              "description": "string"
+            },
+            "scProvider": {
+              "code": "string",
+              "description": "string"
+            },
+            "localDeliveryUnit": {
+              "code": "string",
+              "description": "string"
+            },
+            "district": {
+              "code": "string",
+              "description": "string"
+            },
+            "borough": {
+              "code": "string",
+              "description": "string"
+            }
+          }
+        ]
+      },
+      "fromDate": "string",
+      "toDate": "string",
+      "active": "boolean",
+      "allocationReason": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  ],
+  "otherIds": {
+    "crn": "string",
+    "croNumber": "string",
+    "immigrationNumber": "string",
+    "mostRecentPrisonerNumber": "string",
+    "niNumber": "string",
+    "nomsNumber": "string",
+    "pncNumber": "string"
+  },
+  "partitionArea": "string",
+  "currentTier": "string",
+  "previousSurname": "string",
+  "softDeleted": "boolean",
+  "surname": "string",
+  "title": "string"
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-offenderdetail'>OffenderDetail</a>
 </td>
 </tr>
 
@@ -4250,267 +5515,6 @@
 
 
 <h2 id="schemas">Schemas</h2>
-<h3 id="schema-compare">Compare</h3>
-
-
-<table class='schema-compare'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>params</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>uri</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-comparereport">CompareReport</h3>
-
-
-<table class='schema-comparereport'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>endPointName</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>message</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>url</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>testExecuted</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>success</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-compareall">CompareAll</h3>
-
-
-<table class='schema-compareall'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crns</td>
-<td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>uriConfig</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pageNumber</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pageSize</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-compareallreport">CompareAllReport</h3>
-
-
-<table class='schema-compareallreport'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>totalNumberOfCrns</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>totalPages</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>currentPageNumber</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>totalNumberOfRequests</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>numberOfSuccessfulRequests</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>numberOfUnsuccessfulRequests</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>unableToBeExecuted</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>failureReports</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-comparereport'>CompareReport</a>
-</td>
-</tr>
-
-<tr>
-<td>endpointsCovered</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>endpointsRequestedButNotCovered</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-streamingresponsebody">StreamingResponseBody</h3>
-
-
 <h3 id="schema-contactdetailssummary">ContactDetailsSummary</h3>
 
 
@@ -5321,68 +6325,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-probationstatusdetail">ProbationStatusDetail</h3>
-
-
-<table class='schema-probationstatusdetail'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>status</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>terminationDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>inBreach</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>preSentenceActivity</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>awaitingPsr</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-registration">Registration</h3>
 
 
@@ -5688,6 +6630,9 @@
 
 </tbody>
 </table>
+
+<h3 id="schema-streamingresponsebody">StreamingResponseBody</h3>
+
 
 <h3 id="schema-convictiondocuments">ConvictionDocuments</h3>
 
@@ -9811,6 +10756,68 @@
 <td>false</td>
 <td><p>Phone number</p>
 </td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationstatusdetail">ProbationStatusDetail</h3>
+
+
+<table class='schema-probationstatusdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>inBreach</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>preSentenceActivity</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>awaitingPsr</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
 <td>
   
 </td>
