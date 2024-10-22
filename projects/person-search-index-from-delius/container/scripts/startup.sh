@@ -49,4 +49,5 @@ if grep -q 'contact' <<<"$PIPELINES_ENABLED"; then
   /scripts/setup-index.sh -i "contact-semantic-search" -p /pipelines/contact/index/ingest-pipeline.json -s /pipelines/contact/index/search-pipeline.json -t /pipelines/contact/index/index-template-semantic.json
 fi
 
+echo Starting Logstash...
 /usr/local/bin/docker-entrypoint
