@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -16,6 +17,7 @@ import java.time.ZonedDateTime
 @Table(name = "offender_manager")
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
 @SequenceGenerator(name = "offender_manager_id_seq", sequenceName = "offender_manager_id_seq", allocationSize = 1)
+@EntityListeners(AuditingEntityListener::class)
 class PersonManager(
     @Id
     @Column(name = "offender_manager_id")
@@ -75,6 +77,9 @@ class PersonManager(
 
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
+
+    @Column
+    val partitionAreaId: Long = 0L
 )
 
 @Immutable

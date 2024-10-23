@@ -37,7 +37,7 @@ object DatasetGenerator {
 }
 
 object CourtGenerator {
-    val UNKNOWN_COURT_N07_PROVIDER = generate(code = "UNKNCT", nationalCourtCode = "A00AA00")
+    val UNKNOWN_COURT_N07_PROVIDER = generate(code = "UNKNCT", ouCode = "A00AA00")
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
@@ -45,13 +45,13 @@ object CourtGenerator {
         selectable: Boolean = true,
         courtName: String = "Court not known",
         provider: Provider = ProviderGenerator.DEFAULT,
-        nationalCourtCode: String? = null,
+        ouCode: String? = null,
     ) = Court(
         id = id,
         code = code,
         selectable = selectable,
-        courtName = courtName,
-        probationArea = provider,
-        nationalCourtCode = nationalCourtCode
+        name = courtName,
+        provider = provider,
+        ouCode = ouCode
     )
 }

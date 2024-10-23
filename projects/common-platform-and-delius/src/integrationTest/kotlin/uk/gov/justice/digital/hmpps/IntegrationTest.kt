@@ -28,7 +28,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddr
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.service.AddressService
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -67,9 +66,6 @@ internal class IntegrationTest {
     @SpyBean
     lateinit var personService: PersonService
 
-    @SpyBean
-    lateinit var addressService: AddressService
-
     @BeforeEach
     fun setup() {
         doReturn("A111111").whenever(personService).generateCrn()
@@ -97,8 +93,8 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
         verify(personService, never()).insertPerson(any(), any())
+        verify(personService, never()).insertAddress(any())
         verify(personRepository, never()).save(any())
-        verify(addressService, never()).insertAddress(any())
         verify(addressRepository, never()).save(any())
         verify(auditedInteractionService, Mockito.never()).createAuditedInteraction(
             any(),
@@ -126,7 +122,7 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(personService, never()).insertPerson(any(), any())
-        verify(addressService, never()).insertAddress(any())
+        verify(personService, never()).insertAddress(any())
         verify(addressRepository, never()).save(any())
         verify(personRepository, never()).save(any())
         verify(auditedInteractionService, Mockito.never())
@@ -150,8 +146,8 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(personService, never()).insertPerson(any(), any())
+        verify(personService, never()).insertAddress(any())
         verify(personRepository, never()).save(any())
-        verify(addressService, never()).insertAddress(any())
         verify(addressRepository, never()).save(any())
         verify(auditedInteractionService, Mockito.never())
             .createAuditedInteraction(any(), any(), any(), any(), anyOrNull())
@@ -205,7 +201,7 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(addressService).insertAddress(any())
+        verify(personService).insertAddress(any())
 
         verify(addressRepository).save(check<PersonAddress> {
             assertThat(it.start, Matchers.equalTo(LocalDate.now()))
@@ -242,7 +238,7 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_BLANK_ADDRESS)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(addressService, never()).insertAddress(any())
+        verify(personService, never()).insertAddress(any())
 
         verify(addressRepository, never()).save(any())
 

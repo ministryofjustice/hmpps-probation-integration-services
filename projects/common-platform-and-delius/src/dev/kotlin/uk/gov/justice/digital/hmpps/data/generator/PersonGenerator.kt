@@ -18,7 +18,10 @@ object PersonGenerator {
         forename = UUID.randomUUID().toString().substring(0, 15),
         surname = UUID.randomUUID().toString().substring(0, 15),
         dateOfBirth = LocalDate.now().minusYears(Random.nextInt(16, 76).toLong()),
-        gender = if (Random.nextBoolean()) ReferenceDataGenerator.GENDER_MALE else ReferenceDataGenerator.GENDER_FEMALE
+        gender = if (Random.nextBoolean()) ReferenceDataGenerator.GENDER_MALE else ReferenceDataGenerator.GENDER_FEMALE,
+        surnameSoundex = "surnameSoundex",
+        firstNameSoundex = "firstNameSoundex",
+        middleNameSoundex = null
     )
 }
 

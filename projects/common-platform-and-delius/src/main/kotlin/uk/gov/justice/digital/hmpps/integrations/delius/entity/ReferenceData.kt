@@ -101,21 +101,21 @@ class Court(
     @Column(name = "court_id", nullable = false)
     val id: Long,
 
-    @Column(name = "code", length = 6, nullable = false)
+    @Column(columnDefinition = "char(6)", nullable = false)
     val code: String,
 
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean = true,
 
-    @Column(name = "code_description", length = 80)
-    val courtName: String,
+    @Column(name = "court_name", length = 80)
+    val name: String,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
-    val probationArea: Provider,
+    val provider: Provider,
 
-    @Column(name = "national_court_code")
-    val nationalCourtCode: String?
+    @Column(name = "court_ou_code")
+    val ouCode: String?
 )
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
@@ -149,5 +149,7 @@ fun ReferenceDataRepository.awaitingAssessmentAddressType() =
         ?: throw NotFoundException("Address Type", "code", ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code)
 
 interface CourtRepository : JpaRepository<Court, Long> {
-    fun findByNationalCourtCode(nationalCourtCode: String): Court
+    fun findByOuCode(ouCode: String): Court?
 }
+fun CourtRepository.getByOuCode(ouCode: String) =
+    findByOuCode(ouCode) ?: throw NotFoundException("Court", "ouCode", ouCode)

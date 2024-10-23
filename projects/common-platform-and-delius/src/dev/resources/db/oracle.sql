@@ -1,10 +1,10 @@
-CREATE OR REPLACE PACKAGE offender_support_api IS
+CREATE OR REPLACE PACKAGE offender_support_api AS
     FUNCTION getNextCRN RETURN VARCHAR2;
 END offender_support_api;
 
 GRANT EXECUTE ON offender_support_api TO delius_app_schema;
 
-CREATE OR REPLACE PACKAGE BODY offender_support_api IS
+CREATE OR REPLACE PACKAGE BODY offender_support_api AS
     FUNCTION getNextCRN RETURN VARCHAR2 IS
     BEGIN
         RETURN 'A111111';

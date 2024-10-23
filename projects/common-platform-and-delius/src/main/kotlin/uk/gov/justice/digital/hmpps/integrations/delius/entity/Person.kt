@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -33,6 +34,15 @@ class Person(
 
     @Column(name = "first_name", length = 35)
     val forename: String,
+
+    @Column
+    val surnameSoundex: String,
+
+    @Column
+    val firstNameSoundex: String,
+
+    @Column
+    val middleNameSoundex: String?,
 
     @Column(name = "second_name", length = 35)
     val secondName: String? = null,
@@ -75,11 +85,23 @@ class Person(
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
+    @LastModifiedDate
+    var lastUpdatedDatetimeDiversit: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedBy
+    var lastUpdatedUserIdDiversity: Long = 0,
+
     @CreatedBy
     var createdByUserId: Long = 0,
 
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-)
 
-interface PersonRepository : JpaRepository<Person, Long>
+    @Column
+    val partitionAreaId: Long = 0L
+    )
+
+interface PersonRepository : JpaRepository<Person, Long>{
+    @Query("SELECT SOUNDEX(:name) FROM DUAL", nativeQuery = true)
+    fun getSoundex(name: String): String
+}
