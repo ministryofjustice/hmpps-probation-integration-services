@@ -433,13 +433,44 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
 
     @Query(
         """
-            select distinct cont.type from Caseload c
-            join Contact cont on cont.personId = c.person.id
-            where c.staff.id = :id and cont.type.attendanceContact = true
-            order by cont.type.description asc
-        """
+            select  DISTINCT na.code,
+                    na.description
+            from caseload c join offender o on o.offender_id = c.offender_id 
+            left join ( 
+                    select * from (
+                        SELECT
+                        q.staff_id,
+                        q.offender_id,
+                        q.appointment_datetime,
+                        q.contact_type_id,
+                        q.code,
+                        q.description,
+                        row_number() over (partition by staff_id, offender_id order by appointment_datetime asc) as row_num 
+                        from
+                        (
+                            select    
+                            c.staff_id,
+                            c.offender_id,
+                            to_timestamp(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
+                            c.contact_type_id,
+                            ct.code,
+                            ct.description
+                            from contact c
+                            join r_contact_type ct on c.contact_type_id = ct.contact_type_id and ct.attendance_contact = 'Y'
+                            where c.CONTACT_START_TIME is not null
+                            and c.soft_deleted = 0
+                        ) q
+                        where appointment_datetime > current_timestamp
+                    )
+                    where row_num = 1
+                 ) na on na.offender_id = o.offender_id and na.staff_id = c.staff_employee_id 
+                 left join r_contact_type t2_0 on t2_0.contact_type_id=na.contact_type_id 
+             where (c.role_code = 'OM') 
+             and c.staff_employee_id = :id 
+             and na.description IS NOT null
+                    """, nativeQuery = true
     )
-    fun findContactTypesForStaff(id: Long): List<ContactType>
+    fun findContactTypesForStaff(id: Long): List<contactType>
 
     @Query(
         """
@@ -451,6 +482,11 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         """
     )
     fun findSentenceTypesForStaff(id: Long): List<DisposalType>
+}
+
+interface contactType {
+    val code: String
+    val description: String
 }
 
 enum class CaseloadOrderType(val sortColumn: String) {
