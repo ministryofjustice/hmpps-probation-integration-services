@@ -57,10 +57,12 @@ class Handler(
             // Insert each defendant as a person record
             val savedPerson = personService.insertPerson(defendant, courtCode)
 
-            telemetryService.trackEvent("PersonCreated", mapOf(
-                "CRN" to savedPerson.crn,
-                "personId" to savedPerson.id.toString(),
-                "hearingId" to notification.message.hearing.id)
+            telemetryService.trackEvent(
+                "PersonCreated", mapOf(
+                    "CRN" to savedPerson.crn,
+                    "personId" to savedPerson.id.toString(),
+                    "hearingId" to notification.message.hearing.id
+                )
             )
         }
     }

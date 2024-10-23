@@ -151,5 +151,6 @@ fun ReferenceDataRepository.awaitingAssessmentAddressType() =
 interface CourtRepository : JpaRepository<Court, Long> {
     fun findByOuCode(ouCode: String): Court?
 }
+
 fun CourtRepository.getByOuCode(ouCode: String) =
     findByOuCode(ouCode) ?: throw NotFoundException("Court", "ouCode", ouCode)

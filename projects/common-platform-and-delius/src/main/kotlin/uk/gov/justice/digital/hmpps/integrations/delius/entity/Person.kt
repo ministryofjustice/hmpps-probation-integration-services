@@ -99,9 +99,9 @@ class Person(
 
     @Column
     val partitionAreaId: Long = 0L
-    )
+)
 
-interface PersonRepository : JpaRepository<Person, Long>{
+interface PersonRepository : JpaRepository<Person, Long> {
     @Query("SELECT SOUNDEX(:name) FROM DUAL", nativeQuery = true)
     fun getSoundex(name: String): String
 }
