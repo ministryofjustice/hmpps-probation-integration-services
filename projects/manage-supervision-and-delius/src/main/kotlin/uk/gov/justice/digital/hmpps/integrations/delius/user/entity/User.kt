@@ -433,11 +433,11 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
 
     @Query(
         """
-            select  DISTINCT na.code,
+            SELECT DISTINCT na.code,
                     na.description
-            from caseload c join offender o on o.offender_id = c.offender_id 
-            left join ( 
-                    select * from (
+            FROM caseload c JOIN offender o ON o.offender_id = c.offender_id 
+            LEFT JOIN ( 
+                    SELECT * FROM (
                         SELECT
                         q.staff_id,
                         q.offender_id,
@@ -445,30 +445,31 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
                         q.contact_type_id,
                         q.code,
                         q.description,
-                        row_number() over (partition by staff_id, offender_id order by appointment_datetime asc) as row_num 
-                        from
+                        row_number() over (partition BY staff_id, offender_id ORDER BY appointment_datetime ASC) AS row_num 
+                        FROM
                         (
-                            select    
+                            SELECT    
                             c.staff_id,
                             c.offender_id,
                             to_timestamp(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
                             c.contact_type_id,
                             ct.code,
                             ct.description
-                            from contact c
-                            join r_contact_type ct on c.contact_type_id = ct.contact_type_id and ct.attendance_contact = 'Y'
-                            where c.CONTACT_START_TIME is not null
-                            and c.soft_deleted = 0
+                            FROM contact c
+                            JOIN r_contact_type ct ON c.contact_type_id = ct.contact_type_id AND ct.attendance_contact = 'Y'
+                            WHERE c.CONTACT_START_TIME IS NOT NULL 
+                            AND c.soft_deleted = 0
                         ) q
-                        where appointment_datetime > current_timestamp
+                        WHERE appointment_datetime > current_timestamp
                     )
-                    where row_num = 1
-                 ) na on na.offender_id = o.offender_id and na.staff_id = c.staff_employee_id 
-                 left join r_contact_type t2_0 on t2_0.contact_type_id=na.contact_type_id 
-             where (c.role_code = 'OM') 
-             and c.staff_employee_id = :id 
-             and na.description IS NOT null
-                    """, nativeQuery = true
+                    WHERE row_num = 1
+                 ) na ON na.offender_id = o.offender_id AND na.staff_id = c.staff_employee_id 
+                 LEFT JOIN r_contact_type t2_0 ON t2_0.contact_type_id=na.contact_type_id 
+             WHERE (c.role_code = 'OM') 
+             AND c.staff_employee_id = :id 
+             AND na.description IS NOT null
+             ORDER BY na.description
+    """, nativeQuery = true
     )
     fun findContactTypesForStaff(id: Long): List<contactType>
 
