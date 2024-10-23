@@ -1,0 +1,23 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: appointment-reminders-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/appointment-reminders-and-delius
+
+  ingress:
+    tlsSecretName: appointment-reminders-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    appointment-reminders-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    appointment-reminders-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: appointment-reminders-and-delius
+

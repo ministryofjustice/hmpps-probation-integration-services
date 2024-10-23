@@ -1,6 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
+    "appointment-reminders-and-delius",
     "ims-and-delius",
     "common-platform-and-delius",
     "subject-access-requests-and-delius",
