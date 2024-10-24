@@ -16,7 +16,9 @@ import uk.gov.justice.digital.hmpps.api.model.CaseAccess
 import uk.gov.justice.digital.hmpps.api.model.CaseAccessList
 import uk.gov.justice.digital.hmpps.api.model.User
 import uk.gov.justice.digital.hmpps.api.model.UserAccess
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -39,7 +41,7 @@ class UserIntegrationTest {
     @Test
     fun `limited access controls are correctly returned`() {
         val result = mockMvc.perform(
-            post("/users/limited-access?username=${UserGenerator.LIMITED_ACCESS_USER.username}")
+            post("/users/limited-access?username=${LimitedAccessGenerator.EXCLUSION.user.username}")
                 .withToken()
                 .withJson(
                     listOf(
@@ -100,7 +102,7 @@ class UserIntegrationTest {
     @Test
     fun `limited access controls do not prevent legitimate access`() {
         val result = mockMvc.perform(
-            post("/users/limited-access?username=${UserGenerator.AUDIT_USER.username}")
+            post("/users/limited-access?username=${LimitedAccessGenerator.RESTRICTION.user.username}")
                 .withToken()
                 .withJson(
                     listOf(
@@ -131,8 +133,13 @@ class UserIntegrationTest {
             .andExpectJson(
                 CaseAccessList(
                     crn = PersonGenerator.RESTRICTION_EXCLUSION.crn,
-                    excludedFrom = listOf(User(UserGenerator.LIMITED_ACCESS_USER.username)),
-                    restrictedTo = listOf(User(UserGenerator.AUDIT_USER.username)),
+                    excludedFrom = listOf(User(UserGenerator.LIMITED_ACCESS_USER.username, null)),
+                    restrictedTo = listOf(
+                        User(
+                            StaffGenerator.STAFF_WITH_USER.user!!.username,
+                            StaffGenerator.STAFF_WITH_USER.code
+                        )
+                    ),
                     exclusionMessage = PersonGenerator.RESTRICTION_EXCLUSION.exclusionMessage,
                     restrictionMessage = PersonGenerator.RESTRICTION_EXCLUSION.restrictionMessage,
                 )
@@ -140,16 +147,17 @@ class UserIntegrationTest {
     }
 
     @Test
-    fun `get all access limitations filtered by username`() {
+    fun `get all access limitations filtered by staff code`() {
+        val staff = StaffGenerator.STAFF_WITH_USER
         mockMvc.perform(
             post("/person/${PersonGenerator.RESTRICTION_EXCLUSION.crn}/limited-access")
                 .withToken()
-                .withJson(listOf(UserGenerator.AUDIT_USER.username))
+                .withJson(listOf(staff.code))
         ).andExpectJson(
             CaseAccessList(
                 crn = PersonGenerator.RESTRICTION_EXCLUSION.crn,
                 excludedFrom = emptyList(),
-                restrictedTo = listOf(User(UserGenerator.AUDIT_USER.username)),
+                restrictedTo = listOf(User(staff.user!!.username, staff.code)),
                 exclusionMessage = PersonGenerator.RESTRICTION_EXCLUSION.exclusionMessage,
                 restrictionMessage = PersonGenerator.RESTRICTION_EXCLUSION.restrictionMessage,
             )
@@ -158,7 +166,7 @@ class UserIntegrationTest {
         mockMvc.perform(
             post("/person/${PersonGenerator.RESTRICTION_EXCLUSION.crn}/limited-access")
                 .withToken()
-                .withJson(listOf("SomeOtherUsername"))
+                .withJson(listOf("OTHER"))
         ).andExpectJson(
             CaseAccessList(
                 crn = PersonGenerator.RESTRICTION_EXCLUSION.crn,
