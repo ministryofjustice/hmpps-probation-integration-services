@@ -18,6 +18,13 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
     @Query("select s from StaffWithUser s where upper(s.user.username) = upper(:username)")
     fun findStaffWithUserByUsername(username: String): StaffWithUser?
 
+    @EntityGraph(attributePaths = ["user"])
+    @Query("select s from StaffWithUser s where upper(s.user.username) in :usernamesUppercase")
+    fun findStaffForUsernamesIn(
+        usernames: List<String>,
+        usernamesUppercase: List<String> = usernames.map { it.uppercase() }
+    ): List<StaffWithUser>
+
     @EntityGraph(attributePaths = ["grade.dataset"])
     fun findByCode(code: String): Staff?
 
