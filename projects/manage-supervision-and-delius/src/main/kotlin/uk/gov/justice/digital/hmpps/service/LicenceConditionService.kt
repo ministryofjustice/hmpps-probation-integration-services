@@ -47,7 +47,7 @@ fun EntityLicenceCondition.toLicenceConditionSingleNote(noteId: Int, truncateNot
         subCategory?.description,
         imposedReleasedDate,
         actualStartDate,
-        note = toLicenceConditionNote(truncateNote).elementAtOrNull(noteId)
+        licenceConditionNote = toLicenceConditionNote(truncateNote).elementAtOrNull(noteId)
     )
 
 fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<LicenceConditionNote> {
