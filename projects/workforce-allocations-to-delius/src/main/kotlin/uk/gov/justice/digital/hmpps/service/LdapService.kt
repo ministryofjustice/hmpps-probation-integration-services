@@ -42,10 +42,10 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
     @WithSpan
     fun findAllUsersWithRole(role: String): List<String> = ldapTemplate.search(
         LdapQueryBuilder.query()
-        .attributes("entryDN")
-        .searchScope(SearchScope.SUBTREE)
-        .where("cn").`is`(role)
-        .and("objectclass").`is`("NDRoleAssociation"),
+            .attributes("entryDN")
+            .searchScope(SearchScope.SUBTREE)
+            .where("cn").`is`(role)
+            .and("objectclass").`is`("NDRoleAssociation"),
         AttributesMapper {
             LdapUtils.getStringValue(LdapUtils.newLdapName(it["entryDN"]?.get()?.toString()), 3)
         }
