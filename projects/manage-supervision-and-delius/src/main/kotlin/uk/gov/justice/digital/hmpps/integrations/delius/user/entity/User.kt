@@ -433,45 +433,26 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
 
     @Query(
         """
-            SELECT DISTINCT na.code,
-                    na.description
-            FROM caseload c JOIN offender o ON o.offender_id = c.offender_id 
-            LEFT JOIN ( 
-                    SELECT * FROM (
-                        SELECT
-                        q.staff_id,
-                        q.offender_id,
-                        q.appointment_datetime,
-                        q.contact_type_id,
-                        q.code,
-                        q.description,
-                        row_number() over (partition BY staff_id, offender_id ORDER BY appointment_datetime ASC) AS row_num 
-                        FROM
-                        (
-                            SELECT    
-                            c.staff_id,
-                            c.offender_id,
-                            to_timestamp(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') as appointment_datetime,
-                            c.contact_type_id,
-                            ct.code,
-                            ct.description
-                            FROM contact c
-                            JOIN r_contact_type ct ON c.contact_type_id = ct.contact_type_id AND ct.attendance_contact = 'Y'
-                            WHERE c.CONTACT_START_TIME IS NOT NULL 
-                            AND c.soft_deleted = 0
-                        ) q
-                        WHERE appointment_datetime > current_timestamp
-                    )
-                    WHERE row_num = 1
-                 ) na ON na.offender_id = o.offender_id AND na.staff_id = c.staff_employee_id 
-                 LEFT JOIN r_contact_type t2_0 ON t2_0.contact_type_id=na.contact_type_id 
-             WHERE (c.role_code = 'OM') 
-             AND c.staff_employee_id = :id 
-             AND na.description IS NOT null
-             ORDER BY na.description
+            SELECT DISTINCT code, description FROM (
+                SELECT code, description, ROW_NUMBER() OVER (PARTITION BY offender_id ORDER BY date_time asc) as row_num 
+                FROM (
+                    SELECT 
+                        ct.code,
+                        ct.description,
+                        c.offender_id,
+                        trunc(c.contact_date) + (c.contact_start_time-trunc(c.contact_start_time)) AS date_time
+                    FROM caseload cl
+                    JOIN contact c ON c.offender_id = cl.offender_id AND c.staff_id = cl.staff_employee_id AND c.contact_start_time IS NOT NULL AND c.soft_deleted = 0
+                    JOIN r_contact_type ct ON ct.contact_type_id = c.contact_type_id AND ct.attendance_contact = 'Y'
+                    WHERE cl.role_code = 'OM'
+                    AND cl.staff_employee_id = :id
+                ) WHERE date_time > current_date
+            )
+            WHERE row_num = 1
+            ORDER BY description
     """, nativeQuery = true
     )
-    fun findContactTypesForStaff(id: Long): List<contactType>
+    fun findContactTypesForStaff(id: Long): List<ContactTypeDetails>
 
     @Query(
         """
@@ -485,7 +466,7 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     fun findSentenceTypesForStaff(id: Long): List<DisposalType>
 }
 
-interface contactType {
+interface ContactTypeDetails {
     val code: String
     val description: String
 }
