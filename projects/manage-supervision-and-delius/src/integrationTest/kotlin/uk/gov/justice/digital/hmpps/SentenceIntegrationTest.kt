@@ -155,7 +155,7 @@ class SentenceIntegrationTest {
                             LC_WITHOUT_NOTES.id,
                             LIC_COND_MAIN_CAT.description,
                             imposedReleasedDate = LocalDate.now().minusDays(14),
-                            notes = listOf()
+                            licenceConditionNotes = listOf()
                         ),
                         LicenceCondition(
                             LC_WITH_NOTES_WITHOUT_ADDED_BY.id,
@@ -167,7 +167,7 @@ class SentenceIntegrationTest {
                                 LicenceConditionNote(
                                     0,
                                     note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
-                                    hasNotesBeenTruncated = false
+                                    hasNoteBeenTruncated = false
                                 )
                             )
                         )

@@ -91,7 +91,7 @@ class LicenceConditionIntegrationTest {
                 LIC_COND_SUB_CAT.description,
                 LocalDate.now().minusDays(7),
                 LocalDate.now(),
-                note = LicenceConditionNote(
+                licenceConditionNote = LicenceConditionNote(
                     0,
                     "CVL Service",
                     LocalDate.of(2024, 4, 22),
