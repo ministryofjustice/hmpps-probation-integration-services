@@ -10,22 +10,22 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
     @Query(
         """
         select 
-            crn,
-            any_value(first_name) as first_name,
-            any_value(mobile_number) as mobile_number, 
-            any_value(to_char(appointment_date_time, 'DD/MM/YYYY')) as appointment_date,
-            listagg(distinct to_char(appointment_date_time, 'HH24:MI'), ', ') as appointment_times,
-            listagg(distinct next_work_session_project_type, ', ') as next_work_session_project_type,
-            to_char(current_date, 'DD/MM/YYYY') as today,
-            to_char(:date, 'DD/MM/YYYY') as send_sms_for_day,
-            any_value(full_name) as full_name,
-            count(distinct event_number) as number_of_events,
-            listagg(distinct active_upw_requirements, ', ') as active_upw_requirements,
-            listagg(distinct custodial_status, ', ') as custodial_status,
-            any_value(current_remand_status) as current_remand_status,
-            any_value(allow_sms) as allow_sms,
-            any_value(original_mobile_number) as original_mobile_number,
-            listagg(distinct upw_minutes_remaining, ', ') as upw_minutes_remaining
+            crn as "crn",
+            any_value(first_name) as "firstName",
+            any_value(mobile_number) as "mobileNumber", 
+            any_value(to_char(appointment_date_time, 'DD/MM/YYYY')) as "appointmentDate",
+            listagg(distinct to_char(appointment_date_time, 'HH24:MI'), ', ') as "appointmentTimes",
+            listagg(distinct next_work_session_project_type, ', ') as "nextWorkSessionProjectType",
+            to_char(current_date, 'DD/MM/YYYY') as "today",
+            to_char(:date, 'DD/MM/YYYY') as "sendSmsForDay",
+            any_value(full_name) as "fullName",
+            count(distinct event_number) as "numberOfEvents",
+            listagg(distinct active_upw_requirements, ', ') as "activeUpwRequirements",
+            listagg(distinct custodial_status, ', ') as "custodialStatus",
+            any_value(current_remand_status) as "currentRemandStatus",
+            any_value(allow_sms) as "allowSms",
+            any_value(original_mobile_number) as "originalMobileNumber",
+            listagg(distinct upw_minutes_remaining, ', ') as "upwMinutesRemaining"
         from (
             with duplicate_mobile_numbers as (
                 select offender.offender_id from offender 

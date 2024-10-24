@@ -20,21 +20,21 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
     "originalMobileNumber",
     "upwMinutesRemaining"
 )
-data class UnpaidWorkAppointment(
-    val crn: String,
-    val firstName: String,
-    val mobileNumber: String,
-    val appointmentDate: String,
-    val appointmentTimes: String,
-    val nextWorkSessionProjectType: String,
-    val today: String,
-    val sendSmsForDay: String,
-    val fullName: String,
-    val numberOfEvents: String,
-    val activeUpwRequirements: String,
-    val custodialStatus: String?,
-    val currentRemandStatus: String?,
-    val allowSms: String,
-    val originalMobileNumber: String,
+interface UnpaidWorkAppointment {
+    val crn: String
+    val firstName: String
+    val mobileNumber: String
+    val appointmentDate: String
+    val appointmentTimes: String
+    val nextWorkSessionProjectType: String
+    val today: String
+    val sendSmsForDay: String
+    val fullName: String
+    val numberOfEvents: String
+    val activeUpwRequirements: String
+    val custodialStatus: String?
+    val currentRemandStatus: String?
+    val allowSms: String
+    val originalMobileNumber: String
     val upwMinutesRemaining: String
-)
+}

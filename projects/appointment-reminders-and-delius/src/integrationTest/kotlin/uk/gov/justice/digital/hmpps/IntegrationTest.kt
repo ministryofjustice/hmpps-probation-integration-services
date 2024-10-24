@@ -30,24 +30,24 @@ internal class IntegrationTest {
     fun `returns csv report`() {
         whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"), any())).thenReturn(
             listOf(
-                UnpaidWorkAppointment(
-                    crn = "A123456",
-                    firstName = "Test",
-                    mobileNumber = "07000000000",
-                    appointmentDate = "01/01/2000",
-                    appointmentTimes = "08:00, 11:00",
-                    nextWorkSessionProjectType = "Group session",
-                    today = "01/01/2000",
-                    sendSmsForDay = "01/01/2000",
-                    fullName = "Test Test",
-                    numberOfEvents = "1",
-                    activeUpwRequirements = "1",
-                    custodialStatus = null,
-                    currentRemandStatus = null,
-                    allowSms = "Y",
-                    originalMobileNumber = "070 0000 0000",
-                    upwMinutesRemaining = "123"
-                )
+                object : UnpaidWorkAppointment {
+                    override val crn = "A123456"
+                    override val firstName = "Test"
+                    override val mobileNumber = "07000000000"
+                    override val appointmentDate = "01/01/2000"
+                    override val appointmentTimes = "08:00, 11:00"
+                    override val nextWorkSessionProjectType = "Group session"
+                    override val today = "01/01/2000"
+                    override val sendSmsForDay = "01/01/2000"
+                    override val fullName = "Test Test"
+                    override val numberOfEvents = "1"
+                    override val activeUpwRequirements = "1"
+                    override val custodialStatus = null
+                    override val currentRemandStatus = null
+                    override val allowSms = "Y"
+                    override val originalMobileNumber = "070 0000 0000"
+                    override val upwMinutesRemaining = "123"
+                }
             )
         )
 
