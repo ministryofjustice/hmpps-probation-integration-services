@@ -308,13 +308,13 @@ internal class IntegrationTest {
                         assertTrue(containsKey("addressId"))
                     }
                 }
+
                 else -> fail("Unexpected event type: ${event.eventType}")
             }
         }
     }
 
-    private fun thenNoRecordsAreInserted()
-    {
+    private fun thenNoRecordsAreInserted() {
         verify(personService, never()).insertPerson(any(), any())
         verify(personService, never()).insertAddress(any())
         verify(addressRepository, never()).save(any())

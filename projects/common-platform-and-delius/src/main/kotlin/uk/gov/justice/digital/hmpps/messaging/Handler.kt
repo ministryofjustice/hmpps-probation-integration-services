@@ -40,7 +40,6 @@ class Handler(
             }
             .ifEmpty { throw IllegalArgumentException("No valid defendants found") }
 
-
         val courtCode = notification.message.hearing.courtCentre.code
 
         val dateOfBirth = notification.message.hearing.prosecutionCases
