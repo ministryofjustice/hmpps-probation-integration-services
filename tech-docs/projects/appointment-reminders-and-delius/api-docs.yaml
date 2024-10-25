@@ -14,20 +14,37 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /upw-appointments.csv:
     get:
       tags:
       - api-controller
       operationId: handle
       parameters:
-      - name: inputId
-        in: path
+      - name: providerCode
+        in: query
         required: true
         schema:
           type: string
+      - name: projectTypeCodes
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: date
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
       responses:
         "200":
           description: OK
+          content:
+            text/csv:
+              schema:
+                type: string
 components:
   securitySchemes:
     hmpps-auth-token:

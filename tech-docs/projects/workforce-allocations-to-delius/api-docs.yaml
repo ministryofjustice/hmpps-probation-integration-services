@@ -761,6 +761,8 @@ components:
       properties:
         username:
           type: string
+        staffCode:
+          type: string
     AllocationDetailRequest:
       required:
       - crn

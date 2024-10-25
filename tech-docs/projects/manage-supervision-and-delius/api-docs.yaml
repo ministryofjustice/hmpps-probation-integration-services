@@ -818,11 +818,11 @@ components:
         actualStartDate:
           type: string
           format: date
-        notes:
+        licenceConditionNotes:
           type: array
           items:
             $ref: "#/components/schemas/LicenceConditionNote"
-        note:
+        licenceConditionNote:
           $ref: "#/components/schemas/LicenceConditionNote"
     LicenceConditionNote:
       required:
@@ -840,7 +840,7 @@ components:
           format: date
         note:
           type: string
-        hasNotesBeenTruncated:
+        hasNoteBeenTruncated:
           type: boolean
     Offence:
       required:
