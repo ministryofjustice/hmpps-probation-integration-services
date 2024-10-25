@@ -53,7 +53,7 @@ internal class HandlerTest {
 
     @Test
     fun `exception thrown when age is under 10 years old`() {
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_VALIDATION_ERROR)
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_DOB_ERROR)
         val exception = assertThrows<IllegalArgumentException> {
             handler.handle(notification)
         }
@@ -66,6 +66,6 @@ internal class HandlerTest {
         val exception = assertThrows<IllegalArgumentException> {
             handler.handle(notification)
         }
-        assert(exception.message!!.contains("No defendants found"))
+        assert(exception.message!!.contains("No valid defendants found"))
     }
 }

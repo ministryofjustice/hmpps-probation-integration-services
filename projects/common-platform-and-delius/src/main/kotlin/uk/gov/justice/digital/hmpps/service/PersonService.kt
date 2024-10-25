@@ -80,7 +80,7 @@ class PersonService(
                         id = null,
                         start = LocalDate.now(),
                         status = referenceDataRepository.mainAddressStatus(),
-                        personId = savedPerson.id,
+                        person = savedPerson,
                         notes = address?.buildNotes(),
                         postcode = address?.postcode,
                         type = referenceDataRepository.awaitingAssessmentAddressType()
@@ -94,6 +94,7 @@ class PersonService(
     @Transactional
     fun insertAddress(address: PersonAddress): PersonAddress = audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
         val savedAddress = personAddressRepository.save(address)
+        notifier.addressCreated(savedAddress)
         audit["addressId"] = address.id!!
         savedAddress
     }

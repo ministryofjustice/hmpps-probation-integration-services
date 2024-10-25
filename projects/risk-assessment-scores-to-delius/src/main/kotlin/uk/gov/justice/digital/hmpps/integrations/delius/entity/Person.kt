@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -49,7 +44,13 @@ class Person(
     val dateOfBirth: LocalDate,
 
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @Column
+    val exclusionMessage: String? = "You are excluded from viewing this record. Please contact a system administrator",
+
+    @Column
+    val restrictionMessage: String? = "This is a restricted record. Please contact a system administrator"
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {

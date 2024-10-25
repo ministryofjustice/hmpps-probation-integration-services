@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -46,8 +47,9 @@ class PersonAddress(
     @Column(name = "no_fixed_abode")
     val noFixedAbode: Boolean? = false,
 
-    @Column(name = "offender_id")
-    val personId: Long,
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
 
     @Column(name = "notes", columnDefinition = "clob")
     val notes: String? = null,

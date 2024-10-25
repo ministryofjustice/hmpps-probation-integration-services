@@ -7,6 +7,7 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Subscribe
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.message.*
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 
@@ -34,6 +35,28 @@ class Notifier(
                     ),
                 ),
                 attributes = MessageAttributes("probation-case.engagement.created")
+            )
+        )
+    }
+
+    fun addressCreated(personAddress: PersonAddress) {
+        topicPublisher.publish(
+            Notification(
+                message = HmppsDomainEvent(
+                    version = 1,
+                    eventType = "probation-case.address.created",
+                    description = "A new address has been created on the probation case",
+                    personReference = PersonReference(
+                        identifiers = listOf(
+                            PersonIdentifier("CRN", personAddress.person.crn),
+                        ),
+                    ),
+                    additionalInformation = mapOf(
+                        "addressStatus" to personAddress.status.description,
+                        "addressId" to personAddress.id.toString()
+                    )
+                ),
+                attributes = MessageAttributes("probation-case.address.created")
             )
         )
     }

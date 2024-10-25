@@ -16,7 +16,7 @@ object AddressGenerator {
         id = id,
         start = LocalDate.now(),
         status = ReferenceDataGenerator.MAIN_ADDRESS_STATUS,
-        personId = person.id!!,
+        person = person,
         notes = notes,
         postcode = postcode,
         type = ReferenceDataGenerator.AWAITING_ASSESSMENT

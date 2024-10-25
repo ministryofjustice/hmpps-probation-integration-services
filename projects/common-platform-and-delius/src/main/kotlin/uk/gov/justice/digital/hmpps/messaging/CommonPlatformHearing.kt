@@ -52,9 +52,30 @@ data class Offence(
     val wording: String,
     val offenceLegislation: String,
     val listingNumber: Int,
-    val judicialResults: List<Any> = emptyList(),
-    val plea: Any? = null,
-    val verdict: Any? = null
+    val judicialResults: List<JudicialResult>,
+    val plea: Plea? = null,
+    val verdict: Verdict? = null
+)
+
+data class JudicialResult(
+    val isConvictedResult: Boolean?,
+    val label: String?,
+    val judicialResultTypeId: String?,
+    val resultText: String?
+)
+
+data class Plea(
+    val pleaValue: String?,
+    val pleaDate: LocalDate
+)
+
+data class Verdict(
+    val verdictDate: ZonedDateTime?,
+    val verdictType: VerdictType
+)
+
+data class VerdictType(
+    val description: String?,
 )
 
 data class PersonDefendant(

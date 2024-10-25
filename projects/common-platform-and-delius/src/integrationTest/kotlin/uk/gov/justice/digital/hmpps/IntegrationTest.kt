@@ -4,9 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.*
@@ -33,6 +32,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class IntegrationTest {
@@ -92,17 +92,7 @@ internal class IntegrationTest {
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
-        verify(personService, never()).insertPerson(any(), any())
-        verify(personService, never()).insertAddress(any())
-        verify(personRepository, never()).save(any())
-        verify(addressRepository, never()).save(any())
-        verify(auditedInteractionService, Mockito.never()).createAuditedInteraction(
-            any(),
-            any(),
-            any(),
-            any(),
-            anyOrNull()
-        )
+        thenNoRecordsAreInserted()
     }
 
     @Test
@@ -118,15 +108,25 @@ internal class IntegrationTest {
         )
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_CASES)
-
         channelManager.getChannel(queueName).publishAndWait(notification)
+        thenNoRecordsAreInserted()
+    }
 
-        verify(personService, never()).insertPerson(any(), any())
-        verify(personService, never()).insertAddress(any())
-        verify(addressRepository, never()).save(any())
-        verify(personRepository, never()).save(any())
-        verify(auditedInteractionService, Mockito.never())
-            .createAuditedInteraction(any(), any(), any(), any(), anyOrNull())
+    @Test
+    fun `When a message without a judicial result of remanded in custody is found`() {
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/probation-search/match"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("probation-search-no-results.json")
+                )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_REMAND)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        thenNoRecordsAreInserted()
     }
 
     @Test
@@ -141,16 +141,9 @@ internal class IntegrationTest {
                 )
         )
 
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_VALIDATION_ERROR)
-
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_DOB_ERROR)
         channelManager.getChannel(queueName).publishAndWait(notification)
-
-        verify(personService, never()).insertPerson(any(), any())
-        verify(personService, never()).insertAddress(any())
-        verify(personRepository, never()).save(any())
-        verify(addressRepository, never()).save(any())
-        verify(auditedInteractionService, Mockito.never())
-            .createAuditedInteraction(any(), any(), any(), any(), anyOrNull())
+        thenNoRecordsAreInserted()
     }
 
     @Test
@@ -251,8 +244,9 @@ internal class IntegrationTest {
         )
     }
 
+    @Order(1)
     @Test
-    fun `engagement created message is published on insert person`() {
+    fun `engagement created and address created sns messages are published on insert person`() {
         wireMockServer.stubFor(
             post(urlPathEqualTo("/probation-search/match"))
                 .willReturn(
@@ -276,15 +270,56 @@ internal class IntegrationTest {
         })
 
         val topic = hmppsChannelManager.getChannel(topicName)
-        val messages = topic.pollFor(1)
+        val messages = topic.pollFor(2)
+        val messageTypes = messages.mapNotNull { it.eventType }
 
-        val engagementCreated =
-            messages.first { it.eventType == "probation-case.engagement.created" }.message as HmppsDomainEvent
+        assertThat(
+            messageTypes.sorted(),
+            Matchers.equalTo(
+                listOf(
+                    "probation-case.address.created",
+                    "probation-case.engagement.created"
+                )
+            )
+        )
 
-        assertEquals("probation-case.engagement.created", engagementCreated.eventType)
-        assertEquals(1, engagementCreated.version)
-        assertEquals("A probation case record for a person has been created in Delius", engagementCreated.description)
-        assertEquals("A111111", engagementCreated.personReference.findCrn()!!)
-        assertNull(engagementCreated.detailUrl)
+        messages.forEach { message ->
+            val event = message.message as HmppsDomainEvent
+
+            when (event.eventType) {
+                "probation-case.engagement.created" -> {
+                    assertEquals(1, event.version)
+                    assertEquals("probation-case.engagement.created", event.eventType)
+                    assertEquals("A probation case record for a person has been created in Delius", event.description)
+                    assertNotNull(event.personReference.findCrn())
+                    assertNull(event.detailUrl)
+                    assertTrue(event.additionalInformation.isEmpty())
+                }
+
+                "probation-case.address.created" -> {
+                    assertEquals(1, event.version)
+                    assertEquals("probation-case.address.created", event.eventType)
+                    assertEquals("A new address has been created on the probation case", event.description)
+                    assertNotNull(event.personReference.findCrn())
+                    assertNull(event.detailUrl)
+
+                    with(event.additionalInformation) {
+                        assertTrue(containsKey("addressStatus"))
+                        assertTrue(containsKey("addressId"))
+                    }
+                }
+                else -> fail("Unexpected event type: ${event.eventType}")
+            }
+        }
+    }
+
+    private fun thenNoRecordsAreInserted()
+    {
+        verify(personService, never()).insertPerson(any(), any())
+        verify(personService, never()).insertAddress(any())
+        verify(addressRepository, never()).save(any())
+        verify(personRepository, never()).save(any())
+        verify(auditedInteractionService, Mockito.never())
+            .createAuditedInteraction(any(), any(), any(), any(), anyOrNull())
     }
 }

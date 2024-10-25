@@ -28,9 +28,18 @@ class Handler(
     override fun handle(notification: Notification<CommonPlatformHearing>) {
         telemetryService.notificationReceived(notification)
 
+        // Filter hearing message for defendants with a convicted judicial result of Remanded in custody
         val defendants = notification.message.hearing.prosecutionCases
             .flatMap { it.defendants }
-            .ifEmpty { throw IllegalArgumentException("No defendants found") }
+            .filter { defendant ->
+                defendant.offences.any { offence ->
+                    offence.judicialResults.any { judicialResult ->
+                        judicialResult.isConvictedResult == true && judicialResult.label == "Remanded in custody"
+                    }
+                }
+            }
+            .ifEmpty { throw IllegalArgumentException("No valid defendants found") }
+
 
         val courtCode = notification.message.hearing.courtCentre.code
 
@@ -80,8 +89,3 @@ class Handler(
         )
     }
 }
-
-
-
-
-
