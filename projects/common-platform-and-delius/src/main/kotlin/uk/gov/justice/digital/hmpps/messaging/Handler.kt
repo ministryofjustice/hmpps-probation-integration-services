@@ -69,7 +69,8 @@ class Handler(
     }
 
     fun Defendant.toProbationMatchRequest(): ProbationMatchRequest {
-        val personDetails = this.personDefendant?.personDetails ?: throw IllegalArgumentException("Person details are required")
+        val personDetails =
+            this.personDefendant?.personDetails ?: throw IllegalArgumentException("Person details are required")
         return ProbationMatchRequest(
             firstName = personDetails.firstName,
             surname = personDetails.lastName,
