@@ -18,7 +18,8 @@ class Notifier(
 ) {
     @Subscribe(
         messages = [
-            Message(title = "probation-case.engagement.created", payload = Schema(HmppsDomainEvent::class))
+            Message(title = "probation-case.engagement.created", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "probation-case.address.created", payload = Schema(HmppsDomainEvent::class))
         ]
     )
     fun caseCreated(person: Person) {

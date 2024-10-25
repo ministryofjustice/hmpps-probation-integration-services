@@ -12,15 +12,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddr
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.messaging.Address
 import uk.gov.justice.digital.hmpps.messaging.Defendant
-import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 
 @Service
 class PersonService(
     jdbcTemplate: JdbcTemplate,
     auditedInteractionService: AuditedInteractionService,
-    private val notifier: Notifier,
     private val personRepository: PersonRepository,
     private val courtRepository: CourtRepository,
     private val equalityRepository: EqualityRepository,
@@ -36,8 +35,20 @@ class PersonService(
         .withFunctionName("getNextCRN")
 
     @Transactional
-    fun insertPerson(defendant: Defendant, courtCode: String): Person =
+    fun insertPerson(defendant: Defendant, courtCode: String): InsertPersonResult =
         audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
+
+            val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
+                ?: throw IllegalArgumentException("Date of birth not found in message")
+
+            // Under 10 years old validation
+            dateOfBirth.let {
+                val age = Period.between(it, LocalDate.now()).years
+                require(age > 10) {
+                    "Date of birth would indicate person is under ten years old: $it"
+                }
+            }
+
             // Person record
             val savedPerson = personRepository.save(defendant.toPerson())
 
@@ -45,8 +56,6 @@ class PersonService(
             val initialAllocation = referenceDataRepository.initialAllocationReason()
             val unallocatedTeam = teamRepository.findByCode(courtLinkedProvider.code + "UAT")
             val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
-
-            notifier.caseCreated(savedPerson)
 
             // Person manager record
             val manager = PersonManager(
@@ -62,7 +71,7 @@ class PersonService(
                 allocationDate = LocalDateTime.of(1900, 1, 1, 0, 0)
 
             )
-            personManagerRepository.save(manager)
+            val savedManager = personManagerRepository.save(manager)
 
             // Equality record
             val equality = Equality(
@@ -71,30 +80,29 @@ class PersonService(
                 softDeleted = false,
             )
 
-            equalityRepository.save(equality)
+            val savedEquality = equalityRepository.save(equality)
 
-            val address = defendant.personDefendant?.personDetails?.address
-            if (address.containsInformation()) {
-                insertAddress(
-                    PersonAddress(
-                        id = null,
-                        start = LocalDate.now(),
-                        status = referenceDataRepository.mainAddressStatus(),
-                        person = savedPerson,
-                        notes = address?.buildNotes(),
-                        postcode = address?.postcode,
-                        type = referenceDataRepository.awaitingAssessmentAddressType()
+            val savedAddress =
+                defendant.personDefendant.personDetails.address.takeIf { it.containsInformation() }?.let {
+                    insertAddress(
+                        PersonAddress(
+                            id = null,
+                            start = LocalDate.now(),
+                            status = referenceDataRepository.mainAddressStatus(),
+                            person = savedPerson,
+                            notes = it.buildNotes(),
+                            postcode = it.postcode,
+                            type = referenceDataRepository.awaitingAssessmentAddressType()
+                        )
                     )
-                )
-            }
+                }
             audit["offenderId"] = savedPerson.id
-            savedPerson
+            InsertPersonResult(savedPerson, savedManager, savedEquality, savedAddress)
         }
 
     @Transactional
     fun insertAddress(address: PersonAddress): PersonAddress = audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
         val savedAddress = personAddressRepository.save(address)
-        notifier.addressCreated(savedAddress)
         audit["addressId"] = address.id!!
         savedAddress
     }

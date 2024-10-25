@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import org.springframework.boot.test.system.CapturedOutput
 import org.springframework.boot.test.system.OutputCaptureExtension
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonAddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
@@ -37,7 +37,7 @@ class NotifierTest {
     @Test
     fun `test address created notification`(output: CapturedOutput) {
         doNothing().whenever(topicPublisher).publish(any<Notification<*>>())
-        notifier.addressCreated(AddressGenerator.MAIN_ADDRESS)
+        notifier.addressCreated(PersonAddressGenerator.MAIN_ADDRESS)
         verify(topicPublisher, times(1)).publish(any<Notification<*>>())
         verifyNoMoreInteractions(topicPublisher)
     }

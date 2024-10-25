@@ -12,13 +12,12 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.time.LocalDate
-import java.time.Period
 
 @Component
 @Channel("common-platform-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<CommonPlatformHearing>,
+    private val notifier: Notifier,
     private val telemetryService: TelemetryService,
     private val personService: PersonService,
     private val probationSearchClient: ProbationSearchClient
@@ -42,49 +41,41 @@ class Handler(
 
         val courtCode = notification.message.hearing.courtCentre.code
 
-        val dateOfBirth = notification.message.hearing.prosecutionCases
-            .firstOrNull()?.defendants?.firstOrNull()
-            ?.personDefendant?.personDetails?.dateOfBirth
-            ?: throw IllegalArgumentException("Date of birth not found in message")
-
-        // Under 10 years old validation
-        dateOfBirth.let {
-            val age = Period.between(it, LocalDate.now()).years
-            require(age > 10) {
-                "Date of birth would indicate person is under ten years old: $it"
-            }
-        }
-
-        val matchRequest = notification.message.toProbationMatchRequest()
-        val matchedPersonResponse = probationSearchClient.match(matchRequest)
-
-        if (matchedPersonResponse.matches.isNotEmpty()) {
-            return
-        }
         defendants.forEach { defendant ->
+            val matchRequest = defendant.toProbationMatchRequest()
+            val matchedPersonResponse = probationSearchClient.match(matchRequest)
+
+            if (matchedPersonResponse.matches.isNotEmpty()) {
+                return
+            }
+
             // Insert each defendant as a person record
-            val savedPerson = personService.insertPerson(defendant, courtCode)
+            val savedEntities = personService.insertPerson(defendant, courtCode)
+
+            notifier.caseCreated(savedEntities.person)
+            savedEntities.address?.let { notifier.addressCreated(it) }
 
             telemetryService.trackEvent(
                 "PersonCreated", mapOf(
-                    "CRN" to savedPerson.crn,
-                    "personId" to savedPerson.id.toString(),
-                    "hearingId" to notification.message.hearing.id
+                    "hearingId" to notification.message.hearing.id,
+                    "CRN" to savedEntities.person.crn,
+                    "personId" to savedEntities.person.id.toString(),
+                    "personManagerId" to savedEntities.personManager.id.toString(),
+                    "equalityId" to savedEntities.equality.id.toString(),
+                    "addressId" to savedEntities.address?.id.toString()
                 )
             )
         }
     }
 
-    fun CommonPlatformHearing.toProbationMatchRequest(): ProbationMatchRequest {
-        val defendant = this.hearing.prosecutionCases.firstOrNull()?.defendants?.firstOrNull()
-        val personDetails =
-            defendant?.personDefendant?.personDetails ?: throw IllegalArgumentException("Person details are required")
+    fun Defendant.toProbationMatchRequest(): ProbationMatchRequest {
+        val personDetails = this.personDefendant?.personDetails ?: throw IllegalArgumentException("Person details are required")
         return ProbationMatchRequest(
             firstName = personDetails.firstName,
             surname = personDetails.lastName,
             dateOfBirth = personDetails.dateOfBirth,
-            pncNumber = defendant.pncId,
-            croNumber = defendant.croNumber
+            pncNumber = this.pncId,
+            croNumber = this.croNumber
         )
     }
 }

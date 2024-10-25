@@ -4,7 +4,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
 import java.time.LocalDate
 
-object AddressGenerator {
+object PersonAddressGenerator {
     val MAIN_ADDRESS = generate(person = PersonGenerator.DEFAULT)
 
     fun generate(

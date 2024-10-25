@@ -315,11 +315,10 @@ internal class IntegrationTest {
     }
 
     private fun thenNoRecordsAreInserted() {
-        verify(personService, never()).insertPerson(any(), any())
         verify(personService, never()).insertAddress(any())
         verify(addressRepository, never()).save(any())
         verify(personRepository, never()).save(any())
         verify(auditedInteractionService, Mockito.never())
-            .createAuditedInteraction(any(), any(), any(), any(), anyOrNull())
+            .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
     }
 }
