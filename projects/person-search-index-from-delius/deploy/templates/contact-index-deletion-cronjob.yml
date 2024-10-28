@@ -11,7 +11,7 @@ items:
         set -euo pipefail
         curl -fsSL "$OPENSEARCH_URL/_cat/indices?format=json" \
         | jq -r '.[].index' \
-        | grep '^contact-semantic-search' \
+        | { grep '^contact-semantic-search' || true; } \
         | xargs -I{} sh -c 'echo "Deleting {}..." && curl -fsSL -XDELETE "$OPENSEARCH_URL/{}"'
   - apiVersion: batch/v1
     kind: CronJob
