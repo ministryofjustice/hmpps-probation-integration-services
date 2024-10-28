@@ -74,8 +74,8 @@ dependencyResolutionManagement {
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.2.0")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.2.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.28.26")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.28.26")
+            library("aws-sts", "software.amazon.awssdk:sts:2.29.1")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.29.1")
             bundle(
                 "aws-messaging",
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
@@ -84,7 +84,7 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.6.1")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.15.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.16.0")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.9.0"
@@ -92,7 +92,7 @@ dependencyResolutionManagement {
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.3")
-            library("wiremock", "org.wiremock:wiremock-standalone:3.9.1")
+            library("wiremock", "org.wiremock:wiremock-standalone:3.9.2")
             library("flipt", "io.flipt:flipt-java:1.1.1")
         }
     }
