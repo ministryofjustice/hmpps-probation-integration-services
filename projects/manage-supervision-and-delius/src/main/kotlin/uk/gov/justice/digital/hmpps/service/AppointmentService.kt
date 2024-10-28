@@ -22,11 +22,13 @@ class AppointmentService(
 
     fun createAppointment( crn: String,
         createAppointment: CreateAppointment
-    ) = audit(BusinessInteractionCode.ADD_CONTACT) {
+    ) = audit(BusinessInteractionCode.ADD_CONTACT) { audit ->
         val om = offenderManagerRepository.getByCrn(crn)
         checkForConflicts(om.person.id, createAppointment)
         val appointment = appointmentRepository.save(createAppointment.withManager(om))
         alertRepository.save(appointment.alert(om))
+        audit["offenderId"] = om.person.id
+        audit["contactId"] = appointment.id
     }
 
     private fun checkForConflicts(
