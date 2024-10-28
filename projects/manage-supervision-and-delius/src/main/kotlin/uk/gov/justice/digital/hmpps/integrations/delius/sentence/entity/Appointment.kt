@@ -6,6 +6,8 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -36,10 +38,6 @@ class Appointment (
 
     @Column(name = "contact_end_time")
     val endTime: ZonedDateTime?,
-
-    @Lob
-    @Column
-    val notes: String?,
 
     val probationAreaId: Long? = null,
 
@@ -115,6 +113,20 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         startTime: String,
         endTime: String
     ): Int
+
+    @Query(
+        """
+        select a from Appointment a
+        join fetch a.type t
+        join fetch a.staff s
+        left join fetch s.user u
+        where a.person.crn = :crn
+        and t.attendanceContact = true
+        and a.date >= :start and a.date <= :end
+        order by a.date desc, a.startTime desc
+    """
+    )
+    fun findAppointmentsFor(crn: String, start: LocalDate, end: LocalDate, pageable: Pageable): Page<Appointment>
 }
 
 fun AppointmentRepository.appointmentClashes(

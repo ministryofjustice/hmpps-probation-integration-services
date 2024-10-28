@@ -41,7 +41,7 @@ interface AdditionalSentenceRepository : JpaRepository<AdditionalSentence, Long>
 
 interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 
-    fun findByPersonCrn(crn: String): OffenderManager?
+    fun findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(crn: String): OffenderManager?
 
     fun countOffenderManagersByPerson(person: Person): Long
 
@@ -49,6 +49,6 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 }
 
 fun OffenderManagerRepository.getByCrn(crn: String) =
-    findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+    findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(crn) ?: throw NotFoundException("Person", "crn", crn)
 
 
