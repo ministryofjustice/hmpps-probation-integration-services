@@ -37,7 +37,9 @@ class Handler(
                     }
                 }
             }
-            .ifEmpty { throw IllegalArgumentException("No valid defendants found") }
+        if (defendants.isEmpty()) {
+            return
+        }
 
         val courtCode = notification.message.hearing.courtCentre.code
 

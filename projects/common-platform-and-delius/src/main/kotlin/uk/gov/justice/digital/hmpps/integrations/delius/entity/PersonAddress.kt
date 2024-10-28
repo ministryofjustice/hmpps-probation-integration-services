@@ -41,7 +41,7 @@ class PersonAddress(
 
     @ManyToOne
     @JoinColumn(name = "address_status_id")
-    var status: ReferenceData,
+    val status: ReferenceData,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "no_fixed_abode")
@@ -58,30 +58,30 @@ class PersonAddress(
     val addressNumber: String? = null,
 
     @Column(name = "street_name")
-    var streetName: String? = null,
+    val streetName: String? = null,
 
     @Column(name = "district")
-    var district: String? = null,
+    val district: String? = null,
 
     @Column(name = "town_city")
-    var town: String? = null,
+    val town: String? = null,
 
     @CreatedDate
     @Column(nullable = false)
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "county")
-    var county: String? = null,
+    val county: String? = null,
 
     @Column(nullable = false)
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "building_name")
-    var buildingName: String? = null,
+    val buildingName: String? = null,
 
     @Column(name = "postcode")
-    var postcode: String? = null,
+    val postcode: String? = null,
 
     @Column(nullable = false)
     @CreatedBy
