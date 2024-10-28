@@ -8,21 +8,13 @@
   "SigningCertURL": "https://sns.eu-west-2.amazonaws.com/EXAMPLE.pem",
   "UnsubscribeURL": "https://sns.eu-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=EXAMPLE",
   "MessageAttributes": {
-    "tracestate": {
-      "Type": "String",
-      "Value": "00-01a234b56c7de8f9g01h234i56789j0k-1l234m567n8o9p01-01"
-    },
-    "eventType": {
+    "messageType": {
       "Type": "String",
       "Value": "COMMON_PLATFORM_HEARING"
     },
     "hearingEventType": {
       "Type": "String",
       "Value": "ConfirmedOrUpdated"
-    },
-    "traceparent": {
-      "Type": "String",
-      "Value": "00-01a234b56c7de8f9g01h234i56789j0k-1l234m567n8o9p01-01"
     }
   }
 }
