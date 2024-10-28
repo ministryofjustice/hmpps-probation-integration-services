@@ -8,7 +8,7 @@ database:
       - offender_manager
       - equality
       - audited_interaction
-      - address
+      - offender_address
     packages:
       - offender_support_api # for generating crn
 
