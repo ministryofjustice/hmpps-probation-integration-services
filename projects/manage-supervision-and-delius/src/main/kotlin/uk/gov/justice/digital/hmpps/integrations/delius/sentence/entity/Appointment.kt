@@ -56,6 +56,14 @@ class Appointment (
     @Column(name = "description")
     val description: String? = null,
 
+    @Column(name = "event_id")
+    val eventId: Long? = null,
+
+    @Column(name = "rqmnt_id")
+    val rqmntId: Long? = null,
+
+    val licConditionId: Long? = null,
+
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     val softDeleted: Boolean = false,
 

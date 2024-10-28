@@ -17,6 +17,9 @@ data class CreateAppointment(
     )
     val duration: Duration,
     val notes: String? = null,
+    val eventId: Long? = null,
+    val requirementId: Long? = null,
+    val licenceConditionId: Long? = null,
     val uuid: UUID = UUID.randomUUID()
 ) {
     @JsonIgnore
