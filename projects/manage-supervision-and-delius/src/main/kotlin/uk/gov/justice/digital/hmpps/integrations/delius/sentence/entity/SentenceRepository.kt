@@ -41,10 +41,14 @@ interface AdditionalSentenceRepository : JpaRepository<AdditionalSentence, Long>
 
 interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 
+    fun findByPersonCrn(crn: String): OffenderManager?
+
     fun countOffenderManagersByPerson(person: Person): Long
 
     fun findOffenderManagersByPersonOrderByEndDateDesc(person: Person): List<OffenderManager>
 }
 
+fun OffenderManagerRepository.getByCrn(crn: String) =
+    findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
 
 
