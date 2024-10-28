@@ -1,0 +1,21 @@
+{
+  "Type": "Notification",
+  "MessageId": "aa2c2828-167f-529b-8e19-73735a2fb85c",
+  "TopicArn": "arn:aws:sns:eu-west-2:000000000000:example",
+  "Message": "{\"hearing\":{\"id\":\"00000000-0000-0000-0000-000000000000\",\"courtCentre\":{\"id\":\"00000000-0000-0000-0000-000000000000\",\"code\":\"A00AA00\",\"roomId\":\"00000000-0000-0000-0000-000000000000\",\"roomName\":\"Courtroom 01\"},\"type\":{\"id\":\"00000000-0000-0000-0000-000000000000\",\"description\":\"First hearing\",\"welshDescription\":null},\"jurisdictionType\":\"MAGISTRATES\",\"hearingDays\":[{\"sittingDay\":\"2024-01-01T12:00:00\",\"listedDurationMinutes\":30,\"listingSequence\":1}],\"prosecutionCases\":[]}}",
+  "Timestamp": "2022-07-27T14:22:08.509Z",
+  "SignatureVersion": "1",
+  "Signature": "EXAMPLE",
+  "SigningCertURL": "https://sns.eu-west-2.amazonaws.com/EXAMPLE.pem",
+  "UnsubscribeURL": "https://sns.eu-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=EXAMPLE",
+  "MessageAttributes": {
+    "messageType": {
+      "Type": "String",
+      "Value": "COMMON_PLATFORM_HEARING"
+    },
+    "hearingEventType": {
+      "Type": "String",
+      "Value": "ConfirmedOrUpdated"
+    }
+  }
+}
