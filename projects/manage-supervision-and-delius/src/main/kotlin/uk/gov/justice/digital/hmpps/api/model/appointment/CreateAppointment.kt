@@ -9,7 +9,7 @@ data class CreateAppointment(
     val start: ZonedDateTime,
     val end: ZonedDateTime,
     val interval: Int,
-    val eventId: Long? = null,
+    val eventId: Long,
     val requirementId: Long? = null,
     val licenceConditionId: Long? = null,
     val numberOfAppointments: Int? = null,

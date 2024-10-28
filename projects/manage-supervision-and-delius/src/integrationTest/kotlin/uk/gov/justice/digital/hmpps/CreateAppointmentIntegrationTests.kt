@@ -46,6 +46,7 @@ class CreateAppointmentIntegrationTests {
                         CreateAppointment.Type.HomeVisitToCaseNS,
                         ZonedDateTime.now().plusDays(1),
                         ZonedDateTime.now().plusDays(2),
+                        1,
                         1
                     )
                 )
@@ -62,6 +63,7 @@ class CreateAppointmentIntegrationTests {
                         CreateAppointment.Type.InitialAppointmentInOfficeNS,
                         ZonedDateTime.now().plusDays(2),
                         ZonedDateTime.now().plusDays(1),
+                        1,
                         1)
                 )
         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -76,7 +78,9 @@ class CreateAppointmentIntegrationTests {
             CreateAppointment.Type.PlannedOfficeVisitNS,
             start,
             end,
-            1)
+            1,
+            PersonGenerator.EVENT_1.id
+            )
 
         mockMvc.perform(
             post("/appointments/${person.crn}")
@@ -95,6 +99,8 @@ class CreateAppointmentIntegrationTests {
         assertThat(appointment.date, equalTo(start.toLocalDate()))
         assertThat(appointment.startTime, isCloseTo(start))
         assertThat(appointment.externalReference, equalTo(create.urn))
+        assertThat(appointment.eventId, equalTo(create.eventId))
 
+        appointmentRepository.delete(appointment)
     }
 }

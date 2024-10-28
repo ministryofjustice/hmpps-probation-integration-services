@@ -57,6 +57,7 @@ class AppointmentService(
         om.provider.id,
         om.team,
         om.staff,
-        urn
+        urn,
+        eventId = eventId
     )
 }
