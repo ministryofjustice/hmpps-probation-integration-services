@@ -24,7 +24,8 @@ class SentenceService(
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
     private val offenderManagerRepository: OffenderManagerRepository,
-    private val upwAppointmentRepository: UpwAppointmentRepository
+    private val upwAppointmentRepository: UpwAppointmentRepository,
+    private val licenceConditionRepository: LicenceConditionRepository
 ) {
     fun getEvents(crn: String): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -67,7 +68,12 @@ class SentenceService(
             requirements = requirementRepository.getRequirements(id, eventNumber)
                 .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
-            disposal?.id?.let { getUnpaidWorkTime(it) }
+            disposal?.id?.let { getUnpaidWorkTime(it) },
+            licenceConditions = disposal?.let {
+                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
+                    it.toLicenceCondition()
+                }
+            } ?: emptyList(),
         )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =

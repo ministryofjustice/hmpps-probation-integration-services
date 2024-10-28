@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /appointment-reminders-and-delius/db-username
+    password_key: /appointment-reminders-and-delius/db-password
+
+  audit:
+    username: AppointmentRemindersAndDelius
+    forename: Appointment Reminders
+    surname: Service

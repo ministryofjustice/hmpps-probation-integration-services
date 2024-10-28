@@ -47,4 +47,5 @@ else
 fi
 
 ## Deploy model
-curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/${model_id}/_deploy"
+echo "Deploying model with id=${model_id}..."
+curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/${model_id}/_deploy" || echo 'Warning: Failed to deploy model' >&2

@@ -1,5 +1,5 @@
 plugins {
-    id("com.google.cloud.tools.jib") version "3.4.3" apply false
+    id("com.google.cloud.tools.jib") version "3.4.4" apply false
     id("org.sonarqube") version "5.1.0.4882" apply false
     `kotlin-dsl`
 }
@@ -11,6 +11,6 @@ repositories {
 }
 
 dependencies {
-    implementation("com.google.cloud.tools:jib-gradle-plugin:3.4.3")
+    implementation("com.google.cloud.tools:jib-gradle-plugin:3.4.4")
     implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882")
 }

@@ -8,5 +8,6 @@ data class Sentence(
     val order: Order? = null,
     val requirements: List<Requirement> = listOf(),
     val courtDocuments: List<CourtDocument> = listOf(),
-    val unpaidWorkProgress: String?
+    val unpaidWorkProgress: String?,
+    val licenceConditions: List<LicenceCondition> = listOf()
 )

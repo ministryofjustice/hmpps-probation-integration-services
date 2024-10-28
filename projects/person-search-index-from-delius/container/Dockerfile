@@ -4,7 +4,7 @@ COPY --chown=yq /pipelines /pipelines
 RUN find /pipelines -type f -name "*.yml" -exec sh -c 'for f; do yq -o=json "$f" > "${f%.yml}.json"; done' sh {} +
 
 
-FROM logstash:8.15.2
+FROM logstash:8.15.3
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -30,6 +30,9 @@ RUN mkdir -p /usr/share/logstash/data/dead_letter_queue/person-incremental \
 # Workaround for the jdbc_streaming plugin not supporting statement_filepath.
 # See https://github.com/logstash-plugins/logstash-integration-jdbc/issues/51
 RUN sed -i "s/\${INCREMENTAL_STATEMENT_SQL}/$(tr '\n' ' ' < /pipelines/person/statement.sql | sed 's/"/\\\\"/g;s/:batch_size/0/g;s/:sql_last_value/0/g')/" /pipelines/person/logstash-incremental.conf \
- && sed -i "s/\${INCREMENTAL_STATEMENT_SQL}/$(tr '\n' ' ' < /pipelines/contact/statement.sql | sed 's/"/\\\\"/g;s/:batch_size/0/g;s/:sql_last_value/0/g')/" /pipelines/contact/logstash-incremental.conf
+ && sed -i "s/\${INCREMENTAL_STATEMENT_SQL}/$(tr '\n' ' ' < /pipelines/contact/statement.sql | sed 's/"/\\\\"/g;s/:batch_size/0/g;s/:sql_last_value/0/g;s/:contact_id/?/g')/" /pipelines/contact/logstash-incremental.conf
+
+# Replace literals with bind parameters
+RUN sed -i -E 's/\B:\w+/?/g' /pipelines/contact/statement.sql
 
 ENTRYPOINT ["/scripts/startup.sh"]

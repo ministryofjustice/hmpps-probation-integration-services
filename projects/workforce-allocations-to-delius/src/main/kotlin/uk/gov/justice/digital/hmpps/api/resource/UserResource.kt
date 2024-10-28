@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import uk.gov.justice.digital.hmpps.api.model.User
-import uk.gov.justice.digital.hmpps.service.LdapService
 import uk.gov.justice.digital.hmpps.service.UserAccessService
 import uk.gov.justice.digital.hmpps.service.UserService
 
@@ -13,7 +11,6 @@ import uk.gov.justice.digital.hmpps.service.UserService
 class UserResource(
     private val userAccessService: UserAccessService,
     private val userService: UserService,
-    private val ldapService: LdapService,
 ) {
 
     @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
@@ -37,7 +34,7 @@ class UserResource(
 
     @GetMapping("/users")
     @Operation(summary = "Returns all users with the Delius `MAABT001` role")
-    fun allUsers() = ldapService.findAllUsersWithRole().map { User(it) }
+    fun allUsers() = userService.findAllUsersWithRole()
 
     @GetMapping("/person/{crn}/limited-access/all")
     @Operation(summary = "Returns all limited access information (restrictions and exclusions) for a Delius CRN")
@@ -47,7 +44,7 @@ class UserResource(
     @Operation(summary = "Returns limited access information (restrictions and exclusions) for a Delius CRN, given a list of staff codes")
     fun allAccessLimitationsForCrnAndUserList(
         @PathVariable crn: String,
-        @Size(min = 0, max = 500, message = "Please provide up to 500 usernames to filter by")
-        @RequestBody(required = false) usernames: List<String>? = null,
-    ) = userService.getAllAccessLimitations(crn, usernames)
+        @Size(min = 0, max = 500, message = "Please provide up to 500 staff codes to filter by")
+        @RequestBody(required = false) staffCodes: List<String>? = null,
+    ) = userService.getAllAccessLimitations(crn, staffCodes)
 }

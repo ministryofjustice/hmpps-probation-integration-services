@@ -14,7 +14,7 @@ data class Name(
 data class Event(val number: String, val manager: Manager? = null)
 data class Sentence(val type: String, val date: LocalDate, val length: String)
 
-data class User(val username: String)
+data class User(val username: String, val staffCode: String?)
 
 data class StaffMember(
     val code: String,

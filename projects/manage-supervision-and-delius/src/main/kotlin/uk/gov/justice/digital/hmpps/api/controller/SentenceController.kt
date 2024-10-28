@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.service.ContactService
-import uk.gov.justice.digital.hmpps.service.OffenceService
-import uk.gov.justice.digital.hmpps.service.OrdersService
-import uk.gov.justice.digital.hmpps.service.SentenceService
+import uk.gov.justice.digital.hmpps.service.*
 
 @RestController
 @Tag(name = "Sentence")
@@ -20,7 +17,8 @@ class SentenceController(
     private val sentenceService: SentenceService,
     private val ordersService: OrdersService,
     private val offenceService: OffenceService,
-    private val contactService: ContactService
+    private val contactService: ContactService,
+    private val licenceConditionService: LicenceConditionService
 ) {
 
     @GetMapping
@@ -39,4 +37,12 @@ class SentenceController(
     @GetMapping("/contacts")
     @Operation(summary = "Display contacts")
     fun getContacts(@PathVariable crn: String) = contactService.getContacts(crn)
+
+    @GetMapping("/licence-condition/{licenceConditionId}/note/{noteId}")
+    @Operation(summary = "Get licence condition note")
+    fun getLicenceConditionNote(
+        @PathVariable crn: String,
+        @PathVariable licenceConditionId: Long,
+        @PathVariable noteId: Int
+    ) = licenceConditionService.getLicenceConditionNote(crn, licenceConditionId, noteId)
 }
