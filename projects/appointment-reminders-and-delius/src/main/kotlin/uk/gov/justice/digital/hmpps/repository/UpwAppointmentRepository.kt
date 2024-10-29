@@ -23,6 +23,9 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
             listagg(distinct active_upw_requirements, ', ') as "activeUpwRequirements",
             listagg(distinct custodial_status, ', ') as "custodialStatus",
             any_value(current_remand_status) as "currentRemandStatus",
+            any_value(restrictions) as "restrictions",
+            any_value(exclusions) as "exclusions",
+            any_value(com_area) as "comArea",
             any_value(allow_sms) as "allowSms",
             any_value(original_mobile_number) as "originalMobileNumber",
             listagg(distinct upw_minutes_remaining, ', ') as "upwMinutesRemaining"
@@ -34,6 +37,9 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
             )
             select
                 crn,
+                (select count(*) from restriction where restriction.offender_id = offender.offender_id) as restrictions,
+                (select count(*) from exclusion where exclusion.offender_id = offender.offender_id) as exclusions,
+                com_area.code as com_area,
                 upw_appointment.upw_appointment_id,
                 event_number,
                 first_name,
@@ -48,7 +54,7 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
                 (select count(*) from rqmnt 
                     join r_rqmnt_type_main_category on r_rqmnt_type_main_category.rqmnt_type_main_category_id = rqmnt.rqmnt_type_main_category_id and r_rqmnt_type_main_category.code in ('W', 'W0', 'W1', 'W2')
                     where rqmnt.disposal_id = disposal.disposal_id and rqmnt.active_flag = 1 and rqmnt.soft_deleted = 0) as active_upw_requirements,
-                custodial_status.code_description as custodial_status,
+                custodial_status.code_value as custodial_status,
                 case when exists (select 1 from registration 
                                 join r_register_type on r_register_type.register_type_id = registration.register_type_id and r_register_type.code in ('IWWO', 'IWWB', 'WRSM')
                                 where registration.offender_id = offender.offender_id and registration.deregistered = 0 and registration.soft_deleted = 0) then 'Y' else 'N' end as warrant,
@@ -58,7 +64,7 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
                 current_remand_status,
                 case when exists (select 1 from personal_circumstance 
                                 join r_circumstance_type on r_circumstance_type.circumstance_type_id = personal_circumstance.circumstance_type_id and r_circumstance_type.code_value = 'RIC'
-                                where personal_circumstance.offender_id = offender.offender_id and personal_circumstance.soft_deleted = 0
+                                where personal_circumstance.offender_id = offender.offender_id and personal_circumstance.soft_deleted = 0 and (personal_circumstance.end_date is null or personal_circumstance.end_date > current_date)
                 ) then 'Y' else 'N' end as remanded_in_custody_circumstance,
                 allow_sms,
                 mobile_number as original_mobile_number,
@@ -79,6 +85,8 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
                     from dual
                 )) as upw_minutes_remaining
             from offender
+            join offender_manager on offender_manager.offender_id = offender.offender_id and offender_manager.active_flag = 1
+            join probation_area com_area on com_area.probation_area_id = offender_manager.probation_area_id
             join event on event.offender_id = offender.offender_id and event.active_flag = 1 and event.soft_deleted = 0
             join disposal on disposal.event_id = event.event_id and disposal.active_flag = 1 and disposal.soft_deleted = 0
             join r_disposal_type on r_disposal_type.disposal_type_id = disposal.disposal_type_id
@@ -106,9 +114,12 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
         and upw_minutes_remaining > 0
         and warrant = 'N'
         and unlawfully_at_large = 'N'
-        and current_remand_status is null or (current_remand_status not like 'Remand%' and current_remand_status not like 'Warrant%' and current_remand_status not like 'UAL%' and current_remand_status <> 'Unlawfully at Large')
+        and (current_remand_status is null or (current_remand_status not in ('Warrant With Bail', 'Warrant Without Bail', 'Remanded In Custody', 'Unlawfully at Large') and current_remand_status not like 'UAL%'))
         and remanded_in_custody_circumstance = 'N'
+        and (custodial_status is null or custodial_status not in ('A', 'C', 'D'))
+        and restrictions = 0 and exclusions = 0
         group by crn
+        order by crn
         """, nativeQuery = true
     )
     fun getUnpaidWorkAppointments(
