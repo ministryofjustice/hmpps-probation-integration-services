@@ -90,7 +90,7 @@ data class PersonDetails(
     val firstName: String? = null,
     val dateOfBirth: LocalDate? = null,
     val address: Address? = null,
-    val contact: Contact ? = null,
+    val contact: Contact? = null,
     val ethnicity: Ethnicity? = null
 )
 
