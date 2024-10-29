@@ -40,7 +40,6 @@ class AppointmentService(
         personId: Long,
         createAppointment: CreateAppointment
     ) {
-
         if (createAppointment.requirementId != null && createAppointment.licenceConditionId != null) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Either licence id or requirement id can be provided, not both")
         }
@@ -61,9 +60,6 @@ class AppointmentService(
             throw NotFoundException("LicenceCondition", "licenceConditionId", createAppointment.licenceConditionId)
         }
 
-        if (createAppointment.end.isBefore(createAppointment.start)) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment end time cannot be before start time.")
-        }
         if (createAppointment.start.isAfter(ZonedDateTime.now()) && appointmentRepository.appointmentClashes(
                 personId,
                 createAppointment.start.toLocalDate(),
