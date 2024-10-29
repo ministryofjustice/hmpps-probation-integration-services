@@ -40,7 +40,7 @@ data class Defendant(
     val personDefendant: PersonDefendant?,
     val legalEntityDefendant: Any? = null,
     val masterDefendantId: String,
-    val pncId: String,
+    val pncId: String? = null,
     val croNumber: String
 )
 
@@ -90,7 +90,7 @@ data class PersonDetails(
     val dateOfBirth: LocalDate,
     val address: Address,
     val contact: Contact?,
-    val ethnicity: Ethnicity
+    val ethnicity: Ethnicity?
 )
 
 data class Address(
@@ -104,8 +104,9 @@ data class Address(
 
 data class Contact(
     val home: String? = null,
-    val mobile: String,
-    val work: String? = null
+    val mobile: String? = null,
+    val work: String? = null,
+    val email: String? = null
 )
 
 data class HearingType(
@@ -115,8 +116,8 @@ data class HearingType(
 )
 
 data class Ethnicity(
-    val observedEthnicityDescription: String,
-    val selfDefinedEthnicityDescription: String
+    val observedEthnicityDescription: String? = null,
+    val selfDefinedEthnicityDescription: String? = null
 )
 
 data class CourtCentre(
