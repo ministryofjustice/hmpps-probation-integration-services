@@ -28,25 +28,16 @@ internal class IntegrationTest {
 
     @Test
     fun `returns csv report`() {
-        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"), any())).thenReturn(
+        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"))).thenReturn(
             listOf(
                 object : UnpaidWorkAppointment {
-                    override val crn = "A123456"
                     override val firstName = "Test"
                     override val mobileNumber = "07000000000"
                     override val appointmentDate = "01/01/2000"
                     override val appointmentTimes = "08:00, 11:00"
-                    override val nextWorkSessionProjectType = "Group session"
-                    override val today = "01/01/2000"
-                    override val sendSmsForDay = "01/01/2000"
-                    override val fullName = "Test Test"
-                    override val numberOfEvents = "1"
-                    override val activeUpwRequirements = "1"
-                    override val custodialStatus = null
-                    override val currentRemandStatus = null
-                    override val allowSms = "Y"
-                    override val originalMobileNumber = "070 0000 0000"
-                    override val upwMinutesRemaining = "123"
+                    override val crn = "A123456"
+                    override val eventNumber = "1"
+                    override val upwAppointmentId = "123"
                 }
             )
         )
@@ -58,8 +49,8 @@ internal class IntegrationTest {
             .andExpect(
                 content().string(
                     """
-                    crn,firstName,mobileNumber,appointmentDate,appointmentTimes,"nextWorkSessionProjectType",today,sendSmsForDay,fullName,numberOfEvents,activeUpwRequirements,custodialStatus,currentRemandStatus,allowSms,originalMobileNumber,upwMinutesRemaining
-                    A123456,Test,07000000000,01/01/2000,"08:00, 11:00","Group session",01/01/2000,01/01/2000,"Test Test",1,1,,,Y,"070 0000 0000",123
+                    firstName,mobileNumber,appointmentDate,appointmentTimes,crn,eventNumber,upwAppointmentId
+                    Test,07000000000,01/01/2000,"08:00, 11:00",A123456,1,123
                     
                     """.trimIndent()
                 )
