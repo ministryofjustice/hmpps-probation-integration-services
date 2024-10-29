@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
-import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.domain.Page
@@ -12,8 +10,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
-import java.time.*
+import java.time.Duration
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Entity
@@ -28,7 +30,7 @@ class Appointment (
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
-    val type: AppointmentType,
+    val type: ContactType,
 
     @Column(name = "contact_date")
     val date: LocalDate,
@@ -141,26 +143,8 @@ fun AppointmentRepository.appointmentClashes(
     endTime.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
 ) > 0
 
-@Immutable
-@Entity
-@Table(name = "r_contact_type")
-class AppointmentType(
-    val code: String,
-
-    val description: String,
-
-    @Column(name = "attendance_contact")
-
-    @Convert(converter = YesNoConverter::class)
-    val attendanceContact: Boolean,
-
-    @Id
-    @Column(name = "contact_type_id")
-    val id: Long
-)
-
-interface AppointmentTypeRepository : JpaRepository<AppointmentType, Long> {
-    fun findByCode(code: String): AppointmentType?
+interface AppointmentTypeRepository : JpaRepository<ContactType, Long> {
+    fun findByCode(code: String): ContactType?
 }
 
 fun AppointmentTypeRepository.getByCode(code: String) =

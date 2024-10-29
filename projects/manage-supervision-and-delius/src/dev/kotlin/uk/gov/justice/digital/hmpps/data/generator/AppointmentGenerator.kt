@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentType
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 
 object AppointmentGenerator {
 
@@ -12,5 +12,5 @@ object AppointmentGenerator {
         description: String = "Description for $code",
         attendanceType: Boolean,
         id: Long = IdGenerator.getAndIncrement()
-    ) = AppointmentType(code, description, attendanceType, id)
+    ) = ContactType(IdGenerator.getAndIncrement(), code, true, description)
 }

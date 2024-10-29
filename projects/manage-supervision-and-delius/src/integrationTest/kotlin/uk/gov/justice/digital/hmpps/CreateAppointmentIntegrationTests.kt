@@ -101,6 +101,5 @@ class CreateAppointmentIntegrationTests {
         assertThat(appointment.externalReference, equalTo(create.urn))
         assertThat(appointment.eventId, equalTo(create.eventId))
 
-        appointmentRepository.delete(appointment)
     }
 }

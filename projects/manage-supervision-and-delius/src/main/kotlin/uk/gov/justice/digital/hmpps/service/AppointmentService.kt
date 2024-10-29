@@ -46,6 +46,12 @@ class AppointmentService(
         ) {
             throw ConflictException("Appointment conflicts with an existing future appointment")
         }
+
+        val licenceOrRequirement = listOfNotNull(createAppointment.licenceConditionId, createAppointment.requirementId)
+
+        if (licenceOrRequirement.size > 1) {
+            throw ConflictException("Either licence id or requirement id can be provided, not both")
+        }
     }
 
     private fun CreateAppointment.withManager(om: OffenderManager) = Appointment(
