@@ -50,12 +50,12 @@ paths:
               $ref: "#/components/schemas/AuthenticationRequest"
         required: true
       responses:
-        "200":
-          description: User authenticated
-          content:
-            text/plain: {}
         "403":
           description: "Client role required: `DELIUS_USER_AUTH`"
+          content:
+            text/plain: {}
+        "200":
+          description: User authenticated
           content:
             text/plain: {}
         "401":
