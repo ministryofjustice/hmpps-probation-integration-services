@@ -116,19 +116,19 @@ class PersonService(
 
     fun Defendant.toPerson(): Person {
         val personDetails = personDefendant?.personDetails ?: throw IllegalArgumentException("No person found")
-        val genderCode = personDetails.gender.toDeliusGender()
+        val genderCode = personDetails.gender?.toDeliusGender() ?: throw IllegalArgumentException("Gender not found")
 
         return Person(
             id = null,
             crn = generateCrn(),
             croNumber = this.croNumber,
             pncNumber = this.pncId,
-            forename = personDetails.firstName,
+            forename = personDetails.firstName!!,
             secondName = personDetails.middleName,
             telephoneNumber = personDetails.contact?.home,
             mobileNumber = personDetails.contact?.mobile,
-            surname = personDetails.lastName,
-            dateOfBirth = personDetails.dateOfBirth,
+            surname = personDetails.lastName!!,
+            dateOfBirth = personDetails.dateOfBirth!!,
             gender = referenceDataRepository.findByCodeAndDatasetCode(genderCode, DatasetCode.GENDER)!!,
             softDeleted = false,
             surnameSoundex = personRepository.getSoundex(personDetails.lastName),

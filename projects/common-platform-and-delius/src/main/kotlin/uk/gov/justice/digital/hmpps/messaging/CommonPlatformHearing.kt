@@ -41,7 +41,8 @@ data class Defendant(
     val legalEntityDefendant: Any? = null,
     val masterDefendantId: String,
     val pncId: String? = null,
-    val croNumber: String? = null
+    val croNumber: String? = null,
+    val isYouth: Boolean? = null
 )
 
 data class Offence(
@@ -66,11 +67,11 @@ data class JudicialResult(
 
 data class Plea(
     val pleaValue: String?,
-    val pleaDate: LocalDate
+    val pleaDate: LocalDate? = null
 )
 
 data class Verdict(
-    val verdictDate: ZonedDateTime?,
+    val verdictDate: LocalDate? = null,
     val verdictType: VerdictType
 )
 
@@ -83,14 +84,14 @@ data class PersonDefendant(
 )
 
 data class PersonDetails(
-    val gender: String,
-    val lastName: String,
+    val gender: String? = null,
+    val lastName: String? = null,
     val middleName: String? = null,
-    val firstName: String,
-    val dateOfBirth: LocalDate,
-    val address: Address,
-    val contact: Contact?,
-    val ethnicity: Ethnicity?
+    val firstName: String? = null,
+    val dateOfBirth: LocalDate? = null,
+    val address: Address? = null,
+    val contact: Contact ? = null,
+    val ethnicity: Ethnicity? = null
 )
 
 data class Address(
