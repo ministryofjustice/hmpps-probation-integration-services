@@ -41,7 +41,7 @@ data class Defendant(
     val legalEntityDefendant: Any? = null,
     val masterDefendantId: String,
     val pncId: String? = null,
-    val croNumber: String
+    val croNumber: String? = null
 )
 
 data class Offence(
