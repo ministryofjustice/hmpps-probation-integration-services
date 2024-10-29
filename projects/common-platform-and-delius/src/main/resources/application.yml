@@ -31,7 +31,7 @@ spring:
 delius.db.username: CommonPlatformAndDelius # Should match value in [deploy/database/access.yml].
 
 messaging.consumer.sensitive-event-types:
-  - COMMON_PLATFORM_HEARING
+  - commonplatform.case.received
 
 management:
   endpoints.web:
@@ -49,7 +49,12 @@ server.shutdown: immediate
 
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
-  jpa.hibernate.ddl-auto: create-drop
+  sql.init.mode: always
+  sql.init.data-locations: classpath:db/h2.sql
+  jpa:
+    hibernate.ddl-auto: create-drop
+
+messaging.producer.topic: domain-events
 
 seed.database: true
 wiremock.enabled: true
@@ -58,8 +63,7 @@ context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockIniti
 messaging.consumer.queue: message-queue
 
 integrations:
-  example:
-    url: http://localhost:${wiremock.port}/example
+  probation-search.url: http://localhost:${wiremock.port}/probation-search
 
 oauth2:
   client-id: common-platform-and-delius
@@ -73,10 +77,6 @@ logging.level:
 ---
 spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
-
----
-spring.config.activate.on-profile: oracle
-spring.datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
 
 ---
 spring.config.activate.on-profile: delius-db

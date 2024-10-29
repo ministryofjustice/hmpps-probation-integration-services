@@ -1,5 +1,3 @@
-enabled: false
-
 generic-service:
   ingress:
     host: common-platform-and-delius-dev.hmpps.service.justice.gov.uk
@@ -11,6 +9,7 @@ generic-service:
     SENTRY_ENVIRONMENT: dev
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
+    INTEGRATIONS_PROBATION-SEARCH_URL: https://probation-offender-search-dev.hmpps.service.justice.gov.uk
 
 generic-prometheus-alerts:
   businessHoursOnly: true

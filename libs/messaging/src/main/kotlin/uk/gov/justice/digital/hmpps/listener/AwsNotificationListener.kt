@@ -7,6 +7,7 @@ import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedExcepti
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.api.trace.StatusCode
 import io.sentry.Sentry
 import io.sentry.spring.jakarta.tracing.SentryTransaction
 import org.springframework.beans.factory.annotation.Value
@@ -53,9 +54,11 @@ class AwsNotificationListener(
                 }
                 try {
                     retry(3, RETRYABLE_EXCEPTIONS) { handler.handle(message) }
-                } catch (e: Throwable) {
-                    Sentry.captureException(unwrapSqsExceptions(e))
-                    throw e
+                } catch (t: Throwable) {
+                    val e = unwrapSqsExceptions(t)
+                    Span.current().recordException(e).setStatus(StatusCode.ERROR)
+                    Sentry.captureException(e)
+                    throw t
                 }
             }
     }
