@@ -38,11 +38,6 @@ class Appointment (
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
 
-    @Column(name = "contact_end_time")
-    val endTime: ZonedDateTime?,
-
-    val probationAreaId: Long? = null,
-
     @ManyToOne
     @JoinColumn(name = "team_id")
     val team: Team,
@@ -50,6 +45,14 @@ class Appointment (
     @ManyToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff,
+
+    @Column(name = "last_updated_user_id")
+    val lastUpdatedUserId: Long,
+
+    @Column(name = "contact_end_time")
+    val endTime: ZonedDateTime?,
+
+    val probationAreaId: Long? = null,
 
     val externalReference: String? = null,
 

@@ -64,7 +64,7 @@ class CreateAppointmentIntegrationTests {
                         ZonedDateTime.now().plusDays(2),
                         ZonedDateTime.now().plusDays(1),
                         1,
-                        1)
+                        PersonGenerator.EVENT_1.id)
                 )
         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
     }

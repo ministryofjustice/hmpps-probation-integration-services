@@ -7,7 +7,9 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.ZonedDateTime
 
@@ -16,7 +18,9 @@ class AppointmentService(
     auditedInteractionService: AuditedInteractionService,
     private val appointmentRepository: AppointmentRepository,
     private val appointmentTypeRepository: AppointmentTypeRepository,
-    private val offenderManagerRepository: OffenderManagerRepository
+    private val offenderManagerRepository: OffenderManagerRepository,
+    private val eventSentenceRepository: EventSentenceRepository,
+    private val requirementRepository: RequirementRepository
 ) : AuditableService(auditedInteractionService) {
 
     fun createAppointment( crn: String,
@@ -34,6 +38,14 @@ class AppointmentService(
         createAppointment: CreateAppointment
     ) {
 
+        if (!eventSentenceRepository.existsById(createAppointment.eventId)) {
+            throw NotFoundException("Event", "eventId", createAppointment.eventId)
+        }
+
+        if (createAppointment.requirementId != null && !requirementRepository.existsById(createAppointment.requirementId)) {
+            throw NotFoundException("Requirement", "requirementId", createAppointment.requirementId)
+        }
+
         if (createAppointment.end.isBefore(createAppointment.start)) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment end time cannot be before start time.")
         }
@@ -50,7 +62,7 @@ class AppointmentService(
         val licenceOrRequirement = listOfNotNull(createAppointment.licenceConditionId, createAppointment.requirementId)
 
         if (licenceOrRequirement.size > 1) {
-            throw ConflictException("Either licence id or requirement id can be provided, not both")
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Either licence id or requirement id can be provided, not both")
         }
     }
 
@@ -59,10 +71,11 @@ class AppointmentService(
         appointmentTypeRepository.getByCode(type.code),
         start.toLocalDate(),
         start,
-        end,
-        om.provider.id,
         om.team,
         om.staff,
+        om.staff.user!!.id,
+        end,
+        om.provider.id,
         urn,
         eventId = eventId
     )
