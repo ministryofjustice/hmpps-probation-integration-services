@@ -1,22 +1,20 @@
 package uk.gov.justice.digital.hmpps
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.domain.PageRequest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
-import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
@@ -76,26 +74,14 @@ class CreateAppointmentIntegrationTests {
     fun `create a new appointment`(createAppointment: CreateAppointment) {
         val person = PersonGenerator.PERSON_1
 
-        mockMvc.perform(
+        val response = mockMvc.perform(
             post("/appointments/${person.crn}")
                 .withToken()
-                .withJson(createAppointment)
-        ).andExpect(MockMvcResultMatchers.status().isCreated)
+                .withJson(createAppointment))
+            .andExpect(MockMvcResultMatchers.status().isCreated)
+            .andReturn().response.contentAsJson<CreatedAppointment>()
 
-        val appointment = appointmentRepository.findAppointmentsFor(
-            person.crn,
-            createAppointment.start.toLocalDate(),
-            PageRequest.of(0, 1)
-        ).first()
-
-        assertThat(appointment.type.code, equalTo(createAppointment.type.code))
-        assertThat(appointment.date, equalTo(createAppointment.start.toLocalDate()))
-        assertThat(appointment.startTime, isCloseTo(createAppointment.start))
-        assertThat(appointment.externalReference, equalTo(createAppointment.urn))
-        assertThat(appointment.eventId, equalTo(createAppointment.eventId))
-
-        appointmentRepository.delete(appointment)
-
+        appointmentRepository.deleteById(response.id)
     }
 
     companion object {

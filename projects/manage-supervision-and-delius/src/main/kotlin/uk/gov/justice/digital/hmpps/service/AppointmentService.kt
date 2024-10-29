@@ -2,8 +2,10 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -26,14 +28,20 @@ class AppointmentService(
     private val licenceConditionRepository: LicenceConditionRepository,
 ) : AuditableService(auditedInteractionService) {
 
+    @Transactional
     fun createAppointment( crn: String,
         createAppointment: CreateAppointment
-    ) = audit(BusinessInteractionCode.ADD_CONTACT) { audit ->
-        val om = offenderManagerRepository.getByCrn(crn)
-        audit["offenderId"] = om.person.id
-        checkForConflicts(om.person.id, createAppointment)
-        val appointment = appointmentRepository.save(createAppointment.withManager(om))
-        audit["contactId"] = appointment.id
+    ): CreatedAppointment {
+        return audit(BusinessInteractionCode.ADD_CONTACT) { audit ->
+            val om = offenderManagerRepository.getByCrn(crn)
+            audit["offenderId"] = om.person.id
+            checkForConflicts(om.person.id, createAppointment)
+            val appointment = appointmentRepository.save(createAppointment.withManager(om))
+            val createdAppointment = CreatedAppointment(appointment.id)
+            audit["contactId"] = appointment.id
+
+            return@audit createdAppointment
+        }
     }
 
     private fun checkForConflicts(

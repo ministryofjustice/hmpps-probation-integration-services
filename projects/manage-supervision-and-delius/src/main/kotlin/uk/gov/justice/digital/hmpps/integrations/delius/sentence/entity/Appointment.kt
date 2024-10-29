@@ -3,8 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.LastModifiedBy
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -100,20 +98,6 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         startTime: String,
         endTime: String
     ): Int
-
-    @Query(
-        """
-        select a from Appointment a
-        join fetch a.type t
-        join fetch a.staff s
-        left join fetch s.user u
-        where a.person.crn = :crn
-        and t.attendanceContact = true
-        and a.date >= :start
-        order by a.date desc, a.startTime desc
-    """
-    )
-    fun findAppointmentsFor(crn: String, start: LocalDate, pageable: Pageable): Page<Appointment>
 }
 
 fun AppointmentRepository.appointmentClashes(
