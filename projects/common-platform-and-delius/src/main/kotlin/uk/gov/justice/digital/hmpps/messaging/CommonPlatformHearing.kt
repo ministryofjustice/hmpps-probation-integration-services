@@ -76,7 +76,7 @@ data class Verdict(
 )
 
 data class VerdictType(
-    val description: String?,
+    val description: String? = null,
 )
 
 data class PersonDefendant(
