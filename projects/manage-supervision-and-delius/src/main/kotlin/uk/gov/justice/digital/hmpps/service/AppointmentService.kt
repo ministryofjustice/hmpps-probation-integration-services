@@ -78,10 +78,12 @@ class AppointmentService(
         start,
         om.team,
         om.staff,
-        om.staff.user!!.id,
+        0,
         end,
         om.provider.id,
         urn,
-        eventId = eventId
+        eventId = eventId,
+        rqmntId = requirementId,
+        licConditionId = licenceConditionId
     )
 }

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -47,7 +48,8 @@ class Appointment (
     val staff: Staff,
 
     @Column(name = "last_updated_user_id")
-    val lastUpdatedUserId: Long,
+    @LastModifiedBy
+    var lastUpdatedUserId: Long,
 
     @Column(name = "contact_end_time")
     val endTime: ZonedDateTime?,

@@ -54,7 +54,7 @@ class CreateAppointmentIntegrationTests {
     }
 
     @Test
-    fun `create appointment ending before start returns bad request`() {
+    fun `appointment end date before start returns bad request`() {
         mockMvc.perform(
             post("/appointments/${PersonGenerator.PERSON_1.crn}")
                 .withToken()
@@ -100,6 +100,8 @@ class CreateAppointmentIntegrationTests {
         assertThat(appointment.startTime, isCloseTo(start))
         assertThat(appointment.externalReference, equalTo(create.urn))
         assertThat(appointment.eventId, equalTo(create.eventId))
+
+        appointmentRepository.delete(appointment)
 
     }
 }
