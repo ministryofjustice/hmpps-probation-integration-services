@@ -2,6 +2,8 @@ database:
   access:
     username_key: /manage-supervision-and-delius/db-username
     password_key: /manage-supervision-and-delius/db-password
+    tables:
+      - contact
 
   audit:
     username: ManageSupervisionAndDelius
