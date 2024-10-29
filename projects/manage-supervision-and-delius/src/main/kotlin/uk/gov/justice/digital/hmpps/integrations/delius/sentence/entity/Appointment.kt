@@ -2,9 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -13,7 +11,6 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
-import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -112,11 +109,11 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         left join fetch s.user u
         where a.person.crn = :crn
         and t.attendanceContact = true
-        and a.date >= :start and a.date <= :end
+        and a.date >= :start
         order by a.date desc, a.startTime desc
     """
     )
-    fun findAppointmentsFor(crn: String, start: LocalDate, end: LocalDate, pageable: Pageable): Page<Appointment>
+    fun findAppointmentsFor(crn: String, start: LocalDate, pageable: Pageable): Page<Appointment>
 }
 
 fun AppointmentRepository.appointmentClashes(

@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -69,39 +71,49 @@ class CreateAppointmentIntegrationTests {
         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 
-    @Test
-    fun `create a new appointment`() {
+    @ParameterizedTest
+    @MethodSource("createAppointments")
+    fun `create a new appointment`(createAppointment: CreateAppointment) {
         val person = PersonGenerator.PERSON_1
-        val start = ZonedDateTime.now().plusDays(1)
-        val end = ZonedDateTime.now().plusDays(2)
-        val create = CreateAppointment(
-            CreateAppointment.Type.PlannedOfficeVisitNS,
-            start,
-            end,
-            1,
-            PersonGenerator.EVENT_1.id
-            )
 
         mockMvc.perform(
             post("/appointments/${person.crn}")
                 .withToken()
-                .withJson(create)
+                .withJson(createAppointment)
         ).andExpect(MockMvcResultMatchers.status().isCreated)
 
         val appointment = appointmentRepository.findAppointmentsFor(
             person.crn,
-            start.toLocalDate(),
-            end.toLocalDate(),
+            createAppointment.start.toLocalDate(),
             PageRequest.of(0, 1)
         ).first()
 
-        assertThat(appointment.type.code, equalTo(create.type.code))
-        assertThat(appointment.date, equalTo(start.toLocalDate()))
-        assertThat(appointment.startTime, isCloseTo(start))
-        assertThat(appointment.externalReference, equalTo(create.urn))
-        assertThat(appointment.eventId, equalTo(create.eventId))
+        assertThat(appointment.type.code, equalTo(createAppointment.type.code))
+        assertThat(appointment.date, equalTo(createAppointment.start.toLocalDate()))
+        assertThat(appointment.startTime, isCloseTo(createAppointment.start))
+        assertThat(appointment.externalReference, equalTo(createAppointment.urn))
+        assertThat(appointment.eventId, equalTo(createAppointment.eventId))
 
         appointmentRepository.delete(appointment)
 
+    }
+
+    companion object {
+        @JvmStatic
+        fun createAppointments() = listOf(
+            CreateAppointment(
+                CreateAppointment.Type.PlannedOfficeVisitNS,
+                ZonedDateTime.now().plusDays(1),
+                ZonedDateTime.now().plusDays(2),
+                1,
+                PersonGenerator.EVENT_1.id
+            ),
+            CreateAppointment(
+                CreateAppointment.Type.InitialAppointmentInOfficeNS,
+                ZonedDateTime.now().plusDays(1),
+                null,
+                1,
+                PersonGenerator.EVENT_1.id)
+        )
     }
 }
