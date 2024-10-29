@@ -81,24 +81,7 @@ class Appointment (
     @Column(name = "contact_id")
     val id: Long = 0,
 
-) {
-
-    @CreatedDate
-    @Column(name = "created_datetime")
-    var createdDateTime: ZonedDateTime = ZonedDateTime.now()
-
-    @LastModifiedDate
-    @Column(name = "last_updated_datetime")
-    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now()
-
-    val duration: Duration
-        get() =
-            if (endTime != null) {
-                Duration.between(startTime, endTime)
-            } else {
-                Duration.ZERO
-            }
-}
+)
 
 interface AppointmentRepository : JpaRepository<Appointment, Long> {
     @Query(
