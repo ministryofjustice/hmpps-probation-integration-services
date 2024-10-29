@@ -6,11 +6,13 @@ import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Service
@@ -38,6 +40,14 @@ class AppointmentService(
         personId: Long,
         createAppointment: CreateAppointment
     ) {
+
+        if (createAppointment.requirementId != null && createAppointment.licenceConditionId != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Either licence id or requirement id can be provided, not both")
+        }
+
+        if (createAppointment.end.isBefore(createAppointment.start)) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment end time cannot be before start time.")
+        }
 
         if (!eventSentenceRepository.existsById(createAppointment.eventId)) {
             throw NotFoundException("Event", "eventId", createAppointment.eventId)
@@ -75,11 +85,11 @@ class AppointmentService(
         om.person,
         appointmentTypeRepository.getByCode(type.code),
         start.toLocalDate(),
-        start,
+        ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
         om.team,
         om.staff,
         0,
-        end,
+        ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon),
         om.provider.id,
         urn,
         eventId = eventId,

@@ -7,8 +7,11 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
@@ -45,6 +48,55 @@ class AppointmentServiceTest {
     @InjectMocks
     lateinit var service: AppointmentService
 
+    @Test
+    fun `licence and requirement id provided`() {
+        val appointment = CreateAppointment(
+            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            ZonedDateTime.now().plusDays(1),
+            ZonedDateTime.now().plusDays(2),
+            1,
+            PersonGenerator.EVENT_1.id,
+            requirementId = 2,
+            licenceConditionId = 3)
+
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
+        val exception = assertThrows<ResponseStatusException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(exception.message, equalTo("400 BAD_REQUEST \"Either licence id or requirement id can be provided, not both\""))
+
+        verifyNoMoreInteractions(offenderManagerRepository)
+        verifyNoInteractions(eventSentenceRepository)
+        verifyNoInteractions(licenceConditionRepository)
+        verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(appointmentTypeRepository)
+    }
+
+    @Test
+    fun `start date before end date`() {
+        val appointment = CreateAppointment(
+            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            ZonedDateTime.now().plusDays(2),
+            ZonedDateTime.now().plusDays(1),
+            1,
+            PersonGenerator.EVENT_1.id)
+
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
+        val exception = assertThrows<ResponseStatusException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(exception.message, equalTo("400 BAD_REQUEST \"Appointment end time cannot be before start time.\""))
+
+        verifyNoMoreInteractions(offenderManagerRepository)
+        verifyNoInteractions(eventSentenceRepository)
+        verifyNoInteractions(licenceConditionRepository)
+        verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(appointmentTypeRepository)
+    }
 
     @Test
     fun `event not found`() {
@@ -56,11 +108,19 @@ class AppointmentServiceTest {
             1)
 
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
+        whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("Event with eventId of 1 not found"))
+
+        verifyNoMoreInteractions(offenderManagerRepository)
+        verifyNoMoreInteractions(eventSentenceRepository)
+        verifyNoInteractions(licenceConditionRepository)
+        verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(appointmentTypeRepository)
     }
 
     @Test
@@ -75,11 +135,19 @@ class AppointmentServiceTest {
 
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
+        whenever(requirementRepository.existsById(appointment.requirementId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(exception.message, equalTo("Requirement with requirementId of 2 not found"))
+
+        verifyNoMoreInteractions(offenderManagerRepository)
+        verifyNoMoreInteractions(eventSentenceRepository)
+        verifyNoMoreInteractions(requirementRepository)
+        verifyNoInteractions(licenceConditionRepository)
+        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(appointmentTypeRepository)
     }
 
     @Test
@@ -100,5 +168,12 @@ class AppointmentServiceTest {
         }
 
         assertThat(exception.message, equalTo("LicenceCondition with licenceConditionId of 3 not found"))
+
+        verifyNoMoreInteractions(offenderManagerRepository)
+        verifyNoMoreInteractions(eventSentenceRepository)
+        verifyNoMoreInteractions(licenceConditionRepository)
+        verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(appointmentTypeRepository)
     }
 }
