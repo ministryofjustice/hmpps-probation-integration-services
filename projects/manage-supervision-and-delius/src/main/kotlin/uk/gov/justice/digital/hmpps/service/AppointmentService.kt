@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
@@ -27,8 +26,6 @@ class AppointmentService(
     private val requirementRepository: RequirementRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
 ) : AuditableService(auditedInteractionService) {
-
-    @Transactional
     fun createAppointment( crn: String,
         createAppointment: CreateAppointment
     ): CreatedAppointment {

@@ -92,7 +92,7 @@ class CreateAppointmentIntegrationTests {
         assertThat(appointment.externalReference, equalTo(createAppointment.urn))
         assertThat(appointment.eventId, equalTo(createAppointment.eventId))
 
-        appointmentRepository.deleteById(response.id)
+        appointmentRepository.delete(appointment)
     }
 
     companion object {

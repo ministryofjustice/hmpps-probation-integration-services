@@ -203,9 +203,9 @@ internal class UserIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<StaffCaseload>()
 
-//        assertThat(res.caseload.size, equalTo(1))
-//        assertThat(res.caseload[0].crn, equalTo("X000004"))
-//        assertThat(res.caseload[0].nextAppointment?.description, equalTo("Initial Appointment on Doorstep (NS)"))
+        assertThat(res.caseload.size, equalTo(1))
+        assertThat(res.caseload[0].crn, equalTo("X000004"))
+        assertThat(res.caseload[0].nextAppointment?.description, equalTo("Initial Appointment on Doorstep (NS)"))
     }
 
     @Test
