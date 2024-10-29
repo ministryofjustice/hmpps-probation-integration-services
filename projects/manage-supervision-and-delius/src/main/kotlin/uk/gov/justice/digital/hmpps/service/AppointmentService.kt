@@ -44,8 +44,9 @@ class AppointmentService(
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Either licence id or requirement id can be provided, not both")
         }
 
-        if (createAppointment.end.isBefore(createAppointment.start)) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment end time cannot be before start time.")
+        createAppointment.end?.let {
+            if (it.isBefore(createAppointment.start))
+                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment end time cannot be before start time")
         }
 
         if (!eventSentenceRepository.existsById(createAppointment.eventId)) {
@@ -85,7 +86,7 @@ class AppointmentService(
         om.team,
         om.staff,
         0,
-        ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon),
+        end?.let {ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon)},
         om.provider.id,
         urn,
         eventId = eventId,

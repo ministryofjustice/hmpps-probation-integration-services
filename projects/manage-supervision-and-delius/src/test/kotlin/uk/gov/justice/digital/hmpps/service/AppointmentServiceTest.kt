@@ -88,7 +88,7 @@ class AppointmentServiceTest {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
-        assertThat(exception.message, equalTo("400 BAD_REQUEST \"Appointment end time cannot be before start time.\""))
+        assertThat(exception.message, equalTo("400 BAD_REQUEST \"Appointment end time cannot be before start time\""))
 
         verifyNoMoreInteractions(offenderManagerRepository)
         verifyNoInteractions(eventSentenceRepository)
@@ -103,7 +103,7 @@ class AppointmentServiceTest {
         val appointment = CreateAppointment(
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
-            ZonedDateTime.now().plusDays(2),
+            null,
                         1,
             1)
 

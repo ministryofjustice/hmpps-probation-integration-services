@@ -7,7 +7,7 @@ import java.util.*
 data class CreateAppointment(
     val type: Type,
     val start: ZonedDateTime,
-    val end: ZonedDateTime,
+    val end: ZonedDateTime?,
     val interval: Int,
     val eventId: Long,
     val requirementId: Long? = null,
