@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -14,6 +16,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -80,6 +83,14 @@ class CreateAppointmentIntegrationTests {
                 .withJson(createAppointment))
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<CreatedAppointment>()
+
+        val appointment = appointmentRepository.findById(response.id).get()
+
+        assertThat(appointment.type.code, equalTo(createAppointment.type.code))
+        assertThat(appointment.date, equalTo(createAppointment.start.toLocalDate()))
+        assertThat(appointment.startTime, isCloseTo(createAppointment.start))
+        assertThat(appointment.externalReference, equalTo(createAppointment.urn))
+        assertThat(appointment.eventId, equalTo(createAppointment.eventId))
 
         appointmentRepository.deleteById(response.id)
     }
