@@ -20,7 +20,8 @@ class AppointmentService(
     private val appointmentTypeRepository: AppointmentTypeRepository,
     private val offenderManagerRepository: OffenderManagerRepository,
     private val eventSentenceRepository: EventSentenceRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
+    private val licenceConditionRepository: LicenceConditionRepository,
 ) : AuditableService(auditedInteractionService) {
 
     fun createAppointment( crn: String,
@@ -44,6 +45,10 @@ class AppointmentService(
 
         if (createAppointment.requirementId != null && !requirementRepository.existsById(createAppointment.requirementId)) {
             throw NotFoundException("Requirement", "requirementId", createAppointment.requirementId)
+        }
+
+        if (createAppointment.licenceConditionId != null && !licenceConditionRepository.existsById(createAppointment.licenceConditionId)) {
+            throw NotFoundException("LicenceCondition", "licenceConditionId", createAppointment.licenceConditionId)
         }
 
         if (createAppointment.end.isBefore(createAppointment.start)) {
