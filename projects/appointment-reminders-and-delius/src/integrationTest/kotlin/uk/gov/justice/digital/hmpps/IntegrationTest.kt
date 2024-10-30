@@ -34,10 +34,9 @@ internal class IntegrationTest {
                     override val firstName = "Test"
                     override val mobileNumber = "07000000000"
                     override val appointmentDate = "01/01/2000"
-                    override val appointmentTimes = "08:00, 11:00"
                     override val crn = "A123456"
-                    override val eventNumber = "1"
-                    override val upwAppointmentId = "123"
+                    override val eventNumbers = "1"
+                    override val upwAppointmentIds = "123, 456"
                 }
             )
         )
@@ -49,8 +48,8 @@ internal class IntegrationTest {
             .andExpect(
                 content().string(
                     """
-                    firstName,mobileNumber,appointmentDate,appointmentTimes,crn,eventNumber,upwAppointmentId
-                    Test,07000000000,01/01/2000,"08:00, 11:00",A123456,1,123
+                    firstName,mobileNumber,appointmentDate,crn,eventNumbers,upwAppointmentIds
+                    Test,07000000000,01/01/2000,A123456,1,"123, 456"
                     
                     """.trimIndent()
                 )
