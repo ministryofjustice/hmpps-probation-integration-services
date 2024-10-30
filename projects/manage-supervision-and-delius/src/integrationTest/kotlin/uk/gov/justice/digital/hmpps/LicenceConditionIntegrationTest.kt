@@ -8,18 +8,18 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNote
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNoteDetail
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_SUB_CAT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
-import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceCondition
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_SUB_CAT
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -97,7 +97,7 @@ class LicenceConditionIntegrationTest {
                     LocalDate.of(2024, 4, 22),
                     """
                    ${LicenceConditionGenerator.LONG_NOTE}
-                """.trimIndent() + System.lineSeparator()
+                """.trimIndent()
                 )
             )
         )
