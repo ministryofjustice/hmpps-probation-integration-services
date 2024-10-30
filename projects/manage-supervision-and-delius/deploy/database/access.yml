@@ -5,6 +5,8 @@ database:
     tables:
       - contact
 
+    sequences:
+      - contact_id_seq
   audit:
     username: ManageSupervisionAndDelius
     forename: Manage Supervisions
