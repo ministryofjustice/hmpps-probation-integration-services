@@ -77,7 +77,7 @@ class LicenceConditionIntegrationTest {
     fun `get note for licence condition`() {
         val response = mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LC_WITH_NOTES.id}/note/0")
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/licence-condition/${LC_WITH_NOTES.id}/note/1")
                     .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -92,7 +92,7 @@ class LicenceConditionIntegrationTest {
                 LocalDate.now().minusDays(7),
                 LocalDate.now(),
                 licenceConditionNote = LicenceConditionNote(
-                    0,
+                    1,
                     "CVL Service",
                     LocalDate.of(2024, 4, 22),
                     """
