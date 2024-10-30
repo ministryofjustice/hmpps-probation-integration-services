@@ -13,3 +13,8 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+
+jobs:
+  unpaid-work-appointment-reminders:
+    dry-run: false
+    schedule: '0 18 * * *' # 6:00pm UTC every day
