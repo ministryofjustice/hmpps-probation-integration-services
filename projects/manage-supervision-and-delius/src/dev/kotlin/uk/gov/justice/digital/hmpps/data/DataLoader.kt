@@ -107,6 +107,7 @@ class DataLoader(
             LicenceConditionGenerator.LC_WITH_NOTES,
             LicenceConditionGenerator.LC_WITHOUT_NOTES,
             LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY,
+            LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE,
             PersonGenerator.TERMINATION_REASON,
             PersonGenerator.REF_DATA_YEARS,
             PersonGenerator.INACTIVE_ORDER_1,
