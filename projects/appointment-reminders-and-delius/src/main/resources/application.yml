@@ -33,6 +33,9 @@ management:
 
 info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/185
 
+govuk-notify.templates:
+  upw-appointment-reminder: cd713c1b-1b27-45a0-b493-37a34666635a
+
 ---
 # Shared dev/test config
 spring.config.activate.on-profile: [ "dev", "integration-test" ]
@@ -45,6 +48,8 @@ spring:
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+govuk-notify.api-key: test
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
