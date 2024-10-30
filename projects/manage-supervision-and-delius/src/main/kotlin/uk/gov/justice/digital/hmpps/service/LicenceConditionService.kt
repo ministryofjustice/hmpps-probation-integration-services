@@ -60,7 +60,8 @@ fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<L
                     + System.lineSeparator()
             ).find(note)
             val commentLine = matchResult?.value
-            val commentText = commentLine?.let { note.removePrefix(commentLine).removeSuffix(System.lineSeparator()) } ?: note
+            val commentText =
+                commentLine?.let { note.removePrefix(commentLine).removeSuffix(System.lineSeparator()) } ?: note
 
             val userCreatedBy = matchResult?.groupValues?.get(1)
             val dateCreatedBy = matchResult?.groupValues?.get(2)
