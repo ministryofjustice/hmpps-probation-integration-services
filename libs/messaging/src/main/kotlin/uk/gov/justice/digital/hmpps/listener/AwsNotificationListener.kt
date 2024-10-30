@@ -49,9 +49,6 @@ class AwsNotificationListener(
                 SpanKind.CONSUMER
             ) {
                 Span.current().setAttribute("queue", queueName)
-                if (notification.eventType != null && notification.eventType !in sensitiveEventTypes) {
-                    Span.current().setAttribute("message", message)
-                }
                 try {
                     retry(3, RETRYABLE_EXCEPTIONS) { handler.handle(message) }
                 } catch (t: Throwable) {

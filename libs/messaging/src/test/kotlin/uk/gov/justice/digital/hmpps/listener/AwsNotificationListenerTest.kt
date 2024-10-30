@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.listener
 
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
-import io.opentelemetry.api.trace.Span
 import io.sentry.Sentry
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -11,13 +10,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.messaging.support.GenericMessage
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
@@ -79,40 +77,6 @@ class AwsNotificationListenerTest {
             )
 
             it.verify { Sentry.captureException(meaningfulException) }
-        }
-    }
-
-    @Test
-    fun `sensitive messages are not logged`() {
-        val span = mock(Span::class.java, CALLS_REAL_METHODS)
-        mockStatic(Span::class.java, CALLS_REAL_METHODS).use {
-            it.`when`<Span> { Span.current() }.thenReturn(span)
-            listener.receive(
-                objectMapper.writeValueAsString(
-                    Notification(
-                        "my message",
-                        MessageAttributes("my-sensitive-event-type")
-                    )
-                )
-            )
-            verify(span, never()).setAttribute(eq("message"), any<String>())
-        }
-    }
-
-    @Test
-    fun `non-sensitive messages are logged`() {
-        val span = mock(Span::class.java, CALLS_REAL_METHODS)
-        mockStatic(Span::class.java, CALLS_REAL_METHODS).use {
-            it.`when`<Span> { Span.current() }.thenReturn(span)
-            listener.receive(
-                objectMapper.writeValueAsString(
-                    Notification(
-                        "my message",
-                        MessageAttributes("some-other-event-type")
-                    )
-                )
-            )
-            verify(span).setAttribute(eq("message"), any<String>())
         }
     }
 }

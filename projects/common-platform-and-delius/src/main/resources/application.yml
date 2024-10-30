@@ -30,9 +30,6 @@ spring:
 
 delius.db.username: CommonPlatformAndDelius # Should match value in [deploy/database/access.yml].
 
-messaging.consumer.sensitive-event-types:
-  - commonplatform.case.received
-
 management:
   endpoints.web:
     base-path: /
