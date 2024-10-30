@@ -13,17 +13,19 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.EVENT_DOCUMENT
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES_WITHOUT_ADDED_BY
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_SUB_CAT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_SUB_CAT
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -148,7 +150,7 @@ class SentenceIntegrationTest {
                                         we can check this.
                                     """.trimIndent(),
                                     false
-                                ),
+                                )
                             )
                         ),
                         LicenceCondition(
@@ -168,6 +170,33 @@ class SentenceIntegrationTest {
                                     0,
                                     note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
                                     hasNoteBeenTruncated = false
+                                )
+                            )
+                        ),
+                        LicenceCondition(
+                            LC_WITH_1500_CHAR_NOTE.id,
+                            LIC_COND_MAIN_CAT.description,
+                            LIC_COND_SUB_CAT.description,
+                            LocalDate.now().minusDays(7),
+                            LocalDate.now(),
+                            listOf(
+                                LicenceConditionNote(
+                                    0,
+                                    "Harry Kane",
+                                    LocalDate.of(2024, 10, 29),
+                                    """
+                                         ${LicenceConditionGenerator.NOTE_1500_CHARS}
+                                    """.trimIndent(),
+                                    false
+                                ),
+                                LicenceConditionNote(
+                                    1,
+                                    "Tom Brady",
+                                    LocalDate.of(2024, 10, 29),
+                                    """
+                                        Needs to stay home every evening
+                                    """.trimIndent(),
+                                    false
                                 )
                             )
                         )
