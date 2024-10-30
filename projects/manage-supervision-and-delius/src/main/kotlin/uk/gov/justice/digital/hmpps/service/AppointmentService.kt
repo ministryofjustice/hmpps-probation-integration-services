@@ -26,7 +26,8 @@ class AppointmentService(
     private val requirementRepository: RequirementRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
 ) : AuditableService(auditedInteractionService) {
-    fun createAppointment( crn: String,
+    fun createAppointment(
+        crn: String,
         createAppointment: CreateAppointment
     ): CreatedAppointment {
         return audit(BusinessInteractionCode.ADD_CONTACT) { audit ->
@@ -46,12 +47,18 @@ class AppointmentService(
         createAppointment: CreateAppointment
     ) {
         if (createAppointment.requirementId != null && createAppointment.licenceConditionId != null) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Either licence id or requirement id can be provided, not both")
+            throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Either licence id or requirement id can be provided, not both"
+            )
         }
 
         createAppointment.end?.let {
             if (it.isBefore(createAppointment.start))
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment end time cannot be before start time")
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Appointment end time cannot be before start time"
+                )
         }
 
         if (!eventSentenceRepository.existsById(createAppointment.eventId)) {
@@ -79,7 +86,10 @@ class AppointmentService(
         val licenceOrRequirement = listOfNotNull(createAppointment.licenceConditionId, createAppointment.requirementId)
 
         if (licenceOrRequirement.size > 1) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Either licence id or requirement id can be provided, not both")
+            throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Either licence id or requirement id can be provided, not both"
+            )
         }
     }
 
@@ -91,7 +101,7 @@ class AppointmentService(
         om.team,
         om.staff,
         0,
-        end?.let {ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon)},
+        end?.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
         om.provider.id,
         urn,
         eventId = eventId,

@@ -95,7 +95,6 @@ class Contact(
     @JoinColumn(name = "last_updated_user_id")
     val lastUpdatedUser: User,
 
-
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     val softDeleted: Boolean = false
 ) {

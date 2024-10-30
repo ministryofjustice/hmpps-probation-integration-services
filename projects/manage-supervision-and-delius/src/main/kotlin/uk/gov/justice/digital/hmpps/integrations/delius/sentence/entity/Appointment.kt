@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter
 @Table(name = "contact")
 @SequenceGenerator(name = "contact_id_generator", sequenceName = "contact_id_seq", allocationSize = 1)
 @SQLRestriction("soft_deleted = 0")
-class Appointment (
+class Appointment(
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
@@ -76,7 +76,7 @@ class Appointment (
     @Column(name = "contact_id")
     val id: Long = 0,
 
-)
+    )
 
 interface AppointmentRepository : JpaRepository<Appointment, Long> {
     @Query(

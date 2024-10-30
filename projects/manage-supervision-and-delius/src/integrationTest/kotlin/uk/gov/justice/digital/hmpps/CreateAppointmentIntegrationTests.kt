@@ -67,7 +67,8 @@ class CreateAppointmentIntegrationTests {
                         ZonedDateTime.now().plusDays(2),
                         ZonedDateTime.now().plusDays(1),
                         1,
-                        PersonGenerator.EVENT_1.id)
+                        PersonGenerator.EVENT_1.id
+                    )
                 )
         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
@@ -80,7 +81,8 @@ class CreateAppointmentIntegrationTests {
         val response = mockMvc.perform(
             post("/appointments/${person.crn}")
                 .withToken()
-                .withJson(createAppointment))
+                .withJson(createAppointment)
+        )
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<CreatedAppointment>()
 
@@ -110,7 +112,8 @@ class CreateAppointmentIntegrationTests {
                 ZonedDateTime.now().plusDays(1),
                 null,
                 1,
-                PersonGenerator.EVENT_1.id)
+                PersonGenerator.EVENT_1.id
+            )
         )
     }
 }

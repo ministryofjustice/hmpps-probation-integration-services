@@ -31,19 +31,19 @@ class AppointmentServiceTest {
     lateinit var appointmentRepository: AppointmentRepository
 
     @Mock
-    lateinit var  appointmentTypeRepository: AppointmentTypeRepository
+    lateinit var appointmentTypeRepository: AppointmentTypeRepository
 
     @Mock
-    lateinit var  offenderManagerRepository: OffenderManagerRepository
+    lateinit var offenderManagerRepository: OffenderManagerRepository
 
     @Mock
-    lateinit var  eventSentenceRepository: EventSentenceRepository
+    lateinit var eventSentenceRepository: EventSentenceRepository
 
     @Mock
     lateinit var requirementRepository: RequirementRepository
 
     @Mock
-    lateinit var  licenceConditionRepository: LicenceConditionRepository
+    lateinit var licenceConditionRepository: LicenceConditionRepository
 
     @InjectMocks
     lateinit var service: AppointmentService
@@ -57,14 +57,20 @@ class AppointmentServiceTest {
             1,
             PersonGenerator.EVENT_1.id,
             requirementId = 2,
-            licenceConditionId = 3)
+            licenceConditionId = 3
+        )
 
-        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
         val exception = assertThrows<ResponseStatusException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
-        assertThat(exception.message, equalTo("400 BAD_REQUEST \"Either licence id or requirement id can be provided, not both\""))
+        assertThat(
+            exception.message,
+            equalTo("400 BAD_REQUEST \"Either licence id or requirement id can be provided, not both\"")
+        )
 
         verifyNoMoreInteractions(offenderManagerRepository)
         verifyNoInteractions(eventSentenceRepository)
@@ -81,9 +87,12 @@ class AppointmentServiceTest {
             ZonedDateTime.now().plusDays(2),
             ZonedDateTime.now().plusDays(1),
             1,
-            PersonGenerator.EVENT_1.id)
+            PersonGenerator.EVENT_1.id
+        )
 
-        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
         val exception = assertThrows<ResponseStatusException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
@@ -104,10 +113,13 @@ class AppointmentServiceTest {
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             null,
-                        1,
-            1)
+            1,
+            1
+        )
 
-        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
@@ -131,9 +143,12 @@ class AppointmentServiceTest {
             ZonedDateTime.now().plusDays(2),
             1,
             PersonGenerator.EVENT_1.id,
-            requirementId = 2)
+            requirementId = 2
+        )
 
-        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
         whenever(requirementRepository.existsById(appointment.requirementId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
@@ -158,9 +173,12 @@ class AppointmentServiceTest {
             ZonedDateTime.now().plusDays(2),
             1,
             PersonGenerator.EVENT_1.id,
-            licenceConditionId = 3)
+            licenceConditionId = 3
+        )
 
-        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE)
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
         whenever(licenceConditionRepository.existsById(appointment.licenceConditionId!!)).thenReturn(false)
         val exception = assertThrows<NotFoundException> {
