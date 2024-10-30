@@ -45,12 +45,12 @@ class Handler(
 
         defendants.forEach { defendant ->
 
-            val matchRequest = defendant.toProbationMatchRequest() ?: return
+            val matchRequest = defendant.toProbationMatchRequest() ?: return@forEach
 
             val matchedPersonResponse = probationSearchClient.match(matchRequest)
 
             if (matchedPersonResponse.matches.isNotEmpty()) {
-                return
+                return@forEach
             }
 
             // Insert each defendant as a person record
