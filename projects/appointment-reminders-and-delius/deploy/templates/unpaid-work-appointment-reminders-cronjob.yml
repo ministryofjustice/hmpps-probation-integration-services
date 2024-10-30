@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: unpaid-work-appointment-reminders
+spec:
+  schedule: {{ index .Values "jobs" "unpaid-work-appointment-reminders" "schedule" }}
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: appointment-reminders-and-delius
+          containers:
+            - name: update-custody-key-dates
+              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/appointment-reminders-and-delius:{{ .Values.version }}"
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
+              env:
+                {{- range $secret, $envs := index .Values "generic-service" "namespace_secrets" }}
+                  {{- range $key, $val := $envs }}
+                - name: {{ $key }}
+                  valueFrom:
+                    secretKeyRef:
+                      key: {{ trimSuffix "?" $val }}
+                      name: {{ $secret }}{{ if hasSuffix "?" $val }}
+                      optional: true{{ end }}  {{- end }}
+                {{- end }}
+                {{- range $key, $val := index .Values "generic-service" "env" }}
+                - name: {{ $key }}
+                  value: "{{ $val }}"
+                {{- end }}
+                - name: MESSAGING_CONSUMER_ENABLED
+                  value: "false"
+                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_ENABLED
+                  value: "true"
+                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_PROVIDER
+                  value: "N56"
+                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_DRY-RUN
+                  value: "{{ index .Values "jobs" "unpaid-work-appointment-reminders" "dry-run" }}"
+          restartPolicy: Never

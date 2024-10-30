@@ -17,6 +17,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
     implementation(libs.springdoc)
+    implementation(libs.notify)
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")

@@ -17,6 +17,8 @@ generic-service:
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     appointment-reminders-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
+    appointment-reminders-and-delius-govuk-notify:
+      GOVUK-NOTIFY_API-KEY: API_KEY
 
 generic-prometheus-alerts:
   targetApplication: appointment-reminders-and-delius
