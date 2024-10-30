@@ -23,7 +23,7 @@ data class ProsecutionCase(
     val initiationCode: String,
     val prosecutionCaseIdentifier: ProsecutionCaseIdentifier,
     val defendants: List<Defendant>,
-    val caseStatus: String,
+    val caseStatus: String? = null,
     val caseMarkers: List<Any> = emptyList()
 )
 
@@ -39,7 +39,7 @@ data class Defendant(
     val prosecutionCaseId: String,
     val personDefendant: PersonDefendant?,
     val legalEntityDefendant: Any? = null,
-    val masterDefendantId: String,
+    val masterDefendantId: String? = null,
     val pncId: String? = null,
     val croNumber: String? = null,
     val isYouth: Boolean? = null
