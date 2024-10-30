@@ -76,7 +76,7 @@ fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<L
                     else -> commentText
                 },
                 when (truncateNote) {
-                    true -> note.length > 1500
+                    true -> commentText.length > 1500
                     else -> null
                 }
             )
