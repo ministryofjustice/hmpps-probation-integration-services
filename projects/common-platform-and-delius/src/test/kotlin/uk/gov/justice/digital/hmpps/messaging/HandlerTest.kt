@@ -106,4 +106,17 @@ internal class HandlerTest {
         verify(notifier, never()).caseCreated(any())
         verify(notifier, never()).addressCreated(any())
     }
+
+    @Test
+    fun `When a defendant is missing name or dob then records are not inserted and probation-search is not performed`() {
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
+
+        handler.handle(notification)
+
+        verify(telemetryService).notificationReceived(notification)
+        verify(probationSearchClient, never()).match(any())
+        verify(personService, never()).insertPerson(any(), any())
+        verify(notifier, never()).caseCreated(any())
+        verify(notifier, never()).addressCreated(any())
+    }
 }
