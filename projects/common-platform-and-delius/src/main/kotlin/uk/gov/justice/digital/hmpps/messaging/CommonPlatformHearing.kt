@@ -23,7 +23,7 @@ data class ProsecutionCase(
     val initiationCode: String,
     val prosecutionCaseIdentifier: ProsecutionCaseIdentifier,
     val defendants: List<Defendant>,
-    val caseStatus: String,
+    val caseStatus: String? = null,
     val caseMarkers: List<Any> = emptyList()
 )
 
@@ -39,9 +39,10 @@ data class Defendant(
     val prosecutionCaseId: String,
     val personDefendant: PersonDefendant?,
     val legalEntityDefendant: Any? = null,
-    val masterDefendantId: String,
+    val masterDefendantId: String? = null,
     val pncId: String? = null,
-    val croNumber: String? = null
+    val croNumber: String? = null,
+    val isYouth: Boolean? = null
 )
 
 data class Offence(
@@ -66,16 +67,16 @@ data class JudicialResult(
 
 data class Plea(
     val pleaValue: String?,
-    val pleaDate: LocalDate
+    val pleaDate: LocalDate? = null
 )
 
 data class Verdict(
-    val verdictDate: ZonedDateTime?,
+    val verdictDate: LocalDate? = null,
     val verdictType: VerdictType
 )
 
 data class VerdictType(
-    val description: String?,
+    val description: String? = null,
 )
 
 data class PersonDefendant(
@@ -83,14 +84,14 @@ data class PersonDefendant(
 )
 
 data class PersonDetails(
-    val gender: String,
-    val lastName: String,
+    val gender: String? = null,
+    val lastName: String? = null,
     val middleName: String? = null,
-    val firstName: String,
-    val dateOfBirth: LocalDate,
-    val address: Address,
-    val contact: Contact?,
-    val ethnicity: Ethnicity?
+    val firstName: String? = null,
+    val dateOfBirth: LocalDate? = null,
+    val address: Address? = null,
+    val contact: Contact? = null,
+    val ethnicity: Ethnicity? = null
 )
 
 data class Address(

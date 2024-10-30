@@ -180,6 +180,23 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `When a hearing message with missing required fields is detected no records are inserted`() {
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/probation-search/match"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("probation-search-no-results.json")
+                )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        thenNoRecordsAreInserted()
+    }
+
+    @Test
     fun `When a hearing with an address is received then an address record is inserted`() {
         wireMockServer.stubFor(
             post(urlPathEqualTo("/probation-search/match"))

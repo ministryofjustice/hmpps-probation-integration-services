@@ -44,11 +44,13 @@ class Handler(
         val courtCode = notification.message.hearing.courtCentre.code
 
         defendants.forEach { defendant ->
-            val matchRequest = defendant.toProbationMatchRequest()
+
+            val matchRequest = defendant.toProbationMatchRequest() ?: return@forEach
+
             val matchedPersonResponse = probationSearchClient.match(matchRequest)
 
             if (matchedPersonResponse.matches.isNotEmpty()) {
-                return
+                return@forEach
             }
 
             // Insert each defendant as a person record
@@ -70,13 +72,22 @@ class Handler(
         }
     }
 
-    fun Defendant.toProbationMatchRequest(): ProbationMatchRequest {
-        val personDetails =
-            this.personDefendant?.personDetails ?: throw IllegalArgumentException("Person details are required")
+    fun Defendant.toProbationMatchRequest(): ProbationMatchRequest? {
+        val personDetails = this.personDefendant?.personDetails
+
+        val firstName = personDetails?.firstName
+        val lastName = personDetails?.lastName
+        val dateOfBirth = personDetails?.dateOfBirth
+
+        // Return null if any required fields are missing
+        if (firstName == null || lastName == null || dateOfBirth == null) {
+            return null
+        }
+
         return ProbationMatchRequest(
-            firstName = personDetails.firstName,
-            surname = personDetails.lastName,
-            dateOfBirth = personDetails.dateOfBirth,
+            firstName = firstName,
+            surname = lastName,
+            dateOfBirth = dateOfBirth,
             pncNumber = this.pncId,
             croNumber = this.croNumber
         )
