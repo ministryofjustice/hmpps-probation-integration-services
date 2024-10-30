@@ -2,7 +2,10 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -74,9 +77,21 @@ class Appointment(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     @Column(name = "contact_id")
-    val id: Long = 0,
+    val id: Long = 0
+) {
+    var partitionAreaId: Long = 0
 
-    )
+    @CreatedBy
+    var createdByUserId: Long = 0
+
+    @CreatedDate
+    @Column(name = "created_datetime")
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now()
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now()
+}
 
 interface AppointmentRepository : JpaRepository<Appointment, Long> {
     @Query(

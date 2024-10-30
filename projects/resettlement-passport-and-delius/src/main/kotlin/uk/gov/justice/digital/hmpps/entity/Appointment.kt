@@ -80,7 +80,7 @@ class Appointment(
     @Column(name = "contact_id")
     val id: Long = 0
 ) {
-    val partitionAreaId: Long = 0
+    var partitionAreaId: Long = 0
 
     @CreatedDate
     @Column(name = "created_datetime")

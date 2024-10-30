@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -98,6 +99,11 @@ class Contact(
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     val softDeleted: Boolean = false
 ) {
+    var partitionAreaId: Long = 0
+
+    @CreatedBy
+    var createdByUserId: Long = 0
+
     fun startDateTime(): ZonedDateTime =
         if (startTime != null) ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon) else
             ZonedDateTime.of(date, date.atStartOfDay().toLocalTime(), EuropeLondon)
