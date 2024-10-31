@@ -33,7 +33,7 @@ class Handler(
             .filter { defendant ->
                 defendant.offences.any { offence ->
                     offence.judicialResults.any { judicialResult ->
-                        judicialResult.isConvictedResult == true && judicialResult.label == "Remanded in custody"
+                        judicialResult.label == "Remanded in custody"
                     }
                 }
             }
