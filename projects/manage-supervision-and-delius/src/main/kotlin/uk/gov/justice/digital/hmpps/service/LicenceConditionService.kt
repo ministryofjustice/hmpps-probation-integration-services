@@ -54,7 +54,7 @@ fun EntityLicenceCondition.toLicenceConditionNote(truncateNote: Boolean): List<L
 
     return notes?.let {
         val splitParam = "---------------------------------------------------------" + System.lineSeparator()
-        notes.split(splitParam).mapIndexed { index, note ->
+        notes.split(splitParam).asReversed().mapIndexed { index, note ->
             val matchResult = Regex(
                 "^Comment added by (.+?) on (\\d{2}/\\d{2}/\\d{4}) at \\d{2}:\\d{2}"
                     + System.lineSeparator()
