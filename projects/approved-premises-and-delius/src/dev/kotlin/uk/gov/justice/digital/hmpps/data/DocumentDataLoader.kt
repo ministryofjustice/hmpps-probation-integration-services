@@ -2,12 +2,13 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.generate
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import java.util.*
 
 @Component
@@ -17,38 +18,40 @@ class DocumentDataLoader(
     private val eventRepository: EventRepository
 ) {
     fun loadData() {
-        documentRepository.save(DocumentGenerator.EVENT_DOC)
-        documentRepository.save(DocumentGenerator.PERSON_DOC)
+        documentRepository.save(DocumentGenerator.EVENT)
+        documentRepository.save(DocumentGenerator.PERSON)
 
-        val person = personRepository.findByCrnAndSoftDeletedIsFalse(ProbationCaseGenerator.CASE_X320741.crn)!!
+        val person = personRepository.getByCrn(ProbationCaseGenerator.CASE_X320741.crn)
+        val personEvent = PersonGenerator.generateEvent("1", person.id)
+            .apply(eventRepository::save)
 
-        documentRepository.save(
-            DocumentGenerator.generatePersonDoc(
-                person = person,
-                name = "Random offender document.pdf",
-                alfrescoId = UUID.randomUUID().toString(),
-                documentType = DocumentType.DOCUMENT
-            )
+        val personDocument = generate(
+            tableName = "OFFENDER",
+            person = person,
+            name = "Random offender document.pdf",
+            alfrescoId = UUID.randomUUID().toString()
+        )
+        val cpsPack = generate(
+            tableName = "EVENT",
+            type = "CPS_PACK",
+            name = "CPS pack.pdf",
+            person = person,
+            primaryKeyId = personEvent.id
+        )
+        val previousConvictions = generate(
+            tableName = "OFFENDER",
+            type = "PREVIOUS_CONVICTION",
+            name = "Conviction document.pdf",
+            person = person,
+            primaryKeyId = person.id
         )
 
-        val personEvent = PersonGenerator.generateEvent(
-            "1",
-            person.id
-        ).apply(eventRepository::save)
-
-        listOf(
-            Pair("CPS pack.pdf", DocumentType.CPS_PACK),
-            Pair("Conviction document.pdf", DocumentType.PREVIOUS_CONVICTION)
-        ).forEach {
-            documentRepository.save(
-                DocumentGenerator.generateEventDoc(
-                    person = person,
-                    event = personEvent,
-                    name = it.first,
-                    alfrescoId = UUID.randomUUID().toString(),
-                    documentType = it.second,
-                )
+        documentRepository.saveAll(
+            listOf(
+                personDocument,
+                cpsPack,
+                previousConvictions
             )
-        }
+        )
     }
 }

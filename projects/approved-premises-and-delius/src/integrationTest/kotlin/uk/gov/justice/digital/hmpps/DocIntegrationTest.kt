@@ -46,12 +46,12 @@ internal class DocIntegrationTest {
             .andExpect(jsonPath("$[0].level", equalTo("Conviction")))
             .andExpect(jsonPath("$[0].eventNumber", equalTo("8")))
             .andExpect(jsonPath("$[0].filename", equalTo("test.doc")))
-            .andExpect(jsonPath("$[0].typeCode", equalTo("EVENT")))
-            .andExpect(jsonPath("$[0].typeDescription", equalTo("Event")))
+            .andExpect(jsonPath("$[0].typeCode", equalTo("CONVICTION_DOCUMENT")))
+            .andExpect(jsonPath("$[0].typeDescription", equalTo("Sentence related")))
             .andExpect(jsonPath("$[1].id", equalTo("uuid2")))
             .andExpect(jsonPath("$[1].level", equalTo("Offender")))
             .andExpect(jsonPath("$[1].filename", equalTo("offender.doc")))
-            .andExpect(jsonPath("$[1].typeCode", equalTo("PERSON")))
-            .andExpect(jsonPath("$[1].typeDescription", equalTo("Person")))
+            .andExpect(jsonPath("$[1].typeCode", equalTo("OFFENDER_DOCUMENT")))
+            .andExpect(jsonPath("$[1].typeDescription", equalTo("Offender related")))
     }
 }

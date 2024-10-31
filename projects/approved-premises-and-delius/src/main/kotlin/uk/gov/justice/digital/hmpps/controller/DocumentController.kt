@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.APDocument
+import uk.gov.justice.digital.hmpps.model.DocumentResponse
 import uk.gov.justice.digital.hmpps.service.DocumentService
 
 @RestController
@@ -32,6 +32,6 @@ class DocumentController(private val documentService: DocumentService) {
         """
     )
     @GetMapping(value = ["/all"])
-    fun findDocuments(@PathVariable crn: String): List<APDocument> =
+    fun findDocuments(@PathVariable crn: String): List<DocumentResponse> =
         documentService.getDocumentsByCrn(crn)
 }
