@@ -1,11 +1,11 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Immutable
+@Table(name = "personal_circumstance")
 class PersonalCircumstance(
     @Id
     @Column(name = "personal_circumstance_id")
@@ -54,7 +54,3 @@ class PersonalCircumstanceSubType(
     @Column(name = "code_description")
     val description: String
 )
-
-interface PersonalCircumstanceRepository : JpaRepository<PersonalCircumstance, Long> {
-    fun findByPersonId(personId: Long): List<PersonalCircumstance>
-}

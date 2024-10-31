@@ -1,57 +1,52 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocEvent
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentType
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.EventDocument
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.OffenderDocument
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.ZonedDateTime
+import java.util.*
 
 object DocumentGenerator {
-    val EVENT_DOC = generateEventDoc()
-    val PERSON_DOC = generatePersonDoc()
+    val EVENT = generate(
+        tableName = "EVENT",
+        name = "test.doc",
+        primaryKeyId = PersonGenerator.ANOTHER_EVENT.id,
+        alfrescoId = "uuid1"
+    )
 
-    fun generateEventDoc(
-        event: Event = PersonGenerator.ANOTHER_EVENT,
+    val PERSON = generate(
+        tableName = "OFFENDER",
+        name = "offender.doc",
+        primaryKeyId = PersonGenerator.DEFAULT.id,
+        alfrescoId = "uuid2"
+    )
+
+    val PREVIOUS_CONVICTIONS = generate("OFFENDER", "PREVIOUS_CONVICTION", primaryKeyId = PersonGenerator.DEFAULT.id)
+    val CPS_PACK = generate("EVENT", "CPS_PACK", primaryKeyId = PersonGenerator.EVENT.id)
+    val ADDRESSASSESSMENT = generate("ADDRESSASSESSMENT")
+    val PERSONALCONTACT = generate("PERSONALCONTACT")
+    val PERSONAL_CIRCUMSTANCE = generate("PERSONAL_CIRCUMSTANCE")
+    val OFFENDER_CONTACT = generate("CONTACT")
+    val OFFENDER_NSI = generate("NSI")
+
+    fun generate(
+        tableName: String,
+        type: String = "DOCUMENT",
+        name: String = "$tableName-related document",
         person: Person = PersonGenerator.DEFAULT,
-        id: Long = IdGenerator.getAndIncrement(),
-        name: String = "test.doc",
-        alfrescoId: String = "uuid1",
-        documentType: DocumentType = DocumentType.DOCUMENT
-    ): EventDocument {
-        val doc = EventDocument(event.toDocEvent())
-        doc.id = id
-        doc.person = person
-        doc.name = name
-        doc.primaryKeyId = doc.event?.id!!
-        doc.alfrescoId = alfrescoId
-        doc.lastSaved = ZonedDateTime.now().minusDays(7)
-        doc.dateProduced = null
-        doc.type = documentType
-        return doc
-    }
-
-    fun generatePersonDoc(
-        id: Long = IdGenerator.getAndIncrement(),
-        person: Person = PersonGenerator.DEFAULT,
-        name: String = "offender.doc",
-        alfrescoId: String = "uuid2",
-        documentType: DocumentType = DocumentType.DOCUMENT
-    ): OffenderDocument {
-        val doc = OffenderDocument()
-        doc.id = id
-        doc.person = person
-        doc.name = name
-        doc.primaryKeyId = person.id
-        doc.alfrescoId = alfrescoId
-        doc.lastSaved = ZonedDateTime.now().minusDays(7)
-        doc.dateProduced = null
-        doc.type = documentType
-
-        return doc
-    }
-
-    private fun Event.toDocEvent() =
-        DocEvent(id, Person(personId, "", false), true, number, null, null)
+        primaryKeyId: Long = 0,
+        alfrescoId: String = UUID.randomUUID().toString()
+    ) = DocumentEntity(
+        id = IdGenerator.getAndIncrement(),
+        person = person,
+        alfrescoId = alfrescoId,
+        primaryKeyId = primaryKeyId,
+        name = name,
+        type = type,
+        tableName = tableName,
+        createdAt = ZonedDateTime.now(),
+        createdByUserId = 0,
+        lastSaved = ZonedDateTime.now().minusDays(7),
+        lastUpdatedUserId = 0,
+        softDeleted = false
+    )
 }

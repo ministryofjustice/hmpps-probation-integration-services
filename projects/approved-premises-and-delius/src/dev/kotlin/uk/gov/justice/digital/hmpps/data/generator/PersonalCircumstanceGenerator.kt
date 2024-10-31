@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstance
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceSubType
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceType
+import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstance
+import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceSubType
+import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceType
 
 object PersonalCircumstanceGenerator {
     val PC_TYPES = listOf(

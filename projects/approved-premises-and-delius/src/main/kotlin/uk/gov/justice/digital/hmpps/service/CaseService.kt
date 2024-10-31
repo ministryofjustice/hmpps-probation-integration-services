@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
@@ -10,6 +8,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.Ca
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.Registration
+import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.PersonalCircumstanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.model.*
 
 @Service
