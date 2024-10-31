@@ -35,8 +35,8 @@ class DocumentService(
                 filename = it.name,
                 typeCode = it.typeCode,
                 typeDescription = it.typeDescription,
-                dateSaved = it.dateSaved?.atZone(EuropeLondon),
-                dateCreated = it.dateCreated?.atZone(EuropeLondon),
+                dateSaved = it.dateSaved.atZone(EuropeLondon),
+                dateCreated = (it.dateCreated ?: it.dateSaved).atZone(EuropeLondon),
                 description = it.description,
             )
         }

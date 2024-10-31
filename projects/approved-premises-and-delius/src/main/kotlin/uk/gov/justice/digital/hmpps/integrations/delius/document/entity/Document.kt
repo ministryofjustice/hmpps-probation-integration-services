@@ -9,7 +9,7 @@ interface Document {
     val name: String
     val type: String
     val tableName: String
-    val dateSaved: Instant?
+    val dateSaved: Instant
     val dateCreated: Instant?
     val description: String?
 }
