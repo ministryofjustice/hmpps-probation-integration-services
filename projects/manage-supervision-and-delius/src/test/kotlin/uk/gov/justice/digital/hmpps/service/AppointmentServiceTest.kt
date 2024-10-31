@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.ZonedDateTime
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class AppointmentServiceTest {
@@ -48,6 +49,8 @@ class AppointmentServiceTest {
     @InjectMocks
     lateinit var service: AppointmentService
 
+    private val uuid: UUID = UUID.randomUUID()
+
     @Test
     fun `licence and requirement id provided`() {
         val appointment = CreateAppointment(
@@ -56,6 +59,7 @@ class AppointmentServiceTest {
             ZonedDateTime.now().plusDays(2),
             1,
             PersonGenerator.EVENT_1.id,
+            uuid,
             requirementId = 2,
             licenceConditionId = 3
         )
@@ -87,7 +91,8 @@ class AppointmentServiceTest {
             ZonedDateTime.now().plusDays(2),
             ZonedDateTime.now().plusDays(1),
             1,
-            PersonGenerator.EVENT_1.id
+            PersonGenerator.EVENT_1.id,
+            uuid
         )
 
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
@@ -114,7 +119,8 @@ class AppointmentServiceTest {
             ZonedDateTime.now().plusDays(1),
             null,
             1,
-            1
+            1,
+            uuid
         )
 
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
@@ -143,6 +149,7 @@ class AppointmentServiceTest {
             ZonedDateTime.now().plusDays(2),
             1,
             PersonGenerator.EVENT_1.id,
+            uuid,
             requirementId = 2
         )
 
@@ -173,6 +180,7 @@ class AppointmentServiceTest {
             ZonedDateTime.now().plusDays(2),
             1,
             PersonGenerator.EVENT_1.id,
+            uuid,
             licenceConditionId = 3
         )
 

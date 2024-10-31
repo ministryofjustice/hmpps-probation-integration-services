@@ -10,13 +10,11 @@ data class CreateAppointment(
     val end: ZonedDateTime?,
     val interval: Int,
     val eventId: Long,
+    val uuid: UUID,
     val requirementId: Long? = null,
     val licenceConditionId: Long? = null,
     val numberOfAppointments: Int? = null,
-    val until: ZonedDateTime? = null,
-    //UUID should be provided by the f/e
-    //to prevent accidental duplicates e.g. if a request is retried
-    val uuid: UUID = UUID.randomUUID()
+    val until: ZonedDateTime? = null
 ) {
     @JsonIgnore
     val urn = URN_PREFIX + uuid

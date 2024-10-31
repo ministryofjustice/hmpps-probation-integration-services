@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
+import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,7 +51,8 @@ class CreateAppointmentIntegrationTests {
                         ZonedDateTime.now().plusDays(1),
                         ZonedDateTime.now().plusDays(2),
                         1,
-                        1
+                        1,
+                        UUID.randomUUID()
                     )
                 )
         ).andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -67,7 +69,8 @@ class CreateAppointmentIntegrationTests {
                         ZonedDateTime.now().plusDays(2),
                         ZonedDateTime.now().plusDays(1),
                         1,
-                        PersonGenerator.EVENT_1.id
+                        PersonGenerator.EVENT_1.id,
+                        UUID.randomUUID()
                     )
                 )
         ).andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -105,14 +108,16 @@ class CreateAppointmentIntegrationTests {
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(2),
                 1,
-                PersonGenerator.EVENT_1.id
+                PersonGenerator.EVENT_1.id,
+                UUID.randomUUID()
             ),
             CreateAppointment(
                 CreateAppointment.Type.InitialAppointmentInOfficeNS,
                 ZonedDateTime.now().plusDays(1),
                 null,
                 1,
-                PersonGenerator.EVENT_1.id
+                PersonGenerator.EVENT_1.id,
+                UUID.randomUUID()
             )
         )
     }
