@@ -1,2 +1,2 @@
 dlq_redrive:
-  schedule: 30 5 * * 1-5 # Every weekday at 05:30 UTC
+  schedule: 0 7 * * 1-5 # Every weekday at 07:00 UTC
