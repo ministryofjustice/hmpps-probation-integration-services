@@ -57,7 +57,8 @@ class AppointmentServiceTest {
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
-            1,
+            interval = CreateAppointment.Interval.WEEK,
+            numberOfAppointments = 3,
             PersonGenerator.EVENT_1.id,
             uuid,
             requirementId = 2,
@@ -90,7 +91,8 @@ class AppointmentServiceTest {
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(2),
             ZonedDateTime.now().plusDays(1),
-            1,
+            interval = CreateAppointment.Interval.FORTNIGHT,
+            numberOfAppointments = 3,
             PersonGenerator.EVENT_1.id,
             uuid
         )
@@ -118,7 +120,8 @@ class AppointmentServiceTest {
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             null,
-            1,
+            interval = CreateAppointment.Interval.FOUR_WEEKS,
+            numberOfAppointments = 1,
             1,
             uuid
         )
@@ -147,7 +150,8 @@ class AppointmentServiceTest {
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
-            1,
+            interval = CreateAppointment.Interval.DAY,
+            numberOfAppointments = 1,
             PersonGenerator.EVENT_1.id,
             uuid,
             requirementId = 2
@@ -178,9 +182,9 @@ class AppointmentServiceTest {
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
-            1,
-            PersonGenerator.EVENT_1.id,
-            uuid,
+            interval = CreateAppointment.Interval.NONE,
+            eventId = PersonGenerator.EVENT_1.id,
+            uuid = uuid,
             licenceConditionId = 3
         )
 

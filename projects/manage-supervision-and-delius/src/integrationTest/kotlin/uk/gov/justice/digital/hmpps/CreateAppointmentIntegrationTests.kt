@@ -12,8 +12,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
@@ -50,8 +50,9 @@ class CreateAppointmentIntegrationTests {
                         CreateAppointment.Type.HomeVisitToCaseNS,
                         ZonedDateTime.now().plusDays(1),
                         ZonedDateTime.now().plusDays(2),
-                        1,
-                        1,
+                        interval = CreateAppointment.Interval.DAY,
+                        numberOfAppointments = 1,
+                        eventId = 1,
                         UUID.randomUUID()
                     )
                 )
@@ -68,7 +69,8 @@ class CreateAppointmentIntegrationTests {
                         CreateAppointment.Type.InitialAppointmentInOfficeNS,
                         ZonedDateTime.now().plusDays(2),
                         ZonedDateTime.now().plusDays(1),
-                        1,
+                        interval = CreateAppointment.Interval.DAY,
+                        numberOfAppointments = 1,
                         PersonGenerator.EVENT_1.id,
                         UUID.randomUUID()
                     )
@@ -87,9 +89,9 @@ class CreateAppointmentIntegrationTests {
                 .withJson(createAppointment)
         )
             .andExpect(MockMvcResultMatchers.status().isCreated)
-            .andReturn().response.contentAsJson<CreatedAppointment>()
+            .andReturn().response.contentAsJson<AppointmentDetail>()
 
-        val appointment = appointmentRepository.findById(response.id).get()
+        val appointment = appointmentRepository.findById(response.appointments[0].id).get()
 
         assertThat(appointment.type.code, equalTo(createAppointment.type.code))
         assertThat(appointment.date, equalTo(createAppointment.start.toLocalDate()))
@@ -107,17 +109,16 @@ class CreateAppointmentIntegrationTests {
                 CreateAppointment.Type.PlannedOfficeVisitNS,
                 ZonedDateTime.now().plusDays(1),
                 ZonedDateTime.now().plusDays(2),
-                1,
-                PersonGenerator.EVENT_1.id,
-                UUID.randomUUID()
+                eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
             ),
             CreateAppointment(
                 CreateAppointment.Type.InitialAppointmentInOfficeNS,
                 ZonedDateTime.now().plusDays(1),
                 null,
-                1,
-                PersonGenerator.EVENT_1.id,
-                UUID.randomUUID()
+                CreateAppointment.Interval.DAY,
+                eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
             )
         )
     }
