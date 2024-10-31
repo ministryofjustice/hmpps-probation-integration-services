@@ -96,8 +96,13 @@ class Contact(
     val lastUpdatedUser: User,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    val partitionAreaId: Long = 0,
+
+    val createdByUserId: Long = 0
 ) {
+
     fun startDateTime(): ZonedDateTime =
         if (startTime != null) ZonedDateTime.of(date, startTime.toLocalTime(), EuropeLondon) else
             ZonedDateTime.of(date, date.atStartOfDay().toLocalTime(), EuropeLondon)

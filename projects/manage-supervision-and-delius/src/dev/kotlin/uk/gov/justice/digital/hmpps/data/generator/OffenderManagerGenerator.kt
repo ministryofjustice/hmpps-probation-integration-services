@@ -35,6 +35,7 @@ object OffenderManagerGenerator {
             ContactGenerator.DEFAULT_PROVIDER,
             TEAM,
             STAFF_2,
-            LocalDate.now()
+            LocalDate.now(),
+            active = false
         )
 }

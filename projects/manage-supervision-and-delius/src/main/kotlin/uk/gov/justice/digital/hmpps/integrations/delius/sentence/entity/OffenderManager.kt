@@ -31,7 +31,13 @@ class OffenderManager(
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
 
-    val endDate: LocalDate?
+    val endDate: LocalDate?,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
 )
 
 @Immutable
