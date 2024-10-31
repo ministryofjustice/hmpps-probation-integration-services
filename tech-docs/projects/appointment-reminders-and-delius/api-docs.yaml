@@ -25,13 +25,6 @@ paths:
         required: true
         schema:
           type: string
-      - name: projectTypeCodes
-        in: query
-        required: false
-        schema:
-          type: array
-          items:
-            type: string
       - name: date
         in: query
         required: false
