@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadReposit
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.BoroughRepository
@@ -69,9 +68,9 @@ class DataLoader(
     private val probationCaseDataLoader: ProbationCaseDataLoader,
     private val lduRepository: LduRepository,
     private val staffUserRepository: StaffUserRepository,
-    private val documentRepository: DocumentRepository,
     private val boroughRepository: BoroughRepository,
     private val referralBookingDataLoader: ReferralBookingDataLoader,
+    private val documentDataLoader: DocumentDataLoader,
 
     ) : ApplicationListener<ApplicationReadyEvent> {
 
@@ -228,11 +227,9 @@ class DataLoader(
         eventRepository.save(ANOTHER_EVENT)
         referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
 
-        documentRepository.save(DocumentGenerator.EVENT_DOC)
-        documentRepository.save(DocumentGenerator.PERSON_DOC)
-
         probationCaseDataLoader.loadData()
         referralBookingDataLoader.loadData()
+        documentDataLoader.loadData()
     }
 }
 
