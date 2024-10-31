@@ -48,6 +48,9 @@ jobs:
           output: 'trivy-results.sarif'
           trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
           limit-severities-for-sarif: true
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2,ghcr.io/aquasecurity/trivy-db:2
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1,ghcr.io/aquasecurity/trivy-java-db:1
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
@@ -64,6 +67,9 @@ jobs:
           format: 'json'
           output: 'trivy.json'
           trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2,ghcr.io/aquasecurity/trivy-db:2
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1,ghcr.io/aquasecurity/trivy-java-db:1
 
       - name: Output results
         run: |
