@@ -14,6 +14,8 @@ data class CreateAppointment(
     val licenceConditionId: Long? = null,
     val numberOfAppointments: Int? = null,
     val until: ZonedDateTime? = null,
+    //UUID should be provided by the f/e
+    //to prevent accidental duplicates e.g. if a request is retried
     val uuid: UUID = UUID.randomUUID()
 ) {
     @JsonIgnore
