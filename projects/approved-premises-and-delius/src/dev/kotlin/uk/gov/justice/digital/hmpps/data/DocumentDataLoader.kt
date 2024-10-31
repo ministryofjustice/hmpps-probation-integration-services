@@ -18,8 +18,19 @@ class DocumentDataLoader(
     private val eventRepository: EventRepository
 ) {
     fun loadData() {
-        documentRepository.save(DocumentGenerator.EVENT)
-        documentRepository.save(DocumentGenerator.PERSON)
+        documentRepository.saveAll(
+            listOf(
+                DocumentGenerator.EVENT,
+                DocumentGenerator.PERSON,
+                DocumentGenerator.PREVIOUS_CONVICTIONS,
+                DocumentGenerator.CPS_PACK,
+                DocumentGenerator.ADDRESSASSESSMENT,
+                DocumentGenerator.PERSONALCONTACT,
+                DocumentGenerator.PERSONAL_CIRCUMSTANCE,
+                DocumentGenerator.OFFENDER_CONTACT,
+                DocumentGenerator.OFFENDER_NSI,
+            )
+        )
 
         val person = personRepository.getByCrn(ProbationCaseGenerator.CASE_X320741.crn)
         val personEvent = PersonGenerator.generateEvent("1", person.id)

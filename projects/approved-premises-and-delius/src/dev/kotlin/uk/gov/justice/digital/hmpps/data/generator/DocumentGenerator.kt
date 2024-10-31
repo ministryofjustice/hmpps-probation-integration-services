@@ -20,6 +20,14 @@ object DocumentGenerator {
         alfrescoId = "uuid2"
     )
 
+    val PREVIOUS_CONVICTIONS = generate("OFFENDER", "PREVIOUS_CONVICTION", primaryKeyId = PersonGenerator.DEFAULT.id)
+    val CPS_PACK = generate("EVENT", "CPS_PACK", primaryKeyId = PersonGenerator.EVENT.id)
+    val ADDRESSASSESSMENT = generate("ADDRESSASSESSMENT")
+    val PERSONALCONTACT = generate("PERSONALCONTACT")
+    val PERSONAL_CIRCUMSTANCE = generate("PERSONAL_CIRCUMSTANCE")
+    val OFFENDER_CONTACT = generate("CONTACT")
+    val OFFENDER_NSI = generate("NSI")
+
     fun generate(
         tableName: String,
         type: String = "DOCUMENT",
