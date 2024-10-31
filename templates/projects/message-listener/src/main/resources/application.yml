@@ -53,7 +53,9 @@ spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
 
 ---
 spring.config.activate.on-profile: oracle
-spring.datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
+spring:
+  datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
+  jpa.hibernate.ddl-auto: create
 
 ---
 spring.config.activate.on-profile: delius-db
