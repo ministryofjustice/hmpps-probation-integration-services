@@ -271,7 +271,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/APDocument"
+                  $ref: "#/components/schemas/DocumentResponse"
   /docs/asyncapi:
     get:
       tags:
@@ -662,8 +662,10 @@ components:
           format: date-time
     StreamingResponseBody:
       type: object
-    APDocument:
+    DocumentResponse:
       required:
+      - dateCreated
+      - dateSaved
       - filename
       - level
       - typeCode

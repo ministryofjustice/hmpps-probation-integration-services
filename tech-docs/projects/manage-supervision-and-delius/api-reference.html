@@ -101,6 +101,9 @@
         <a href="./api-reference.html#caseload-user-username-search"><span>/caseload/user/{username}/search</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#appointments-crn"><span>/appointments/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#user-username-access-crn"><span>/user/{username}/access/{crn}</span></a>
       </li>
       <li>
@@ -340,6 +343,66 @@
 </td>
 <td>
 <a href='#schema-staffcaseload'>StaffCaseload</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="appointments-crn">/appointments/{crn}</h2>
+
+<h3 id="appointments-crn-post">post</h3>
+
+
+
+
+<h4 id="appointments-crn-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="appointments-crn-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>201</td>
+<td>
+<p>Created</p>
+
+
+
+<pre><code>{
+  "id": "integer"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-createdappointment'>CreatedAppointment</a>
 </td>
 </tr>
 
@@ -3880,6 +3943,140 @@
 <td></td>
 <td>
   <a href='#schema-metadata'>MetaData</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-createappointment">CreateAppointment</h3>
+
+
+<table class='schema-createappointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>start</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>end</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>interval</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>eventId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>uuid</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>requirementId</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>licenceConditionId</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>numberOfAppointments</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>until</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-createdappointment">CreatedAppointment</h3>
+
+
+<table class='schema-createdappointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
