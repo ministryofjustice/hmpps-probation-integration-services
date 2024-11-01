@@ -39,6 +39,3 @@ github_branch: main
 # Slack
 owner_slack_workspace: mojdt
 default_owner_slack: '#probation-integration-tech'
-
-# OpenAPI
-api_path: https://justice-email-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml
