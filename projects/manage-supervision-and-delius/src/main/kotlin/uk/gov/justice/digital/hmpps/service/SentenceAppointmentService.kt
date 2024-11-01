@@ -55,7 +55,7 @@ class SentenceAppointmentService(
                             createAppointment.interval,
                             createAppointment.numberOfAppointments,
                             createAppointment.eventId,
-                            if (i == 0 ) createAppointment.uuid else UUID.randomUUID(), //needs to be a unique value
+                            if (i == 0) createAppointment.uuid else UUID.randomUUID(), //needs to be a unique value
                             createAppointment.requirementId,
                             createAppointment.licenceConditionId,
                             createAppointment.until
@@ -67,7 +67,7 @@ class SentenceAppointmentService(
             val appointments = createAppointments.map { it.withManager(om) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
-            audit["contactId"] = createdAppointments.joinToString { it.id.toString()  }
+            audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
 
             return@audit AppointmentDetail(createdAppointments)
         }

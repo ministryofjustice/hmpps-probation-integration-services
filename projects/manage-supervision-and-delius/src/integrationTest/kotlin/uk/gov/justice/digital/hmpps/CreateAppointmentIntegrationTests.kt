@@ -112,7 +112,8 @@ class CreateAppointmentIntegrationTests {
         val response = mockMvc.perform(
             post("/appointments/${person.crn}")
                 .withToken()
-                .withJson(createAppointment))
+                .withJson(createAppointment)
+        )
             .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<AppointmentDetail>()
@@ -132,7 +133,6 @@ class CreateAppointmentIntegrationTests {
         assertNotEquals(externalRef, appointments[2].externalReference)
 
         appointmentRepository.deleteAll(appointments)
-
     }
 
     companion object {

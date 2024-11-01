@@ -32,6 +32,7 @@ data class CreateAppointment(
         FORTNIGHT(14),
         FOUR_WEEKS(28)
     }
+
     companion object {
         const val URN_PREFIX = "urn:uk:gov:hmpps:manage-supervision-service:appointment:"
     }
