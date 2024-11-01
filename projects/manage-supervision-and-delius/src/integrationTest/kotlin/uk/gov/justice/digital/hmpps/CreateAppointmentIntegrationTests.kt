@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -108,6 +109,7 @@ class CreateAppointmentIntegrationTests {
     fun `create multiple appointments`() {
         val person = PersonGenerator.PERSON_1
 
+        val uuid = UUID.randomUUID()
         val response = mockMvc.perform(
             post("/appointments/${person.crn}")
                 .withToken()
@@ -117,7 +119,7 @@ class CreateAppointmentIntegrationTests {
                         ZonedDateTime.now(),
                         numberOfAppointments = 3,
                         eventId = PersonGenerator.EVENT_1.id,
-                        uuid = UUID.randomUUID()
+                        uuid = uuid
                     )
                 ))
             .andDo(print())
@@ -127,9 +129,17 @@ class CreateAppointmentIntegrationTests {
         val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
 
         assertThat(appointments.size, equalTo(3))
+
         assertThat(appointments[0].date, equalTo(LocalDate.now()))
         assertThat(appointments[1].date, equalTo(LocalDate.now().plusDays(1)))
         assertThat(appointments[2].date, equalTo(LocalDate.now().plusDays(2)))
+
+        //check for unique external reference
+        val externalRef = "urn:uk:gov:hmpps:manage-supervision-service:appointment:$uuid"
+        assertThat(appointments[0].externalReference, equalTo(externalRef))
+        assertNotEquals(externalRef, appointments[1].externalReference)
+        assertNotEquals(externalRef, appointments[2].externalReference)
+
         appointmentRepository.deleteAll(appointments)
 
     }

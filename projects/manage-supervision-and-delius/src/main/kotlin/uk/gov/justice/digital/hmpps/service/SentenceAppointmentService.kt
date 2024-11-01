@@ -16,6 +16,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirem
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 class SentenceAppointmentService(
@@ -48,7 +50,7 @@ class SentenceAppointmentService(
                             createAppointment.interval,
                             createAppointment.numberOfAppointments,
                             createAppointment.eventId,
-                            createAppointment.uuid,
+                            if (i == 0 ) createAppointment.uuid else UUID.randomUUID(), //needs to be a unique value
                             createAppointment.requirementId,
                             createAppointment.licenceConditionId,
                             createAppointment.until
