@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.Period
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
@@ -39,8 +40,12 @@ class SentenceAppointmentService(
             checkForConflicts(om.person.id, createAppointment)
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
-            createAppointment.numberOfAppointments.let {
-                for (i in 0 until it) {
+            createAppointment.let {
+                val numberOfAppointments = createAppointment.until?.let {
+                    Period.between(createAppointment.start.toLocalDate(), it.toLocalDate()).days
+                } ?: createAppointment.numberOfAppointments
+
+                for (i in 0 until numberOfAppointments) {
                     val interval = createAppointment.interval.value * i
                     createAppointments.add(
                         CreateAppointment(
@@ -84,6 +89,14 @@ class SentenceAppointmentService(
                 throw ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Appointment end time cannot be before start time"
+                )
+        }
+
+        createAppointment.until?.let {
+            if (it.isBefore(createAppointment.start))
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Until cannot be before start time"
                 )
         }
 

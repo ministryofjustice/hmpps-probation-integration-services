@@ -89,8 +89,8 @@ class SentenceAppointmentServiceTest {
     fun `start date before end date`() {
         val appointment = CreateAppointment(
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
-            ZonedDateTime.now().plusDays(2),
-            ZonedDateTime.now().plusDays(1),
+            start = ZonedDateTime.now().plusDays(2),
+            end = ZonedDateTime.now().plusDays(1),
             interval = CreateAppointment.Interval.FORTNIGHT,
             numberOfAppointments = 3,
             PersonGenerator.EVENT_1.id,
@@ -105,6 +105,35 @@ class SentenceAppointmentServiceTest {
         }
 
         assertThat(exception.message, equalTo("400 BAD_REQUEST \"Appointment end time cannot be before start time\""))
+
+        verifyNoMoreInteractions(offenderManagerRepository)
+        verifyNoInteractions(eventSentenceRepository)
+        verifyNoInteractions(licenceConditionRepository)
+        verifyNoInteractions(requirementRepository)
+        verifyNoInteractions(appointmentRepository)
+        verifyNoInteractions(appointmentTypeRepository)
+    }
+
+    @Test
+    fun `until before end date`() {
+        val appointment = CreateAppointment(
+            CreateAppointment.Type.InitialAppointmentInOfficeNS,
+            start = ZonedDateTime.now().plusDays(2),
+            until = ZonedDateTime.now().plusDays(1),
+            interval = CreateAppointment.Interval.FORTNIGHT,
+            numberOfAppointments = 3,
+            eventId = PersonGenerator.EVENT_1.id,
+            uuid = uuid
+        )
+
+        whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
+            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
+        )
+        val exception = assertThrows<ResponseStatusException> {
+            service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
+        }
+
+        assertThat(exception.message, equalTo("400 BAD_REQUEST \"Until cannot be before start time\""))
 
         verifyNoMoreInteractions(offenderManagerRepository)
         verifyNoInteractions(eventSentenceRepository)
