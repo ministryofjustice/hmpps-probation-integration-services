@@ -1,0 +1,8 @@
+enabled: false # TODO set this to true when you're ready to deploy your service
+
+generic-service:
+  ingress:
+    host: justice-email-and-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod

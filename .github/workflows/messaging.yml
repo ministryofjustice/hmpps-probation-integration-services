@@ -38,6 +38,7 @@ on:
           - assessment-summary-and-delius-queue
           - cas2-and-delius-queue
           - common-platform-and-delius-queue
+          - justice-email-and-delius-queue
           # ^ add new queues here
 
 jobs:
