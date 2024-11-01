@@ -13,9 +13,6 @@ import uk.gov.justice.digital.hmpps.entity.Exclusion
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceSubType
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Ldu
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
@@ -24,6 +21,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.Ma
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.PersonalCircumstanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceSubType
+import uk.gov.justice.digital.hmpps.integrations.delius.personalcircumstance.entity.PersonalCircumstanceType
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import java.time.LocalDate
