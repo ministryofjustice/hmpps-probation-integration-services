@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /justice-email-and-delius/db-username
+    password_key: /justice-email-and-delius/db-password
+
+  audit:
+    username: JusticeEmailAndDelius
+    forename: Justice Email Integration
+    surname: Service
