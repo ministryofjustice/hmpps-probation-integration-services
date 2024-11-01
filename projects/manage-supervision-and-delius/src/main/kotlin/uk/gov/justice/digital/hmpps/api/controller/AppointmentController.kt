@@ -5,13 +5,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
-import uk.gov.justice.digital.hmpps.service.AppointmentService
+import uk.gov.justice.digital.hmpps.service.SentenceAppointmentService
 
 @RestController
 @Tag(name = "Sentence")
 @RequestMapping("/appointments/{crn}")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
-class AppointmentController(private val appointmentService: AppointmentService) {
+class AppointmentController(private val appointmentService: SentenceAppointmentService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

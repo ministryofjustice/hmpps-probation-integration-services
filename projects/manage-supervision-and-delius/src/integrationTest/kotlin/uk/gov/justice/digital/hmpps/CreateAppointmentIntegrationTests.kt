@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 import java.util.*
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -100,6 +102,36 @@ class CreateAppointmentIntegrationTests {
         assertThat(appointment.eventId, equalTo(createAppointment.eventId))
 
         appointmentRepository.delete(appointment)
+    }
+
+    @Test
+    fun `create multiple appointments`() {
+        val person = PersonGenerator.PERSON_1
+
+        val response = mockMvc.perform(
+            post("/appointments/${person.crn}")
+                .withToken()
+                .withJson(
+                    CreateAppointment(
+                        CreateAppointment.Type.HomeVisitToCaseNS,
+                        ZonedDateTime.now(),
+                        numberOfAppointments = 3,
+                        eventId = PersonGenerator.EVENT_1.id,
+                        uuid = UUID.randomUUID()
+                    )
+                ))
+            .andDo(print())
+            .andExpect(MockMvcResultMatchers.status().isCreated)
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
+
+        assertThat(appointments.size, equalTo(3))
+        assertThat(appointments[0].date, equalTo(LocalDate.now()))
+        assertThat(appointments[1].date, equalTo(LocalDate.now().plusDays(1)))
+        assertThat(appointments[2].date, equalTo(LocalDate.now().plusDays(2)))
+        appointmentRepository.deleteAll(appointments)
+
     }
 
     companion object {

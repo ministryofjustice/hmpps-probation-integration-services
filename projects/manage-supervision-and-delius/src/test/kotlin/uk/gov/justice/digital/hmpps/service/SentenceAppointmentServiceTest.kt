@@ -23,7 +23,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
-class AppointmentServiceTest {
+class SentenceAppointmentServiceTest {
 
     @Mock
     lateinit var auditedInteractionService: AuditedInteractionService
@@ -47,7 +47,7 @@ class AppointmentServiceTest {
     lateinit var licenceConditionRepository: LicenceConditionRepository
 
     @InjectMocks
-    lateinit var service: AppointmentService
+    lateinit var service: SentenceAppointmentService
 
     private val uuid: UUID = UUID.randomUUID()
 
@@ -182,7 +182,7 @@ class AppointmentServiceTest {
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
-            interval = CreateAppointment.Interval.NONE,
+            interval = CreateAppointment.Interval.DAY,
             eventId = PersonGenerator.EVENT_1.id,
             uuid = uuid,
             licenceConditionId = 3

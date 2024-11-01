@@ -7,8 +7,8 @@ import java.util.*
 data class CreateAppointment(
     val type: Type,
     val start: ZonedDateTime,
-    val end: ZonedDateTime?,
-    val interval: Interval = Interval.NONE,
+    val end: ZonedDateTime? = null,
+    val interval: Interval = Interval.DAY,
     val numberOfAppointments: Int = 1,
     val eventId: Long,
     val uuid: UUID,
@@ -27,7 +27,6 @@ data class CreateAppointment(
     }
 
     enum class Interval(val value: Int) {
-        NONE(0),
         DAY(1),
         WEEK(7),
         FORTNIGHT(14),

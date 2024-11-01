@@ -18,7 +18,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Service
-class AppointmentService(
+class SentenceAppointmentService(
     auditedInteractionService: AuditedInteractionService,
     private val appointmentRepository: AppointmentRepository,
     private val appointmentTypeRepository: AppointmentTypeRepository,
@@ -38,8 +38,8 @@ class AppointmentService(
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
             createAppointment.numberOfAppointments.let {
-                for (i in 1..it) {
-                    val interval = createAppointment.interval.value * 1
+                for (i in 0 until it) {
+                    val interval = createAppointment.interval.value * i
                     createAppointments.add(
                         CreateAppointment(
                             createAppointment.type,
@@ -57,7 +57,7 @@ class AppointmentService(
                 }
             }
 
-            val appointments = createAppointments.map { createAppointment.withManager(om) }
+            val appointments = createAppointments.map { it.withManager(om) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
             audit["contactId"] = createdAppointments.joinToString { it.id.toString()  }
@@ -79,14 +79,6 @@ class AppointmentService(
 
         createAppointment.end?.let {
             if (it.isBefore(createAppointment.start))
-                throw ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Appointment end time cannot be before start time"
-                )
-        }
-
-        createAppointment.numberOfAppointments.let {
-            if (it > 1 && createAppointment.interval.value == 0)
                 throw ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Appointment end time cannot be before start time"
