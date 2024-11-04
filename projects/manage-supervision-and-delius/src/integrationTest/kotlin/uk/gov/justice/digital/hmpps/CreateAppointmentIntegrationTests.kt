@@ -123,8 +123,14 @@ class CreateAppointmentIntegrationTests {
         assertThat(appointments.size, equalTo(3))
 
         assertThat(appointments[0].date, equalTo(LocalDate.now()))
-        assertThat(appointments[1].date, equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 1)))
-        assertThat(appointments[2].date, equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 2)))
+        assertThat(
+            appointments[1].date,
+            equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 1))
+        )
+        assertThat(
+            appointments[2].date,
+            equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 2))
+        )
 
         //check for unique external reference
         val externalRef = "urn:uk:gov:hmpps:manage-supervision-service:appointment:${createAppointment.uuid}"
