@@ -10,7 +10,7 @@ object OffenderManagerGenerator {
 
     val BOROUGH = Borough("LTS_ALL", "Leicestershire All", IdGenerator.getAndIncrement())
     val DISTRICT = District("LTS_ALL", "Leicestershire All", BOROUGH, IdGenerator.getAndIncrement())
-    val TEAM = Team(IdGenerator.getAndIncrement(), DISTRICT, DEFAULT_PROVIDER,"N07T02", "OMU B")
+    val TEAM = Team(IdGenerator.getAndIncrement(), DISTRICT, DEFAULT_PROVIDER, "N07T02", "OMU B")
 
     val STAFF_1 = Staff(IdGenerator.getAndIncrement(), "Peter", "Parker", DEFAULT_PROVIDER, null)
     val STAFF_2 = Staff(IdGenerator.getAndIncrement(), "Bruce", "Wayne", DEFAULT_PROVIDER, null)

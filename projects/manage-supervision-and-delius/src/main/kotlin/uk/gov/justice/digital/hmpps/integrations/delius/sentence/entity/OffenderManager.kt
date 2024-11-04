@@ -64,7 +64,6 @@ class Staff(
     val user: StaffUser?
 )
 
-
 @Entity
 @Immutable
 @Table(name = "user_")
@@ -103,11 +102,12 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             AND UPPER(t.description) = UPPER(:teamName)
         """
     )
-    fun findUserAndLocation(username: String, teamName: String ): UserLocation?
+    fun findUserAndLocation(username: String, teamName: String): UserLocation?
 }
 
 fun StaffUserRepository.getUserAndLocation(username: String, teamName: String) =
-    findUserAndLocation(username, teamName) ?: throw NotFoundException("User", "username",
+    findUserAndLocation(username, teamName) ?: throw NotFoundException(
+        "User", "username",
         "$username in $teamName"
     )
 
@@ -160,8 +160,7 @@ class Location(
 
     val description: String,
 
-)
-
+    )
 
 @Embeddable
 class TeamOfficeLinkId(

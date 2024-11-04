@@ -158,6 +158,7 @@ class CreateAppointmentIntegrationTests {
 
     companion object {
         private val user = User(STAFF_USER_1.username, TEAM.description)
+
         @JvmStatic
         fun createAppointments() = listOf(
             CreateAppointment(

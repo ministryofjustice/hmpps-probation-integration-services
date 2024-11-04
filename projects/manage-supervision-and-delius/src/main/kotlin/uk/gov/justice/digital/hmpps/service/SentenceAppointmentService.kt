@@ -39,7 +39,8 @@ class SentenceAppointmentService(
             val om = offenderManagerRepository.getByCrn(crn)
             audit["offenderId"] = om.person.id
             checkForConflicts(om.person.id, createAppointment)
-            val userAndLocation = staffUserRepository.getUserAndLocation(createAppointment.user.username, createAppointment.user.team)
+            val userAndLocation =
+                staffUserRepository.getUserAndLocation(createAppointment.user.username, createAppointment.user.team)
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
             createAppointment.let {
