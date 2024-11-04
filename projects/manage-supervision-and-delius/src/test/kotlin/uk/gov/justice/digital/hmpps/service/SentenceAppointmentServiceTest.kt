@@ -13,6 +13,7 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -46,14 +47,20 @@ class SentenceAppointmentServiceTest {
     @Mock
     lateinit var licenceConditionRepository: LicenceConditionRepository
 
+    @Mock
+    lateinit var staffUserRepository: StaffUserRepository
+
     @InjectMocks
     lateinit var service: SentenceAppointmentService
 
     private val uuid: UUID = UUID.randomUUID()
 
+    private val user = User("user", "team")
+
     @Test
     fun `licence and requirement id provided`() {
         val appointment = CreateAppointment(
+            user,
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
@@ -88,6 +95,7 @@ class SentenceAppointmentServiceTest {
     @Test
     fun `start date before end date`() {
         val appointment = CreateAppointment(
+            user,
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             start = ZonedDateTime.now().plusDays(2),
             end = ZonedDateTime.now().plusDays(1),
@@ -117,6 +125,7 @@ class SentenceAppointmentServiceTest {
     @Test
     fun `until before end date`() {
         val appointment = CreateAppointment(
+            user,
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             start = ZonedDateTime.now().plusDays(2),
             until = ZonedDateTime.now().plusDays(1),
@@ -146,6 +155,7 @@ class SentenceAppointmentServiceTest {
     @Test
     fun `event not found`() {
         val appointment = CreateAppointment(
+            user,
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             null,
@@ -176,6 +186,7 @@ class SentenceAppointmentServiceTest {
     @Test
     fun `requirement not found`() {
         val appointment = CreateAppointment(
+            user,
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),
@@ -208,6 +219,7 @@ class SentenceAppointmentServiceTest {
     @Test
     fun `licence not found`() {
         val appointment = CreateAppointment(
+            user,
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
             ZonedDateTime.now().plusDays(2),

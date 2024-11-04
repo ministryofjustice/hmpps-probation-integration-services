@@ -100,6 +100,8 @@ class DataLoader(
             OffenderManagerGenerator.STAFF_USER_2,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
+            OffenderManagerGenerator.DEFAULT_LOCATION,
+            OffenderManagerGenerator.TEAM_OFFICE,
             PersonGenerator.DEFAULT_DISPOSAL_TYPE,
             PersonGenerator.ACTIVE_ORDER,
             LicenceConditionGenerator.LIC_COND_MAIN_CAT,

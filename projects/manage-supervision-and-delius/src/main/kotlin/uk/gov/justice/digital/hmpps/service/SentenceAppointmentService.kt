@@ -29,6 +29,7 @@ class SentenceAppointmentService(
     private val eventSentenceRepository: EventSentenceRepository,
     private val requirementRepository: RequirementRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
+    private val staffUserRepository: StaffUserRepository
 ) : AuditableService(auditedInteractionService) {
     fun createAppointment(
         crn: String,
@@ -38,6 +39,7 @@ class SentenceAppointmentService(
             val om = offenderManagerRepository.getByCrn(crn)
             audit["offenderId"] = om.person.id
             checkForConflicts(om.person.id, createAppointment)
+            val userAndLocation = staffUserRepository.getUserAndLocation(createAppointment.user.username, createAppointment.user.team)
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
             createAppointment.let {
@@ -52,6 +54,7 @@ class SentenceAppointmentService(
                     val interval = createAppointment.interval.value * i
                     createAppointments.add(
                         CreateAppointment(
+                            createAppointment.user,
                             createAppointment.type,
                             createAppointment.start.plusDays(interval.toLong()),
                             createAppointment.end?.plusDays(interval.toLong()),
@@ -67,7 +70,7 @@ class SentenceAppointmentService(
                 }
             }
 
-            val appointments = createAppointments.map { it.withManager(om) }
+            val appointments = createAppointments.map { it.withManager(om, userAndLocation) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
             audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
@@ -135,19 +138,21 @@ class SentenceAppointmentService(
         }
     }
 
-    private fun CreateAppointment.withManager(om: OffenderManager) = Appointment(
+    private fun CreateAppointment.withManager(om: OffenderManager, userAndLocation: UserLocation) = Appointment(
         om.person,
         appointmentTypeRepository.getByCode(type.code),
         start.toLocalDate(),
         ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
-        om.team,
-        om.staff,
+        teamId = userAndLocation.teamId,
+        staffId = userAndLocation.staffId,
         0,
         end?.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
-        om.provider.id,
+        probationAreaId = userAndLocation.providerId,
         urn,
         eventId = eventId,
         rqmntId = requirementId,
-        licConditionId = licenceConditionId
+        licConditionId = licenceConditionId,
+        createdByUserId = userAndLocation.userId,
+        officeLocationId = userAndLocation.locationId
     )
 }
