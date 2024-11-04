@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
-import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
@@ -37,13 +36,11 @@ class Appointment(
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    val team: Team,
+    @Column(name = "team_id")
+    val teamId: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "staff_id")
-    val staff: Staff,
+    @Column(name = "staff_id")
+    val staffId: Long,
 
     @Column(name = "last_updated_user_id")
     @LastModifiedBy
@@ -74,15 +71,18 @@ class Appointment(
     @Column(name = "row_version")
     val version: Long = 0,
 
+    @Column(name = "created_by_user_id")
+    val createdByUserId: Long? = null,
+
+    @Column(name = "office_location_id")
+    val officeLocationId: Long? = null,
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     @Column(name = "contact_id")
     val id: Long = 0
 ) {
     var partitionAreaId: Long = 0
-
-    @CreatedBy
-    var createdByUserId: Long = 0
 
     @CreatedDate
     @Column(name = "created_datetime")

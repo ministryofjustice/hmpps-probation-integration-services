@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -13,11 +14,14 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
+import java.time.Period
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
-class AppointmentService(
+class SentenceAppointmentService(
     auditedInteractionService: AuditedInteractionService,
     private val appointmentRepository: AppointmentRepository,
     private val appointmentTypeRepository: AppointmentTypeRepository,
@@ -25,20 +29,54 @@ class AppointmentService(
     private val eventSentenceRepository: EventSentenceRepository,
     private val requirementRepository: RequirementRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
+    private val staffUserRepository: StaffUserRepository
 ) : AuditableService(auditedInteractionService) {
     fun createAppointment(
         crn: String,
         createAppointment: CreateAppointment
-    ): CreatedAppointment {
+    ): AppointmentDetail {
         return audit(BusinessInteractionCode.ADD_CONTACT) { audit ->
             val om = offenderManagerRepository.getByCrn(crn)
             audit["offenderId"] = om.person.id
             checkForConflicts(om.person.id, createAppointment)
-            val appointment = appointmentRepository.save(createAppointment.withManager(om))
-            val createdAppointment = CreatedAppointment(appointment.id)
-            audit["contactId"] = appointment.id
+            val userAndLocation =
+                staffUserRepository.getUserAndLocation(createAppointment.user.username, createAppointment.user.team)
+            val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
-            return@audit createdAppointment
+            createAppointment.let {
+                val numberOfAppointments = createAppointment.until?.let {
+                    Period.between(
+                        createAppointment.start.toLocalDate(),
+                        it.toLocalDate()
+                    ).days.div(createAppointment.interval.value)
+                } ?: createAppointment.numberOfAppointments
+
+                for (i in 0 until numberOfAppointments) {
+                    val interval = createAppointment.interval.value * i
+                    createAppointments.add(
+                        CreateAppointment(
+                            createAppointment.user,
+                            createAppointment.type,
+                            createAppointment.start.plusDays(interval.toLong()),
+                            createAppointment.end?.plusDays(interval.toLong()),
+                            createAppointment.interval,
+                            createAppointment.numberOfAppointments,
+                            createAppointment.eventId,
+                            if (i == 0) createAppointment.uuid else UUID.randomUUID(), //needs to be a unique value
+                            createAppointment.requirementId,
+                            createAppointment.licenceConditionId,
+                            createAppointment.until
+                        )
+                    )
+                }
+            }
+
+            val appointments = createAppointments.map { it.withManager(om, userAndLocation) }
+            val savedAppointments = appointmentRepository.saveAll(appointments)
+            val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
+            audit["contactId"] = createdAppointments.joinToString { it.id.toString() }
+
+            return@audit AppointmentDetail(createdAppointments)
         }
     }
 
@@ -58,6 +96,14 @@ class AppointmentService(
                 throw ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Appointment end time cannot be before start time"
+                )
+        }
+
+        createAppointment.until?.let {
+            if (it.isBefore(createAppointment.start))
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Until cannot be before start time"
                 )
         }
 
@@ -93,19 +139,21 @@ class AppointmentService(
         }
     }
 
-    private fun CreateAppointment.withManager(om: OffenderManager) = Appointment(
+    private fun CreateAppointment.withManager(om: OffenderManager, userAndLocation: UserLocation) = Appointment(
         om.person,
         appointmentTypeRepository.getByCode(type.code),
         start.toLocalDate(),
         ZonedDateTime.of(LocalDate.EPOCH, start.toLocalTime(), EuropeLondon),
-        om.team,
-        om.staff,
+        teamId = userAndLocation.teamId,
+        staffId = userAndLocation.staffId,
         0,
         end?.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
-        om.provider.id,
+        probationAreaId = userAndLocation.providerId,
         urn,
         eventId = eventId,
         rqmntId = requirementId,
-        licConditionId = licenceConditionId
+        licConditionId = licenceConditionId,
+        createdByUserId = userAndLocation.userId,
+        officeLocationId = userAndLocation.locationId
     )
 }

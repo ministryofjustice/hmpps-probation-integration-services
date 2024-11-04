@@ -5,15 +5,16 @@ import java.time.ZonedDateTime
 import java.util.*
 
 data class CreateAppointment(
+    val user: User,
     val type: Type,
     val start: ZonedDateTime,
-    val end: ZonedDateTime?,
-    val interval: Int,
+    val end: ZonedDateTime? = null,
+    val interval: Interval = Interval.DAY,
+    val numberOfAppointments: Int = 1,
     val eventId: Long,
     val uuid: UUID,
     val requirementId: Long? = null,
     val licenceConditionId: Long? = null,
-    val numberOfAppointments: Int? = null,
     val until: ZonedDateTime? = null
 ) {
     @JsonIgnore
@@ -26,7 +27,19 @@ data class CreateAppointment(
         InitialAppointmentHomeVisitNS("COHV")
     }
 
+    enum class Interval(val value: Int) {
+        DAY(1),
+        WEEK(7),
+        FORTNIGHT(14),
+        FOUR_WEEKS(28)
+    }
+
     companion object {
         const val URN_PREFIX = "urn:uk:gov:hmpps:manage-supervision-service:appointment:"
     }
 }
+
+data class User(
+    val username: String,
+    val team: String
+)
