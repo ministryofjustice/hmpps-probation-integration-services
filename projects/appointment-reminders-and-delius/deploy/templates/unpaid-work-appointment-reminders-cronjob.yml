@@ -12,7 +12,7 @@ spec:
       template:
         spec:
           containers:
-            - name: update-custody-key-dates
+            - name: unpaid-work-appointment-reminders
               image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/appointment-reminders-and-delius:{{ .Values.version }}"
               securityContext:
                 capabilities:
