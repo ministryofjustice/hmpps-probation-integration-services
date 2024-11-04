@@ -2,6 +2,7 @@
 generic-service:
   productId: HMPPS518
   nameOverride: justice-email-and-delius
+  serviceAccountName: justice-email-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/justice-email-and-delius
@@ -12,11 +13,21 @@ generic-service:
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
+      SPRING_LDAP_URLS: LDAP_URL
+      SPRING_LDAP_PASSWORD: LDAP_PASSWORD
     justice-email-and-delius-database:
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     justice-email-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
+    justice-email-and-delius-queue:
+      MESSAGING_PRODUCER_QUEUE: QUEUE_NAME
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+    justice-email-and-delius-microsoft-graph:
+      MICROSOFT-GRAPH_TENANT-ID: TENANT_ID
+      MICROSOFT-GRAPH_CLIENT-ID: CLIENT_ID
+      MICROSOFT-GRAPH_CLIENT-SECRET: CLIENT_SECRET
+      MICROSOFT-GRAPH_EMAIL-ADDRESS: EMAIL_ADDRESS
 
 generic-prometheus-alerts:
   targetApplication: justice-email-and-delius

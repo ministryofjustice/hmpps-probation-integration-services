@@ -17,6 +17,14 @@ plugins {
     id("com.google.cloud.tools.jib") apply false
     id("base")
     id("org.sonarqube")
+    id("idea")
+}
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
 }
 
 val agentDeps: Configuration by configurations.creating

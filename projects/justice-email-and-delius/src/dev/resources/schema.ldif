@@ -1,0 +1,26 @@
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=test-user,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: test-user
+sn: test-user
+mail: example@justice.gov.uk
+
+dn: cn=duplicate1,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: duplicate1
+sn: duplicate1
+mail: duplicate@justice.gov.uk
+
+dn: cn=duplicate2,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: duplicate2
+sn: duplicate2
+mail: duplicate@justice.gov.uk
+
