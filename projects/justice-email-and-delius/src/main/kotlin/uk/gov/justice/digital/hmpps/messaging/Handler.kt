@@ -39,10 +39,12 @@ class Handler(
         val message = notification.message
 
         val crn = message.extractCrn()
+        val emailAddress =
+            message.fromEmailAddress.takeIf { it.endsWith("@justice.gov.uk") || it.endsWith("@digital.justice.gov.uk") }
+                ?: throw IllegalArgumentException("Email address does not end with @justice.gov.uk or @digital.justice.gov.uk")
         val person = personRepository.getByCrn(crn)
         val manager = personManagerRepository.getManager(person.id)
-        val username = findUsernameByEmailAddress(message.fromEmailAddress)
-        val staffId = username?.let { staffRepository.findByUserUsername(username)?.id } ?: manager.staffId
+        val staffId = findStaffIdForEmailAddress(emailAddress) ?: manager.staffId
         val contact = contactRepository.save(
             Contact(
                 personId = person.id,
@@ -61,7 +63,7 @@ class Handler(
         telemetryService.trackEvent(
             "CreatedContact", mapOf(
                 "crn" to crn,
-                "username" to username.toString(),
+                "staffId" to staffId.toString(),
                 "contactId" to contact.id.toString(),
                 "messageId" to message.id,
             )
@@ -77,25 +79,26 @@ class Handler(
         }
     }
 
-    private fun findUsernameByEmailAddress(emailAddress: String): String? {
-        val matchingUsernames = try {
-            ldapTemplate.search(
-                query()
+    private fun findStaffIdForEmailAddress(emailAddress: String): Long? {
+        val matchingStaffIds = try {
+            ldapTemplate
+                .search(query()
                     .attributes("cn")
                     .searchScope(SearchScope.ONELEVEL)
                     .where("objectclass").`is`("inetOrgPerson")
                     .and("objectclass").`is`("top")
                     .and("mail").`is`(emailAddress),
-                AttributesMapper { it["cn"]?.get()?.toString() }
-            ).filterNotNull()
+                    AttributesMapper { it["cn"]?.get()?.toString() })
+                .filterNotNull()
+                .mapNotNull { staffRepository.findByUserUsername(it)?.id }
         } catch (_: NameNotFoundException) {
             return null
         }
 
-        return when (matchingUsernames.size) {
+        return when (matchingStaffIds.size) {
             0 -> null
-            1 -> matchingUsernames.single()
-            else -> error("Multiple users found for $emailAddress")
+            1 -> matchingStaffIds.single()
+            else -> error("Multiple staff records found for $emailAddress")
         }
     }
 }

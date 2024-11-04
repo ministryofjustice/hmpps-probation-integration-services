@@ -82,4 +82,21 @@ internal class IntegrationTest {
         val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
         assertThat(exception.message, equalTo("No CRN in message subject"))
     }
+
+    @Test
+    fun `error when multiple staff records have the same email address`() {
+        val notification = Notification(get<EmailMessage>("multiple-staff"))
+        val exception = assertThrows<IllegalStateException> { handler.handle(notification) }
+        assertThat(exception.message, equalTo("Multiple staff records found for duplicate@justice.gov.uk"))
+    }
+
+    @Test
+    fun `error for unexpected source email address`() {
+        val notification = Notification(get<EmailMessage>("non-justice-email"))
+        val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
+        assertThat(
+            exception.message,
+            equalTo("Email address does not end with @justice.gov.uk or @digital.justice.gov.uk")
+        )
+    }
 }
