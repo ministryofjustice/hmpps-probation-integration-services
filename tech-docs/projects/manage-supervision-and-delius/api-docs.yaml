@@ -82,7 +82,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CreatedAppointment"
+                $ref: "#/components/schemas/AppointmentDetail"
   /user/{username}/access/{crn}:
     get:
       tags:
@@ -766,11 +766,15 @@ components:
       required:
       - eventId
       - interval
+      - numberOfAppointments
       - start
       - type
+      - user
       - uuid
       type: object
       properties:
+        user:
+          $ref: "#/components/schemas/User"
         type:
           type: string
           enum:
@@ -785,6 +789,13 @@ components:
           type: string
           format: date-time
         interval:
+          type: string
+          enum:
+          - DAY
+          - WEEK
+          - FORTNIGHT
+          - FOUR_WEEKS
+        numberOfAppointments:
           type: integer
           format: int32
         eventId:
@@ -799,12 +810,28 @@ components:
         licenceConditionId:
           type: integer
           format: int64
-        numberOfAppointments:
-          type: integer
-          format: int32
         until:
           type: string
           format: date-time
+    User:
+      required:
+      - team
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+        team:
+          type: string
+    AppointmentDetail:
+      required:
+      - appointments
+      type: object
+      properties:
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreatedAppointment"
     CreatedAppointment:
       required:
       - id

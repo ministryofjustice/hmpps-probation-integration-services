@@ -397,12 +397,16 @@
 
 
 <pre><code>{
-  "id": "integer"
+  "appointments": [
+    {
+      "id": "integer"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-<a href='#schema-createdappointment'>CreatedAppointment</a>
+<a href='#schema-appointmentdetail'>AppointmentDetail</a>
 </td>
 </tr>
 
@@ -3959,6 +3963,16 @@
 <tbody>
 
 <tr>
+<td>user</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-user'>User</a>
+</td>
+</tr>
+
+<tr>
 <td>type</td>
 <td>string</td>
 <td>true</td>
@@ -3990,6 +4004,16 @@
 
 <tr>
 <td>interval</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>numberOfAppointments</td>
 <td>integer</td>
 <td>true</td>
 <td></td>
@@ -4039,8 +4063,8 @@
 </tr>
 
 <tr>
-<td>numberOfAppointments</td>
-<td>integer</td>
+<td>until</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
@@ -4048,13 +4072,57 @@
 </td>
 </tr>
 
+</tbody>
+</table>
+
+<h3 id="schema-user">User</h3>
+
+
+<table class='schema-user'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
 <tr>
-<td>until</td>
+<td>username</td>
 <td>string</td>
-<td>false</td>
+<td>true</td>
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-appointmentdetail">AppointmentDetail</h3>
+
+
+<table class='schema-appointmentdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>appointments</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-createdappointment'>CreatedAppointment</a>
 </td>
 </tr>
 
