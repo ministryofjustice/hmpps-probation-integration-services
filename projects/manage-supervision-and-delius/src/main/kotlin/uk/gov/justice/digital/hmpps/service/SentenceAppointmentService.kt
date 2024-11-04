@@ -42,7 +42,7 @@ class SentenceAppointmentService(
 
             createAppointment.let {
                 val numberOfAppointments = createAppointment.until?.let {
-                    Period.between(createAppointment.start.toLocalDate(), it.toLocalDate()).days
+                    Period.between(createAppointment.start.toLocalDate(), it.toLocalDate()).days.div(createAppointment.interval.value)
                 } ?: createAppointment.numberOfAppointments
 
                 for (i in 0 until numberOfAppointments) {

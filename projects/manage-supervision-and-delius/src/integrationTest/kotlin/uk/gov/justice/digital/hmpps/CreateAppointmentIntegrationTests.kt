@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 import java.util.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
@@ -123,8 +124,8 @@ class CreateAppointmentIntegrationTests {
         assertThat(appointments.size, equalTo(3))
 
         assertThat(appointments[0].date, equalTo(LocalDate.now()))
-        assertThat(appointments[1].date, equalTo(LocalDate.now().plusDays(1)))
-        assertThat(appointments[2].date, equalTo(LocalDate.now().plusDays(2)))
+        assertThat(appointments[1].date, equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 1)))
+        assertThat(appointments[2].date, equalTo(LocalDate.now().plusDays(createAppointment.interval.value.toLong() * 2)))
 
         //check for unique external reference
         val externalRef = "urn:uk:gov:hmpps:manage-supervision-service:appointment:${createAppointment.uuid}"
@@ -168,6 +169,14 @@ class CreateAppointmentIntegrationTests {
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 ZonedDateTime.now(),
                 until = ZonedDateTime.now().plusDays(3),
+                eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID()
+            ),
+            CreateAppointment(
+                CreateAppointment.Type.HomeVisitToCaseNS,
+                start = ZonedDateTime.now(),
+                until = ZonedDateTime.now().plusDays(21),
+                interval = CreateAppointment.Interval.WEEK,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
             )
