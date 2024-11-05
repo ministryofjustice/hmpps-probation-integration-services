@@ -88,7 +88,8 @@ class CreateAppointmentIntegrationTests {
                         PersonGenerator.EVENT_1.id,
                         UUID.randomUUID()
                     )
-                ))
+                )
+        )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(jsonPath("$.message", equalTo("Appointment end time cannot be before start time")))
     }
