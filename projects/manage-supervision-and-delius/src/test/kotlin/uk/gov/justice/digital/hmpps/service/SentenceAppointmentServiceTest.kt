@@ -11,12 +11,12 @@ import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
@@ -75,13 +75,13 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        val exception = assertThrows<ResponseStatusException> {
+        val exception = assertThrows<InvalidRequestException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
         assertThat(
             exception.message,
-            equalTo("400 BAD_REQUEST \"Either licence id or requirement id can be provided, not both\"")
+            equalTo("Either licence id or requirement id can be provided, not both")
         )
 
         verifyNoMoreInteractions(offenderManagerRepository)
@@ -108,11 +108,11 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        val exception = assertThrows<ResponseStatusException> {
+        val exception = assertThrows<InvalidRequestException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
-        assertThat(exception.message, equalTo("400 BAD_REQUEST \"Appointment end time cannot be before start time\""))
+        assertThat(exception.message, equalTo("Appointment end time cannot be before start time"))
 
         verifyNoMoreInteractions(offenderManagerRepository)
         verifyNoInteractions(eventSentenceRepository)
@@ -138,11 +138,11 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        val exception = assertThrows<ResponseStatusException> {
+        val exception = assertThrows<InvalidRequestException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
 
-        assertThat(exception.message, equalTo("400 BAD_REQUEST \"Until cannot be before start time\""))
+        assertThat(exception.message, equalTo("Until cannot be before start time"))
 
         verifyNoMoreInteractions(offenderManagerRepository)
         verifyNoInteractions(eventSentenceRepository)
