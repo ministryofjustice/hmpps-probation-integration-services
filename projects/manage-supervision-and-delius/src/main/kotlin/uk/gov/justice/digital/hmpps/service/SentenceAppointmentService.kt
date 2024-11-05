@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
@@ -10,15 +8,16 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
-import java.time.Period
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
-import kotlin.collections.ArrayList
+import kotlin.math.ceil
 
 @Service
 class SentenceAppointmentService(
@@ -45,10 +44,12 @@ class SentenceAppointmentService(
 
             createAppointment.let {
                 val numberOfAppointments = createAppointment.until?.let {
-                    Period.between(
-                        createAppointment.start.toLocalDate(),
-                        it.toLocalDate()
-                    ).days.div(createAppointment.interval.value)
+                    val duration = Duration.between(
+                        createAppointment.start.toLocalDateTime(),
+                        it.toLocalDateTime()
+                    ).toDays() + 1
+
+                    ceil(duration.toDouble().div(createAppointment.interval.value)).toInt()
                 } ?: createAppointment.numberOfAppointments
 
                 for (i in 0 until numberOfAppointments) {
@@ -85,26 +86,17 @@ class SentenceAppointmentService(
         createAppointment: CreateAppointment
     ) {
         if (createAppointment.requirementId != null && createAppointment.licenceConditionId != null) {
-            throw ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Either licence id or requirement id can be provided, not both"
-            )
+            throw InvalidRequestException("Either licence id or requirement id can be provided, not both")
         }
 
         createAppointment.end?.let {
             if (it.isBefore(createAppointment.start))
-                throw ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Appointment end time cannot be before start time"
-                )
+                throw InvalidRequestException("Appointment end time cannot be before start time")
         }
 
         createAppointment.until?.let {
             if (it.isBefore(createAppointment.start))
-                throw ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Until cannot be before start time"
-                )
+                throw InvalidRequestException("Until cannot be before start time")
         }
 
         if (!eventSentenceRepository.existsById(createAppointment.eventId)) {
@@ -132,10 +124,7 @@ class SentenceAppointmentService(
         val licenceOrRequirement = listOfNotNull(createAppointment.licenceConditionId, createAppointment.requirementId)
 
         if (licenceOrRequirement.size > 1) {
-            throw ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Either licence id or requirement id can be provided, not both"
-            )
+            throw InvalidRequestException("Either licence id or requirement id can be provided, not both")
         }
     }
 

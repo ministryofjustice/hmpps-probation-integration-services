@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
@@ -87,8 +88,9 @@ class CreateAppointmentIntegrationTests {
                         PersonGenerator.EVENT_1.id,
                         UUID.randomUUID()
                     )
-                )
-        ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+                ))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(jsonPath("$.message", equalTo("Appointment end time cannot be before start time")))
     }
 
     @ParameterizedTest
@@ -194,7 +196,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 ZonedDateTime.now(),
-                until = ZonedDateTime.now().plusDays(3),
+                until = ZonedDateTime.now().plusDays(2),
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
             ),
@@ -202,7 +204,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 start = ZonedDateTime.now(),
-                until = ZonedDateTime.now().plusDays(21),
+                until = ZonedDateTime.now().plusDays(14),
                 interval = CreateAppointment.Interval.WEEK,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
