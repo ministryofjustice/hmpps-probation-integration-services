@@ -47,9 +47,9 @@ class SentenceAppointmentService(
                     val duration = Duration.between(
                         createAppointment.start.toLocalDateTime(),
                         it.toLocalDateTime()
-                    ).toDays() + 1
+                    ).toDays()
 
-                    ceil(duration.toDouble().div(createAppointment.interval.value)).toInt()
+                    (duration / createAppointment.interval.value).toInt() + 1
                 } ?: createAppointment.numberOfAppointments
 
                 for (i in 0 until numberOfAppointments) {
