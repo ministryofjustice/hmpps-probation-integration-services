@@ -14,6 +14,7 @@ generic-service:
     common:
       SPRING_DATASOURCE_URL: DB_URL
       SPRING_LDAP_URLS: LDAP_URL
+      SPRING_LDAP_USERNAME: LDAP_USERNAME
       SPRING_LDAP_PASSWORD: LDAP_PASSWORD
     justice-email-and-delius-database:
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
