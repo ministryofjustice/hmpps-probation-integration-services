@@ -192,7 +192,6 @@ internal class CASIntegrationTest {
         assertThat(domainEvent.crn(), equalTo(event.message.crn()))
         assertThat(domainEvent.additionalInformation["addressId"], equalTo(address.id))
         assertThat(domainEvent.additionalInformation["addressStatus"], equalTo("Main Address"))
-
     }
 
     @Test
