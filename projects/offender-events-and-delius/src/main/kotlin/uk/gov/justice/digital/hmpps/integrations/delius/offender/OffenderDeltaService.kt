@@ -33,7 +33,8 @@ class OffenderDeltaService(
                 mapOf(
                     "crn" to it.message.crn,
                     "eventType" to it.eventType!!,
-                    "occurredAt" to ISO_ZONED_DATE_TIME.format(it.message.eventDatetime)
+                    "occurredAt" to ISO_ZONED_DATE_TIME.format(it.message.eventDatetime),
+                    "notification" to it.toString(),
                 )
             )
         }
