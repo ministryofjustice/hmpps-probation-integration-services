@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.operations.SqsTemplate
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.instrumentation.annotations.SpanAttribute
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -30,7 +29,7 @@ class QueuePublisher(
     private val permit = Semaphore(limit, true)
 
     @WithSpan(kind = SpanKind.PRODUCER)
-    override fun publish(@SpanAttribute notification: Notification<*>) {
+    override fun publish(notification: Notification<*>) {
         Span.current().updateName("PUBLISH ${notification.eventType}").setAttribute("queue", queue)
         notification.message?.also { _ ->
             permit.acquire()

@@ -23,6 +23,7 @@ class MailboxService(
     @WithSpan("POLL mailbox", kind = SpanKind.SERVER)
     fun publishUnreadMessagesToQueue() {
         getUnreadMessages()
+            .ifEmpty { return }
             .also { telemetryService.trackEvent("ReceivedMessages", mapOf("count" to it.size.toString())) }
             .forEach {
                 notificationPublisher.publish(it.asNotification())
