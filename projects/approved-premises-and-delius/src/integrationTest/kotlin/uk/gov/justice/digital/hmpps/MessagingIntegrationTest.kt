@@ -5,6 +5,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -36,6 +37,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAdd
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
@@ -50,6 +52,9 @@ import java.time.LocalDate
 internal class MessagingIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
+
+    @Value("\${messaging.producer.topic}")
+    lateinit var topicName: String
 
     @Autowired
     lateinit var channelManager: HmppsChannelManager
@@ -80,6 +85,14 @@ internal class MessagingIntegrationTest {
 
     @Autowired
     private lateinit var staffRepository: StaffRepository
+
+    @BeforeEach
+    fun clearTopic() {
+        val topic = channelManager.getChannel(topicName)
+        do {
+            val message = topic.receive()?.also { topic.done(it.id) }
+        } while (message != null)
+    }
 
     @Test
     fun `application submission creates an alert contact`() {
@@ -299,6 +312,13 @@ internal class MessagingIntegrationTest {
         assertThat(main.postcode, equalTo(ap.postcode))
         assertThat(main.telephoneNumber, equalTo(ap.telephoneNumber))
 
+        // And a domain event is published for the new address
+        val domainEvent = channelManager.getChannel(topicName).receive()?.message as HmppsDomainEvent
+        assertThat(domainEvent.eventType, equalTo("probation-case.address.created"))
+        assertThat(domainEvent.crn(), equalTo(event.message.crn()))
+        assertThat(domainEvent.additionalInformation["addressId"], equalTo(main.id))
+        assertThat(domainEvent.additionalInformation["addressStatus"], equalTo("Main Address"))
+
         val keyWorker = staffRepository.getByCode("N54A001")
         val residences = residenceRepository.findAll().filter { it.personId == contact.person.id }
         assertThat(residences.size, equalTo(1))
@@ -349,6 +369,11 @@ internal class MessagingIntegrationTest {
         }
 
         assertNull(personAddressRepository.findMainAddress(PersonGenerator.DEFAULT.id))
+
+        val domainEvent = channelManager.getChannel(topicName).receive()?.message as HmppsDomainEvent
+        assertThat(domainEvent.eventType, equalTo("probation-case.address.updated"))
+        assertThat(domainEvent.crn(), equalTo(event.message.crn()))
+        assertThat(domainEvent.additionalInformation["addressStatus"], equalTo("Previous Address"))
 
         val residence = residenceRepository.findAll().first { it.personId == contact.person.id }
         assertThat(residence.departureDate, equalTo(nsi.actualEndDate))

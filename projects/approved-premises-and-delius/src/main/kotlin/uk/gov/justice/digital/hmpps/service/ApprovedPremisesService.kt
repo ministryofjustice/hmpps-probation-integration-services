@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.url
 
@@ -24,7 +25,8 @@ class ApprovedPremisesService(
     private val eventRepository: EventRepository,
     private val contactService: ContactService,
     private val nsiService: NsiService,
-    private val referralService: ReferralService
+    private val referralService: ReferralService,
+    private val notifier: Notifier,
 ) {
     fun applicationSubmitted(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
@@ -115,13 +117,18 @@ class ApprovedPremisesService(
         val details = approvedPremisesApiClient.getPersonArrivedDetails(event.url()).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
-        nsiService.personArrived(person, details, ap)
+        nsiService.personArrived(person, details, ap)?.let { (previousAddress, newAddress) ->
+            notifier.addressCreated(person.crn, newAddress.id, newAddress.status.description)
+            previousAddress?.let { notifier.addressUpdated(person.crn, it.id, it.status.description) }
+        }
     }
 
     fun personDeparted(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getPersonDepartedDetails(event.url()).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
-        nsiService.personDeparted(person, details, ap)
+        nsiService.personDeparted(person, details, ap)?.let { updatedAddress ->
+            notifier.addressUpdated(person.crn, updatedAddress.id, updatedAddress.status.description)
+        }
     }
 }

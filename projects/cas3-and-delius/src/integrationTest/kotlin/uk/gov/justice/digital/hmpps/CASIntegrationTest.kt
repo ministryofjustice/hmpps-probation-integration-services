@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
@@ -36,6 +37,9 @@ import java.time.ZonedDateTime
 internal class CASIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
+
+    @Value("\${messaging.producer.topic}")
+    lateinit var topicName: String
 
     @Autowired
     lateinit var channelManager: HmppsChannelManager
@@ -182,6 +186,12 @@ internal class CASIntegrationTest {
         assertThat(address.streetName, equalTo("12 Church Street"))
         assertThat(address.county, equalTo("Bibbinghammcshireshire"))
         assertThat(address.postcode, equalTo("BB1 1BB"))
+
+        val domainEvent = channelManager.getChannel(topicName).receive()?.message as HmppsDomainEvent
+        assertThat(domainEvent.eventType, equalTo("probation-case.address.created"))
+        assertThat(domainEvent.crn(), equalTo(event.message.crn()))
+        assertThat(domainEvent.additionalInformation["addressId"], equalTo(address.id))
+        assertThat(domainEvent.additionalInformation["addressStatus"], equalTo("Main Address"))
     }
 
     @Test
@@ -215,6 +225,12 @@ internal class CASIntegrationTest {
         assertThat(address!!.status.code, equalTo("P"))
         assertThat(contact.teamId, equalTo(ProviderGenerator.DEFAULT_TEAM.id))
         assertThat(contact.staffId, equalTo(ProviderGenerator.DEFAULT_STAFF.id))
+
+        val domainEvent = channelManager.getChannel(topicName).receive()?.message as HmppsDomainEvent
+        assertThat(domainEvent.eventType, equalTo("probation-case.address.updated"))
+        assertThat(domainEvent.crn(), equalTo(event.message.crn()))
+        assertThat(domainEvent.additionalInformation["addressId"], equalTo(address.id))
+        assertThat(domainEvent.additionalInformation["addressStatus"], equalTo("Main Address"))
     }
 
     @Test
