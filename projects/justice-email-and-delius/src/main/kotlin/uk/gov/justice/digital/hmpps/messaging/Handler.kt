@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import com.vladsch.flexmark.html2md.converter.FlexmarkHtmlConverter
 import org.openfolder.kotlinasyncapi.annotation.Schema
 import org.openfolder.kotlinasyncapi.annotation.channel.Channel
 import org.openfolder.kotlinasyncapi.annotation.channel.Message
@@ -25,6 +26,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 class Handler(
     auditedInteractionService: AuditedInteractionService,
     override val converter: NotificationConverter<EmailMessage>,
+    private val htmlToMarkdownConverter: FlexmarkHtmlConverter,
     private val telemetryService: TelemetryService,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
@@ -52,7 +54,7 @@ class Handler(
                 type = contactTypeRepository.getByCode(EMAIL_TEXT_FROM_OTHER),
                 date = message.receivedDateTime,
                 startTime = message.receivedDateTime,
-                notes = message.bodyContent,
+                notes = htmlToMarkdownConverter.convert(message.bodyContent),
                 staffId = staffId,
                 teamId = manager.teamId,
                 providerId = manager.providerId,
@@ -71,9 +73,9 @@ class Handler(
     }
 
     private fun EmailMessage.extractCrn(): String {
-        val crns = Regex("[A-Za-z][0-9]{6}").findAll(subject)
+        val crns = Regex("[A-Za-z][0-9]{6}").findAll(subject).map { it.value }.distinct()
         return when (crns.count()) {
-            1 -> crns.single().value.uppercase()
+            1 -> crns.single().uppercase()
             0 -> throw IllegalArgumentException("No CRN in message subject")
             else -> throw IllegalArgumentException("Multiple CRNs in message subject")
         }
