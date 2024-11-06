@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactO
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.referralCompleted
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -38,7 +39,7 @@ class NsiService(
         person: Person,
         details: PersonArrived,
         ap: ApprovedPremises
-    ) {
+    ): Pair<PersonAddress?, PersonAddress>? {
         val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
         nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference) ?: run {
             val staff = staffRepository.getByCode(details.keyWorker.staffCode)
@@ -69,7 +70,6 @@ class NsiService(
                     transferReason = transferReasonRepository.getNsiTransferReason()
                 )
             )
-            addressService.updateMainAddress(person, details, ap)
             contactService.createContact(
                 ContactDetails(
                     date = details.arrivedAt,
@@ -88,15 +88,16 @@ class NsiService(
                 probationAreaCode = ap.probationArea.code
             )
             referralService.personArrived(person, ap, details)
+            return addressService.updateMainAddress(person, details, ap)
         }
+        return null
     }
 
-    fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises) {
+    fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises): PersonAddress? {
         val nsi =
             nsiRepository.findByPersonIdAndExternalReference(person.id, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
         nsi?.actualEndDate = details.departedAt
         nsi?.outcome = referenceDataRepository.referralCompleted()
-        addressService.endMainAddress(person, details.departedAt.toLocalDate())
         contactService.createContact(
             ContactDetails(
                 date = details.departedAt,
@@ -114,5 +115,6 @@ class NsiService(
             probationAreaCode = ap.probationArea.code
         )
         referralService.personDeparted(person, details)
+        return addressService.endMainAddress(person, details.departedAt.toLocalDate())
     }
 }

@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.By
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.service.ProviderService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @ExtendWith(MockitoExtension::class)

@@ -65,6 +65,7 @@ wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 messaging.consumer.queue: message-queue
+messaging.producer.topic: domain-events
 
 integrations:
   approved-premises-api:

@@ -25,6 +25,8 @@ generic-service:
       SENTRY_DSN: SENTRY_DSN
     approved-premises-and-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+    hmpps-domain-events-topic:
+      MESSAGING_PRODUCER_TOPIC: topic_arn
 
 generic-prometheus-alerts:
   targetApplication: approved-premises-and-delius
