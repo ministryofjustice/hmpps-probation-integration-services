@@ -20,13 +20,6 @@ plugins {
     id("idea")
 }
 
-idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
-    }
-}
-
 val agentDeps: Configuration by configurations.creating
 
 dependencies {
@@ -81,6 +74,7 @@ subprojects {
         plugin("jacoco-report-aggregation")
         plugin("org.sonarqube")
         plugin("com.gorylenko.gradle-git-properties")
+        plugin("idea")
         plugin(JibConfigPlugin::class.java)
         plugin(ClassPathPlugin::class.java)
     }
@@ -114,6 +108,15 @@ subprojects {
         tasks.named("check") {
             dependsOn(rootProject.subprojects.filter { it.path.startsWith(":libs") }
                 .map { it.tasks.getByName("check") })
+        }
+    }
+
+    idea {
+        module {
+            testSources.from(sourceSets["dev"].allSource.srcDirs)
+            testResources.from(sourceSets["dev"].resources.srcDirs)
+            testSources.from(sourceSets["integrationTest"].allSource.srcDirs)
+            testResources.from(sourceSets["integrationTest"].resources.srcDirs)
         }
     }
 }
