@@ -6,6 +6,7 @@ import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.EmailMessage
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
@@ -54,6 +55,7 @@ class MailboxService(
             bodyContent = body.content,
             fromEmailAddress = from.emailAddress.address,
             receivedDateTime = receivedDateTime.toZonedDateTime(),
-        )
+        ),
+        attributes = MessageAttributes("email.message.received")
     )
 }

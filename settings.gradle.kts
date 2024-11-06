@@ -81,6 +81,7 @@ dependencyResolutionManagement {
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.6.2")
             library("azure-identity", "com.azure:azure-identity:1.13.3")
             library("flipt", "io.flipt:flipt-java:1.1.1")
+            library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.16.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")

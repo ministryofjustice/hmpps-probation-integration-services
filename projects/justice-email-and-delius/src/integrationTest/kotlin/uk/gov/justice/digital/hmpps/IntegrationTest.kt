@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.Data
+import uk.gov.justice.digital.hmpps.entity.Contact
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType.Code.EMAIL_TEXT_FROM_OTHER
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -39,13 +40,9 @@ internal class IntegrationTest {
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
 
-        val contactId = with(argumentCaptor<Map<String, String>>()) {
-            verify(telemetryService).trackEvent(eq("CreatedContact"), capture(), any())
-            firstValue["contactId"]!!.toLong()
-        }
-        val contact = contactRepository.findById(contactId).orElseThrow()
+        val contact = verifyContactCreated()
         assertThat(contact.type.code, equalTo(EMAIL_TEXT_FROM_OTHER.code))
-        assertThat(contact.notes, equalTo("Example message"))
+        assertThat(contact.notes, equalTo("Example message\n"))
         assertThat(
             contact.externalReference,
             equalTo("urn:uk:gov:hmpps:justice-email:00000000-0000-0000-0000-000000000000")
@@ -61,11 +58,7 @@ internal class IntegrationTest {
         handler.handle(notification)
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
 
-        val contactId = with(argumentCaptor<Map<String, String>>()) {
-            verify(telemetryService).trackEvent(eq("CreatedContact"), capture(), any())
-            firstValue["contactId"]!!.toLong()
-        }
-        val contact = contactRepository.findById(contactId).orElseThrow()
+        val contact = verifyContactCreated()
         assertThat(contact.staffId, equalTo(Data.MANAGER.staffId))
     }
 
@@ -98,5 +91,49 @@ internal class IntegrationTest {
             exception.message,
             equalTo("Email address does not end with @justice.gov.uk or @digital.justice.gov.uk")
         )
+    }
+
+    @Test
+    fun `converts html to text`() {
+        val notification = Notification(
+            get<EmailMessage>("successful-message").copy(
+                bodyContent = """
+                    <p>Paragraph 1
+                    <p>Paragraph 2 with <strong>bold</strong> text</p>
+                    <ul>
+                        <li>List item 1</li>
+                        <li>List item 2
+                    </ul>
+                    Text<br/>with<br>new lines
+                """.trimIndent()
+            )
+        )
+        handler.handle(notification)
+        val contact = verifyContactCreated()
+        assertThat(
+            contact.notes, equalTo(
+                """
+                Paragraph 1
+                
+                Paragraph 2 with **bold** text
+                
+                * List item 1
+                * List item 2
+                
+                Text  
+                with  
+                new lines
+                
+            """.trimIndent()
+            )
+        )
+    }
+
+    private fun verifyContactCreated(): Contact {
+        val contactId = with(argumentCaptor<Map<String, String>>()) {
+            verify(telemetryService).trackEvent(eq("CreatedContact"), capture(), any())
+            firstValue["contactId"]!!.toLong()
+        }
+        return contactRepository.findById(contactId).orElseThrow()
     }
 }

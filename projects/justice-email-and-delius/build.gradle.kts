@@ -18,6 +18,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.azure.identity)
     implementation(libs.microsoft.graph)
+    implementation(libs.html2md)
 
     dev(project(":libs:dev-tools"))
     dev("com.unboundid:unboundid-ldapsdk")
