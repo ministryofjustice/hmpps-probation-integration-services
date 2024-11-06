@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.hasItems
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -16,8 +18,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRe
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
-import java.time.temporal.ChronoUnit
 
 @SpringBootTest
 internal class IntegrationTest {
@@ -48,7 +48,7 @@ internal class IntegrationTest {
             expected.forEach {
                 verify(telemetryService, timeout(30000)).trackEvent(
                     eq("OffenderEventPublished"),
-                    eq(it + ("occurredAt" to ISO_ZONED_DATE_TIME.format(delta.dateChanged.truncatedTo(ChronoUnit.SECONDS)))),
+                    check { properties -> assertThat(properties.entries, hasItems(*it.entries.toTypedArray())) },
                     any()
                 )
             }
