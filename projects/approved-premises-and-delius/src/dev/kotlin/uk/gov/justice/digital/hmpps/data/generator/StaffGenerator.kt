@@ -25,6 +25,7 @@ object StaffGenerator {
     val CRU_WOMENS_ESTATE = generate(
         name = "CRU Womens Estate"
     )
+    val STAFF_WITHOUT_USERNAME = generate()
 
     val DEFAULT_STAFF_USER = generateStaffUser("john-smith", DEFAULT_STAFF)
     val JIM_SNOW_USER = generateStaffUser("JIMSNOWLDAP", JIM_SNOW)

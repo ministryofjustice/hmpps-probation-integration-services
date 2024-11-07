@@ -156,6 +156,8 @@ class DataLoader(
         staffRepository.save(StaffGenerator.CRU_WOMENS_ESTATE)
         staffUserRepository.save(StaffGenerator.CRU_WOMENS_ESTATE_USER)
 
+        staffRepository.save(StaffGenerator.STAFF_WITHOUT_USERNAME)
+
         val personManagerStaff = StaffGenerator.generate(code = "N54A001")
         staffRepository.save(personManagerStaff)
         val person = PersonGenerator.DEFAULT

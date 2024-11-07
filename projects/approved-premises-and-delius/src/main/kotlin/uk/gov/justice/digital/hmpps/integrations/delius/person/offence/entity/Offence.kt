@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -15,11 +9,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import java.time.LocalDate
 
 interface CaseOffence {
+    val id: Long
     val code: String
     val description: String
     val date: LocalDate?
     val main: Boolean
     val eventNumber: String
+    val eventId: Long
 }
 
 @Immutable
@@ -91,11 +87,25 @@ class Offence(
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
     @Query(
         """
-        select mo.offence.code as code, mo.offence.description as description, mo.date as date, true as main, mo.event.number as eventNumber
+        select 
+            mo.offence.id as id,
+            mo.offence.code as code, 
+            mo.offence.description as description, 
+            mo.date as date, 
+            true as main, 
+            mo.event.number as eventNumber,
+            mo.event.id as eventId
         from MainOffence mo
         where mo.event.personId = :personId and mo.event.active = true
         union all
-        select ao.offence.code, ao.offence.description, ao.date, false, ao.event.number
+        select 
+            ao.offence.id,
+            ao.offence.code, 
+            ao.offence.description, 
+            ao.date, 
+            false, 
+            ao.event.number,
+            ao.event.id
         from AdditionalOffence ao
         where ao.event.personId = :personId and ao.event.active = true
     """
