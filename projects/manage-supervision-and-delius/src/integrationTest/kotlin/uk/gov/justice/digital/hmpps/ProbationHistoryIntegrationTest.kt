@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
+import uk.gov.justice.digital.hmpps.api.model.sentence.SentenceSummary
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,7 +49,10 @@ class ProbationHistoryIntegrationTest {
 
         val expected = History(
             PersonGenerator.OVERVIEW.toSummary(),
-            listOf(),
+            listOf(
+                SentenceSummary(1234567, "Pre-Sentence"),
+                SentenceSummary(7654321, "Default Sentence Type")
+            ),
             ProbationHistory(2, LocalDate.now().minusDays(7), 2, 2)
         )
 
