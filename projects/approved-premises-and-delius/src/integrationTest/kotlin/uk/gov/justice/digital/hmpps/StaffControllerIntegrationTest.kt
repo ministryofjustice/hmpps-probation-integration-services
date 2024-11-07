@@ -92,4 +92,15 @@ class StaffControllerIntegrationTest {
         assertThat(res.probationArea.description, equalTo(StaffGenerator.DEFAULT_STAFF.probationArea.description))
         assertThat(res.active, equalTo(true))
     }
+
+    @Test
+    fun `get staff by code`() {
+        val staffCode = StaffGenerator.DEFAULT_STAFF.code
+        val res = mockMvc.perform(get("/staff?code=${staffCode}").withToken())
+            .andExpect(status().isOk).andReturn().response.contentAsJson<StaffDetail>()
+        assertThat(res.username, equalTo(StaffGenerator.DEFAULT_STAFF.user!!.username))
+        assertThat(res.name.surname, equalTo(StaffGenerator.DEFAULT_STAFF.surname))
+        assertThat(res.name.forename, equalTo(StaffGenerator.DEFAULT_STAFF.forename))
+        assertThat(res.code, equalTo(StaffGenerator.DEFAULT_STAFF.code))
+    }
 }

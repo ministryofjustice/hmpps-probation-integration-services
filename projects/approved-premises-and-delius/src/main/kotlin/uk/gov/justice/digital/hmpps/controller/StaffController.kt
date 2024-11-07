@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.StaffService
 
 @RestController
+@PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
 class StaffController(
     private val staffService: StaffService
 ) {
-    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
     @Operation(
         summary = "List all members of staff that are keyworkers in the Approved Premises",
         description = """An Approved Premises is defined in Delius as part of reference data.
@@ -32,14 +32,15 @@ class StaffController(
         @PageableDefault(value = 100) pageable: Pageable = Pageable.ofSize(100)
     ) = staffService.getStaffInApprovedPremises(code, keyWorker, pageable)
 
-    @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
-    @Operation(
-        summary = "Get the staff name by username",
-        description = """Returns the Staff name associated with the given username.
-            """
-    )
+    @Operation(summary = "Get the staff details by username")
     @GetMapping(value = ["/staff/{userName}"])
     fun getStaffByUsername(
         @PathVariable userName: String
     ) = staffService.getStaffByUsername(userName)
+
+    @Operation(summary = "Get the staff details by code")
+    @GetMapping(value = ["/staff"], params = ["code"])
+    fun getStaffByCode(
+        @RequestParam code: String
+    ) = staffService.getStaffByCode(code)
 }

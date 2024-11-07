@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Approve
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.*
 
@@ -42,11 +43,12 @@ class StaffService(
 
     fun getStaffByUsername(username: String) =
         staffRepository.findByUsername(username)?.toStaffDetail(ldapTemplate.findByUsername<LdapUser>(username))
-            ?: throw NotFoundException(
-                "Staff",
-                "username",
-                username
-            )
+            ?: throw NotFoundException("Staff", "username", username)
+
+    fun getStaffByCode(code: String) =
+        staffRepository.getByCode(code).let {
+            it.toStaffDetail(it.user?.username?.let { username -> ldapTemplate.findByUsername<LdapUser>(username) })
+        }
 
     fun Staff.toResponse(approvedPremisesCode: String) = StaffResponse(
         code = code,
