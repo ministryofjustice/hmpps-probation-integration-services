@@ -3,10 +3,7 @@ package uk.gov.justice.digital.hmpps.api.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.service.*
 
 @RestController
@@ -23,7 +20,10 @@ class SentenceController(
 
     @GetMapping
     @Operation(summary = "Display active events")
-    fun getOverview(@PathVariable crn: String) = sentenceService.getEvents(crn)
+    fun getOverview(
+        @PathVariable crn: String,
+        @RequestParam(required = false) number: String?,
+    ) = sentenceService.getEvents(crn, number)
 
     @GetMapping("/previous-orders")
     @Operation(summary = "Display inactive events")

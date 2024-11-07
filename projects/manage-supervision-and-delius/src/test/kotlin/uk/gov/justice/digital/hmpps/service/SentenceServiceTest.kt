@@ -92,7 +92,7 @@ class SentenceServiceTest {
                 PersonGenerator.OVERVIEW.toSummary(),
                 emptyList()
             )
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         assertEquals(expected, response)
 
@@ -193,7 +193,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(70)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(3936)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = SentenceOverview(
             PersonGenerator.OVERVIEW.toSummary(),
@@ -294,7 +294,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(0)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = "0 minutes completed (of 1 hour)"
 
@@ -315,7 +315,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(1)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = "1 minute completed (of 1 hour)"
 
@@ -336,7 +336,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(2)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = "2 minutes completed (of 2 hours)"
 
@@ -356,7 +356,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(60)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = Requirement(
             requirement1._code,
@@ -388,7 +388,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(61)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = "1 hour 1 minute completed (of 2 hours)"
 
@@ -408,7 +408,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(2)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(62)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = "1 hour 2 minutes completed (of 2 hours)"
 
@@ -428,7 +428,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(1)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(120)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = Requirement(
             requirement1._code,
@@ -460,7 +460,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(3)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(121)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = "2 hours 1 minute completed (of 3 hours)"
 
@@ -480,7 +480,7 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(3)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(122)
 
-        val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
+        val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = "2 hours 2 minutes completed (of 3 hours)"
 

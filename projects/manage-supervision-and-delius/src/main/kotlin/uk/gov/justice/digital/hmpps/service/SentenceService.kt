@@ -26,9 +26,14 @@ class SentenceService(
     private val upwAppointmentRepository: UpwAppointmentRepository,
     private val licenceConditionRepository: LicenceConditionRepository
 ) {
-    fun getEvents(crn: String): SentenceOverview {
+    fun getEvents(crn: String, eventNumber: String?): SentenceOverview {
         val person = personRepository.getPerson(crn)
-        val activeEvents = eventRepository.findSentencesByPersonId(person.id).filter { it.active }
+        val activeEvents = eventRepository.findSentencesByPersonId(person.id).filter {
+            it.active && when(eventNumber) {
+                null -> true
+                else -> eventNumber == it.eventNumber
+            }
+        }
 
         return SentenceOverview(
             personSummary = person.toSummary(),
