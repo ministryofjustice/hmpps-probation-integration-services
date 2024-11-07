@@ -89,7 +89,8 @@ class SentenceServiceTest {
 
         val expected =
             SentenceOverview(
-                PersonGenerator.OVERVIEW.toSummary()
+                PersonGenerator.OVERVIEW.toSummary(),
+                emptyList()
             )
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -196,6 +197,7 @@ class SentenceServiceTest {
 
         val expected = SentenceOverview(
             PersonGenerator.OVERVIEW.toSummary(),
+            listOf(SentenceSummary(123457, "Default Sentence Type")),
             Sentence(
                     OffenceDetails(
                         "123457",

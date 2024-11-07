@@ -28,13 +28,19 @@ class SentenceService(
 ) {
     fun getEvents(crn: String): SentenceOverview {
         val person = personRepository.getPerson(crn)
-        val activeEvent = eventRepository.findSentencesByPersonId(person.id).firstOrNull { it.active }
+        val activeEvents = eventRepository.findSentencesByPersonId(person.id).filter { it.active }
 
         return SentenceOverview(
             personSummary = person.toSummary(),
-            sentence = activeEvent?.toSentence(crn)
+            activeEvents.map { it.toSentenceSummary() },
+            sentence = activeEvents.firstOrNull()?.toSentence(crn)
         )
     }
+
+    fun Event.toSentenceSummary() = SentenceSummary(
+        eventNumber.toLong(),
+        disposal?.type?.description ?: "Pre-Sentence"
+    )
 
     fun Event.toSentence(crn: String):Sentence {
         val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
