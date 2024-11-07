@@ -67,15 +67,10 @@ jobs:
           echo "has_rest_api=$(yq '. | has("api_path")' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml')" | tee -a "$GITHUB_OUTPUT"
           echo "has_async_api=$(test -f 'projects/${{ matrix.project }}/tech-docs/source/asyncapi-reference.html.md.erb' && echo 'true' || echo 'false')" | tee -a "$GITHUB_OUTPUT"
 
-      - uses: actions/setup-java@v4
-        if: steps.check_config.outputs.has_rest_api == 'true' || steps.check_config.outputs.has_async_api == 'true'
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: ./.github/actions/setup-gradle
         if: steps.check_config.outputs.has_rest_api || steps.check_config.outputs.has_async_api
         with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           cache-read-only: true
 
       - name: Host API specs

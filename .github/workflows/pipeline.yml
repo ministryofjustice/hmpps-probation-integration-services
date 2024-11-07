@@ -18,7 +18,8 @@ jobs:
     with:
       push: true
       force-deploy: "${{ inputs.force-deploy || false }}"
-    secrets: inherit
+    secrets:
+      GRADLE_ENCRYPTION_KEY: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
   post-build:
     name: Post-build
@@ -41,7 +42,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/analyse
         with:
-          token: ${{ secrets.SONAR_TOKEN }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          gradle-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
   deploy-to-test:
     name: Deploy to test

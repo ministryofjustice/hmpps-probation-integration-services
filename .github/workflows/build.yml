@@ -9,6 +9,10 @@ on:
       force-deploy:
         type: boolean
         default: false
+    secrets:
+      GRADLE_ENCRYPTION_KEY:
+        required: true
+        description: Used for encrypting the Gradle cache. See https://github.com/gradle/actions/blob/main/docs/setup-gradle.md#saving-configuration-cache-data
     outputs:
       version:
         value: ${{ jobs.build-gradle.outputs.version }}
@@ -89,11 +93,9 @@ jobs:
       changes: ${{ steps.check-changes.outputs.changes }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: ./.github/actions/setup-gradle
         with:
-          java-version: '21'
-          distribution: 'temurin'
-      - uses: gradle/actions/setup-gradle@v4
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Set version
         id: version
