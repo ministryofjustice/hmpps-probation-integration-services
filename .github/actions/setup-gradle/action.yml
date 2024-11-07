@@ -14,6 +14,10 @@ inputs:
       A suitable key can be generated with `openssl rand -base64 16`.
       Configuration-cache data will not be saved/restored without an encryption key being provided.
     required: false
+  remove-git-config:
+    description: Whether to remove the git config file to prevent configuration cache invalidation.
+    required: false
+    default: 'true'
 
 runs:
   using: "composite"
@@ -26,3 +30,11 @@ runs:
       with:
         cache-encryption-key: ${{ inputs.cache-encryption-key }}
         cache-read-only: ${{ inputs.cache-read-only }}
+    - name: Manually cache buildSrc output # workaround for https://github.com/gradle/actions/issues/21
+      uses: actions/cache@v4
+      with:
+        path: buildSrc/build
+        key: gradle-buildSrc-${{ hashFiles('buildSrc/src/**', 'buildSrc/build.gradle.kts') }}
+    - if: inputs.remove-git-config == 'true'
+      run: rm -f .git/config
+      shell: bash

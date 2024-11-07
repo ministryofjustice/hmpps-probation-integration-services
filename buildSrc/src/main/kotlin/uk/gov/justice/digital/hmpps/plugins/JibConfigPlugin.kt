@@ -51,7 +51,7 @@ class JibConfigPlugin : Plugin<Project> {
             project.tasks.withType<BuildImageTask>().named("jib") {
                 doFirst {
                     jib!!.to {
-                        tags = setOf("${project.version}")
+                        tags = setOf("${System.getenv("VERSION") ?: "dev"}")
                         auth {
                             username = System.getenv("GITHUB_USERNAME")
                             password = System.getenv("GITHUB_PASSWORD")
@@ -59,7 +59,7 @@ class JibConfigPlugin : Plugin<Project> {
                     }
                 }
                 if (System.getenv("FORCE_DEPLOY") == "true") {
-                    jib!!.to.tags = setOf("${project.version}")
+                    jib!!.to.tags = setOf("${System.getenv("VERSION") ?: "dev"}")
                 }
                 doLast {
                     val dir = File("${project.rootDir}/changed")
