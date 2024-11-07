@@ -22,6 +22,8 @@ generic-service:
       SENTRY_DSN: SENTRY_DSN
     cas3-and-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+    hmpps-domain-events-topic:
+      MESSAGING_PRODUCER_TOPIC: topic_arn
 
 generic-prometheus-alerts:
   targetApplication: cas3-and-delius

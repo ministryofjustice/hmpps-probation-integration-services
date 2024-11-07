@@ -5,30 +5,21 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Channel
 import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Cas3ApiClient
-import uk.gov.justice.digital.hmpps.integrations.delius.AddressService
-import uk.gov.justice.digital.hmpps.integrations.delius.ContactService
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.Cas3Service
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
 @Component
-@Transactional
 @Channel("cas3-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
-    private val contactService: ContactService,
-    private val addressService: AddressService,
-    private val cas3ApiClient: Cas3ApiClient,
-    private val personRepository: PersonRepository
+    private val cas3Service: Cas3Service,
+    private val notifier: Notifier,
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(
         messages = [
@@ -75,76 +66,53 @@ class Handler(
         val event = notification.message
         when (event.eventType) {
             "accommodation.cas3.referral.submitted" -> {
-                contactService.createOrUpdateContact(event.crn()) {
-                    cas3ApiClient.getApplicationSubmittedDetails(event.url())
-                }
+                cas3Service.referralSubmitted(event)
                 telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
             }
 
             "accommodation.cas3.booking.cancelled" -> {
-                contactService.createOrUpdateContact(event.crn()) {
-                    cas3ApiClient.getBookingCancelledDetails(event.url())
-                }
+                cas3Service.bookingCancelled(event)
                 telemetryService.trackEvent("BookingCancelled", event.telemetryProperties())
             }
 
             "accommodation.cas3.booking.confirmed" -> {
-                contactService.createOrUpdateContact(event.crn()) {
-                    cas3ApiClient.getBookingConfirmedDetails(event.url())
-                }
+                cas3Service.bookingConfirmed(event)
                 telemetryService.trackEvent("BookingConfirmed", event.telemetryProperties())
             }
 
             "accommodation.cas3.booking.provisionally-made" -> {
-                contactService.createOrUpdateContact(event.crn()) {
-                    cas3ApiClient.getBookingProvisionallyMade(event.url())
-                }
+                cas3Service.bookingProvisionallyMade(event)
                 telemetryService.trackEvent("BookingProvisionallyMade", event.telemetryProperties())
             }
 
             "accommodation.cas3.person.arrived" -> {
-                val person = personRepository.getByCrn(event.crn())
-                val detail = cas3ApiClient.getPersonArrived(event.url())
-                contactService.createOrUpdateContact(event.crn(), person) {
-                    detail
-                }
-                addressService.updateMainAddress(person, detail.eventDetails)
+                val (previousAddress, newAddress) = cas3Service.personArrived(event)
+                notifier.addressCreated(event.crn(), newAddress.id, newAddress.status.description)
+                previousAddress?.let { notifier.addressUpdated(event.crn(), it.id, it.status.description) }
                 telemetryService.trackEvent("PersonArrived", event.telemetryProperties())
             }
 
             "accommodation.cas3.person.departed" -> {
-                val person = personRepository.getByCrn(event.crn())
-                val detail = cas3ApiClient.getPersonDeparted(event.url())
-                contactService.createOrUpdateContact(event.crn(), person) {
-                    detail
+                cas3Service.personDeparted(event)?.let { updatedAddress ->
+                    notifier.addressUpdated(event.crn(), updatedAddress.id, updatedAddress.status.description)
                 }
-                addressService.endMainCAS3Address(person, detail.eventDetails.departedAt.toLocalDate())
                 telemetryService.trackEvent("PersonDeparted", event.telemetryProperties())
             }
 
             "accommodation.cas3.person.arrived.updated" -> {
-                val person = personRepository.getByCrn(event.crn())
-                val detail = cas3ApiClient.getPersonArrived(event.url())
-                contactService.createOrUpdateContact(
-                    event.crn(),
-                    replaceNotes = false,
-                    extraInfo = "Address details were updated: ${DeliusDateTimeFormatter.format(detail.timestamp)}"
-                ) { detail }
-                addressService.updateCas3Address(person, detail.eventDetails)
+                cas3Service.personArrivedUpdated(event)?.let { updatedAddress ->
+                    notifier.addressUpdated(event.crn(), updatedAddress.id, updatedAddress.status.description)
+                }
                 telemetryService.trackEvent("PersonArrivedUpdated", event.telemetryProperties())
             }
 
             "accommodation.cas3.person.departed.updated" -> {
-                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
-                    cas3ApiClient.getPersonDeparted(event.url())
-                }
+                cas3Service.personDepartedUpdated(event)
                 telemetryService.trackEvent("PersonDepartedUpdated", event.telemetryProperties())
             }
 
             "accommodation.cas3.booking.cancelled.updated" -> {
-                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
-                    cas3ApiClient.getBookingCancelledDetails(event.url())
-                }
+                cas3Service.bookingCancelledUpdated(event)
                 telemetryService.trackEvent("BookingCancelledUpdated", event.telemetryProperties())
             }
 

@@ -17,14 +17,19 @@ class AddressService(
     private val personAddressRepository: PersonAddressRepository,
     private val referenceDataRepository: ReferenceDataRepository
 ) {
-    fun updateMainAddress(person: Person, details: PersonArrived, ap: ApprovedPremises) {
-        endMainAddress(person, details.arrivedAt.toLocalDate())
-        ap.arrival(person, details).apply(personAddressRepository::save)
+    fun updateMainAddress(
+        person: Person,
+        details: PersonArrived,
+        ap: ApprovedPremises
+    ): Pair<PersonAddress?, PersonAddress> {
+        val previous = endMainAddress(person, details.arrivedAt.toLocalDate())
+        val current = ap.arrival(person, details).let(personAddressRepository::save)
+        return previous to current
     }
 
-    fun endMainAddress(person: Person, endDate: LocalDate) {
+    fun endMainAddress(person: Person, endDate: LocalDate): PersonAddress? {
         val currentMain = personAddressRepository.findMainAddress(person.id)
-        currentMain?.apply {
+        return currentMain?.also {
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
             currentMain.endDate = endDate

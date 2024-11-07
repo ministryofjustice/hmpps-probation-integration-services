@@ -98,9 +98,7 @@ class Contact(
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     val softDeleted: Boolean = false,
 
-    val partitionAreaId: Long = 0,
-
-    val createdByUserId: Long = 0
+    val partitionAreaId: Long = 0
 ) {
 
     fun startDateTime(): ZonedDateTime =

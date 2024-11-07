@@ -78,8 +78,11 @@ dependencyResolutionManagement {
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.1")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.2.1")
             library("aws-sts", "software.amazon.awssdk:sts:2.29.6")
+            library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.6.2")
+            library("azure-identity", "com.azure:azure-identity:1.13.3")
             library("flipt", "io.flipt:flipt-java:1.1.1")
-            library("insights", "com.microsoft.azure:applicationinsights-web:3.6.2")
+            library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.16.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
@@ -96,7 +99,7 @@ dependencyResolutionManagement {
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
             )
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
-            bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
+            bundle("telemetry", listOf("azure-app-insights", "opentelemetry-annotations", "sentry"))
         }
     }
 }

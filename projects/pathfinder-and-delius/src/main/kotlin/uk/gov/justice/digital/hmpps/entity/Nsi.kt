@@ -26,6 +26,8 @@ class Nsi(
     @Column(name = "nsi_id")
     val id: Long = 0,
 
+    val eventId: Long? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     var active: Boolean = true,
 
@@ -45,27 +47,30 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
            with latest_breach as (select nsi.referral_date as breachdate
                        from nsi nsi
                                 join r_nsi_type ref on nsi.nsi_type_id = ref.nsi_type_id
+                                left join event on event.event_id = nsi.event_id
                        where nsi.offender_id = :personId
+                         and (event.event_id is null or (event.active_flag = 1 and event.soft_deleted = 0))
                          and nsi.active_flag = 1
                          and nsi.soft_deleted = 0
                          and ref.code = 'BRE'
                        order by nsi.referral_date desc
                            fetch next 1 row only),
                  latest_recall as (select nsi.referral_date as recalldate
-                                   from nsi nsi
-                                            join r_nsi_type ref
-                                                 on nsi.nsi_type_id = ref.nsi_type_id
-                                   where nsi.offender_id = :personId
-                                     and nsi.active_flag = 1
-                                     and nsi.soft_deleted = 0
-                                     and ref.code = 'REC'
-                                   order by nsi.referral_date desc
-                                       fetch next 1 row only)
+                       from nsi nsi
+                                join r_nsi_type ref on nsi.nsi_type_id = ref.nsi_type_id
+                                left join event on event.event_id = nsi.event_id
+                       where nsi.offender_id = :personId
+                         and (event.event_id is null or (event.active_flag = 1 and event.soft_deleted = 0))
+                         and nsi.active_flag = 1
+                         and nsi.soft_deleted = 0
+                         and ref.code = 'REC'
+                       order by nsi.referral_date desc
+                           fetch next 1 row only)
             select breachdate as referralDate, 'breach' as name
             from latest_breach
             union all
             select recalldate as referralDate, 'recall' as name
-            from latest_recall  
+            from latest_recall
         """,
         nativeQuery = true
     )

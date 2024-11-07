@@ -21,19 +21,15 @@ object ResourceLoader {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java, ZonedDateTimeDeserializer()))
 
-    fun event(filename: String): HmppsDomainEvent =
-        MAPPER.readValue(ResourceUtils.getFile("classpath:messages/$filename.json"))
+    fun event(filename: String): HmppsDomainEvent = get(filename)
 
-    inline fun <reified T> message(filename: String): T =
-        MAPPER.readValue(
-            MAPPER.readValue<Notification<String>>(
-                ResourceUtils.getFile("classpath:messages/$filename.json")
-            ).message
-        )
+    inline fun <reified T> get(filename: String): T =
+        MAPPER.readValue<T>(ResourceUtils.getFile("classpath:messages/$filename.json"))
+
+    inline fun <reified T> message(filename: String): T = MAPPER.readValue(get<Notification<String>>(filename).message)
 
     inline fun <reified T> notification(filename: String): Notification<T> {
-        val file = ResourceUtils.getFile("classpath:messages/$filename.json")
-        val stringMessage = MAPPER.readValue<Notification<String>>(file)
+        val stringMessage = get<Notification<String>>(filename)
         return Notification(
             message = MAPPER.readValue(stringMessage.message, T::class.java),
             attributes = stringMessage.attributes

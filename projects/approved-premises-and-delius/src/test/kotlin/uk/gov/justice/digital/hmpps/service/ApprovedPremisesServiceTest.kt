@@ -40,6 +40,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.url
 import uk.gov.justice.digital.hmpps.prepEvent
@@ -131,6 +132,9 @@ internal class ApprovedPremisesServiceTest {
     @Mock
     lateinit var applicationStartedEvent: ApplicationStartedEvent
 
+    @Mock
+    lateinit var notifier: Notifier
+
     lateinit var addressService: AddressService
     lateinit var contactService: ContactService
     lateinit var nsiService: NsiService
@@ -191,7 +195,8 @@ internal class ApprovedPremisesServiceTest {
             eventRepository,
             contactService,
             nsiService,
-            referralService
+            referralService,
+            notifier,
         )
     }
 
@@ -304,6 +309,7 @@ internal class ApprovedPremisesServiceTest {
         givenAddressTypes(listOf(ReferenceDataGenerator.AP_ADDRESS_TYPE))
         givenAuditUser()
         givenReferral(person, details.eventDetails.bookingId)
+        whenever(personAddressRepository.save(any())).thenAnswer { it.arguments[0] }
 
         approvedPremisesService.personArrived(personArrivedEvent)
 
