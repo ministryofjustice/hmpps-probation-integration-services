@@ -92,6 +92,11 @@ updates:
     schedule:
       interval: "weekly"
 
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/setup-gradle"
+    schedule:
+      interval: "weekly"
+
   - package-ecosystem: "terraform"
     directory: "/templates"
     schedule:

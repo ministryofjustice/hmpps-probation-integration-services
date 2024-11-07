@@ -101,7 +101,7 @@ jobs:
         id: version
         run: |
           version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
-          echo "ORG_GRADLE_PROJECT_version=$version" | tee -a "$GITHUB_ENV"
+          echo "VERSION=$version" | tee -a "$GITHUB_ENV"
           echo "version=$version" | tee -a "$GITHUB_OUTPUT"
 
       - name: Build and test
@@ -115,7 +115,8 @@ jobs:
         with:
           max_attempts: 3 # Pushing lots of new image versions at once can result in GitHub rate-limiting so we retry this step
           timeout_minutes: 15
-          command: ./gradlew ${{ matrix.project }}:jib
+          # Configuration cache is not yet supported for Jib - see: https://github.com/GoogleContainerTools/jib/issues/3132
+          command: ./gradlew ${{ matrix.project }}:jib --no-configuration-cache
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_PASSWORD: ${{ github.token }}

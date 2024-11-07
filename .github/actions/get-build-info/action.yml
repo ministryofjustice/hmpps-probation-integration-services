@@ -28,13 +28,15 @@ runs:
       with:
         cache-encryption-key: ${{ inputs.gradle-encryption-key }}
         cache-read-only: true
+        remove-git-config: false
 
     - name: Get build info
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
       run: |
         echo '::group::Generate build info'
         ./gradlew ${{ inputs.project }}:buildInfo ${{ inputs.project }}:gitInfo
+        sed -i "s/build.version=.*/build.version=$VERSION/" projects/${{ inputs.project }}/build-info.properties
         echo '::endgroup::'
       shell: bash
       env:
-        ORG_GRADLE_PROJECT_version: ${{ inputs.version }}
+        VERSION: ${{ inputs.version }}

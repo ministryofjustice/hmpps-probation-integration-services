@@ -41,7 +41,7 @@ runs:
       shell: bash
       run: |
         version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
-        echo "ORG_GRADLE_PROJECT_version=$version" | tee -a "$GITHUB_ENV"
+        echo "VERSION=$version" | tee -a "$GITHUB_ENV"
         echo "version=$version" | tee -a "$GITHUB_OUTPUT"
 
     - uses: ./.github/actions/setup-gradle
