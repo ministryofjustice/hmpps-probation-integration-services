@@ -44,9 +44,6 @@ class SentenceServiceTest {
     lateinit var documentRepository: DocumentRepository
 
     @Mock
-    lateinit var offenderManagerRepository: OffenderManagerRepository
-
-    @Mock
     lateinit var upwAppointmentRepository: UpwAppointmentRepository
 
     @Mock
@@ -89,14 +86,11 @@ class SentenceServiceTest {
         whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(
             listOf()
         )
-        whenever(offenderManagerRepository.countOffenderManagersByPerson(PersonGenerator.OVERVIEW)).thenReturn(
-            0
-        )
 
         val expected =
             SentenceOverview(
                 PersonGenerator.OVERVIEW.toSummary(),
-                listOf(), ProbationHistory(0, null, 0, 0)
+                listOf()
             )
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -269,8 +263,7 @@ class SentenceServiceTest {
                     "65 hours 36 minutes completed (of 70 hours)",
                     listOf()
                 )
-            ),
-            ProbationHistory(0, null, 0, 0)
+            )
         )
 
         assertEquals(expected, response)

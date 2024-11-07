@@ -41,7 +41,7 @@ class SentenceIntegrationTest {
             .andReturn().response.contentAsJson<SentenceOverview>()
 
         val expected = SentenceOverview(
-            PersonDetailsGenerator.PERSONAL_DETAILS.toSummary(), listOf(), ProbationHistory(0, null, 0, 0)
+            PersonDetailsGenerator.PERSONAL_DETAILS.toSummary(), listOf()
         )
 
         assertEquals(expected, response)
@@ -202,8 +202,7 @@ class SentenceIntegrationTest {
                         )
                     )
                 )
-            ),
-            ProbationHistory(2, LocalDate.now().minusDays(7), 2, 2)
+            )
         )
 
         assertEquals(expected, response)
