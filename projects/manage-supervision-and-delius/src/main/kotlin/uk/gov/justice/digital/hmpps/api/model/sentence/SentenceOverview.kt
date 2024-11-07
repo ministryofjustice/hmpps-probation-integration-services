@@ -4,5 +4,5 @@ import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 
 data class SentenceOverview(
     val personSummary: PersonSummary,
-    val sentences: List<Sentence>
+    val sentence: Sentence? = null
 )

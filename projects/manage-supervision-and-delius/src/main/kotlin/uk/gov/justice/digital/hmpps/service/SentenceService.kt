@@ -28,20 +28,19 @@ class SentenceService(
 ) {
     fun getEvents(crn: String): SentenceOverview {
         val person = personRepository.getPerson(crn)
-        val activeEvents = eventRepository.findSentencesByPersonId(person.id).filter { it.active }
+        val activeEvent = eventRepository.findSentencesByPersonId(person.id).firstOrNull { it.active }
 
         return SentenceOverview(
             personSummary = person.toSummary(),
-            sentences = activeEvents.map {
-                val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(it.id)
-                val additionalSentences = additionalSentenceRepository.getAllByEventId(it.id)
-                it.toSentence(courtAppearance, additionalSentences, crn)
-            }
+            sentence = activeEvent?.toSentence(crn)
         )
     }
 
-    fun Event.toSentence(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>, crn: String) =
-        Sentence(
+    fun Event.toSentence(crn: String):Sentence {
+        val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
+        val additionalSentences = additionalSentenceRepository.getAllByEventId(id)
+
+        return Sentence(
             OffenceDetails(
                 eventNumber = eventNumber,
                 offence = mainOffence?.let { Offence(it.offence.description, it.offenceCount) },
@@ -66,8 +65,9 @@ class SentenceService(
                 licenceConditionRepository.findAllByDisposalId(disposal.id).map {
                     it.toLicenceCondition()
                 }
-            } ?: emptyList(),
+            } ?: emptyList()
         )
+    }
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)

@@ -89,8 +89,7 @@ class SentenceServiceTest {
 
         val expected =
             SentenceOverview(
-                PersonGenerator.OVERVIEW.toSummary(),
-                listOf()
+                PersonGenerator.OVERVIEW.toSummary()
             )
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn)
 
@@ -197,8 +196,7 @@ class SentenceServiceTest {
 
         val expected = SentenceOverview(
             PersonGenerator.OVERVIEW.toSummary(),
-            listOf(
-                Sentence(
+            Sentence(
                     OffenceDetails(
                         "123457",
                         Offence("Murder", 1),
@@ -262,7 +260,6 @@ class SentenceServiceTest {
                     listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
                     "65 hours 36 minutes completed (of 70 hours)",
                     listOf()
-                )
             )
         )
 
@@ -300,7 +297,7 @@ class SentenceServiceTest {
         val expected = "0 minutes completed (of 1 hour)"
 
 
-        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
+        assertEquals(expected, response.sentence!!.unpaidWorkProgress)
     }
 
     @Test
@@ -321,7 +318,7 @@ class SentenceServiceTest {
         val expected = "1 minute completed (of 1 hour)"
 
 
-        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
+        assertEquals(expected, response.sentence!!.unpaidWorkProgress)
     }
 
     @Test
@@ -341,7 +338,7 @@ class SentenceServiceTest {
 
         val expected = "2 minutes completed (of 2 hours)"
 
-        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
+        assertEquals(expected, response.sentence!!.unpaidWorkProgress)
     }
 
     @Test
@@ -373,7 +370,7 @@ class SentenceServiceTest {
             null
         )
 
-        assertEquals(expected, response.sentences[0].requirements[0])
+        assertEquals(expected, response.sentence!!.requirements[0])
     }
 
     @Test
@@ -393,7 +390,7 @@ class SentenceServiceTest {
 
         val expected = "1 hour 1 minute completed (of 2 hours)"
 
-        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
+        assertEquals(expected, response.sentence!!.unpaidWorkProgress)
     }
 
     @Test
@@ -413,7 +410,7 @@ class SentenceServiceTest {
 
         val expected = "1 hour 2 minutes completed (of 2 hours)"
 
-        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
+        assertEquals(expected, response.sentence!!.unpaidWorkProgress)
     }
 
     @Test
@@ -445,7 +442,7 @@ class SentenceServiceTest {
             null
         )
 
-        assertEquals(expected, response.sentences[0].requirements[0])
+        assertEquals(expected, response.sentence!!.requirements[0])
     }
 
     @Test
@@ -465,7 +462,7 @@ class SentenceServiceTest {
 
         val expected = "2 hours 1 minute completed (of 3 hours)"
 
-        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
+        assertEquals(expected, response.sentence!!.unpaidWorkProgress)
     }
 
     @Test
@@ -485,7 +482,7 @@ class SentenceServiceTest {
 
         val expected = "2 hours 2 minutes completed (of 3 hours)"
 
-        assertEquals(expected, response.sentences[0].unpaidWorkProgress)
+        assertEquals(expected, response.sentence!!.unpaidWorkProgress)
     }
 
     data class RequirementDetails(
