@@ -57,8 +57,8 @@ class SentenceIntegrationTest {
         val expected = SentenceOverview(
             PersonGenerator.OVERVIEW.toSummary(),
             listOf(
-                SentenceSummary(1234567, "Pre-Sentence"),
-                SentenceSummary(7654321, "Default Sentence Type")
+                SentenceSummary("1234567", "Pre-Sentence"),
+                SentenceSummary("7654321", "Default Sentence Type")
             ),
             Sentence(
                 OffenceDetails(
@@ -90,8 +90,8 @@ class SentenceIntegrationTest {
         val expected = SentenceOverview(
             PersonGenerator.OVERVIEW.toSummary(),
             listOf(
-                SentenceSummary(1234567, "Pre-Sentence"),
-                SentenceSummary(7654321, "Default Sentence Type")
+                SentenceSummary("1234567", "Pre-Sentence"),
+                SentenceSummary("7654321", "Default Sentence Type")
             ),
             Sentence(
                 OffenceDetails(
