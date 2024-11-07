@@ -8,6 +8,9 @@ inputs:
   version:
     description: The version of the service to deploy
     required: true
+  gradle-encryption-key:
+    description: Gradle encryption key
+    required: true
 
 runs:
   using: "composite"
@@ -20,15 +23,10 @@ runs:
       with:
         files: projects/${{ inputs.project }}/build.gradle.kts
 
-    - uses: actions/setup-java@v4
+    - uses: ./.github/actions/setup-gradle
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
       with:
-        java-version: '21'
-        distribution: 'temurin'
-
-    - uses: gradle/actions/setup-gradle@v4
-      if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
-      with:
+        cache-encryption-key: ${{ inputs.gradle-encryption-key }}
         cache-read-only: true
 
     - name: Get build info

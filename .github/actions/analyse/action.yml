@@ -2,8 +2,11 @@ name: Analyse
 description: Publish test results to GitHub Actions, and analyse source code and results using Sonar
 
 inputs:
-  token:
+  sonar-token:
     description: Sonar token
+    required: true
+  gradle-encryption-key:
+    description: Gradle encryption key
     required: true
 
 runs:
@@ -41,13 +44,9 @@ runs:
         echo "ORG_GRADLE_PROJECT_version=$version" | tee -a "$GITHUB_ENV"
         echo "version=$version" | tee -a "$GITHUB_OUTPUT"
 
-    - uses: actions/setup-java@v4
+    - uses: ./.github/actions/setup-gradle
       with:
-        java-version: '21'
-        distribution: 'temurin'
-
-    - uses: gradle/actions/setup-gradle@v4
-      with:
+        cache-encryption-key: ${{ inputs.gradle-encryption-key }}
         cache-read-only: true
 
     - name: Sonar analysis
@@ -55,4 +54,4 @@ runs:
       run: ./gradlew sonar
       shell: bash
       env:
-        SONAR_TOKEN: ${{ inputs.token }}
+        SONAR_TOKEN: ${{ inputs.sonar-token }}

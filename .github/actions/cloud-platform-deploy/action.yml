@@ -29,6 +29,9 @@ inputs:
   ip-allowlists:
     description: The HMPPS IP allow list groups to apply, in base64-encoded YAML format
     required: true
+  gradle-encryption-key:
+    description: Gradle encryption key
+    required: true
 
 runs:
   using: composite
@@ -46,6 +49,7 @@ runs:
       with:
         project: ${{ inputs.project }}
         version: ${{ inputs.version }}
+        gradle-encryption-key: ${{ inputs.gradle-encryption-key }}
 
     - name: Authenticate
       uses: ./.github/actions/cloud-platform-auth
