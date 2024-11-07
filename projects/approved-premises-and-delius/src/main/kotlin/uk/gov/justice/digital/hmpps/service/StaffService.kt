@@ -70,7 +70,7 @@ class StaffService(
                 endDate = it.endDate
             )
         },
-        username = user!!.username,
+        username = user?.username,
         name = PersonName(forename, surname, middleName),
         code = code,
         probationArea = ProbationArea(
