@@ -29,16 +29,18 @@ class SentenceService(
     fun getEvents(crn: String, eventNumber: String?): SentenceOverview {
         val person = personRepository.getPerson(crn)
         val activeEvents = eventRepository.findSentencesByPersonId(person.id).filter {
-            it.active && when(eventNumber) {
-                null -> true
-                else -> eventNumber == it.eventNumber
-            }
+            it.active
         }
 
         return SentenceOverview(
             personSummary = person.toSummary(),
             activeEvents.map { it.toSentenceSummary() },
-            sentence = activeEvents.firstOrNull()?.toSentence(crn)
+            sentence = activeEvents.firstOrNull{
+                when(eventNumber) {
+                    null -> true
+                    else -> eventNumber == it.eventNumber
+                }
+            }?.toSentence(crn)
         )
     }
 
