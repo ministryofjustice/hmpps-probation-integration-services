@@ -8,6 +8,7 @@ data class History(
     val sentenceSummaryList: List<SentenceSummary> = emptyList(),
     val probationHistory: ProbationHistory
 )
+
 data class ProbationHistory(
     val numberOfTerminatedEvents: Int,
     val dateOfMostRecentTerminatedEvent: LocalDate?,

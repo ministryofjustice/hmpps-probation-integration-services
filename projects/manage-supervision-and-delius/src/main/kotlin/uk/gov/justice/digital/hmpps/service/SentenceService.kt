@@ -37,11 +37,11 @@ class SentenceService(
             personSummary = person.toSummary(),
             activeEvents.map { it.toSentenceSummary() },
             sentence = activeEvents.firstOrNull {
-                when(eventNumber) {
+                when (eventNumber) {
                     null -> true
                     else -> eventNumber == it.eventNumber
                 }
-            } ?.toSentence(crn)
+            }?.toSentence(crn)
         )
     }
 
@@ -59,7 +59,6 @@ class SentenceService(
                 offenderManagerRepository.countOffenderManagersByPerson(person)
             )
         )
-
     }
 
     fun Event.toSentenceSummary() = SentenceSummary(
@@ -67,7 +66,7 @@ class SentenceService(
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
-    fun Event.toSentence(crn: String):Sentence {
+    fun Event.toSentence(crn: String): Sentence {
         val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
         val additionalSentences = additionalSentenceRepository.getAllByEventId(id)
 

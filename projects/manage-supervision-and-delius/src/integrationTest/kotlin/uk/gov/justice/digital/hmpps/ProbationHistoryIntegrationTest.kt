@@ -27,7 +27,10 @@ class ProbationHistoryIntegrationTest {
     @Test
     fun `no probation history`() {
         val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/probation-history").withToken())
+            .perform(
+                MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/probation-history")
+                    .withToken()
+            )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<History>()
 
@@ -43,7 +46,9 @@ class ProbationHistoryIntegrationTest {
     @Test
     fun `get probation history`() {
         val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/probation-history").withToken())
+            .perform(
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/probation-history").withToken()
+            )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<History>()
 

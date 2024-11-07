@@ -202,69 +202,69 @@ class SentenceServiceTest {
             PersonGenerator.OVERVIEW.toSummary(),
             listOf(SentenceSummary(123457, "Default Sentence Type")),
             Sentence(
-                    OffenceDetails(
-                        "123457",
-                        Offence("Murder", 1),
-                        LocalDate.now(),
-                        "overview",
-                        listOf(
-                            Offence("Burglary", 1)
-                        )
-                    ),
-                    Conviction(
-                        "Hull Court",
-                        null,
-                        null,
-                        listOf(
-                            AdditionalSentence(3, null, null, "Disqualified from Driving"),
-                            AdditionalSentence(null, 500, "fine notes", "Fine")
-                        )
-                    ),
-                    Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
+                OffenceDetails(
+                    "123457",
+                    Offence("Murder", 1),
+                    LocalDate.now(),
+                    "overview",
                     listOf(
-                        Requirement(
-                            requirement1._code,
-                            requirement1._expectedStartDate,
-                            requirement1._startDate,
-                            requirement1._expectedEndDate,
-                            requirement1._terminationDate,
-                            requirement1._terminationReason,
-                            "${requirement1._description} - ${requirement1._codeDescription}",
-                            requirement1._length,
-                            requirement1.lengthUnitValue,
-                            requirement1._notes,
-                            null
-                        ),
-                        Requirement(
-                            requirement2._code,
-                            requirement2._expectedStartDate,
-                            requirement2._startDate,
-                            requirement2._expectedEndDate,
-                            requirement2._terminationDate,
-                            requirement2._terminationReason,
-                            "3 days RAR, 1 completed",
-                            requirement2._length,
-                            requirement2.lengthUnitValue,
-                            requirement2._notes,
-                            Rar(1, 2, 3)
-                        ),
-                        Requirement(
-                            requirement3._code,
-                            requirement3._expectedStartDate,
-                            requirement3._startDate,
-                            requirement3._expectedEndDate,
-                            requirement3._terminationDate,
-                            requirement3._terminationReason,
-                            requirement3._description,
-                            requirement3._length,
-                            requirement3.lengthUnitValue,
-                            requirement3._notes,
-                            null
-                        )
+                        Offence("Burglary", 1)
+                    )
+                ),
+                Conviction(
+                    "Hull Court",
+                    null,
+                    null,
+                    listOf(
+                        AdditionalSentence(3, null, null, "Disqualified from Driving"),
+                        AdditionalSentence(null, 500, "fine notes", "Fine")
+                    )
+                ),
+                Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
+                listOf(
+                    Requirement(
+                        requirement1._code,
+                        requirement1._expectedStartDate,
+                        requirement1._startDate,
+                        requirement1._expectedEndDate,
+                        requirement1._terminationDate,
+                        requirement1._terminationReason,
+                        "${requirement1._description} - ${requirement1._codeDescription}",
+                        requirement1._length,
+                        requirement1.lengthUnitValue,
+                        requirement1._notes,
+                        null
                     ),
-                    listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
-                    "65 hours 36 minutes completed (of 70 hours)",
-                    listOf()
+                    Requirement(
+                        requirement2._code,
+                        requirement2._expectedStartDate,
+                        requirement2._startDate,
+                        requirement2._expectedEndDate,
+                        requirement2._terminationDate,
+                        requirement2._terminationReason,
+                        "3 days RAR, 1 completed",
+                        requirement2._length,
+                        requirement2.lengthUnitValue,
+                        requirement2._notes,
+                        Rar(1, 2, 3)
+                    ),
+                    Requirement(
+                        requirement3._code,
+                        requirement3._expectedStartDate,
+                        requirement3._startDate,
+                        requirement3._expectedEndDate,
+                        requirement3._terminationDate,
+                        requirement3._terminationReason,
+                        requirement3._description,
+                        requirement3._length,
+                        requirement3.lengthUnitValue,
+                        requirement3._notes,
+                        null
+                    )
+                ),
+                listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
+                "65 hours 36 minutes completed (of 70 hours)",
+                listOf()
             )
         )
 
