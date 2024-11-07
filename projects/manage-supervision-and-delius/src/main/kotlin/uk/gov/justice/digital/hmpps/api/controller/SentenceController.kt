@@ -25,6 +25,10 @@ class SentenceController(
         @RequestParam(required = false) number: String?,
     ) = sentenceService.getEvents(crn, number)
 
+    @GetMapping("/probation-history")
+    @Operation(summary = "Display probation history")
+    fun getProbationHistory(@PathVariable crn: String) = sentenceService.getProbationHistory(crn)
+
     @GetMapping("/previous-orders")
     @Operation(summary = "Display inactive events")
     fun getPreviousEvents(@PathVariable crn: String) = ordersService.getPreviousEvents(crn)

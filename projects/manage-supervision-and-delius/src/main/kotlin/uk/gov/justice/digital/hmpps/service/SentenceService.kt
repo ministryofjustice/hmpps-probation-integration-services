@@ -23,6 +23,7 @@ class SentenceService(
     private val personRepository: PersonRepository,
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
+    private val offenderManagerRepository: OffenderManagerRepository,
     private val upwAppointmentRepository: UpwAppointmentRepository,
     private val licenceConditionRepository: LicenceConditionRepository
 ) {
@@ -35,13 +36,30 @@ class SentenceService(
         return SentenceOverview(
             personSummary = person.toSummary(),
             activeEvents.map { it.toSentenceSummary() },
-            sentence = activeEvents.firstOrNull{
+            sentence = activeEvents.firstOrNull {
                 when(eventNumber) {
                     null -> true
                     else -> eventNumber == it.eventNumber
                 }
-            }?.toSentence(crn)
+            } ?.toSentence(crn)
         )
+    }
+
+    fun getProbationHistory(crn: String): History {
+        val person = personRepository.getPerson(crn)
+        val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
+
+        return History(
+            personSummary = person.toSummary(),
+            activeEvents.map { it.toSentenceSummary() },
+            ProbationHistory(
+                inactiveEvents.count(),
+                getMostRecentTerminatedDateFromInactiveEvents(inactiveEvents),
+                inactiveEvents.count { it.inBreach },
+                offenderManagerRepository.countOffenderManagersByPerson(person)
+            )
+        )
+
     }
 
     fun Event.toSentenceSummary() = SentenceSummary(

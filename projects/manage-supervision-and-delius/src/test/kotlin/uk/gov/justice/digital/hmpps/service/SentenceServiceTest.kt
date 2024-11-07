@@ -44,6 +44,9 @@ class SentenceServiceTest {
     lateinit var documentRepository: DocumentRepository
 
     @Mock
+    lateinit var offenderManagerRepository: OffenderManagerRepository
+
+    @Mock
     lateinit var upwAppointmentRepository: UpwAppointmentRepository
 
     @Mock
