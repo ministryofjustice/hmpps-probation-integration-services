@@ -40,7 +40,7 @@ class Disposal(
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
-){
+) {
     fun expectedEndDate() = enteredSentenceEndDate ?: endDate
 }
 
@@ -62,12 +62,13 @@ data class DisposalType(
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
 
-    @Query("""
+    @Query(
+        """
         select d from Disposal d
         join d.event e
         where e.person.crn = :crn
-    """)
+    """
+    )
     fun findActiveSentences(crn: String): List<Disposal>
-
 }
 
