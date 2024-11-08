@@ -124,6 +124,9 @@
         <a href="./api-reference.html#teams-managingcase-crn"><span>/teams/managingCase/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#staff"><span>/staff</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#staff-username"><span>/staff/{userName}</span></a>
       </li>
       <li>
@@ -586,14 +589,103 @@
 
 
 
+<h2 id="staff">/staff</h2>
+
+<h3 id="staff-get">get</h3>
+
+  <p><em>Get the staff details by code</em></p>
+
+
+
+
+<h4 id="staff-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "email": "string",
+  "telephoneNumber": "string",
+  "staffIdentifier": "integer",
+  "teams": [
+    {
+      "code": "string",
+      "name": "string",
+      "ldu": {
+        "code": "string",
+        "name": "string"
+      },
+      "borough": {
+        "code": "string",
+        "description": "string"
+      },
+      "startDate": "string",
+      "endDate": "string"
+    }
+  ],
+  "probationArea": {
+    "code": "string",
+    "description": "string"
+  },
+  "username": "string",
+  "name": {
+    "forename": "string",
+    "surname": "string",
+    "middleName": "string"
+  },
+  "code": "string",
+  "active": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-staffdetail'>StaffDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="staff-username">/staff/{userName}</h2>
 
 <h3 id="staff-username-get">get</h3>
 
-  <p><em>Get the staff name by username</em></p>
-
-
-  <p>Returns the Staff name associated with the given username.</p>
+  <p><em>Get the staff details by username</em></p>
 
 
 
@@ -1872,7 +1964,7 @@
 <tr>
 <td>username</td>
 <td>string</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   

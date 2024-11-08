@@ -118,6 +118,11 @@ paths:
         required: true
         schema:
           type: string
+      - name: number
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -125,6 +130,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SentenceOverview"
+  /sentence/{crn}/probation-history:
+    get:
+      tags:
+      - Sentence
+      summary: Display probation history
+      operationId: getProbationHistory
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/History"
   /sentence/{crn}/previous-orders:
     get:
       tags:
@@ -1018,25 +1042,6 @@ components:
         dateOfBirth:
           type: string
           format: date
-    ProbationHistory:
-      required:
-      - numberOfProfessionalContacts
-      - numberOfTerminatedEventBreaches
-      - numberOfTerminatedEvents
-      type: object
-      properties:
-        numberOfTerminatedEvents:
-          type: integer
-          format: int32
-        dateOfMostRecentTerminatedEvent:
-          type: string
-          format: date
-        numberOfTerminatedEventBreaches:
-          type: integer
-          format: int32
-        numberOfProfessionalContacts:
-          type: integer
-          format: int64
     Rar:
       required:
       - completed
@@ -1118,18 +1123,62 @@ components:
     SentenceOverview:
       required:
       - personSummary
-      - probationHistory
-      - sentences
+      - sentenceSummaryList
       type: object
       properties:
         personSummary:
           $ref: "#/components/schemas/PersonSummary"
-        sentences:
+        sentenceSummaryList:
           type: array
           items:
-            $ref: "#/components/schemas/Sentence"
+            $ref: "#/components/schemas/SentenceSummary"
+        sentence:
+          $ref: "#/components/schemas/Sentence"
+    SentenceSummary:
+      required:
+      - description
+      - eventNumber
+      type: object
+      properties:
+        eventNumber:
+          type: integer
+          format: int64
+        description:
+          type: string
+    History:
+      required:
+      - personSummary
+      - probationHistory
+      - sentenceSummaryList
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        sentenceSummaryList:
+          type: array
+          items:
+            $ref: "#/components/schemas/SentenceSummary"
         probationHistory:
           $ref: "#/components/schemas/ProbationHistory"
+    ProbationHistory:
+      required:
+      - numberOfProfessionalContacts
+      - numberOfTerminatedEventBreaches
+      - numberOfTerminatedEvents
+      type: object
+      properties:
+        numberOfTerminatedEvents:
+          type: integer
+          format: int32
+        dateOfMostRecentTerminatedEvent:
+          type: string
+          format: date
+        numberOfTerminatedEventBreaches:
+          type: integer
+          format: int32
+        numberOfProfessionalContacts:
+          type: integer
+          format: int64
     PreviousOrder:
       required:
       - title

@@ -143,13 +143,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamCodeResponse"
+  /staff:
+    get:
+      tags:
+      - staff-controller
+      summary: Get the staff details by code
+      operationId: getStaffByCode
+      parameters:
+      - name: code
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffDetail"
   /staff/{userName}:
     get:
       tags:
       - staff-controller
-      summary: Get the staff name by username
-      description: "Returns the Staff name associated with the given username.\n \
-        \           "
+      summary: Get the staff details by username
       operationId: getStaffByUsername
       parameters:
       - name: userName
@@ -504,7 +521,6 @@ components:
       - probationArea
       - staffIdentifier
       - teams
-      - username
       type: object
       properties:
         email:

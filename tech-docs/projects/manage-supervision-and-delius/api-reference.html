@@ -110,6 +110,9 @@
         <a href="./api-reference.html#sentence-crn"><span>/sentence/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#sentence-crn-probation-history"><span>/sentence/{crn}/probation-history</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#sentence-crn-previous-orders"><span>/sentence/{crn}/previous-orders</span></a>
       </li>
       <li>
@@ -516,6 +519,16 @@
 </td>
 </tr>
 
+<tr>
+<td>number</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -548,97 +561,179 @@
     "pnc": "string",
     "dateOfBirth": "string"
   },
-  "sentences": [
+  "sentenceSummaryList": [
     {
-      "offenceDetails": {
-        "eventNumber": "string",
-        "offence": {
+      "eventNumber": "integer",
+      "description": "string"
+    }
+  ],
+  "sentence": {
+    "offenceDetails": {
+      "eventNumber": "string",
+      "offence": {
+        "description": "string",
+        "count": "integer"
+      },
+      "dateOfOffence": "string",
+      "notes": "string",
+      "additionalOffences": [
+        {
           "description": "string",
           "count": "integer"
-        },
-        "dateOfOffence": "string",
-        "notes": "string",
-        "additionalOffences": [
-          {
-            "description": "string",
-            "count": "integer"
-          }
-        ]
-      },
-      "conviction": {
-        "sentencingCourt": "string",
-        "responsibleCourt": "string",
-        "convictionDate": "string",
-        "additionalSentences": [
-          {
-            "length": "integer",
-            "amount": "integer",
-            "notes": "string",
-            "description": "string"
-          }
-        ]
-      },
-      "order": {
+        }
+      ]
+    },
+    "conviction": {
+      "sentencingCourt": "string",
+      "responsibleCourt": "string",
+      "convictionDate": "string",
+      "additionalSentences": [
+        {
+          "length": "integer",
+          "amount": "integer",
+          "notes": "string",
+          "description": "string"
+        }
+      ]
+    },
+    "order": {
+      "description": "string",
+      "length": "integer",
+      "endDate": "string",
+      "startDate": "string",
+      "status": "string",
+      "mainOffence": "string",
+      "breaches": "integer"
+    },
+    "requirements": [
+      {
+        "code": "string",
+        "expectedStartDate": "string",
+        "actualStartDate": "string",
+        "expectedEndDate": "string",
+        "actualEndDate": "string",
+        "terminationReason": "string",
         "description": "string",
         "length": "integer",
-        "endDate": "string",
-        "startDate": "string",
-        "status": "string",
-        "mainOffence": "string",
-        "breaches": "integer"
-      },
-      "requirements": [
-        {
-          "code": "string",
-          "expectedStartDate": "string",
-          "actualStartDate": "string",
-          "expectedEndDate": "string",
-          "actualEndDate": "string",
-          "terminationReason": "string",
-          "description": "string",
-          "length": "integer",
-          "lengthUnitValue": "string",
-          "notes": "string",
-          "rar": {
-            "completed": "integer",
-            "scheduled": "integer",
-            "totalDays": "integer"
-          }
+        "lengthUnitValue": "string",
+        "notes": "string",
+        "rar": {
+          "completed": "integer",
+          "scheduled": "integer",
+          "totalDays": "integer"
         }
-      ],
-      "courtDocuments": [
-        {
-          "id": "string",
-          "lastSaved": "string",
-          "documentName": "string"
-        }
-      ],
-      "unpaidWorkProgress": "string",
-      "licenceConditions": [
-        {
-          "id": "integer",
-          "mainDescription": "string",
-          "subTypeDescription": "string",
-          "imposedReleasedDate": "string",
-          "actualStartDate": "string",
-          "licenceConditionNotes": [
-            {
-              "id": "integer",
-              "createdBy": "string",
-              "createdByDate": "string",
-              "note": "string",
-              "hasNoteBeenTruncated": "boolean"
-            }
-          ],
-          "licenceConditionNote": {
+      }
+    ],
+    "courtDocuments": [
+      {
+        "id": "string",
+        "lastSaved": "string",
+        "documentName": "string"
+      }
+    ],
+    "unpaidWorkProgress": "string",
+    "licenceConditions": [
+      {
+        "id": "integer",
+        "mainDescription": "string",
+        "subTypeDescription": "string",
+        "imposedReleasedDate": "string",
+        "actualStartDate": "string",
+        "licenceConditionNotes": [
+          {
             "id": "integer",
             "createdBy": "string",
             "createdByDate": "string",
             "note": "string",
             "hasNoteBeenTruncated": "boolean"
           }
+        ],
+        "licenceConditionNote": {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
         }
-      ]
+      }
+    ]
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-sentenceoverview'>SentenceOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="sentence-crn-probation-history">/sentence/{crn}/probation-history</h2>
+
+<h3 id="sentence-crn-probation-history-get">get</h3>
+
+  <p><em>Display probation history</em></p>
+
+
+
+
+<h4 id="sentence-crn-probation-history-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="sentence-crn-probation-history-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "sentenceSummaryList": [
+    {
+      "eventNumber": "integer",
+      "description": "string"
     }
   ],
   "probationHistory": {
@@ -651,7 +746,7 @@
 
 </td>
 <td>
-<a href='#schema-sentenceoverview'>SentenceOverview</a>
+<a href='#schema-history'>History</a>
 </td>
 </tr>
 
@@ -4741,58 +4836,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-probationhistory">ProbationHistory</h3>
-
-
-<table class='schema-probationhistory'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>numberOfTerminatedEvents</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>dateOfMostRecentTerminatedEvent</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>numberOfTerminatedEventBreaches</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>numberOfProfessionalContacts</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-rar">Rar</h3>
 
 
@@ -5059,12 +5102,86 @@
 </tr>
 
 <tr>
-<td>sentences</td>
+<td>sentenceSummaryList</td>
 <td>array</td>
 <td>true</td>
 <td></td>
 <td>
+  <a href='#schema-sentencesummary'>SentenceSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
   <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentencesummary">SentenceSummary</h3>
+
+
+<table class='schema-sentencesummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>eventNumber</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-history">History</h3>
+
+
+<table class='schema-history'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>sentenceSummaryList</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-sentencesummary'>SentenceSummary</a>
 </td>
 </tr>
 
@@ -5075,6 +5192,58 @@
 <td></td>
 <td>
   <a href='#schema-probationhistory'>ProbationHistory</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationhistory">ProbationHistory</h3>
+
+
+<table class='schema-probationhistory'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>numberOfTerminatedEvents</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfMostRecentTerminatedEvent</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>numberOfTerminatedEventBreaches</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>numberOfProfessionalContacts</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
