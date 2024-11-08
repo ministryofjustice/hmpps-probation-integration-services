@@ -2,26 +2,38 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.model.CaseDetails
-import uk.gov.justice.digital.hmpps.model.FirstAppointment
-import uk.gov.justice.digital.hmpps.model.Manager
-import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.service.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.service.entity.EventRepository
-import uk.gov.justice.digital.hmpps.service.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.service.entity.getPerson
-import uk.gov.justice.digital.hmpps.service.entity.isInCustody
-import uk.gov.justice.digital.hmpps.service.entity.name
+import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.service.entity.*
 
 @Service
 class PersonDetailsService(
     val personRepository: PersonRepository,
     val eventRepository: EventRepository,
-    val contactRepository: ContactRepository
+    val disposalRepository: DisposalRepository,
+    val requirementRepository: RequirementRepository,
+    val contactRepository: ContactRepository,
+    val upwAppointmentRepository: UpwAppointmentRepository
 ) {
-    fun getPersonalDetails(crn: String): CaseDetails {
+    fun getCaseDetails(crn: String): CaseDetails {
         val personEntity = personRepository.getPerson(crn)
         val manager = personEntity.manager
+
+        val sentences = disposalRepository.findActiveSentences(crn).map { disposal ->
+            val rarDays = requirementRepository.getRar(disposal.id)
+            val upwHoursOrdered = requirementRepository.sumTotalUnpaidWorkHoursByDisposal(disposal.id)
+            val upwMinutesCompleted = upwAppointmentRepository.calculateUnpaidTimeWorked(disposal.id)
+            Sentence(
+                description = disposal.type.description,
+                startDate = disposal.startDate,
+                endDate = disposal.expectedEndDate(),
+                programmeRequirement = false, //ToDo
+                unpaidWorkHoursOrdered = upwHoursOrdered,
+                unpaidWorkMinutesCompleted = upwMinutesCompleted,
+                rarDaysCompleted = rarDays.completed,
+                rarDaysOrdered = rarDays.totalDays
+            )
+        }
+
         return CaseDetails(
             personEntity.name(),
             personEntity.crn,
@@ -33,7 +45,8 @@ class PersonDetailsService(
                 Name(manager.staff.forename, manager.staff.middleName, manager.staff.surname),
                 manager.staff.isUnallocated()
             ),
-            eventRepository.isInCustody(crn)
+            eventRepository.isInCustody(crn),
+            sentences
         )
     }
 

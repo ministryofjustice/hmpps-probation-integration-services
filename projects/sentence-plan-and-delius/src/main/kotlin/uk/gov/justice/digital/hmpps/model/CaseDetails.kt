@@ -10,7 +10,8 @@ data class CaseDetails(
     val nomisId: String?,
     val region: String?,
     val keyWorker: Manager,
-    val inCustody: Boolean = false
+    val inCustody: Boolean = false,
+    val sentences: List<Sentence> = emptyList()
 )
 
 data class Name(
@@ -22,4 +23,15 @@ data class Name(
 data class Manager(
     val name: Name?,
     val unallocated: Boolean = false
+)
+
+data class Sentence(
+    val description: String?,
+    val startDate: LocalDate? = null,
+    val endDate: LocalDate? = null,
+    val programmeRequirement: Boolean = false,
+    val unpaidWorkHoursOrdered: Int = 0,
+    val unpaidWorkMinutesCompleted: Int = 0,
+    val rarDaysOrdered: Int = 0,
+    val rarDaysCompleted: Int = 0,
 )
