@@ -20,7 +20,7 @@ data class Hearing(
 
 data class ProsecutionCase(
     val id: String,
-    val initiationCode: String,
+    val initiationCode: String? = null,
     val prosecutionCaseIdentifier: ProsecutionCaseIdentifier,
     val defendants: List<Defendant>,
     val caseStatus: String? = null,
@@ -48,7 +48,7 @@ data class Defendant(
 data class Offence(
     val id: String,
     val offenceDefinitionId: String? = null,
-    val offenceCode: String,
+    val offenceCode: String? = null,
     val offenceTitle: String,
     val wording: String,
     val offenceLegislation: String,
