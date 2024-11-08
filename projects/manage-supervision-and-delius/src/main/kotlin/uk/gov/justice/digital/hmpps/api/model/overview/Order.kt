@@ -6,6 +6,7 @@ data class Order(
     val description: String,
     val length: Long?,
     val endDate: LocalDate?,
+    val releaseDate: LocalDate? = null,
     val startDate: LocalDate,
     val status: String? = null,
     val mainOffence: String? = null,
