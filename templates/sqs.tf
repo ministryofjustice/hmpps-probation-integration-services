@@ -33,7 +33,7 @@ resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
 }
 
 module "SERVICE_NAME-dlq" {
-  source = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
+  source = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.1.0"
 
   # Queue configuration
   sqs_name                  = "SERVICE_NAME-dlq"
