@@ -52,4 +52,7 @@ class Release (
 
     @Column(name = "created_datetime")
     val createdDateTime: ZonedDateTime,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean
 )

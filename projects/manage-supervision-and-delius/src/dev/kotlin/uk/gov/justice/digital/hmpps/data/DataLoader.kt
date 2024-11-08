@@ -169,6 +169,10 @@ class DataLoader(
             UnpaidWorkApptGenerator.UNPAID_WORK_DETAILS_1,
             UnpaidWorkApptGenerator.APPT1,
             UnpaidWorkApptGenerator.APPT2,
+            CustodyGenerator.CUSTODY_1,
+            CustodyGenerator.RELEASE_1,
+            CustodyGenerator.RELEASE_2,
+            CustodyGenerator.RELEASE_3
         )
 
         personalDetailsData()
