@@ -20,9 +20,7 @@ jobs:
     if: always()
     steps:
       - name: Check build matrix status
-        run: echo "${{ needs.build.result }}" && exit "$RESULT"
-        env:
-          RESULT: ${{ needs.build.result == 'success' && 0 || 1 }}
+        run: if [ "${{ needs.build.result }}" = "success" ]; then exit 0; else exit 1; fi
 
   analyse:
     name: Analyse
