@@ -9,6 +9,6 @@ data class SentenceOverview(
 )
 
 data class SentenceSummary(
-    val eventNumber: Long,
+    val eventNumber: String,
     val description: String
 )

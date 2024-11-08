@@ -62,7 +62,7 @@ class SentenceService(
     }
 
     fun Event.toSentenceSummary() = SentenceSummary(
-        eventNumber.toLong(),
+        eventNumber,
         disposal?.type?.description ?: "Pre-Sentence"
     )
 
