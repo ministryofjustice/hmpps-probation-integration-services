@@ -111,7 +111,13 @@ class SentenceIntegrationTest {
                     LocalDate.now(),
                     listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                 ),
-                Order("Default Sentence Type", 12, null, releaseDate = RELEASE_3.date.toLocalDate(), startDate = LocalDate.now().minusDays(14)),
+                Order(
+                    "Default Sentence Type",
+                    12,
+                    null,
+                    releaseDate = RELEASE_3.date.toLocalDate(),
+                    startDate = LocalDate.now().minusDays(14)
+                ),
                 listOf(
                     Requirement(
                         "F",

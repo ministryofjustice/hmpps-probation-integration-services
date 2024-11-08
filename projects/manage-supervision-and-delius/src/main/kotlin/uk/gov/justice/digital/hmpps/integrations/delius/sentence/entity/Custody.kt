@@ -38,7 +38,7 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
 @Immutable
 @Entity
 @SQLRestriction("soft_deleted = 0")
-class Release (
+class Release(
     @Id
     @Column(name = "release_id")
     val id: Long,
