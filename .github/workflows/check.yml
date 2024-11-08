@@ -20,8 +20,9 @@ jobs:
     if: always()
     steps:
       - name: Check build matrix status
-        if: ${{ needs.build.result != 'success' }}
-        run: exit 1
+        run: exit "$RESULT"
+        env:
+          RESULT: ${{ needs.build.result == 'success' && 0 || 1 }}
 
   analyse:
     name: Analyse
