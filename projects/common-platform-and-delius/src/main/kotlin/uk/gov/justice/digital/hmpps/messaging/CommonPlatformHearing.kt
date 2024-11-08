@@ -47,13 +47,13 @@ data class Defendant(
 
 data class Offence(
     val id: String,
-    val offenceDefinitionId: String,
+    val offenceDefinitionId: String? = null,
     val offenceCode: String,
     val offenceTitle: String,
     val wording: String,
     val offenceLegislation: String,
     val listingNumber: Int,
-    val judicialResults: List<JudicialResult>,
+    val judicialResults: List<JudicialResult>? = emptyList(),
     val plea: Plea? = null,
     val verdict: Verdict? = null
 )
