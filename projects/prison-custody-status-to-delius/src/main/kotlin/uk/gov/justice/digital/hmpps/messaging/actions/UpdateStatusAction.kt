@@ -19,78 +19,83 @@ class UpdateStatusAction(
     private val custodyHistoryRepository: CustodyHistoryRepository
 ) : PrisonerMovementAction {
     override val name: String = "UpdateStatus"
-    override fun accept(context: PrisonerMovementContext): ActionResult =
-        when (context.prisonerMovement) {
-            is PrisonerMovement.Received -> {
-                inboundStatusChange(context)
-            }
+    override fun accept(context: PrisonerMovementContext): ActionResult {
+        val (prisonerMovement, custody) = context
 
-            is PrisonerMovement.Released -> {
-                outboundStatusChange(context)
-            }
+        val result = checkPreconditions(prisonerMovement, custody)
+        if (result != null) return result
+
+        return when (context.prisonerMovement) {
+            is PrisonerMovement.Received -> inboundStatusChange(context)
+            is PrisonerMovement.Released -> outboundStatusChange(context)
         }
+    }
 
     private fun inboundStatusChange(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        return if (custody.status.canChange() && prisonerMovement.receivedDateValid(custody)) {
-            val detail = if (custody.canBeRecalled()) "Recall added in custody " else "In custody "
-            updateStatus(
-                custody,
-                CustodialStatusCode.IN_CUSTODY,
-                prisonerMovement,
-                detail
-            )
-        } else {
-            ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
-        }
+        val detail = if (custody.canBeRecalled()) "Recall added in custody " else "In custody "
+        return updateStatus(custody, CustodialStatusCode.IN_CUSTODY, prisonerMovement, detail)
     }
 
     private fun outboundStatusChange(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         val statusCode = when {
             prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded() -> custody.nextStatus()
-            else -> if (custody.canBeReleased() && prisonerMovement.releaseDateValid(custody)) {
-                CustodialStatusCode.RELEASED_ON_LICENCE
-            } else {
-                throw IgnorableMessageException("PrisonerStatusCorrect")
-            }
+            else -> CustodialStatusCode.RELEASED_ON_LICENCE
         }
-        return updateStatus(
-            custody,
-            statusCode,
-            prisonerMovement,
-            when {
-                prisonerMovement.isHospitalRelease() -> "Transfer to/from Hospital"
-                prisonerMovement.isIrcRelease() -> "Transfer to Immigration Removal Centre"
-                prisonerMovement.isAbsconded() -> "Recall added unlawfully at large "
-                else -> "Released on Licence"
-            }
-        )
+        val detail = when {
+            prisonerMovement.isHospitalRelease() -> "Transfer to/from Hospital"
+            prisonerMovement.isIrcRelease() -> "Transfer to Immigration Removal Centre"
+            prisonerMovement.isAbsconded() -> "Recall added unlawfully at large "
+            else -> "Released on Licence"
+        }
+        return updateStatus(custody, statusCode, prisonerMovement, detail)
     }
 
-    private fun Custody.nextStatus() =
-        when {
-            canBeRecalled() -> CustodialStatusCode.RECALLED
-            status.canChange() -> CustodialStatusCode.IN_CUSTODY
-            else -> throw IgnorableMessageException("PrisonerStatusCorrect")
-        }
+    private fun Custody.nextStatus() = when {
+        canBeRecalled() -> CustodialStatusCode.RECALLED
+        status.canChange() -> CustodialStatusCode.IN_CUSTODY
+        else -> throw IgnorableMessageException("PrisonerStatusCorrect")
+    }
 
     private fun updateStatus(
         custody: Custody,
         status: CustodialStatusCode,
         prisonerMovement: PrisonerMovement,
         detail: String
-    ): ActionResult = custody.updateStatusAt(
-        referenceDataRepository.getCustodialStatus(status.code),
-        prisonerMovement.occurredAt,
-        detail
-    ) {
-        referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code)
-    }?.let { history ->
+    ): ActionResult = if (status.code == custody.status.code) {
+        ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
+    } else {
+        val history = custody.updateStatusAt(
+            referenceDataRepository.getCustodialStatus(status.code),
+            prisonerMovement.occurredAt,
+            detail
+        ) { referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code) }
         custodyRepository.save(custody)
         custodyHistoryRepository.save(history)
-        return ActionResult.Success(ActionResult.Type.StatusUpdated, prisonerMovement.telemetryProperties())
-    } ?: ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
+        ActionResult.Success(ActionResult.Type.StatusUpdated, prisonerMovement.telemetryProperties())
+    }
+
+    private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody): ActionResult? {
+        if (prisonerMovement is PrisonerMovement.Received &&
+            !(custody.status.canChange() && prisonerMovement.receivedDateValid(custody))
+        ) {
+            return ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
+        }
+
+        if (prisonerMovement is PrisonerMovement.Released &&
+            !(prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded()) &&
+            !(custody.canBeReleased() && prisonerMovement.releaseDateValid(custody))
+        ) {
+            return ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
+        }
+
+        if (!prisonerMovement.statusDateValid(custody)) {
+            return ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
+        }
+
+        return null
+    }
 }
 
 private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)

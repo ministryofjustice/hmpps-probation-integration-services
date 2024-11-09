@@ -105,12 +105,10 @@ class Custody(
         dateTime: ZonedDateTime,
         detail: String,
         historyType: () -> ReferenceData
-    ): CustodyHistory? = if (this.status.code == status.code) {
-        null
-    } else {
+    ): CustodyHistory {
         this.status = status
         this.statusChangeDate = dateTime.toLocalDate()
-        CustodyHistory(
+        return CustodyHistory(
             date = dateTime,
             type = historyType(),
             detail = detail,
