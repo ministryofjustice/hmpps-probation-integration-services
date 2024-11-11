@@ -1012,6 +1012,9 @@ components:
         endDate:
           type: string
           format: date
+        releaseDate:
+          type: string
+          format: date
         startDate:
           type: string
           format: date
