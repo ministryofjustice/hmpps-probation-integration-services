@@ -1141,8 +1141,7 @@ components:
       type: object
       properties:
         eventNumber:
-          type: integer
-          format: int64
+          type: string
         description:
           type: string
     History:
