@@ -5,6 +5,15 @@ outputs:
   changes:
     description: A JSON array of projects where changes were reported by the build
     value: ${{ steps.check-changes.outputs.changes }}
+  dev:
+    description: A JSON array of projects where changes should be deployed to dev
+    value: ${{ steps.deployments.outputs.dev }}
+  preprod:
+    description: A JSON array of projects where changes should be deployed to preprod
+    value: ${{ steps.deployments.outputs.preprod }}
+  prod:
+    description: A JSON array of projects where changes should be deployed to prod
+    value: ${{ steps.deployments.outputs.prod }}
 
 runs:
   using: "composite"
@@ -21,3 +30,10 @@ runs:
       id: check-changes
       shell: bash
       run: echo "changes=$(jq -s '[.[][]]' changes/**/*.json | jq -c '. // []')" | tee -a "$GITHUB_OUTPUT"
+
+    - name: Check which services should be deployed
+      id: deployments
+      shell: bash
+      run: ./.github/actions/merge-changes/check-deployments.sh
+      env:
+        PROJECTS: ${{ steps.check-changes.outputs.changes }}
