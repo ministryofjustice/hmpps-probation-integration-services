@@ -98,6 +98,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
       - name: Output projects with changes for production where the tests have passed
         id: intersect
+        if: always()
         run: echo "prod=$(jq -crn --argjson changes "$CHANGES" --argjson passed "$PASSED" '$changes - ($changes - $passed)')" | tee -a "$GITHUB_OUTPUT"
         env:
           CHANGES: ${{ needs.post-build.outputs.prod_deployments }}
