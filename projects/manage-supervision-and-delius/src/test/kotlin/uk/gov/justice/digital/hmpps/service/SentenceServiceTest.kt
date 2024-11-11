@@ -52,6 +52,9 @@ class SentenceServiceTest {
     @Mock
     lateinit var licenceConditionRepository: LicenceConditionRepository
 
+    @Mock
+    lateinit var custodyRepository: CustodyRepository
+
     @InjectMocks
     lateinit var service: SentenceService
 
@@ -220,7 +223,7 @@ class SentenceServiceTest {
                         AdditionalSentence(null, 500, "fine notes", "Fine")
                     )
                 ),
-                Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
+                Order("Default Sentence Type", 12, null, startDate = LocalDate.now().minusDays(14)),
                 listOf(
                     Requirement(
                         requirement1._code,

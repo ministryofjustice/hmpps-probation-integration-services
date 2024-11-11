@@ -25,7 +25,8 @@ class SentenceService(
     private val documentRepository: DocumentRepository,
     private val offenderManagerRepository: OffenderManagerRepository,
     private val upwAppointmentRepository: UpwAppointmentRepository,
-    private val licenceConditionRepository: LicenceConditionRepository
+    private val licenceConditionRepository: LicenceConditionRepository,
+    private val custodyRepository: CustodyRepository,
 ) {
     fun getEvents(crn: String, eventNumber: String?): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -90,7 +91,7 @@ class SentenceService(
             requirements = requirementRepository.getRequirements(id, eventNumber)
                 .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
-            disposal?.id?.let { getUnpaidWorkTime(it) },
+            unpaidWorkProgress = disposal?.id?.let { getUnpaidWorkTime(it) },
             licenceConditions = disposal?.let {
                 licenceConditionRepository.findAllByDisposalId(disposal.id).map {
                     it.toLicenceCondition()
@@ -102,8 +103,16 @@ class SentenceService(
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
 
-    fun Disposal.toOrder() =
-        Order(description = type.description, length = length, startDate = date, endDate = expectedEndDate())
+    fun Disposal.toOrder(): Order {
+        val sentence = custodyRepository.findAllByDisposalId(id).firstOrNull()
+        return Order(
+            description = type.description,
+            length = length,
+            startDate = date,
+            endDate = expectedEndDate(),
+            releaseDate = sentence?.mostRecentRelease()?.date?.toLocalDate()
+        )
+    }
 
     fun RequirementDetails.toRequirement(): Requirement {
         val rar = getRar(id, code)

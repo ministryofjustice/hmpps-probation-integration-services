@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.COURT_DOCUMENT
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator.EVENT_DOCUMENT
+import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator.RELEASE_3
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITHOUT_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_1500_CHAR_NOTE
@@ -110,7 +111,13 @@ class SentenceIntegrationTest {
                     LocalDate.now(),
                     listOf(AdditionalSentence(3, null, null, "Disqualified from Driving"))
                 ),
-                Order("Default Sentence Type", 12, null, LocalDate.now().minusDays(14)),
+                Order(
+                    "Default Sentence Type",
+                    12,
+                    null,
+                    releaseDate = RELEASE_3.date.toLocalDate(),
+                    startDate = LocalDate.now().minusDays(14)
+                ),
                 listOf(
                     Requirement(
                         "F",
