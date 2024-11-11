@@ -27,6 +27,9 @@ jobs:
     needs: build
     outputs:
       changes: ${{ steps.merge-changes.outputs.changes }}
+      dev_deployments: ${{ steps.merge-changes.outputs.dev }}
+      preprod_deployments: ${{ steps.merge-changes.outputs.preprod }}
+      prod_deployments: ${{ steps.merge-changes.outputs.prod }}
       version: ${{ needs.build.outputs.version }}
     steps:
       - uses: actions/checkout@v4
@@ -49,22 +52,22 @@ jobs:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
     needs: post-build
-    if: ${{ needs.post-build.outputs.changes != '[]' }}
+    if: ${{ needs.post-build.outputs.dev_deployments != '[]' }}
     with:
       environment: test
       version: ${{ needs.post-build.outputs.version }}
-      projects: ${{ needs.post-build.outputs.changes }}
+      projects: ${{ needs.post-build.outputs.dev_deployments }}
     secrets: inherit
 
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
     needs: post-build
-    if: ${{ needs.post-build.outputs.changes != '[]'}}
+    if: ${{ needs.post-build.outputs.preprod_deployments != '[]'}}
     with:
       environment: preprod
       version: ${{ needs.post-build.outputs.version }}
-      projects: ${{ needs.post-build.outputs.changes }}
+      projects: ${{ needs.post-build.outputs.preprod_deployments }}
     secrets: inherit
 
   end-to-end-tests:
@@ -78,6 +81,7 @@ jobs:
     outputs:
       failed-projects: ${{ steps.run.outputs.failed-projects }}
       passed-projects: ${{ steps.run.outputs.passed-projects }}
+      deploy-to-prod: ${{ steps.intersect.outputs.prod }}
       report-url: ${{ steps.run.outputs.report-url }}
     steps:
       - uses: actions/create-github-app-token@v1
@@ -92,6 +96,12 @@ jobs:
         with:
           projects: ${{ needs.post-build.outputs.changes }}
           token: ${{ steps.app-token.outputs.token }}
+      - name: Output projects with changes for production where the tests have passed
+        id: intersect
+        run: echo "prod=$(jq -crn --argjson changes "$CHANGES" --argjson passed "$PASSED" '$changes - ($changes - $passed)')" | tee -a "$GITHUB_OUTPUT"
+        env:
+          CHANGES: ${{ needs.post-build.outputs.prod_deployments }}
+          PASSED: ${{ steps.run.outputs.passed-projects }}
 
   report-test-failures:
     name: Failed testing
@@ -109,12 +119,12 @@ jobs:
   deploy-to-prod:
     name: Deploy to production
     uses: ./.github/workflows/deploy.yml
-    if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.passed-projects != '[]')) && github.ref == 'refs/heads/main' }}
+    if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.deploy-to-prod != '[]')) && github.ref == 'refs/heads/main' }}
     needs:
       - post-build
       - end-to-end-tests
     with:
       environment: prod
       version: ${{ needs.post-build.outputs.version }}
-      projects: ${{ needs.end-to-end-tests.outputs.passed-projects }}
+      projects: ${{ needs.end-to-end-tests.outputs.deploy-to-prod }}
     secrets: inherit
