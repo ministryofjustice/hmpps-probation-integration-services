@@ -20,7 +20,7 @@ class UnpaidWorkAppointmentsService(
                 notificationClient.sendSms(
                     templateId,
                     it.mobileNumber,
-                    mapOf("firstName" to it.firstName, "date" to it.appointmentDate),
+                    mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate),
                     it.upwAppointmentIds
                 )
                 telemetryService.trackEvent(
