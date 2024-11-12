@@ -7,12 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -39,6 +34,9 @@ class DataLoader(
             ProviderGenerator.DEFAULT_STAFF,
             PersonGenerator.DEFAULT,
             PersonManagerGenerator.DEFAULT,
+            EventGenerator.DISPOSAL_TYPE,
+            EventGenerator.REQUIREMENT_CAT_F,
+            EventGenerator.REQUIREMENT_CAT_W,
             EventGenerator.DEFAULT_EVENT,
             EventGenerator.DEFAULT_DISPOSAL,
             EventGenerator.DEFAULT_CUSTODY,
@@ -48,7 +46,15 @@ class DataLoader(
             EventGenerator.NON_CUSTODIAL_DISPOSAL,
             EventGenerator.NON_CUSTODIAL_CUSTODY,
             EventGenerator.FIRST_APPT_CT,
-            EventGenerator.FIRST_APPT_CONTACT
+            EventGenerator.FIRST_APPT_CONTACT,
+            EventGenerator.REQUIREMENT_1,
+            EventGenerator.REQUIREMENT_2,
+            EventGenerator.UPW_DETAILS_1,
+            EventGenerator.UPW_DETAILS_2,
+            EventGenerator.UPW_APPOINTMENT_1,
+            EventGenerator.UPW_APPOINTMENT_2,
+            EventGenerator.RAR_CONTACT_1,
+            EventGenerator.RAR_CONTACT_2
         )
     }
 

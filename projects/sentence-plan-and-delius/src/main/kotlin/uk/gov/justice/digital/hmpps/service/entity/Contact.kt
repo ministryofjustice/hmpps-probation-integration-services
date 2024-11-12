@@ -1,14 +1,9 @@
 package uk.gov.justice.digital.hmpps.service.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDateTime
@@ -26,7 +21,7 @@ class Contact(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event,
 
@@ -39,6 +34,26 @@ class Contact(
 
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "rar_activity", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    val rarActivity: Boolean? = null,
+
+    @Column(name = "attended")
+    @Convert(converter = YesNoConverter::class)
+    val attended: Boolean? = null,
+
+    @Column(name = "sensitive")
+    @Convert(converter = YesNoConverter::class)
+    val sensitive: Boolean? = null,
+
+    @Column(name = "complied")
+    @Convert(converter = YesNoConverter::class)
+    val complied: Boolean? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_id")
+    val requirement: Requirement? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     var softDeleted: Boolean = false

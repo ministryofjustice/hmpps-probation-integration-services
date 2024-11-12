@@ -8,12 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
-import uk.gov.justice.digital.hmpps.model.CaseDetails
-import uk.gov.justice.digital.hmpps.model.FirstAppointment
-import uk.gov.justice.digital.hmpps.model.Manager
-import uk.gov.justice.digital.hmpps.model.Name
+import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.service.entity.Disposal
 import uk.gov.justice.digital.hmpps.service.entity.Person
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -28,10 +27,21 @@ internal class SentencePlanIntegrationTest {
 
     @Test
     fun `API call retuns a success response`() {
+
         mockMvc
             .perform(get("/case-details/X123123").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(getDetailResponse(true, PersonGenerator.DEFAULT))
+            .andExpectJson(
+                getDetailResponse(
+                    true,
+                    PersonGenerator.DEFAULT,
+                    EventGenerator.DEFAULT_DISPOSAL,
+                    0,
+                    20,
+                    2,
+                    1
+                )
+            )
     }
 
     @Test
@@ -39,7 +49,17 @@ internal class SentencePlanIntegrationTest {
         mockMvc
             .perform(get("/case-details/X123124").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(getDetailResponse(false, PersonGenerator.NON_CUSTODIAL))
+            .andExpectJson(
+                getDetailResponse(
+                    false,
+                    PersonGenerator.NON_CUSTODIAL,
+                    EventGenerator.NON_CUSTODIAL_DISPOSAL,
+                    6,
+                    3,
+                    0,
+                    0
+                )
+            )
     }
 
     @Test
@@ -51,7 +71,11 @@ internal class SentencePlanIntegrationTest {
             .andExpectJson(FirstAppointment(date))
     }
 
-    private fun getDetailResponse(custody: Boolean = true, person: Person): CaseDetails {
+    private fun getDetailResponse(
+        custody: Boolean = true, person: Person, disposal: Disposal,
+        upwHoursOrdered: Int, upwMinutesCompleted: Int,
+        rarDaysOrdered: Int, rarDaysCompleted: Int,
+    ): CaseDetails {
         return CaseDetails(
             Name(
                 person.forename,
@@ -71,7 +95,13 @@ internal class SentencePlanIntegrationTest {
                 ),
                 ProviderGenerator.DEFAULT_STAFF.isUnallocated()
             ),
-            custody
+            custody,
+            listOf(
+                Sentence(
+                    disposal.type.description, disposal.startDate, disposal.expectedEndDate(), false,
+                    upwHoursOrdered, upwMinutesCompleted, rarDaysOrdered, rarDaysCompleted
+                )
+            )
         )
     }
 }

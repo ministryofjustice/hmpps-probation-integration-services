@@ -14,7 +14,7 @@ class CaseDetailsController(
     @GetMapping(value = ["case-details/{crn}"])
     fun getCaseDetails(
         @PathVariable("crn") crn: String
-    ) = personDetailsService.getPersonalDetails(crn)
+    ) = personDetailsService.getCaseDetails(crn)
 
     @PreAuthorize("hasRole('PROBATION_API__SENTENCE_PLAN__CASE_DETAIL')")
     @GetMapping(value = ["case-details/{crn}/first-appointment-date"])
