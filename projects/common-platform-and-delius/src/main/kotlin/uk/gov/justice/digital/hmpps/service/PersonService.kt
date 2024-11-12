@@ -53,7 +53,7 @@ class PersonService(
             val savedPerson = personRepository.save(defendant.toPerson())
 
             val courtLinkedProvider = courtRepository.getByOuCode(courtCode).provider
-            val initialAllocation = referenceDataRepository.initialAllocationReason()
+            val initialAllocation = referenceDataRepository.initialOmAllocationReason()
             val unallocatedTeam = teamRepository.findByCode(courtLinkedProvider.code + "UAT")
             val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
 

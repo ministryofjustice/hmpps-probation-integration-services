@@ -34,8 +34,12 @@ class ReferenceData(
 
     enum class StandardRefDataCode(val code: String) {
         INITIAL_ALLOCATION("IN1"),
+        TRIAL_ADJOURNMENT_APPEARANCE("T"),
         ADDRESS_MAIN_STATUS("M"),
-        AWAITING_ASSESSMENT("A16")
+        AWAITING_ASSESSMENT("A16"),
+        REMANDED_IN_CUSTODY_STATUS("Y"),
+        REMANDED_IN_CUSTODY_OUTCOME("112"),
+        GUILTY("G")
     }
 }
 
@@ -54,8 +58,13 @@ class Dataset(
 
 enum class DatasetCode(val value: String) {
     OM_ALLOCATION_REASON("OM ALLOCATION REASON"),
+    ORDER_ALLOCATION_REASON("ORDER ALLOCATION REASON"),
+    COURT_APPEARANCE_TYPE("COURT APPEARANCE TYPE"),
     ADDRESS_STATUS("ADDRESS STATUS"),
     ADDRESS_TYPE("ADDRESS TYPE"),
+    REMAND_STATUS("REMAND STATUS"),
+    PLEA("PLEA"),
+    COURT_APPEARANCE_OUTCOME("COURT APPEARANCE OUTCOME"),
     GENDER("GENDER");
 
     companion object {
@@ -129,7 +138,7 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     fun findByCodeAndDatasetCode(code: String, datasetCode: DatasetCode): ReferenceData?
 }
 
-fun ReferenceDataRepository.initialAllocationReason() =
+fun ReferenceDataRepository.initialOmAllocationReason() =
     findByCodeAndDatasetCode(
         ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code,
         DatasetCode.OM_ALLOCATION_REASON
@@ -138,6 +147,50 @@ fun ReferenceDataRepository.initialAllocationReason() =
             "Allocation Reason",
             "code",
             ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code
+        )
+
+fun ReferenceDataRepository.initialOrderAllocationReason() =
+    findByCodeAndDatasetCode(
+        ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code,
+        DatasetCode.ORDER_ALLOCATION_REASON
+    )
+        ?: throw NotFoundException(
+            "Allocation Reason",
+            "code",
+            ReferenceData.StandardRefDataCode.INITIAL_ALLOCATION.code
+        )
+
+fun ReferenceDataRepository.trialAdjournmentAppearanceType() =
+    findByCodeAndDatasetCode(
+        ReferenceData.StandardRefDataCode.TRIAL_ADJOURNMENT_APPEARANCE.code,
+        DatasetCode.COURT_APPEARANCE_TYPE
+    )
+        ?: throw NotFoundException(
+            "Court Appearance Type",
+            "code",
+            ReferenceData.StandardRefDataCode.TRIAL_ADJOURNMENT_APPEARANCE.code
+        )
+
+fun ReferenceDataRepository.remandedInCustodyOutcome() =
+    findByCodeAndDatasetCode(
+        ReferenceData.StandardRefDataCode.REMANDED_IN_CUSTODY_OUTCOME.code,
+        DatasetCode.COURT_APPEARANCE_OUTCOME
+    )
+        ?: throw NotFoundException(
+            "Court Appearance Outcome",
+            "code",
+            ReferenceData.StandardRefDataCode.REMANDED_IN_CUSTODY_OUTCOME.code
+        )
+
+fun ReferenceDataRepository.remandedInCustodyStatus() =
+    findByCodeAndDatasetCode(
+        ReferenceData.StandardRefDataCode.REMANDED_IN_CUSTODY_STATUS.code,
+        DatasetCode.REMAND_STATUS
+    )
+        ?: throw NotFoundException(
+            "Remand Status",
+            "code",
+            ReferenceData.StandardRefDataCode.REMANDED_IN_CUSTODY_STATUS.code
         )
 
 fun ReferenceDataRepository.mainAddressStatus() =
