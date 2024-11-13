@@ -30,12 +30,13 @@ fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) = findAttr
 
 @WithSpan
 fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanAttribute attribute: String) = try {
-    search(query()
-        .attributes(attribute)
-        .searchScope(SearchScope.ONELEVEL)
-        .where("objectclass").`is`("inetOrgPerson")
-        .and("objectclass").`is`("top")
-        .and("cn").`is`(username),
+    search(
+        query()
+            .attributes(attribute)
+            .searchScope(SearchScope.ONELEVEL)
+            .where("objectclass").`is`("inetOrgPerson")
+            .and("objectclass").`is`("top")
+            .and("cn").`is`(username),
         AttributesMapper { it[attribute]?.get()?.toString() }
     ).singleOrNull()
 } catch (_: NameNotFoundException) {
@@ -44,12 +45,13 @@ fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanA
 
 @WithSpan
 fun LdapTemplate.getRoles(@SpanAttribute username: String) = try {
-    search(query()
-        .attributes("cn")
-        .base(LdapNameBuilder.newInstance().add("cn", username).build())
-        .searchScope(SearchScope.ONELEVEL)
-        .where("objectclass").`is`("NDRole")
-        .or("objectclass").`is`("NDRoleAssociation"),
+    search(
+        query()
+            .attributes("cn")
+            .base(LdapNameBuilder.newInstance().add("cn", username).build())
+            .searchScope(SearchScope.ONELEVEL)
+            .where("objectclass").`is`("NDRole")
+            .or("objectclass").`is`("NDRoleAssociation"),
         AttributesMapper { it["cn"]?.get()?.toString() }
     ).filterNotNull()
 } catch (_: NameNotFoundException) {
