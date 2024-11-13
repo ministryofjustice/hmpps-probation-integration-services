@@ -2,4 +2,4 @@ api.http.host: 0.0.0.0
 config.reload.automatic: true
 config.support_escapes: true
 dead_letter_queue.enable: true
-pipeline.batch.size: ${PIPELINE_BATCH_SIZE:100}
+pipeline.batch.size: ${PIPELINE_BATCH_SIZE:10}
