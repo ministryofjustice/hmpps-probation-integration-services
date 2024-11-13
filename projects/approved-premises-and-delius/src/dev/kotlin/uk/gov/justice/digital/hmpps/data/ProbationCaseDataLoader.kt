@@ -123,11 +123,12 @@ class ProbationCaseDataLoader(
 
         personalCircumstanceTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_TYPES)
         personalCircumstanceSubTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_SUB_TYPES)
-        personalCircumstanceRepository.save(PersonalCircumstanceGenerator.generate(
-            ProbationCaseGenerator.CASE_COMPLEX.id,
-            PersonalCircumstanceGenerator.PC_TYPES.first { it.code == PersonalCircumstanceType.Code.VETERAN.value },
-            PersonalCircumstanceGenerator.PC_SUB_TYPES.first { it.description == PersonalCircumstanceType.Code.VETERAN.value + "SUB" }
-        ))
+        personalCircumstanceRepository.save(
+            PersonalCircumstanceGenerator.generate(
+                ProbationCaseGenerator.CASE_COMPLEX.id,
+                PersonalCircumstanceGenerator.PC_TYPES.first { it.code == PersonalCircumstanceType.Code.VETERAN.value },
+                PersonalCircumstanceGenerator.PC_SUB_TYPES.first { it.description == PersonalCircumstanceType.Code.VETERAN.value + "SUB" }
+            ))
 
         mutableLimitedAccessPersonRepository.save(RESTRICTED_CASE)
         mutableLimitedAccessPersonRepository.save(EXCLUDED_CASE)

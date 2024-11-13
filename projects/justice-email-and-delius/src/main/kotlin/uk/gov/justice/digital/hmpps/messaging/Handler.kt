@@ -84,12 +84,13 @@ class Handler(
     private fun findStaffIdForEmailAddress(emailAddress: String): Long? {
         val matchingStaffIds = try {
             ldapTemplate
-                .search(query()
-                    .attributes("cn")
-                    .searchScope(SearchScope.ONELEVEL)
-                    .where("objectclass").`is`("inetOrgPerson")
-                    .and("objectclass").`is`("top")
-                    .and("mail").`is`(emailAddress),
+                .search(
+                    query()
+                        .attributes("cn")
+                        .searchScope(SearchScope.ONELEVEL)
+                        .where("objectclass").`is`("inetOrgPerson")
+                        .and("objectclass").`is`("top")
+                        .and("mail").`is`(emailAddress),
                     AttributesMapper { it["cn"]?.get()?.toString() })
                 .filterNotNull()
                 .mapNotNull { staffRepository.findByUserUsername(it)?.id }

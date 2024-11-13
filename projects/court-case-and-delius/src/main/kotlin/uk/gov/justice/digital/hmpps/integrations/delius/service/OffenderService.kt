@@ -217,7 +217,8 @@ fun DisabilityEntity.toDisability() = Disability(
     startDate = startDate
 )
 
-fun DocumentEntity?.toPreviousConviction() = PreviousConviction(convictionDate = this?.dateProduced?.toLocalDate(),
+fun DocumentEntity?.toPreviousConviction() = PreviousConviction(
+    convictionDate = this?.dateProduced?.toLocalDate(),
     detail = this?.name?.let { ImmutableMap.of("documentName", it) })
 
 fun Person.toProfile(previousConviction: DocumentEntity?) = OffenderProfile(
