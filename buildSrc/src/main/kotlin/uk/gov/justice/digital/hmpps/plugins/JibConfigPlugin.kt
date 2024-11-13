@@ -75,7 +75,7 @@ class JibConfigPlugin : Plugin<Project> {
                     "$buildDir/classes",
                     "$buildDir/generated",
                     "$buildDir/resources",
-                    project.configurations[jib!!.configurationName.get()].resolvedConfiguration.files
+                    project.configurations[jib!!.configurationName.get()].resolvedConfiguration.resolvedArtifacts.map { it.file }
                 )
                 outputs.file("$buildDir/jib-image.id")
                 outputs.cacheIf { true }
