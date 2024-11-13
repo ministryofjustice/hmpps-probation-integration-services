@@ -200,7 +200,19 @@
     },
     "unallocated": "boolean"
   },
-  "inCustody": "boolean"
+  "inCustody": "boolean",
+  "sentences": [
+    {
+      "description": "string",
+      "startDate": "string",
+      "endDate": "string",
+      "programmeRequirement": "boolean",
+      "unpaidWorkHoursOrdered": "integer",
+      "unpaidWorkMinutesCompleted": "integer",
+      "rarDaysOrdered": "integer",
+      "rarDaysCompleted": "integer"
+    }
+  ]
 }</code></pre>
 
 </td>
@@ -366,6 +378,16 @@
 </td>
 </tr>
 
+<tr>
+<td>sentences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -433,6 +455,98 @@
 <tr>
 <td>surname</td>
 <td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentence">Sentence</h3>
+
+
+<table class='schema-sentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>programmeRequirement</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unpaidWorkHoursOrdered</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unpaidWorkMinutesCompleted</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rarDaysOrdered</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rarDaysCompleted</td>
+<td>integer</td>
 <td>true</td>
 <td></td>
 <td>

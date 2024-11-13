@@ -59,6 +59,7 @@ components:
       - inCustody
       - keyWorker
       - name
+      - sentences
       type: object
       properties:
         name:
@@ -78,6 +79,10 @@ components:
           $ref: "#/components/schemas/Manager"
         inCustody:
           type: boolean
+        sentences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sentence"
     Manager:
       required:
       - unallocated
@@ -99,6 +104,37 @@ components:
           type: string
         surname:
           type: string
+    Sentence:
+      required:
+      - programmeRequirement
+      - rarDaysCompleted
+      - rarDaysOrdered
+      - unpaidWorkHoursOrdered
+      - unpaidWorkMinutesCompleted
+      type: object
+      properties:
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        programmeRequirement:
+          type: boolean
+        unpaidWorkHoursOrdered:
+          type: integer
+          format: int32
+        unpaidWorkMinutesCompleted:
+          type: integer
+          format: int32
+        rarDaysOrdered:
+          type: integer
+          format: int32
+        rarDaysCompleted:
+          type: integer
+          format: int32
     FirstAppointment:
       type: object
       properties:
