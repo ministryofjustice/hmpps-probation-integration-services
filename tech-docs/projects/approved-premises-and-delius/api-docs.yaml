@@ -595,10 +595,15 @@ components:
       required:
       - code
       - description
+      - eventId
       - eventNumber
+      - id
       - main
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         code:
           type: string
         description:
@@ -608,6 +613,9 @@ components:
           format: date
         main:
           type: boolean
+        eventId:
+          type: integer
+          format: int64
         eventNumber:
           type: string
     Registration:
