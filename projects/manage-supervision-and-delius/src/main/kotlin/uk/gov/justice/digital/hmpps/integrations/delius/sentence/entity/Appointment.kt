@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
@@ -9,8 +10,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -77,6 +80,17 @@ class Appointment(
     @Column(name = "office_location_id")
     val officeLocationId: Long? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id")
+    val outcome: ContactOutcome? = null,
+
+    @Lob
+    val notes: String? = null,
+
+    @Column(name = "sensitive")
+    @Convert(converter = YesNoConverter::class)
+    val sensitive: Boolean? = null,
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     @Column(name = "contact_id")
@@ -113,6 +127,7 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         startTime: String,
         endTime: String
     ): Int
+
 }
 
 fun AppointmentRepository.appointmentClashes(
@@ -133,3 +148,36 @@ interface AppointmentTypeRepository : JpaRepository<ContactType, Long> {
 
 fun AppointmentTypeRepository.getByCode(code: String) =
     findByCode(code) ?: throw NotFoundException("AppointmentType", "code", code)
+
+@Entity
+@Table(name = "r_contact_type_outcome")
+class ContactTypeOutcome(
+
+    @EmbeddedId
+    val id: ContactTypeOutcomeId
+)
+
+interface ContactTypeOutcomeRepository : JpaRepository<ContactTypeOutcome, ContactTypeOutcomeId> {
+
+    @Query(
+        """
+            SELECT DECODE(COUNT(1), 1, 'TRUE','FALSE')  AS value
+            FROM ContactTypeOutcome c
+            JOIN c.id.outcome o
+            WHERE c.id = :contactTypeId
+            AND o.code = :code
+        """
+    )
+    fun existsById(contactTypeId: Long, code: String): Boolean
+
+}
+
+@Embeddable
+class ContactTypeOutcomeId(
+    @Column(name = "contact_type_id")
+    val contactTypeId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "r_contact_outcome_type")
+    val outcome: ContactOutcome,
+) : Serializable
