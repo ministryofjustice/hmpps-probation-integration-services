@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcomeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByTypeIdAndOutcomeCode
 
 @Service
 class AppointmentOutcomeService(
@@ -15,10 +16,12 @@ class AppointmentOutcomeService(
     fun recordOutcome(outcome: Outcome) {
         val appointment = appointmentRepository.findById(outcome.id).orElseThrow { throw NotFoundException("Appointment", "id", outcome.id) }
 
-        if (!contactTypeOutcomeRepository.existsById(appointment.type.id, outcome.code)) {
-            throw NotFoundException("ContactTypeOutcome", "ContactTypeOutcomeId with contact_type_id $appointment.type.id and ContactOutcome.code ", outcome.code)
-        }
+        contactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(appointment.type.id, outcome.code)
 
+        appointment.apply {
+            sensitive = appointment.sensitive
+            notes = outcome.notes
+        }
         appointmentRepository.save(appointment)
     }
 }

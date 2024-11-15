@@ -11,18 +11,18 @@ import uk.gov.justice.digital.hmpps.service.SentenceAppointmentService
 
 @RestController
 @Tag(name = "Sentence")
-@RequestMapping("/appointments/{crn}")
+@RequestMapping("/appointment")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class AppointmentController(
     private val appointmentService: SentenceAppointmentService,
     private val appointmentOutcomeService: AppointmentOutcomeService) {
 
-    @PostMapping
+    @PostMapping("/{crn}")
     @ResponseStatus(HttpStatus.CREATED)
     fun createAppointment(@PathVariable crn: String, @RequestBody createAppointment: CreateAppointment) =
         appointmentService.createAppointment(crn, createAppointment)
 
-    @PatchMapping("/{id}")
+    @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     fun recordOutcome(@RequestBody outcome: Outcome) = appointmentOutcomeService.recordOutcome(outcome)
 }

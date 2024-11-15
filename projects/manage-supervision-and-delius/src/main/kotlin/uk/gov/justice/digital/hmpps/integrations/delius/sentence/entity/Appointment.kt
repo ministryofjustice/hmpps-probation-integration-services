@@ -85,11 +85,11 @@ class Appointment(
     val outcome: ContactOutcome? = null,
 
     @Lob
-    val notes: String? = null,
+    var notes: String? = null,
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
-    val sensitive: Boolean? = null,
+    var sensitive: Boolean? = null,
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
@@ -154,30 +154,33 @@ fun AppointmentTypeRepository.getByCode(code: String) =
 class ContactTypeOutcome(
 
     @EmbeddedId
-    val id: ContactTypeOutcomeId
+    val id: ContactTypeOutcomeId,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_type_id", insertable = false, updatable = false)
+    val type: ContactType,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id", insertable = false, updatable = false)
+    val outcome: ContactOutcome,
 )
 
 interface ContactTypeOutcomeRepository : JpaRepository<ContactTypeOutcome, ContactTypeOutcomeId> {
-
-    @Query(
-        """
-            SELECT DECODE(COUNT(1), 1, 'TRUE','FALSE')  AS value
-            FROM ContactTypeOutcome c
-            JOIN c.id.outcome o
-            WHERE c.id = :contactTypeId
-            AND o.code = :code
-        """
-    )
-    fun existsById(contactTypeId: Long, code: String): Boolean
-
+    fun findByIdContactTypeIdAndOutcomeCode(contactTypeId: Long, code: String): ContactTypeOutcome?
 }
+
+fun ContactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(contactTypeId: Long, code: String) =
+    findByIdContactTypeIdAndOutcomeCode(
+        contactTypeId, code) ?: throw NotFoundException("ContactTypeOutcome", "contact_type_id $contactTypeId and outcome code", code)
+
 
 @Embeddable
 class ContactTypeOutcomeId(
     @Column(name = "contact_type_id")
     val contactTypeId: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "r_contact_outcome_type")
-    val outcome: ContactOutcome,
+    @Column(name = "contact_outcome_type_id")
+    val contactOutcomeTypeId: Long,
+
 ) : Serializable
+
