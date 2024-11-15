@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Ldu
+import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.AdditionalOffence
@@ -100,9 +101,34 @@ class ProbationCaseDataLoader(
             )
         )
 
+        listOf(
+            ProbationCaseGenerator.CASE_COMPLEX,
+            ProbationCaseGenerator.CASE_X320741,
+            ProbationCaseGenerator.CASE_LAO_RESTRICTED,
+            ProbationCaseGenerator.CASE_LAO_EXCLUSION,
+        ).forEach {
+            generateEventAndAddOffences(probationCase = it)
+        }
+
+        personalCircumstanceTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_TYPES)
+        personalCircumstanceSubTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_SUB_TYPES)
+        personalCircumstanceRepository.save(
+            PersonalCircumstanceGenerator.generate(
+                ProbationCaseGenerator.CASE_COMPLEX.id,
+                PersonalCircumstanceGenerator.PC_TYPES.first { it.code == PersonalCircumstanceType.Code.VETERAN.value },
+                PersonalCircumstanceGenerator.PC_SUB_TYPES.first { it.description == PersonalCircumstanceType.Code.VETERAN.value + "SUB" }
+            ))
+
+        mutableLimitedAccessPersonRepository.save(RESTRICTED_CASE)
+        mutableLimitedAccessPersonRepository.save(EXCLUDED_CASE)
+        restrictionRepository.save(LimitedAccessGenerator.generateRestriction(RESTRICTED_CASE.toLimitedAccessPerson()))
+        exclusionRepository.save(LimitedAccessGenerator.generateExclusion(EXCLUDED_CASE.toLimitedAccessPerson()))
+    }
+
+    private fun generateEventAndAddOffences(probationCase: ProbationCase) {
         val event = PersonGenerator.generateEvent(
             "1",
-            ProbationCaseGenerator.CASE_COMPLEX.id
+            probationCase.id
         ).apply(eventRepository::save)
 
         mainOffenceRepository.save(
@@ -120,20 +146,6 @@ class ProbationCaseDataLoader(
                 LocalDate.now().minusDays(5)
             )
         )
-
-        personalCircumstanceTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_TYPES)
-        personalCircumstanceSubTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_SUB_TYPES)
-        personalCircumstanceRepository.save(
-            PersonalCircumstanceGenerator.generate(
-                ProbationCaseGenerator.CASE_COMPLEX.id,
-                PersonalCircumstanceGenerator.PC_TYPES.first { it.code == PersonalCircumstanceType.Code.VETERAN.value },
-                PersonalCircumstanceGenerator.PC_SUB_TYPES.first { it.description == PersonalCircumstanceType.Code.VETERAN.value + "SUB" }
-            ))
-
-        mutableLimitedAccessPersonRepository.save(RESTRICTED_CASE)
-        mutableLimitedAccessPersonRepository.save(EXCLUDED_CASE)
-        restrictionRepository.save(LimitedAccessGenerator.generateRestriction(RESTRICTED_CASE.toLimitedAccessPerson()))
-        exclusionRepository.save(LimitedAccessGenerator.generateExclusion(EXCLUDED_CASE.toLimitedAccessPerson()))
     }
 }
 

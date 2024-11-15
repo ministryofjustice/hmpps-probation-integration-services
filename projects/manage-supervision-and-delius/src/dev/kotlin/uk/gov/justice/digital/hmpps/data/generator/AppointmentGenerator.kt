@@ -18,7 +18,6 @@ object AppointmentGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = ContactType(IdGenerator.getAndIncrement(), code, true, description)
 
-
     val ATTENDED_COMPLIED = generateOutcome("ATTC", "Attended - Complied", true, true)
 
     val CONTACT_TYPE_OUTCOMES = APPOINTMENT_TYPES.map {
@@ -30,9 +29,9 @@ object AppointmentGenerator {
         contactOutcomeTypeId: Long,
         contactType: ContactType,
         outcome: ContactOutcome
-        ) = ContactTypeOutcome (
-            ContactTypeOutcomeId(contactTypeId, contactOutcomeTypeId),
-            contactType,
-            outcome
-        )
+    ) = ContactTypeOutcome(
+        ContactTypeOutcomeId(contactTypeId, contactOutcomeTypeId),
+        contactType,
+        outcome
+    )
 }

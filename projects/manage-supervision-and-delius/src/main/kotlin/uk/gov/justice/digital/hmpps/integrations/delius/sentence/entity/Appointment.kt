@@ -129,7 +129,6 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         startTime: String,
         endTime: String
     ): Int
-
 }
 
 fun AppointmentRepository.appointmentClashes(
@@ -173,8 +172,8 @@ interface ContactTypeOutcomeRepository : JpaRepository<ContactTypeOutcome, Conta
 
 fun ContactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(contactTypeId: Long, code: String) =
     findByIdContactTypeIdAndOutcomeCode(
-        contactTypeId, code) ?: throw NotFoundException("ContactTypeOutcome", "contact_type_id $contactTypeId and outcome code", code)
-
+        contactTypeId, code
+    ) ?: throw NotFoundException("ContactTypeOutcome", "contact_type_id $contactTypeId and outcome code", code)
 
 @Embeddable
 class ContactTypeOutcomeId(
@@ -184,5 +183,5 @@ class ContactTypeOutcomeId(
     @Column(name = "contact_outcome_type_id")
     val contactOutcomeTypeId: Long,
 
-) : Serializable
+    ) : Serializable
 
