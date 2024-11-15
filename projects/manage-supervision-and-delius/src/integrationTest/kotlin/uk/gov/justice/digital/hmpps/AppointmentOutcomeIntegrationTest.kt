@@ -104,6 +104,7 @@ class AppointmentOutcomeIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
 
         val updatedAppointment = appointmentRepository.findById(response.appointments[0].id).get()
+
         assertEquals("Y", updatedAppointment.attended)
         assertEquals(request.notes, updatedAppointment.notes)
         assertEquals(ATTENDED_COMPLIED.id, updatedAppointment.outcomeId)
@@ -118,7 +119,6 @@ class AppointmentOutcomeIntegrationTest {
         assertThat(updatedAppointment.staffId, equalTo(createdAppointment.staffId))
         assertThat(updatedAppointment.probationAreaId, equalTo(createdAppointment.probationAreaId))
         assertThat(updatedAppointment.officeLocationId, equalTo(createdAppointment.officeLocationId))
-
 
         appointmentRepository.delete(updatedAppointment)
     }
