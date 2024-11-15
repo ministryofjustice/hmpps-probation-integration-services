@@ -80,6 +80,9 @@ class Appointment(
     @Column(name = "office_location_id")
     val officeLocationId: Long? = null,
 
+    @Column(name = "attended", columnDefinition = "char(1)")
+    var attended: String? = null,
+
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
     val outcome: ContactOutcome? = null,

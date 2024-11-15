@@ -16,12 +16,14 @@ class AppointmentOutcomeService(
     fun recordOutcome(outcome: Outcome) {
         val appointment = appointmentRepository.findById(outcome.id).orElseThrow { throw NotFoundException("Appointment", "id", outcome.id) }
 
-        contactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(appointment.type.id, outcome.code)
+        val contactTypeOutcome = contactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(appointment.type.id, outcome.code)
 
         appointment.apply {
-            sensitive = appointment.sensitive
+            attended = if (contactTypeOutcome.type.attendanceContact) "Y" else "N"
             notes = outcome.notes
+            sensitive = outcome.sensitive
         }
+
         appointmentRepository.save(appointment)
     }
 }
