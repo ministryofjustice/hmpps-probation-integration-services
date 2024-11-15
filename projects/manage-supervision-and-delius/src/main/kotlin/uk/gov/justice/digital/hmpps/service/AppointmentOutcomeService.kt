@@ -21,6 +21,7 @@ class AppointmentOutcomeService(
         appointment.apply {
             attended = if (contactTypeOutcome.type.attendanceContact) "Y" else "N"
             notes = outcome.notes
+            outcomeId = contactTypeOutcome.outcome.id
             sensitive = outcome.sensitive
         }
 
