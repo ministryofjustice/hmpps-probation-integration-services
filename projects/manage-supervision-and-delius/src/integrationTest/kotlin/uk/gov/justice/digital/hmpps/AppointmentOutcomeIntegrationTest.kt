@@ -81,7 +81,6 @@ class AppointmentOutcomeIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andExpect(jsonPath("$.message", equalTo("ContactTypeOutcome with contact_type_id 8 and outcome code of ABC not found")))
 
-        val appointment = appointmentRepository.findById(response.appointments[0].id).get()
-        appointmentRepository.delete(appointment)
+        appointmentRepository.deleteById(response.appointments[0].id)
     }
 }
