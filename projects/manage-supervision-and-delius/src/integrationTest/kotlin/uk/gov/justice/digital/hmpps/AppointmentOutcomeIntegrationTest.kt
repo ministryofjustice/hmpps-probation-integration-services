@@ -93,7 +93,7 @@ class AppointmentOutcomeIntegrationTest {
         assertNull(createdAppointment.outcomeId)
         assertNull(createdAppointment.sensitive)
 
-        val request = Outcome(response.appointments[0].id, "ATTC",  notes = "my notes")
+        val request = Outcome(response.appointments[0].id, "ATTC", notes = "my notes")
 
         mockMvc
             .perform(
