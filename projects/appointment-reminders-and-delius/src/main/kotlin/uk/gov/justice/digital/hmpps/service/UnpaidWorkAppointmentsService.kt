@@ -15,7 +15,7 @@ class UnpaidWorkAppointmentsService(
     @Value("\${govuk-notify.templates.upw-appointment-reminder}") private val templateId: String,
 ) {
     fun sendUnpaidWorkAppointmentReminders(providerCode: String, dryRun: Boolean = false) {
-        upwAppointmentRepository.getUnpaidWorkAppointments(LocalDate.now().plusDays(2), providerCode)
+        upwAppointmentRepository.getUnpaidWorkAppointments(LocalDate.now().plusDays(3), providerCode)
             .forEach {
                 notificationClient.sendSms(
                     templateId,
