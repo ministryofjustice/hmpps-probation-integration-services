@@ -42,8 +42,9 @@ class AppointmentOutcomeIntegrationTest {
     @Test
     fun `unauthorized status returned`() {
         mockMvc
-            .perform(MockMvcRequestBuilders.patch("/appointment")
-                .withJson(outcome)
+            .perform(
+                MockMvcRequestBuilders.patch("/appointment")
+                    .withJson(outcome)
             )
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
@@ -51,9 +52,10 @@ class AppointmentOutcomeIntegrationTest {
     @Test
     fun `when an appointment does not exist returns a 404 response`() {
         mockMvc
-            .perform(MockMvcRequestBuilders.patch("/appointment")
-                .withToken()
-                .withJson(outcome)
+            .perform(
+                MockMvcRequestBuilders.patch("/appointment")
+                    .withToken()
+                    .withJson(outcome)
             )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andExpect(jsonPath("$.message", equalTo("Appointment with id of 123 not found")))
@@ -64,12 +66,18 @@ class AppointmentOutcomeIntegrationTest {
         val response = createAppointment()
 
         mockMvc
-            .perform(MockMvcRequestBuilders.patch("/appointment")
-                .withToken()
-                .withJson(Outcome(response.appointments[0].id, "ABC"))
+            .perform(
+                MockMvcRequestBuilders.patch("/appointment")
+                    .withToken()
+                    .withJson(Outcome(response.appointments[0].id, "ABC"))
             )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect(jsonPath("$.message", equalTo("ContactTypeOutcome with contact_type_id 8 and outcome code of ABC not found")))
+            .andExpect(
+                jsonPath(
+                    "$.message",
+                    equalTo("ContactTypeOutcome with contact_type_id 8 and outcome code of ABC not found")
+                )
+            )
 
         appointmentRepository.deleteById(response.appointments[0].id)
     }
@@ -80,9 +88,10 @@ class AppointmentOutcomeIntegrationTest {
         val request = Outcome(response.appointments[0].id, "ATTC", false, "my notes")
 
         mockMvc
-            .perform(MockMvcRequestBuilders.patch("/appointment")
-                .withToken()
-                .withJson(request)
+            .perform(
+                MockMvcRequestBuilders.patch("/appointment")
+                    .withToken()
+                    .withJson(request)
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
 

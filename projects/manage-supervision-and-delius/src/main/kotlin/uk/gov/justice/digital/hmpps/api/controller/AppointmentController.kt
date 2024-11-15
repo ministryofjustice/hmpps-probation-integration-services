@@ -15,7 +15,8 @@ import uk.gov.justice.digital.hmpps.service.SentenceAppointmentService
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class AppointmentController(
     private val appointmentService: SentenceAppointmentService,
-    private val appointmentOutcomeService: AppointmentOutcomeService) {
+    private val appointmentOutcomeService: AppointmentOutcomeService
+) {
 
     @PostMapping("/{crn}")
     @ResponseStatus(HttpStatus.CREATED)
