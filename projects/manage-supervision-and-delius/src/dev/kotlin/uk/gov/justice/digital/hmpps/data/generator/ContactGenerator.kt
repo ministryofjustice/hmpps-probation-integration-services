@@ -179,7 +179,7 @@ object ContactGenerator {
         outcome = outcome
     )
 
-    private fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
+    fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
         ContactOutcome(IdGenerator.getAndIncrement(), code, description, attendance, acceptable)
 
     private fun generateContactType(
