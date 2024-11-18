@@ -21,7 +21,7 @@ class AppointmentOutcomeService(
             contactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(appointment.type.id, outcome.code)
 
         appointment.apply {
-            attended = if (contactTypeOutcome.type.attendanceContact) "Y" else "N"
+            attended = outcome.attended
             notes = outcome.notes
             outcomeId = contactTypeOutcome.outcome.id
             sensitive = outcome.sensitive
