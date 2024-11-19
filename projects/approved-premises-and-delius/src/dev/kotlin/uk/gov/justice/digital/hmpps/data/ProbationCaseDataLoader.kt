@@ -102,10 +102,30 @@ class ProbationCaseDataLoader(
         )
 
         listOf(
-            DataLoaderCaseAndEventAndOffences(ProbationCaseGenerator.CASE_COMPLEX,        eventId = 100001L, mainOffence = Pair(200001L, LocalDate.parse("2024-10-11")), additionalOffence = Pair(300001L, LocalDate.parse("2024-10-21"))),
-            DataLoaderCaseAndEventAndOffences(ProbationCaseGenerator.CASE_X320741,        eventId = 100002L, mainOffence = Pair(200002L, LocalDate.parse("2024-10-12")), additionalOffence = Pair(300002L, LocalDate.parse("2024-10-22"))),
-            DataLoaderCaseAndEventAndOffences(ProbationCaseGenerator.CASE_LAO_RESTRICTED, eventId = 100003L, mainOffence = Pair(200003L, LocalDate.parse("2024-10-13")), additionalOffence = Pair(300003L, LocalDate.parse("2024-10-23"))),
-            DataLoaderCaseAndEventAndOffences(ProbationCaseGenerator.CASE_LAO_EXCLUSION,  eventId = 100004L, mainOffence = Pair(200004L, LocalDate.parse("2024-10-14")), additionalOffence = Pair(300004L, LocalDate.parse("2024-10-24"))),
+            DataLoaderCaseAndEventAndOffences(
+                ProbationCaseGenerator.CASE_COMPLEX,
+                eventId = 100001L,
+                mainOffence = Pair(200001L, LocalDate.parse("2024-10-11")),
+                additionalOffence = Pair(300001L, LocalDate.parse("2024-10-21"))
+            ),
+            DataLoaderCaseAndEventAndOffences(
+                ProbationCaseGenerator.CASE_X320741,
+                eventId = 100002L,
+                mainOffence = Pair(200002L, LocalDate.parse("2024-10-12")),
+                additionalOffence = Pair(300002L, LocalDate.parse("2024-10-22"))
+            ),
+            DataLoaderCaseAndEventAndOffences(
+                ProbationCaseGenerator.CASE_LAO_RESTRICTED,
+                eventId = 100003L,
+                mainOffence = Pair(200003L, LocalDate.parse("2024-10-13")),
+                additionalOffence = Pair(300003L, LocalDate.parse("2024-10-23"))
+            ),
+            DataLoaderCaseAndEventAndOffences(
+                ProbationCaseGenerator.CASE_LAO_EXCLUSION,
+                eventId = 100004L,
+                mainOffence = Pair(200004L, LocalDate.parse("2024-10-14")),
+                additionalOffence = Pair(300004L, LocalDate.parse("2024-10-24"))
+            ),
         ).forEach {
             generateEventAndAddOffences(
                 it.probationCase,

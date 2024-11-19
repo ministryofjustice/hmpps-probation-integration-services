@@ -87,7 +87,8 @@ fun CommunityManager.team() = Team(
     team.endDate
 )
 
-fun CaseOffence.asOffence() = Offence(id = if (main) "M$id" else "A$id", code, description, date, main, eventId, eventNumber)
+fun CaseOffence.asOffence() =
+    Offence(id = if (main) "M$id" else "A$id", code, description, date, main, eventId, eventNumber)
 
 fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registration(type.code, type.description, date)
 fun Registration.asMappa() = MappaDetail(
