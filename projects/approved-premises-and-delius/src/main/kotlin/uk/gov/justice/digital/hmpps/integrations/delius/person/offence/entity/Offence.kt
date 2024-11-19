@@ -88,7 +88,7 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
     @Query(
         """
         select 
-            mo.offence.id as id,
+            mo.id as id,
             mo.offence.code as code, 
             mo.offence.description as description, 
             mo.date as date, 
@@ -99,7 +99,7 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
         where mo.event.personId = :personId and mo.event.active = true
         union all
         select 
-            ao.offence.id,
+            ao.id,
             ao.offence.code, 
             ao.offence.description, 
             ao.date, 
