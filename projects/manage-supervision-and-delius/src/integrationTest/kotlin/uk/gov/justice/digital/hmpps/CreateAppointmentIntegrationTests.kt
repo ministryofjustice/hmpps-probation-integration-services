@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
@@ -131,7 +130,6 @@ class CreateAppointmentIntegrationTests {
                 .withToken()
                 .withJson(createAppointment)
         )
-            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<AppointmentDetail>()
 

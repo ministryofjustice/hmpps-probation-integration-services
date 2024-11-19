@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.entity.Person
 
 object PersonGenerator {
 
