@@ -33,6 +33,7 @@ prisoner.movement.configs:
       - DD
       - DE
       - DL
+      - DEIRC
       - ECSLIRC
       # Early removal scheme
       - ETR
