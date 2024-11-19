@@ -15,12 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
@@ -121,9 +117,8 @@ internal class UpdateStatusActionTest {
             ZonedDateTime.now().minusDays(1)
         )
 
-        assertThrows<IgnorableMessageException> {
-            action.accept(PrisonerMovementContext(prisonerMovement, custody))
-        }
+        val result = action.accept(PrisonerMovementContext(prisonerMovement, custody))
+        assertThat(result, instanceOf(ActionResult.Ignored::class.java))
     }
 
     @ParameterizedTest

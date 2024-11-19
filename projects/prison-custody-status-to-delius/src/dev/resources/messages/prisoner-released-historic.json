@@ -1,0 +1,17 @@
+{
+  "Type": "Notification",
+  "MessageId": "682dd2a4-c193-461c-a8e9-cc976a961aa5",
+  "TopicArn": "",
+  "Message": "{\"eventType\":\"prison-offender-events.prisoner.released\",\"additionalInformation\":{\"nomsNumber\":\"A0001AA\",\"reason\":\"RELEASED\",\"details\":\"Movement reason code NCS\",\"nomisMovementReasonCode\":\"NCS\",\"currentLocation\":\"OUTSIDE_PRISON\",\"prisonId\":\"WSI\",\"currentPrisonStatus\":\"NOT_UNDER_PRISON_CARE\"},\"version\":1,\"occurredAt\":\"2010-01-01T07:03:50.912169+01:00\",\"publishedAt\":\"2010-01-01T08:00:33.477735848+01:00\",\"description\":\"A prisoner has been released from prison\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A0001AA\"}]}}",
+  "Timestamp": "2022-05-04T07:00:33.487Z",
+  "SignatureVersion": "1",
+  "Signature": "",
+  "SigningCertURL": "",
+  "UnsubscribeURL": "",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "prison-offender-events.prisoner.released"
+    }
+  }
+}
