@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
@@ -89,7 +88,6 @@ internal class RequirementsByEventIdIntegrationTest {
         val response = mockMvc
             .perform(get("/probation-case/$crn/convictions/${event.id}/requirements").withToken())
             .andExpect(status().isOk)
-            .andDo(print())
             .andReturn().response.contentAsJson<ConvictionRequirements>()
 
         assertEquals(expectedResponse, response)
@@ -119,7 +117,6 @@ internal class RequirementsByEventIdIntegrationTest {
         mockMvc
             .perform(get("/probation-case/$crn/convictions/${event.id}/requirements?$requestParams").withToken())
             .andExpect(status().isOk)
-            .andDo(print())
             .andExpect(jsonPath("$.requirements.length()").value(1))
             .andExpect(jsonPath("$.requirements[0].active").value(active))
             .andExpect(jsonPath("$.requirements[0].softDeleted").value(deleted))

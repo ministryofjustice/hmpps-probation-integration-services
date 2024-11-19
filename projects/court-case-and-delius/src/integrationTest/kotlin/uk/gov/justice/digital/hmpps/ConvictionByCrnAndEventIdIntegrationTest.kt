@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Attendances
@@ -256,7 +255,6 @@ internal class ConvictionByCrnAndEventIdIntegrationTest {
         val response = mockMvc
             .perform(get("/probation-case/$crn/convictions/${event.id}").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andDo(print())
             .andReturn().response.contentAsJson<Conviction>()
 
         assertEquals(expectedResponse.convictionId, response.convictionId)
