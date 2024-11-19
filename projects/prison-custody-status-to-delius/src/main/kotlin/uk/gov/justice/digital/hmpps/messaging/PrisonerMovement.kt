@@ -74,3 +74,9 @@ fun PrisonerMovement.releaseDateValid(custody: Custody): Boolean {
 fun PrisonerMovement.receivedDateValid(custody: Custody): Boolean =
     !occurredAt.isAfter(ZonedDateTime.now()) && (custody.mostRecentRelease()?.date?.let { !occurredAt.isBefore(it) }
         ?: true)
+
+fun PrisonerMovement.statusDateValid(custody: Custody): Boolean =
+    occurredAt <= ZonedDateTime.now() && occurredAt.toLocalDate() >= custody.statusChangeDate
+
+fun PrisonerMovement.locationDateValid(custody: Custody): Boolean =
+    occurredAt <= ZonedDateTime.now() && occurredAt.toLocalDate() >= custody.locationChangeDate

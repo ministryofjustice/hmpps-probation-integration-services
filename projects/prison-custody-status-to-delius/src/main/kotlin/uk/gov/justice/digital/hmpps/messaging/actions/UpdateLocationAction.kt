@@ -119,7 +119,8 @@ class UpdateLocationAction(
     private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody): ActionResult? {
         if ((prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.toPrisonId) ||
             (prisonerMovement is PrisonerMovement.Received && !prisonerMovement.receivedDateValid(custody)) ||
-            (prisonerMovement is PrisonerMovement.Released && !prisonerMovement.releaseDateValid(custody))
+            (prisonerMovement is PrisonerMovement.Released && !prisonerMovement.releaseDateValid(custody)) ||
+            !prisonerMovement.locationDateValid(custody)
         ) {
             return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
         }
