@@ -37,7 +37,7 @@ class AppointmentOutcomeIntegrationTest {
 
     @Autowired
     internal lateinit var mockMvc: MockMvc
-
+    
     val outcome = Outcome(123, "ATTC", "N")
 
     @Test

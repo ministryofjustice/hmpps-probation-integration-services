@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.service
+package uk.gov.justice.digital.hmpps.api.controller
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.ExtendWith
@@ -11,19 +11,17 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.Person
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person as PersonEntity
-import uk.gov.justice.digital.hmpps.integration.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.Person as PersonEntity
 
 @ExtendWith(MockitoExtension::class)
-class SubjectAccessRequestsServiceTest {
+class ProbationCaseControllerTest {
 
     @Mock
     lateinit var personRepository: PersonRepository
 
     @InjectMocks
-    lateinit var subjectAccessRequestsService: SubjectAccessRequestsService
-
-    val person1 = PersonGenerator.PERSON1
+    lateinit var probationCaseController: ProbationCaseController
 
     @ParameterizedTest
     @CsvSource(
@@ -36,7 +34,7 @@ class SubjectAccessRequestsServiceTest {
 
         whenever(personRepository.findByCrn(crn)).thenReturn(getPerson(person))
 
-        val response = subjectAccessRequestsService.getPersonDetailsByCrn(crn)
+        val response = probationCaseController.getPersonalDetails(crn)
 
         val expectedResponse = Person(getName(fullName))
 
