@@ -55,6 +55,7 @@ sealed interface PrisonerMovement {
         MovementReasonCodes.DISCHARGED_OR_DEPORTED,
         MovementReasonCodes.DEPORTED_NO_SENTENCE,
         MovementReasonCodes.DEPORTED_LICENCE,
+        MovementReasonCodes.DEPORTED_IRC,
         MovementReasonCodes.EARLY_REMOVAL_SCHEME,
         MovementReasonCodes.END_CUSTODY_TO_IMMIGRATION_RELEASE_CENTRE
     )
