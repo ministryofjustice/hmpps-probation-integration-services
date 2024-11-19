@@ -79,4 +79,4 @@ fun PrisonerMovement.statusDateValid(custody: Custody): Boolean =
     occurredAt <= ZonedDateTime.now() && occurredAt.toLocalDate() >= custody.statusChangeDate
 
 fun PrisonerMovement.locationDateValid(custody: Custody): Boolean =
-    occurredAt <= ZonedDateTime.now() && occurredAt.toLocalDate() >= custody.locationChangeDate
+    occurredAt <= ZonedDateTime.now() && (custody.locationChangeDate == null || occurredAt.toLocalDate() >= custody.locationChangeDate)
