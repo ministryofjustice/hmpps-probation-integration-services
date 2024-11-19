@@ -38,7 +38,7 @@ class AppointmentOutcomeIntegrationTest {
     @Autowired
     internal lateinit var mockMvc: MockMvc
 
-    val outcome = Outcome(123, "ATTC", "N")
+    val outcome = Outcome(123, "Jack Ryan","ATTC", "N")
 
     @Test
     fun `unauthorized status returned`() {
@@ -70,7 +70,7 @@ class AppointmentOutcomeIntegrationTest {
             .perform(
                 MockMvcRequestBuilders.patch("/appointment")
                     .withToken()
-                    .withJson(Outcome(response.appointments[0].id, "ABC", "Y"))
+                    .withJson(Outcome(response.appointments[0].id, "Jon Jones", "ABC", "Y"))
             )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andExpect(
@@ -94,7 +94,7 @@ class AppointmentOutcomeIntegrationTest {
         assertNull(createdAppointment.outcomeId)
         assertNull(createdAppointment.sensitive)
 
-        val request = Outcome(response.appointments[0].id, "ATTC", "Y", notes = "my notes")
+        val request = Outcome(response.appointments[0].id, "Jason Bourne", "ATTC", "Y", notes = "my notes")
 
         mockMvc
             .perform(
@@ -108,7 +108,7 @@ class AppointmentOutcomeIntegrationTest {
 
         assertEquals("Y", updatedAppointment.attended)
         assertEquals("Y", updatedAppointment.complied)
-        assertEquals(request.notes, updatedAppointment.notes)
+        assertEquals(request.notes, updatedAppointment.notes!!.lines()[1])
         assertEquals(ATTENDED_COMPLIED.id, updatedAppointment.outcomeId)
         assertFalse(updatedAppointment.sensitive!!)
 
