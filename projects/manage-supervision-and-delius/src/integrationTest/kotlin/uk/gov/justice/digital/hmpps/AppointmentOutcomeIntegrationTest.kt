@@ -89,6 +89,7 @@ class AppointmentOutcomeIntegrationTest {
         val createdAppointment = appointmentRepository.findById(response.appointments[0].id).get()
 
         assertNull(createdAppointment.attended)
+        assertNull(createdAppointment.complied)
         assertNull(createdAppointment.notes)
         assertNull(createdAppointment.outcomeId)
         assertNull(createdAppointment.sensitive)
@@ -106,6 +107,7 @@ class AppointmentOutcomeIntegrationTest {
         val updatedAppointment = appointmentRepository.findById(response.appointments[0].id).get()
 
         assertEquals("Y", updatedAppointment.attended)
+        assertEquals("Y", updatedAppointment.complied)
         assertEquals(request.notes, updatedAppointment.notes)
         assertEquals(ATTENDED_COMPLIED.id, updatedAppointment.outcomeId)
         assertFalse(updatedAppointment.sensitive!!)

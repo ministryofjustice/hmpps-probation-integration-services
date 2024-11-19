@@ -22,7 +22,8 @@ class AppointmentOutcomeService(
 
         appointment.apply {
             attended = outcome.attended
-            notes = outcome.notes
+            complied = if (contactTypeOutcome.outcome.outcomeCompliantAcceptable!!) "Y" else "N"
+            notes = listOfNotNull(notes, outcome.notes).joinToString(System.lineSeparator())
             outcomeId = contactTypeOutcome.outcome.id
             sensitive = outcome.sensitive
         }

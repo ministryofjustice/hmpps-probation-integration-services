@@ -83,6 +83,9 @@ class Appointment(
     @Column(name = "attended", columnDefinition = "char(1)")
     var attended: String? = null,
 
+    @Column(name = "complied", columnDefinition = "char(1")
+    var complied: String? = null,
+
     @Column(name = "contact_outcome_type_id")
     var outcomeId: Long? = null,
 
