@@ -38,7 +38,7 @@ class AppointmentOutcomeIntegrationTest {
     @Autowired
     internal lateinit var mockMvc: MockMvc
 
-    val outcome = Outcome(123, "Jack Ryan","ATTC", "N")
+    val outcome = Outcome(123, "Jack Ryan", "ATTC", "N")
 
     @Test
     fun `unauthorized status returned`() {

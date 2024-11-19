@@ -26,10 +26,14 @@ class AppointmentOutcomeService(
             val dateTime = LocalDateTime.now()
             attended = outcome.attended
             complied = if (contactTypeOutcome.outcome.outcomeCompliantAcceptable!!) "Y" else "N"
-            notes = outcome.notes?.let { """
-                Comment added by ${outcome.recordedBy} on ${dateTime.format(DeliusDateTimeFormatter).substring(0, 10)} at ${dateTime.format(DeliusDateTimeFormatter).substring(11, 16)}
+            notes = outcome.notes?.let {
+                """
+                Comment added by ${outcome.recordedBy} on ${
+                    dateTime.format(DeliusDateTimeFormatter).substring(0, 10)
+                } at ${dateTime.format(DeliusDateTimeFormatter).substring(11, 16)}
                 $it
-            """.trimIndent() }
+            """.trimIndent()
+            }
             outcomeId = contactTypeOutcome.outcome.id
             sensitive = outcome.sensitive
         }
