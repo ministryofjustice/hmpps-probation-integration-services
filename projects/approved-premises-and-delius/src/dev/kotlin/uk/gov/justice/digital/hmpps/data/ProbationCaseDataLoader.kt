@@ -101,39 +101,30 @@ class ProbationCaseDataLoader(
             )
         )
 
-        listOf(
-            DataLoaderCaseAndEventAndOffences(
-                ProbationCaseGenerator.CASE_COMPLEX,
-                eventId = 100001L,
-                mainOffence = Pair(200001L, LocalDate.parse("2024-10-11")),
-                additionalOffence = Pair(300001L, LocalDate.parse("2024-10-21"))
-            ),
-            DataLoaderCaseAndEventAndOffences(
-                ProbationCaseGenerator.CASE_X320741,
-                eventId = 100002L,
-                mainOffence = Pair(200002L, LocalDate.parse("2024-10-12")),
-                additionalOffence = Pair(300002L, LocalDate.parse("2024-10-22"))
-            ),
-            DataLoaderCaseAndEventAndOffences(
-                ProbationCaseGenerator.CASE_LAO_RESTRICTED,
-                eventId = 100003L,
-                mainOffence = Pair(200003L, LocalDate.parse("2024-10-13")),
-                additionalOffence = Pair(300003L, LocalDate.parse("2024-10-23"))
-            ),
-            DataLoaderCaseAndEventAndOffences(
-                ProbationCaseGenerator.CASE_LAO_EXCLUSION,
-                eventId = 100004L,
-                mainOffence = Pair(200004L, LocalDate.parse("2024-10-14")),
-                additionalOffence = Pair(300004L, LocalDate.parse("2024-10-24"))
-            ),
-        ).forEach {
-            generateEventAndAddOffences(
-                it.probationCase,
-                it.eventId,
-                it.mainOffence,
-                it.additionalOffence
-            )
-        }
+        generateEventAndAddOffences(
+            ProbationCaseGenerator.CASE_COMPLEX,
+            eventId = 100001L,
+            mainOffence = Pair(200001L, LocalDate.parse("2024-10-11")),
+            additionalOffence = Pair(300001L, LocalDate.parse("2024-10-21"))
+        )
+        generateEventAndAddOffences(
+            ProbationCaseGenerator.CASE_X320741,
+            eventId = 100002L,
+            mainOffence = Pair(200002L, LocalDate.parse("2024-10-12")),
+            additionalOffence = Pair(300002L, LocalDate.parse("2024-10-22"))
+        )
+        generateEventAndAddOffences(
+            ProbationCaseGenerator.CASE_LAO_RESTRICTED,
+            eventId = 100003L,
+            mainOffence = Pair(200003L, LocalDate.parse("2024-10-13")),
+            additionalOffence = Pair(300003L, LocalDate.parse("2024-10-23"))
+        )
+        generateEventAndAddOffences(
+            ProbationCaseGenerator.CASE_LAO_EXCLUSION,
+            eventId = 100004L,
+            mainOffence = Pair(200004L, LocalDate.parse("2024-10-14")),
+            additionalOffence = Pair(300004L, LocalDate.parse("2024-10-24"))
+        )
 
         personalCircumstanceTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_TYPES)
         personalCircumstanceSubTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_SUB_TYPES)
@@ -196,12 +187,6 @@ class MutableLimitedAccessPerson(
     fun toLimitedAccessPerson() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
 }
 
-data class DataLoaderCaseAndEventAndOffences(
-    val probationCase: ProbationCase,
-    val eventId: Long,
-    val mainOffence: Pair<Long, LocalDate>,
-    val additionalOffence: Pair<Long, LocalDate>
-)
 
 interface LduRepository : JpaRepository<Ldu, Long>
 interface OffenceRepository : JpaRepository<Offence, Long>
