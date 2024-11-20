@@ -146,7 +146,7 @@ jobs:
       - name: Get report output directory
         if: always()
         run: |
-          echo "report-dir=test-report/$REF/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}" | tee -a "$GITHUB_ENV"
+          echo "report-dir=test-report/$REF/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}/${{ matrix.project }}" | tee -a "$GITHUB_ENV"
           mv /tmp/.git/ .
         env:
           REF: ${{ github.ref_name }}
