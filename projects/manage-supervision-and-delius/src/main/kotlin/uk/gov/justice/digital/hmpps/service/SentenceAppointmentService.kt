@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
@@ -36,7 +37,9 @@ class SentenceAppointmentService(
         return audit(BusinessInteractionCode.ADD_CONTACT) { audit ->
             val om = offenderManagerRepository.getByCrn(crn)
             audit["offenderId"] = om.person.id
-            checkForConflicts(om.person.id, createAppointment)
+
+            checkForConflicts(createAppointment)
+
             val userAndLocation =
                 staffUserRepository.getUserAndLocation(createAppointment.user.username, createAppointment.user.team)
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
@@ -71,6 +74,20 @@ class SentenceAppointmentService(
                 }
             }
 
+           createAppointments.forEach {
+                if (it.start.isAfter(ZonedDateTime.now()) && appointmentRepository.appointmentClashes(
+                        om.person.id,
+                        it.start.toLocalDate(),
+                        it.start,
+                        it.end
+                    )
+                ) {
+                    throw ConflictException("Appointment conflicts with an existing future appointment ${createAppointment.start.toLocalDateTime().format(
+                        DeliusDateTimeFormatter).dropLast(3)} and ${createAppointment.end.toLocalDateTime().format(
+                        DeliusDateTimeFormatter).dropLast(3)}")
+                }
+            }
+
             val appointments = createAppointments.map { it.withManager(om, userAndLocation) }
             val savedAppointments = appointmentRepository.saveAll(appointments)
             val createdAppointments = savedAppointments.map { CreatedAppointment(it.id) }
@@ -81,7 +98,6 @@ class SentenceAppointmentService(
     }
 
     private fun checkForConflicts(
-        personId: Long,
         createAppointment: CreateAppointment
     ) {
         if (createAppointment.requirementId != null && createAppointment.licenceConditionId != null) {
@@ -108,16 +124,6 @@ class SentenceAppointmentService(
 
         if (createAppointment.licenceConditionId != null && !licenceConditionRepository.existsById(createAppointment.licenceConditionId)) {
             throw NotFoundException("LicenceCondition", "licenceConditionId", createAppointment.licenceConditionId)
-        }
-
-        if (createAppointment.start.isAfter(ZonedDateTime.now()) && appointmentRepository.appointmentClashes(
-                personId,
-                createAppointment.start.toLocalDate(),
-                createAppointment.start,
-                createAppointment.end
-            )
-        ) {
-            throw ConflictException("Appointment conflicts with an existing future appointment")
         }
 
         val licenceOrRequirement = listOfNotNull(createAppointment.licenceConditionId, createAppointment.requirementId)

@@ -43,3 +43,8 @@ data class User(
     val username: String,
     val team: String
 )
+
+data class OverlappingAppointment(
+    val start: String,
+    val end: String,
+)

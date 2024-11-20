@@ -179,11 +179,12 @@ class CreateAppointmentIntegrationTests {
             .andReturn().response.contentAsJson<AppointmentDetail>()
 
 
-        val response1 = mockMvc.perform(
+        val conflict = mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
                 .withJson(appointment))
             .andExpect(MockMvcResultMatchers.status().isConflict)
+//            .andExpect(jsonPath("$.message", equalTo("Appointment conflicts with an existing future appointment")))
 
         val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
         appointmentRepository.deleteAll(appointments)
