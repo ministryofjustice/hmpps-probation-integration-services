@@ -8,7 +8,7 @@ data class CreateAppointment(
     val user: User,
     val type: Type,
     val start: ZonedDateTime,
-    val end: ZonedDateTime? = null,
+    val end: ZonedDateTime,
     val interval: Interval = Interval.DAY,
     val numberOfAppointments: Int = 1,
     val eventId: Long,

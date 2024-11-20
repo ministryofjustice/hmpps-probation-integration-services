@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
@@ -42,6 +43,8 @@ class CreateAppointmentIntegrationTests {
     internal lateinit var appointmentRepository: AppointmentRepository
 
     private val user = User(STAFF_USER_1.username, TEAM.description)
+
+    private val person = PersonGenerator.PERSON_1
 
     @Test
     fun `unauthorized status returned`() {
@@ -95,8 +98,6 @@ class CreateAppointmentIntegrationTests {
     @ParameterizedTest
     @MethodSource("createAppointment")
     fun `create a new appointment`(createAppointment: CreateAppointment) {
-        val person = PersonGenerator.PERSON_1
-
         val response = mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
@@ -124,7 +125,6 @@ class CreateAppointmentIntegrationTests {
     @ParameterizedTest
     @MethodSource("createMultipleAppointments")
     fun `create multiple appointments`(createAppointment: CreateAppointment) {
-        val person = PersonGenerator.PERSON_1
         val response = mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
@@ -156,6 +156,38 @@ class CreateAppointmentIntegrationTests {
         appointmentRepository.deleteAll(appointments)
     }
 
+    @Test
+    fun `create overlapping appointment`() {
+        val appointment = CreateAppointment(
+            Companion.user,
+            CreateAppointment.Type.HomeVisitToCaseNS,
+            ZonedDateTime.now().plusHours(1),
+            ZonedDateTime.now().plusHours(2),
+            numberOfAppointments = 3,
+            eventId = PersonGenerator.EVENT_1.id,
+            uuid = UUID.randomUUID()
+        )
+
+        val person = PersonGenerator.PERSON_1
+
+        val response = mockMvc.perform(
+            post("/appointment/${person.crn}")
+                .withToken()
+                .withJson(appointment))
+            .andDo(print())
+            .andExpect(MockMvcResultMatchers.status().isCreated)
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+
+        val response1 = mockMvc.perform(
+            post("/appointment/${person.crn}")
+                .withToken()
+                .withJson(appointment))
+            .andExpect(MockMvcResultMatchers.status().isConflict)
+
+        val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
+        appointmentRepository.deleteAll(appointments)
+    }
     companion object {
         private val user = User(STAFF_USER_1.username, TEAM.description)
 
@@ -165,7 +197,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.PlannedOfficeVisitNS,
                 ZonedDateTime.now().plusDays(1),
-                ZonedDateTime.now().plusDays(2),
+                ZonedDateTime.now().plusDays(1).plusHours(1),
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
             ),
@@ -173,7 +205,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.InitialAppointmentInOfficeNS,
                 ZonedDateTime.now().plusDays(1),
-                null,
+                ZonedDateTime.now().plusDays(1).plusHours(1),
                 CreateAppointment.Interval.DAY,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
@@ -186,6 +218,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 ZonedDateTime.now(),
+                ZonedDateTime.now().plusHours(1),
                 numberOfAppointments = 3,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
@@ -194,6 +227,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 ZonedDateTime.now(),
+                end = ZonedDateTime.now().plusHours(1),
                 until = ZonedDateTime.now().plusDays(2),
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
@@ -202,6 +236,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 start = ZonedDateTime.now(),
+                end = ZonedDateTime.now().plusHours(2),
                 until = ZonedDateTime.now().plusDays(14),
                 interval = CreateAppointment.Interval.WEEK,
                 eventId = PersonGenerator.EVENT_1.id,
@@ -209,4 +244,5 @@ class CreateAppointmentIntegrationTests {
             )
         )
     }
+
 }

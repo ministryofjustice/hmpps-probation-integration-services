@@ -58,7 +58,7 @@ class SentenceAppointmentService(
                             createAppointment.user,
                             createAppointment.type,
                             createAppointment.start.plusDays(interval.toLong()),
-                            createAppointment.end?.plusDays(interval.toLong()),
+                            createAppointment.end.plusDays(interval.toLong()),
                             createAppointment.interval,
                             createAppointment.numberOfAppointments,
                             createAppointment.eventId,
@@ -88,7 +88,7 @@ class SentenceAppointmentService(
             throw InvalidRequestException("Either licence id or requirement id can be provided, not both")
         }
 
-        createAppointment.end?.let {
+        createAppointment.end.let {
             if (it.isBefore(createAppointment.start))
                 throw InvalidRequestException("Appointment end time cannot be before start time")
         }
@@ -114,7 +114,7 @@ class SentenceAppointmentService(
                 personId,
                 createAppointment.start.toLocalDate(),
                 createAppointment.start,
-                createAppointment.start
+                createAppointment.end
             )
         ) {
             throw ConflictException("Appointment conflicts with an existing future appointment")
@@ -135,7 +135,7 @@ class SentenceAppointmentService(
         teamId = userAndLocation.teamId,
         staffId = userAndLocation.staffId,
         0,
-        end?.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
+        end.let { ZonedDateTime.of(LocalDate.EPOCH, end.toLocalTime(), EuropeLondon) },
         probationAreaId = userAndLocation.providerId,
         urn,
         eventId = eventId,

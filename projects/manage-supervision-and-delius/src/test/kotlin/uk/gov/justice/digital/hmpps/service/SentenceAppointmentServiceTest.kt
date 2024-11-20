@@ -123,11 +123,12 @@ class SentenceAppointmentServiceTest {
     }
 
     @Test
-    fun `until before end date`() {
+    fun `until before start date`() {
         val appointment = CreateAppointment(
             user,
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             start = ZonedDateTime.now().plusDays(2),
+            end = ZonedDateTime.now().plusDays(2),
             until = ZonedDateTime.now().plusDays(1),
             interval = CreateAppointment.Interval.FORTNIGHT,
             numberOfAppointments = 3,
@@ -158,7 +159,7 @@ class SentenceAppointmentServiceTest {
             user,
             CreateAppointment.Type.InitialAppointmentInOfficeNS,
             ZonedDateTime.now().plusDays(1),
-            null,
+            ZonedDateTime.now().plusDays(1),
             interval = CreateAppointment.Interval.FOUR_WEEKS,
             numberOfAppointments = 1,
             1,
