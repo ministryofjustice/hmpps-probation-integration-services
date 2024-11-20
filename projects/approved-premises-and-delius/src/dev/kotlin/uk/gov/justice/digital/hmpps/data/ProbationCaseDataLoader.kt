@@ -187,7 +187,6 @@ class MutableLimitedAccessPerson(
     fun toLimitedAccessPerson() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
 }
 
-
 interface LduRepository : JpaRepository<Ldu, Long>
 interface OffenceRepository : JpaRepository<Offence, Long>
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>
