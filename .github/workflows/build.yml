@@ -125,10 +125,7 @@ jobs:
 
       - name: Check changes
         id: check-changes
-        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq -R . | jq -s -c '. // []')" | tee -a "$GITHUB_OUTPUT"
-
-      - name: Output changes
-        run: echo '${{ steps.check-changes.outputs.changes }}' > ${{ matrix.project }}-changes.json
+        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq -R . | jq -s -c '. // []')" | tee -a "$GITHUB_OUTPUT" "${{ matrix.project }}-changes.json"
 
       - name: Store changes
         uses: actions/upload-artifact@v4
@@ -152,11 +149,11 @@ jobs:
         env:
           REF: ${{ github.ref_name }}
 
-      - name: Publish HTML test report
+      - name: Publish test report
         if: always()
         uses: JamesIves/github-pages-deploy-action@62fec3add6773ec5dbbf18d2ee4260911aa35cf4 # v4.6.9
         with:
-          folder: projects/${{ matrix.project }}/build/reports/tests/**/*
+          folder: projects/${{ matrix.project }}/build/reports/tests
           target-folder: ${{ env.report-dir }}
 
   build-docker:
