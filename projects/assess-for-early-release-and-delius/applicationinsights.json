@@ -1,0 +1,62 @@
+{
+  "role": {
+    "name": "assess-for-early-release-and-delius"
+  },
+  "customDimensions": {
+    "service.version": "${VERSION}",
+    "service.team": "probation-integration"
+  },
+  "instrumentation": {
+    "logging": {
+      "level": "DEBUG"
+    },
+    "springScheduling": {
+      "enabled": false
+    }
+  },
+  "selfDiagnostics": {
+    "destination": "console"
+  },
+  "sampling": {
+    "percentage": 100
+  },
+  "preview": {
+    "sampling": {
+      "overrides": [
+        {
+          "telemetryType": "request",
+          "attributes": [
+            {
+              "key": "http.url",
+              "value": "https?://[^/]+/health/?.*",
+              "matchType": "regexp"
+            }
+          ],
+          "percentage": 0
+        },
+        {
+          "telemetryType": "request",
+          "attributes": [
+            {
+              "key": "http.url",
+              "value": "https?://[^/]+/info/?.*",
+              "matchType": "regexp"
+            }
+          ],
+          "percentage": 0
+        },
+        {
+          "telemetryType": "dependency",
+          "attributes": [
+            {
+              "key": "db.operation",
+              "value": "SELECT",
+              "matchType": "strict"
+            }
+          ],
+          "percentage": 10
+        }
+      ]
+    }
+  }
+}
