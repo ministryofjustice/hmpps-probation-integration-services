@@ -160,11 +160,11 @@ class DetailedOffence(
 interface MainOffenceRepository : JpaRepository<MainOffence, Long>
 
 interface OffenceRepository : JpaRepository<Offence, Long> {
-    fun findByMainOffenceCode(offenceCode: String): Offence?
+    fun findByCode(offenceCode: String): Offence?
 }
 
 fun OffenceRepository.findOffence(offenceCode: String) =
-    findByMainOffenceCode(offenceCode) ?: throw NotFoundException("Offence", "offenceCode", offenceCode)
+    findByCode(offenceCode) ?: throw NotFoundException("Offence", "offenceCode", offenceCode)
 
 interface DetailedOffenceRepository : JpaRepository<DetailedOffence, Long> {
     fun findByCode(code: String): DetailedOffence?

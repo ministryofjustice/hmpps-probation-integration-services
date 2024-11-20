@@ -60,7 +60,7 @@ class CourtAppearance(
     val appearanceType: ReferenceData,
 
     @ManyToOne
-    @JoinColumn(name = "appearance_type_id")
+    @JoinColumn(name = "plea_id")
     val plea: ReferenceData? = null,
 
     @ManyToOne

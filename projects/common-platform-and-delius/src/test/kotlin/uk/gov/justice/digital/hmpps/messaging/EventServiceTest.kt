@@ -95,7 +95,7 @@ internal class EventServiceTest {
 
         whenever(eventRepository.getNextEventNumber(person.id!!)).thenReturn(1L.toString())
         whenever(detailedOffenceRepository.findByCode(hearingOffence.offenceCode!!)).thenReturn(detailedOffence)
-        whenever(offenceRepository.findByMainOffenceCode(detailedOffence.homeOfficeCode!!)).thenReturn(offence)
+        whenever(offenceRepository.findByCode(detailedOffence.homeOfficeCode!!)).thenReturn(offence)
         whenever(courtRepository.findByOuCode(court.ouCode!!)).thenReturn(court)
         whenever(teamRepository.findByCode(any())).thenReturn(TeamGenerator.UNALLOCATED)
         whenever(staffRepository.findByCode(any())).thenReturn(StaffGenerator.UNALLOCATED)

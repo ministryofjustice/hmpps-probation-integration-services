@@ -135,26 +135,22 @@ class OrderManager(
     val providerEmployeeId: Long? = null,
 
     @CreatedDate
-    @Column(name = "created_datetime", updatable = false)
     val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
-    @Column
     @CreatedBy
     var createdByUserId: Long = 0,
 
     @LastModifiedDate
-    @Column(name = "last_updated_datetime")
     var lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "provider_team_id")
     val providerTeamId: Long? = null,
 
     @LastModifiedBy
-    @Column(name = "last_updated_user_id")
     var lastModifiedUserId: Long = 0,
 
     @ManyToOne
-    @JoinColumn(name = "allocation_reason_id")
+    @JoinColumn(name = "transfer_reason_id")
     val transferReason: TransferReason,
 
     @Column(name = "trust_provider_flag", columnDefinition = "number")
@@ -181,7 +177,7 @@ interface EventRepository : JpaRepository<Event, Long> {
         """
     SELECT CAST(COALESCE(MAX(CAST(e.number AS int)), 0) + 1 AS string) 
     FROM Event e 
-    WHERE e.person.id = :offenderId
+    WHERE e.person.id = :personId
     """
     )
     fun getNextEventNumber(personId: Long): String

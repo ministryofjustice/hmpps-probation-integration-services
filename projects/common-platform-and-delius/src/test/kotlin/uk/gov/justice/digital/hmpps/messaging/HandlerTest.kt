@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Equality
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.EventService
 import uk.gov.justice.digital.hmpps.service.InsertPersonResult
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
@@ -33,6 +34,9 @@ internal class HandlerTest {
 
     @Mock
     lateinit var personService: PersonService
+
+    @Mock
+    lateinit var eventService: EventService
 
     @Mock
     lateinit var probationSearchClient: ProbationSearchClient

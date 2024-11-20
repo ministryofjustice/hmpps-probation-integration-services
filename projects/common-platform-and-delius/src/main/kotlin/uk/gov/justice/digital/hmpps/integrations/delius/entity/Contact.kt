@@ -26,7 +26,7 @@ class Contact(
     @Column(name = "contact_id")
     val id: Long? = null,
 
-    @Column(name = "contact_id")
+    @Column
     val linkedContactId: Long? = null,
 
     @Column(name = "contact_date")
