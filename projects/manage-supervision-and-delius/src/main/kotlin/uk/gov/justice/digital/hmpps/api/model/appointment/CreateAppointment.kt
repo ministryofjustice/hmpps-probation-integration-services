@@ -13,9 +13,10 @@ data class CreateAppointment(
     val numberOfAppointments: Int = 1,
     val eventId: Long,
     val uuid: UUID,
+    val createOverlappingAppointment: Boolean = false,
     val requirementId: Long? = null,
     val licenceConditionId: Long? = null,
-    val until: ZonedDateTime? = null
+    val until: ZonedDateTime? = null,
 ) {
     @JsonIgnore
     val urn = URN_PREFIX + uuid

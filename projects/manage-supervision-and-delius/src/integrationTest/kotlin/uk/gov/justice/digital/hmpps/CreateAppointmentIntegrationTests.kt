@@ -196,9 +196,32 @@ class CreateAppointmentIntegrationTests {
             .andExpect(MockMvcResultMatchers.status().isConflict)
             .andExpect(jsonPath("$.message", equalTo(errorMsg)))
 
-        val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
+        val overlapAppointment = CreateAppointment(
+            Companion.user,
+            CreateAppointment.Type.HomeVisitToCaseNS,
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, EuropeLondon),
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON.plusHours(1), EuropeLondon),
+            numberOfAppointments = 3,
+            eventId = PersonGenerator.EVENT_1.id,
+            uuid = UUID.randomUUID(),
+            createOverlappingAppointment = true
+        )
+
+        val overlapAppointmentResponse = mockMvc.perform(
+            post("/appointment/${person.crn}")
+                .withToken()
+                .withJson(overlapAppointment))
+            .andDo(print())
+            .andExpect(MockMvcResultMatchers.status().isCreated)
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val appointments = appointmentRepository.findAllById(response.appointments.map { it.id }) + appointmentRepository.findAllById(overlapAppointmentResponse.appointments.map { it.id })
+
+        assertThat(appointments.size, equalTo(6))
         appointmentRepository.deleteAll(appointments)
+
     }
+
     companion object {
         private val user = User(STAFF_USER_1.username, TEAM.description)
 
