@@ -168,7 +168,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
         Booking.InOutStatus.IN -> PrisonerMovement.Received(
             personReference,
             movement.fromAgency,
-            movement.toAgency!!,
+            movement.toAgency ?: throw IgnorableMessageException("TemporaryAbsenceNoAgency"),
             PrisonerMovement.Type.valueOf(reason),
             movement.movementReason,
             dateTime
@@ -176,7 +176,7 @@ fun Booking.prisonerMovement(movement: Movement): PrisonerMovement {
 
         Booking.InOutStatus.OUT -> PrisonerMovement.Released(
             personReference,
-            movement.fromAgency!!,
+            movement.fromAgency ?: throw IgnorableMessageException("TemporaryAbsenceNoAgency"),
             movement.toAgency,
             PrisonerMovement.Type.valueOf(reason),
             movement.movementReason,
