@@ -14,10 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /user:
+    get:
+      tags:
+      - user-controller
+      operationId: getUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
   /probation-case/{crn}:
     get:
       tags:
-      - subject-access-requests-controller
+      - probation-case-controller
       operationId: getPersonalDetails
       parameters:
       - name: crn
@@ -34,6 +48,16 @@ paths:
                 $ref: "#/components/schemas/Person"
 components:
   schemas:
+    User:
+      required:
+      - lastName
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+        lastName:
+          type: string
     Name:
       required:
       - forename

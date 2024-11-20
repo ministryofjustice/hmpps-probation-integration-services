@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#user"><span>/user</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-case-crn"><span>/probation-case/{crn}</span></a>
       </li>
       <li>
@@ -130,6 +133,45 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="user">/user</h2>
+
+<h3 id="user-get">get</h3>
+
+
+
+
+
+
+
+<h4 id="user-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -200,6 +242,38 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-user">User</h3>
+
+
+<table class='schema-user'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-name">Name</h3>
 
 

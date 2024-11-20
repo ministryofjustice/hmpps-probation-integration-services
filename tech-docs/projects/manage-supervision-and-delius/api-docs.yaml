@@ -59,7 +59,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StaffCaseload"
-  /appointments/{crn}:
+  /appointment/{crn}:
     post:
       tags:
       - Sentence
@@ -83,6 +83,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AppointmentDetail"
+  /appointment:
+    patch:
+      tags:
+      - Sentence
+      operationId: recordOutcome
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Outcome"
+        required: true
+      responses:
+        "200":
+          description: OK
   /user/{username}/access/{crn}:
     get:
       tags:
@@ -864,6 +878,24 @@ components:
         id:
           type: integer
           format: int64
+    Outcome:
+      required:
+      - attended
+      - code
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+        attended:
+          type: string
+        sensitive:
+          type: boolean
+        notes:
+          type: string
     CaseAccess:
       required:
       - crn

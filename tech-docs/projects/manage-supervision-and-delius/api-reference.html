@@ -101,7 +101,10 @@
         <a href="./api-reference.html#caseload-user-username-search"><span>/caseload/user/{username}/search</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#appointments-crn"><span>/appointments/{crn}</span></a>
+        <a href="./api-reference.html#appointment-crn"><span>/appointment/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#appointment"><span>/appointment</span></a>
       </li>
       <li>
         <a href="./api-reference.html#user-username-access-crn"><span>/user/{username}/access/{crn}</span></a>
@@ -355,14 +358,14 @@
 
 
 
-<h2 id="appointments-crn">/appointments/{crn}</h2>
+<h2 id="appointment-crn">/appointment/{crn}</h2>
 
-<h3 id="appointments-crn-post">post</h3>
-
-
+<h3 id="appointment-crn-post">post</h3>
 
 
-<h4 id="appointments-crn-post-parameters">Parameters</h4>
+
+
+<h4 id="appointment-crn-post-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -385,7 +388,7 @@
 
 
 
-<h4 id="appointments-crn-post-responses">Responses</h4>
+<h4 id="appointment-crn-post-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -410,6 +413,42 @@
 </td>
 <td>
 <a href='#schema-appointmentdetail'>AppointmentDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="appointment">/appointment</h2>
+
+<h3 id="appointment-patch">patch</h3>
+
+
+
+
+
+
+
+<h4 id="appointment-patch-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+</td>
+<td>
+
 </td>
 </tr>
 
@@ -4242,6 +4281,68 @@
 <td>id</td>
 <td>integer</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-outcome">Outcome</h3>
+
+
+<table class='schema-outcome'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>attended</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sensitive</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   
