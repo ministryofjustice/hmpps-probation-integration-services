@@ -1,0 +1,23 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: assess-for-early-release-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/assess-for-early-release-and-delius
+
+  ingress:
+    tlsSecretName: assess-for-early-release-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    assess-for-early-release-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    assess-for-early-release-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: assess-for-early-release-and-delius
+

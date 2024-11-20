@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /assess-for-early-release-and-delius/db-username
+    password_key: /assess-for-early-release-and-delius/db-password
+
+  audit:
+    username: AssessForEarlyReleaseAndDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service
