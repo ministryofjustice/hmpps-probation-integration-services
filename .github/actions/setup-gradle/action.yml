@@ -36,5 +36,5 @@ runs:
         path: buildSrc/build
         key: gradle-buildSrc-${{ hashFiles('buildSrc/src/**', 'buildSrc/build.gradle.kts') }}
     - if: inputs.remove-git-dir == 'true'
-      run: rm -rf .git
+      run: mv .git/ /tmp/.git
       shell: bash
