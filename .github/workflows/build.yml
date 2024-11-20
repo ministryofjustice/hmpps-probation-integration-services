@@ -136,13 +136,28 @@ jobs:
           name: changes-${{ matrix.project }}
           path: ${{ matrix.project }}-changes.json
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.project }}
           path: |
             **/build/jacoco
             **/build/reports/jacoco/**/*.xml
             **/build/test-results
+
+      - name: Get report output directory
+        if: always()
+        run: echo "report-dir=test-report/$REF/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}" | tee -a "$GITHUB_ENV"
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Publish HTML test report
+        if: always()
+        uses: JamesIves/github-pages-deploy-action@62fec3add6773ec5dbbf18d2ee4260911aa35cf4 # v4.6.9
+        with:
+          folder: projects/${{ matrix.project }}/build/reports/tests/**/*
+          target-folder: ${{ env.report-dir }}
 
   build-docker:
     name: Docker build

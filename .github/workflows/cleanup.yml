@@ -27,7 +27,7 @@ jobs:
           account: ministryofjustice
           image-names: hmpps-probation-integration-services/*
           image-tags: "!test !test-prev !preprod !preprod-prev !prod !prod-prev"
-          cut-off: 30d
+          cut-off: "30d"
           token: ${{ secrets.BOT_GITHUB_PACKAGES_TOKEN }}
 
   delete-reports:
@@ -37,7 +37,7 @@ jobs:
         with:
           ref: gh-pages
           fetch-depth: 0
-      - name: Delete Playwright reports older than 1 week
+      - name: Delete test reports older than 1 week
         run: |
           wget https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo
           git pull origin gh-pages
@@ -45,6 +45,15 @@ jobs:
             --path 'tech-docs' \
             --path 'tech-docs-drafts' \
             --path 'schema-spy-report' \
+            --path "test-report/main/$(date -d '-7 days' +%Y-%m-%d)" \
+            --path "test-report/main/$(date -d '-6 days' +%Y-%m-%d)" \
+            --path "test-report/main/$(date -d '-5 days' +%Y-%m-%d)" \
+            --path "test-report/main/$(date -d '-4 days' +%Y-%m-%d)" \
+            --path "test-report/main/$(date -d '-3 days' +%Y-%m-%d)" \
+            --path "test-report/main/$(date -d '-2 days' +%Y-%m-%d)" \
+            --path "test-report/main/$(date -d '-1 days' +%Y-%m-%d)" \
+            --path "test-report/main/$(date +%Y-%m-%d)" \
+            --path 'index.html' \
             --refs gh-pages \
             --force
           git gc --prune=now
