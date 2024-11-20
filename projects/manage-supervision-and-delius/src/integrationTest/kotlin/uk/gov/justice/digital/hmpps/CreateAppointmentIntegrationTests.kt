@@ -23,12 +23,15 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAF
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -161,8 +164,8 @@ class CreateAppointmentIntegrationTests {
         val appointment = CreateAppointment(
             Companion.user,
             CreateAppointment.Type.HomeVisitToCaseNS,
-            ZonedDateTime.now().plusHours(1),
-            ZonedDateTime.now().plusHours(2),
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON, EuropeLondon),
+            ZonedDateTime.of(LocalDate.now().plusDays(1), LocalTime.NOON.plusHours(1), EuropeLondon),
             numberOfAppointments = 3,
             eventId = PersonGenerator.EVENT_1.id,
             uuid = UUID.randomUUID()
@@ -179,12 +182,19 @@ class CreateAppointmentIntegrationTests {
             .andReturn().response.contentAsJson<AppointmentDetail>()
 
 
-        val conflict = mockMvc.perform(
+        val dateNowPlusOneDay = LocalDate.now().plusDays(1).format(DeliusDateFormatter)
+        val dateNowPlusTwoDays = LocalDate.now().plusDays(2).format(DeliusDateFormatter)
+        val dateNowPlusThreeDays = LocalDate.now().plusDays(3).format(DeliusDateFormatter)
+
+        val errorMsg = """
+            Appointment(s) conflicts with an existing future appointment [{"start":"$dateNowPlusOneDay 12:00","end":"$dateNowPlusOneDay 13:00"},{"start":"$dateNowPlusTwoDays 12:00","end":"$dateNowPlusTwoDays 13:00"},{"start":"$dateNowPlusThreeDays 12:00","end":"$dateNowPlusThreeDays 13:00"}]
+        """.trimIndent()
+        mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
                 .withJson(appointment))
             .andExpect(MockMvcResultMatchers.status().isConflict)
-//            .andExpect(jsonPath("$.message", equalTo("Appointment conflicts with an existing future appointment")))
+            .andExpect(jsonPath("$.message", equalTo(errorMsg)))
 
         val appointments = appointmentRepository.findAllById(response.appointments.map { it.id })
         appointmentRepository.deleteAll(appointments)

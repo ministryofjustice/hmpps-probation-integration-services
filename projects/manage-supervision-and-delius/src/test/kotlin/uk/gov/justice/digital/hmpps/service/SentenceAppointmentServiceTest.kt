@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -49,6 +50,9 @@ class SentenceAppointmentServiceTest {
 
     @Mock
     lateinit var staffUserRepository: StaffUserRepository
+
+    @Mock
+    lateinit var objectMapper: ObjectMapper
 
     @InjectMocks
     lateinit var service: SentenceAppointmentService

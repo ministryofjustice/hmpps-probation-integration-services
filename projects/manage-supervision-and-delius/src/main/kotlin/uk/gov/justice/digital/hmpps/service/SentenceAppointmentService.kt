@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreatedAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.OverlappingAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
@@ -28,7 +30,8 @@ class SentenceAppointmentService(
     private val eventSentenceRepository: EventSentenceRepository,
     private val requirementRepository: RequirementRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
-    private val staffUserRepository: StaffUserRepository
+    private val staffUserRepository: StaffUserRepository,
+    private val objectMapper: ObjectMapper
 ) : AuditableService(auditedInteractionService) {
     fun createAppointment(
         crn: String,
@@ -74,7 +77,7 @@ class SentenceAppointmentService(
                 }
             }
 
-           createAppointments.forEach {
+            val overlappingAppointments = createAppointments.mapNotNull {
                 if (it.start.isAfter(ZonedDateTime.now()) && appointmentRepository.appointmentClashes(
                         om.person.id,
                         it.start.toLocalDate(),
@@ -82,10 +85,15 @@ class SentenceAppointmentService(
                         it.end
                     )
                 ) {
-                    throw ConflictException("Appointment conflicts with an existing future appointment ${createAppointment.start.toLocalDateTime().format(
-                        DeliusDateTimeFormatter).dropLast(3)} and ${createAppointment.end.toLocalDateTime().format(
-                        DeliusDateTimeFormatter).dropLast(3)}")
-                }
+                    OverlappingAppointment(
+                        it.start.toLocalDateTime().format(DeliusDateTimeFormatter).dropLast(3),
+                        it.end.toLocalDateTime().format(DeliusDateTimeFormatter).dropLast(3)
+                    )
+                } else null
+            }
+
+            if (overlappingAppointments.isNotEmpty()) {
+                throw ConflictException("Appointment(s) conflicts with an existing future appointment ${objectMapper.writeValueAsString(overlappingAppointments)}")
             }
 
             val appointments = createAppointments.map { it.withManager(om, userAndLocation) }
