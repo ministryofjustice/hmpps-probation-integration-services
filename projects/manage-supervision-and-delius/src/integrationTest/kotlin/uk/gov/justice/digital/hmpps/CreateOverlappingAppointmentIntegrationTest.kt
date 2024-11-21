@@ -100,6 +100,4 @@ class CreateOverlappingAppointmentIntegrationTest {
         assertThat(appointments.size, equalTo(6))
         appointmentRepository.deleteAll(appointments)
     }
-
-
 }
