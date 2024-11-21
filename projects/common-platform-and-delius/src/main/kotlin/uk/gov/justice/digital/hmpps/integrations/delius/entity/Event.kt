@@ -96,9 +96,11 @@ class Event(
 )
 
 @Entity
+@SequenceGenerator(name = "order_manager_id_seq", sequenceName = "order_manager_id_seq", allocationSize = 1)
 @Table(name = "order_manager")
 class OrderManager(
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_manager_id_seq")
     @Column(name = "order_manager_id")
     val id: Long? = null,
 

@@ -99,7 +99,7 @@ object CourtGenerator {
 object ContactTypeGenerator {
     val EAPP = generate(
         code = ContactTypeCode.COURT_APPEARANCE.code,
-        description = "EAPP"
+        description = "Court Appearance"
     )
     fun generate(code: String, id: Long = IdGenerator.getAndIncrement(), description: String) =
         ContactType(id = id, code = code, description = description)

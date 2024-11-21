@@ -68,7 +68,6 @@ internal class EventServiceTest {
 
     @Test
     fun `insert event saves multiple records`() {
-
         val person = PersonGenerator.DEFAULT
         val event = EventGenerator.generate(person)
         val orderManager = OrderManagerGenerator.generate(event = event)

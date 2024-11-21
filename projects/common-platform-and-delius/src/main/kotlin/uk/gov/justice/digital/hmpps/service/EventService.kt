@@ -44,8 +44,7 @@ class EventService(
                     id = null,
                     person = person,
                     number = eventRepository.getNextEventNumber(person.id!!),
-                    referralDate = hearingOffence.plea?.pleaDate
-                        ?: throw IllegalArgumentException("No Plea Date found"), // TODO: Identify event's referral date
+                    referralDate = sittingDay.toLocalDate(), // TODO: Identify event's referral date
                     active = true
                 )
             )
@@ -59,15 +58,15 @@ class EventService(
                 }
                     ?: throw IllegalArgumentException("Home Office Code cannot be null")
 
-            // 2. Create (+ identify?) the main offence record from the hearing message
+            // 2. Create the main offence record from the hearing message
             val savedMainOffence = mainOffenceRepository.save(
                 MainOffence(
                     id = null,
-                    date = LocalDate.now(), // TODO From the offence -> Wording free text field
+                    date = LocalDate.now(), // TODO: From the offence -> Wording free text field
                     event = savedEvent,
                     offence = offenceRepository.findOffence(hoOffenceCode),
                     softDeleted = false,
-                    count = 1, // TODO Need to identify how offence count is used, in most cases appears to be 1
+                    count = 1, // TODO: Need to identify how offence count is used, in most cases appears to be 1
                     person = person,
                 )
             )
@@ -79,17 +78,24 @@ class EventService(
             val trialAdjournmentRefData = referenceDataRepository.trialAdjournmentAppearanceType()
             val remandedInCustodyOutcome = referenceDataRepository.remandedInCustodyOutcome()
             val remandedInCustodyStatus = referenceDataRepository.remandedInCustodyStatus()
-            val plea = when (hearingOffence.plea.pleaValue) {
-                "NOT_GUILTY" -> referenceDataRepository.findByCodeAndDatasetCode("N", DatasetCode.PLEA)
+            val plea = when (hearingOffence.plea?.pleaValue) {
+                "NOT_GUILTY" -> referenceDataRepository.findByCodeAndDatasetCode(
+                    ReferenceData.StandardRefDataCode.NOT_GUILTY.code,
+                    DatasetCode.PLEA
+                )
+
                 "GUILTY" -> referenceDataRepository.findByCodeAndDatasetCode(
                     ReferenceData.StandardRefDataCode.GUILTY.code,
                     DatasetCode.PLEA
                 )
 
-                else -> referenceDataRepository.findByCodeAndDatasetCode("Q", DatasetCode.PLEA)
+                else -> referenceDataRepository.findByCodeAndDatasetCode(
+                    ReferenceData.StandardRefDataCode.NOT_KNOWN_PLEA.code,
+                    DatasetCode.PLEA
+                )
             }
 
-            // 3. Create (two) initial court appearance(s) for the event
+            // 3. Create initial court appearances for the event
             val initialCourtAppearance = courtAppearanceRepository.save(
                 CourtAppearance(
                     id = null,
@@ -117,7 +123,7 @@ class EventService(
                     teamId = unallocatedTeam.id,
                     staffId = unallocatedStaff.id,
                     softDeleted = false,
-                    court = court, // TODO: Is the 'next court' always the same as the hearing's court?
+                    court = court, // TODO: How do we identify the 'next court', for now use the same court
                     appearanceType = trialAdjournmentRefData,
                     person = person
                 )
@@ -131,7 +137,7 @@ class EventService(
                     id = null,
                     date = sittingDay.toLocalDate(),
                     person = person,
-                    startTime = sittingDay, // TODO Clear the date aspect to 01-Jan-70 for delius formatting?
+                    startTime = sittingDay.with(LocalDate.of(1970, 1, 1)),
                     endTime = null,
                     staff = unallocatedStaff,
                     team = unallocatedTeam,
@@ -147,9 +153,9 @@ class EventService(
             val futureAppearanceContact = contactRepository.save(
                 Contact(
                     id = null,
-                    date = sittingDay.toLocalDate(), // TODO: Identify the next appearance date from hearing
+                    date = futureCourtAppearance.appearanceDate,
                     person = person,
-                    startTime = sittingDay, // TODO: Identify the next appearance time from hearing
+                    startTime = sittingDay.with(LocalDate.of(1970, 1, 1)),
                     endTime = null,
                     alert = true,
                     eventId = savedEvent.id,
@@ -182,10 +188,42 @@ class EventService(
                     active = true
                 )
             )
-            // TODO 6. Update person level remand status field
+            // TODO 6. Update person level remand status field?
 
             audit["offenderId"] = savedEvent.person.id!!
             audit["eventId"] = savedEvent.id
             InsertEventResult(savedEvent, savedMainOffence, savedCourtAppearances, savedContacts, savedOrderManager)
+        }
+
+    @Transactional
+    fun insertCourtAppearance(
+        event: Event,
+        courtCode: String,
+        sittingDay: ZonedDateTime,
+        caseUrn: String
+    ): CourtAppearance =
+        audit(BusinessInteractionCode.INSERT_COURT_APPEARANCE) { audit ->
+            val court = courtRepository.getByOuCode(courtCode)
+            val unallocatedTeam = teamRepository.findByCode(court.provider.code + "UAT")
+            val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
+            val trialAdjournmentRefData = referenceDataRepository.trialAdjournmentAppearanceType()
+
+            val savedCourtAppearance = courtAppearanceRepository.save(
+                CourtAppearance(
+                    id = null,
+                    appearanceDate = sittingDay.toLocalDate(),
+                    crownCourtCalendarNumber = caseUrn,
+                    event = event,
+                    teamId = unallocatedTeam.id,
+                    staffId = unallocatedStaff.id,
+                    softDeleted = false,
+                    court = court,
+                    appearanceType = trialAdjournmentRefData,
+                    person = event.person
+                )
+            )
+
+            audit["courtAppearanceId"] = savedCourtAppearance.id!!
+            savedCourtAppearance
         }
 }

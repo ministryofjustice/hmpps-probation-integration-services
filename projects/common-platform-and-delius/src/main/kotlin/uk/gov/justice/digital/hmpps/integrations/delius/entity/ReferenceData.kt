@@ -39,7 +39,9 @@ class ReferenceData(
         AWAITING_ASSESSMENT("A16"),
         REMANDED_IN_CUSTODY_STATUS("Y"),
         REMANDED_IN_CUSTODY_OUTCOME("112"),
-        GUILTY("G")
+        GUILTY("G"),
+        NOT_GUILTY("N"),
+        NOT_KNOWN_PLEA("Q")
     }
 }
 

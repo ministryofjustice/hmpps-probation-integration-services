@@ -21,7 +21,7 @@ object MainOffenceGenerator {
 }
 
 object DetailedOffenceGenerator {
-    val DEFAULT = generate(code = "00100", description = "Murder", homeOfficeCode = "123")
+    val DEFAULT = generate(code = "AA00000", description = "Murder", homeOfficeCode = "00100")
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,

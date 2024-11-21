@@ -1,21 +1,22 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
-@Immutable
 @Table(name = "court_appearance")
+@SequenceGenerator(name = "court_appearance_id_seq", sequenceName = "court_appearance_id_seq", allocationSize = 1)
 class CourtAppearance(
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "court_appearance_id_seq")
     @Column(name = "court_appearance_id")
     val id: Long? = null,
 
@@ -95,4 +96,13 @@ class CourtAppearance(
     val person: Person,
 )
 
-interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long>
+interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
+    @Query(
+        """
+        SELECT c FROM CourtAppearance c
+        WHERE c.crownCourtCalendarNumber = :crownCourtCalendarNumber
+        ORDER BY c.appearanceDate DESC
+    """
+    )
+    fun findLatestByCaseUrn(crownCourtCalendarNumber: String): CourtAppearance?
+}
