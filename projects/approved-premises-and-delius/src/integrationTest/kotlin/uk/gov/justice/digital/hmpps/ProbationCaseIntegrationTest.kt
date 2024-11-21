@@ -80,7 +80,10 @@ class ProbationCaseIntegrationTest {
         assertThat(otherOffence.id, equalTo("A300001"))
         assertThat(otherOffence.description, equalTo("Burglary in a dwelling - OFF2"))
         assertThat(otherOffence.mainCategoryDescription, equalTo("Burglary in a dwelling"))
-        assertThat(otherOffence.subCategoryDescription, equalTo("Burglary (dwelling) with intent to commit, or the commission of, an offence triable only on indictment"))
+        assertThat(
+            otherOffence.subCategoryDescription,
+            equalTo("Burglary (dwelling) with intent to commit, or the commission of, an offence triable only on indictment")
+        )
         assertThat(otherOffence.date, equalTo(LocalDate.parse("2024-10-21")))
         assertThat(otherOffence.eventId, equalTo(100001L))
         assertThat(detail.careLeaver, equalTo(false))
