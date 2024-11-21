@@ -277,14 +277,16 @@ class SentenceAppointmentServiceTest {
 
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
 
-        whenever(appointmentRepository.getClashCount(
-            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.person.id,
-            appointment.start.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE),
-            appointment.start.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
-            appointment.end.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())))
+        whenever(
+            appointmentRepository.getClashCount(
+                OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.person.id,
+                appointment.start.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                appointment.start.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
+                appointment.end.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
+            )
         ).thenReturn(1)
 
-        assertThrows<ConflictException> { service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)}
+        assertThrows<ConflictException> { service.createAppointment(PersonGenerator.PERSON_1.crn, appointment) }
     }
 
     @Test
@@ -308,17 +310,25 @@ class SentenceAppointmentServiceTest {
 
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
 
-        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(ContactType(1, appointment.type.code, true, "description"))
+        whenever(appointmentTypeRepository.findByCode(appointment.type.code)).thenReturn(
+            ContactType(
+                1,
+                appointment.type.code,
+                true,
+                "description"
+            )
+        )
 
-        whenever(appointmentRepository.getClashCount(
-            OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.person.id,
-            appointment.start.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE),
-            appointment.start.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
-            appointment.end.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())))
+        whenever(
+            appointmentRepository.getClashCount(
+                OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.person.id,
+                appointment.start.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                appointment.start.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
+                appointment.end.format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
+            )
         ).thenReturn(1)
 
         service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
-
     }
 
     data class UserLoc(
@@ -327,7 +337,7 @@ class SentenceAppointmentServiceTest {
         val _teamId: Long,
         val _providerId: Long,
         val _locationId: Long,
-    ): UserLocation {
+    ) : UserLocation {
         override val userId: Long
             get() = _userId
         override val staffId: Long
@@ -339,5 +349,4 @@ class SentenceAppointmentServiceTest {
         override val locationId: Long
             get() = _locationId
     }
-
 }
