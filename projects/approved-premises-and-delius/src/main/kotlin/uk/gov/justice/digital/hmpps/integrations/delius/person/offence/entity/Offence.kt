@@ -12,6 +12,8 @@ interface CaseOffence {
     val id: Long
     val code: String
     val description: String
+    val mainCategoryDescription: String
+    val subCategoryDescription: String
     val date: LocalDate?
     val main: Boolean
     val eventNumber: String
@@ -79,6 +81,12 @@ class Offence(
     @Column
     val description: String,
 
+    @Column(name = "main_category_description")
+    private var mainCategoryDescription: String,
+
+    @Column(name = "sub_category_description")
+    private val subCategoryDescription: String,
+
     @Id
     @Column(name = "offence_id")
     val id: Long
@@ -91,6 +99,8 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
             mo.id as id,
             mo.offence.code as code, 
             mo.offence.description as description, 
+            mo.offence.mainCategoryDescription as mainCategoryDescription, 
+            mo.offence.subCategoryDescription as subCategoryDescription, 
             mo.date as date, 
             true as main, 
             mo.event.number as eventNumber,
@@ -102,6 +112,8 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
             ao.id,
             ao.offence.code, 
             ao.offence.description, 
+            ao.offence.mainCategoryDescription as mainCategoryDescription, 
+            ao.offence.subCategoryDescription as subCategoryDescription, 
             ao.date, 
             false, 
             ao.event.number,
