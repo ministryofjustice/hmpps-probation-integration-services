@@ -176,11 +176,11 @@ class CreateAppointmentIntegrationTests {
         val response = mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
-                .withJson(appointment))
+                .withJson(appointment)
+        )
             .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<AppointmentDetail>()
-
 
         val dateNowPlusOneDay = LocalDate.now().plusDays(1).format(DeliusDateFormatter)
         val dateNowPlusTwoDays = LocalDate.now().plusDays(2).format(DeliusDateFormatter)
@@ -192,7 +192,8 @@ class CreateAppointmentIntegrationTests {
         mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
-                .withJson(appointment))
+                .withJson(appointment)
+        )
             .andExpect(MockMvcResultMatchers.status().isConflict)
             .andExpect(jsonPath("$.message", equalTo(errorMsg)))
 
@@ -210,16 +211,18 @@ class CreateAppointmentIntegrationTests {
         val overlapAppointmentResponse = mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
-                .withJson(overlapAppointment))
+                .withJson(overlapAppointment)
+        )
             .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<AppointmentDetail>()
 
-        val appointments = appointmentRepository.findAllById(response.appointments.map { it.id }) + appointmentRepository.findAllById(overlapAppointmentResponse.appointments.map { it.id })
+        val appointments =
+            appointmentRepository.findAllById(response.appointments.map { it.id }) + appointmentRepository.findAllById(
+                overlapAppointmentResponse.appointments.map { it.id })
 
         assertThat(appointments.size, equalTo(6))
         appointmentRepository.deleteAll(appointments)
-
     }
 
     companion object {
@@ -278,5 +281,4 @@ class CreateAppointmentIntegrationTests {
             )
         )
     }
-
 }

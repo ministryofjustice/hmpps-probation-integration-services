@@ -94,7 +94,13 @@ class SentenceAppointmentService(
             }
 
             if (!createAppointment.createOverlappingAppointment && overlappingAppointments.isNotEmpty()) {
-                throw ConflictException("Appointment(s) conflicts with an existing future appointment ${objectMapper.writeValueAsString(overlappingAppointments)}")
+                throw ConflictException(
+                    "Appointment(s) conflicts with an existing future appointment ${
+                        objectMapper.writeValueAsString(
+                            overlappingAppointments
+                        )
+                    }"
+                )
             }
 
             val appointments = createAppointments.map { it.withManager(om, userAndLocation) }
