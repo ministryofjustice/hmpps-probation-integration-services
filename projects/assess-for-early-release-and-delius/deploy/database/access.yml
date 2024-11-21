@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /assess-for-early-release-and-delius/db-username
+    password_key: /assess-for-early-release-and-delius/db-password
+
+  audit:
+    username: AssessForEarlyReleaseAndDelius
+    forename: Assess for Early Release
+    surname: Service
