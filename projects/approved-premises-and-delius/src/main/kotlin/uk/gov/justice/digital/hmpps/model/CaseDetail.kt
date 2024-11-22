@@ -59,9 +59,11 @@ data class MappaDetail(
 )
 
 data class Offence(
-    val id: Long,
+    val id: String,
     val code: String,
     val description: String,
+    val mainCategoryDescription: String,
+    val subCategoryDescription: String,
     val date: LocalDate?,
     val main: Boolean,
     val eventId: Long,

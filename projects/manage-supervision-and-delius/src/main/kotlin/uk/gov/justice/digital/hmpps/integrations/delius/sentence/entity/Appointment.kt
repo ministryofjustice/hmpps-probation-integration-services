@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
@@ -9,8 +10,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -77,6 +80,22 @@ class Appointment(
     @Column(name = "office_location_id")
     val officeLocationId: Long? = null,
 
+    @Column(name = "attended", columnDefinition = "char(1)")
+    var attended: String? = null,
+
+    @Column(name = "complied", columnDefinition = "char(1")
+    var complied: String? = null,
+
+    @Column(name = "contact_outcome_type_id")
+    var outcomeId: Long? = null,
+
+    @Lob
+    var notes: String? = null,
+
+    @Column(name = "sensitive")
+    @Convert(converter = YesNoConverter::class)
+    var sensitive: Boolean? = null,
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     @Column(name = "contact_id")
@@ -133,3 +152,39 @@ interface AppointmentTypeRepository : JpaRepository<ContactType, Long> {
 
 fun AppointmentTypeRepository.getByCode(code: String) =
     findByCode(code) ?: throw NotFoundException("AppointmentType", "code", code)
+
+@Entity
+@Table(name = "r_contact_type_outcome")
+class ContactTypeOutcome(
+
+    @EmbeddedId
+    val id: ContactTypeOutcomeId,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_type_id", insertable = false, updatable = false)
+    val type: ContactType,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id", insertable = false, updatable = false)
+    val outcome: ContactOutcome,
+)
+
+interface ContactTypeOutcomeRepository : JpaRepository<ContactTypeOutcome, ContactTypeOutcomeId> {
+    fun findByIdContactTypeIdAndOutcomeCode(contactTypeId: Long, code: String): ContactTypeOutcome?
+}
+
+fun ContactTypeOutcomeRepository.getByTypeIdAndOutcomeCode(contactTypeId: Long, code: String) =
+    findByIdContactTypeIdAndOutcomeCode(
+        contactTypeId, code
+    ) ?: throw NotFoundException("ContactTypeOutcome", "contact_type_id $contactTypeId and outcome code", code)
+
+@Embeddable
+class ContactTypeOutcomeId(
+    @Column(name = "contact_type_id")
+    val contactTypeId: Long,
+
+    @Column(name = "contact_outcome_type_id")
+    val contactOutcomeTypeId: Long,
+
+    ) : Serializable
+

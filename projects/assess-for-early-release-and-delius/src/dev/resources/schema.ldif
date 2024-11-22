@@ -1,0 +1,25 @@
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=john-smith,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: john-smith
+sn: Staff
+mail: john.smith@moj.gov.uk
+telephoneNumber: 10101010101
+
+dn: cn=bob-smith,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: bob-smith
+sn: Staff
+mail: bob.smith@moj.gov.uk
+telephoneNumber: 20202020202
+
+dn: cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com
+description: Role Catalogue
+objectclass: top
+cn: ndRoleCatalogue

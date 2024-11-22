@@ -34,7 +34,9 @@ class DataLoader(
             entityManager.persist(BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()))
         }
         entityManager.persistAll(
+            AppointmentGenerator.ATTENDED_COMPLIED,
             *AppointmentGenerator.APPOINTMENT_TYPES.toTypedArray(),
+            *AppointmentGenerator.CONTACT_TYPE_OUTCOMES.toTypedArray(),
             ContactGenerator.DEFAULT_PROVIDER,
             ContactGenerator.DEFAULT_BOROUGH,
             ContactGenerator.DEFAULT_DISTRICT,
