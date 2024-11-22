@@ -27,9 +27,30 @@ object ReferenceDataGenerator {
     val OWNER_ADDRESS_TYPE = generate("A01A", ADDRESS_TYPE.id, "Householder")
     val MAIN_ADDRESS_STATUS = generate("M", ADDRESS_STATUS.id, "Main Address")
     val PREV_ADDRESS_STATUS = generate("P", ADDRESS_STATUS.id, "Previous Address")
+
     val NHC_Q001 = generate("Q001", HOSTEL_CODE.id)
     val NHC_Q002 = generate("Q002", HOSTEL_CODE.id)
+
+    val NHC_Q005 = generate("Q005", HOSTEL_CODE.id)
+    val NHC_Q049 = generate("Q049", HOSTEL_CODE.id)
+    val NHC_Q095 = generate("Q095", HOSTEL_CODE.id)
+    val NHC_Q701 = generate("Q701", HOSTEL_CODE.id)
+    val NHC_Q702 = generate("Q702", HOSTEL_CODE.id)
+    val NHC_Q703 = generate("Q703", HOSTEL_CODE.id)
+    val NHC_Q704 = generate("Q704", HOSTEL_CODE.id)
+    val NHC_Q705 = generate("Q705", HOSTEL_CODE.id)
+    val NHC_Q706 = generate("Q706", HOSTEL_CODE.id)
+    val NHC_Q707 = generate("Q707", HOSTEL_CODE.id)
+    val NHC_Q708 = generate("Q708", HOSTEL_CODE.id)
+    val NHC_Q709 = generate("Q709", HOSTEL_CODE.id)
     val NHC_Q710 = generate("Q710", HOSTEL_CODE.id)
+    val NHC_Q711 = generate("Q711", HOSTEL_CODE.id)
+    val NHC_Q712 = generate("Q712", HOSTEL_CODE.id)
+    val NHC_Q713 = generate("Q713", HOSTEL_CODE.id)
+    val NHC_Q714 = generate("Q714", HOSTEL_CODE.id)
+    val NHC_Q715 = generate("Q715", HOSTEL_CODE.id)
+    val NHC_Q716 = generate("Q716", HOSTEL_CODE.id)
+
     val STAFF_GRADE = generate("TEST", DatasetGenerator.STAFF_GRADE.id, "Test staff grade")
 
     val REFERRAL_DATE_TYPE = generate("CRC", ALL_DATASETS[DatasetCode.AP_REFERRAL_DATE_TYPE]!!.id)
@@ -87,7 +108,25 @@ object ReferenceDataGenerator {
         PREV_ADDRESS_STATUS,
         NHC_Q001,
         NHC_Q002,
+        NHC_Q005,
+        NHC_Q049,
+        NHC_Q095,
+        NHC_Q701,
+        NHC_Q702,
+        NHC_Q703,
+        NHC_Q704,
+        NHC_Q705,
+        NHC_Q706,
+        NHC_Q707,
+        NHC_Q708,
+        NHC_Q709,
         NHC_Q710,
+        NHC_Q711,
+        NHC_Q712,
+        NHC_Q713,
+        NHC_Q714,
+        NHC_Q715,
+        NHC_Q716,
         STAFF_GRADE,
         REFERRAL_DATE_TYPE,
         REFERRAL_GROUP,

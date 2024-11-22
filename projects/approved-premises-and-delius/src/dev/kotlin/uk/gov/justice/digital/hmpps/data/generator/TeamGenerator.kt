@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Ldu
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import java.util.concurrent.atomic.AtomicLong
@@ -11,23 +10,47 @@ object TeamGenerator {
 
     val AP_TEAM_LDU = ProbationCaseGenerator.generateLdu("N54LDU")
     val APPROVED_PREMISES_TEAM = generate(ApprovedPremisesGenerator.DEFAULT)
-    val APPROVED_PREMISES_TEAM_WITH_NO_STAFF = generate(ApprovedPremisesGenerator.NO_STAFF)
     val NON_APPROVED_PREMISES_TEAM = generate()
     val UNALLOCATED = generate(code = "N54UAT")
-    val E2E_TEST_TEAM = generate(ApprovedPremisesGenerator.E2E_TEST)
+
+    val ALL_AP_TEAMS = listOf(
+        APPROVED_PREMISES_TEAM,
+        generate(ApprovedPremisesGenerator.AP_Q005),
+        generate(ApprovedPremisesGenerator.AP_Q049),
+        generate(ApprovedPremisesGenerator.AP_Q095),
+        generate(ApprovedPremisesGenerator.AP_Q701),
+        generate(ApprovedPremisesGenerator.AP_Q702),
+        generate(ApprovedPremisesGenerator.AP_Q703),
+        generate(ApprovedPremisesGenerator.AP_Q704),
+        generate(ApprovedPremisesGenerator.AP_Q705),
+        generate(ApprovedPremisesGenerator.AP_Q706),
+        generate(ApprovedPremisesGenerator.AP_Q707),
+        generate(ApprovedPremisesGenerator.AP_Q708),
+        generate(ApprovedPremisesGenerator.AP_Q709),
+        generate(ApprovedPremisesGenerator.AP_Q710),
+        generate(ApprovedPremisesGenerator.AP_Q711),
+        generate(ApprovedPremisesGenerator.AP_Q712),
+        generate(ApprovedPremisesGenerator.AP_Q713),
+        generate(ApprovedPremisesGenerator.AP_Q714),
+        generate(ApprovedPremisesGenerator.AP_Q715),
+        generate(ApprovedPremisesGenerator.AP_Q716)
+    )
+
+    val ALL_TEAMS = listOf(
+        NON_APPROVED_PREMISES_TEAM,
+        UNALLOCATED
+    ) + ALL_AP_TEAMS
 
     fun generate(
         approvedPremises: ApprovedPremises? = null,
         code: String = "N54${teamCodeGenerator.getAndIncrement().toString().padStart(3, '0')}",
-        description: String = "Description of Team $code",
-        district: Ldu = AP_TEAM_LDU
     ) = Team(
         id = IdGenerator.getAndIncrement(),
         code = code,
-        description = description,
+        description = "Description of Team $code",
         probationArea = ProbationAreaGenerator.DEFAULT,
         approvedPremises = approvedPremises,
-        district = district
+        district = AP_TEAM_LDU
     )
 }
 
