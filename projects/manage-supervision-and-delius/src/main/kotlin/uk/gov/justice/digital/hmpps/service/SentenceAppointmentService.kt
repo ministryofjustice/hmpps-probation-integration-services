@@ -17,7 +17,6 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
-import kotlin.math.ceil
 
 @Service
 class SentenceAppointmentService(

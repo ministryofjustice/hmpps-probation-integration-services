@@ -1,0 +1,79 @@
+# Appointment SMS Flow
+
+direction: down
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+data: Delius Data {
+        "" {
+            explanation: |md
+            Name, mobile number and appointment date
+            |
+        }
+}
+
+deduplicate: Deduplication  {
+        "" {
+            explanation: |md
+            Where there are multiple appointments for a mobile number\
+            only send a single reminder
+            |
+        }
+}
+
+validate: Validation {
+        validate_person: Person Validation {
+            explanation: |md
+            - The person is not in custody or on remand
+            - The person is not unlawfully at large
+            - The person is not Limited Access
+            |
+        }
+
+        validate_comms: Communication Validation {
+            explanation: |md
+            - The mobile number is formatted correctly
+            - The person has not opted out of SMS contacts
+            |
+        }
+
+        validate_activity: Activity Validation {
+            explanation: |md
+            - The person has an active unpaid work requirement
+            - The unpaid work requirement is not related to\
+              Education, Training and Employment
+            - There is time remaining on the unpaid work requirement
+            - The appointment does not have an outcome
+            |
+        }
+}
+
+ok: Validation OK
+fail: Validation Fail
+
+send: Send SMS {
+        notify: GOV.UK Notify  {
+            explanation: |md
+            Send SMS appointment reminder to person on probation
+            |
+        }
+}
+
+end1: End {
+  shape: circle
+}
+
+end2: End {
+  shape: circle
+}
+
+data -> validate
+validate -> ok: OK
+validate -> fail: Fail
+
+ok -> deduplicate
+deduplicate -> send
+send -> end1
+fail -> end2

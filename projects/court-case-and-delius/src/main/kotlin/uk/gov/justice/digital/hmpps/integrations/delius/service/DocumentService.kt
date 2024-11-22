@@ -42,7 +42,8 @@ class DocumentService(
         val convictions = convictionDocuments
             .groupBy { it.eventId }
             .map {
-                ConvictionDocuments(it.key.toString(),
+                ConvictionDocuments(
+                    it.key.toString(),
                     it.value.map { d -> d.toOffenderDocumentDetail() }
                         .filter { odd -> filter(odd, filterData) })
             }

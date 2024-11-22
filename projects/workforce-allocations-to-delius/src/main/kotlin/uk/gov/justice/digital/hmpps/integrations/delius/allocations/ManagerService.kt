@@ -47,7 +47,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
             staffId = newManager.staff.id,
             providerId = newManager.provider.id,
             notes =
-            """
+                """
         |Transfer Reason: Internal Transfer
         |Transfer Date: ${newManager.startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
         |From Trust: ${newManager.provider.description}
@@ -55,7 +55,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
         |From Officer: ${oldManager.staff.displayName}
         |-------------------------------/${System.lineSeparator()}
         |"""
-                .trimMargin()
+                    .trimMargin()
         )
     }
 

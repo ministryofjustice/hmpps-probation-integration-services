@@ -7,11 +7,22 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.Of
 import java.time.LocalDate
 
 object OffenceGenerator {
-    val OFFENCE_ONE = generate("OFF1", "Offence One")
-    val OFFENCE_TWO = generate("OFF2", "Offence Two")
+    val OFFENCE_ONE = generate("OFF1", "Murder - OFF1", "Murder", "Murder of spouse")
+    val OFFENCE_TWO = generate(
+        "OFF2",
+        "Burglary in a dwelling - OFF2",
+        "Burglary in a dwelling",
+        "Burglary (dwelling) with intent to commit, or the commission of, an offence triable only on indictment"
+    )
 
-    fun generate(code: String, description: String, id: Long = IdGenerator.getAndIncrement()) =
-        Offence(code, description, id)
+    fun generate(
+        code: String,
+        description: String,
+        mainCategoryDescription: String,
+        subCategoryDescription: String,
+        id: Long = IdGenerator.getAndIncrement()
+    ) =
+        Offence(code, description, mainCategoryDescription, subCategoryDescription, id)
 
     fun generateMainOffence(
         event: Event,

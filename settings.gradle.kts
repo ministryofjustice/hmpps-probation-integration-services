@@ -1,6 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
+    "assess-for-early-release-and-delius",
     "justice-email-and-delius",
     "appointment-reminders-and-delius",
     "ims-and-delius",
@@ -73,13 +74,13 @@ dependencyResolutionManagement {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.3")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.2.1")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.29.9")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.29.15")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.2.1")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.1")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.2.1")
-            library("aws-sts", "software.amazon.awssdk:sts:2.29.9")
+            library("aws-sts", "software.amazon.awssdk:sts:2.29.15")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.6.2")
-            library("azure-identity", "com.azure:azure-identity:1.14.1")
+            library("azure-identity", "com.azure:azure-identity:1.14.2")
             library("flipt", "io.flipt:flipt-java:1.1.1")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.20.0")
@@ -88,9 +89,9 @@ dependencyResolutionManagement {
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.9.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.10.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.16.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.18.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
             library("wiremock", "org.wiremock:wiremock-standalone:3.9.2")
 
@@ -104,7 +105,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.develocity") version "3.18.1" }
+plugins { id("com.gradle.develocity") version "3.18.2" }
 develocity {
     buildScan {
         publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }

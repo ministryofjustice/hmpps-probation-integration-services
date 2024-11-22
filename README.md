@@ -61,8 +61,23 @@ Docker or remote dependencies.
 
 To set up your development environment:
 1. Open the project in [IntelliJ IDEA](https://www.jetbrains.com/idea/). Select "Import project from external model", then "Gradle".
-2. To run the tests for a service, right-click the `src/test` folder in the project view and select "Run tests" (See [Test](#test)).
+2. To run the tests for a service, right-click the `src/test` or `src/integrationTest` folder in the project view and
+   select "Run tests" (See [Test](#test)).
 3. To start the service, use the pre-defined run configuration in `.idea/runConfigurations` (See [Run](#run)).
+
+## Code formatting
+
+Kotlin code is formatted using IntelliJ IDEA's code formatter,
+which follows the [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html).
+
+GitHub Actions will automatically fix any formatting issues when you open a pull request.
+You can also use <strong title="Command">⌘</strong><strong title="Option">⌥</strong>**L** (macOS),
+or **Ctrl+Alt+L** (Windows/Linux) to manually reformat your code in IntelliJ IDEA.
+See [Reformat code](https://www.jetbrains.com/help/idea/reformat-and-rearrange-code.html).
+
+Note: The code formatter does not remove unused imports by default. You should
+enable [Optimise on save](https://www.jetbrains.com/help/idea/creating-and-optimizing-imports.html#optimize-on-save) in
+your IntelliJ IDEA settings to ensure you do not commit unused imports.
 
 # Build
 IntelliJ will automatically build your code as needed. To build using Gradle, follow the instructions below. 
@@ -96,15 +111,6 @@ To build Docker images locally, run:
 ```shell
 ./gradlew jibDockerBuild
 ```
-
-## Code formatting
-Kotlin code is formatted using IntelliJ IDEA's code formatter,
-which follows the [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html).
-
-GitHub Actions will automatically fix any formatting issues when you open a pull request. 
-You can also use <strong title="Command">⌘</strong><strong title="Option">⌥</strong>**L** (macOS), 
-or **Ctrl+Alt+L** (Windows/Linux) to manually reformat your code in IntelliJ IDEA.
-See [Reformat file](https://www.jetbrains.com/guide/java/tips/reformat-file/).
 
 # Run
 ## IntelliJ

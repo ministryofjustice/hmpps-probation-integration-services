@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
@@ -48,14 +46,14 @@ class CreateAppointmentIntegrationTests {
     @Test
     fun `unauthorized status returned`() {
         mockMvc
-            .perform(MockMvcRequestBuilders.get("/appointments/D123456"))
+            .perform(post("/appointment/D123456"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
 
     @Test
-    fun `when offender does not exist retuns a 404 response`() {
+    fun `when offender does not exist returns a 404 response`() {
         mockMvc.perform(
-            post("/appointments/D123456")
+            post("/appointment/D123456")
                 .withToken()
                 .withJson(
                     CreateAppointment(
@@ -75,7 +73,7 @@ class CreateAppointmentIntegrationTests {
     @Test
     fun `appointment end date before start returns bad request`() {
         mockMvc.perform(
-            post("/appointments/${PersonGenerator.PERSON_1.crn}")
+            post("/appointment/${PersonGenerator.PERSON_1.crn}")
                 .withToken()
                 .withJson(
                     CreateAppointment(
@@ -95,12 +93,12 @@ class CreateAppointmentIntegrationTests {
     }
 
     @ParameterizedTest
-    @MethodSource("createAppointments")
+    @MethodSource("createAppointment")
     fun `create a new appointment`(createAppointment: CreateAppointment) {
         val person = PersonGenerator.PERSON_1
 
         val response = mockMvc.perform(
-            post("/appointments/${person.crn}")
+            post("/appointment/${person.crn}")
                 .withToken()
                 .withJson(createAppointment)
         )
@@ -128,11 +126,10 @@ class CreateAppointmentIntegrationTests {
     fun `create multiple appointments`(createAppointment: CreateAppointment) {
         val person = PersonGenerator.PERSON_1
         val response = mockMvc.perform(
-            post("/appointments/${person.crn}")
+            post("/appointment/${person.crn}")
                 .withToken()
                 .withJson(createAppointment)
         )
-            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andReturn().response.contentAsJson<AppointmentDetail>()
 
@@ -163,7 +160,7 @@ class CreateAppointmentIntegrationTests {
         private val user = User(STAFF_USER_1.username, TEAM.description)
 
         @JvmStatic
-        fun createAppointments() = listOf(
+        fun createAppointment() = listOf(
             CreateAppointment(
                 user,
                 CreateAppointment.Type.PlannedOfficeVisitNS,

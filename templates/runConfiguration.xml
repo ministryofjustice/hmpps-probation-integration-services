@@ -1,12 +1,29 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="$SERVICE_NAME" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="dev" />
-    <module name="probation-integration-services.$SERVICE_NAME.dev" />
-    <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
-    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/projects/$SERVICE_NAME" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
+  <configuration default="false" name="$SERVICE_NAME" type="GradleRunConfiguration" factoryName="Gradle">
+    <ExternalSystemSettings>
+      <option name="env">
+        <map>
+          <entry key="SPRING_PROFILES_ACTIVE" value="dev"/>
+        </map>
+      </option>
+      <option name="executionName"/>
+      <option name="externalProjectPath" value="$PROJECT_DIR$"/>
+      <option name="externalSystemIdString" value="GRADLE"/>
+      <option name="scriptParameters" value=""/>
+      <option name="taskDescriptions">
+        <list/>
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value="$SERVICE_NAME:bootRun"/>
+        </list>
+      </option>
+      <option name="vmOptions"/>
+    </ExternalSystemSettings>
+    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+    <DebugAllEnabled>false</DebugAllEnabled>
+    <RunAsTest>false</RunAsTest>
+    <method v="2"/>
   </configuration>
 </component>

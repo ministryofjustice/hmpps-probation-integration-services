@@ -4,6 +4,7 @@ generic-service:
 
   scheduledDowntime:
     enabled: true
+    startup: 0 8 * * 1-5 # delayed startup to match Delius DB startup time
 
   env:
     SENTRY_ENVIRONMENT: dev

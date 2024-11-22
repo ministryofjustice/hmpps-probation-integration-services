@@ -691,4 +691,24 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             )
         }
     }
+
+    @Test
+    fun `status and location updates are ignored if the values have been updated more recently in Delius`() {
+        val notification = NotificationGenerator.PRISONER_RELEASED_HISTORIC
+        withBooking(BookingGenerator.RELEASED, BookingGenerator.RELEASED.lastMovement(notification.message.occurredAt))
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verifyTelemetry("PrisonerLocationCorrect", "PrisonerStatusCorrect") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0001AA",
+                "previousInstitution" to "WSI",
+                "institution" to "OUT",
+                "reason" to "RELEASED",
+                "movementReason" to "NCS",
+                "movementType" to "Released"
+            )
+        }
+    }
 }

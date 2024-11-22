@@ -9,26 +9,27 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.entity.UserRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
-    private val auditUserRepository: AuditUserRepository,
-    private val em: EntityManager
+    private val userRepository: UserRepository,
+    private val entityManager: EntityManager
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
     fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
+        userRepository.save(UserGenerator.AUDIT_USER)
     }
 
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        em.persistAll(PersonGenerator.PERSON1)
-    }
-
-    private fun EntityManager.persistAll(vararg entities: Any) {
-        entities.forEach { persist(it) }
+        listOf(
+            PersonGenerator.PERSON1,
+            UserGenerator.USER1,
+            UserGenerator.USER2,
+            UserGenerator.INACTIVE_USER,
+        ).forEach { entityManager.persist(it) }
     }
 }

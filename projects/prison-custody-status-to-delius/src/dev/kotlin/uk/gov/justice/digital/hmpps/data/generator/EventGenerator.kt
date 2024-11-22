@@ -44,6 +44,8 @@ object EventGenerator {
         institution: Institution?,
         custodialStatusCode: CustodialStatusCode = CustodialStatusCode.IN_CUSTODY,
         disposalDate: ZonedDateTime = ZonedDateTime.of(2022, 5, 1, 0, 0, 0, 0, EuropeLondon),
+        statusChangeDate: LocalDate = LocalDate.of(2020, 1, 1),
+        locationChangeDate: LocalDate = LocalDate.of(2020, 1, 1),
         lengthInDays: Long = 365,
         disposalCode: String = "DEF"
     ): Event {
@@ -54,8 +56,8 @@ object EventGenerator {
             status = ReferenceDataGenerator.CUSTODIAL_STATUS[custodialStatusCode]!!,
             institution = institution,
             disposal = disposal,
-            statusChangeDate = LocalDate.now().minusDays(1),
-            locationChangeDate = LocalDate.now().minusDays(1)
+            statusChangeDate = statusChangeDate,
+            locationChangeDate = locationChangeDate
         )
         disposal.custody = custody
         return event

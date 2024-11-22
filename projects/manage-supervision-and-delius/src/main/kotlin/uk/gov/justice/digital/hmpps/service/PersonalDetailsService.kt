@@ -58,7 +58,8 @@ class PersonalDetailsService(
             preferredName = person.preferredName,
             telephoneNumber = person.telephoneNumber,
             mobileNumber = person.mobileNumber,
-            circumstances = Circumstances(lastUpdated = personalCircumstances.maxOfOrNull { it.lastUpdated },
+            circumstances = Circumstances(
+                lastUpdated = personalCircumstances.maxOfOrNull { it.lastUpdated },
                 circumstances = personalCircumstances.map {
                     PersonalCircumstance(
                         it.subType.description,
