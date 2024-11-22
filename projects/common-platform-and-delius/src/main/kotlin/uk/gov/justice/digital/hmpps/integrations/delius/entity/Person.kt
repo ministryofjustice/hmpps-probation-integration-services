@@ -104,4 +104,7 @@ class Person(
 interface PersonRepository : JpaRepository<Person, Long> {
     @Query("SELECT SOUNDEX(:name) FROM DUAL", nativeQuery = true)
     fun getSoundex(name: String): String
+
+    @Query(value = "SELECT offender_support_api.getNextCRN FROM DUAL", nativeQuery = true)
+    fun getNextCrn(): String
 }

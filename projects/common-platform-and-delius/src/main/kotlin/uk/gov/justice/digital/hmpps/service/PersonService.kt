@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -18,7 +16,6 @@ import java.time.Period
 
 @Service
 class PersonService(
-    jdbcTemplate: JdbcTemplate,
     auditedInteractionService: AuditedInteractionService,
     private val personRepository: PersonRepository,
     private val courtRepository: CourtRepository,
@@ -29,10 +26,6 @@ class PersonService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val personAddressRepository: PersonAddressRepository
 ) : AuditableService(auditedInteractionService) {
-
-    private val generateCrn = SimpleJdbcCall(jdbcTemplate)
-        .withCatalogName("offender_support_api")
-        .withFunctionName("getNextCRN")
 
     @Transactional
     fun insertPerson(defendant: Defendant, courtCode: String): InsertPersonResult =
@@ -108,7 +101,7 @@ class PersonService(
     }
 
     fun generateCrn(): String {
-        return generateCrn.executeFunction(String::class.java)
+        return personRepository.getNextCrn()
     }
 
     fun String.toDeliusGender() = ReferenceData.GenderCode.entries.find { it.commonPlatformValue == this }?.deliusValue
