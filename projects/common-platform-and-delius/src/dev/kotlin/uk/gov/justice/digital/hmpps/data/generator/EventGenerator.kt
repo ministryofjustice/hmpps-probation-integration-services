@@ -67,6 +67,7 @@ object CourtAppearanceGenerator {
         court = CourtGenerator.UNKNOWN_COURT_N07_PROVIDER,
         person = PersonGenerator.DEFAULT
     )
+
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
         appearanceDate: LocalDate = LocalDate.now(),

@@ -101,6 +101,7 @@ object ContactTypeGenerator {
         code = ContactTypeCode.COURT_APPEARANCE.code,
         description = "Court Appearance"
     )
+
     fun generate(code: String, id: Long = IdGenerator.getAndIncrement(), description: String) =
         ContactType(id = id, code = code, description = description)
 }
