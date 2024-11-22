@@ -65,7 +65,12 @@ class StaffControllerIntegrationTest {
         mockMvc.perform(get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.page.totalElements", equalTo(3)))
-            .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker 1", "Key-worker 2", "Key-worker 3"))))
+            .andExpect(
+                jsonPath(
+                    "$.content[*].name.surname",
+                    equalTo(listOf("Key-worker 1", "Key-worker 2", "Key-worker 3"))
+                )
+            )
             .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, true, true))))
     }
 
