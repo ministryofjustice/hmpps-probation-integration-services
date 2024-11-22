@@ -29,15 +29,15 @@ class StaffControllerIntegrationTest {
         mockMvc
             .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withToken())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.page.totalElements", equalTo(3)))
+            .andExpect(jsonPath("$.page.totalElements", equalTo(5)))
             .andExpect(jsonPath("$.page.size", equalTo(100)))
             .andExpect(
                 jsonPath(
                     "$.content[*].name.surname",
-                    equalTo(listOf("Key-worker", "Not key-worker", "Unallocated"))
+                    equalTo(listOf("Key-worker 1", "Key-worker 2", "Key-worker 3", "Not key-worker", "Unallocated"))
                 )
             )
-            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, false, false))))
+            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, true, true, false, false))))
     }
 
     @Test
@@ -64,9 +64,9 @@ class StaffControllerIntegrationTest {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         mockMvc.perform(get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withToken())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.page.totalElements", equalTo(1)))
-            .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker"))))
-            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true))))
+            .andExpect(jsonPath("$.page.totalElements", equalTo(3)))
+            .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker 1", "Key-worker 2", "Key-worker 3"))))
+            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, true, true))))
     }
 
     @Test
