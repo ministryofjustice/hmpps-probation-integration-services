@@ -216,6 +216,8 @@ jobs:
         uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
         if: ${{ !contains(needs.*.result, 'failure') }}
         with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: probation-integration-notifications
           payload: |
             {
@@ -259,13 +261,13 @@ jobs:
                 }
               ]
             }
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
       - name: Send failure message to Slack
         uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
         if: ${{ contains(needs.*.result, 'failure') }}
         with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel-id: probation-integration-notifications
           payload: |
             {
@@ -301,5 +303,4 @@ jobs:
                 }
               ]
             }
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
