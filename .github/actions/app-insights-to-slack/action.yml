@@ -146,7 +146,7 @@ runs:
       if: steps.transform.outputs.result != null
       uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
       with:
-        channel-id: ${{ inputs.slack_channel }}
+        method: chat.postMessage
+        token: ${{ secrets.SLACK_BOT_TOKEN }}
+        channel-id: probation-integration-notifications
         payload: ${{ steps.transform.outputs.result }}
-      env:
-        SLACK_BOT_TOKEN: ${{ inputs.slack_token }}
