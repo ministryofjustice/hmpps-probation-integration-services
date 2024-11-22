@@ -599,6 +599,8 @@ components:
       - eventNumber
       - id
       - main
+      - mainCategoryDescription
+      - subCategoryDescription
       type: object
       properties:
         id:
@@ -606,6 +608,10 @@ components:
         code:
           type: string
         description:
+          type: string
+        mainCategoryDescription:
+          type: string
+        subCategoryDescription:
           type: string
         date:
           type: string
