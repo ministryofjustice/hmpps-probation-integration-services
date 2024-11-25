@@ -802,6 +802,8 @@ components:
           $ref: "#/components/schemas/MetaData"
     CreateAppointment:
       required:
+      - createOverlappingAppointment
+      - end
       - eventId
       - interval
       - numberOfAppointments
@@ -842,6 +844,8 @@ components:
         uuid:
           type: string
           format: uuid
+        createOverlappingAppointment:
+          type: boolean
         requirementId:
           type: integer
           format: int64
