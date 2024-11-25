@@ -24,6 +24,8 @@ jobs:
         run: |
           echo "result=$(echo "$pending_runs" | jq -rc '. |
             {
+              "channel": "probation-integration-notifications",
+              "text": "Review pending deployments",
               "blocks": ([
                 {
                   "type": "section",
@@ -67,5 +69,4 @@ jobs:
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel: probation-integration-notifications
           payload: ${{ steps.transform.outputs.result }}

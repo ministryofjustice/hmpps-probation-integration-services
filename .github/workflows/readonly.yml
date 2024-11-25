@@ -218,9 +218,10 @@ jobs:
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel: probation-integration-notifications
           payload: |
             {
+              "channel": "probation-integration-notifications",
+              "text": "Read-only mode alert",
               "blocks": [
                 {
                   "type": "header",
@@ -268,9 +269,10 @@ jobs:
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel: probation-integration-notifications
           payload: |
             {
+              "channel": "probation-integration-notifications",
+              "text": "Read-only mode failure",
               "blocks": [
                 {
                   "type": "header",

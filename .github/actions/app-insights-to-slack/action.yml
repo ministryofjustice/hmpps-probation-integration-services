@@ -87,6 +87,8 @@ runs:
       run: |
         echo "result=$(echo "$search_result" | jq -rc '.tables[0].rows |
           {
+            "channel": "${{ inputs.slack_channel }}",
+            "text": "Probation Integration Report",
             "blocks": ([
               {
                 "type": "header",
@@ -148,5 +150,4 @@ runs:
       with:
         method: chat.postMessage
         token: ${{ inputs.slack_token }}
-        channel: ${{ inputs.slack_channel }}
         payload: ${{ steps.transform.outputs.result }}
