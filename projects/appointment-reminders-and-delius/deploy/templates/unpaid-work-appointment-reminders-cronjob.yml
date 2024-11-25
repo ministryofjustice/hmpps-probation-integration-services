@@ -42,6 +42,4 @@ spec:
                   value: "true"
                 - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_PROVIDER
                   value: "N56"
-                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_DRY-RUN
-                  value: "{{ index .Values "jobs" "unpaid-work-appointment-reminders" "dry-run" }}"
           restartPolicy: Never

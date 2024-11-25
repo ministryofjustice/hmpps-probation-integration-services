@@ -10,5 +10,4 @@ generic-service:
 
 jobs:
   unpaid-work-appointment-reminders:
-    dry-run: true
-    schedule: '30 18 * * *' # 6:30pm UTC every day
+    schedule: '0 10 * * *' # 10am UTC every day

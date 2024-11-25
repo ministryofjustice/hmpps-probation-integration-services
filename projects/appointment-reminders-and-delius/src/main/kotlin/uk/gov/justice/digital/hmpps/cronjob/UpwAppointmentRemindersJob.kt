@@ -15,13 +15,11 @@ import kotlin.system.exitProcess
 class UpwAppointmentRemindersJob(
     @Value("\${jobs.unpaid-work-appointment-reminders.provider}")
     private val providerCode: String,
-    @Value("\${jobs.unpaid-work-appointment-reminders.dry-run:false}")
-    private val dryRun: Boolean,
     private val service: UnpaidWorkAppointmentsService,
     private val applicationContext: ApplicationContext,
 ) : ApplicationListener<ApplicationStartedEvent> {
     override fun onApplicationEvent(applicationStartedEvent: ApplicationStartedEvent) {
-        service.sendUnpaidWorkAppointmentReminders(providerCode, dryRun)
+        service.sendUnpaidWorkAppointmentReminders(providerCode)
         exitProcess(exit(applicationContext, { 0 }))
     }
 }
