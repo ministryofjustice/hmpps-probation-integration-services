@@ -67,5 +67,5 @@ jobs:
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: probation-integration-notifications
+          channel: probation-integration-notifications
           payload: ${{ steps.transform.outputs.result }}
