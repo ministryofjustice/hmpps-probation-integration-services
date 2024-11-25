@@ -148,5 +148,5 @@ runs:
       with:
         method: chat.postMessage
         token: ${{ inputs.slack_token }}
-        channel-id: ${{ inputs.slack_channel }}
+        channel: ${{ inputs.slack_channel }}
         payload: ${{ steps.transform.outputs.result }}
