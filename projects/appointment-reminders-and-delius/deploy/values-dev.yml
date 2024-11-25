@@ -16,5 +16,4 @@ generic-prometheus-alerts:
 
 jobs:
   unpaid-work-appointment-reminders:
-    dry-run: false
-    schedule: '0 18 * * *' # 6:00pm UTC every day
+    schedule: '0 10 * * *' # 10am UTC every day
