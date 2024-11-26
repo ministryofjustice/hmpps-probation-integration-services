@@ -86,11 +86,11 @@ class DataLoader(
         moveOnCategoryRepository.save(ReferenceDataGenerator.MC05)
         registerTypeRepository.saveAll(ReferenceDataGenerator.REGISTER_TYPES.values)
 
-        addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002, AddressGenerator.Q710))
+        addressRepository.saveAll(AddressGenerator.ALL_ADDRESSES)
         boroughRepository.save(ProbationCaseGenerator.BOROUGH)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         probationAreaRepository.save(ProbationAreaGenerator.N58_SW)
-        approvedPremisesRepository.save(ApprovedPremisesGenerator.DEFAULT)
+        approvedPremisesRepository.saveAll(ApprovedPremisesGenerator.ALL_APS)
         // add a duplicate AP for testing selectable query
         approvedPremisesRepository.save(
             ApprovedPremisesGenerator.generate(
@@ -99,37 +99,29 @@ class DataLoader(
                 selectable = false
             )
         )
-        approvedPremisesRepository.save(ApprovedPremisesGenerator.NO_STAFF)
-        approvedPremisesRepository.save(ApprovedPremisesGenerator.E2E_TEST)
         officeLocationRepository.save(OfficeLocationGenerator.DEFAULT)
         apGroupLinkRepository.saveAll(ApprovedPremisesGenerator.AP_GROUP_LINKS)
 
         lduRepository.save(TeamGenerator.AP_TEAM_LDU)
-        teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM)
-        teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_WITH_NO_STAFF)
-        teamRepository.save(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
-        teamRepository.save(TeamGenerator.UNALLOCATED)
-        teamRepository.save(TeamGenerator.E2E_TEST_TEAM)
-        staffRepository.save(
-            StaffGenerator.generate(
-                "Key-worker",
-                "KEY0001",
-                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM, TeamGenerator.E2E_TEST_TEAM),
-                approvedPremises = listOf(ApprovedPremisesGenerator.DEFAULT, ApprovedPremisesGenerator.E2E_TEST)
+        teamRepository.saveAll(TeamGenerator.ALL_TEAMS)
+
+        (1..3).forEach {
+            staffRepository.save(
+                StaffGenerator.generate(
+                    "Key-worker $it",
+                    "KEY000$it",
+                    teams = TeamGenerator.ALL_AP_TEAMS,
+                    approvedPremises = ApprovedPremisesGenerator.ALL_STAFFED_APS
+                )
             )
-        )
+        }
+
         staffRepository.save(
             StaffGenerator.generate(
                 "Not key-worker",
-                "KEY0002",
-                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM)
-            )
-        )
-        staffRepository.save(
-            StaffGenerator.generate(
-                "Not key-worker and not in AP team",
-                "KEY0003",
-                teams = listOf(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
+                "NOTKEY1",
+                teams = TeamGenerator.ALL_AP_TEAMS,
+                approvedPremises = emptyList(),
             )
         )
 
@@ -137,7 +129,7 @@ class DataLoader(
             StaffGenerator.generate(
                 "Unallocated",
                 TeamGenerator.APPROVED_PREMISES_TEAM.code + "U",
-                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM)
+                teams = TeamGenerator.ALL_AP_TEAMS
             )
         )
 

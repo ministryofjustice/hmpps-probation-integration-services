@@ -46,8 +46,6 @@ server.shutdown: immediate
 
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
-  sql.init.mode: always
-  sql.init.data-locations: classpath:db/h2.sql
   jpa:
     hibernate.ddl-auto: create-drop
 

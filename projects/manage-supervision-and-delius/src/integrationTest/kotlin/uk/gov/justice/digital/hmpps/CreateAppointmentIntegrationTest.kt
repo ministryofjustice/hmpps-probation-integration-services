@@ -33,7 +33,7 @@ import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CreateAppointmentIntegrationTests {
+class CreateAppointmentIntegrationTest {
 
     @Autowired
     internal lateinit var mockMvc: MockMvc
@@ -42,6 +42,8 @@ class CreateAppointmentIntegrationTests {
     internal lateinit var appointmentRepository: AppointmentRepository
 
     private val user = User(STAFF_USER_1.username, TEAM.description)
+
+    private val person = PersonGenerator.PERSON_1
 
     @Test
     fun `unauthorized status returned`() {
@@ -95,8 +97,6 @@ class CreateAppointmentIntegrationTests {
     @ParameterizedTest
     @MethodSource("createAppointment")
     fun `create a new appointment`(createAppointment: CreateAppointment) {
-        val person = PersonGenerator.PERSON_1
-
         val response = mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
@@ -124,7 +124,6 @@ class CreateAppointmentIntegrationTests {
     @ParameterizedTest
     @MethodSource("createMultipleAppointments")
     fun `create multiple appointments`(createAppointment: CreateAppointment) {
-        val person = PersonGenerator.PERSON_1
         val response = mockMvc.perform(
             post("/appointment/${person.crn}")
                 .withToken()
@@ -165,7 +164,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.PlannedOfficeVisitNS,
                 ZonedDateTime.now().plusDays(1),
-                ZonedDateTime.now().plusDays(2),
+                ZonedDateTime.now().plusDays(1).plusHours(1),
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
             ),
@@ -173,7 +172,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.InitialAppointmentInOfficeNS,
                 ZonedDateTime.now().plusDays(1),
-                null,
+                ZonedDateTime.now().plusDays(1).plusHours(1),
                 CreateAppointment.Interval.DAY,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
@@ -186,6 +185,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 ZonedDateTime.now(),
+                ZonedDateTime.now().plusHours(1),
                 numberOfAppointments = 3,
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
@@ -194,6 +194,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 ZonedDateTime.now(),
+                end = ZonedDateTime.now().plusHours(1),
                 until = ZonedDateTime.now().plusDays(2),
                 eventId = PersonGenerator.EVENT_1.id,
                 uuid = UUID.randomUUID()
@@ -202,6 +203,7 @@ class CreateAppointmentIntegrationTests {
                 user,
                 CreateAppointment.Type.HomeVisitToCaseNS,
                 start = ZonedDateTime.now(),
+                end = ZonedDateTime.now().plusHours(2),
                 until = ZonedDateTime.now().plusDays(14),
                 interval = CreateAppointment.Interval.WEEK,
                 eventId = PersonGenerator.EVENT_1.id,
