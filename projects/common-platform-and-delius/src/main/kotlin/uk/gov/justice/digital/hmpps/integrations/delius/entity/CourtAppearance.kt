@@ -45,8 +45,8 @@ class CourtAppearance(
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
 
-    @Column(name = "partition_area_id")
-    val partitionAreaId: Long? = null,
+    @Column
+    val partitionAreaId: Long = 0L,
 
     @ManyToOne
     @JoinColumn(name = "court_id")
@@ -72,17 +72,17 @@ class CourtAppearance(
     @JoinColumn(name = "remand_status_id")
     val remandStatus: ReferenceData? = null,
 
+    @Column(nullable = false)
     @CreatedBy
-    @Column(name = "created_by_user_id", updatable = false)
     var createdByUserId: Long = 0,
+
+    @Column(name = "last_updated_user_id")
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0,
 
     @CreatedDate
     @Column(nullable = false)
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
-    @LastModifiedBy
-    @Column(name = "last_updated_user_id")
-    var lastModifiedUserId: Long = 0,
 
     @Column(nullable = false)
     @LastModifiedDate

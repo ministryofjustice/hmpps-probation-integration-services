@@ -56,17 +56,17 @@ class MainOffence(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
+    @Column
     @CreatedBy
-    @Column(name = "created_by_user_id")
     var createdByUserId: Long = 0,
+
+    @Column(name = "last_updated_user_id")
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0,
 
     @CreatedDate
     @Column(name = "created_datetime")
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-
-    @LastModifiedBy
-    @Column
-    var lastUpdatedUserId: Long = 0,
 
     @Column
     @LastModifiedDate

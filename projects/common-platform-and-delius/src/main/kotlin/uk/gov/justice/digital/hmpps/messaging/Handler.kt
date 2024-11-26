@@ -55,18 +55,18 @@ class Handler(
             }
 
             // Insert each defendant as a person record, send relevant SNS messages
-            val savedEntities = personService.insertPerson(defendant, courtCode)
-            notifier.caseCreated(savedEntities.person)
-            savedEntities.address?.let { notifier.addressCreated(it) }
+            val savedPersonEntities = personService.insertPerson(defendant, courtCode)
+            notifier.caseCreated(savedPersonEntities.person)
+            savedPersonEntities.address?.let { notifier.addressCreated(it) }
 
             telemetryService.trackEvent(
                 "PersonCreated", mapOf(
                     "hearingId" to hearing.id,
-                    "CRN" to savedEntities.person.crn,
-                    "personId" to savedEntities.person.id.toString(),
-                    "personManagerId" to savedEntities.personManager.id.toString(),
-                    "equalityId" to savedEntities.equality.id.toString(),
-                    "addressId" to savedEntities.address?.id.toString()
+                    "CRN" to savedPersonEntities.person.crn,
+                    "personId" to savedPersonEntities.person.id.toString(),
+                    "personManagerId" to savedPersonEntities.personManager.id.toString(),
+                    "equalityId" to savedPersonEntities.equality.id.toString(),
+                    "addressId" to savedPersonEntities.address?.id.toString()
                 )
             )
 
@@ -84,19 +84,40 @@ class Handler(
             val existingCourtAppearance = courtAppearanceRepository.findLatestByCaseUrn(caseUrn)
 
             if (existingCourtAppearance != null) {
-                eventService.insertCourtAppearance(
+                val savedCourtAppearance = eventService.insertCourtAppearance(
                     existingCourtAppearance.event,
                     courtCode,
                     hearing.hearingDays.first().sittingDay,
                     caseUrn
                 )
+                telemetryService.trackEvent(
+                    "CourtAppearanceCreated", mapOf(
+                        "hearingId" to hearing.id,
+                        "courtAppearanceId" to savedCourtAppearance.id.toString(),
+                        "personId" to savedCourtAppearance.person.id.toString(),
+                        "eventId" to savedCourtAppearance.event.id.toString(),
+                    )
+                )
             } else {
-                eventService.insertEvent(
+                val savedEventEntities = eventService.insertEvent(
                     mainOffence,
-                    savedEntities.person,
+                    savedPersonEntities.person,
                     courtCode,
                     hearing.hearingDays.first().sittingDay,
                     caseUrn
+                )
+                telemetryService.trackEvent(
+                    "EventCreated", mapOf(
+                        "hearingId" to hearing.id,
+                        "eventId" to savedEventEntities.event.id.toString(),
+                        "eventNumber" to savedEventEntities.event.number,
+                        "CRN" to savedEventEntities.event.person.crn,
+                        "personId" to savedEventEntities.event.person.id.toString(),
+                        "orderManagerId" to savedEventEntities.orderManager.id.toString(),
+                        "mainOffenceId" to savedEventEntities.mainOffence.id.toString(),
+                        "courtAppearanceIds" to savedEventEntities.courtAppearances.joinToString(",") { it.id.toString() },
+                        "contactIds" to savedEventEntities.contacts.joinToString(",") { it.id.toString() }
+                    )
                 )
             }
         }

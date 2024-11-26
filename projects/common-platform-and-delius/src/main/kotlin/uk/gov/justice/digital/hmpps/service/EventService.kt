@@ -45,7 +45,8 @@ class EventService(
                     person = person,
                     number = eventRepository.getNextEventNumber(person.id!!),
                     referralDate = sittingDay.toLocalDate(), // TODO: Identify event's referral date
-                    active = true
+                    active = true,
+                    ftcCount = 0
                 )
             )
 
@@ -139,14 +140,14 @@ class EventService(
                     person = person,
                     startTime = sittingDay.with(LocalDate.of(1970, 1, 1)),
                     endTime = null,
-                    staff = unallocatedStaff,
-                    team = unallocatedTeam,
                     alert = true,
                     eventId = savedEvent.id!!,
                     type = courtAppearanceContactType,
-                    staffEmployeeId = unallocatedStaff.id,
                     probationAreaId = court.provider.id,
-                    trustProviderTeamId = unallocatedTeam.id
+                    team = unallocatedTeam,
+                    trustProviderTeamId = unallocatedTeam.id,
+                    staff = unallocatedStaff,
+                    staffEmployeeId = unallocatedStaff.id
                 )
             )
 
@@ -160,9 +161,11 @@ class EventService(
                     alert = true,
                     eventId = savedEvent.id,
                     type = courtAppearanceContactType,
-                    staffEmployeeId = unallocatedStaff.id,
                     probationAreaId = court.provider.id,
-                    trustProviderTeamId = unallocatedTeam.id
+                    team = unallocatedTeam,
+                    trustProviderTeamId = unallocatedTeam.id,
+                    staff = unallocatedStaff,
+                    staffEmployeeId = unallocatedStaff.id
                 )
             )
 

@@ -15,7 +15,8 @@ object EventGenerator {
         person = person,
         number = "1",
         referralDate = LocalDate.now(),
-        active = true
+        active = true,
+        ftcCount = 0
     )
 }
 
@@ -56,7 +57,11 @@ object ContactGenerator {
         person = person,
         startTime = ZonedDateTime.now(),
         endTime = ZonedDateTime.now().plusDays(1),
-        type = type
+        type = type,
+        staff = StaffGenerator.UNALLOCATED,
+        staffEmployeeId = StaffGenerator.UNALLOCATED.id,
+        team = TeamGenerator.UNALLOCATED,
+        providerEmployeeId = TeamGenerator.UNALLOCATED.id
     )
 }
 

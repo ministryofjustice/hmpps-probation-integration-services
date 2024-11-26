@@ -23,10 +23,10 @@ class Event(
     val id: Long? = null,
 
     @Column(name = "consecutive_to_event_id")
-    val consecutiveToId: Long? = null,
+    val consecutiveId: Long? = null,
 
-    @Column(name = "consecutive_with_event_id")
-    val consecutiveWithId: Long? = null,
+    @Column(name = "concurrent_with_event_id")
+    val concurrentId: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
@@ -77,7 +77,7 @@ class Event(
     val breachEnd: LocalDate? = null,
 
     @Column
-    val ftcCount: Long? = null,
+    val ftcCount: Long,
 
     @Column(columnDefinition = "NUMBER", nullable = false)
     val pendingTransfer: Boolean = false,
@@ -137,19 +137,21 @@ class OrderManager(
     val providerEmployeeId: Long? = null,
 
     @CreatedDate
-    val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-
-    @CreatedBy
-    var createdByUserId: Long = 0,
+    val createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
-    var lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "provider_team_id")
     val providerTeamId: Long? = null,
 
+    @Column
+    @CreatedBy
+    var createdByUserId: Long = 0,
+
+    @Column(name = "last_updated_user_id")
     @LastModifiedBy
-    var lastModifiedUserId: Long = 0,
+    var lastUpdatedUserId: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "transfer_reason_id")

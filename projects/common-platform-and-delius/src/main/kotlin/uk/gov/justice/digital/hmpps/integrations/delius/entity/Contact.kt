@@ -54,7 +54,7 @@ class Contact(
     @Column(name = "provider_employee_id")
     val providerEmployeeId: Long? = null,
 
-    @Column(name = "hours_credited")
+    @Column(name = "hours_credited", columnDefinition = "NUMBER(10,2)")
     var hoursCredited: Double? = null,
 
     @Column(name = "notes", columnDefinition = "clob")
@@ -126,7 +126,7 @@ class Contact(
     @Column
     val contactOutcomeTypeId: Long? = null,
 
-    @Column(nullable = false)
+    @Column
     @CreatedBy
     var createdByUserId: Long = 0,
 
@@ -141,7 +141,7 @@ class Contact(
     val trustProviderFlag: Boolean = false,
 
     @Column
-    val staffEmployeeId: Long? = null,
+    val staffEmployeeId: Long,
 
     @Column
     val probationAreaId: Long? = null,
