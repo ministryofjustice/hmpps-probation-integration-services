@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Offence
@@ -19,7 +20,10 @@ object ReferenceDataGenerator {
         )
     }
     val FLAG_DATASET = generateDataset(Dataset.Code.REGISTER_TYPE_FLAG.value)
-    val DEFAULT_FLAG = generateReferenceData("1", dataset = FLAG_DATASET)
+    val ROSH_FLAG = generateReferenceData("1", "RoSH", FLAG_DATASET)
+    val SAFEGUARDING_FLAG = generateReferenceData("3", "Safeguarding", FLAG_DATASET)
+    val LEVELS_DATASET = generateDataset(Dataset.Code.REGISTER_LEVEL.value)
+    val LEVELS = RiskLevel.entries.map { generateReferenceData(it.code, it.name, dataset = LEVELS_DATASET) }
     val OFFENCES = listOf("80400", "00857").map { generateOffence(it) }
     val COURTS = listOf("CRT150", "LVRPCC").map { generateCourt(it) }
     val REQ_MAIN_CATS = listOf("RM38").map { generateReqMainCat(it) }

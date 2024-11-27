@@ -1,8 +1,8 @@
 {
-  "probNumber": "L123456",
+  "probNumber": "A000002",
   "assessments": [
     {
-      "assessmentPk": 10096930,
+      "assessmentPk": 2,
       "assessmentType": "LAYER3",
       "dateCompleted": "2023-12-07T12:22:44",
       "assessorSignedDate": "2023-12-07T12:16:12",
