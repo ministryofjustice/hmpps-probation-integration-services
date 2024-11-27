@@ -21,7 +21,7 @@ class UnpaidWorkAppointmentsService(
                     templateId,
                     it.mobileNumber,
                     mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate),
-                    it.upwAppointmentIds
+                    "${it.crn}:${it.appointmentDate}:${it.upwAppointmentIds}"
                 )
                 telemetryService.trackEvent(
                     "SentUnpaidWorkAppointmentReminder",
