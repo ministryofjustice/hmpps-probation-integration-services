@@ -90,7 +90,7 @@ internal class IntegrationTest {
             "cd713c1b-1b27-45a0-b493-37a34666635a",
             "07000000000",
             mapOf("FirstName" to "Test", "NextWorkSession" to "01/01/2000"),
-            "123, 456"
+            "A123456:01/01/2000:123, 456"
         )
         verify(telemetryService).trackEvent(
             "SentUnpaidWorkAppointmentReminder",
