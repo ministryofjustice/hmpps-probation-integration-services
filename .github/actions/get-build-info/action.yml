@@ -28,7 +28,6 @@ runs:
       with:
         cache-encryption-key: ${{ inputs.gradle-encryption-key }}
         cache-read-only: true
-        remove-git-dir: false
 
     - name: Get build info
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
