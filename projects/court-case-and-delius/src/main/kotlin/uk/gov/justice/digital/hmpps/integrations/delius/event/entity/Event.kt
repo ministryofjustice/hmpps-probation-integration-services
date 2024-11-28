@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -30,6 +31,7 @@ class Event(
     val mainOffence: MainOffence? = null,
 
     @Column(name = "in_breach", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val inBreach: Boolean,
 
     @Column(name = "breach_end")
@@ -42,9 +44,11 @@ class Event(
     val disposal: Disposal? = null,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -132,6 +136,7 @@ class OrderManager(
     val staff: Staff?,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @ManyToOne
@@ -147,6 +152,7 @@ class OrderManager(
     val endDate: ZonedDateTime?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id

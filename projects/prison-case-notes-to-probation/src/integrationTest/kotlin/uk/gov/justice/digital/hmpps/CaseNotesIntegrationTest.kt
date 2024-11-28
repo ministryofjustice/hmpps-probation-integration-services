@@ -15,8 +15,8 @@ import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
@@ -44,13 +44,13 @@ class CaseNotesIntegrationTest {
     @Autowired
     private lateinit var staffRepository: StaffRepository
 
-    @MockBean
+    @MockitoBean
     private lateinit var telemetryService: TelemetryService
 
     @Autowired
     lateinit var wireMockserver: WireMockServer
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var air: AuditedInteractionRepository
 
     @Test

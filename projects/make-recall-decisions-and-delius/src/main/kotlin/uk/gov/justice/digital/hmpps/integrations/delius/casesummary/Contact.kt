@@ -1,18 +1,11 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.casesummary
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.NotFound
 import org.hibernate.annotations.NotFoundAction
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -61,6 +54,7 @@ class Contact(
     val sensitive: Boolean?,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -79,6 +73,7 @@ class ContactType(
     val description: String,
 
     @Column(name = "sgc_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val systemGenerated: Boolean
 )
 
@@ -124,6 +119,7 @@ class ContactDocument(
     val tableName: String = "CONTACT",
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 

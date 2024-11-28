@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.contact.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -26,6 +27,7 @@ class Contact(
     val date: LocalDate,
 
     @Column(name = "enforcement", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val enforcementContact: Boolean? = null,
 
     @Column(name = "event_id")
@@ -44,6 +46,7 @@ class Contact(
     val outcome: AttendanceOutcome? = null,
 
     @Column(columnDefinition = "NUMBER")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 

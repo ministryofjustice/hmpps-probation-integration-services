@@ -1,20 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -108,6 +97,7 @@ class Contact(
     var lastUpdatedUserId: Long = 0,
 
     @Column(nullable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     val partitionAreaId: Long = 0
@@ -136,6 +126,7 @@ class Contact(
         private set
 
     @Column(name = "hours_credited", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var hoursCredited: Double? = null
         private set
 
@@ -276,6 +267,7 @@ class Enforcement(
     val partitionAreaId: Long = 0,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Column(name = "row_version")

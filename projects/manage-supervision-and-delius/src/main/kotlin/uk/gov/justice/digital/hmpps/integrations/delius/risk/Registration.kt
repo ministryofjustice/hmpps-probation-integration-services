@@ -5,6 +5,7 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -29,6 +30,7 @@ class RiskFlag(
     val type: RegisterType,
 
     @Column(name = "deregistered", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val deRegistered: Boolean,
 
     @Column(name = "registration_notes", columnDefinition = "clob")
@@ -52,6 +54,7 @@ class RiskFlag(
     val reviews: List<RegistrationReview> = emptyList(),
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -89,6 +92,7 @@ class RegistrationReview(
     val completed: Boolean?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Column(name = "created_datetime")
@@ -123,6 +127,7 @@ class DeRegistration(
     val staff: Staff,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 )
 

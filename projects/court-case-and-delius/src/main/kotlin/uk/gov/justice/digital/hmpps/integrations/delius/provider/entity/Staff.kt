@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
 import kotlin.jvm.Transient
@@ -104,6 +105,7 @@ class Team(
     val probationArea: ProbationAreaEntity,
 
     @Column(name = "private", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val private: Boolean = false
 )
 

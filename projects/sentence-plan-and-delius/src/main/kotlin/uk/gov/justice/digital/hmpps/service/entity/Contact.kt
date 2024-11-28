@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -55,7 +56,8 @@ class Contact(
     @JoinColumn(name = "rqmnt_id")
     val requirement: Requirement? = null,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false
 
 )

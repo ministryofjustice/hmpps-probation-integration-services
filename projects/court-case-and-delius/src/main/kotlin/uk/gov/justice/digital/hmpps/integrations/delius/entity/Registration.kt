@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.registration.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -55,9 +56,11 @@ class Registration(
     val deRegistrations: List<DeRegistration> = emptyList(),
 
     @Column(name = "deregistered", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val deRegistered: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Column(name = "created_datetime")
@@ -131,6 +134,7 @@ class DeRegistration(
     val createdDateTime: LocalDateTime,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 )
 

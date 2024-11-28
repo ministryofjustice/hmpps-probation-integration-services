@@ -11,7 +11,6 @@ object DataGenerator {
     val COURT_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "CS", "Summary Non-motoring", COURT_CATEGORY_SET)
 
     val EXISTING_DETAILED_OFFENCE = DetailedOffence(
-        id = IdGenerator.getAndIncrement(),
         code = "AB06001",
         description = "Obstruct person acting in execution of the regulations - 09155",
         category = COURT_CATEGORY,
@@ -48,8 +47,7 @@ object DataGenerator {
         form20Code: String? = null,
         schedule15SexualOffence: Boolean? = false,
         schedule15ViolentOffence: Boolean? = false,
-        childAbduction: Boolean? = false,
-        id: Long = IdGenerator.getAndIncrement()
+        childAbduction: Boolean? = false
     ) = ReferenceOffence(
         code,
         description,
@@ -63,7 +61,6 @@ object DataGenerator {
         form20Code,
         schedule15SexualOffence,
         schedule15ViolentOffence,
-        childAbduction,
-        id
+        childAbduction
     )
 }
