@@ -4,12 +4,11 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Residence
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
+import uk.gov.justice.digital.hmpps.service.EXT_REF_BOOKING_PREFIX
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -20,22 +19,25 @@ object ReferralGenerator {
     val BOOKING_ID = UUID.randomUUID().toString()
     var BOOKING_WITHOUT_ARRIVAL = generateReferral(
         person = PersonGenerator.PERSON_WITH_BOOKING,
-        referralNotes = "${Nsi.EXT_REF_BOOKING_PREFIX}$BOOKING_ID${System.lineSeparator()}Some other notes"
+        referralNotes = "Some other notes",
+        externalReference = "${EXT_REF_BOOKING_PREFIX}$BOOKING_ID",
     )
 
     val ARRIVED_ID = UUID.randomUUID().toString()
     var BOOKING_ARRIVED = generateReferral(
         person = PersonGenerator.PERSON_WITH_BOOKING,
-        referralNotes = "${Nsi.EXT_REF_BOOKING_PREFIX}$ARRIVED_ID${System.lineSeparator()}Some other notes",
+        referralNotes = "Some other notes",
+        externalReference = "${EXT_REF_BOOKING_PREFIX}$ARRIVED_ID",
         expectedArrivalDate = LocalDate.now(),
-        expectedDepartureDate = LocalDate.now().plusDays(7)
+        expectedDepartureDate = LocalDate.now().plusDays(7),
     )
     var ARRIVAL = generateResidence(PersonGenerator.PERSON_WITH_BOOKING, BOOKING_ARRIVED)
 
     val DEPARTED_ID = UUID.randomUUID().toString()
     var BOOKING_DEPARTED = generateReferral(
         person = PersonGenerator.PERSON_WITH_BOOKING,
-        referralNotes = "${Nsi.EXT_REF_BOOKING_PREFIX}$DEPARTED_ID${System.lineSeparator()}Some other notes",
+        referralNotes = "Some other notes",
+        externalReference = "${EXT_REF_BOOKING_PREFIX}$DEPARTED_ID",
         expectedArrivalDate = LocalDate.now().minusDays(8),
         expectedDepartureDate = LocalDate.now().minusDays(1)
     )
@@ -56,7 +58,8 @@ object ReferralGenerator {
         expectedArrivalDate: LocalDate? = LocalDate.now().plusDays(1),
         expectedDepartureDate: LocalDate? = LocalDate.now().plusDays(8),
         decisionDate: ZonedDateTime? = ZonedDateTime.now(EuropeLondon),
-        referralNotes: String? = null
+        referralNotes: String? = null,
+        externalReference: String? = null
     ) = Referral(
         personId = person.id,
         eventId = eventId,
@@ -93,7 +96,8 @@ object ReferralGenerator {
         decisionTeamId = TeamGenerator.APPROVED_PREMISES_TEAM.id,
         decisionStaffId = 26553,
         referringTeamId = TeamGenerator.UNALLOCATED.id,
-        referringStaffId = 563828
+        referringStaffId = 563828,
+        externalReference = externalReference
     )
 
     fun generateResidence(

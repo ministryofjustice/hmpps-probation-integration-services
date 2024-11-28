@@ -30,7 +30,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi.Companion.EXT_REF_BOOKING_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
@@ -42,6 +41,7 @@ import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
+import uk.gov.justice.digital.hmpps.service.EXT_REF_BOOKING_PREFIX
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.LocalDate
@@ -185,6 +185,7 @@ internal class MessagingIntegrationTest {
             referral.categoryId,
             equalTo(ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.VOLUNTARY_MAPPA.value]?.id)
         )
+        assertThat(referral.externalReference, equalTo("${EXT_REF_BOOKING_PREFIX}14c80733-4b6d-4f35-b724-66955aac320c"))
         assertThat(referral.referralGroupId, equalTo(ReferenceDataGenerator.REFERRAL_GROUP.id))
         assertThat(referral.referralDate, equalTo(LocalDate.parse("2022-11-28")))
         assertThat(referral.activeArsonRiskId, equalTo(ReferenceDataGenerator.YN_UNKNOWN.id))

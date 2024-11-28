@@ -565,7 +565,7 @@ internal class ApprovedPremisesServiceTest {
             LocalDate.now(),
             LocalDate.now(),
             ZonedDateTime.now(),
-            Nsi.EXT_REF_BOOKING_PREFIX + bookingId,
+            "Some notes...",
             ReferenceDataGenerator.REFERRAL_DATE_TYPE.id,
             ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.OTHER.value]!!.id,
             ReferenceDataGenerator.REFERRAL_GROUP.id,
@@ -586,13 +586,14 @@ internal class ApprovedPremisesServiceTest {
             ReferenceDataGenerator.RISK_UNKNOWN.id,
             ReferenceDataGenerator.RISK_UNKNOWN.id,
             ReferenceDataGenerator.RISK_UNKNOWN.id,
-            null
+            null,
+            EXT_REF_BOOKING_PREFIX + bookingId,
         )
         whenever(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+            referralRepository.findByPersonIdAndCreatedByUserIdAndExternalReference(
                 person.id,
                 UserGenerator.AUDIT_USER.id,
-                Nsi.EXT_REF_BOOKING_PREFIX + bookingId
+                EXT_REF_BOOKING_PREFIX + bookingId
             )
         ).thenReturn(ref)
         return ref

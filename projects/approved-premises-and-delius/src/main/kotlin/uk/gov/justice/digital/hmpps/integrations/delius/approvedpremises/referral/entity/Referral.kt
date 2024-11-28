@@ -81,7 +81,8 @@ class Referral(
     val rohSelfId: Long,
     val rohOthersId: Long,
     @Lob
-    val riskInformation: String?
+    val riskInformation: String?,
+    val externalReference: String?,
 ) {
     @Column(name = "original_ap_admit_date")
     var admissionDate: LocalDate? = null
@@ -157,7 +158,7 @@ class Event(
 )
 
 interface ReferralRepository : JpaRepository<Referral, Long> {
-    fun findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+    fun findByPersonIdAndCreatedByUserIdAndExternalReference(
         personId: Long,
         createdByUserId: Long,
         externalRef: String
@@ -182,7 +183,7 @@ interface ReferralRepository : JpaRepository<Referral, Long> {
             join ApprovedPremises ap on ap.id = r.approvedPremisesId
             join Person p on p.id = r.personId
             left join Residence res on res.referralId = r.id
-            where p.crn = :crn and r.referralNotes like '%' || :externalRef || '%'
+            where p.crn = :crn and r.externalReference = :externalRef
         """
     )
     fun findReferralDetail(crn: String, externalRef: String): ReferralAndResidence?
