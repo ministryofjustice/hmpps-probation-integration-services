@@ -52,6 +52,7 @@ class StaffService(
 
     fun Staff.toResponse(approvedPremisesCode: String) = StaffResponse(
         code = code,
+        staffIdentifier = id,
         name = PersonName(forename, surname, middleName),
         grade = grade?.let { grade -> StaffGrade(grade.code, grade.description) },
         keyWorker = approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode)

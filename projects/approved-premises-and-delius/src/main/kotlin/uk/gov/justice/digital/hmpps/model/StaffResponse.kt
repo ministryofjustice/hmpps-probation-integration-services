@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.model
 
 data class StaffResponse(
     val code: String,
+    val staffIdentifier: Long,
     val name: PersonName,
     val grade: StaffGrade?,
     val keyWorker: Boolean

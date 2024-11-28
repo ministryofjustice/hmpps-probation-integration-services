@@ -74,6 +74,7 @@ internal class StaffServiceTest {
         assertThat(results.content.map { it.name.surname }, equalTo(listOf("Staff 1", "Staff 2")))
         assertThat(results.content.map { it.keyWorker }, equalTo(listOf(false, true)))
         assertThat(results.content[0].code, equalTo(staffEntities[0].code))
+        assertThat(results.content[0].staffIdentifier, equalTo(staffEntities[0].id))
         assertThat(results.content[0].name.forename, equalTo(staffEntities[0].forename))
         assertThat(results.content[0].name.middleName, equalTo(staffEntities[0].middleName))
         assertThat(results.content[0].name.surname, equalTo(staffEntities[0].surname))
