@@ -3,105 +3,144 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/N123456/ALLOW/10069390/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000001/ALLOW/1/COMPLETE"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "assessment-summary-N123456.json"
+        "bodyFileName": "A000001-no-rosh.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/L123456/ALLOW/10096930/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000002/ALLOW/2/COMPLETE"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "assessment-summary-L123456.json"
+        "bodyFileName": "A000002-low-rosh.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/M123456/ALLOW/100835871/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000003/ALLOW/3/COMPLETE"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "assessment-summary-M123456.json"
+        "bodyFileName": "A000003-medium-rosh.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/H123456/ALLOW/10078385/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000004/ALLOW/4/COMPLETE"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "assessment-summary-H123456.json"
+        "bodyFileName": "A000004-high-rosh.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/E123456/ALLOW/10069390/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000006/ALLOW/6/COMPLETE"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "assessment-summary-E123456.json"
+        "bodyFileName": "A000006-no-event.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/F123456/ALLOW/10069390/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000007/ALLOW/7/COMPLETE"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "assessment-summary-F123456.json"
+        "bodyFileName": "A000007-soft-deleted.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/G123456/ALLOW/10069390/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/Z999999/ALLOW/999999/COMPLETE"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "assessment-summary-G123456.json"
+        "bodyFileName": "Z999999-no-delius-record.json"
       }
     },
     {
       "request": {
         "method": "GET",
-        "urlPath": "/eor/oasys/ass/asssumm/O123456/ALLOW/10069391/COMPLETE"
+        "urlPath": "/eor/oasys/ass/asssumm/A000008/ALLOW/8/COMPLETE"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "assessment-summary-O123456.json"
+        "bodyFileName": "A000008-prison.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000009/ALLOW/9/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000009-high-risk-to-children.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000010/ALLOW/10/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000010-multiple-risks.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000011/ALLOW/11/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000011-multiple-risks.json"
       }
     }
   ]

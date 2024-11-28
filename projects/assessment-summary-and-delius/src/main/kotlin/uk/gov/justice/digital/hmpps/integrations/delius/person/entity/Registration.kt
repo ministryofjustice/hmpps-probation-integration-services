@@ -33,6 +33,7 @@ class Registration(
 
     @Column(name = "registering_team_id")
     val teamId: Long,
+
     @Column(name = "registering_staff_id")
     val staffId: Long,
 
@@ -40,7 +41,15 @@ class Registration(
     @JoinColumn(name = "register_type_id")
     val type: RegisterType,
 
+    @ManyToOne
+    @JoinColumn(name = "register_level_id")
+    val level: ReferenceData? = null,
+
     var nextReviewDate: LocalDate? = null,
+
+    @Lob
+    @Column(name = "registration_notes")
+    val notes: String? = null,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
@@ -191,6 +200,9 @@ class DeRegistration(
 interface RegistrationRepository : JpaRepository<Registration, Long> {
     @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
     fun findByPersonIdAndTypeFlagCode(personId: Long, flagCode: String): List<Registration>
+
+    @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
+    fun findByPersonIdAndTypeCode(personId: Long, typeCode: String): List<Registration>
 }
 
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long> {

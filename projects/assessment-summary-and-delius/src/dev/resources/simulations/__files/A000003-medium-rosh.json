@@ -1,8 +1,8 @@
 {
-  "probNumber": "F123456",
+  "probNumber": "A000003",
   "assessments": [
     {
-      "assessmentPk": 10078385,
+      "assessmentPk": 3,
       "assessmentType": "LAYER3",
       "dateCompleted": "2023-12-15T08:34:44",
       "assessorSignedDate": "2023-12-15T08:33:39",
@@ -21,15 +21,15 @@
       "latestCompleteDate": "2023-12-15T08:34:44",
       "currentConcernsRiskOfSuicide": "Yes",
       "reviewSpDate": null,
-      "initialSpDate": null,
+      "initialSpDate": "2023-12-15",
       "reviewNum": "01",
       "riskPrisonersCustody": "Low",
       "riskStaffCustody": "Low",
       "riskStaffCommunity": "Low",
       "riskKnownAdultCustody": "Low",
-      "riskKnownAdultCommunity": "Medium",
+      "riskAdultCommunity": "Medium",
       "riskPublicCustody": "Low",
-      "riskPublicCommunity": "High",
+      "riskPublicCommunity": "Medium",
       "riskChildrenCustody": "Low",
       "riskChildrenCommunity": "Low",
       "currentConcernsBreachOfTrust": "Yes",
@@ -50,10 +50,10 @@
         "attitudesWeightedScore": 5
       },
       "furtherInformation": {
-        "totWeightedScore": 108,
+        "totWeightedScore": 88,
         "pOAssessment": "270",
         "pOAssessmentDesc": "Review",
-        "assessorName": "LevelTwo CentralSupport",
+        "assessorName": "Reeeeeeeeeeaaaaaaaaaally Loooooooooooooooooong Name",
         "ogrs1Year": 43,
         "ogrs2Year": 61,
         "reviewTerm": "N",
@@ -64,7 +64,7 @@
       },
       "offender": {
         "riskToOthers": "H",
-        "offenderPk": 7374816
+        "offenderPk": 7374972
       },
       "ogpOvp": {
         "ogpNC": "N",
@@ -92,14 +92,13 @@
             "objectiveSequence": 1,
             "criminogenicNeeds": [
               {
-                "criminogenicNeed": "IHD",
                 "criminogenicNeedDesc": "Risk to Public"
               }
             ],
             "actions": [
               {
                 "actionDesc": "Drug counselling",
-                "actionComment": "Comments about the action"
+                "actionComment": "Frank will need to attend regularly"
               }
             ]
           },
@@ -108,15 +107,13 @@
             "objectiveSequence": 2,
             "criminogenicNeeds": [
               {
-                "criminogenicNeed": "I4",
                 "criminogenicNeedDesc": "Education Training and Employment"
               }
             ],
             "actions": [
               {
-                "action": "VIII1",
                 "actionDesc": "Basic skills",
-                "actionComment": "Some comment about their basic skills"
+                "actionComment": "Some comment about their skills"
               }
             ]
           }
