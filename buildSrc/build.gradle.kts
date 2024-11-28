@@ -12,5 +12,5 @@ repositories {
 
 dependencies {
     implementation("com.google.cloud.tools:jib-gradle-plugin:3.4.4")
-    implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882")
+    implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.0.0.5145")
 }
