@@ -1,19 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
@@ -84,6 +73,7 @@ class CaseNote(
     val trustProviderTeamId: Long = teamId,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
+    @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
 
     @Column(updatable = false)
@@ -93,6 +83,7 @@ class CaseNote(
     val eventId: Long? = null,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false
 )
 

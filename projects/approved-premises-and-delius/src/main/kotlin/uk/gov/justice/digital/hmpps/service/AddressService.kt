@@ -37,7 +37,6 @@ class AddressService(
     }
 
     private fun ApprovedPremises.arrival(person: Person, details: PersonArrived) = PersonAddress(
-        0,
         person.id,
         referenceDataRepository.approvedPremisesAddressType(),
         referenceDataRepository.mainAddressStatus(),

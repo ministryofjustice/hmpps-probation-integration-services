@@ -10,8 +10,8 @@ import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.generator.OffenderDeltaGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDelta
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRepository
@@ -30,10 +30,10 @@ internal class IntegrationTest {
     @Autowired
     lateinit var offenderDeltaRepository: OffenderDeltaRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var offenderDeltaService: OffenderDeltaService
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @ParameterizedTest

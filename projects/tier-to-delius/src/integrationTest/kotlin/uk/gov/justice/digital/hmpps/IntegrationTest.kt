@@ -12,7 +12,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.repository.ContactDevRepository
 import uk.gov.justice.digital.hmpps.data.repository.ManagementTierDevRepository
 import uk.gov.justice.digital.hmpps.data.repository.ManagementTierWithEndDateDevRepository
@@ -53,10 +53,10 @@ internal class IntegrationTest {
     @Autowired
     private lateinit var wireMockServer: WireMockServer
 
-    @MockBean
+    @MockitoBean
     private lateinit var telemetryService: TelemetryService
 
-    @MockBean
+    @MockitoBean
     private lateinit var featureFlags: FeatureFlags
 
     @Test

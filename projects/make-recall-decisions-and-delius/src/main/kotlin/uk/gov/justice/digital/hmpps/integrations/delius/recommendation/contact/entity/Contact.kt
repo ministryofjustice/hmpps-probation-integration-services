@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -57,6 +58,7 @@ class Contact(
     val alert: Boolean? = false,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false,
 
     @Column(name = "row_version")

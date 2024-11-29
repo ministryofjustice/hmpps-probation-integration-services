@@ -1,13 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
 @Immutable
@@ -22,7 +17,8 @@ class DocEvent(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @Column(name = "event_number", nullable = false)
@@ -51,10 +47,12 @@ class DocDisposal(
     @JoinColumn(name = "disposal_type_id", updatable = false)
     val type: DocDisposalType,
 
-    @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
+    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 

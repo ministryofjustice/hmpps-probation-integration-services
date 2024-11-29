@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -33,19 +33,19 @@ internal class PrisonMatchingIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var personRepository: PersonRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var custodyRepository: CustodyRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var additionalIdentifierRepository: AdditionalIdentifierRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var contactRepository: ContactRepository
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Test

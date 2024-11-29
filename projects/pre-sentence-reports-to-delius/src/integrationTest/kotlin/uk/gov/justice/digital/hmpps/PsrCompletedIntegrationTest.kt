@@ -10,8 +10,8 @@ import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
@@ -28,7 +28,7 @@ class PsrCompletedIntegrationTest {
     @Autowired
     private lateinit var channelManager: HmppsChannelManager
 
-    @MockBean
+    @MockitoBean
     private lateinit var telemetryService: TelemetryService
 
     @Autowired
@@ -37,7 +37,7 @@ class PsrCompletedIntegrationTest {
     @Autowired
     private lateinit var documentRepository: DocumentRepository
 
-    @SpyBean
+    @MockitoSpyBean
     private lateinit var alfrescoUploadClient: AlfrescoUploadClient
 
     @Test

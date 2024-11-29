@@ -1,13 +1,9 @@
 package uk.gov.justice.digital.hmpps.controller.casedetails.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 
 @Immutable
@@ -33,7 +29,8 @@ class CaseAddress(
     val county: String?,
     val postcode: String?,
     val telephoneNumber: String?,
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
     @ManyToOne
     @JoinColumn(name = "address_status_id")

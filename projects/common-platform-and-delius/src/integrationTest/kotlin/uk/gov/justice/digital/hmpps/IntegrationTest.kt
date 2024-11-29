@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
@@ -51,19 +51,19 @@ internal class IntegrationTest {
     @Autowired
     lateinit var wireMockServer: WireMockServer
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var auditedInteractionService: AuditedInteractionService
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var personRepository: PersonRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var addressRepository: PersonAddressRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var personService: PersonService
 
     @BeforeEach

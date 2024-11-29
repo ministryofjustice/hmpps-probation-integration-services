@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -32,7 +33,8 @@ class Staff(
     @Column(name = "probation_area_id")
     val probationAreaId: Long,
 
-    @Column(name = "private", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "private", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     var privateStaff: Boolean = false,
 
     @Column(name = "start_date", updatable = false)

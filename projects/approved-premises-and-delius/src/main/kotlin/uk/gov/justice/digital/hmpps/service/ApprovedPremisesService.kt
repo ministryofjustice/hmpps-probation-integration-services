@@ -118,8 +118,8 @@ class ApprovedPremisesService(
         val person = personRepository.getByCrn(event.crn())
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         nsiService.personArrived(person, details, ap)?.let { (previousAddress, newAddress) ->
-            notifier.addressCreated(person.crn, newAddress.id, newAddress.status.description)
-            previousAddress?.let { notifier.addressUpdated(person.crn, it.id, it.status.description) }
+            notifier.addressCreated(person.crn, newAddress.id!!, newAddress.status.description)
+            previousAddress?.let { notifier.addressUpdated(person.crn, it.id!!, it.status.description) }
         }
     }
 
@@ -128,7 +128,7 @@ class ApprovedPremisesService(
         val person = personRepository.getByCrn(event.crn())
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         nsiService.personDeparted(person, details, ap)?.let { updatedAddress ->
-            notifier.addressUpdated(person.crn, updatedAddress.id, updatedAddress.status.description)
+            notifier.addressUpdated(person.crn, updatedAddress.id!!, updatedAddress.status.description)
         }
     }
 }

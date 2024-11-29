@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
@@ -27,6 +28,7 @@ class Alert(
     val personManagerId: Long,
 
     @Column(name = "trust_provider_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
 
     @Version

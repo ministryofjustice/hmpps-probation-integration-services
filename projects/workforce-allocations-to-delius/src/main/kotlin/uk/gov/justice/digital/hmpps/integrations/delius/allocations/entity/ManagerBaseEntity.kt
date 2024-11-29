@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
+import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
@@ -34,7 +32,8 @@ abstract class ManagerBaseEntity : BaseEntity() {
     @Column(name = "allocation_date", nullable = false)
     lateinit var startDate: ZonedDateTime
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER")
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var active: Boolean = true
 
     @Column(name = "end_date")

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -32,7 +33,8 @@ class PersonAddress(
     @Column(name = "partition_area_id", nullable = false)
     val partitionAreaId: Long = 0,
 
-    @Column(name = "soft_deleted", updatable = false, columnDefinition = "NUMBER")
+    @Column(name = "soft_deleted", updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Column(name = "row_version")
@@ -94,7 +96,8 @@ class PersonAddress(
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
 
-    @Column(name = "awaiting_assessment", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "awaiting_assessment", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val awaitingAssessment: Boolean = false,
 
     @ManyToOne

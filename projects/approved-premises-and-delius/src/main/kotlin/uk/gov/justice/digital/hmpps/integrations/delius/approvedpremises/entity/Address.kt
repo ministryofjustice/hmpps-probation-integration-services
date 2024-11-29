@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 
 @Immutable
 @Entity
@@ -21,5 +23,6 @@ class Address(
     val postcode: String?,
     val telephoneNumber: String?,
     @Column(updatable = false, columnDefinition = "NUMBER")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )

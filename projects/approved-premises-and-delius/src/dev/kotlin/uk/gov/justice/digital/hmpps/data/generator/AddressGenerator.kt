@@ -196,9 +196,7 @@ object AddressGenerator {
         county: String? = null,
         postcode: String? = null,
         telephoneNumber: String? = null,
-        id: Long = IdGenerator.getAndIncrement()
     ) = PersonAddress(
-        id,
         personId,
         type,
         status,
@@ -209,6 +207,6 @@ object AddressGenerator {
         town,
         county,
         postcode,
-        telephoneNumber
+        telephoneNumber,
     )
 }

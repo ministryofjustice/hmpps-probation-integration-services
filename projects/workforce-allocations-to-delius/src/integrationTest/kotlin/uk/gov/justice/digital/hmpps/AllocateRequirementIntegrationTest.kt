@@ -10,8 +10,8 @@ import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
@@ -38,7 +38,7 @@ class AllocateRequirementIntegrationTest {
     @Autowired
     private lateinit var requirementManagerRepository: RequirementManagerRepository
 
-    @MockBean
+    @MockitoBean
     private lateinit var telemetryService: TelemetryService
 
     @Test

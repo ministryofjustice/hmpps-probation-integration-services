@@ -11,6 +11,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletResponse
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
@@ -37,7 +38,7 @@ object MockMvcExtensions {
 
     inline fun <reified T> MockHttpServletResponse.contentAsJson(): T = objectMapper.readValue<T>(this.contentAsString)
 
-    inline fun <reified T> ResultActions.andExpectJson(obj: T, strict: Boolean = false) =
+    inline fun <reified T> ResultActions.andExpectJson(obj: T, compareMode: JsonCompareMode = JsonCompareMode.LENIENT) =
         this.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(content().json(objectMapper.writeValueAsString(obj), strict))
+            .andExpect(content().json(objectMapper.writeValueAsString(obj), compareMode))
 }
