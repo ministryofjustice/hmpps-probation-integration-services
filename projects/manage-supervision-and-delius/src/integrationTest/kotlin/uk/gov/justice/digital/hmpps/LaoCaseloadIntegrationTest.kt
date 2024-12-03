@@ -9,14 +9,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.user.StaffCaseload
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LIMITED_ACCESS_USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.EXCLUSION
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.RESTRICTION_EXCLUSION
+import uk.gov.justice.digital.hmpps.service.UserAccess
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -27,7 +31,6 @@ internal class LaoCaseloadIntegrationTest {
 
     @Test
     fun `all caseload activity for an lao user`() {
-
         val person = LIMITED_ACCESS_USER
         val res = mockMvc
             .perform(get("/caseload/user/${person.username}").withToken())
@@ -64,5 +67,43 @@ internal class LaoCaseloadIntegrationTest {
 
         assertThat(caseload[3].limitedAccess, equalTo(false))
         assertNotEquals(caseload[3].caseName, null)
+    }
+
+    @Test
+    fun `check lao access for a user with list of crns`() {
+        val person = LIMITED_ACCESS_USER
+        val crns = listOf(RESTRICTION_EXCLUSION.crn, EXCLUSION.crn, RESTRICTION.crn, PERSONAL_DETAILS.crn)
+        val res = mockMvc
+            .perform(
+                MockMvcRequestBuilders.post("/user/${person.username}/access").withToken()
+                    .withJson(crns)
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<UserAccess>()
+
+        val userAccess = res.access.sortedBy { it.crn }
+
+        assertThat(userAccess[0].userExcluded, equalTo(true))
+        assertThat(userAccess[0].userRestricted, equalTo(true))
+
+        assertThat(userAccess[1].userExcluded, equalTo(true))
+        assertThat(userAccess[1].userRestricted, equalTo(false))
+
+        assertThat(userAccess[2].userExcluded, equalTo(false))
+        assertThat(userAccess[2].userRestricted, equalTo(true))
+
+        assertThat(userAccess[3].userExcluded, equalTo(false))
+        assertThat(userAccess[3].userRestricted, equalTo(false))
+    }
+
+    @Test
+    fun `check lao access returns 400 when no crns are provided`() {
+        val person = LIMITED_ACCESS_USER
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders.post("/user/${person.username}/access").withToken()
+                    .withJson(emptyList<String>())
+            )
+            .andExpect(status().isBadRequest)
     }
 }
