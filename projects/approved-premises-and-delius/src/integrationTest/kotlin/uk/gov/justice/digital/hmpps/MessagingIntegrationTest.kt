@@ -94,6 +94,10 @@ internal class MessagingIntegrationTest {
         } while (message != null)
     }
 
+    fun setUpTestSpecificData() {
+        personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
+    }
+
     @Test
     fun `application submission creates an alert contact`() {
         // Given an application-submitted event
@@ -145,6 +149,8 @@ internal class MessagingIntegrationTest {
     @Test
     @Order(1)
     fun `booking made creates referral and contact`() {
+        setUpTestSpecificData()
+        
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
 

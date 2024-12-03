@@ -79,6 +79,10 @@ internal class MessagingIntegrationInactiveTest {
     @Autowired
     private lateinit var staffRepository: StaffRepository
 
+    fun setUpTestSpecificData() {
+        personAddressRepository.save(AddressGenerator.INACTIVE_PERSON_ADDRESS)
+    }
+
     @Test
     fun `application submission with an inactive event creates an alert contact`() {
         // Given an application-submitted event
@@ -129,6 +133,8 @@ internal class MessagingIntegrationInactiveTest {
     @Test
     @Order(1)
     fun `booking made with inactive event creates referral and contact`() {
+        setUpTestSpecificData()
+
         // Given a booking-made event
         val event = prepEvent("booking-made-inactive", wireMockServer.port())
 
