@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.GENDER_MALE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -41,6 +42,7 @@ class DataLoader(
             ContactGenerator.DEFAULT_BOROUGH,
             ContactGenerator.DEFAULT_DISTRICT,
             ContactGenerator.DEFAULT_STAFF,
+            ContactGenerator.LIMITED_ACCESS_STAFF,
             ContactGenerator.STAFF_1,
             ContactGenerator.DEFAULT_TEAM,
             ContactGenerator.LOCATION_BRK_1,
@@ -49,7 +51,9 @@ class DataLoader(
 
         entityManager.persist(ContactGenerator.USER_1)
 
-        entityManager.persist(PersonGenerator.OVERVIEW.gender)
+        entityManager.persist(ContactGenerator.LIMITED_ACCESS_USER)
+
+        entityManager.persist(GENDER_MALE)
 
         PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
         PersonGenerator.PROVISIONS.forEach { entityManager.persist(it.type) }
@@ -62,7 +66,6 @@ class DataLoader(
         entityManager.persistCollection(PersonGenerator.PROVISIONS)
         entityManager.persistCollection(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         entityManager.persist(PersonGenerator.OVERVIEW)
-
         entityManager.persist(CourtGenerator.BHAM)
         entityManager.persist(PersonGenerator.EVENT_1)
         entityManager.persist(PersonGenerator.EVENT_2)
@@ -188,6 +191,9 @@ class DataLoader(
             PersonDetailsGenerator.LANGUAGE_RD,
             PersonDetailsGenerator.GENDER_IDENTITY_RD,
             PersonDetailsGenerator.PERSONAL_DETAILS,
+            PersonDetailsGenerator.RESTRICTION,
+            PersonDetailsGenerator.EXCLUSION,
+            PersonDetailsGenerator.RESTRICTION_EXCLUSION,
             PersonDetailsGenerator.DISABILITY_1_RD,
             PersonDetailsGenerator.DISABILITY_2_RD,
             PersonDetailsGenerator.PERSONAL_CIRCUMSTANCE_1_RD,
@@ -222,10 +228,23 @@ class DataLoader(
         entityManager.flush()
         entityManager.merge(PersonGenerator.PERSON_1)
         entityManager.merge(PersonGenerator.PERSON_2)
+        entityManager.merge(PersonGenerator.CL_EXCLUDED)
+        entityManager.merge(PersonGenerator.CL_RESTRICTED)
+        entityManager.merge(PersonGenerator.CL_RESTRICTED_EXCLUDED)
         entityManager.flush()
         entityManager.persist(PersonGenerator.CASELOAD_PERSON_1)
         entityManager.persist(PersonGenerator.CASELOAD_PERSON_2)
         entityManager.persist(PersonGenerator.CASELOAD_PERSON_3)
+
+        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_EXCLUSION)
+        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_RESTRICTION)
+        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_BOTH)
+        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_NEITHER)
+
+        entityManager.persist(LimitedAccessGenerator.EXCLUSION)
+        entityManager.persist(LimitedAccessGenerator.RESTRICTION)
+        entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
+        entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {
