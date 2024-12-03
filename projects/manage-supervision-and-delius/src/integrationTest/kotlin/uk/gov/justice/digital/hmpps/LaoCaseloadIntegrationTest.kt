@@ -34,32 +34,35 @@ internal class LaoCaseloadIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<StaffCaseload>()
 
-        assertThat(res.caseload[0].crn, equalTo(EXCLUSION.crn))
-        assertThat(res.caseload[1].crn, equalTo(RESTRICTION.crn))
-        assertThat(res.caseload[2].crn, equalTo(RESTRICTION_EXCLUSION.crn))
+        val caseload = res.caseload.sortedBy { it.crn }
 
-        assertThat(res.caseload[0].limitedAccess, equalTo(true))
-        assertThat(res.caseload[0].caseName, equalTo(null))
-        assertThat(res.caseload[0].latestSentence, equalTo(null))
-        assertThat(res.caseload[0].nextAppointment, equalTo(null))
-        assertThat(res.caseload[0].previousAppointment, equalTo(null))
-        assertThat(res.caseload[0].numberOfAdditionalSentences, equalTo(null))
+        assertThat(caseload[0].crn, equalTo(RESTRICTION_EXCLUSION.crn))
+        assertThat(caseload[1].crn, equalTo(EXCLUSION.crn))
+        assertThat(caseload[2].crn, equalTo(RESTRICTION.crn))
 
-        assertThat(res.caseload[1].limitedAccess, equalTo(true))
-        assertThat(res.caseload[1].caseName, equalTo(null))
-        assertThat(res.caseload[1].latestSentence, equalTo(null))
-        assertThat(res.caseload[1].nextAppointment, equalTo(null))
-        assertThat(res.caseload[1].previousAppointment, equalTo(null))
-        assertThat(res.caseload[1].numberOfAdditionalSentences, equalTo(null))
 
-        assertThat(res.caseload[2].limitedAccess, equalTo(true))
-        assertThat(res.caseload[2].caseName, equalTo(null))
-        assertThat(res.caseload[2].latestSentence, equalTo(null))
-        assertThat(res.caseload[2].nextAppointment, equalTo(null))
-        assertThat(res.caseload[2].previousAppointment, equalTo(null))
-        assertThat(res.caseload[2].numberOfAdditionalSentences, equalTo(null))
+        assertThat(caseload[0].limitedAccess, equalTo(true))
+        assertThat(caseload[0].caseName, equalTo(null))
+        assertThat(caseload[0].latestSentence, equalTo(null))
+        assertThat(caseload[0].nextAppointment, equalTo(null))
+        assertThat(caseload[0].previousAppointment, equalTo(null))
+        assertThat(caseload[0].numberOfAdditionalSentences, equalTo(null))
 
-        assertThat(res.caseload[3].limitedAccess, equalTo(false))
-        assertNotEquals(res.caseload[3].caseName, null)
+        assertThat(caseload[1].limitedAccess, equalTo(true))
+        assertThat(caseload[1].caseName, equalTo(null))
+        assertThat(caseload[1].latestSentence, equalTo(null))
+        assertThat(caseload[1].nextAppointment, equalTo(null))
+        assertThat(caseload[1].previousAppointment, equalTo(null))
+        assertThat(caseload[1].numberOfAdditionalSentences, equalTo(null))
+
+        assertThat(caseload[2].limitedAccess, equalTo(true))
+        assertThat(caseload[2].caseName, equalTo(null))
+        assertThat(caseload[2].latestSentence, equalTo(null))
+        assertThat(caseload[2].nextAppointment, equalTo(null))
+        assertThat(caseload[2].previousAppointment, equalTo(null))
+        assertThat(caseload[2].numberOfAdditionalSentences, equalTo(null))
+
+        assertThat(caseload[3].limitedAccess, equalTo(false))
+        assertNotEquals(caseload[3].caseName, null)
     }
 }
