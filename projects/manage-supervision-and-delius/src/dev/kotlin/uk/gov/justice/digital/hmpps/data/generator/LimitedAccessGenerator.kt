@@ -12,11 +12,11 @@ import java.time.LocalDateTime
 object LimitedAccessGenerator {
     val EXCLUSION = generateExclusion(PersonDetailsGenerator.EXCLUSION)
     val RESTRICTION =
-        generateRestriction(PersonDetailsGenerator.RESTRICTION, endDateTime = LocalDateTime.now().plusHours(1))
+        generateRestriction(PersonDetailsGenerator.RESTRICTION, endDateTime = LocalDateTime.now().plusDays(1))
     val BOTH_EXCLUSION = generateExclusion(PersonDetailsGenerator.RESTRICTION_EXCLUSION)
     val BOTH_RESTRICTION = generateRestriction(
         PersonDetailsGenerator.RESTRICTION_EXCLUSION,
-        endDateTime = LocalDateTime.now().plusHours(1)
+        endDateTime = LocalDateTime.now().plusDays(1)
     )
 
     fun generateExclusion(
