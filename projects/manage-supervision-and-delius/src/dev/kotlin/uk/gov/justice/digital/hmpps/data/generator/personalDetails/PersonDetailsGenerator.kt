@@ -35,6 +35,21 @@ object PersonDetailsGenerator {
         requiresInterpreter = true
     )
 
+    val EXCLUSION = generatePersonDetails(
+        "E123456",
+        exclusionMessage = "There is an exclusion on this person"
+    )
+    val RESTRICTION =
+        generatePersonDetails(
+            "R123456",
+            restrictionMessage = "There is a restriction on this person"
+        )
+    val RESTRICTION_EXCLUSION = generatePersonDetails(
+        "B123456",
+        exclusionMessage = "You are excluded from viewing this case",
+        restrictionMessage = "You are restricted from viewing this case"
+    )
+
     val ALIAS_1 = generateAlias("Sam", "Edward", "Smith", PERSONAL_DETAILS.id)
     val ALIAS_2 = generateAlias("Joe", "Richard", "Jones", PersonGenerator.OVERVIEW.id)
 
@@ -236,6 +251,7 @@ object PersonDetailsGenerator {
         endDate: LocalDate? = null,
         verified: Boolean? = null,
         notes: String? = null
+
     ) = PersonAddress(
         personId = personId,
         id = IdGenerator.getAndIncrement(),
@@ -255,23 +271,25 @@ object PersonDetailsGenerator {
         typeVerified = verified,
         telephoneNumber = "0191876865",
         lastUpdatedUser = USER,
-        notes = notes
+        notes = notes,
     )
 
     fun generatePersonDetails(
         crn: String,
-        forename: String,
-        secondName: String,
-        surname: String,
-        preferredName: String,
-        gender: ReferenceData,
-        religion: ReferenceData,
-        sexualOrientation: ReferenceData,
-        language: ReferenceData,
-        previousSurname: String,
-        genderIdentity: ReferenceData,
-        genderIdentityDescription: String,
-        requiresInterpreter: Boolean = false
+        forename: String = "TestForename",
+        secondName: String = "SecondName",
+        surname: String = "Surname",
+        preferredName: String = "PreferredName",
+        gender: ReferenceData = GENDER_FEMALE,
+        religion: ReferenceData = RELIGION_DEFAULT,
+        sexualOrientation: ReferenceData = SEXUAL_ORIENTATION,
+        language: ReferenceData = LANGUAGE_RD,
+        previousSurname: String = "PreviousSurname",
+        genderIdentity: ReferenceData = GENDER_IDENTITY_RD,
+        genderIdentityDescription: String = "genderIdentityDescription",
+        requiresInterpreter: Boolean = false,
+        exclusionMessage: String? = null,
+        restrictionMessage: String? = null
     ) = Person(
         id = IdGenerator.getAndIncrement(),
         crn = crn,
@@ -292,6 +310,8 @@ object PersonDetailsGenerator {
         genderIdentity = genderIdentity,
         genderIdentityDescription = genderIdentityDescription,
         requiresInterpreter = requiresInterpreter,
+        exclusionMessage = exclusionMessage,
+        restrictionMessage = restrictionMessage
     )
 
     fun generateDocument(

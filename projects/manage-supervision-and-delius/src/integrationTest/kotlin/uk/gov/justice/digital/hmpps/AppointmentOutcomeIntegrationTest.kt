@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.AppointmentDetail
 import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.Outcome
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.APPOINTMENT_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.ATTENDED_COMPLIED
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
@@ -66,6 +67,9 @@ class AppointmentOutcomeIntegrationTest {
     fun `when an appointment outcome does not exist returns a 404 response`() {
         val response = createAppointment()
 
+        val expectedContactType =
+            APPOINTMENT_TYPES.firstOrNull { type -> type.code == CreateAppointment.Type.PlannedOfficeVisitNS.code }
+
         mockMvc
             .perform(
                 MockMvcRequestBuilders.patch("/appointment")
@@ -76,7 +80,7 @@ class AppointmentOutcomeIntegrationTest {
             .andExpect(
                 jsonPath(
                     "$.message",
-                    equalTo("ContactTypeOutcome with contact_type_id 8 and outcome code of ABC not found")
+                    equalTo("ContactTypeOutcome with contact_type_id ${expectedContactType?.id} and outcome code of ABC not found")
                 )
             )
 
