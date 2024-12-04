@@ -14,12 +14,6 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "contact")
 class CaseNote(
-    @Id
-    @Column(name = "contact_id", updatable = false)
-    @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long = 0,
-
     val externalReference: String,
 
     @Column(updatable = false)
@@ -84,7 +78,13 @@ class CaseNote(
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     @Convert(converter = NumericBooleanConverter::class)
-    var softDeleted: Boolean = false
+    var softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "contact_id", updatable = false)
+    @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
+    val id: Long = 0,
 )
 
 @Immutable
