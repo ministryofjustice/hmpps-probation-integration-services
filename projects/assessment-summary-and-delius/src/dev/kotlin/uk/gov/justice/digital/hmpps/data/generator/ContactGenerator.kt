@@ -12,9 +12,8 @@ object ContactGenerator {
         type: ContactType,
         eventId: Long? = null,
         alert: Boolean? = false,
-        softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Contact(type, person, eventId, null, alert, softDeleted, id)
+        softDeleted: Boolean = false
+    ) = Contact(type, person, eventId, null, alert, softDeleted)
 
     fun generateType(code: String, id: Long = IdGenerator.getAndIncrement()) = ContactType(code, id)
 }
