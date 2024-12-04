@@ -26,7 +26,6 @@ data class ProbationArea(
 data class StaffDetail(
     val email: String?,
     val telephoneNumber: String?,
-    val staffIdentifier: Long,
     val teams: List<Team> = emptyList(),
     val probationArea: ProbationArea,
     val username: String?,

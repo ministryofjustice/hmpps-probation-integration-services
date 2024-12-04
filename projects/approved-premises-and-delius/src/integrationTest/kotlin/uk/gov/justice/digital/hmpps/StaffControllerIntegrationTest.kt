@@ -85,7 +85,6 @@ class StaffControllerIntegrationTest {
         assertThat(res.code, equalTo(StaffGenerator.DEFAULT_STAFF.code))
         assertThat(res.email, equalTo("john.smith@moj.gov.uk"))
         assertThat(res.telephoneNumber, equalTo("07321165373"))
-        assertThat(res.staffIdentifier, equalTo(StaffGenerator.DEFAULT_STAFF.id))
         assertThat(res.teams[0].borough?.code, equalTo(StaffGenerator.DEFAULT_STAFF.teams[0].district.borough.code))
         assertThat(
             res.teams[0].borough?.description,
