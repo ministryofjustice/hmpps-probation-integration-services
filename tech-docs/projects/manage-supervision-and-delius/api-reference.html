@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#user-username-access"><span>/user/{username}/access</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#caseload-user-username-search"><span>/caseload/user/{username}/search</span></a>
       </li>
       <li>
@@ -221,6 +224,74 @@
 
 
 
+<h2 id="user-username-access">/user/{username}/access</h2>
+
+<h3 id="user-username-access-post">post</h3>
+
+
+
+
+<h4 id="user-username-access-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-access-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="caseload-user-username-search">/caseload/user/{username}/search</h2>
 
 <h3 id="caseload-user-username-search-post">post</h3>
@@ -327,7 +398,8 @@
         "description": "string"
       },
       "latestSentence": "string",
-      "numberOfAdditionalSentences": "integer"
+      "numberOfAdditionalSentences": "integer",
+      "limitedAccess": "boolean"
     }
   ],
   "metaData": {
@@ -3315,7 +3387,8 @@
         "description": "string"
       },
       "latestSentence": "string",
-      "numberOfAdditionalSentences": "integer"
+      "numberOfAdditionalSentences": "integer",
+      "limitedAccess": "boolean"
     }
   ],
   "metaData": {
@@ -3738,6 +3811,90 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-caseaccess">CaseAccess</h3>
+
+
+<table class='schema-caseaccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userExcluded</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userRestricted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-useraccess">UserAccess</h3>
+
+
+<table class='schema-useraccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>access</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-caseaccess'>CaseAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-usersearchfilter">UserSearchFilter</h3>
 
 
@@ -3940,7 +4097,7 @@
 <tr>
 <td>caseName</td>
 <td>object</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-name'>Name</a>
@@ -3960,7 +4117,7 @@
 <tr>
 <td>dob</td>
 <td>string</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -4000,7 +4157,17 @@
 <tr>
 <td>numberOfAdditionalSentences</td>
 <td>integer</td>
-<td>true</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>limitedAccess</td>
+<td>boolean</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -4351,68 +4518,6 @@
 
 <tr>
 <td>notes</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-caseaccess">CaseAccess</h3>
-
-
-<table class='schema-caseaccess'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>userExcluded</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>userRestricted</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>exclusionMessage</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>restrictionMessage</td>
 <td>string</td>
 <td>false</td>
 <td></td>
