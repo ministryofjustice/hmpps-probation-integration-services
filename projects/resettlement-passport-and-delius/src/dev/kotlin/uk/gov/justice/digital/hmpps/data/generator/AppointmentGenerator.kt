@@ -73,8 +73,7 @@ object AppointmentGenerator {
         outcome: AppointmentOutcome? = null,
         description: String? = null,
         softDeleted: Boolean = false,
-        version: Long = 0,
-        id: Long = IdGenerator.getAndIncrement()
+        version: Long = 0
     ) = Appointment(
         person,
         type,
@@ -91,6 +90,5 @@ object AppointmentGenerator {
         outcome,
         softDeleted,
         version,
-        id
     )
 }
