@@ -212,6 +212,7 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(personService).insertAddress(any())
+        verify(personService).findAddressByFreeText(any())
 
         verify(addressRepository).save(check<PersonAddress> {
             assertThat(it.start, Matchers.equalTo(LocalDate.now()))
@@ -329,6 +330,74 @@ internal class IntegrationTest {
                 else -> fail("Unexpected event type: ${event.eventType}")
             }
         }
+    }
+
+
+    @Test
+    fun `court hearing address inserted no address lookup api result is found`() {
+        wireMockServer.stubFor(
+            get(urlPathEqualTo("/address-lookup/search/places/v1/find"))
+                .willReturn(
+                    okJson(
+                        """
+                {
+                    "header": { "totalresults": 0 },
+                    "results": []
+                }
+            """
+                    )
+                )
+        )
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val addressCaptor = argumentCaptor<PersonAddress>()
+        verify(addressRepository).save(addressCaptor.capture())
+
+        val savedAddress = addressCaptor.firstValue
+        assertThat(savedAddress.notes, Matchers.containsString("Example Address Line 1"))
+        assertThat(savedAddress.postcode, Matchers.containsString("AA1 1AA"))
+    }
+
+    @Test
+    fun `Address lookup api is inserted when result is found`() {
+        wireMockServer.stubFor(
+            get(urlPathEqualTo("/address-lookup/search/places/v1/find"))
+                .willReturn(
+                    okJson(
+                        """
+                {
+                    "header": { "totalresults": 1 },
+                    "results": [
+                        {
+                            "DPA": {
+                                "address": "123 Test Street, Test, AB1 2CD",
+                                "postcode": "AB1 2CD",
+                                "buildingNumber": "123",
+                                "thoroughfareName": "Test Street",
+                                "postTown": "Test",
+                                "match": 0.9
+                            }
+                        }
+                    ]
+                }
+                """
+                    )
+                )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val addressCaptor = argumentCaptor<PersonAddress>()
+        verify(addressRepository).save(addressCaptor.capture())
+
+        val savedAddress = addressCaptor.firstValue
+        assertThat(savedAddress.notes, Matchers.containsString("123 Test Street, Test, AB1 2CD"))
+        assertThat(savedAddress.postcode, Matchers.containsString("AB1 2CD"))
+        assertThat(savedAddress.streetName, Matchers.containsString("Test Street"))
+        assertThat(savedAddress.addressNumber, Matchers.containsString("123"))
+        assertThat(savedAddress.town, Matchers.containsString("Test"))
     }
 
     private fun thenNoRecordsAreInserted() {
