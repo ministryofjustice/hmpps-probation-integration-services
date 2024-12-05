@@ -62,9 +62,8 @@ integrations:
 
 os-places:
   api:
-    url: https://api.os.uk
-    key: test-key
-
+    url: http://localhost:${wiremock.port}/address-lookup
+    key: key
 
 oauth2:
   client-id: common-platform-and-delius

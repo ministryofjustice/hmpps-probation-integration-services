@@ -287,6 +287,17 @@ internal class IntegrationTest {
             assertThat(it.telephoneNumber, Matchers.equalTo("01234567890"))
         })
 
+        verify(addressRepository).save(check<PersonAddress> {
+            assertThat(it.start, Matchers.equalTo(LocalDate.now()))
+            assertNull(it.endDate)
+            assertNotNull(it.notes)
+            assertThat(it.softDeleted, Matchers.equalTo(false))
+            assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
+            assertThat(it.noFixedAbode, Matchers.equalTo(false))
+            assertThat(it.type.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code))
+            assertThat(it.typeVerified, Matchers.equalTo(false))
+        })
+
         val topic = hmppsChannelManager.getChannel(topicName)
         val messages = topic.pollFor(2)
         val messageTypes = messages.mapNotNull { it.eventType }
@@ -332,9 +343,8 @@ internal class IntegrationTest {
         }
     }
 
-
     @Test
-    fun `court hearing address inserted no address lookup api result is found`() {
+    fun `court hearing address is inserted when no address lookup is found`() {
         wireMockServer.stubFor(
             get(urlPathEqualTo("/address-lookup/search/places/v1/find"))
                 .willReturn(
@@ -351,12 +361,18 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val addressCaptor = argumentCaptor<PersonAddress>()
-        verify(addressRepository).save(addressCaptor.capture())
-
-        val savedAddress = addressCaptor.firstValue
-        assertThat(savedAddress.notes, Matchers.containsString("Example Address Line 1"))
-        assertThat(savedAddress.postcode, Matchers.containsString("AA1 1AA"))
+        verify(addressRepository).save(check<PersonAddress> {
+            assertThat(it.start, Matchers.equalTo(LocalDate.now()))
+            assertThat(it.notes, Matchers.containsString("Example Address Line 1"))
+            assertThat(it.postcode, Matchers.containsString("AA1 1AA"))
+            assertNull(it.endDate)
+            assertNotNull(it.notes)
+            assertThat(it.softDeleted, Matchers.equalTo(false))
+            assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
+            assertThat(it.noFixedAbode, Matchers.equalTo(false))
+            assertThat(it.type.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code))
+            assertThat(it.typeVerified, Matchers.equalTo(false))
+        })
     }
 
     @Test
@@ -389,15 +405,21 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val addressCaptor = argumentCaptor<PersonAddress>()
-        verify(addressRepository).save(addressCaptor.capture())
-
-        val savedAddress = addressCaptor.firstValue
-        assertThat(savedAddress.notes, Matchers.containsString("123 Test Street, Test, AB1 2CD"))
-        assertThat(savedAddress.postcode, Matchers.containsString("AB1 2CD"))
-        assertThat(savedAddress.streetName, Matchers.containsString("Test Street"))
-        assertThat(savedAddress.addressNumber, Matchers.containsString("123"))
-        assertThat(savedAddress.town, Matchers.containsString("Test"))
+        verify(addressRepository).save(check<PersonAddress> {
+            assertThat(it.start, Matchers.equalTo(LocalDate.now()))
+            assertThat(it.notes, Matchers.containsString("123 Test Street, Test, AB1 2CD"))
+            assertThat(it.postcode, Matchers.containsString("AB1 2CD"))
+            assertThat(it.streetName, Matchers.containsString("Test Street"))
+            assertThat(it.addressNumber, Matchers.containsString("123"))
+            assertThat(it.town, Matchers.containsString("Test"))
+            assertNull(it.endDate)
+            assertNotNull(it.notes)
+            assertThat(it.softDeleted, Matchers.equalTo(false))
+            assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
+            assertThat(it.noFixedAbode, Matchers.equalTo(false))
+            assertThat(it.type.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code))
+            assertThat(it.typeVerified, Matchers.equalTo(false))
+        })
     }
 
     private fun thenNoRecordsAreInserted() {
