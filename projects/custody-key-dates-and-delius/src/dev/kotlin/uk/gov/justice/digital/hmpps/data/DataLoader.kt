@@ -15,8 +15,10 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateOrd
 import uk.gov.justice.digital.hmpps.data.repository.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -53,7 +55,7 @@ class DataLoader(
             )
         )
         referenceDataRepository.save(ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS)
-        referenceDataRepository.saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values)
+        val keyDateTypes = referenceDataRepository.saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values)
         contactTypeRepository.save(ContactTypeGenerator.EDSS)
         disposalTypeRepository.save(SentenceGenerator.DEFAULT_DISPOSAL_TYPE)
 
@@ -74,32 +76,32 @@ class DataLoader(
             listOf(
                 KeyDateGenerator.generate(
                     DEFAULT_CUSTODY,
-                    ReferenceDataGenerator.KEY_DATE_TYPES["PED"]!!,
+                    keyDateTypes[2], //PED
                     LocalDate.parse("2022-10-26"),
                     false
                 ),
                 KeyDateGenerator.generate(
                     DEFAULT_CUSTODY,
-                    ReferenceDataGenerator.KEY_DATE_TYPES["LED"]!!,
+                    keyDateTypes[0], //LED
                     LocalDate.parse("2024-09-10"),
                     false
                 ),
                 KeyDateGenerator.generate(
                     DEFAULT_CUSTODY,
-                    ReferenceDataGenerator.KEY_DATE_TYPES["SED"]!!,
+                    keyDateTypes[3], //["SED"]!!,
                     LocalDate.parse("2024-08-10"),
                     false
                 )
             )
         )
-        createPersonWithKeyDates(PersonGenerator.DEFAULT, "58340A")
+        createPersonWithKeyDates(PersonGenerator.DEFAULT, "58340A", keyDateTypes)
 
-        createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES, "38340A")
+        createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES, "38340A", keyDateTypes)
 
-        createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN, "48340A")
+        createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN, "48340A", keyDateTypes)
     }
 
-    private fun createPersonWithKeyDates(personRef: Person, bookingRef: String): Custody {
+    private fun createPersonWithKeyDates(personRef: Person, bookingRef: String, keyDateTypes: List<ReferenceData>): Custody {
         val person = personRepository.save(personRef)
         val event = eventRepository.save(generateEvent(person, "1"))
         orderManagerRepository.save(generateOrderManager(event))
@@ -112,11 +114,11 @@ class DataLoader(
             )
         )
         keyDateRepository.saveAll(
-            ReferenceDataGenerator.KEY_DATE_TYPES.values.map {
-                if (it.code == "LED") {
-                    KeyDateGenerator.generate(custody, it, LocalDate.parse("2025-09-11"), true)
+            keyDateTypes.map { referenceData ->
+                if (referenceData.code == "LED") {
+                    KeyDate(custody, referenceData, LocalDate.parse("2025-09-11")).also { it.softDeleted = true }
                 } else {
-                    KeyDateGenerator.generate(custody, it, LocalDate.parse("2025-12-11"), false)
+                    KeyDate(custody, referenceData, LocalDate.parse("2025-12-11")).also { it.softDeleted = false }
                 }
             }
         )

@@ -94,7 +94,7 @@ class CustodyDateUpdateService(
             existing.changeDate(date)
         } else {
             val kdt = referenceDataRepository.findKeyDateType(code)
-            KeyDate(null, this, kdt, date)
+            KeyDate( this, kdt, date)
         }
     }
 

@@ -15,11 +15,6 @@ import java.time.LocalDate
 )
 class KeyDate(
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "key_date_id_seq")
-    @Column(name = "key_date_id")
-    val id: Long?,
-
     @ManyToOne
     @JoinColumn(name = "custody_id")
     val custody: Custody? = null,
@@ -29,14 +24,18 @@ class KeyDate(
     val type: ReferenceData,
 
     @Column(name = "key_date")
-    val date: LocalDate
+    val date: LocalDate,
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "key_date_id_seq")
+    @Column(name = "key_date_id")
+    val id: Long = 0,
 ) : BaseEntity() {
     fun changeDate(date: LocalDate): KeyDate? = if (this.date == date && !this.softDeleted) {
         null
     } else {
         // create new entity to allow dry run to not make changes
-        KeyDate(id, custody, type, date).also {
+        KeyDate(custody, type, date, id).also {
             it.createdDateTime = createdDateTime
             it.createdUserId = createdUserId
             it.version = version
