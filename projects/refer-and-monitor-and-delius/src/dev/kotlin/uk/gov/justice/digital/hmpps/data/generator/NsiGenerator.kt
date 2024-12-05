@@ -69,8 +69,7 @@ object NsiGenerator {
         providerId: Long = ProviderGenerator.INTENDED_PROVIDER.id,
         notes: String? = null,
         active: Boolean = true,
-        softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        softDeleted: Boolean = false
     ) = Nsi(
         person,
         type,
@@ -84,8 +83,7 @@ object NsiGenerator {
         rarCount = rarCount,
         notes = notes,
         active = active,
-        softDeleted = softDeleted,
-        id = id
+        softDeleted = softDeleted
     )
 
     fun generateType(code: String, id: Long = IdGenerator.getAndIncrement()) = NsiType(code, id)

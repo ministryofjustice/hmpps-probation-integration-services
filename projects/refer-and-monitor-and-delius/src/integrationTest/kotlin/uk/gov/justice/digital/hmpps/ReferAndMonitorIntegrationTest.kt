@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
@@ -64,6 +65,9 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Autowired
     lateinit var eventRepository: EventRepository
+
+    @Autowired
+    lateinit var nsiManagerRepository: NsiManagerRepository
 
     @Test
     @Order(1)
@@ -268,8 +272,7 @@ internal class ReferAndMonitorIntegrationTest {
                 date = LocalDate.now().plusDays(7),
                 startTime = ZonedDateTime.now().plusDays(7),
                 nsi = nsi,
-                person = nsi.person,
-                id = 0
+                person = nsi.person
             )
         )
 
@@ -365,6 +368,11 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Test
     fun `failure to find appointment is rejected with reason`() {
+        NsiGenerator.FUZZY_SEARCH = nsiRepository.save(NsiGenerator.FUZZY_SEARCH)
+        nsiManagerRepository.save(NsiGenerator.generateManager(NsiGenerator.FUZZY_SEARCH))
+
+        NsiGenerator.TERMINATED = nsiRepository.save(NsiGenerator.TERMINATED)
+
         val notification = prepNotification(
             notification("session-appointment-feedback-submitted-not-found"),
             wireMockServer.port()

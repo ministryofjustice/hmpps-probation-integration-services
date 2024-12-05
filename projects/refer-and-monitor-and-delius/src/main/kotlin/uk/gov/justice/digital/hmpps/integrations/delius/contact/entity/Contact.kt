@@ -126,7 +126,6 @@ class Contact(
         private set
 
     @Column(name = "hours_credited", columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
     var hoursCredited: Double? = null
         private set
 
