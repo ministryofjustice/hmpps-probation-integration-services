@@ -21,16 +21,6 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "prison_offender_manager")
 class PrisonManager(
-    @Id
-    @SequenceGenerator(
-        name = "prison_manager_id_generator",
-        sequenceName = "prison_offender_manager_id_seq",
-        allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
-    @Column(name = "prison_offender_manager_id", nullable = false)
-    val id: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
@@ -82,7 +72,17 @@ class PrisonManager(
 
     @LastModifiedDate
     @Column(nullable = false)
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Id
+    @SequenceGenerator(
+        name = "prison_manager_id_generator",
+        sequenceName = "prison_offender_manager_id_seq",
+        allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
+    @Column(name = "prison_offender_manager_id", nullable = false)
+    val id: Long = 0,
 )
 
 interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
