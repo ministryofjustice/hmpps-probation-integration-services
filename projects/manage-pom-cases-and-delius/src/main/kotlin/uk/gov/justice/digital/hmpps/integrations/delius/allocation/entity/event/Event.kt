@@ -18,10 +18,12 @@ class Event(
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 
-    @Column(name = "active_flag")
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
-    @Column(name = "soft_deleted")
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -39,10 +41,12 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: Event,
 
-    @Column(name = "active_flag")
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
-    @Column(name = "soft_deleted")
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id

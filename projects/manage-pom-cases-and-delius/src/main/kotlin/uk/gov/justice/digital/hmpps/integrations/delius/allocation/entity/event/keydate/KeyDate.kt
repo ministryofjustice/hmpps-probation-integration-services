@@ -34,7 +34,7 @@ class KeyDate(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "key_date_id_seq")
     @Column(name = "key_date_id")
-    val id: Long?
+    val id: Long = 0
 ) {
     val partitionAreaId = 0
 

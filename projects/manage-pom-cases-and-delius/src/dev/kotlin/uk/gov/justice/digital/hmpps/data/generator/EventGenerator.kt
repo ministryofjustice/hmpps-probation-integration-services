@@ -34,6 +34,5 @@ object EventGenerator {
         custody: Custody,
         type: ReferenceData,
         date: LocalDate,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = KeyDate(custody.id, type, date, id)
+    ) = KeyDate(custody.id, type, date)
 }
