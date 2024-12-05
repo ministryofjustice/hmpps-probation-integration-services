@@ -15,12 +15,6 @@ import java.time.ZonedDateTime
 @Table(name = "staff")
 class Staff(
 
-    @Id
-    @Column(name = "staff_id")
-    @SequenceGenerator(name = "staff_id_seq", sequenceName = "staff_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_id_seq")
-    val id: Long = 0,
-
     @Column(name = "forename")
     val forename: String,
 
@@ -58,5 +52,11 @@ class Staff(
 
     @Version
     @Column(name = "row_version")
-    var version: Long = 0
+    var version: Long = 0,
+
+    @Id
+    @Column(name = "staff_id")
+    @SequenceGenerator(name = "staff_id_seq", sequenceName = "staff_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_id_seq")
+    val id: Long = 0,
 )

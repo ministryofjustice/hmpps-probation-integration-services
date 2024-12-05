@@ -14,11 +14,6 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "contact")
 data class CaseNote(
-    @Id
-    @Column(name = "contact_id", updatable = false)
-    @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long = 0,
 
     @Column(updatable = false)
     val offenderId: Long,
@@ -94,7 +89,13 @@ data class CaseNote(
 
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    var softDeleted: Boolean = false
+    var softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "contact_id", updatable = false)
+    @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
+    val id: Long = 0,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
