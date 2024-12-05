@@ -7,13 +7,11 @@ object StaffMemberGenerator {
 
     fun generate(
         staffCode: String = "N54A001",
-        staffIdentifier: Long = 1501234567,
         forenames: String = "John",
         surname: String = "Smith",
         username: String? = null
     ) = StaffMember(
         staffCode = staffCode,
-        staffIdentifier = staffIdentifier,
         forenames = forenames,
         surname = surname,
         username = username
