@@ -1,9 +1,12 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.integrations.client.OsClient
+import uk.gov.justice.digital.hmpps.integrations.client.OsPlacesResponse
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -24,7 +27,10 @@ class PersonService(
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val personAddressRepository: PersonAddressRepository
+    private val personAddressRepository: PersonAddressRepository,
+    private val osClient: OsClient,
+    @Value("\${os-places.api.key}") private val apiKey: String
+
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -75,8 +81,35 @@ class PersonService(
 
             val savedEquality = equalityRepository.save(equality)
 
-            val savedAddress =
-                defendant.personDefendant.personDetails.address.takeIf { it.containsInformation() }?.let {
+            val addressInfo = defendant.personDefendant.personDetails.address
+            val osPlacesResponse = addressInfo?.takeIf { it.containsInformation() && !it.postcode.isNullOrBlank() }
+                ?.let { findAddressByFreeText(it) }
+
+            val deliveryPointAddress = osPlacesResponse?.results?.firstOrNull()?.dpa
+            val isValidMatch = deliveryPointAddress?.match?.let { it >= 0.6 } ?: false
+
+            val savedAddress = if (deliveryPointAddress != null && isValidMatch) {
+                insertAddress(
+                    PersonAddress(
+                        id = null,
+                        start = LocalDate.now(),
+                        status = referenceDataRepository.mainAddressStatus(),
+                        person = savedPerson,
+                        type = referenceDataRepository.awaitingAssessmentAddressType(),
+                        postcode = deliveryPointAddress.postcode,
+                        notes = deliveryPointAddress.address,
+                        buildingName = listOfNotNull(
+                            deliveryPointAddress.subBuildingName,
+                            deliveryPointAddress.buildingName
+                        ).joinToString(" "),
+                        addressNumber = deliveryPointAddress.buildingNumber?.toString(),
+                        streetName = deliveryPointAddress.thoroughfareName,
+                        town = deliveryPointAddress.postTown,
+                        district = deliveryPointAddress.localCustodianCodeDescription
+                    )
+                )
+            } else {
+                addressInfo?.takeIf { it.containsInformation() }?.let {
                     insertAddress(
                         PersonAddress(
                             id = null,
@@ -89,6 +122,8 @@ class PersonService(
                         )
                     )
                 }
+            }
+
             audit["offenderId"] = savedPerson.id
             InsertPersonResult(savedPerson, savedManager, savedEquality, savedAddress)
         }
@@ -146,5 +181,21 @@ class PersonService(
             "Address4: ${this.address4 ?: "N/A"}",
             "Postcode: ${this.postcode ?: "N/A"}"
         ).joinToString("\n")
+    }
+
+    fun findAddressByFreeText(address: Address): OsPlacesResponse {
+        val freeText = address.toFreeText()
+        return osClient.searchByFreeText(query = freeText, maxResults = 1, key = apiKey)
+    }
+
+    fun Address.toFreeText(): String {
+        return listOfNotNull(
+            this.address1?.trim(),
+            this.address2?.trim(),
+            this.address3?.trim(),
+            this.address4?.trim(),
+            this.address5?.trim(),
+            this.postcode?.trim()
+        ).joinToString(", ")
     }
 }
