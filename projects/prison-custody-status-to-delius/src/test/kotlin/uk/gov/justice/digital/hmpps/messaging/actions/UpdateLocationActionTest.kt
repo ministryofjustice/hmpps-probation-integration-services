@@ -5,7 +5,6 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.instanceOf
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -20,7 +19,6 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
@@ -65,10 +63,7 @@ internal class UpdateLocationActionTest {
     @ParameterizedTest
     @MethodSource("noChangeMovements")
     fun `no changes made when location is correct`(custody: Custody, prisonerMovement: PrisonerMovement) {
-        if (prisonerMovement.type == RELEASED && prisonerMovement.reason.isBlank()) {
-            whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
-                .thenReturn(InstitutionGenerator.DEFAULT)
-        } else if (prisonerMovement.isAbsconded()) {
+        if (prisonerMovement.isAbsconded()) {
             whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
                 .thenReturn(InstitutionGenerator.DEFAULT)
             whenever(institutionRepository.findByCode(InstitutionCode.UNLAWFULLY_AT_LARGE.code))
