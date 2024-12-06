@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -31,6 +32,9 @@ class AllocationDemandIntegrationTest {
 
     @MockitoBean
     lateinit var allocationDemandRepository: AllocationDemandRepository
+
+    @Autowired
+    lateinit var contactRepository: ContactRepository
 
     @Test
     fun `get allocation demand unauthorised`() {
@@ -122,6 +126,7 @@ class AllocationDemandIntegrationTest {
 
     @Test
     fun `allocation demand allocation staff endpoint`() {
+        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT_CASE_VIEW)
         val person = PersonGenerator.CASE_VIEW
         val event = EventGenerator.CASE_VIEW
         val staff = StaffGenerator.DEFAULT

@@ -11,7 +11,6 @@ object RequirementManagerGenerator : ManagerGenerator {
     var NEW = generate(requirementId = RequirementGenerator.NEW.id)
     var HISTORIC = generate(requirementId = RequirementGenerator.HISTORIC.id)
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
         requirementId: Long = RequirementGenerator.DEFAULT.id,
         transferReasonId: Long = TransferReasonGenerator.COMPONENT.id,
         provider: Provider = ProviderGenerator.DEFAULT,
@@ -24,7 +23,6 @@ object RequirementManagerGenerator : ManagerGenerator {
         lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
         version: Long = 0
     ) = RequirementManager(
-        id,
         requirementId,
         transferReasonId
     ).build(
