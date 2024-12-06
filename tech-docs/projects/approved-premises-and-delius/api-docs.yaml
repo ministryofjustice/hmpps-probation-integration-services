@@ -519,7 +519,6 @@ components:
       - code
       - name
       - probationArea
-      - staffIdentifier
       - teams
       type: object
       properties:
@@ -527,9 +526,6 @@ components:
           type: string
         telephoneNumber:
           type: string
-        staffIdentifier:
-          type: integer
-          format: int64
         teams:
           type: array
           items:
