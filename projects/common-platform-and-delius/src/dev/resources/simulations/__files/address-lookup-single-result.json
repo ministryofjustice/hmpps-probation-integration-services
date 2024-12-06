@@ -1,0 +1,15 @@
+{
+  "header": { "totalresults": 1 },
+  "results": [
+    {
+      "DPA": {
+        "ADDRESS": "123 Test Street, Test, AB1 2CD",
+        "POSTCODE": "AB1 2CD",
+        "BUILDING_NUMBER": "123",
+        "THOROUGHFARE_NAME": "Test Street",
+        "POST_TOWN": "Test",
+        "MATCH": 0.9
+      }
+    }
+  ]
+}

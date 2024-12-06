@@ -97,16 +97,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a message with no prosecution cases is found no insert is performed`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_CASES)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
@@ -114,16 +104,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a message without a judicial result of remanded in custody is found`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_REMAND)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
@@ -131,16 +111,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a person under 10 years old is found no insert is performed`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_DOB_ERROR)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
@@ -148,16 +118,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a probation search match is not detected then a person is inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -181,16 +141,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a hearing message with missing required fields is detected no records are inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
@@ -198,16 +148,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a hearing with an address is received then an address record is inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -236,16 +176,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a hearing with an empty address is received then an address record is not inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_BLANK_ADDRESS)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -265,16 +195,6 @@ internal class IntegrationTest {
     @Order(1)
     @Test
     fun `engagement created and address created sns messages are published on insert person`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -377,31 +297,6 @@ internal class IntegrationTest {
 
     @Test
     fun `Address lookup api is inserted when result is found`() {
-        wireMockServer.stubFor(
-            get(urlPathEqualTo("/address-lookup/search/places/v1/find"))
-                .willReturn(
-                    okJson(
-                        """
-                {
-                    "header": { "totalresults": 1 },
-                    "results": [
-                        {
-                            "DPA": {
-                                "address": "123 Test Street, Test, AB1 2CD",
-                                "postcode": "AB1 2CD",
-                                "buildingNumber": "123",
-                                "thoroughfareName": "Test Street",
-                                "postTown": "Test",
-                                "match": 0.9
-                            }
-                        }
-                    ]
-                }
-                """
-                    )
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -428,5 +323,10 @@ internal class IntegrationTest {
         verify(personRepository, never()).save(any())
         verify(auditedInteractionService, Mockito.never())
             .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
+    }
+
+    @AfterEach
+    fun resetWireMock() {
+        wireMockServer.resetAll()
     }
 }
