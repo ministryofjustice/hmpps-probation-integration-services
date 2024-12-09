@@ -283,10 +283,12 @@ internal class IntegrationTest {
 
         verify(addressRepository).save(check<PersonAddress> {
             assertThat(it.start, Matchers.equalTo(LocalDate.now()))
-            assertThat(it.notes, Matchers.containsString("Example Address Line 1"))
+            assertThat(it.streetName, Matchers.containsString("Example Address Line 1"))
+            assertThat(it.district, Matchers.containsString("Example Address Line 2"))
+            assertThat(it.town, Matchers.containsString("Example Address Line 3"))
             assertThat(it.postcode, Matchers.containsString("AA1 1AA"))
             assertNull(it.endDate)
-            assertNotNull(it.notes)
+            assertNull(it.notes)
             assertThat(it.softDeleted, Matchers.equalTo(false))
             assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
             assertThat(it.noFixedAbode, Matchers.equalTo(false))
@@ -302,7 +304,7 @@ internal class IntegrationTest {
 
         verify(addressRepository).save(check<PersonAddress> {
             assertThat(it.start, Matchers.equalTo(LocalDate.now()))
-            assertThat(it.notes, Matchers.containsString("123 Test Street, Test, AB1 2CD"))
+            assertThat(it.notes, Matchers.containsString("UPRN: 123456789012"))
             assertThat(it.postcode, Matchers.containsString("AB1 2CD"))
             assertThat(it.streetName, Matchers.containsString("Test Street"))
             assertThat(it.addressNumber, Matchers.containsString("123"))

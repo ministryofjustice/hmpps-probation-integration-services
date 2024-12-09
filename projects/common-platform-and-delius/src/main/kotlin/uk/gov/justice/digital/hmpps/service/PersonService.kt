@@ -93,7 +93,7 @@ class PersonService(
                         person = savedPerson,
                         type = referenceDataRepository.awaitingAssessmentAddressType(),
                         postcode = deliveryPointAddress.postcode,
-                        notes = "Address record automatically created by common-platform-delius-service with the following information:\n${deliveryPointAddress.address}",
+                        notes = "UPRN: ${deliveryPointAddress.uprn}",
                         buildingName = listOfNotNull(
                             deliveryPointAddress.subBuildingName,
                             deliveryPointAddress.buildingName
@@ -112,9 +112,12 @@ class PersonService(
                             start = LocalDate.now(),
                             status = referenceDataRepository.mainAddressStatus(),
                             person = savedPerson,
-                            notes = it.buildNotes(),
                             postcode = it.postcode,
-                            type = referenceDataRepository.awaitingAssessmentAddressType()
+                            type = referenceDataRepository.awaitingAssessmentAddressType(),
+                            streetName = it.address1,
+                            district = it.address2,
+                            town = it.address3,
+                            county = listOfNotNull(it.address4, it.address5).joinToString(", ")
                         )
                     )
                 }
@@ -166,17 +169,6 @@ class PersonService(
             this.address1, this.address2, this.address3,
             this.address4, this.address5, this.postcode
         ).any { !it.isNullOrBlank() }
-    }
-
-    fun Address.buildNotes(): String {
-        return listOf(
-            "Address record automatically created by common-platform-delius-service with the following information:",
-            "Address1: ${this.address1 ?: "N/A"}",
-            "Address2: ${this.address2 ?: "N/A"}",
-            "Address3: ${this.address3 ?: "N/A"}",
-            "Address4: ${this.address4 ?: "N/A"}",
-            "Postcode: ${this.postcode ?: "N/A"}"
-        ).joinToString("\n")
     }
 
     fun findAddressByFreeText(address: Address): OsPlacesResponse {
