@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -28,9 +27,7 @@ class PersonService(
     private val staffRepository: StaffRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val personAddressRepository: PersonAddressRepository,
-    private val osClient: OsClient,
-    @Value("\${os-places.api.key}") private val apiKey: String
-
+    private val osClient: OsClient
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -86,9 +83,8 @@ class PersonService(
                 ?.let { findAddressByFreeText(it) }
 
             val deliveryPointAddress = osPlacesResponse?.results?.firstOrNull()?.dpa
-            val isValidMatch = deliveryPointAddress?.match?.let { it >= 0.6 } ?: false
 
-            val savedAddress = if (deliveryPointAddress != null && isValidMatch) {
+            val savedAddress = if (deliveryPointAddress != null) {
                 insertAddress(
                     PersonAddress(
                         id = null,
@@ -185,7 +181,7 @@ class PersonService(
 
     fun findAddressByFreeText(address: Address): OsPlacesResponse {
         val freeText = address.toFreeText()
-        return osClient.searchByFreeText(query = freeText, maxResults = 1, key = apiKey)
+        return osClient.searchByFreeText(query = freeText, maxResults = 1, minMatch = 0.6)
     }
 
     fun Address.toFreeText(): String {

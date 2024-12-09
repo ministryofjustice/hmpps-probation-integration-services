@@ -9,7 +9,7 @@ interface OsClient {
     fun searchByFreeText(
         @RequestParam query: String,
         @RequestParam maxResults: Int,
-        @RequestParam key: String
+        @RequestParam minMatch: Double,
     ): OsPlacesResponse
 }
 
@@ -42,11 +42,11 @@ class DpaWrapper {
 
 data class Dpa(
     @JsonProperty("UPRN")
-    val uprn: String?,
+    val uprn: Long,
     @JsonProperty("UDPRN")
-    val udprn: String?,
+    val udprn: Long,
     @JsonProperty("ADDRESS")
-    val address: String?,
+    val address: String,
     @JsonProperty("PO_BOX_NUMBER")
     val poBoxNumber: String?,
     @JsonProperty("ORGANISATION_NAME")
@@ -68,63 +68,65 @@ data class Dpa(
     @JsonProperty("DEPENDENT_LOCALITY")
     val dependentLocality: String?,
     @JsonProperty("POST_TOWN")
-    val postTown: String?,
+    val postTown: String,
     @JsonProperty("POSTCODE")
-    val postcode: String?,
+    val postcode: String,
     @JsonProperty("RPC")
-    val rpc: String?,
+    val rpc: String,
     @JsonProperty("X_COORDINATE")
-    val xCoordinate: Double?,
+    val xCoordinate: Double,
     @JsonProperty("Y_COORDINATE")
-    val yCoordinate: Double?,
+    val yCoordinate: Double,
     @JsonProperty("LNG")
     val lng: Double?,
     @JsonProperty("LAT")
     val lat: Double?,
     @JsonProperty("STATUS")
-    val status: String?,
+    val status: String,
     @JsonProperty("MATCH")
     val match: Float?,
     @JsonProperty("MATCH_DESCRIPTION")
     val matchDescription: String?,
     @JsonProperty("LANGUAGE")
-    val language: String?,
+    val language: String,
     @JsonProperty("COUNTRY_CODE")
-    val countryCode: String?,
+    val countryCode: String,
     @JsonProperty("COUNTRY_CODE_DESCRIPTION")
-    val countryCodeDescription: String?,
+    val countryCodeDescription: String,
     @JsonProperty("LOCAL_CUSTODIAN_CODE")
-    val localCustodianCode: Int?,
+    val localCustodianCode: Int,
     @JsonProperty("LOCAL_CUSTODIAN_CODE_DESCRIPTION")
-    val localCustodianCodeDescription: String?,
+    val localCustodianCodeDescription: String,
     @JsonProperty("CLASSIFICATION_CODE")
-    val classificationCode: String?,
+    val classificationCode: String,
     @JsonProperty("CLASSIFICATION_CODE_DESCRIPTION")
-    val classificationCodeDescription: String?,
+    val classificationCodeDescription: String,
     @JsonProperty("POSTAL_ADDRESS_CODE")
-    val postalAddressCode: String?,
+    val postalAddressCode: String,
     @JsonProperty("POSTAL_ADDRESS_CODE_DESCRIPTION")
-    val postalAddressCodeDescription: String?,
+    val postalAddressCodeDescription: String,
+    @JsonProperty("LOGICAL_STATUS_CODE")
+    val logicalStatusCode: Int,
     @JsonProperty("BLPU_STATE_CODE")
-    val blpuStateCode: String?,
+    val blpuStateCode: Int,
     @JsonProperty("BLPU_STATE_CODE_DESCRIPTION")
     val blpuStateCodeDescription: String?,
     @JsonProperty("TOPOGRAPHY_LAYER_TOID")
-    val topographyLayerToid: String?,
+    val topographyLayerToid: String,
     @JsonProperty("PARENT_UPRN")
-    val parentUprn: String?,
+    val parentUprn: Long?,
     @JsonProperty("LAST_UPDATE_DATE")
-    val lastUpdateDate: String?,
+    val lastUpdateDate: String,
     @JsonProperty("ENTRY_DATE")
-    val entryDate: String?,
+    val entryDate: String,
     @JsonProperty("LEGAL_NAME")
     val legalName: String?,
     @JsonProperty("BLPU_STATE_DATE")
     val blpuStateDate: String?,
     @JsonProperty("DELIVERY_POINT_SUFFIX")
-    val deliveryPointSuffix: String?,
+    val deliveryPointSuffix: String,
     @JsonProperty("PARISH_CODE")
-    val parishCode: String?,
+    val parishCode: String,
     @JsonProperty("WARD_CODE")
-    val wardCode: String?
+    val wardCode: String
 )

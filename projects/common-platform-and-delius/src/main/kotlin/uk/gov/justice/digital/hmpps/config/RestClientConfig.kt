@@ -31,8 +31,7 @@ class RestClientConfig(private val oauth2Client: RestClient) {
             .requestInterceptor(RetryInterceptor())
             .requestInterceptor { request, body, execution ->
                 execution.execute(object : HttpRequestWrapper(request) {
-                    override fun getURI() = request.uri
-                        .let { UriComponentsBuilder.fromUri(it).queryParam("key", apiKey).build(true).toUri() }
+                    override fun getURI() = UriComponentsBuilder.fromUri(request.uri).queryParam("key", apiKey).build(true).toUri()
                 }, body)
             }
             .baseUrl(baseUrl)
