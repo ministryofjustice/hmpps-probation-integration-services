@@ -67,13 +67,15 @@ sealed interface PrisonerMovement {
 }
 
 fun PrisonerMovement.releaseDateValid(custody: Custody): Boolean {
-    return !occurredAt.isBefore(custody.disposal.date) &&
-        !(custody.mostRecentRelease()?.recall?.date?.let { occurredAt.isBefore(it) } ?: false)
+    val release = custody.mostRecentRelease()
+    val recallDate = release?.recall?.date
+    return occurredAt >= custody.disposal.date && (release == null || (recallDate != null && occurredAt >= recallDate))
 }
 
-fun PrisonerMovement.receivedDateValid(custody: Custody): Boolean =
-    !occurredAt.isAfter(ZonedDateTime.now()) && (custody.mostRecentRelease()?.date?.let { !occurredAt.isBefore(it) }
-        ?: true)
+fun PrisonerMovement.receivedDateValid(custody: Custody): Boolean {
+    val releaseDate = custody.mostRecentRelease()?.date
+    return occurredAt <= ZonedDateTime.now() && (releaseDate == null || occurredAt >= releaseDate)
+}
 
 fun PrisonerMovement.statusDateValid(custody: Custody): Boolean =
     occurredAt <= ZonedDateTime.now() && occurredAt.toLocalDate() >= custody.statusChangeDate

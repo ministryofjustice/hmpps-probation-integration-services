@@ -29,7 +29,7 @@ prisoner.movement.configs:
       # Unlawfully at large
       - UAL
       - UAL_ECL
-      # IRC
+      # Immigration removal centre
       - DD
       - DE
       - DL
