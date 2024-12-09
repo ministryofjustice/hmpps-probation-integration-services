@@ -34,7 +34,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
 
       - name: Publish HTML report
-        uses: JamesIves/github-pages-deploy-action@62fec3add6773ec5dbbf18d2ee4260911aa35cf4 # v4.6.9
+        uses: JamesIves/github-pages-deploy-action@15de0f09300eea763baee31dff6c6184995c5f6a # v4.7.2
         with:
           folder: schema-spy-report
           target-folder: schema-spy-report
