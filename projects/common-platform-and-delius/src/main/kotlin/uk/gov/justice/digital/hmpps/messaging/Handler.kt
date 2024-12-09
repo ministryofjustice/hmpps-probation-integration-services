@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.EventService
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -20,15 +22,19 @@ class Handler(
     private val notifier: Notifier,
     private val telemetryService: TelemetryService,
     private val personService: PersonService,
-    private val probationSearchClient: ProbationSearchClient
+    private val eventService: EventService,
+    private val probationSearchClient: ProbationSearchClient,
+    private val courtAppearanceRepository: CourtAppearanceRepository
 ) : NotificationHandler<CommonPlatformHearing> {
 
     @Publish(messages = [Message(title = "COMMON_PLATFORM_HEARING", payload = Schema(CommonPlatformHearing::class))])
     override fun handle(notification: Notification<CommonPlatformHearing>) {
         telemetryService.notificationReceived(notification)
 
-        // Filter hearing message for defendants with a convicted judicial result of Remanded in custody
-        val defendants = notification.message.hearing.prosecutionCases
+        val hearing = notification.message.hearing
+        val courtCode = hearing.courtCentre.code
+
+        val defendants = hearing.prosecutionCases
             .flatMap { it.defendants }
             .filter { defendant ->
                 defendant.offences.any { offence ->
@@ -41,34 +47,79 @@ class Handler(
             return
         }
 
-        val courtCode = notification.message.hearing.courtCentre.code
-
         defendants.forEach { defendant ->
-
             val matchRequest = defendant.toProbationMatchRequest() ?: return@forEach
-
             val matchedPersonResponse = probationSearchClient.match(matchRequest)
-
             if (matchedPersonResponse.matches.isNotEmpty()) {
                 return@forEach
             }
 
-            // Insert each defendant as a person record
-            val savedEntities = personService.insertPerson(defendant, courtCode)
-
-            notifier.caseCreated(savedEntities.person)
-            savedEntities.address?.let { notifier.addressCreated(it) }
+            // Insert each defendant as a person record, send relevant SNS messages
+            val savedPersonEntities = personService.insertPerson(defendant, courtCode)
+            notifier.caseCreated(savedPersonEntities.person)
+            savedPersonEntities.address?.let { notifier.addressCreated(it) }
 
             telemetryService.trackEvent(
                 "PersonCreated", mapOf(
-                    "hearingId" to notification.message.hearing.id,
-                    "CRN" to savedEntities.person.crn,
-                    "personId" to savedEntities.person.id.toString(),
-                    "personManagerId" to savedEntities.personManager.id.toString(),
-                    "equalityId" to savedEntities.equality.id.toString(),
-                    "addressId" to savedEntities.address?.id.toString()
+                    "hearingId" to hearing.id,
+                    "CRN" to savedPersonEntities.person.crn,
+                    "personId" to savedPersonEntities.person.id.toString(),
+                    "personManagerId" to savedPersonEntities.personManager.id.toString(),
+                    "equalityId" to savedPersonEntities.equality.id.toString(),
+                    "addressId" to savedPersonEntities.address?.id.toString()
                 )
             )
+
+            val remandedOffences = defendant.offences.filter { offence ->
+                offence.judicialResults?.any { it.label == "Remanded in custody" } == true
+            }
+
+            val mainOffence = remandedOffences.firstOrNull()
+                ?: return@forEach
+
+            val caseUrn = hearing.prosecutionCases
+                .find { it.defendants.contains(defendant) }
+                ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
+
+            val existingCourtAppearance = courtAppearanceRepository.findLatestByCaseUrn(caseUrn)
+
+            if (existingCourtAppearance != null) {
+                val savedCourtAppearance = eventService.insertCourtAppearance(
+                    existingCourtAppearance.event,
+                    courtCode,
+                    hearing.hearingDays.first().sittingDay,
+                    caseUrn
+                )
+                telemetryService.trackEvent(
+                    "CourtAppearanceCreated", mapOf(
+                        "hearingId" to hearing.id,
+                        "courtAppearanceId" to savedCourtAppearance.id.toString(),
+                        "personId" to savedCourtAppearance.person.id.toString(),
+                        "eventId" to savedCourtAppearance.event.id.toString(),
+                    )
+                )
+            } else {
+                val savedEventEntities = eventService.insertEvent(
+                    mainOffence,
+                    savedPersonEntities.person,
+                    courtCode,
+                    hearing.hearingDays.first().sittingDay,
+                    caseUrn
+                )
+                telemetryService.trackEvent(
+                    "EventCreated", mapOf(
+                        "hearingId" to hearing.id,
+                        "eventId" to savedEventEntities.event.id.toString(),
+                        "eventNumber" to savedEventEntities.event.number,
+                        "CRN" to savedEventEntities.event.person.crn,
+                        "personId" to savedEventEntities.event.person.id.toString(),
+                        "orderManagerId" to savedEventEntities.orderManager.id.toString(),
+                        "mainOffenceId" to savedEventEntities.mainOffence.id.toString(),
+                        "courtAppearanceIds" to savedEventEntities.courtAppearances.joinToString(",") { it.id.toString() },
+                        "contactIds" to savedEventEntities.contacts.joinToString(",") { it.id.toString() }
+                    )
+                )
+            }
         }
     }
 
@@ -93,3 +144,4 @@ class Handler(
         )
     }
 }
+
