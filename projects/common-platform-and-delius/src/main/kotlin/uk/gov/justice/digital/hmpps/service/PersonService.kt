@@ -97,7 +97,7 @@ class PersonService(
                         person = savedPerson,
                         type = referenceDataRepository.awaitingAssessmentAddressType(),
                         postcode = deliveryPointAddress.postcode,
-                        notes = deliveryPointAddress.address,
+                        notes = "Address record automatically created by common-platform-delius-service with the following information:\n${deliveryPointAddress.address}",
                         buildingName = listOfNotNull(
                             deliveryPointAddress.subBuildingName,
                             deliveryPointAddress.buildingName
