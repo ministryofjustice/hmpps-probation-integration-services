@@ -19,20 +19,34 @@ data class OsPlacesResponse(
 )
 
 data class OsPlacesHeader(
+    @JsonProperty("uri")
     val uri: String?,
+    @JsonProperty("query")
     val query: String?,
+    @JsonProperty("offset")
     val offset: Int?,
-    val totalresults: Int?,
+    @JsonProperty("totalresults")
+    val totalResults: Int?,
+    @JsonProperty("format")
     val format: String?,
+    @JsonProperty("dataset")
     val dataset: String?,
+    @JsonProperty("lr")
     val lr: String?,
-    val maxresults: Int?,
-    val matchprecision: Double?,
+    @JsonProperty("maxresults")
+    val maxResults: Int?,
+    @JsonProperty("matchprecision")
+    val matchPrecision: Double?,
+    @JsonProperty("filter")
     val filter: String?,
+    @JsonProperty("srs")
     val srs: String?,
+    @JsonProperty("epoch")
     val epoch: String?,
-    val lastupdate: String?,
-    val output_srs: String?
+    @JsonProperty("lastupdate")
+    val lastUpdate: String?,
+    @JsonProperty("output_srs")
+    val outputSrs: String?
 )
 
 class DpaWrapper {
