@@ -10,13 +10,13 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonAddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.client.*
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Equality
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.EventService
+import uk.gov.justice.digital.hmpps.service.InsertEventResult
 import uk.gov.justice.digital.hmpps.service.InsertPersonResult
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
@@ -33,6 +33,12 @@ internal class HandlerTest {
 
     @Mock
     lateinit var personService: PersonService
+
+    @Mock
+    lateinit var eventService: EventService
+
+    @Mock
+    lateinit var courtAppearanceRepository: CourtAppearanceRepository
 
     @Mock
     lateinit var probationSearchClient: ProbationSearchClient
@@ -57,6 +63,16 @@ internal class HandlerTest {
                 personManager = PersonManagerGenerator.DEFAULT,
                 equality = Equality(id = 1L, personId = 1L, softDeleted = false),
                 address = PersonAddressGenerator.MAIN_ADDRESS,
+            )
+        )
+
+        whenever(eventService.insertEvent(any(), any(), any(), any(), any())).thenReturn(
+            InsertEventResult(
+                EventGenerator.DEFAULT,
+                MainOffenceGenerator.DEFAULT,
+                listOf(CourtAppearanceGenerator.TRIAL_ADJOURNMENT, CourtAppearanceGenerator.TRIAL_ADJOURNMENT),
+                listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
+                OrderManagerGenerator.DEFAULT
             )
         )
 
@@ -103,6 +119,8 @@ internal class HandlerTest {
 
         verify(telemetryService).notificationReceived(notification)
         verify(personService, never()).insertPerson(any(), any())
+        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any())
         verify(notifier, never()).caseCreated(any())
         verify(notifier, never()).addressCreated(any())
     }
@@ -118,5 +136,83 @@ internal class HandlerTest {
         verify(personService, never()).insertPerson(any(), any())
         verify(notifier, never()).caseCreated(any())
         verify(notifier, never()).addressCreated(any())
+    }
+
+    @Test
+    fun `Inserts event when case urn does not exist`() {
+        whenever(courtAppearanceRepository.findLatestByCaseUrn(any())).thenReturn(null)
+
+        whenever(personService.insertPerson(any(), any())).thenReturn(
+            InsertPersonResult(
+                person = PersonGenerator.DEFAULT,
+                personManager = PersonManagerGenerator.DEFAULT,
+                equality = Equality(id = 1L, personId = 1L, softDeleted = false),
+                address = PersonAddressGenerator.MAIN_ADDRESS,
+            )
+        )
+
+        whenever(eventService.insertEvent(any(), any(), any(), any(), any())).thenReturn(
+            InsertEventResult(
+                EventGenerator.DEFAULT,
+                MainOffenceGenerator.DEFAULT,
+                listOf(CourtAppearanceGenerator.TRIAL_ADJOURNMENT, CourtAppearanceGenerator.TRIAL_ADJOURNMENT),
+                listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
+                OrderManagerGenerator.DEFAULT
+            )
+        )
+
+        whenever(probationSearchClient.match(any())).thenReturn(
+            ProbationMatchResponse(
+                matches = emptyList(),
+                matchedBy = "NONE"
+            )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+
+        handler.handle(notification)
+
+        verify(telemetryService).notificationReceived(notification)
+        verify(personService).insertPerson(any(), any())
+        verify(eventService).insertEvent(any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any())
+        verify(notifier).caseCreated(any())
+        verify(notifier).addressCreated(any())
+    }
+
+    @Test
+    fun `Inserts court appearance record when case urn exists`() {
+        whenever(courtAppearanceRepository.findLatestByCaseUrn(any())).thenReturn(CourtAppearanceGenerator.TRIAL_ADJOURNMENT)
+
+        whenever(personService.insertPerson(any(), any())).thenReturn(
+            InsertPersonResult(
+                person = PersonGenerator.DEFAULT,
+                personManager = PersonManagerGenerator.DEFAULT,
+                equality = Equality(id = 1L, personId = 1L, softDeleted = false),
+                address = PersonAddressGenerator.MAIN_ADDRESS,
+            )
+        )
+
+        whenever(eventService.insertCourtAppearance(any(), any(), any(), any())).thenReturn(
+            CourtAppearanceGenerator.TRIAL_ADJOURNMENT
+        )
+
+        whenever(probationSearchClient.match(any())).thenReturn(
+            ProbationMatchResponse(
+                matches = emptyList(),
+                matchedBy = "NONE"
+            )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+
+        handler.handle(notification)
+
+        verify(telemetryService).notificationReceived(notification)
+        verify(personService).insertPerson(any(), any())
+        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any())
+        verify(eventService).insertCourtAppearance(any(), any(), any(), any())
+        verify(notifier).caseCreated(any())
+        verify(notifier).addressCreated(any())
     }
 }

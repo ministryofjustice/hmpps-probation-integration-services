@@ -35,7 +35,7 @@ data class ProsecutionCaseIdentifier(
 
 data class Defendant(
     val id: String,
-    val offences: List<Offence>,
+    val offences: List<HearingOffence>,
     val prosecutionCaseId: String,
     val personDefendant: PersonDefendant?,
     val legalEntityDefendant: Any? = null,
@@ -45,7 +45,7 @@ data class Defendant(
     val isYouth: Boolean? = null
 )
 
-data class Offence(
+data class HearingOffence(
     val id: String,
     val offenceDefinitionId: String? = null,
     val offenceCode: String? = null,
@@ -90,7 +90,7 @@ data class PersonDetails(
     val firstName: String? = null,
     val dateOfBirth: LocalDate? = null,
     val address: Address? = null,
-    val contact: Contact? = null,
+    val contact: ContactDetails? = null,
     val ethnicity: Ethnicity? = null
 )
 
@@ -103,7 +103,7 @@ data class Address(
     val postcode: String? = null
 )
 
-data class Contact(
+data class ContactDetails(
     val home: String? = null,
     val mobile: String? = null,
     val work: String? = null,

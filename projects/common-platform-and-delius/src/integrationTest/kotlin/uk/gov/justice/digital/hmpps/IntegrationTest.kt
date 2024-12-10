@@ -19,14 +19,13 @@ import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.service.EventService
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -61,10 +60,31 @@ internal class IntegrationTest {
     lateinit var personRepository: PersonRepository
 
     @SpyBean
+    lateinit var personManagerRepository: PersonManagerRepository
+
+    @SpyBean
     lateinit var addressRepository: PersonAddressRepository
 
     @SpyBean
+    lateinit var eventRepository: EventRepository
+
+    @SpyBean
+    lateinit var courtAppearanceRepository: CourtAppearanceRepository
+
+    @SpyBean
+    lateinit var contactRepository: ContactRepository
+
+    @SpyBean
+    lateinit var mainOffenceRepository: MainOffenceRepository
+
+    @SpyBean
+    lateinit var orderManagerRepository: OrderManagerRepository
+
+    @SpyBean
     lateinit var personService: PersonService
+
+    @SpyBean
+    lateinit var eventService: EventService
 
     @BeforeEach
     fun setup() {
@@ -333,9 +353,58 @@ internal class IntegrationTest {
 
     private fun thenNoRecordsAreInserted() {
         verify(personService, never()).insertAddress(any())
+        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any())
         verify(addressRepository, never()).save(any())
         verify(personRepository, never()).save(any())
         verify(auditedInteractionService, Mockito.never())
             .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
+    }
+
+    @Test
+    fun `A hearing message with a remanded offence is received and an event is inserted`() {
+        wireMockServer.stubFor(
+            post(urlPathEqualTo("/probation-search/match"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("probation-search-no-results.json")
+                )
+        )
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(eventService).insertEvent(any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any())
+
+        verify(eventRepository).save(check<Event> {
+            assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
+            assertThat(it.person.surname, Matchers.equalTo("Example Last Name"))
+            assertThat(it.referralDate, Matchers.equalTo(LocalDate.of(2024, 1, 1)))
+            assertTrue(it.active)
+            assertThat(it.number, Matchers.equalTo("1"))
+        })
+
+        verify(auditedInteractionService).createAuditedInteraction(
+            eq(BusinessInteractionCode.INSERT_EVENT),
+            any(),
+            eq(AuditedInteraction.Outcome.SUCCESS),
+            any(),
+            anyOrNull()
+        )
+    }
+
+    @AfterEach
+    fun cleanup() {
+        courtAppearanceRepository.deleteAll()
+        mainOffenceRepository.deleteAll()
+        orderManagerRepository.deleteAll()
+        eventRepository.deleteAll()
+        addressRepository.deleteAll()
+        contactRepository.deleteAll()
+        personManagerRepository.deleteAll()
+        personRepository.deleteAll()
     }
 }
