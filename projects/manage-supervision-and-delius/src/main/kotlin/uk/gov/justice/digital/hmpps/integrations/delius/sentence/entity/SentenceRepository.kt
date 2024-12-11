@@ -51,7 +51,7 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
         SELECT om
         FROM OffenderManager om
         WHERE om.person.id = :id 
-        ORDER BY om.endDate NULLS FIRST
+        ORDER BY om.endDate
     """)
     fun findOffenderManagersByPersonOrderByEndDateDesc(id: Long): List<OffenderManager>
 }
