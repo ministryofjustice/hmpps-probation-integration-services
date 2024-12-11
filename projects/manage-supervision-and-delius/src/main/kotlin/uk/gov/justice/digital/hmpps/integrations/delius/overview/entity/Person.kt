@@ -84,9 +84,12 @@ class Person(
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 
-)
+    val exclusionMessage: String? = null,
+    val restrictionMessage: String? = null,
+
+    )
 
 interface PersonSummaryEntity {
     val id: Long
@@ -108,12 +111,12 @@ interface PersonRepository : JpaRepository<Person, Long> {
         select 
         p.offender_id as id, 
         p.first_name as forename, 
-        p.second_name as secondName, 
-        p.third_name as thirdName, 
+        p.second_name as secondname, 
+        p.third_name as thirdname, 
         p.surname, 
         p.crn, 
         p.pnc_number as pnc, 
-        p.date_of_birth_date as dateOfBirth
+        p.date_of_birth_date as dateofbirth
         from offender p 
         where p.crn = :crn and p.soft_deleted = 0  
         """, nativeQuery = true

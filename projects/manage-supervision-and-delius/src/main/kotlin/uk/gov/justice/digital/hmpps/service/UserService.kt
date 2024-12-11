@@ -15,18 +15,21 @@ class UserService(
     private val userRepository: UserRepository,
     private val caseloadRepository: CaseloadRepository,
     private val staffRepository: StaffRepository,
-    private val teamRepository: TeamRepository
+    private val teamRepository: TeamRepository,
+    private val userAccessService: UserAccessService
 ) {
 
     @Transactional
     fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {
         val user = userRepository.getUser(username)
         val caseload = caseloadRepository.findByStaffId(user.staff!!.id, pageable)
+
+        val userAccess = userAccessService.userAccessFor(username, caseload.content.map { it.person.crn })
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
             provider = user.staff.provider.description,
-            caseload = caseload.content.map { it.toStaffCase() },
+            caseload = caseload.content.map { it.toStaffCase(userAccess.access.firstOrNull { ua -> ua.crn == it.person.crn }) },
             staff = Name(forename = user.staff.forename, surname = user.staff.surname),
         )
     }
@@ -51,12 +54,13 @@ class UserService(
                 .map { KeyPair(it.code.trim(), it.description) }
         val contactTypes =
             caseloadRepository.findContactTypesForStaff(user.staff.id).map { KeyPair(it.code.trim(), it.description) }
+        val userAccess = userAccessService.checkLimitedAccessFor(caseload.content.map { it.person.crn })
 
         return StaffCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
             provider = user.staff.provider.description,
-            caseload = caseload.content.map { it.toStaffCase() },
+            caseload = caseload.content.map { it.toStaffCase(userAccess.access.first { ua -> ua.crn == it.person.crn }) },
             staff = Name(forename = user.staff.forename, surname = user.staff.surname),
             metaData = MetaData(sentenceTypes = sentenceTypes, contactTypes = contactTypes),
             sortedBy = sortedBy
@@ -67,7 +71,7 @@ class UserService(
     fun getTeamCaseload(teamCode: String, pageable: Pageable): TeamCaseload {
         val team = teamRepository.getTeam(teamCode)
         val caseload = caseloadRepository.findByTeamCode(team.code, pageable)
-        caseload.content
+
         return TeamCaseload(
             totalElements = caseload.totalElements.toInt(),
             totalPages = caseload.totalPages,
@@ -94,12 +98,13 @@ class UserService(
     }
 }
 
-fun Caseload.toStaffCase() = StaffCase(
+fun Caseload.toStaffCase(caseAccess: CaseAccess? = null) = StaffCase(
+    limitedAccess = caseAccess.isLao(),
     caseName = Name(
         forename = person.forename,
         middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
         surname = person.surname
-    ),
+    ).takeIf { !caseAccess.isLao() },
     crn = person.crn,
     nextAppointment = nextAppointment?.let {
         Appointment(
@@ -107,17 +112,18 @@ fun Caseload.toStaffCase() = StaffCase(
             description = it.type.description,
             date = it.appointmentDatetime
         )
-    },
+    }.takeIf { !caseAccess.isLao() },
     previousAppointment = previousAppointment?.let {
         Appointment(
             id = it.id,
             description = it.type.description,
             date = it.appointmentDatetime
         )
-    },
-    dob = person.dateOfBirth,
-    latestSentence = latestSentence?.disposal?.type?.description,
-    numberOfAdditionalSentences = latestSentence?.let { it.totalNumberOfSentences - 1L } ?: 0L
+    }.takeIf { !caseAccess.isLao() },
+    dob = person.dateOfBirth.takeIf { !caseAccess.isLao() },
+    latestSentence = latestSentence?.disposal?.type?.description.takeIf { !caseAccess.isLao() },
+    numberOfAdditionalSentences = (latestSentence?.let { it.totalNumberOfSentences - 1L }
+        ?: 0L).takeIf { !caseAccess.isLao() },
 )
 
 fun Caseload.toTeamCase() = TeamCase(
@@ -129,3 +135,5 @@ fun Caseload.toTeamCase() = TeamCase(
     crn = person.crn,
     staff = Staff(name = Name(forename = staff.forename, surname = staff.surname), code = staff.code)
 )
+
+fun CaseAccess?.isLao() = this != null && (this.userExcluded || this.userRestricted)

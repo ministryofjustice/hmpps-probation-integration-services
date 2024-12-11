@@ -98,7 +98,6 @@ object EventDetailsGenerator {
     private fun staffMember(staff: Staff, username: String? = null) = StaffMember(
         username = username,
         staffCode = staff.code,
-        staffIdentifier = staff.id,
         forenames = staff.forename,
         surname = staff.surname
     )

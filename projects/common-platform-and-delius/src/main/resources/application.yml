@@ -57,6 +57,11 @@ messaging.consumer.queue: message-queue
 integrations:
   probation-search.url: http://localhost:${wiremock.port}/probation-search
 
+os-places:
+  api:
+    url: http://localhost:${wiremock.port}/address-lookup
+    key: key
+
 oauth2:
   client-id: common-platform-and-delius
   client-secret: common-platform-and-delius

@@ -256,7 +256,7 @@ internal class UserIntegrationTest {
 
         assertThat(res.caseload.size, equalTo(2))
         assertThat(res.caseload[0].crn, equalTo("X000005"))
-        assertThat(res.caseload[0].caseName.surname, equalTo("Bloggs"))
+        assertThat(res.caseload[0].caseName?.surname, equalTo("Bloggs"))
     }
 
     @Test
@@ -273,7 +273,7 @@ internal class UserIntegrationTest {
 
         assertThat(res.caseload.size, equalTo(2))
         assertThat(res.caseload[0].crn, equalTo("X000004"))
-        assertThat(res.caseload[0].caseName.surname, equalTo("Surname"))
+        assertThat(res.caseload[0].caseName?.surname, equalTo("Surname"))
         assertThat(res.metaData?.contactTypes?.size, equalTo(1))
         assertThat(res.metaData?.sentenceTypes?.size, equalTo(1))
     }

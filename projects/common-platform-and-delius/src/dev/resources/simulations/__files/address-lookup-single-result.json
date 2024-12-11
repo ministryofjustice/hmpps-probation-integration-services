@@ -1,0 +1,41 @@
+{
+  "header": {
+    "totalresults": 1
+  },
+  "results": [
+    {
+      "DPA": {
+        "UPRN": 123456789012,
+        "UDPRN": 12345678,
+        "ADDRESS": "123 Test Street, Test, AB1 2CD",
+        "POSTCODE": "AB1 2CD",
+        "BUILDING_NUMBER": 123,
+        "THOROUGHFARE_NAME": "Test Street",
+        "POST_TOWN": "Test",
+        "RPC": "2",
+        "X_COORDINATE": 123456.78,
+        "Y_COORDINATE": 876543.21,
+        "STATUS": "APPROVED",
+        "MATCH": 0.9,
+        "LANGUAGE": "EN",
+        "COUNTRY_CODE": "E",
+        "COUNTRY_CODE_DESCRIPTION": "This record is within England",
+        "LOCAL_CUSTODIAN_CODE": 1760,
+        "LOCAL_CUSTODIAN_CODE_DESCRIPTION": "Test",
+        "CLASSIFICATION_CODE": "CO01GV",
+        "CLASSIFICATION_CODE_DESCRIPTION": "Central Government Service",
+        "POSTAL_ADDRESS_CODE": "D",
+        "POSTAL_ADDRESS_CODE_DESCRIPTION": "A record which is linked to PAF",
+        "LOGICAL_STATUS_CODE": 1,
+        "BLPU_STATE_CODE": 2,
+        "BLPU_STATE_CODE_DESCRIPTION": "In use",
+        "TOPOGRAPHY_LAYER_TOID": "osgb1234567890123456",
+        "LAST_UPDATE_DATE": "2024-01-01",
+        "ENTRY_DATE": "2024-01-01",
+        "DELIVERY_POINT_SUFFIX": "1A",
+        "PARISH_CODE": "E87654321",
+        "WARD_CODE": "E12345678"
+      }
+    }
+  ]
+}

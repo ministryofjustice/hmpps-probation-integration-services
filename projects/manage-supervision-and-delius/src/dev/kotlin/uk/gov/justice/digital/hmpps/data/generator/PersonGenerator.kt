@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LIMITED_ACCESS_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
@@ -23,6 +24,7 @@ import java.time.ZonedDateTime
 
 object PersonGenerator {
 
+    val GENDER_MALE = ReferenceData(IdGenerator.getAndIncrement(), "M", "Male")
     val OVERVIEW = generateOverview("X000004")
     val EVENT_1 = generateEvent(
         OVERVIEW,
@@ -185,9 +187,42 @@ object PersonGenerator {
         PersonDetailsGenerator.PERSONAL_DETAILS.surname
     )
 
+    val CL_EXCLUDED =
+        generateCaseloadPerson(
+            PersonDetailsGenerator.EXCLUSION.id,
+            PersonDetailsGenerator.EXCLUSION.crn,
+            PersonDetailsGenerator.EXCLUSION.forename,
+            PersonDetailsGenerator.EXCLUSION.secondName,
+            PersonDetailsGenerator.EXCLUSION.surname
+        )
+    val CL_RESTRICTED = generateCaseloadPerson(
+        PersonDetailsGenerator.RESTRICTION.id,
+        PersonDetailsGenerator.RESTRICTION.crn,
+        PersonDetailsGenerator.RESTRICTION.forename,
+        PersonDetailsGenerator.RESTRICTION.secondName,
+        PersonDetailsGenerator.RESTRICTION.surname
+    )
+
+    val CL_RESTRICTED_EXCLUDED = generateCaseloadPerson(
+        PersonDetailsGenerator.RESTRICTION_EXCLUSION.id,
+        PersonDetailsGenerator.RESTRICTION_EXCLUSION.crn,
+        PersonDetailsGenerator.RESTRICTION_EXCLUSION.forename,
+        PersonDetailsGenerator.RESTRICTION_EXCLUSION.secondName,
+        PersonDetailsGenerator.RESTRICTION_EXCLUSION.surname
+    )
+
     val CASELOAD_PERSON_1 = generateCaseload(PERSON_1, DEFAULT_STAFF, ContactGenerator.DEFAULT_TEAM)
     val CASELOAD_PERSON_2 = generateCaseload(PERSON_2, ContactGenerator.STAFF_1, ContactGenerator.DEFAULT_TEAM)
     val CASELOAD_PERSON_3 = generateCaseload(PERSON_2, DEFAULT_STAFF, ContactGenerator.DEFAULT_TEAM)
+
+    val CASELOAD_LIMITED_ACCESS_EXCLUSION =
+        generateCaseload(CL_EXCLUDED, LIMITED_ACCESS_STAFF, ContactGenerator.DEFAULT_TEAM)
+    val CASELOAD_LIMITED_ACCESS_RESTRICTION =
+        generateCaseload(CL_RESTRICTED, LIMITED_ACCESS_STAFF, ContactGenerator.DEFAULT_TEAM)
+    val CASELOAD_LIMITED_ACCESS_BOTH =
+        generateCaseload(CL_RESTRICTED_EXCLUDED, LIMITED_ACCESS_STAFF, ContactGenerator.DEFAULT_TEAM)
+    val CASELOAD_LIMITED_ACCESS_NEITHER =
+        generateCaseload(PERSON_2, LIMITED_ACCESS_STAFF, ContactGenerator.DEFAULT_TEAM)
 
     fun generateEvent(
         person: Person,
@@ -295,8 +330,10 @@ object PersonGenerator {
         telephoneNumber: String? = "4321",
         preferredName: String? = "Dee",
         dateOfBirth: LocalDate = LocalDate.now().minusYears(50),
-        gender: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "M", "Male"),
-        id: Long = IdGenerator.getAndIncrement()
+        gender: ReferenceData = GENDER_MALE,
+        id: Long = IdGenerator.getAndIncrement(),
+        exclusionMessage: String? = null,
+        restrictionMessage: String? = null
     ) = Person(
         id = id,
         crn = crn,
@@ -314,7 +351,9 @@ object PersonGenerator {
         religion = null,
         sexualOrientation = null,
         genderIdentity = null,
-        genderIdentityDescription = null
+        genderIdentityDescription = null,
+        exclusionMessage = exclusionMessage,
+        restrictionMessage = restrictionMessage
     )
 
     fun generateRequirement(
