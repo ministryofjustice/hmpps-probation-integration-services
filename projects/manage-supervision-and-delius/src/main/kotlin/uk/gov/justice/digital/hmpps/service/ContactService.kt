@@ -23,7 +23,7 @@ class ContactService(
 
     fun getContacts(crn: String): ProfessionalContact {
         val person = personRepository.getPerson(crn)
-        val contacts = offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(person)
+        val contacts = offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(person.id)
 
         if (contacts.isEmpty()) {
             throw NotFoundException("Offender Manager records", "crn", crn)

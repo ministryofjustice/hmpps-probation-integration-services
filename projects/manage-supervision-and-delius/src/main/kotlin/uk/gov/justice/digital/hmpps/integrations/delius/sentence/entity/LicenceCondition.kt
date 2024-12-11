@@ -55,7 +55,7 @@ interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
             JOIN FETCH lc.mainCategory mc
             LEFT JOIN FETCH lc.subCategory
             WHERE lc.disposalId = :disposalId
-            ORDER BY mc.description ASC
+            ORDER BY mc.description, lc.id ASC
         """
     )
     fun findAllByDisposalId(disposalId: Long): List<LicenceCondition>
