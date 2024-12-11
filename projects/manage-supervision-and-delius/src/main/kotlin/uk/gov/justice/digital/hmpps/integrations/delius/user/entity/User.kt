@@ -405,10 +405,10 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join fetch d.type dt
         where c.staff.id = :id
         and (:nameOrCrn is null 
-          or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' 
-          or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%'
-          or upper(p.surname || ' ' || p.forename) like '%' || upper(:nameOrCrn) || '%'
-          or upper(p.surname || ', ' || p.forename) like '%' || upper(:nameOrCrn) || '%')
+          or upper(p.crn) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
+          or upper(p.forename || ' ' || p.surname) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
+          or upper(p.surname || ' ' || p.forename) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\'
+          or upper(p.surname || ', ' || p.forename) like '%' || upper(:nameOrCrn) || '%' ESCAPE '\')
         and (:nextContactCode is null or (upper(trim(naType.code)) = upper(trim(:nextContactCode))))
         and (:sentenceCode is null or (upper(trim(dt.code)) = upper(trim(:sentenceCode))))
     """
