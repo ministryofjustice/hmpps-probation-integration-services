@@ -150,7 +150,7 @@ internal class MessagingIntegrationTest {
     @Order(1)
     fun `booking made creates referral and contact`() {
         setUpTestSpecificData()
-        
+
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
 

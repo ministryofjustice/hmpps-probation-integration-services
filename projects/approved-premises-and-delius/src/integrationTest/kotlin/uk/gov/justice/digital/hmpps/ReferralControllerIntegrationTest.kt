@@ -38,7 +38,6 @@ class ReferralControllerIntegrationTest {
     @Autowired
     lateinit var residenceRepository: ResidenceRepository
 
-
     @Test
     fun `existing referrals for a crn are returned successfully`() {
         referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
@@ -82,7 +81,6 @@ class ReferralControllerIntegrationTest {
             .andReturn().response.contentAsJson<ReferralDetail>()
 
         assertThat(res, equalTo(detail))
-
     }
 
     companion object {

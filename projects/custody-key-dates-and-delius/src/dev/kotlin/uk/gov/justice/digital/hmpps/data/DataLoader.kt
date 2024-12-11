@@ -101,7 +101,11 @@ class DataLoader(
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN, "48340A", keyDateTypes)
     }
 
-    private fun createPersonWithKeyDates(personRef: Person, bookingRef: String, keyDateTypes: List<ReferenceData>): Custody {
+    private fun createPersonWithKeyDates(
+        personRef: Person,
+        bookingRef: String,
+        keyDateTypes: List<ReferenceData>
+    ): Custody {
         val person = personRepository.save(personRef)
         val event = eventRepository.save(generateEvent(person, "1"))
         orderManagerRepository.save(generateOrderManager(event))

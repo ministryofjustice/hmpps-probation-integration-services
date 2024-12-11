@@ -47,12 +47,14 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 
     fun countOffenderManagersByPerson(person: Person): Long
 
-    @Query("""
+    @Query(
+        """
         SELECT om
         FROM OffenderManager om
         WHERE om.person.id = :id 
         ORDER BY om.endDate
-    """)
+    """
+    )
     fun findOffenderManagersByPersonOrderByEndDateDesc(id: Long): List<OffenderManager>
 }
 

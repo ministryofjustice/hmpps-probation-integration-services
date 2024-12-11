@@ -100,6 +100,7 @@ class DataLoader(
             )
         )
     }
+
     fun EntityManager.saveAll(vararg any: Any) = any.forEach { merge(it) }
 
     private fun createAppointments(person: Person) {

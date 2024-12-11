@@ -66,7 +66,11 @@ internal class ApiIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("caseIdentifiers")
-    fun `successful retrieval of a case record by crn or noms id`(identifier: String, person: Person, loadData: Boolean) {
+    fun `successful retrieval of a case record by crn or noms id`(
+        identifier: String,
+        person: Person,
+        loadData: Boolean
+    ) {
         if (loadData) {
             loadTestData()
         }
