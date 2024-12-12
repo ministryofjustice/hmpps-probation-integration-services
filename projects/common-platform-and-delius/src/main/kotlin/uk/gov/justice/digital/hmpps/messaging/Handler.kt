@@ -6,6 +6,7 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -20,7 +21,8 @@ class Handler(
     private val notifier: Notifier,
     private val telemetryService: TelemetryService,
     private val personService: PersonService,
-    private val probationSearchClient: ProbationSearchClient
+    private val probationSearchClient: ProbationSearchClient,
+    private val featureFlags: FeatureFlags
 ) : NotificationHandler<CommonPlatformHearing> {
 
     @Publish(messages = [Message(title = "COMMON_PLATFORM_HEARING", payload = Schema(CommonPlatformHearing::class))])
@@ -41,8 +43,6 @@ class Handler(
             return
         }
 
-        val courtCode = notification.message.hearing.courtCentre.code
-
         defendants.forEach { defendant ->
 
             val matchRequest = defendant.toProbationMatchRequest() ?: return@forEach
@@ -54,19 +54,44 @@ class Handler(
             }
 
             // Insert each defendant as a person record
-            val savedEntities = personService.insertPerson(defendant, courtCode)
+            val savedEntities = personService.insertPerson(defendant, notification.message.hearing.courtCentre.code)
 
-            notifier.caseCreated(savedEntities.person)
-            savedEntities.address?.let { notifier.addressCreated(it) }
+            val eventName = if (featureFlags.enabled("common-platform-record-creation-toggle")) {
+                notifier.caseCreated(savedEntities.person)
+                savedEntities.address?.let { notifier.addressCreated(it) }
+                "PersonCreated"
+            } else {
+                "SimulatedPersonCreated"
+            }
 
             telemetryService.trackEvent(
-                "PersonCreated", mapOf(
+                eventName,
+                mapOf(
                     "hearingId" to notification.message.hearing.id,
                     "CRN" to savedEntities.person.crn,
                     "personId" to savedEntities.person.id.toString(),
+                    "firstName" to savedEntities.person.forename,
+                    "surname" to savedEntities.person.surname,
+                    "dob" to savedEntities.person.dateOfBirth.toString(),
+                    "genderCode" to savedEntities.person.gender.description,
+                    "pnc" to savedEntities.person.pncNumber.toString(),
                     "personManagerId" to savedEntities.personManager.id.toString(),
+                    "allocationDate" to savedEntities.personManager.allocationDate.toString(),
+                    "allocationReason" to savedEntities.personManager.allocationReason.description,
+                    "providerCode" to savedEntities.personManager.provider.code,
+                    "teamCode" to savedEntities.personManager.team.code,
+                    "staffCode" to savedEntities.personManager.staff.code,
                     "equalityId" to savedEntities.equality.id.toString(),
-                    "addressId" to savedEntities.address?.id.toString()
+                    "addressId" to savedEntities.address?.id.toString(),
+                    "buildingName" to savedEntities.address?.buildingName.toString(),
+                    "addressNumber" to savedEntities.address?.addressNumber.toString(),
+                    "streetName" to savedEntities.address?.streetName.toString(),
+                    "town" to savedEntities.address?.town.toString(),
+                    "district" to savedEntities.address?.district.toString(),
+                    "county" to savedEntities.address?.county.toString(),
+                    "type" to savedEntities.address?.type?.description.toString(),
+                    "status" to savedEntities.address?.status?.description.toString(),
+                    "postcode" to savedEntities.address?.postcode.toString(),
                 )
             )
         }
