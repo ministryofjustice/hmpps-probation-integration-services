@@ -16,3 +16,8 @@ data class Requirement(
     val notes: String?,
     val rar: Rar? = null
 )
+
+data class MinimalRequirement(
+    val id: Long,
+    val description: String
+)

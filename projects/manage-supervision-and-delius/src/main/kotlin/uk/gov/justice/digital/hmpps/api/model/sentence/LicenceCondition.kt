@@ -25,3 +25,8 @@ data class LicenceConditionNoteDetail(
     val personSummary: PersonSummary,
     val licenceCondition: LicenceCondition? = null
 )
+
+data class MinimalLicenceCondition(
+    val id: Long,
+    val mainDescription: String
+)
