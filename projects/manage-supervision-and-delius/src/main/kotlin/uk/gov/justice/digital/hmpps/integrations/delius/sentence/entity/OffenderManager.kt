@@ -64,6 +64,7 @@ class Staff(
     val user: StaffUser?
 )
 
+
 @Entity
 @Immutable
 @Table(name = "user_")
@@ -79,6 +80,11 @@ class StaffUser(
     @Column(name = "distinguished_name")
     val username: String,
 
+    val forename: String,
+
+    val forename2: String? = null,
+
+    val surname: String
     ) {
     @Transient
     var email: String? = null
@@ -88,6 +94,15 @@ class StaffUser(
 }
 
 interface StaffUserRepository : JpaRepository<StaffUser, Long> {
+
+    @Query(
+        """
+            SELECT u 
+            FROM StaffUser u
+            WHERE UPPER(u.username) = UPPER(:username)
+        """
+    )
+    fun findByUsername(username: String) : StaffUser?
 
     @Query(
         """
@@ -103,7 +118,24 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
         """
     )
     fun findUserAndLocation(username: String, teamName: String): UserLocation?
+
+    @Query(
+        """
+            SELECT l
+            FROM StaffUser u
+            JOIN u.staff st
+            JOIN ContactStaffTeam cst ON cst.id.staffId = st.id
+            JOIN Team t ON t.id = cst.id.team.id
+            JOIN TeamOfficeLink tol ON tol.id.teamId = t.id
+            JOIN Location l ON l = tol.id.officeLocation
+            WHERE u.id = :id
+        """
+    )
+    fun findUserOfficeLocations(id: Long): List<Location>
 }
+
+fun StaffUserRepository.getUser(username: String) =
+    findByUsername(username) ?: throw NotFoundException("User", "username", username)
 
 fun StaffUserRepository.getUserAndLocation(username: String, teamName: String) =
     findUserAndLocation(username, teamName) ?: throw NotFoundException(
@@ -160,7 +192,18 @@ class Location(
 
     val description: String,
 
-    )
+    val buildingName: String?,
+
+    val buildingNumber: String?,
+
+    val streetName: String?,
+
+    val townCity: String?,
+
+    val county: String?,
+
+    val postcode: String?,
+)
 
 @Embeddable
 class TeamOfficeLinkId(
@@ -172,3 +215,20 @@ class TeamOfficeLinkId(
     val officeLocation: Location
 ) : Serializable
 
+@Entity
+@Immutable
+@Table(name = "staff_team")
+class ContactStaffTeam(
+    @Id
+    val id: StaffTeamLinkId
+)
+
+@Embeddable
+class StaffTeamLinkId(
+    @Column(name = "staff_id")
+    val staffId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    val team: Team
+) : Serializable
