@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.model
 
-import java.time.LocalDate
+import java.time.ZonedDateTime
 
 data class CourtAppearance(
-    val appearanceDate: LocalDate,
+    val appearanceDate: ZonedDateTime,
     val type: Type,
     val courtCode: String,
     val courtName: String,
