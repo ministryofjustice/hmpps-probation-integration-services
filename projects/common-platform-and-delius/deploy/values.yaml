@@ -10,8 +10,8 @@ generic-service:
   ingress:
     tlsSecretName: common-platform-and-delius-cert
 
-env:
-  OS-PLACES_API_URL: https://api.os.uk
+  env:
+    OS-PLACES_API_URL: https://api.os.uk
 
   namespace_secrets:
     common:
