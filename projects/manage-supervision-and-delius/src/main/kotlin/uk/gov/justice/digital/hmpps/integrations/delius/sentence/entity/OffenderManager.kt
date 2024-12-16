@@ -64,7 +64,6 @@ class Staff(
     val user: StaffUser?
 )
 
-
 @Entity
 @Immutable
 @Table(name = "user_")
@@ -108,16 +107,16 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
         """
             SELECT u.id AS userId, st.id AS staffId, t.id AS teamId, st.provider.id AS providerId, l.id AS locationId
             FROM StaffUser u
-            JOIN  u.staff st 
-            JOIN  st.provider
-            JOIN  Team t ON t.provider = st.provider
+            JOIN  u.staff st
+            JOIN  ContactStaffTeam cst ON cst.id.staffId = st.id
+            JOIN  Team t ON t.id = cst.id.team.id
             JOIN  TeamOfficeLink tol ON tol.id.teamId = t.id
             JOIN  Location l ON l = tol.id.officeLocation
             WHERE UPPER(u.username) = UPPER(:username)
-            AND UPPER(t.description) = UPPER(:teamName)
+            AND l.id = :locationId
         """
     )
-    fun findUserAndLocation(username: String, teamName: String): UserLocation?
+    fun findUserAndLocation(username: String, locationId: Long): UserLocation?
 
     @Query(
         """
@@ -137,10 +136,10 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 fun StaffUserRepository.getUser(username: String) =
     findByUsername(username) ?: throw NotFoundException("User", "username", username)
 
-fun StaffUserRepository.getUserAndLocation(username: String, teamName: String) =
-    findUserAndLocation(username, teamName) ?: throw NotFoundException(
+fun StaffUserRepository.getUserAndLocation(username: String, locationId: Long) =
+    findUserAndLocation(username, locationId) ?: throw NotFoundException(
         "User", "username",
-        "$username in $teamName"
+        "$username in $locationId"
     )
 
 interface UserLocation {

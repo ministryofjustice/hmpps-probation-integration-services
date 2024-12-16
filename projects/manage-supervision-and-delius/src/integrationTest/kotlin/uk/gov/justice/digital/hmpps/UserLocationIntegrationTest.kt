@@ -1,14 +1,16 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.api.model.sentence.Address
 import uk.gov.justice.digital.hmpps.api.model.sentence.LocationDetails
 import uk.gov.justice.digital.hmpps.api.model.sentence.Name
@@ -32,7 +34,15 @@ class UserLocationIntegrationTest {
     }
 
     @Test
-    fun `get user location`() {
+    fun `user not found`() {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/user/locations").withToken())
+            .andDo(print())
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(jsonPath("$.message", equalTo("User with username of user not found")))
+    }
+
+    @Test
+    fun `get user locations`() {
          val response = mockMvc.perform(MockMvcRequestBuilders.get("/user/peter-parker/locations").withToken())
              .andDo(print())
              .andExpect(MockMvcResultMatchers.status().isOk)

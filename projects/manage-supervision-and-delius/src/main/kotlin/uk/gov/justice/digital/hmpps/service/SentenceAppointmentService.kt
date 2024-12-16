@@ -33,6 +33,7 @@ class SentenceAppointmentService(
     private val staffUserRepository: StaffUserRepository,
     private val objectMapper: ObjectMapper
 ) : AuditableService(auditedInteractionService) {
+
     fun createAppointment(
         crn: String,
         createAppointment: CreateAppointment
@@ -44,7 +45,7 @@ class SentenceAppointmentService(
             checkForConflicts(createAppointment)
 
             val userAndLocation =
-                staffUserRepository.getUserAndLocation(createAppointment.user.username, createAppointment.user.team)
+                staffUserRepository.getUserAndLocation(createAppointment.user.username, createAppointment.user.locationId)
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
             createAppointment.let {
