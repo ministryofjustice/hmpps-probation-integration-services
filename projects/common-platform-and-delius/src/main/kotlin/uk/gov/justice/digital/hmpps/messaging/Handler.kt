@@ -13,6 +13,8 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
+import java.time.Period
 
 @Component
 @Channel("common-platform-and-delius-queue")
@@ -50,50 +52,55 @@ class Handler(
             val matchedPersonResponse = probationSearchClient.match(matchRequest)
 
             if (matchedPersonResponse.matches.isNotEmpty()) {
+                telemetryService.trackEvent(
+                    "ProbationSearchMatchDetected",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id,
+                    )
+                )
                 return@forEach
             }
 
-            // Insert each defendant as a person record
-            val savedEntities = personService.insertPerson(defendant, notification.message.hearing.courtCentre.code)
+            val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
+                ?: throw IllegalArgumentException("Date of birth not found in message")
 
-            val eventName = if (featureFlags.enabled("common-platform-record-creation-toggle")) {
-                notifier.caseCreated(savedEntities.person)
-                savedEntities.address?.let { notifier.addressCreated(it) }
-                "PersonCreated"
-            } else {
-                "SimulatedPersonCreated"
+            // Under 10 years old validation
+            dateOfBirth.let {
+                val age = Period.between(it, LocalDate.now()).years
+                require(age > 10) {
+                    "Date of birth would indicate person is under ten years old: $it"
+                }
             }
 
-            telemetryService.trackEvent(
-                eventName,
-                mapOf(
-                    "hearingId" to notification.message.hearing.id,
-                    "CRN" to savedEntities.person.crn,
-                    "personId" to savedEntities.person.id.toString(),
-                    "firstName" to savedEntities.person.forename,
-                    "surname" to savedEntities.person.surname,
-                    "dob" to savedEntities.person.dateOfBirth.toString(),
-                    "genderCode" to savedEntities.person.gender.description,
-                    "pnc" to savedEntities.person.pncNumber.toString(),
-                    "personManagerId" to savedEntities.personManager.id.toString(),
-                    "allocationDate" to savedEntities.personManager.allocationDate.toString(),
-                    "allocationReason" to savedEntities.personManager.allocationReason.description,
-                    "providerCode" to savedEntities.personManager.provider.code,
-                    "teamCode" to savedEntities.personManager.team.code,
-                    "staffCode" to savedEntities.personManager.staff.code,
-                    "equalityId" to savedEntities.equality.id.toString(),
-                    "addressId" to savedEntities.address?.id.toString(),
-                    "buildingName" to savedEntities.address?.buildingName.toString(),
-                    "addressNumber" to savedEntities.address?.addressNumber.toString(),
-                    "streetName" to savedEntities.address?.streetName.toString(),
-                    "town" to savedEntities.address?.town.toString(),
-                    "district" to savedEntities.address?.district.toString(),
-                    "county" to savedEntities.address?.county.toString(),
-                    "type" to savedEntities.address?.type?.description.toString(),
-                    "status" to savedEntities.address?.status?.description.toString(),
-                    "postcode" to savedEntities.address?.postcode.toString(),
+            if (featureFlags.enabled("common-platform-record-creation-toggle")) {
+                // Insert each defendant as a person record
+                val savedEntities = personService.insertPerson(defendant, notification.message.hearing.courtCentre.code)
+
+                notifier.caseCreated(savedEntities.person)
+                savedEntities.address?.let { notifier.addressCreated(it) }
+
+                telemetryService.trackEvent(
+                    "PersonCreated",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id,
+                        "CRN" to savedEntities.person.crn,
+                        "personId" to savedEntities.person.id.toString(),
+                        "personManagerId" to savedEntities.personManager.id.toString(),
+                        "equalityId" to savedEntities.equality.id.toString(),
+                        "addressId" to savedEntities.address?.id.toString(),
+                    )
                 )
-            )
+            } else {
+                telemetryService.trackEvent(
+                    "SimulatedPersonCreated",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id
+                    )
+                )
+            }
         }
     }
 

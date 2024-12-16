@@ -333,7 +333,7 @@ internal class IntegrationTest {
         whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(false)
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
-        verify(personService).insertPerson(any(), any())
+        verify(personService, never()).insertPerson(any(), any())
         thenNoRecordsAreInserted()
         verify(auditedInteractionService, Mockito.never())
             .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.FAIL), any(), anyOrNull())

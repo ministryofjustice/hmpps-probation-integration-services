@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
 import uk.gov.justice.digital.hmpps.integrations.client.OsPlacesResponse
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -15,7 +13,6 @@ import uk.gov.justice.digital.hmpps.messaging.Address
 import uk.gov.justice.digital.hmpps.messaging.Defendant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.Period
 
 @Service
 class PersonService(
@@ -28,137 +25,97 @@ class PersonService(
     private val staffRepository: StaffRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val personAddressRepository: PersonAddressRepository,
-    private val osClient: OsClient,
-    private val featureFlags: FeatureFlags
+    private val osClient: OsClient
 ) : AuditableService(auditedInteractionService) {
 
-    @Transactional
     fun insertPerson(defendant: Defendant, courtCode: String): InsertPersonResult =
-        if (featureFlags.enabled("common-platform-record-creation-toggle")) {
-            audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
-                val result = insertPersonLogic(defendant, courtCode)
-                audit["offenderId"] = result.person.id!!
-                result
-            }
-        } else {
-            insertPersonLogic(defendant, courtCode)
-        }
+        audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
+            // Person record
+            val savedPerson = personRepository.save(defendant.toPerson())
 
-    fun insertPersonLogic(defendant: Defendant, courtCode: String): InsertPersonResult {
-        val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
-            ?: throw IllegalArgumentException("Date of birth not found in message")
+            val courtLinkedProvider = courtRepository.getByOuCode(courtCode).provider
+            val initialAllocation = referenceDataRepository.initialAllocationReason()
+            val unallocatedTeam = teamRepository.findByCode(courtLinkedProvider.code + "UAT")
+            val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
 
-        // Under 10 years old validation
-        dateOfBirth.let {
-            val age = Period.between(it, LocalDate.now()).years
-            require(age > 10) {
-                "Date of birth would indicate person is under ten years old: $it"
-            }
-        }
+            // Person manager record
+            val manager = PersonManager(
+                person = savedPerson,
+                staff = unallocatedStaff,
+                team = unallocatedTeam,
+                provider = courtLinkedProvider,
+                softDeleted = false,
+                active = true,
+                allocationReason = initialAllocation,
+                staffEmployeeID = unallocatedStaff.id,
+                trustProviderTeamId = unallocatedTeam.id,
+                allocationDate = LocalDateTime.of(1900, 1, 1, 0, 0)
 
-        // Person record
-        val savedPerson = if (featureFlags.enabled("common-platform-record-creation-toggle")) {
-            personRepository.save(defendant.toPerson())
-        } else {
-            defendant.toPerson()
-        }
-
-        val courtLinkedProvider = courtRepository.getByOuCode(courtCode).provider
-        val initialAllocation = referenceDataRepository.initialAllocationReason()
-        val unallocatedTeam = teamRepository.findByCode(courtLinkedProvider.code + "UAT")
-        val unallocatedStaff = staffRepository.findByCode(unallocatedTeam.code + "U")
-
-        // Person manager record
-        val manager = PersonManager(
-            person = savedPerson,
-            staff = unallocatedStaff,
-            team = unallocatedTeam,
-            provider = courtLinkedProvider,
-            softDeleted = false,
-            active = true,
-            allocationReason = initialAllocation,
-            staffEmployeeID = unallocatedStaff.id,
-            trustProviderTeamId = unallocatedTeam.id,
-            allocationDate = LocalDateTime.of(1900, 1, 1, 0, 0)
-
-        )
-
-        val savedManager = if (featureFlags.enabled("common-platform-record-creation-toggle")) {
-            personManagerRepository.save(manager)
-        } else {
-            manager
-        }
-
-        // Equality record
-        val equality = Equality(
-            id = null,
-            personId = savedPerson.id ?: 0L,
-            softDeleted = false,
-        )
-
-        val savedEquality = if (featureFlags.enabled("common-platform-record-creation-toggle")) {
-            equalityRepository.save(equality)
-        } else {
-            equality
-        }
-
-        val addressInfo = defendant.personDefendant.personDetails.address
-        val osPlacesResponse = addressInfo?.takeIf { it.containsInformation() && !it.postcode.isNullOrBlank() }
-            ?.let { findAddressByFreeText(it) }
-
-        val deliveryPointAddress = osPlacesResponse?.results?.firstOrNull()?.dpa
-
-        val savedAddress = if (deliveryPointAddress != null) {
-            insertAddress(
-                PersonAddress(
-                    id = null,
-                    start = LocalDate.now(),
-                    status = referenceDataRepository.mainAddressStatus(),
-                    person = savedPerson,
-                    type = referenceDataRepository.awaitingAssessmentAddressType(),
-                    postcode = deliveryPointAddress.postcode,
-                    notes = "UPRN: ${deliveryPointAddress.uprn}",
-                    buildingName = listOfNotNull(
-                        deliveryPointAddress.subBuildingName,
-                        deliveryPointAddress.buildingName
-                    ).joinToString(" "),
-                    addressNumber = deliveryPointAddress.buildingNumber?.toString(),
-                    streetName = deliveryPointAddress.thoroughfareName,
-                    town = deliveryPointAddress.postTown,
-                    district = deliveryPointAddress.localCustodianCodeDescription
-                )
             )
-        } else {
-            addressInfo?.takeIf { it.containsInformation() }?.let {
+            val savedManager = personManagerRepository.save(manager)
+
+            // Equality record
+            val equality = Equality(
+                id = null,
+                personId = savedPerson.id!!,
+                softDeleted = false,
+            )
+
+            val savedEquality = equalityRepository.save(equality)
+
+            val addressInfo = defendant.personDefendant?.personDetails?.address
+            val osPlacesResponse = addressInfo?.takeIf { it.containsInformation() && !it.postcode.isNullOrBlank() }
+                ?.let { findAddressByFreeText(it) }
+
+            val deliveryPointAddress = osPlacesResponse?.results?.firstOrNull()?.dpa
+
+            val savedAddress = if (deliveryPointAddress != null) {
                 insertAddress(
                     PersonAddress(
                         id = null,
                         start = LocalDate.now(),
                         status = referenceDataRepository.mainAddressStatus(),
                         person = savedPerson,
-                        postcode = it.postcode,
                         type = referenceDataRepository.awaitingAssessmentAddressType(),
-                        streetName = it.address1,
-                        district = it.address2,
-                        town = it.address3,
-                        county = listOfNotNull(it.address4, it.address5).joinToString(", ")
+                        postcode = deliveryPointAddress.postcode,
+                        notes = "UPRN: ${deliveryPointAddress.uprn}",
+                        buildingName = listOfNotNull(
+                            deliveryPointAddress.subBuildingName,
+                            deliveryPointAddress.buildingName
+                        ).joinToString(" "),
+                        addressNumber = deliveryPointAddress.buildingNumber?.toString(),
+                        streetName = deliveryPointAddress.thoroughfareName,
+                        town = deliveryPointAddress.postTown,
+                        district = deliveryPointAddress.localCustodianCodeDescription
                     )
                 )
+            } else {
+                addressInfo?.takeIf { it.containsInformation() }?.let {
+                    insertAddress(
+                        PersonAddress(
+                            id = null,
+                            start = LocalDate.now(),
+                            status = referenceDataRepository.mainAddressStatus(),
+                            person = savedPerson,
+                            postcode = it.postcode,
+                            type = referenceDataRepository.awaitingAssessmentAddressType(),
+                            streetName = it.address1,
+                            district = it.address2,
+                            town = it.address3,
+                            county = listOfNotNull(it.address4, it.address5).joinToString(", ")
+                        )
+                    )
+                }
             }
+            audit["offenderId"] = savedPerson.id
+            InsertPersonResult(savedPerson, savedManager, savedEquality, savedAddress)
         }
-        return InsertPersonResult(savedPerson, savedManager, savedEquality, savedAddress)
-    }
 
-    fun insertAddress(address: PersonAddress): PersonAddress =
-        if (featureFlags.enabled("common-platform-record-creation-toggle")) {
-            audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
-                val result = personAddressRepository.save(address)
-                audit["offenderId"] = result.person.id!!
-                result
-            }
-        } else {
-            address
-        }
+    fun insertAddress(address: PersonAddress): PersonAddress = audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
+        val savedAddress = personAddressRepository.save(address)
+        audit["addressId"] = address.id!!
+        savedAddress
+    }
 
     fun generateCrn(): String {
         return personRepository.getNextCrn()

@@ -126,23 +126,14 @@ internal class HandlerTest {
     @Test
     fun `Simulated person created logged when feature flag disabled`() {
         probationSearchMatchNotFound()
-
         whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(false)
-        whenever(personService.insertPerson(any(), any())).thenReturn(
-            InsertPersonResult(
-                person = PersonGenerator.DEFAULT,
-                personManager = PersonManagerGenerator.DEFAULT,
-                equality = Equality(id = 1L, personId = 1L, softDeleted = false),
-                address = PersonAddressGenerator.MAIN_ADDRESS,
-            )
-        )
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
 
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(eq("SimulatedPersonCreated"), anyMap(), anyMap())
-        verify(personService).insertPerson(any(), any())
+        verify(personService, never()).insertPerson(any(), any())
         verify(notifier, never()).caseCreated(any())
         verify(notifier, never()).addressCreated(any())
     }
