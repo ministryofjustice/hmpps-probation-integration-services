@@ -19,7 +19,7 @@ class UserLocationService(private val staffUserRepository: StaffUserRepository) 
 
         return UserOfficeLocation(
             Name(user.forename, user.forename2, user.surname),
-            userLocations.map { it.toLocationDetails()}
+            userLocations.map { it.toLocationDetails() }
         )
     }
 

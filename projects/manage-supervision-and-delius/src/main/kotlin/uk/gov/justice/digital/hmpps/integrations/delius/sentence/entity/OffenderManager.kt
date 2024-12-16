@@ -84,7 +84,7 @@ class StaffUser(
     val forename2: String? = null,
 
     val surname: String
-    ) {
+) {
     @Transient
     var email: String? = null
 
@@ -101,7 +101,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             WHERE UPPER(u.username) = UPPER(:username)
         """
     )
-    fun findByUsername(username: String) : StaffUser?
+    fun findByUsername(username: String): StaffUser?
 
     @Query(
         """

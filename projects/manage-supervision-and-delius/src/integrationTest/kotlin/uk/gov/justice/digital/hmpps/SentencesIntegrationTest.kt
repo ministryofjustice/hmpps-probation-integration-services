@@ -31,7 +31,6 @@ class SentencesIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-
     @Test
     fun `unauthorized status returned`() {
         mockMvc
@@ -42,7 +41,9 @@ class SentencesIntegrationTest {
     @Test
     fun `no active sentences`() {
         val response = mockMvc
-            .perform(MockMvcRequestBuilders.get("/sentences/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}").withToken())
+            .perform(
+                MockMvcRequestBuilders.get("/sentences/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}").withToken()
+            )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<MinimalSentenceOverview>()
 
@@ -75,7 +76,8 @@ class SentencesIntegrationTest {
                     ),
                     requirements = listOf(
                         MinimalRequirement(REQUIREMENT.id, "1 days RAR, 1 completed"),
-                        MinimalRequirement(REQUIREMENT_UNPAID_WORK.id, "Unpaid Work - Intensive"))
+                        MinimalRequirement(REQUIREMENT_UNPAID_WORK.id, "Unpaid Work - Intensive")
+                    )
                 )
             )
         )

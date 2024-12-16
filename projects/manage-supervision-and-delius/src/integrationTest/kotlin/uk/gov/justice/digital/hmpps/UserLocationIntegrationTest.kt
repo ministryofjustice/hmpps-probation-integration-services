@@ -43,17 +43,25 @@ class UserLocationIntegrationTest {
 
     @Test
     fun `get user locations`() {
-         val response = mockMvc.perform(MockMvcRequestBuilders.get("/user/peter-parker/locations").withToken())
-             .andDo(print())
-             .andExpect(MockMvcResultMatchers.status().isOk)
-             .andReturn().response.contentAsJson<UserOfficeLocation>()
+        val response = mockMvc.perform(MockMvcRequestBuilders.get("/user/peter-parker/locations").withToken())
+            .andDo(print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<UserOfficeLocation>()
 
-        val expected =  UserOfficeLocation(
+        val expected = UserOfficeLocation(
             Name(STAFF_USER_1.forename, surname = STAFF_USER_1.surname),
-            listOf(LocationDetails(
-                DEFAULT_LOCATION.id,
-                DEFAULT_LOCATION.description,
-                Address(DEFAULT_LOCATION.buildingNumber, DEFAULT_LOCATION.streetName, DEFAULT_LOCATION.townCity, DEFAULT_LOCATION.county, DEFAULT_LOCATION.postcode))
+            listOf(
+                LocationDetails(
+                    DEFAULT_LOCATION.id,
+                    DEFAULT_LOCATION.description,
+                    Address(
+                        DEFAULT_LOCATION.buildingNumber,
+                        DEFAULT_LOCATION.streetName,
+                        DEFAULT_LOCATION.townCity,
+                        DEFAULT_LOCATION.county,
+                        DEFAULT_LOCATION.postcode
+                    )
+                )
             )
         )
         assertEquals(expected, response)

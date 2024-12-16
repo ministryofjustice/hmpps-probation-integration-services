@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.ZonedDateTime
 import java.util.*
 
-data class CreateAppointment (
+data class CreateAppointment(
     val user: User,
     val type: Type,
     val start: ZonedDateTime,
@@ -21,7 +21,7 @@ data class CreateAppointment (
     @JsonIgnore
     val urn = URN_PREFIX + uuid
 
-    enum class Type (val code: String) {
+    enum class Type(val code: String) {
         HomeVisitToCaseNS("CHVS"),
         InitialAppointmentInOfficeNS("COAI"),
         PlannedOfficeVisitNS("COAP"),
@@ -40,12 +40,12 @@ data class CreateAppointment (
     }
 }
 
-data class User (
+data class User(
     val username: String,
     val locationId: Long
 )
 
-data class OverlappingAppointment (
+data class OverlappingAppointment(
     val start: String,
     val end: String,
 )

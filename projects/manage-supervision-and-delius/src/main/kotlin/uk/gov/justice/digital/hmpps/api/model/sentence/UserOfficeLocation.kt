@@ -7,9 +7,10 @@ data class UserOfficeLocation(
 
 data class Name(
     val forename: String,
-    val middleName: String? = null ,
+    val middleName: String? = null,
     val surname: String
 )
+
 data class LocationDetails(
     val id: Long,
     val description: String,

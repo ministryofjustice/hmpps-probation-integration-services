@@ -19,7 +19,17 @@ object OffenderManagerGenerator {
     val STAFF_TEAM = ContactStaffTeam(StaffTeamLinkId(STAFF_1.id, TEAM))
 
     val DEFAULT_LOCATION =
-        Location(IdGenerator.getAndIncrement(), "B20", "1 Birmingham Street", "Bham House", "1", "Birmingham Street", "Birmingham", "West Midlands", "B20 3BA")
+        Location(
+            IdGenerator.getAndIncrement(),
+            "B20",
+            "1 Birmingham Street",
+            "Bham House",
+            "1",
+            "Birmingham Street",
+            "Birmingham",
+            "West Midlands",
+            "B20 3BA"
+        )
 
     val TEAM_OFFICE = TeamOfficeLink(TeamOfficeLinkId(TEAM.id, DEFAULT_LOCATION))
 

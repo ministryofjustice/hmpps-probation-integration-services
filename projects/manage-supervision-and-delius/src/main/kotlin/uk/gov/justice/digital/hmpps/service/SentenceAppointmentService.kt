@@ -45,7 +45,10 @@ class SentenceAppointmentService(
             checkForConflicts(createAppointment)
 
             val userAndLocation =
-                staffUserRepository.getUserAndLocation(createAppointment.user.username, createAppointment.user.locationId)
+                staffUserRepository.getUserAndLocation(
+                    createAppointment.user.username,
+                    createAppointment.user.locationId
+                )
             val createAppointments: ArrayList<CreateAppointment> = arrayListOf()
 
             createAppointment.let {
