@@ -15,9 +15,9 @@ import uk.gov.justice.digital.hmpps.model.CourtAppearance
 import uk.gov.justice.digital.hmpps.model.CourtAppearancesContainer
 import uk.gov.justice.digital.hmpps.model.Type
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -56,7 +56,7 @@ internal class CourtAppearancesIntegrationTest {
                   "courtAppearances": {
                     "X012771": [
                       {
-                        "appearanceDate": "${LocalDate.now()}",
+                        "appearanceDate": ${objectMapper.writeValueAsString(CourtAppearanceGenerator.DEFAULT_CA.appearanceDate)},
                         "type": {
                           "code": "T",
                           "description": "Trial/Adjournment"
@@ -70,7 +70,7 @@ internal class CourtAppearancesIntegrationTest {
                     ],
                     "X012774": [
                       {
-                        "appearanceDate": "2090-01-01",
+                        "appearanceDate": ${objectMapper.writeValueAsString(CourtAppearanceGenerator.CA_3.appearanceDate)},
                         "type": {
                           "code": "T",
                           "description": "Trial/Adjournment"
@@ -82,7 +82,7 @@ internal class CourtAppearancesIntegrationTest {
                         "offenderId": ${CourtAppearanceGenerator.PERSON_2.id}
                       },
                       {
-                        "appearanceDate": "${LocalDate.now()}",
+                        "appearanceDate": ${objectMapper.writeValueAsString(CourtAppearanceGenerator.CA_2.appearanceDate)},
                         "type": {
                           "code": "T",
                           "description": "Trial/Adjournment"

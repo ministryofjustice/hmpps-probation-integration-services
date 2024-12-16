@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.controller.IdentifierType
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.CourtAppearanceEntity
 import uk.gov.justice.digital.hmpps.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.model.AllCourtAppearancesContainer
@@ -18,8 +19,11 @@ class CourtAppearanceService(private val courtAppearanceRepository: CourtAppeara
         var fromDate = LocalDate.now()
         requestDate?.also { fromDate = it }
         val courtAppearances = when (type) {
-            IdentifierType.CRN -> courtAppearanceRepository.findMostRecentCourtAppearancesByCrn(fromDate, value)
-            IdentifierType.NOMS -> courtAppearanceRepository.findMostRecentCourtAppearancesByNomsNumber(fromDate, value)
+            IdentifierType.CRN -> courtAppearanceRepository
+                .findMostRecentCourtAppearancesByCrn(fromDate.atStartOfDay(EuropeLondon), value)
+
+            IdentifierType.NOMS -> courtAppearanceRepository
+                .findMostRecentCourtAppearancesByNomsNumber(fromDate.atStartOfDay(EuropeLondon), value)
         }
         courtAppearances.forEach { courtAppearanceModels.add(it.toModel()) }
         return CourtAppearancesContainer(courtAppearanceModels)
