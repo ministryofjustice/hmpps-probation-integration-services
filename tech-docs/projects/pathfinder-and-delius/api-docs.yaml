@@ -215,7 +215,7 @@ components:
       properties:
         appearanceDate:
           type: string
-          format: date
+          format: date-time
         type:
           $ref: "#/components/schemas/Type"
         courtCode:
