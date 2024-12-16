@@ -5,6 +5,7 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Immutable
@@ -22,9 +23,11 @@ class Registration(
     val type: RegisterType,
 
     @Column(name = "deregistered", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val deRegistered: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -33,12 +34,14 @@ class Event(
     val eventNumber: String,
 
     @Column(name = "in_breach", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val inBreach: Boolean,
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @OneToOne(mappedBy = "event")
@@ -51,6 +54,7 @@ class Event(
     val notes: String?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Column(name = "created_datetime")
@@ -110,9 +114,11 @@ class Disposal(
     val terminationDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -167,6 +173,7 @@ class MainOffence(
     val offence: Offence,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -194,6 +201,7 @@ class AdditionalOffence(
     val offence: Offence,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 
 )

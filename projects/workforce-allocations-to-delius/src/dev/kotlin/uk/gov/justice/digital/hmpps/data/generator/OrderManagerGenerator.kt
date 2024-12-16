@@ -35,7 +35,6 @@ object OrderManagerGenerator {
     }
 
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
         eventId: Long = EventGenerator.DEFAULT.id,
         transferReasonId: Long = TransferReasonGenerator.CASE_ORDER.id,
         provider: Provider = ProviderGenerator.DEFAULT,
@@ -48,9 +47,8 @@ object OrderManagerGenerator {
         lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
         version: Long = 0
     ) = OrderManager(
-        id,
-        eventId,
-        transferReasonId
+        eventId = eventId,
+        transferReasonId = transferReasonId
     ).build(
         provider,
         team,

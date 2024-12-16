@@ -34,7 +34,6 @@ object CaseNoteGenerator {
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now()
     ): CaseNote {
         return CaseNote(
-            IdGenerator.getAndIncrement(),
             offenderId,
             eventId,
             nsiId,

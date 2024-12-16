@@ -153,6 +153,12 @@ class SentenceIntegrationTest {
                 "3 minutes completed (of 12 hours)",
                 listOf(
                     LicenceCondition(
+                        LC_WITHOUT_NOTES.id,
+                        LIC_COND_MAIN_CAT.description,
+                        imposedReleasedDate = LocalDate.now().minusDays(14),
+                        licenceConditionNotes = listOf()
+                    ),
+                    LicenceCondition(
                         LC_WITH_NOTES.id,
                         LIC_COND_MAIN_CAT.description,
                         LIC_COND_SUB_CAT.description,
@@ -180,12 +186,6 @@ class SentenceIntegrationTest {
                                 true
                             )
                         )
-                    ),
-                    LicenceCondition(
-                        LC_WITHOUT_NOTES.id,
-                        LIC_COND_MAIN_CAT.description,
-                        imposedReleasedDate = LocalDate.now().minusDays(14),
-                        licenceConditionNotes = listOf()
                     ),
                     LicenceCondition(
                         LC_WITH_NOTES_WITHOUT_ADDED_BY.id,

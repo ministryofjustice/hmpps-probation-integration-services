@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -39,7 +40,8 @@ class Staff(
     @Column(name = "last_updated_datetime")
     val lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
 
-    @Column(name = "private", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "private", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     var privateStaff: Boolean = false,
 
     @CreatedBy

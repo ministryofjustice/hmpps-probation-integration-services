@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -60,12 +61,12 @@ internal class OffenceServiceTest {
         offenceService.createOffence(offence)
 
         verify(detailedOffenceRepository).save(check {
-            assertThat(it.id, equalTo(0))
+            assertThat(it.id, nullValue())
             assertThat(it.code, equalTo(offence.code))
             assertThat(it.category, equalTo(COURT_CATEGORY))
         })
         verify(offenceRepository).save(check {
-            assertThat(it.id, equalTo(0))
+            assertThat(it.id, nullValue())
             assertThat(it.code, equalTo(offence.homeOfficeCode))
             assertThat(it.description, equalTo("${offence.homeOfficeDescription} - ${offence.homeOfficeCode}"))
             assertThat(it.mainCategoryCode, equalTo(HIGH_LEVEL_OFFENCE.mainCategoryCode))

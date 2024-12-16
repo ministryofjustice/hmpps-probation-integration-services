@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
@@ -23,7 +24,8 @@ class Event(
     @Column
     val firstReleaseDate: LocalDate? = null,
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @OneToOne(mappedBy = "event")
@@ -33,7 +35,8 @@ class Event(
     @SQLRestriction("active_flag = 1 and soft_deleted = 0")
     val manager: OrderManager? = null,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -52,10 +55,12 @@ class Disposal(
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
 
-    @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
+    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -95,6 +100,7 @@ class Custody(
     val keyDates: List<KeyDate> = listOf(),
 
     @Column(columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -121,5 +127,6 @@ class OrderManager(
     val staffId: Long,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true
 )

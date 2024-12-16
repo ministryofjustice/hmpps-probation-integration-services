@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
@@ -64,7 +64,7 @@ internal class MessagingIntegrationInactiveTest {
     @Autowired
     lateinit var personAddressRepository: PersonAddressRepository
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Autowired
@@ -78,6 +78,10 @@ internal class MessagingIntegrationInactiveTest {
 
     @Autowired
     private lateinit var staffRepository: StaffRepository
+
+    fun setUpTestSpecificData() {
+        personAddressRepository.save(AddressGenerator.INACTIVE_PERSON_ADDRESS)
+    }
 
     @Test
     fun `application submission with an inactive event creates an alert contact`() {
@@ -129,6 +133,8 @@ internal class MessagingIntegrationInactiveTest {
     @Test
     @Order(1)
     fun `booking made with inactive event creates referral and contact`() {
+        setUpTestSpecificData()
+
         // Given a booking-made event
         val event = prepEvent("booking-made-inactive", wireMockServer.port())
 

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Immutable
@@ -17,10 +18,12 @@ class Event(
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 
-    @Column(name = "active_flag")
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
-    @Column(name = "soft_deleted")
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -38,10 +41,12 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: Event,
 
-    @Column(name = "active_flag")
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
-    @Column(name = "soft_deleted")
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -59,6 +64,7 @@ class Custody(
     val disposal: Disposal,
 
     @Column(columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id

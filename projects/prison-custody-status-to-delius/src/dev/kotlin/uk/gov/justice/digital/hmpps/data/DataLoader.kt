@@ -144,7 +144,6 @@ class DataLoader(
         val teamBir =
             teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.MOVED_TO_WITH_POM.probationArea!!))
         val prisonManager = PrisonManager(
-            IdGenerator.getAndIncrement(),
             0,
             PersonGenerator.MATCHABLE_WITH_POM.id,
             ZonedDateTime.of(2023, 1, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
@@ -155,7 +154,6 @@ class DataLoader(
             false
         )
         val prisonManager1 = PrisonManager(
-            IdGenerator.getAndIncrement(),
             0,
             PersonGenerator.MATCHABLE_WITH_POM.id,
             ZonedDateTime.of(2023, 2, 1, 1, 0, 0, 0, ZoneId.systemDefault()),

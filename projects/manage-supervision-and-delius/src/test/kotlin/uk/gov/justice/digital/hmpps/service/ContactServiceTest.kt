@@ -67,7 +67,7 @@ class ContactServiceTest {
     fun `no offender manager records`() {
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
-            offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(PersonGenerator.OVERVIEW)
+            offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(PersonGenerator.OVERVIEW.id)
         ).thenReturn(listOf())
 
         val exception = assertThrows<NotFoundException> {
@@ -81,7 +81,7 @@ class ContactServiceTest {
 
         verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
         verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonOrderByEndDateDesc(
-            PersonGenerator.OVERVIEW
+            PersonGenerator.OVERVIEW.id
         )
 
         verifyNoMoreInteractions(personRepository)
@@ -108,7 +108,7 @@ class ContactServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
-            offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(PersonGenerator.OVERVIEW)
+            offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(PersonGenerator.OVERVIEW.id)
         ).thenReturn(
             listOf(OFFENDER_MANAGER_ACTIVE, OFFENDER_MANAGER_INACTIVE)
         )
@@ -119,7 +119,7 @@ class ContactServiceTest {
 
         verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
         verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonOrderByEndDateDesc(
-            PersonGenerator.OVERVIEW
+            PersonGenerator.OVERVIEW.id
         )
 
         verifyNoMoreInteractions(personRepository)

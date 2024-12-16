@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -62,6 +63,7 @@ class Nsi(
     val externalReference: String? = null,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val pendingTransfer: Boolean = false,
 
     @JoinColumn(name = "nsi_outcome_id")
@@ -85,9 +87,11 @@ class Nsi(
     var lastUpdatedUserId: Long = 0,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var active: Boolean = true,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 ) {
 

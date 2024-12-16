@@ -1,16 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -30,16 +21,6 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "prison_offender_manager")
 class PrisonManager(
-    @Id
-    @SequenceGenerator(
-        name = "prison_manager_id_generator",
-        sequenceName = "prison_offender_manager_id_seq",
-        allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
-    @Column(name = "prison_offender_manager_id", nullable = false)
-    val id: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
@@ -67,9 +48,11 @@ class PrisonManager(
     val probationArea: ProbationArea,
 
     @Column(columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     var active: Boolean = true,
 
     @Column
@@ -89,7 +72,17 @@ class PrisonManager(
 
     @LastModifiedDate
     @Column(nullable = false)
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Id
+    @SequenceGenerator(
+        name = "prison_manager_id_generator",
+        sequenceName = "prison_offender_manager_id_seq",
+        allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
+    @Column(name = "prison_offender_manager_id", nullable = false)
+    val id: Long = 0,
 )
 
 interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {

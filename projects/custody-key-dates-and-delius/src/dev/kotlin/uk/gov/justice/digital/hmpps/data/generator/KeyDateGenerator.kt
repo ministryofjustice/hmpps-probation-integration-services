@@ -8,5 +8,5 @@ import java.time.LocalDate
 object KeyDateGenerator {
 
     fun generate(custody: Custody, type: ReferenceData, date: LocalDate, softDeleted: Boolean) =
-        KeyDate(IdGenerator.getAndIncrement(), custody, type, date).also { it.softDeleted = softDeleted }
+        KeyDate(custody, type, date).also { it.softDeleted = softDeleted }
 }

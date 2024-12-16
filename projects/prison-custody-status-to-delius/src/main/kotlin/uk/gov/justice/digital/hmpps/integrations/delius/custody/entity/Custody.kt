@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -53,6 +54,7 @@ class Custody(
     var locationChangeDate: LocalDate?,
 
     @Column(columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "custody")

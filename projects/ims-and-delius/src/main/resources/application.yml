@@ -1,11 +1,9 @@
 # Default config
-server.shutdown: graceful
 spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
     hibernate.ddl-auto: validate
-    database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE
@@ -51,7 +49,6 @@ spring:
 
 seed.database: true
 wiremock.enabled: true
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

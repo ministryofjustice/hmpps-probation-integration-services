@@ -41,7 +41,7 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         and e.softDeleted = false and d.softDeleted = false
         and e.active = true and d.active = true
         and om.active = true
-        and s.code like '%U'
+        and s.code like '%U' ESCAPE ' '
     """
     )
     fun findAllUnallocatedActiveEvents(personId: Long): List<ActiveEvent>

@@ -9,6 +9,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -17,8 +19,14 @@ class InitialAllocationIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
+    @Autowired
+    lateinit var orderManagerRepository: OrderManagerRepository
+
     @Test
     fun `returns csv report`() {
+        orderManagerRepository.save(OrderManagerGenerator.UNALLOCATED)
+        orderManagerRepository.save(OrderManagerGenerator.INITIAL_ALLOCATION)
+
         mockMvc
             .perform(get("/initial-allocations.csv").accept("text/csv").withToken())
             .andExpect(request().asyncStarted())

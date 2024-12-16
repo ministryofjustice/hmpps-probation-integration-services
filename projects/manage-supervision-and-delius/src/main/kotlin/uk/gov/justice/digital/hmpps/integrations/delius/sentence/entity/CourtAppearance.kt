@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Event
 import java.time.LocalDate
 
@@ -25,6 +26,7 @@ class CourtAppearance(
     @JoinColumn(name = "event_id")
     val event: Event,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.NotFound
 import org.hibernate.annotations.NotFoundAction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
@@ -80,6 +81,7 @@ class OasysAssessment(
     val ovpScore2: Long?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id
@@ -143,6 +145,7 @@ class SectionScore(
     var score: Long,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version

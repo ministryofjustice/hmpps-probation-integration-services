@@ -1,13 +1,9 @@
 package uk.gov.justice.digital.hmpps.controller.casedetails.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 import java.time.LocalDate
 
@@ -33,7 +29,13 @@ class RegistrationEntity(
     @ManyToOne
     @JoinColumn(name = "registration_level", updatable = false)
     val level: ReferenceData,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
+
+    @Column(name = "deregistered", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val deregistered: Boolean = false
 )
 

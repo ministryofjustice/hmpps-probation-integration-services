@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
@@ -71,7 +71,7 @@ internal class MessagingIntegrationTest {
     @Autowired
     lateinit var personAddressRepository: PersonAddressRepository
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Autowired
@@ -92,6 +92,10 @@ internal class MessagingIntegrationTest {
         do {
             val message = topic.receive()?.also { topic.done(it.id) }
         } while (message != null)
+    }
+
+    fun setUpTestSpecificData() {
+        personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
     }
 
     @Test
@@ -145,6 +149,8 @@ internal class MessagingIntegrationTest {
     @Test
     @Order(1)
     fun `booking made creates referral and contact`() {
+        setUpTestSpecificData()
+
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
 

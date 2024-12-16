@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -107,6 +108,7 @@ class Person(
     val requiresInterpreter: Boolean? = false,
 
     @Column(name = "current_disposal", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val currentDisposal: Boolean,
 
     @Column(name = "current_remand_status")
@@ -149,9 +151,11 @@ class Person(
     val allowSms: Boolean? = false,
 
     @Column(name = "current_exclusion", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val currentExclusion: Boolean = false,
 
     @Column(name = "current_restriction", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val currentRestriction: Boolean = false,
 
     @Column(name = "current_highest_risk_colour")
@@ -171,6 +175,7 @@ class Person(
     val restrictionMessage: String? = null,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "person")
@@ -206,6 +211,7 @@ class OffenderAlias(
     val secondName: String? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     val surname: String,
@@ -262,6 +268,7 @@ class PersonAddress(
     val endDate: LocalDate? = null,
 
     @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     val createdDatetime: ZonedDateTime = ZonedDateTime.now(),

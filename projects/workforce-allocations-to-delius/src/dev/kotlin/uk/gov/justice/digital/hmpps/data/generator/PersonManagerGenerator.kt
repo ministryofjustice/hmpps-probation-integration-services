@@ -13,7 +13,6 @@ object PersonManagerGenerator {
     var HISTORIC = generate(startDateTime = ManagerGenerator.START_DATE_TIME, personId = PersonGenerator.HISTORIC_PM.id)
 
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
         personId: Long = PersonGenerator.DEFAULT.id,
         provider: Provider = ProviderGenerator.DEFAULT,
         team: Team = TeamGenerator.DEFAULT,
@@ -25,7 +24,6 @@ object PersonManagerGenerator {
         lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
         version: Long = 0
     ) = PersonManager(
-        id,
         personId
     ).build(
         provider,

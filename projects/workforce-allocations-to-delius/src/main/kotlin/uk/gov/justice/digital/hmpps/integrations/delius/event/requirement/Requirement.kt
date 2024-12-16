@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.requirement
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
@@ -36,10 +37,12 @@ class Requirement(
     @JoinColumn(name = "rqmnt_type_sub_category_id")
     val subCategory: ReferenceData?,
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 

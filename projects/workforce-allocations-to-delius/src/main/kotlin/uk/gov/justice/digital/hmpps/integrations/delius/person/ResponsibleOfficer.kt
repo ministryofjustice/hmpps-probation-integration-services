@@ -28,11 +28,6 @@ import java.time.ZonedDateTime
     allocationSize = 1
 )
 class ResponsibleOfficer(
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "responsible_officer_id_generator")
-    @Column(name = "responsible_officer_id", nullable = false)
-    val id: Long = 0,
-
     @Column(name = "offender_id")
     val personId: Long,
 
@@ -61,5 +56,10 @@ class ResponsibleOfficer(
     var createdDatetime: ZonedDateTime? = null,
 
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime? = null
+    var lastUpdatedDatetime: ZonedDateTime? = null,
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "responsible_officer_id_generator")
+    @Column(name = "responsible_officer_id", nullable = false)
+    val id: Long = 0
 )

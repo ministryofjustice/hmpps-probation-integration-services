@@ -6,7 +6,6 @@ import java.time.ZonedDateTime
 
 object CourtCaseNoteGenerator {
     val CASE_NOTE = CaseNote(
-        IdGenerator.getAndIncrement(),
         "2222",
         PersonGenerator.CURRENTLY_MANAGED.id,
         ContactTypeGenerator.CONTACT_TYPE,

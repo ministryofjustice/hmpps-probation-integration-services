@@ -13,7 +13,7 @@ import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -32,7 +32,7 @@ internal class OpdIntegrationTest {
     @Autowired
     lateinit var channelManager: HmppsChannelManager
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Autowired
