@@ -103,6 +103,7 @@ class DataLoader(
             OffenderManagerGenerator.STAFF_2,
             OffenderManagerGenerator.STAFF_USER_1,
             OffenderManagerGenerator.STAFF_USER_2,
+            OffenderManagerGenerator.STAFF_TEAM,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.DEFAULT_LOCATION,

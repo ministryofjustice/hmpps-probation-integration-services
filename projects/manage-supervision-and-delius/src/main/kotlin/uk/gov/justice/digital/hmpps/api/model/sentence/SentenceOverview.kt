@@ -12,3 +12,8 @@ data class SentenceSummary(
     val eventNumber: String,
     val description: String
 )
+
+data class MinimalSentenceOverview(
+    val personSummary: PersonSummary,
+    val sentences: List<MinimalSentence> = emptyList(),
+)

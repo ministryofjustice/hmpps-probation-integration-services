@@ -10,6 +10,9 @@ generic-service:
   ingress:
     tlsSecretName: common-platform-and-delius-cert
 
+  env:
+    OS-PLACES_API_URL: https://api.os.uk
+
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
@@ -25,6 +28,8 @@ generic-service:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
     hmpps-domain-events-topic:
       MESSAGING_PRODUCER_TOPIC: topic_arn
+    common-platform-and-delius-os-places:
+      OS-PLACES_API_KEY: API_KEY
 
 generic-prometheus-alerts:
   targetApplication: common-platform-and-delius
