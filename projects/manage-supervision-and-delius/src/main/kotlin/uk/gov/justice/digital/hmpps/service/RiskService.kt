@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.risk.*
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
@@ -35,7 +36,7 @@ class RiskService(
         val summary = personRepository.getSummary(crn)
         val riskFlags = riskFlagRepository.findByPersonId(summary.id)
         val opd = nsiRepository.findByPersonIdAndTypeCode(summary.id, NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
-            .firstOrNull()
+            .firstOrNull(Nsi::active)
         val mappa = riskFlagRepository.findActiveMappaRegistrationByOffenderId(summary.id, PageRequest.of(0, 1))
             .firstOrNull()
 

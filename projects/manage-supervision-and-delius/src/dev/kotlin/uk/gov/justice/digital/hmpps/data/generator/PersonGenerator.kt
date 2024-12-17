@@ -523,7 +523,8 @@ object PersonGenerator {
         personId: Long,
         eventId: Long,
         type: NsiType,
-        status: NsiStatus
+        status: NsiStatus,
+        active: Boolean = true
 
     ) = Nsi(
         id = IdGenerator.getAndIncrement(),
@@ -533,7 +534,8 @@ object PersonGenerator {
         eventId = eventId,
         type = type,
         nsiStatus = status,
-        lastUpdated = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        lastUpdated = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+        active = active
     )
 
     fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) =
