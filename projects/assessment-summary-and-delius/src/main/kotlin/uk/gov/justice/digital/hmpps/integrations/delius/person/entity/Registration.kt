@@ -7,6 +7,7 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -121,6 +122,23 @@ class RegisterType(
     val id: Long
 )
 
+@Immutable
+@Entity
+@Table(name = "r_register_duplicate_group")
+class RegisterDuplicateGroup(
+    @ManyToMany
+    @JoinTable(
+        name = "r_register_type_dup_grp",
+        joinColumns = [JoinColumn(name = "register_group_id")],
+        inverseJoinColumns = [JoinColumn(name = "register_type_id")]
+    )
+    val types: List<RegisterType>,
+
+    @Id
+    @Column(name = "register_group_id")
+    val id: Long
+)
+
 @Entity
 @Table(name = "registration_review")
 @SQLRestriction("soft_deleted = 0")
@@ -202,12 +220,25 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     fun findByPersonIdAndTypeFlagCode(personId: Long, flagCode: String): List<Registration>
 
     @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
-    fun findByPersonIdAndTypeCode(personId: Long, typeCode: String): List<Registration>
+    fun findByPersonIdAndTypeCodeIn(personId: Long, typeCodes: List<String>): List<Registration>
 }
+
+fun RegistrationRepository.findByPersonIdAndTypeCode(personId: Long, typeCode: String) =
+    findByPersonIdAndTypeCodeIn(personId, listOf(typeCode))
 
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long> {
     @EntityGraph(attributePaths = ["flag", "registrationContactType", "reviewContactType"])
     fun findByCode(code: String): RegisterType?
+
+    @Query(
+        """
+        select distinct t2.code
+        from RegisterDuplicateGroup g 
+        join g.types t1 on t1.code = :code
+        join g.types t2 on t2.code <> :code
+        """
+    )
+    fun findOtherTypesInGroup(code: String): List<String>
 }
 
 fun RegisterTypeRepository.getByCode(code: String) =

@@ -30,10 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysA
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -351,6 +348,9 @@ internal class IntegrationTest {
         assertThat(riskToChildrenBefore.reviews, hasSize(1))
         val riskToPrisonerBefore = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PRISONER.code)
         assertThat(riskToPrisonerBefore, hasSize(0))
+        val altRiskToPrisonerBefore =
+            registrationRepository.findByPersonIdAndTypeCode(person.id, RegistrationGenerator.ALT_TYPE.code).single()
+        assertThat(altRiskToPrisonerBefore.level?.code, nullValue())
         val riskToStaffBefore =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.STAFF.code).single()
         assertThat(riskToStaffBefore.level?.code, equalTo(RiskLevel.V.code))
@@ -386,6 +386,9 @@ internal class IntegrationTest {
         assertThat(riskToPrisoner.level?.code, equalTo(RiskLevel.M.code))
         assertThat(riskToPrisoner.reviews, hasSize(1))
         assertThat(domainEvents.ofType(RiskType.PRISONER), hasSize(1))
+        val altRiskToPrisoner =
+            registrationRepository.findByPersonIdAndTypeCode(person.id, RegistrationGenerator.ALT_TYPE.code)
+        assertThat(altRiskToPrisoner, empty())
 
         val riskToStaff = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.STAFF.code).single()
         assertThat(riskToStaff.level?.code, equalTo(RiskLevel.V.code))
