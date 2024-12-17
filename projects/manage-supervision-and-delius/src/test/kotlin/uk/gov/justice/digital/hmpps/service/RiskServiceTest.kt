@@ -10,8 +10,10 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.Page
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
+import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlagRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
@@ -24,6 +26,9 @@ internal class RiskServiceTest {
 
     @Mock
     lateinit var riskFlagRepository: RiskFlagRepository
+
+    @Mock
+    lateinit var nsiRepository: NsiRepository
 
     @InjectMocks
     lateinit var service: RiskService
@@ -50,6 +55,9 @@ internal class RiskServiceTest {
         )
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         whenever(riskFlagRepository.findByPersonId(any())).thenReturn(expectedRiskFlags)
+        whenever(nsiRepository.findByPersonIdAndTypeCode(any(), any())).thenReturn(emptyList())
+        whenever(riskFlagRepository.findActiveMappaRegistrationByOffenderId(any(), any())).thenReturn(Page.empty())
+
         val res = service.getPersonRiskFlags(crn)
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
