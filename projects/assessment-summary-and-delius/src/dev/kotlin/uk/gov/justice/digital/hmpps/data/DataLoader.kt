@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.enum.RiskType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.set
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
@@ -44,6 +45,8 @@ class DataLoader(
         saveAll(ReferenceDataGenerator.LEVELS_DATASET, *ReferenceDataGenerator.LEVELS.toTypedArray())
         saveAll(*ContactGenerator.TYPES.values.toTypedArray())
         saveAll(*RegistrationGenerator.TYPES.values.toTypedArray())
+        saveAll(RegistrationGenerator.ALT_TYPE)
+        saveAll(RegistrationGenerator.DUPLICATE_GROUP)
         saveAll(*ReferenceDataGenerator.REQ_MAIN_CATS.toTypedArray())
         saveAll(
             ReferenceDataGenerator.DOMAIN_EVENT_TYPE_DATASET,
@@ -65,10 +68,11 @@ class DataLoader(
         PersonGenerator.PRISON_ASSESSMENT.withEvent(custodial = true)
         PersonGenerator.NO_EXISTING_RISKS.withEvent()
         PersonGenerator.EXISTING_RISKS.withEvent().withRisks(
-            RiskType.CHILDREN to RiskLevel.H,
-            RiskType.STAFF to RiskLevel.V,
-            RiskType.KNOWN_ADULT to RiskLevel.M,
-            RiskType.PUBLIC to RiskLevel.M,
+            RegistrationGenerator.TYPES[RiskType.CHILDREN.code]!! to RiskLevel.H,
+            RegistrationGenerator.TYPES[RiskType.STAFF.code]!! to RiskLevel.V,
+            RegistrationGenerator.TYPES[RiskType.KNOWN_ADULT.code]!! to RiskLevel.M,
+            RegistrationGenerator.TYPES[RiskType.PUBLIC.code]!! to RiskLevel.M,
+            RegistrationGenerator.ALT_TYPE to null,
         )
         PersonGenerator.FEATURE_FLAG.withEvent().withRiskOfSeriousHarm(V)
     }
@@ -107,11 +111,11 @@ class DataLoader(
         return this
     }
 
-    private fun Person.withRisks(vararg risks: Pair<RiskType, RiskLevel>): Person {
+    private fun Person.withRisks(vararg risks: Pair<RegisterType, RiskLevel?>): Person {
         risks.forEach { risk ->
-            val type = RegistrationGenerator.TYPES[risk.first.code]
-            val level = ReferenceDataGenerator.LEVELS.single { it.code == risk.second.code }
-            val contact = entityManager.merge(ContactGenerator.generateContact(this, type!!.registrationContactType!!))
+            val type = risk.first
+            val level = ReferenceDataGenerator.LEVELS.singleOrNull { it.code == risk.second?.code }
+            val contact = entityManager.merge(ContactGenerator.generateContact(this, type.registrationContactType!!))
             val registration =
                 RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), contact, type, level)
             val reviewContact = entityManager.merge(ContactGenerator.generateContact(this, type.reviewContactType!!))
