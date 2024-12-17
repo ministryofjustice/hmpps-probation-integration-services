@@ -57,6 +57,7 @@ class Handler(
                     mapOf(
                         "hearingId" to notification.message.hearing.id,
                         "defendantId" to defendant.id,
+                        "crns" to matchedPersonResponse.matches.joinToString(", ") { it.offender.otherIds.crn }
                     )
                 )
                 return@forEach
