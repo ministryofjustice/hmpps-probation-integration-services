@@ -5,11 +5,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.risk.*
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.DeRegistration
 import uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlagRepository
@@ -48,13 +46,6 @@ class RiskService(
             riskFlags = riskFlags.filter { !it.deRegistered }.map { it.toRiskFlag() },
             removedRiskFlags = riskFlags.filter { it.deRegistered }.map { it.toRiskFlag() }
         )
-    }
-
-    fun getMappaDetail(crn: String): MappaDetail {
-        val person = personRepository.getPerson(crn)
-        return riskFlagRepository.findActiveMappaRegistrationByOffenderId(person.id, PageRequest.of(0, 1))
-            .firstOrNull()
-            ?.toMappa() ?: throw NotFoundException("MAPPA details for offender not found")
     }
 }
 
