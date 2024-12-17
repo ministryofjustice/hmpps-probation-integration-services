@@ -110,7 +110,13 @@
         <a href="./api-reference.html#appointment"><span>/appointment</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#user-username-locations"><span>/user/{username}/locations</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#user-username-access-crn"><span>/user/{username}/access/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#sentences-crn"><span>/sentences/{crn}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#sentence-crn"><span>/sentence/{crn}</span></a>
@@ -530,6 +536,85 @@
 
 
 
+<h2 id="user-username-locations">/user/{username}/locations</h2>
+
+<h3 id="user-username-locations-get">get</h3>
+
+  <p><em>Display user locations</em></p>
+
+
+
+
+<h4 id="user-username-locations-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-locations-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "locations": [
+    {
+      "id": "integer",
+      "description": "string",
+      "address": {
+        "buildingNumber": "string",
+        "streetName": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-userofficelocation'>UserOfficeLocation</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="user-username-access-crn">/user/{username}/access/{crn}</h2>
 
 <h3 id="user-username-access-crn-get">get</h3>
@@ -595,6 +680,110 @@
 </td>
 <td>
 <a href='#schema-caseaccess'>CaseAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="sentences-crn">/sentences/{crn}</h2>
+
+<h3 id="sentences-crn-get">get</h3>
+
+  <p><em>Display active events</em></p>
+
+
+
+
+<h4 id="sentences-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>number</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="sentences-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "sentences": [
+    {
+      "id": "integer",
+      "order": {
+        "description": "string",
+        "startDate": "string",
+        "endDate": "string"
+      },
+      "licenceConditions": [
+        {
+          "id": "integer",
+          "mainDescription": "string"
+        }
+      ],
+      "requirements": [
+        {
+          "id": "integer",
+          "description": "string"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-minimalsentenceoverview'>MinimalSentenceOverview</a>
 </td>
 </tr>
 
@@ -1994,26 +2183,11 @@
     }
   ],
   "mainAddress": {
-    "buildingName": "string",
     "buildingNumber": "string",
     "streetName": "string",
-    "district": "string",
     "town": "string",
     "county": "string",
-    "postcode": "string",
-    "telephoneNumber": "string",
-    "from": "string",
-    "to": "string",
-    "verified": "boolean",
-    "lastUpdated": "string",
-    "lastUpdatedBy": {
-      "forename": "string",
-      "middleName": "string",
-      "surname": "string"
-    },
-    "type": "string",
-    "status": "string",
-    "notes": "string"
+    "postcode": "string"
   },
   "otherAddressCount": "integer",
   "previousAddressCount": "integer",
@@ -2655,73 +2829,28 @@
     "dateOfBirth": "string"
   },
   "mainAddress": {
-    "buildingName": "string",
     "buildingNumber": "string",
     "streetName": "string",
-    "district": "string",
     "town": "string",
     "county": "string",
-    "postcode": "string",
-    "telephoneNumber": "string",
-    "from": "string",
-    "to": "string",
-    "verified": "boolean",
-    "lastUpdated": "string",
-    "lastUpdatedBy": {
-      "forename": "string",
-      "middleName": "string",
-      "surname": "string"
-    },
-    "type": "string",
-    "status": "string",
-    "notes": "string"
+    "postcode": "string"
   },
   "otherAddresses": [
     {
-      "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
-      "district": "string",
       "town": "string",
       "county": "string",
-      "postcode": "string",
-      "telephoneNumber": "string",
-      "from": "string",
-      "to": "string",
-      "verified": "boolean",
-      "lastUpdated": "string",
-      "lastUpdatedBy": {
-        "forename": "string",
-        "middleName": "string",
-        "surname": "string"
-      },
-      "type": "string",
-      "status": "string",
-      "notes": "string"
+      "postcode": "string"
     }
   ],
   "previousAddresses": [
     {
-      "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
-      "district": "string",
       "town": "string",
       "county": "string",
-      "postcode": "string",
-      "telephoneNumber": "string",
-      "from": "string",
-      "to": "string",
-      "verified": "boolean",
-      "lastUpdated": "string",
-      "lastUpdatedBy": {
-        "forename": "string",
-        "middleName": "string",
-        "surname": "string"
-      },
-      "type": "string",
-      "status": "string",
-      "notes": "string"
+      "postcode": "string"
     }
   ]
 }</code></pre>
@@ -2864,26 +2993,11 @@
       }
     ],
     "mainAddress": {
-      "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
-      "district": "string",
       "town": "string",
       "county": "string",
-      "postcode": "string",
-      "telephoneNumber": "string",
-      "from": "string",
-      "to": "string",
-      "verified": "boolean",
-      "lastUpdated": "string",
-      "lastUpdatedBy": {
-        "forename": "string",
-        "middleName": "string",
-        "surname": "string"
-      },
-      "type": "string",
-      "status": "string",
-      "notes": "string"
+      "postcode": "string"
     },
     "otherAddressCount": "integer",
     "previousAddressCount": "integer",
@@ -4411,8 +4525,8 @@
 </tr>
 
 <tr>
-<td>team</td>
-<td>string</td>
+<td>locationId</td>
+<td>integer</td>
 <td>true</td>
 <td></td>
 <td>
@@ -4520,6 +4634,394 @@
 <td>notes</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-address">Address</h3>
+
+
+<table class='schema-address'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>buildingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-locationdetails">LocationDetails</h3>
+
+
+<table class='schema-locationdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>address</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-userofficelocation">UserOfficeLocation</h3>
+
+
+<table class='schema-userofficelocation'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>locations</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-locationdetails'>LocationDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-minimallicencecondition">MinimalLicenceCondition</h3>
+
+
+<table class='schema-minimallicencecondition'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainDescription</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-minimalorder">MinimalOrder</h3>
+
+
+<table class='schema-minimalorder'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-minimalrequirement">MinimalRequirement</h3>
+
+
+<table class='schema-minimalrequirement'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-minimalsentence">MinimalSentence</h3>
+
+
+<table class='schema-minimalsentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>order</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-minimalorder'>MinimalOrder</a>
+</td>
+</tr>
+
+<tr>
+<td>licenceConditions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-minimallicencecondition'>MinimalLicenceCondition</a>
+</td>
+</tr>
+
+<tr>
+<td>requirements</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-minimalrequirement'>MinimalRequirement</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-minimalsentenceoverview">MinimalSentenceOverview</h3>
+
+
+<table class='schema-minimalsentenceoverview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>sentences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-minimalsentence'>MinimalSentence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personsummary">PersonSummary</h3>
+
+
+<table class='schema-personsummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pnc</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -4996,68 +5498,6 @@
 <td>breaches</td>
 <td>integer</td>
 <td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personsummary">PersonSummary</h3>
-
-
-<table class='schema-personsummary'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>offenderId</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pnc</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>dateOfBirth</td>
-<td>string</td>
-<td>true</td>
 <td></td>
 <td>
   
@@ -6575,178 +7015,6 @@
 <td></td>
 <td>
   <a href='#schema-riskflag'>RiskFlag</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-address">Address</h3>
-
-
-<table class='schema-address'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>buildingName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>buildingNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>streetName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>district</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>town</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>county</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>postcode</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>from</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>to</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>verified</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>lastUpdated</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>lastUpdatedBy</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>type</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>status</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>notes</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
