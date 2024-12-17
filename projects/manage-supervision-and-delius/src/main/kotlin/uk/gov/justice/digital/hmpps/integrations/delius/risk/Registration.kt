@@ -6,9 +6,13 @@ import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
@@ -27,6 +31,10 @@ class RiskFlag(
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "register_type_id")
     val type: RegisterType,
+
+    @ManyToOne
+    @JoinColumn(name = "register_category_id")
+    val category: ReferenceData?,
 
     @Column(name = "deregistered", columnDefinition = "number")
     val deRegistered: Boolean,
@@ -51,6 +59,13 @@ class RiskFlag(
     @OneToMany(mappedBy = "registration")
     val reviews: List<RegistrationReview> = emptyList(),
 
+    @Column(name = "registration_date")
+    val date: LocalDate,
+
+    @ManyToOne
+    @JoinColumn(name = "register_level_id")
+    val level: ReferenceData?,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
 
@@ -62,6 +77,18 @@ class RiskFlag(
 interface RiskFlagRepository : JpaRepository<RiskFlag, Long> {
     fun findByPersonId(personId: Long): List<RiskFlag>
     fun findByPersonIdAndId(personId: Long, id: Long): RiskFlag?
+
+    @Query(
+        """
+        select r from RiskFlag r
+        where r.type.code = 'MAPP'
+        and r.personId = :offenderId
+        and r.softDeleted = false
+        and r.deRegistered = false
+        order by r.date desc
+    """
+    )
+    fun findActiveMappaRegistrationByOffenderId(offenderId: Long, pageable: Pageable): Page<RiskFlag>
 }
 
 fun RiskFlagRepository.getRiskFlag(personId: Long, id: Long): RiskFlag =
