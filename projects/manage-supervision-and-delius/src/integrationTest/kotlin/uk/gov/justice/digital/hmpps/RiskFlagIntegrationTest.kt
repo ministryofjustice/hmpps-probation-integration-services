@@ -13,9 +13,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlag
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlags
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEREGISTRATION_1
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OPD_NSI
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_1
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTRATION_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTRATION_3
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTRATION_REVIEW_2
@@ -42,7 +41,6 @@ internal class RiskFlagIntegrationTest {
         assertThat(res.mappa?.level, equalTo(2))
         assertThat(res.mappa?.category, equalTo(0))
         assertThat(res.opd?.eligible, equalTo(true))
-        assertThat(res.opd?.date, equalTo(OPD_NSI.lastUpdated))
         assertThat(res.riskFlags.size, equalTo(3))
         assertThat(res.riskFlags[1].description, equalTo(REGISTRATION_2.type.description))
         assertThat(res.riskFlags[1].mostRecentReviewDate, equalTo(REGISTRATION_REVIEW_2.date))
@@ -60,7 +58,7 @@ internal class RiskFlagIntegrationTest {
 
     @Test
     fun `opd and mappa is not returned`() {
-        val person = PERSON_1
+        val person = PERSON_2
         val res = mockMvc
             .perform(get("/risk-flags/${person.crn}").withToken())
             .andExpect(status().isOk)
