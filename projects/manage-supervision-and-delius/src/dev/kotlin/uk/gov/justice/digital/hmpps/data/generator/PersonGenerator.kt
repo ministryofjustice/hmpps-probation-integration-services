@@ -21,6 +21,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 object PersonGenerator {
 
@@ -532,7 +533,7 @@ object PersonGenerator {
         eventId = eventId,
         type = type,
         nsiStatus = status,
-        lastUpdated = ZonedDateTime.now()
+        lastUpdated = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)
     )
 
     fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) =
