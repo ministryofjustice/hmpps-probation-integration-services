@@ -18,8 +18,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -64,11 +66,18 @@ internal class IntegrationTest {
     lateinit var addressRepository: PersonAddressRepository
 
     @SpyBean
+    lateinit var personManagerRepository: PersonManagerRepository
+
+    @SpyBean
     lateinit var personService: PersonService
+
+    @MockBean
+    private lateinit var featureFlags: FeatureFlags
 
     @BeforeEach
     fun setup() {
         doReturn("A111111").whenever(personService).generateCrn()
+        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(true)
     }
 
     @Test
@@ -319,10 +328,21 @@ internal class IntegrationTest {
         })
     }
 
+    @Test
+    fun `When feature flag is disabled no records are inserted`() {
+        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(false)
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(personService, never()).insertPerson(any(), any())
+        thenNoRecordsAreInserted()
+        verify(auditedInteractionService, Mockito.never())
+            .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.FAIL), any(), anyOrNull())
+    }
+
     private fun thenNoRecordsAreInserted() {
-        verify(personService, never()).insertAddress(any())
         verify(addressRepository, never()).save(any())
         verify(personRepository, never()).save(any())
+        verify(personManagerRepository, never()).save(any())
         verify(auditedInteractionService, Mockito.never())
             .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
     }

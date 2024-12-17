@@ -6,12 +6,15 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
+import java.time.Period
 
 @Component
 @Channel("common-platform-and-delius-queue")
@@ -20,7 +23,8 @@ class Handler(
     private val notifier: Notifier,
     private val telemetryService: TelemetryService,
     private val personService: PersonService,
-    private val probationSearchClient: ProbationSearchClient
+    private val probationSearchClient: ProbationSearchClient,
+    private val featureFlags: FeatureFlags
 ) : NotificationHandler<CommonPlatformHearing> {
 
     @Publish(messages = [Message(title = "COMMON_PLATFORM_HEARING", payload = Schema(CommonPlatformHearing::class))])
@@ -41,8 +45,6 @@ class Handler(
             return
         }
 
-        val courtCode = notification.message.hearing.courtCentre.code
-
         defendants.forEach { defendant ->
 
             val matchRequest = defendant.toProbationMatchRequest() ?: return@forEach
@@ -50,25 +52,56 @@ class Handler(
             val matchedPersonResponse = probationSearchClient.match(matchRequest)
 
             if (matchedPersonResponse.matches.isNotEmpty()) {
+                telemetryService.trackEvent(
+                    "ProbationSearchMatchDetected",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id,
+                        "crns" to matchedPersonResponse.matches.joinToString(", ") { it.offender.otherIds.crn }
+                    )
+                )
                 return@forEach
             }
 
-            // Insert each defendant as a person record
-            val savedEntities = personService.insertPerson(defendant, courtCode)
+            val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
+                ?: throw IllegalArgumentException("Date of birth not found in message")
 
-            notifier.caseCreated(savedEntities.person)
-            savedEntities.address?.let { notifier.addressCreated(it) }
+            // Under 10 years old validation
+            dateOfBirth.let {
+                val age = Period.between(it, LocalDate.now()).years
+                require(age > 10) {
+                    "Date of birth would indicate person is under ten years old: $it"
+                }
+            }
 
-            telemetryService.trackEvent(
-                "PersonCreated", mapOf(
-                    "hearingId" to notification.message.hearing.id,
-                    "CRN" to savedEntities.person.crn,
-                    "personId" to savedEntities.person.id.toString(),
-                    "personManagerId" to savedEntities.personManager.id.toString(),
-                    "equalityId" to savedEntities.equality.id.toString(),
-                    "addressId" to savedEntities.address?.id.toString()
+            if (featureFlags.enabled("common-platform-record-creation-toggle")) {
+                // Insert each defendant as a person record
+                val savedEntities = personService.insertPerson(defendant, notification.message.hearing.courtCentre.code)
+
+                notifier.caseCreated(savedEntities.person)
+                savedEntities.address?.let { notifier.addressCreated(it) }
+
+                telemetryService.trackEvent(
+                    "PersonCreated",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id,
+                        "CRN" to savedEntities.person.crn,
+                        "personId" to savedEntities.person.id.toString(),
+                        "personManagerId" to savedEntities.personManager.id.toString(),
+                        "equalityId" to savedEntities.equality.id.toString(),
+                        "addressId" to savedEntities.address?.id.toString(),
+                    )
                 )
-            )
+            } else {
+                telemetryService.trackEvent(
+                    "SimulatedPersonCreated",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id
+                    )
+                )
+            }
         }
     }
 
