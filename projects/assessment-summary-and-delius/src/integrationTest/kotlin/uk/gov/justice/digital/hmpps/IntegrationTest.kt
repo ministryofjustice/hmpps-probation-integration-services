@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
+import jakarta.persistence.EntityManager
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
@@ -75,6 +76,9 @@ internal class IntegrationTest {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    lateinit var entityManager: EntityManager
 
     @MockBean
     lateinit var telemetryService: TelemetryService
@@ -357,6 +361,8 @@ internal class IntegrationTest {
         val riskToAdultBefore =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.KNOWN_ADULT.code).single()
         assertThat(riskToAdultBefore.level?.code, equalTo(RiskLevel.M.code))
+        assertThat(riskToAdultBefore.reviews, hasSize(1))
+        val riskToAdultReviewId = riskToAdultBefore.reviews.single().id
         val riskToPublicBefore =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PUBLIC.code).single()
         assertThat(riskToPublicBefore.level?.code, equalTo(RiskLevel.M.code))
@@ -398,6 +404,7 @@ internal class IntegrationTest {
         val riskToAdult = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.KNOWN_ADULT.code)
         assertThat(riskToAdult, hasSize(0))
         assertThat(domainEvents.ofType(RiskType.KNOWN_ADULT), hasSize(1))
+        assertThat(entityManager.find(RegistrationReview::class.java, riskToAdultReviewId), nullValue())
 
         val riskToPublic = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PUBLIC.code).single()
         assertThat(riskToPublic.level?.code, equalTo(RiskLevel.V.code))

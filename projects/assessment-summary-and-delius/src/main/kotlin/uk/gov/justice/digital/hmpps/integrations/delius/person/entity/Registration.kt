@@ -69,24 +69,22 @@ class Registration(
     var deregistration: DeRegistration? = null
         private set
 
-    @OneToMany(mappedBy = "registration", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "registration", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OrderBy("date, createdDatetime")
-    var reviews: List<RegistrationReview> = listOf()
+    var reviews: MutableList<RegistrationReview> = mutableListOf()
         private set
 
     fun withReview(contact: Contact): Registration {
-        reviews = reviews + RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId)
+        reviews += RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId)
         return this
     }
 
-    fun deregister(contact: Contact): List<Contact> {
+    fun deregister(contact: Contact) {
         deregistration = DeRegistration(LocalDate.now(), this, personId, contact, contact.teamId, contact.staffId)
         deregistered = true
         nextReviewDate = null
-        val splitReviews = reviews.groupBy { it.completed }
-        reviews = splitReviews[true] ?: listOf()
+        reviews.removeIf { !it.completed && it.notes == null }
         reviews.firstOrNull()?.reviewDue = null
-        return splitReviews[false]?.map { it.contact } ?: listOf()
     }
 }
 
@@ -165,8 +163,12 @@ class RegistrationReview(
 
     @Column(name = "reviewing_team_id")
     val teamId: Long,
+
     @Column(name = "reviewing_staff_id")
     val staffId: Long,
+
+    @Lob
+    val notes: String? = null,
 
     @Convert(converter = YesNoConverter::class)
     val completed: Boolean = false,
