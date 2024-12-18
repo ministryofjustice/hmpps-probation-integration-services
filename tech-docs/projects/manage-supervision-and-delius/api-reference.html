@@ -1906,6 +1906,18 @@
     "pnc": "string",
     "dateOfBirth": "string"
   },
+  "opd": {
+    "eligible": "boolean",
+    "date": "string"
+  },
+  "mappa": {
+    "level": "integer",
+    "levelDescription": "string",
+    "category": "integer",
+    "categoryDescription": "string",
+    "startDate": "string",
+    "reviewDate": "string"
+  },
   "riskFlags": [
     {
       "id": "integer",
@@ -6803,6 +6815,110 @@
 </tbody>
 </table>
 
+<h3 id="schema-mappadetail">MappaDetail</h3>
+
+
+<table class='schema-mappadetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>level</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>levelDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>category</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>categoryDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>reviewDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-opd">Opd</h3>
+
+
+<table class='schema-opd'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>eligible</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-personriskflags">PersonRiskFlags</h3>
 
 
@@ -6819,6 +6935,26 @@
 <td></td>
 <td>
   <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>opd</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-opd'>Opd</a>
+</td>
+</tr>
+
+<tr>
+<td>mappa</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-mappadetail'>MappaDetail</a>
 </td>
 </tr>
 

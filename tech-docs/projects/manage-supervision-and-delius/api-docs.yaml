@@ -1649,6 +1649,38 @@ components:
           $ref: "#/components/schemas/PersonSummary"
         appointment:
           $ref: "#/components/schemas/Activity"
+    MappaDetail:
+      required:
+      - startDate
+      type: object
+      properties:
+        level:
+          type: integer
+          format: int32
+        levelDescription:
+          type: string
+        category:
+          type: integer
+          format: int32
+        categoryDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+        reviewDate:
+          type: string
+          format: date
+    Opd:
+      required:
+      - date
+      - eligible
+      type: object
+      properties:
+        eligible:
+          type: boolean
+        date:
+          type: string
+          format: date-time
     PersonRiskFlags:
       required:
       - personSummary
@@ -1658,6 +1690,10 @@ components:
       properties:
         personSummary:
           $ref: "#/components/schemas/PersonSummary"
+        opd:
+          $ref: "#/components/schemas/Opd"
+        mappa:
+          $ref: "#/components/schemas/MappaDetail"
         riskFlags:
           type: array
           items:
