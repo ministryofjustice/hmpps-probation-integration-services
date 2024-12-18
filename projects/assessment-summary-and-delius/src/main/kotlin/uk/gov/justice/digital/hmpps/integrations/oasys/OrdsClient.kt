@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.oasys
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 import java.time.LocalDate
@@ -9,6 +10,9 @@ import java.time.LocalDate
 interface OrdsClient {
     @GetExchange
     fun getAssessmentSummary(uri: URI): AssessmentSummaries
+
+    @GetExchange(url = "/ass/sectionroshsumm/ALLOW/{assessmentPk}")
+    fun getRoshSummary(@PathVariable("assessmentPk") assessmentPk: Long): RoshSummary?
 }
 
 data class AssessmentSummary(
@@ -150,4 +154,13 @@ data class AssessmentSummaries(
 data class BasicSentencePlanArea(
     val bspAreaLinked: String?,
     val bspAreaLinkedDesc: String?
+)
+
+data class RoshSummary(
+    val assessments: List<RoshSummaryAssessment>
+)
+
+data class RoshSummaryAssessment(
+    val whoAtRisk: String? = null,
+    val natureOfRisk: String? = null,
 )

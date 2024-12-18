@@ -142,6 +142,19 @@
         "status": 200,
         "bodyFileName": "A000011-multiple-risks.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/eor/oasys/ass/sectionroshsumm/ALLOW/.+"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "rosh-summary.json"
+      }
     }
   ]
 }
