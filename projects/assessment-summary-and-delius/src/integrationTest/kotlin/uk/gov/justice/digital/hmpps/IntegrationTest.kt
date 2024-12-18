@@ -325,7 +325,17 @@ internal class IntegrationTest {
         assertThat(registration.level?.code, equalTo(RiskLevel.H.code))
         assertThat(
             registration.notes,
-            equalTo("The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H")
+            equalTo(
+                """
+                    The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
+                    
+                    *R10.1 Who is at risk*
+                    Known adults - Joe Bloggs
+                    
+                    *R10.2 What is the nature of the risk*
+                    Physical harm - Physical assault, shown willingness to use a weapon
+                """.trimIndent()
+            )
         )
 
         assertThat(registration.reviews, hasSize(1))

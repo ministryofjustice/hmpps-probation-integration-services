@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Ref
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.registerLevel
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
+import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import java.time.LocalDate
 
@@ -23,6 +24,7 @@ class RiskService(
     private val registerTypeRepository: RegisterTypeRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val contactService: ContactService,
+    private val ordsClient: OrdsClient,
     private val featureFlags: FeatureFlags
 ) {
     fun recordRisk(person: Person, summary: AssessmentSummary) =
@@ -75,8 +77,12 @@ class RiskService(
             if (matchingRegistrations.isEmpty()) {
                 val type = registerTypeRepository.getByCode(riskType.code)
                 val level = referenceDataRepository.registerLevel(riskLevel.code)
-                val notes =
-                    "The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on ${summary.dateCompleted.toDeliusDate()} identified the ${type.description} to be ${level.description}"
+                val roshSummary = ordsClient.getRoshSummary(summary.assessmentPk)?.assessments?.singleOrNull()
+                val notes = """
+                |The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on ${summary.dateCompleted.toDeliusDate()} identified the ${type.description} to be ${level.description}.
+                |${roshSummary?.whoAtRisk?.let { "\n|*R10.1 Who is at risk*\n|$it" }}
+                |${roshSummary?.natureOfRisk?.let { "\n|*R10.2 What is the nature of the risk*\n|$it" }}
+                """.trimMargin()
                 events += registrations.addRegistration(person, type, level, notes).regEvent(person.crn)
 
                 // Registrations in the type's duplicate group should also be removed
