@@ -418,7 +418,11 @@ internal class IntegrationTest {
 
         val riskToPublic = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PUBLIC.code).single()
         assertThat(riskToPublic.level?.code, equalTo(RiskLevel.V.code))
-        assertThat(riskToPublicBefore.reviews, hasSize(1))
+        assertThat(riskToPublic.reviews, hasSize(1))
+        assertThat(
+            riskToPublic.notes,
+            startsWith("The OASys assessment of Review on 07/12/2023 identified the Risk to public to have increased to V.")
+        )
         assertThat(domainEvents.ofType(RiskType.PUBLIC), hasSize(2))
         assertThat(
             domainEvents.ofType(RiskType.PUBLIC).map { it.eventType },

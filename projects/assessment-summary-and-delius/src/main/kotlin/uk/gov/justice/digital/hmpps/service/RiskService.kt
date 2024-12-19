@@ -78,8 +78,16 @@ class RiskService(
                 val type = registerTypeRepository.getByCode(riskType.code)
                 val level = referenceDataRepository.registerLevel(riskLevel.code)
                 val roshSummary = ordsClient.getRoshSummary(summary.assessmentPk)?.assessments?.singleOrNull()
+
+                val existingLevel = RiskLevel.maxByCode(registrationsToRemove.mapNotNull { it.level?.code })
                 val notes = """
-                |The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on ${summary.dateCompleted.toDeliusDate()} identified the ${type.description} to be ${level.description}.
+                |The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on ${summary.dateCompleted.toDeliusDate()} identified the ${type.description} ${
+                    when {
+                        existingLevel == null || existingLevel.ordinal == riskLevel.ordinal -> "to be"
+                        existingLevel.ordinal < riskLevel.ordinal -> "to have increased to"
+                        else -> "to have decreased to"
+                    }
+                } ${level.description}.
                 |${roshSummary?.whoAtRisk?.let { "\n|*R10.1 Who is at risk*\n|$it" }}
                 |${roshSummary?.natureOfRisk?.let { "\n|*R10.2 What is the nature of the risk*\n|$it" }}
                 """.trimMargin()
