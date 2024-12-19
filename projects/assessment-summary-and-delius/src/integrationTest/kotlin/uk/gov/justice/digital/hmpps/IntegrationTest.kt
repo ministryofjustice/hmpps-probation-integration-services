@@ -343,6 +343,7 @@ internal class IntegrationTest {
         assertThat(
             review.contact.notes?.trim(), equalTo(
                 """
+                    The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
                     Type: Safeguarding - Risk to children
                     Next Review Date: ${DeliusDateFormatter.format(LocalDate.now().plusMonths(6))}
                 """.trimIndent()
@@ -387,14 +388,13 @@ internal class IntegrationTest {
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.CHILDREN.code).single()
         assertThat(riskToChildren.level?.code, equalTo(RiskLevel.H.code))
         assertThat(riskToChildren.reviews, hasSize(2))
-        assertThat(
-            riskToChildren.reviews[1].contact.notes?.trim(), equalTo(
-                """
-                    Type: Safeguarding - Risk to children
-                    Next Review Date: 14/12/2023
-                """.trimIndent()
-            )
-        )
+        val expectedReviewNotes = """
+            The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
+            Type: Safeguarding - Risk to children
+            Next Review Date: 14/12/2023
+        """.trimIndent()
+        assertThat(riskToChildren.reviews[1].notes?.trim(), equalTo(expectedReviewNotes))
+        assertThat(riskToChildren.reviews[1].contact.notes?.trim(), equalTo(expectedReviewNotes))
         assertThat(domainEvents.ofType(RiskType.CHILDREN), hasSize(0))
 
         val riskToPrisoner =
