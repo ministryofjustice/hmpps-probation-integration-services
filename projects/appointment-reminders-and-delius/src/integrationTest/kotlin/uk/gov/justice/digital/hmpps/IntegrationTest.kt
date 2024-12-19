@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -39,21 +40,32 @@ internal class IntegrationTest {
     @MockBean
     lateinit var telemetryService: TelemetryService
 
-    @Test
-    fun `returns csv report`() {
+    @BeforeEach
+    fun setup() {
         whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"))).thenReturn(
             listOf(
                 object : UnpaidWorkAppointment {
                     override val firstName = "Test"
-                    override val mobileNumber = "07000000000"
+                    override val mobileNumber = "07000000001"
                     override val appointmentDate = "01/01/2000"
-                    override val crn = "A123456"
+                    override val crn = "A000001"
                     override val eventNumbers = "1"
                     override val upwAppointmentIds = "123, 456"
+                },
+                object : UnpaidWorkAppointment {
+                    override val firstName = "Test"
+                    override val mobileNumber = "07000000002"
+                    override val appointmentDate = "01/01/2000"
+                    override val crn = "A000002"
+                    override val eventNumbers = "1"
+                    override val upwAppointmentIds = "789"
                 }
             )
         )
+    }
 
+    @Test
+    fun `returns csv report`() {
         mockMvc
             .perform(get("/upw-appointments.csv?providerCode=N56").withToken())
             .andExpect(status().is2xxSuccessful)
@@ -62,7 +74,8 @@ internal class IntegrationTest {
                 content().string(
                     """
                     firstName,mobileNumber,appointmentDate,crn,eventNumbers,upwAppointmentIds
-                    Test,07000000000,01/01/2000,A123456,1,"123, 456"
+                    Test,07000000001,01/01/2000,A000001,1,"123, 456"
+                    Test,07000000002,01/01/2000,A000002,1,789
                     
                     """.trimIndent()
                 )
@@ -71,30 +84,21 @@ internal class IntegrationTest {
 
     @Test
     fun `sends messages to govuk notify`() {
-        whenever(upwAppointmentRepository.getUnpaidWorkAppointments(any(), eq("N56"))).thenReturn(
-            listOf(
-                object : UnpaidWorkAppointment {
-                    override val firstName = "Test"
-                    override val mobileNumber = "07000000000"
-                    override val appointmentDate = "01/01/2000"
-                    override val crn = "A123456"
-                    override val eventNumbers = "1"
-                    override val upwAppointmentIds = "123, 456"
-                }
-            )
-        )
-
         unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56")
 
         verify(notificationClient).sendSms(
             "cd713c1b-1b27-45a0-b493-37a34666635a",
-            "07000000000",
+            "07000000001",
             mapOf("FirstName" to "Test", "NextWorkSession" to "01/01/2000"),
-            "A123456:01/01/2000:123, 456"
+            "A000001:01/01/2000:123, 456"
         )
         verify(telemetryService).trackEvent(
-            "SentUnpaidWorkAppointmentReminder",
-            mapOf("crn" to "A123456", "upwAppointmentIds" to "123, 456")
+            "UnpaidWorkAppointmentReminderSent",
+            mapOf("crn" to "A000001", "upwAppointmentIds" to "123, 456")
+        )
+        verify(telemetryService).trackEvent(
+            "UnpaidWorkAppointmentReminderNotSent",
+            mapOf("crn" to "A000002", "upwAppointmentIds" to "789")
         )
     }
 }
