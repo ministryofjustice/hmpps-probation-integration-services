@@ -75,7 +75,7 @@ class Registration(
         private set
 
     fun withReview(contact: Contact): Registration {
-        reviews += RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId)
+        reviews += RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId, contact.notes)
         return this
     }
 
