@@ -76,6 +76,8 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toMappa() = M
 fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag() = RiskFlag(
     id = id,
     description = type.description,
+    levelCode = level?.code,
+    levelDescription = level?.description,
     notes = notes,
     createdDate = createdDate,
     createdBy = Name(forename = createdBy.forename, surname = createdBy.surname),
