@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
+import java.util.stream.Stream
 
 interface StaffRepository : JpaRepository<StaffRecord, Long> {
     @EntityGraph(attributePaths = ["grade.dataset", "user"])
@@ -23,7 +24,7 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
     fun findStaffForUsernamesIn(
         usernames: List<String>,
         usernamesUppercase: List<String> = usernames.map { it.uppercase() }
-    ): List<StaffWithUser>
+    ): Stream<StaffWithUser>
 
     @EntityGraph(attributePaths = ["grade.dataset"])
     fun findByCode(code: String): Staff?

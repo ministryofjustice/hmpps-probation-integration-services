@@ -2,16 +2,15 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.equalToIgnoringCase
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import uk.gov.justice.digital.hmpps.api.model.CaseAccess
 import uk.gov.justice.digital.hmpps.api.model.CaseAccessList
 import uk.gov.justice.digital.hmpps.api.model.User
@@ -34,8 +33,11 @@ class UserIntegrationTest {
     @Test
     fun `get all users`() {
         mockMvc.perform(get("/users").withToken())
+            .andExpect(request().asyncStarted())
+            .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$[0].username", equalToIgnoringCase("JoeBloggs")))
+            .andExpect(content().contentTypeCompatibleWith("application/json"))
+            .andExpect(content().json("""[{"username":"JoeBloggs","staffCode":"N02ABS1"}]"""))
     }
 
     @Test
