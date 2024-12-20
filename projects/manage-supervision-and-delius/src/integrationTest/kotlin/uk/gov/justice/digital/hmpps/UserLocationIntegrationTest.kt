@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.api.model.sentence.Address
@@ -36,7 +35,6 @@ class UserLocationIntegrationTest {
     @Test
     fun `user not found`() {
         mockMvc.perform(MockMvcRequestBuilders.get("/user/user/locations").withToken())
-            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andExpect(jsonPath("$.message", equalTo("User with username of user not found")))
     }
@@ -44,7 +42,6 @@ class UserLocationIntegrationTest {
     @Test
     fun `get user locations`() {
         val response = mockMvc.perform(MockMvcRequestBuilders.get("/user/peter-parker/locations").withToken())
-            .andDo(print())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<UserOfficeLocation>()
 
