@@ -186,7 +186,7 @@ class ReferralService(
     fun personArrived(person: Person, ap: ApprovedPremises, details: PersonArrived) {
         val referral = getReferral(person, EXT_REF_BOOKING_PREFIX + details.bookingId)
         referral.admissionDate = details.arrivedAt.toLocalDate()
-        val kw = staffRepository.getByCode(details.keyWorker.staffCode)
+        val kw = staffRepository.getByCode(details.recordedBy.staffCode)
         residenceRepository.save(details.residence(person, ap, referral, kw))
     }
 
