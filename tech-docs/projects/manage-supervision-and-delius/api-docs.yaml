@@ -1717,6 +1717,10 @@ components:
           format: int64
         description:
           type: string
+        levelCode:
+          type: string
+        levelDescription:
+          type: string
         notes:
           type: string
         nextReviewDate:
