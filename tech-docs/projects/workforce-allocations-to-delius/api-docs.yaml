@@ -212,9 +212,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/StreamingResponseBody"
   /staff/{code}/officer-view:
     get:
       tags:
@@ -956,6 +954,8 @@ components:
           format: date
         length:
           type: string
+    StreamingResponseBody:
+      type: object
     OfficerView:
       required:
       - casesDueToEndInNext4Weeks
@@ -1108,8 +1108,6 @@ components:
           $ref: "#/components/schemas/DocumentEvent"
         description:
           type: string
-    StreamingResponseBody:
-      type: object
     PrEvent:
       required:
       - offences
