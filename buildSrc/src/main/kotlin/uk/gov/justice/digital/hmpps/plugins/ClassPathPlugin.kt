@@ -5,6 +5,11 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.testing.Test
+import org.gradle.internal.classpath.Instrumented.systemProperty
+import org.gradle.internal.fingerprint.classpath.impl.ClasspathFingerprintingStrategy.compileClasspath
+import org.gradle.internal.fingerprint.classpath.impl.ClasspathFingerprintingStrategy.runtimeClasspath
+import org.gradle.internal.impldep.org.jsoup.nodes.Document.OutputSettings.Syntax.html
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
@@ -54,7 +59,7 @@ class ClassPathPlugin : Plugin<Project> {
                 }
             }
 
-            project.tasks.create("integrationTest", Test::class.java) {
+            project.tasks.register("integrationTest", Test::class.java) {
                 testClassesDirs = getByName("integrationTest").output.classesDirs
                 classpath = getByName("integrationTest").runtimeClasspath
                 val profiles = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))
