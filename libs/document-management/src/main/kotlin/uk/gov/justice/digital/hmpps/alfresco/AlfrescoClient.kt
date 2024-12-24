@@ -48,7 +48,7 @@ class AlfrescoClient(
 
                 else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
             }
-        }, false)
+        }, false) ?: throw NotFoundException("Document content", "alfrescoId", id)
 
     private fun HttpHeaders.copy(key: String, res: ConvertibleClientHttpResponse) {
         res.headers[key]?.also { this[key] = it }
