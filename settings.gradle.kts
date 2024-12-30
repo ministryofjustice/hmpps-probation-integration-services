@@ -74,11 +74,11 @@ dependencyResolutionManagement {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.3")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.2.1")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.29.40")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.29.43")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.2.1")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.2.1")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.2.1")
-            library("aws-sts", "software.amazon.awssdk:sts:2.29.40")
+            library("aws-sts", "software.amazon.awssdk:sts:2.29.43")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.6.2")
             library("azure-identity", "com.azure:azure-identity:1.14.2")
             library("flipt", "io.flipt:flipt-java:1.1.1")
