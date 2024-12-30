@@ -20,15 +20,19 @@ class UnpaidWorkAppointmentsService(
         upwAppointmentRepository.getUnpaidWorkAppointments(LocalDate.now().plusDays(2), providerCode)
             .forEach {
                 if (it.crn !in properties.excludedCrns) {
-                    notificationClient.sendSms(
+                    val response = notificationClient.sendSms(
                         templateId,
                         it.mobileNumber,
                         mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate),
-                        "${it.crn}:${it.appointmentDate}:${it.upwAppointmentIds}"
+                        it.crn
                     )
                     telemetryService.trackEvent(
                         "UnpaidWorkAppointmentReminderSent",
-                        mapOf("crn" to it.crn, "upwAppointmentIds" to it.upwAppointmentIds)
+                        mapOf(
+                            "crn" to it.crn,
+                            "upwAppointmentIds" to it.upwAppointmentIds,
+                            "notificationId" to response?.notificationId.toString()
+                        )
                     )
                 } else telemetryService.trackEvent(
                     "UnpaidWorkAppointmentReminderNotSent",
