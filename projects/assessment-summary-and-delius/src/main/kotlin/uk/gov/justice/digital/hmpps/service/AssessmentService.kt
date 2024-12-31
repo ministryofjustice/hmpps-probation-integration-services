@@ -112,9 +112,11 @@ fun Objective.plan(
     )
     criminogenicNeeds.forEachIndexed { index, need -> sp.withNeed(index.deliusIndex(), need.criminogenicNeedDesc) }
     actions?.forEachIndexed { index, action ->
-        sp.withWorkSummary(index.deliusIndex(), action.actionDesc)
-        action.actionComment?.also {
-            sp.withText(index.deliusIndex(), it)
+        if (action.actionDesc != null) {
+            sp.withWorkSummary(index.deliusIndex(), action.actionDesc)
+            action.actionComment?.also {
+                sp.withText(index.deliusIndex(), it)
+            }
         }
     }
     return sp

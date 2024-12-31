@@ -141,7 +141,7 @@ data class Need(
 )
 
 data class Action(
-    val actionDesc: String,
+    val actionDesc: String?,
     val actionComment: String?
 )
 
