@@ -74,6 +74,9 @@ class DataLoader(
             RegistrationGenerator.TYPES[RiskType.PUBLIC.code]!! to RiskLevel.M,
             RegistrationGenerator.ALT_TYPE to null,
         )
+        PersonGenerator.EXISTING_RISKS_WITHOUT_LEVEL.withEvent().withRisks(
+            RegistrationGenerator.TYPES[RiskType.CHILDREN.code]!! to null
+        )
         PersonGenerator.FEATURE_FLAG.withEvent().withRiskOfSeriousHarm(V)
     }
 

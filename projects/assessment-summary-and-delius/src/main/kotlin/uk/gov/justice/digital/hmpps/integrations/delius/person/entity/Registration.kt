@@ -44,7 +44,7 @@ class Registration(
 
     @ManyToOne
     @JoinColumn(name = "register_level_id")
-    val level: ReferenceData? = null,
+    var level: ReferenceData? = null,
 
     var nextReviewDate: LocalDate? = null,
 
