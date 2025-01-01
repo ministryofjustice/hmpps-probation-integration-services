@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><database name="DMDNDA" schema="DELIUS_APP_SCHEMA" type="Oracle - Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production&#10;Version 19.24.0.0.0">
+<?xml version="1.0" encoding="UTF-8"?><database name="DMDNDA" schema="DELIUS_APP_SCHEMA" type="Oracle - Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production&#10;Version 19.25.0.0.0">
    <tables>
       <table name="A$DMS_DOCUMENT" remarks="A$DMS_DOCUMENT&#10;                        ==========&#10;                        This table stores the row history for documents associated to an offender and the status of the migration" schema="DELIUS_APP_SCHEMA" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="DMS_DOCUMENT_ID" nullable="false" remarks="Primary Key" size="22" type="NUMBER" typeCode="2">
