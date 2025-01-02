@@ -16,6 +16,7 @@ object PersonGenerator {
     val NO_EXISTING_RISKS = generate("A000009")
     val EXISTING_RISKS = generate("A000010")
     val FEATURE_FLAG = generate("A000011")
+    val EXISTING_RISKS_WITHOUT_LEVEL = generate("A000012")
 
     fun generate(
         crn: String,

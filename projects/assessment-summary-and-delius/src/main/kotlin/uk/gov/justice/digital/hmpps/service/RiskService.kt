@@ -68,25 +68,21 @@ class RiskService(
             // Deregister existing registrations if OASys identified the level as low risk
             if (riskLevel == RiskLevel.L) return@flatMap registrations.map { person.removeRegistration(it) }
 
+            // Add the level to any existing registrations with no level
+            val level = referenceDataRepository.registerLevel(riskLevel.code)
+            registrations.filter { it.level == null }.forEach { it.level = level }
+
             // Remove any existing registrations with a different level
-            val (matchingRegistrations, registrationsToRemove) = registrations
-                .partition { it.level != null && it.level.code == riskLevel.code }
+            val (matchingRegistrations, registrationsToRemove) = registrations.partition { it.level!!.code == riskLevel.code }
             val events = registrationsToRemove.map { person.removeRegistration(it) }.toMutableList()
 
-            val type = registerTypeRepository.getByCode(riskType.code)
-            val level = referenceDataRepository.registerLevel(riskLevel.code)
-            val existingLevel = RiskLevel.maxByCode(registrationsToRemove.mapNotNull { it.level?.code })
-            val assessmentNote =
-                "The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on ${summary.dateCompleted.toDeliusDate()} identified the ${type.description} ${
-                    when {
-                        existingLevel == null -> "to be"
-                        existingLevel.ordinal < riskLevel.ordinal -> "to have increased to"
-                        existingLevel.ordinal > riskLevel.ordinal -> "to have decreased to"
-                        else -> "to have remained"
-                    }
-                } ${level.description}."
-
             // Add registration with the identified level if it doesn't already exist
+            val type = registerTypeRepository.getByCode(riskType.code)
+            val existingLevel = RiskLevel.maxByCode(registrationsToRemove.mapNotNull { it.level?.code })
+            val assessmentNote = "The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on " +
+                "${summary.dateCompleted.toDeliusDate()} identified the ${type.description} " +
+                "${existingLevel.increasedOrDecreasedTo(riskLevel)} ${level.description}."
+
             if (matchingRegistrations.isEmpty()) {
                 val roshSummary = ordsClient.getRoshSummary(summary.assessmentPk)?.assessments?.singleOrNull()
                 val notes = """
@@ -173,3 +169,10 @@ fun reviewNotes(type: RegisterType, nextReviewDate: LocalDate?) = listOfNotNull(
 ).joinToString(System.lineSeparator())
 
 fun Registration.notes(): String = reviewNotes(type, nextReviewDate)
+
+private fun RiskLevel?.increasedOrDecreasedTo(riskLevel: RiskLevel) = when {
+    this == null -> "to be"
+    this.ordinal < riskLevel.ordinal -> "to have increased to"
+    this.ordinal > riskLevel.ordinal -> "to have decreased to"
+    else -> "to have remained"
+}

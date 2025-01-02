@@ -146,6 +146,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000012/ALLOW/12/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000012-no-existing-level.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPattern": "/eor/oasys/ass/sectionroshsumm/ALLOW/.+"
       },
       "response": {

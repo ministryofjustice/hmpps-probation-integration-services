@@ -380,10 +380,9 @@ internal class IntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(message)
 
-        val domainEvents = domainEventRepository.findAll()
-            .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
-            .filter { it.crn() == PersonGenerator.EXISTING_RISKS.crn }
+        val domainEvents = domainEventRepository.findAllForCrn(PersonGenerator.EXISTING_RISKS.crn)
 
+        // Unchanged value from OASys - adds a review
         val riskToChildren =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.CHILDREN.code).single()
         assertThat(riskToChildren.level?.code, equalTo(RiskLevel.H.code))
@@ -397,25 +396,30 @@ internal class IntegrationTest {
         assertThat(riskToChildren.reviews[1].contact.notes?.trim(), equalTo(expectedReviewNotes))
         assertThat(domainEvents.ofType(RiskType.CHILDREN), hasSize(0))
 
+        // No existing registration - add new
         val riskToPrisoner =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PRISONER.code).single()
         assertThat(riskToPrisoner.level?.code, equalTo(RiskLevel.M.code))
         assertThat(riskToPrisoner.reviews, hasSize(1))
         assertThat(domainEvents.ofType(RiskType.PRISONER), hasSize(1))
+        // removes any in duplicate group
         val altRiskToPrisoner =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RegistrationGenerator.ALT_TYPE.code)
         assertThat(altRiskToPrisoner, empty())
 
+        // null from OASys - no change
         val riskToStaff = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.STAFF.code).single()
         assertThat(riskToStaff.level?.code, equalTo(RiskLevel.V.code))
         assertThat(riskToStaff.reviews, hasSize(1))
         assertThat(domainEvents.ofType(RiskType.STAFF), hasSize(0))
 
+        // Low from OASys - remove existing
         val riskToAdult = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.KNOWN_ADULT.code)
         assertThat(riskToAdult, hasSize(0))
         assertThat(domainEvents.ofType(RiskType.KNOWN_ADULT), hasSize(1))
         assertThat(entityManager.find(RegistrationReview::class.java, riskToAdultReviewId), nullValue())
 
+        // Changed level - remove existing and add new
         val riskToPublic = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PUBLIC.code).single()
         assertThat(riskToPublic.level?.code, equalTo(RiskLevel.V.code))
         assertThat(riskToPublic.reviews, hasSize(1))
@@ -428,6 +432,22 @@ internal class IntegrationTest {
             domainEvents.ofType(RiskType.PUBLIC).map { it.eventType },
             hasItems("probation-case.registration.added", "probation-case.registration.deregistered")
         )
+    }
+
+    @Test
+    fun `level is added in-place to existing risk registrations with no level`() {
+        val person = personRepository.getByCrn(PersonGenerator.EXISTING_RISKS_WITHOUT_LEVEL.crn)
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val riskToChildren =
+            registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.CHILDREN.code).single()
+        assertThat(riskToChildren.level?.code, equalTo(RiskLevel.H.code))
+        assertThat(riskToChildren.reviews, hasSize(2))
+
+        val domainEvents = domainEventRepository.findAllForCrn(PersonGenerator.EXISTING_RISKS_WITHOUT_LEVEL.crn)
+        assertThat(domainEvents.ofType(RiskType.CHILDREN), hasSize(0))
     }
 
     @Test
@@ -459,4 +479,8 @@ internal class IntegrationTest {
 
     private fun List<HmppsDomainEvent>.ofType(type: RiskType) =
         filter { it.additionalInformation["registerTypeCode"] == type.code }
+
+    private fun DomainEventRepository.findAllForCrn(crn: String) = findAll()
+        .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
+        .filter { it.crn() == crn }
 }
