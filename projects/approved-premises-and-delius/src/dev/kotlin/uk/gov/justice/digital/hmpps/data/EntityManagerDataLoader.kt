@@ -22,5 +22,4 @@ class EntityManagerDataLoader {
         ReferralGenerator.BOOKING_ARRIVED_DB_RECORD = entityManager.merge(ReferralGenerator.BOOKING_ARRIVED)
         ReferralGenerator.BOOKING_DEPARTED_DB_RECORD = entityManager.merge(ReferralGenerator.BOOKING_DEPARTED)
     }
-
 }

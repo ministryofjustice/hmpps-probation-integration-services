@@ -69,7 +69,7 @@ class DataLoader(
     private val documentDataLoader: DocumentDataLoader,
     private val entityManagerDataLoader: EntityManagerDataLoader
 
-    ) : ApplicationListener<ApplicationReadyEvent> {
+) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
     fun saveAuditUser() {
