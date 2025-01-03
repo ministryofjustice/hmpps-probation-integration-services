@@ -65,7 +65,9 @@ class DataLoader(
     private val lduRepository: LduRepository,
     private val staffUserRepository: StaffUserRepository,
     private val boroughRepository: BoroughRepository,
+    private val referralBookingDataLoader: ReferralBookingDataLoader,
     private val documentDataLoader: DocumentDataLoader,
+    private val entityManagerDataLoader: EntityManagerDataLoader
 
     ) : ApplicationListener<ApplicationReadyEvent> {
 
@@ -166,6 +168,7 @@ class DataLoader(
             )
         )
 
+        entityManagerDataLoader.loadData()
         eventRepository.save(PersonGenerator.EVENT)
         eventRepository.save(PersonGenerator.INACTIVE_EVENT)
         registrationRepository.save(
@@ -211,8 +214,9 @@ class DataLoader(
         )
 
         eventRepository.save(ANOTHER_EVENT)
-        personRepository.save(PersonGenerator.PERSON_WITH_BOOKING)
+
         probationCaseDataLoader.loadData()
+        referralBookingDataLoader.loadData()
         documentDataLoader.loadData()
     }
 }

@@ -94,10 +94,6 @@ internal class MessagingIntegrationTest {
         } while (message != null)
     }
 
-    fun setUpTestSpecificData() {
-        personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
-    }
-
     @Test
     fun `application submission creates an alert contact`() {
         // Given an application-submitted event
@@ -149,8 +145,6 @@ internal class MessagingIntegrationTest {
     @Test
     @Order(1)
     fun `booking made creates referral and contact`() {
-        setUpTestSpecificData()
-
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
 
@@ -301,7 +295,7 @@ internal class MessagingIntegrationTest {
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
-            .associateBy { it.id == AddressGenerator.PERSON_ADDRESS.id }
+            .associateBy { it.id == AddressGenerator.PERSON_ADDRESS_ID }
         assertThat(addresses.size, equalTo(2))
         val previous = addresses[true]!!
         assertThat(previous.endDate, equalTo(details.arrivedAt.toLocalDate()))

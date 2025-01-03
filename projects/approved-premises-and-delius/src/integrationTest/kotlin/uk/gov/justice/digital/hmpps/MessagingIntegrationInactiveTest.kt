@@ -22,7 +22,6 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.PreferredResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -74,14 +73,7 @@ internal class MessagingIntegrationInactiveTest {
     private lateinit var residenceRepository: ResidenceRepository
 
     @Autowired
-    private lateinit var preferredResidenceRepository: PreferredResidenceRepository
-
-    @Autowired
     private lateinit var staffRepository: StaffRepository
-
-    fun setUpTestSpecificData() {
-        personAddressRepository.save(AddressGenerator.INACTIVE_PERSON_ADDRESS)
-    }
 
     @Test
     fun `application submission with an inactive event creates an alert contact`() {
@@ -133,8 +125,6 @@ internal class MessagingIntegrationInactiveTest {
     @Test
     @Order(1)
     fun `booking made with inactive event creates referral and contact`() {
-        setUpTestSpecificData()
-
         // Given a booking-made event
         val event = prepEvent("booking-made-inactive", wireMockServer.port())
 
@@ -245,7 +235,7 @@ internal class MessagingIntegrationInactiveTest {
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses =
             personAddressRepository.findAll().filter { it.personId == PersonGenerator.PERSON_INACTIVE_EVENT.id }
-                .associateBy { it.id == AddressGenerator.INACTIVE_PERSON_ADDRESS.id }
+                .associateBy { it.id == AddressGenerator.INACTIVE_PERSON_ADDRESS_ID }
         assertThat(addresses.size, equalTo(2))
         val previous = addresses[true]!!
         assertThat(previous.endDate, equalTo(details.arrivedAt.toLocalDate()))
