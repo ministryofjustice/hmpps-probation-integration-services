@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNote
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNoteDetail
+import uk.gov.justice.digital.hmpps.api.model.sentence.MinimalLicenceCondition
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
@@ -39,6 +40,8 @@ fun EntityLicenceCondition.toLicenceCondition() =
         actualStartDate,
         toLicenceConditionNote(true)
     )
+
+fun EntityLicenceCondition.toMinimalLicenceCondition() = MinimalLicenceCondition(id, mainCategory.description)
 
 fun EntityLicenceCondition.toLicenceConditionSingleNote(noteId: Int, truncateNote: Boolean) =
     LicenceCondition(

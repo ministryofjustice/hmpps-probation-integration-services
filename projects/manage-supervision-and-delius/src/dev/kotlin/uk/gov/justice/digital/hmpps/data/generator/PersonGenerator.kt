@@ -21,10 +21,13 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 object PersonGenerator {
 
     val GENDER_MALE = ReferenceData(IdGenerator.getAndIncrement(), "M", "Male")
+    val MAPPA_CATEGORY = ReferenceData(IdGenerator.getAndIncrement(), "X9", "X9 Desc")
+    val MAPPA_LEVEL = ReferenceData(IdGenerator.getAndIncrement(), "M2", "M2 Desc")
     val OVERVIEW = generateOverview("X000004")
     val EVENT_1 = generateEvent(
         OVERVIEW,
@@ -156,9 +159,12 @@ object PersonGenerator {
 
     val REGISTER_TYPE_1 = generateRegisterType("CODE1", "Restraining Order")
     val REGISTER_TYPE_2 = generateRegisterType("CODE2", "Domestic Abuse Perpetrator")
-    val REGISTRATION_1 = generateRegistration(REGISTER_TYPE_1, OVERVIEW.id, "Notes")
-    val REGISTRATION_2 = generateRegistration(REGISTER_TYPE_2, OVERVIEW.id, "Notes")
-    val REGISTRATION_3 = generateRegistration(REGISTER_TYPE_2, OVERVIEW.id, "Notes", deRegistered = true)
+    val MAPPA_TYPE = generateRegisterType("MAPP", "Mappa")
+    val REGISTRATION_1 = generateRegistration(REGISTER_TYPE_1, null, OVERVIEW.id, "Notes")
+    val REGISTRATION_2 = generateRegistration(REGISTER_TYPE_2, null, OVERVIEW.id, "Notes")
+    val REGISTRATION_3 = generateRegistration(REGISTER_TYPE_2, null, OVERVIEW.id, "Notes", deRegistered = true)
+
+    val MAPPA_REGISTRATION = generateRegistration(MAPPA_TYPE, MAPPA_CATEGORY, OVERVIEW.id, "Notes", level = MAPPA_LEVEL)
 
     val REGISTRATION_REVIEW_1 = generateRiskReview(
         REGISTRATION_2, LocalDate.now().minusDays(4),
@@ -460,13 +466,17 @@ object PersonGenerator {
 
     fun generateRegistration(
         type: RegisterType,
+        category: ReferenceData? = null,
         personId: Long,
         notes: String?,
         id: Long = IdGenerator.getAndIncrement(),
-        deRegistered: Boolean = false
+        deRegistered: Boolean = false,
+        date: LocalDate = LocalDate.now(),
+        level: ReferenceData? = null,
     ) = RiskFlag(
         personId,
         type,
+        category,
         deRegistered,
         notes,
         LocalDate.now(),
@@ -474,6 +484,8 @@ object PersonGenerator {
         USER,
         LocalDate.now().plusDays(1),
         emptyList(),
+        date,
+        level,
         false,
         id
     )
@@ -495,10 +507,13 @@ object PersonGenerator {
     ) = RegistrationReview(riskFlag, date, reviewDue, notes, true, false, createdDate, IdGenerator.getAndIncrement())
 
     val NSI_BREACH_TYPE = generateNsiType("BRE")
+    val NSI_OPD_TYPE = generateNsiType("OPD1")
     val NSI_STATUS = generateNsiStatus("STATUS1", "An NSI Status")
     val BREACH_PREVIOUS_ORDER_1 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_1.event.id, NSI_BREACH_TYPE, NSI_STATUS)
     val BREACH_PREVIOUS_ORDER_2 = generateNsi(OVERVIEW.id, INACTIVE_ORDER_2.event.id, NSI_BREACH_TYPE, NSI_STATUS)
     val BREACH_ON_ACTIVE_ORDER = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_BREACH_TYPE, NSI_STATUS)
+
+    val OPD_NSI = generateNsi(OVERVIEW.id, ACTIVE_ORDER.event.id, NSI_OPD_TYPE, NSI_STATUS)
 
     fun generateNsiType(code: String) = NsiType(id = IdGenerator.getAndIncrement(), code = code)
     fun generateNsiStatus(code: String, description: String) =
@@ -508,7 +523,8 @@ object PersonGenerator {
         personId: Long,
         eventId: Long,
         type: NsiType,
-        status: NsiStatus
+        status: NsiStatus,
+        active: Boolean = true
 
     ) = Nsi(
         id = IdGenerator.getAndIncrement(),
@@ -517,7 +533,9 @@ object PersonGenerator {
         expectedStartDate = LocalDate.now().minusDays(5),
         eventId = eventId,
         type = type,
-        nsiStatus = status
+        nsiStatus = status,
+        lastUpdated = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+        active = active
     )
 
     fun generateCaseload(caseLoadPerson: CaseloadPerson, staff: Staff, team: Team) =

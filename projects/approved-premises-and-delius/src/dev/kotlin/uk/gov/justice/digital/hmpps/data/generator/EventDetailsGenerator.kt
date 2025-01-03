@@ -88,7 +88,7 @@ object EventDetailsGenerator {
             premises = premises(),
             arrivedAt = ZonedDateTime.now(),
             expectedDepartureOn = LocalDate.now().plusMonths(6),
-            keyWorker = staffMember(keyWorker),
+            recordedBy = staffMember(keyWorker),
             notes = "Arrived on time",
             applicationSubmittedOn = LocalDate.now().minusDays(1),
             eventNumber = "11"

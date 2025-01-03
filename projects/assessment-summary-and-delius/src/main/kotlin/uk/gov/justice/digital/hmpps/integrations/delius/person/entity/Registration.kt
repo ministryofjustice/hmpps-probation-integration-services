@@ -8,6 +8,7 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -44,7 +45,7 @@ class Registration(
 
     @ManyToOne
     @JoinColumn(name = "register_level_id")
-    val level: ReferenceData? = null,
+    var level: ReferenceData? = null,
 
     var nextReviewDate: LocalDate? = null,
 
@@ -71,24 +72,22 @@ class Registration(
     var deregistration: DeRegistration? = null
         private set
 
-    @OneToMany(mappedBy = "registration", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "registration", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OrderBy("date, createdDatetime")
-    var reviews: List<RegistrationReview> = listOf()
+    var reviews: MutableList<RegistrationReview> = mutableListOf()
         private set
 
     fun withReview(contact: Contact): Registration {
-        reviews = reviews + RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId)
+        reviews += RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId, contact.notes)
         return this
     }
 
-    fun deregister(contact: Contact): List<Contact> {
+    fun deregister(contact: Contact) {
         deregistration = DeRegistration(LocalDate.now(), this, personId, contact, contact.teamId, contact.staffId)
         deregistered = true
         nextReviewDate = null
-        val splitReviews = reviews.groupBy { it.completed }
-        reviews = splitReviews[true] ?: listOf()
+        reviews.removeIf { !it.completed && it.notes == null }
         reviews.firstOrNull()?.reviewDue = null
-        return splitReviews[false]?.map { it.contact } ?: listOf()
     }
 }
 
@@ -124,6 +123,23 @@ class RegisterType(
     val id: Long
 )
 
+@Immutable
+@Entity
+@Table(name = "r_register_duplicate_group")
+class RegisterDuplicateGroup(
+    @ManyToMany
+    @JoinTable(
+        name = "r_register_type_dup_grp",
+        joinColumns = [JoinColumn(name = "register_group_id")],
+        inverseJoinColumns = [JoinColumn(name = "register_type_id")]
+    )
+    val types: List<RegisterType>,
+
+    @Id
+    @Column(name = "register_group_id")
+    val id: Long
+)
+
 @Entity
 @Table(name = "registration_review")
 @SQLRestriction("soft_deleted = 0")
@@ -150,8 +166,12 @@ class RegistrationReview(
 
     @Column(name = "reviewing_team_id")
     val teamId: Long,
+
     @Column(name = "reviewing_staff_id")
     val staffId: Long,
+
+    @Lob
+    val notes: String? = null,
 
     @Convert(converter = YesNoConverter::class)
     val completed: Boolean = false,
@@ -207,12 +227,25 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     fun findByPersonIdAndTypeFlagCode(personId: Long, flagCode: String): List<Registration>
 
     @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
-    fun findByPersonIdAndTypeCode(personId: Long, typeCode: String): List<Registration>
+    fun findByPersonIdAndTypeCodeIn(personId: Long, typeCodes: List<String>): List<Registration>
 }
+
+fun RegistrationRepository.findByPersonIdAndTypeCode(personId: Long, typeCode: String) =
+    findByPersonIdAndTypeCodeIn(personId, listOf(typeCode))
 
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long> {
     @EntityGraph(attributePaths = ["flag", "registrationContactType", "reviewContactType"])
     fun findByCode(code: String): RegisterType?
+
+    @Query(
+        """
+        select distinct t2.code
+        from RegisterDuplicateGroup g 
+        join g.types t1 on t1.code = :code
+        join g.types t2 on t2.code <> :code
+        """
+    )
+    fun findOtherTypesInGroup(code: String): List<String>
 }
 
 fun RegisterTypeRepository.getByCode(code: String) =

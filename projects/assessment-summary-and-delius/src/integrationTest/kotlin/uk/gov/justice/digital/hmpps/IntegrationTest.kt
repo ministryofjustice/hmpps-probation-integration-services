@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
+import jakarta.persistence.EntityManager
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
@@ -30,10 +31,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysA
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity.DomainEventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -78,6 +76,9 @@ internal class IntegrationTest {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    lateinit var entityManager: EntityManager
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
@@ -324,7 +325,17 @@ internal class IntegrationTest {
         assertThat(registration.level?.code, equalTo(RiskLevel.H.code))
         assertThat(
             registration.notes,
-            equalTo("The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H")
+            equalTo(
+                """
+                    The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
+                    
+                    *R10.1 Who is at risk*
+                    Known adults - Joe Bloggs
+                    
+                    *R10.2 What is the nature of the risk*
+                    Physical harm - Physical assault, shown willingness to use a weapon
+                """.trimIndent()
+            )
         )
 
         assertThat(registration.reviews, hasSize(1))
@@ -332,6 +343,7 @@ internal class IntegrationTest {
         assertThat(
             review.contact.notes?.trim(), equalTo(
                 """
+                    The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
                     Type: Safeguarding - Risk to children
                     Next Review Date: ${DeliusDateFormatter.format(LocalDate.now().plusMonths(6))}
                 """.trimIndent()
@@ -351,59 +363,91 @@ internal class IntegrationTest {
         assertThat(riskToChildrenBefore.reviews, hasSize(1))
         val riskToPrisonerBefore = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PRISONER.code)
         assertThat(riskToPrisonerBefore, hasSize(0))
+        val altRiskToPrisonerBefore =
+            registrationRepository.findByPersonIdAndTypeCode(person.id, RegistrationGenerator.ALT_TYPE.code).single()
+        assertThat(altRiskToPrisonerBefore.level?.code, nullValue())
         val riskToStaffBefore =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.STAFF.code).single()
         assertThat(riskToStaffBefore.level?.code, equalTo(RiskLevel.V.code))
         val riskToAdultBefore =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.KNOWN_ADULT.code).single()
         assertThat(riskToAdultBefore.level?.code, equalTo(RiskLevel.M.code))
+        assertThat(riskToAdultBefore.reviews, hasSize(1))
+        val riskToAdultReviewId = riskToAdultBefore.reviews.single().id
         val riskToPublicBefore =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PUBLIC.code).single()
         assertThat(riskToPublicBefore.level?.code, equalTo(RiskLevel.M.code))
 
         channelManager.getChannel(queueName).publishAndWait(message)
 
-        val domainEvents = domainEventRepository.findAll()
-            .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
-            .filter { it.crn() == PersonGenerator.EXISTING_RISKS.crn }
+        val domainEvents = domainEventRepository.findAllForCrn(PersonGenerator.EXISTING_RISKS.crn)
 
+        // Unchanged value from OASys - adds a review
         val riskToChildren =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.CHILDREN.code).single()
         assertThat(riskToChildren.level?.code, equalTo(RiskLevel.H.code))
         assertThat(riskToChildren.reviews, hasSize(2))
-        assertThat(
-            riskToChildren.reviews[1].contact.notes?.trim(), equalTo(
-                """
-                    Type: Safeguarding - Risk to children
-                    Next Review Date: 14/12/2023
-                """.trimIndent()
-            )
-        )
+        val expectedReviewNotes = """
+            The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
+            Type: Safeguarding - Risk to children
+            Next Review Date: 14/12/2023
+        """.trimIndent()
+        assertThat(riskToChildren.reviews[1].notes?.trim(), equalTo(expectedReviewNotes))
+        assertThat(riskToChildren.reviews[1].contact.notes?.trim(), equalTo(expectedReviewNotes))
         assertThat(domainEvents.ofType(RiskType.CHILDREN), hasSize(0))
 
+        // No existing registration - add new
         val riskToPrisoner =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PRISONER.code).single()
         assertThat(riskToPrisoner.level?.code, equalTo(RiskLevel.M.code))
         assertThat(riskToPrisoner.reviews, hasSize(1))
         assertThat(domainEvents.ofType(RiskType.PRISONER), hasSize(1))
+        // removes any in duplicate group
+        val altRiskToPrisoner =
+            registrationRepository.findByPersonIdAndTypeCode(person.id, RegistrationGenerator.ALT_TYPE.code)
+        assertThat(altRiskToPrisoner, empty())
 
+        // null from OASys - no change
         val riskToStaff = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.STAFF.code).single()
         assertThat(riskToStaff.level?.code, equalTo(RiskLevel.V.code))
         assertThat(riskToStaff.reviews, hasSize(1))
         assertThat(domainEvents.ofType(RiskType.STAFF), hasSize(0))
 
+        // Low from OASys - remove existing
         val riskToAdult = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.KNOWN_ADULT.code)
         assertThat(riskToAdult, hasSize(0))
         assertThat(domainEvents.ofType(RiskType.KNOWN_ADULT), hasSize(1))
+        assertThat(entityManager.find(RegistrationReview::class.java, riskToAdultReviewId), nullValue())
 
+        // Changed level - remove existing and add new
         val riskToPublic = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PUBLIC.code).single()
         assertThat(riskToPublic.level?.code, equalTo(RiskLevel.V.code))
-        assertThat(riskToPublicBefore.reviews, hasSize(1))
+        assertThat(riskToPublic.reviews, hasSize(1))
+        assertThat(
+            riskToPublic.notes,
+            startsWith("The OASys assessment of Review on 07/12/2023 identified the Risk to public to have increased to V.")
+        )
         assertThat(domainEvents.ofType(RiskType.PUBLIC), hasSize(2))
         assertThat(
             domainEvents.ofType(RiskType.PUBLIC).map { it.eventType },
             hasItems("probation-case.registration.added", "probation-case.registration.deregistered")
         )
+    }
+
+    @Test
+    fun `level is added in-place to existing risk registrations with no level`() {
+        val person = personRepository.getByCrn(PersonGenerator.EXISTING_RISKS_WITHOUT_LEVEL.crn)
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val riskToChildren =
+            registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.CHILDREN.code).single()
+        assertThat(riskToChildren.level?.code, equalTo(RiskLevel.H.code))
+        assertThat(riskToChildren.reviews, hasSize(2))
+
+        val domainEvents = domainEventRepository.findAllForCrn(PersonGenerator.EXISTING_RISKS_WITHOUT_LEVEL.crn)
+        assertThat(domainEvents.ofType(RiskType.CHILDREN), hasSize(0))
     }
 
     @Test
@@ -435,4 +479,8 @@ internal class IntegrationTest {
 
     private fun List<HmppsDomainEvent>.ofType(type: RiskType) =
         filter { it.additionalInformation["registerTypeCode"] == type.code }
+
+    private fun DomainEventRepository.findAllForCrn(crn: String) = findAll()
+        .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
+        .filter { it.crn() == crn }
 }

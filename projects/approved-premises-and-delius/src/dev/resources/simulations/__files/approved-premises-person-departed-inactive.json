@@ -37,7 +37,7 @@
         "code": "XYZ456"
       }
     },
-    "keyWorker": {
+    "recordedBy": {
       "staffCode": "N54A001",
       "staffIdentifier": 1501234567,
       "forenames": "John",

@@ -8,8 +8,4 @@ enum class RiskType(val code: String, val riskLevel: (AssessmentSummary) -> Risk
     PRISONER("REG16", { RiskLevel.of(it.riskPrisonersCustody) }),
     PUBLIC("REG17", { RiskLevel.of(it.riskPublicCommunity, it.riskPublicCustody) }),
     STAFF("AV2S", { RiskLevel.of(it.riskStaffCommunity, it.riskStaffCustody) });
-
-    companion object {
-        fun of(value: String): RiskType? = entries.firstOrNull { it.name.equals(value, true) }
-    }
 }

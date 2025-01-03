@@ -6,7 +6,9 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -31,7 +33,7 @@ class Court(
 class CourtAppearanceEntity(
 
     @Column(name = "appearance_date")
-    val appearanceDate: LocalDate,
+    val appearanceDate: ZonedDateTime,
 
     @Id
     @Column(name = "court_appearance_id")
@@ -107,7 +109,7 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
         order by ca.appearanceDate desc
         """
     )
-    fun findMostRecentCourtAppearancesByCrn(dateFrom: LocalDate, crn: String): List<CourtAppearanceEntity>
+    fun findMostRecentCourtAppearancesByCrn(dateFrom: ZonedDateTime, crn: String): List<CourtAppearanceEntity>
 
     @Query(
         """
@@ -117,7 +119,10 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
         order by ca.appearanceDate desc
         """
     )
-    fun findMostRecentCourtAppearancesByNomsNumber(dateFrom: LocalDate, nomsNumber: String): List<CourtAppearanceEntity>
+    fun findMostRecentCourtAppearancesByNomsNumber(
+        dateFrom: ZonedDateTime,
+        nomsNumber: String
+    ): List<CourtAppearanceEntity>
 
     @Query(
         """
@@ -129,6 +134,6 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
     )
     fun findCourtAppearancesForCrns(
         crns: List<String>,
-        dateFrom: LocalDate = LocalDate.now()
+        dateFrom: ZonedDateTime = LocalDate.now().atStartOfDay(EuropeLondon)
     ): List<CourtAppearanceEntity>
 }

@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterDuplicateGroup
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Registration
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -16,6 +17,13 @@ object RegistrationGenerator {
         RiskOfSeriousHarmType.entries.map { generateType(it.code, it.colour, flag = ROSH_FLAG) },
         RiskType.entries.map { generateType(it.code, "Amber", "Risk to ${it.name.lowercase()}") }
     ).flatten().associateBy { it.code }
+
+    val ALT_TYPE = generateType("ALT1", "Amber", "ALT Risk to prisoner")
+
+    val DUPLICATE_GROUP = RegisterDuplicateGroup(
+        types = listOf(TYPES[RiskType.PRISONER.code]!!, ALT_TYPE),
+        id = IdGenerator.getAndIncrement()
+    )
 
     val RiskOfSeriousHarmType.colour
         get() = when (this) {

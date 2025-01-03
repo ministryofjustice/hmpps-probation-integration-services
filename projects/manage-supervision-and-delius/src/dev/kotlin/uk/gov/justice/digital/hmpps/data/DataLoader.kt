@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.GENDER_MALE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -53,7 +52,12 @@ class DataLoader(
 
         entityManager.persist(ContactGenerator.LIMITED_ACCESS_USER)
 
-        entityManager.persist(GENDER_MALE)
+        entityManager.persistAll(
+            PersonGenerator.GENDER_MALE,
+            PersonGenerator.MAPPA_TYPE,
+            PersonGenerator.MAPPA_CATEGORY,
+            PersonGenerator.MAPPA_LEVEL
+        )
 
         PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
         PersonGenerator.PROVISIONS.forEach { entityManager.persist(it.type) }
@@ -103,6 +107,7 @@ class DataLoader(
             OffenderManagerGenerator.STAFF_2,
             OffenderManagerGenerator.STAFF_USER_1,
             OffenderManagerGenerator.STAFF_USER_2,
+            OffenderManagerGenerator.STAFF_TEAM,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.DEFAULT_LOCATION,
@@ -157,9 +162,11 @@ class DataLoader(
             PersonGenerator.REQUIREMENT_CONTACT_2,
             PersonGenerator.REGISTER_TYPE_1,
             PersonGenerator.REGISTER_TYPE_2,
+            PersonGenerator.MAPPA_TYPE,
             PersonGenerator.REGISTRATION_1,
             PersonGenerator.REGISTRATION_2,
             PersonGenerator.REGISTRATION_3,
+            PersonGenerator.MAPPA_REGISTRATION,
             PersonGenerator.REGISTRATION_REVIEW_1,
             PersonGenerator.REGISTRATION_REVIEW_2,
             PersonGenerator.REGISTRATION_REVIEW_3,
@@ -167,10 +174,12 @@ class DataLoader(
             PersonGenerator.MAIN_CAT_F_TYPE,
             PersonGenerator.MAIN_CAT_W_TYPE,
             PersonGenerator.NSI_BREACH_TYPE,
+            PersonGenerator.NSI_OPD_TYPE,
             PersonGenerator.NSI_STATUS,
             PersonGenerator.BREACH_PREVIOUS_ORDER_1,
             PersonGenerator.BREACH_PREVIOUS_ORDER_2,
             PersonGenerator.BREACH_ON_ACTIVE_ORDER,
+            PersonGenerator.OPD_NSI,
             UnpaidWorkApptGenerator.UNPAID_WORK_DETAILS_1,
             UnpaidWorkApptGenerator.APPT1,
             UnpaidWorkApptGenerator.APPT2,

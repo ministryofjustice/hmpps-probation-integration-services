@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Ref
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.registerLevel
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
+import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import java.time.LocalDate
 
@@ -23,6 +24,7 @@ class RiskService(
     private val registerTypeRepository: RegisterTypeRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val contactService: ContactService,
+    private val ordsClient: OrdsClient,
     private val featureFlags: FeatureFlags
 ) {
     fun recordRisk(person: Person, summary: AssessmentSummary) =
@@ -59,39 +61,53 @@ class RiskService(
     private fun recordOtherRisks(person: Person, summary: AssessmentSummary): List<HmppsDomainEvent> {
         if (!featureFlags.enabled("assessment-summary-additional-risks")) return emptyList()
         return RiskType.entries.flatMap { riskType ->
-            val desiredLevel = riskType.riskLevel(summary) ?: return@flatMap emptyList()
+            val riskLevel = riskType.riskLevel(summary) ?: return@flatMap emptyList()
             val registrations =
                 registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code).toMutableList()
 
-            val (matchingRegistrations, registrationsToRemove) = registrations.partition { existing ->
-                existing.level != null && existing.level.code == desiredLevel.code && desiredLevel != RiskLevel.L
+            // Deregister existing registrations if OASys identified the level as low risk
+            if (riskLevel == RiskLevel.L) return@flatMap registrations.map { person.removeRegistration(it) }
+
+            // Add the level to any existing registrations with no level
+            val level = referenceDataRepository.registerLevel(riskLevel.code)
+            registrations.filter { it.level == null }.forEach { it.level = level }
+
+            // Remove any existing registrations with a different level
+            val (matchingRegistrations, registrationsToRemove) = registrations.partition { it.level!!.code == riskLevel.code }
+            val events = registrationsToRemove.map { person.removeRegistration(it) }.toMutableList()
+
+            // Add registration with the identified level if it doesn't already exist
+            val type = registerTypeRepository.getByCode(riskType.code)
+            val existingLevel = RiskLevel.maxByCode(registrationsToRemove.mapNotNull { it.level?.code })
+            val assessmentNote = "The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on " +
+                "${summary.dateCompleted.toDeliusDate()} identified the ${type.description} " +
+                "${existingLevel.increasedOrDecreasedTo(riskLevel)} ${level.description}."
+
+            if (matchingRegistrations.isEmpty()) {
+                val roshSummary = ordsClient.getRoshSummary(summary.assessmentPk)?.assessments?.singleOrNull()
+                val notes = """
+                    |$assessmentNote
+                    |${roshSummary?.whoAtRisk?.let { "\n|*R10.1 Who is at risk*\n|$it" }}
+                    |${roshSummary?.natureOfRisk?.let { "\n|*R10.2 What is the nature of the risk*\n|$it" }}
+                    """.trimMargin()
+                events += registrations.addRegistration(person, type, level, notes).regEvent(person.crn)
+
+                // Registrations in the type's duplicate group should also be removed
+                registerTypeRepository.findOtherTypesInGroup(riskType.code)
+                    .let { registrationRepository.findByPersonIdAndTypeCodeIn(person.id, it) }
+                    .forEach {
+                        val duplicateGroupNotes =
+                            "De-registered when a ${type.description} registration was added on ${summary.dateCompleted.toDeliusDate()}."
+                        events += person.removeRegistration(it, notes = duplicateGroupNotes)
+                    }
             }
 
-            val deRegEvents = registrationsToRemove.map {
-                val contact = contactService.createContact(ContactDetail(DEREGISTRATION, notes = it.notes()), person)
-                it.deregister(contact)
-                it.deRegEvent(person.crn)
-            }
-            val regEvent = if (matchingRegistrations.isEmpty() && desiredLevel != RiskLevel.L) {
-                val type = registerTypeRepository.getByCode(riskType.code)
-                val level = referenceDataRepository.registerLevel(desiredLevel.code)
-                val notes =
-                    "The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on ${
-                        DeliusDateFormatter.format(
-                            summary.dateCompleted
-                        )
-                    } identified the ${type.description} to be ${level.description}"
-                val registration = registrations.addRegistration(person, type, level, notes)
-                registration.regEvent(person.crn)
-            } else null
-
-            if (desiredLevel != RiskLevel.L) {
-                // Always add a review if medium or higher, regardless of whether the register level has changed
-                registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code).singleOrNull()
-                    ?.let { it.withReview(it.reviewContact(person)) }
+            // Always add a review, regardless of whether the register level has changed
+            registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code).singleOrNull()?.let {
+                it.withReview(it.reviewContact(person, "$assessmentNote\n${it.notes()}"))
             }
 
-            return@flatMap listOfNotNull(regEvent) + deRegEvents
+            return@flatMap events
         }
     }
 
@@ -128,10 +144,19 @@ class RiskService(
         return registration
     }
 
-    private fun Registration.reviewContact(person: Person) = contactService.createContact(
+    private fun Person.removeRegistration(
+        registration: Registration,
+        notes: String = registration.notes()
+    ): HmppsDomainEvent {
+        val contact = contactService.createContact(ContactDetail(DEREGISTRATION, notes = notes), this)
+        registration.deregister(contact)
+        return registration.deRegEvent(crn)
+    }
+
+    private fun Registration.reviewContact(person: Person, notes: String = notes()) = contactService.createContact(
         ContactDetail(
             ContactType.Code.REGISTRATION_REVIEW,
-            notes = notes(),
+            notes = notes,
             contactType = type.reviewContactType
         ),
         person
@@ -140,7 +165,14 @@ class RiskService(
 
 fun reviewNotes(type: RegisterType, nextReviewDate: LocalDate?) = listOfNotNull(
     "Type: ${type.flag.description} - ${type.description}",
-    nextReviewDate?.let { "Next Review Date: ${DeliusDateFormatter.format(it)}" }
+    nextReviewDate?.let { "Next Review Date: ${it.toDeliusDate()}" }
 ).joinToString(System.lineSeparator())
 
 fun Registration.notes(): String = reviewNotes(type, nextReviewDate)
+
+private fun RiskLevel?.increasedOrDecreasedTo(riskLevel: RiskLevel) = when {
+    this == null -> "to be"
+    this.ordinal < riskLevel.ordinal -> "to have increased to"
+    this.ordinal > riskLevel.ordinal -> "to have decreased to"
+    else -> "to have remained"
+}

@@ -42,7 +42,7 @@ class NsiService(
     ): Pair<PersonAddress?, PersonAddress>? {
         val externalReference = EXT_REF_BOOKING_PREFIX + details.bookingId
         nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference) ?: run {
-            val staff = staffRepository.getByCode(details.keyWorker.staffCode)
+            val staff = staffRepository.getByCode(details.recordedBy.staffCode)
             val nsi = nsiRepository.save(
                 Nsi(
                     person = person,
@@ -111,7 +111,7 @@ class NsiService(
             person = person,
             eventId = eventRepository.getEvent(person.id, details.eventNumber).id,
             team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode),
-            staff = staffRepository.getByCode(details.keyWorker.staffCode),
+            staff = staffRepository.getByCode(details.recordedBy.staffCode),
             probationAreaCode = ap.probationArea.code
         )
         referralService.personDeparted(person, details)
