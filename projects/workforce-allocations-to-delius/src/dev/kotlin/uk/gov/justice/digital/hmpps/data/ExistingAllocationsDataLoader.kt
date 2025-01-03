@@ -15,8 +15,8 @@ class ExistingAllocationsDataLoader(
 ) {
     fun loadData() {
         existingAllocationsRefDataLoader.loadData()
-        orderManagerRepository.save(OrderManagerGenerator.UNALLOCATED)
-        orderManagerRepository.save(OrderManagerGenerator.INITIAL_ALLOCATION)
+//        orderManagerRepository.save(OrderManagerGenerator.UNALLOCATED)
+//        orderManagerRepository.save(OrderManagerGenerator.INITIAL_ALLOCATION)
     }
 }
 

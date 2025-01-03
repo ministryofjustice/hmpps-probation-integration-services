@@ -31,9 +31,7 @@ object ContactGenerator {
         staffId: Long,
         providerId: Long,
         date: ZonedDateTime = ZonedDateTime.now(),
-        id: Long = IdGenerator.getAndIncrement()
     ) = Contact(
-        id = id,
         type = type,
         personId = personId,
         eventId = eventId,

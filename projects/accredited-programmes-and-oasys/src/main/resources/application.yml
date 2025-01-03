@@ -1,5 +1,4 @@
 # Default config
-server.shutdown: graceful
 spring:
   jackson:
     default-property-inclusion: non_empty
@@ -35,7 +34,7 @@ info.productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk
 spring.config.activate.on-profile: [ "dev", "integration-test" ]
 server.shutdown: immediate
 
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+wiremock.enabled: true
 
 integrations:
   ords:

@@ -1,13 +1,9 @@
 package uk.gov.justice.digital.hmpps.controller.casedetails.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import java.time.LocalDate
 
 @Immutable
@@ -31,5 +27,7 @@ class AliasEntity(
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val case: CaseEntity,
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )

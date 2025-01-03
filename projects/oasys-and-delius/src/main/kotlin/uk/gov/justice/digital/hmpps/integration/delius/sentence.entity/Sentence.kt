@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.sentence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integration.delius.provider.entity.Institution
@@ -30,6 +31,7 @@ class Custody(
     val releases: List<Release> = listOf(),
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -49,9 +51,11 @@ class Disposal(
     val event: Event,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -72,9 +76,11 @@ class Event(
     val disposal: Disposal?,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -109,6 +115,7 @@ class Release(
     val recall: Recall?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Column(name = "created_datetime")
@@ -139,6 +146,7 @@ class Recall(
     val notes: String?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.e
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 @Immutable
@@ -17,7 +18,8 @@ class Person(
     @Column(columnDefinition = "CHAR(7)")
     val crn: String,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @OneToOne(mappedBy = "person")
@@ -51,6 +53,7 @@ class PersonManager(
     val staffId: Long,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true
 )
 
@@ -67,7 +70,8 @@ class AdditionalIdentifier(
     @Column(name = "identifier")
     val mergedFromCrn: String,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @ManyToOne

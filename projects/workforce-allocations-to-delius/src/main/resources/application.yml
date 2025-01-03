@@ -1,12 +1,10 @@
 # Default config
-server.shutdown: graceful
 spring:
   mvc.async.request-timeout: 5m # for report download
   jackson:
     default-property-inclusion: non_null
   jpa:
     hibernate.ddl-auto: validate
-    database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE
@@ -62,7 +60,7 @@ spring:
     validation.enabled: false
 
 seed.database: true
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+wiremock.enabled: true
 
 messaging.consumer.queue: workforce-allocations-events
 
@@ -86,7 +84,6 @@ spring.config.activate.on-profile: dev
 ---
 spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_ON_EXIT=FALSE
-
 ---
 spring.config.activate.on-profile: oracle
 spring:

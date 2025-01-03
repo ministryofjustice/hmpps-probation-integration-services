@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.config.security
 
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.ObjectPostProcessor
+import org.springframework.security.config.ObjectPostProcessor
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.header.HeaderWriterFilter
 

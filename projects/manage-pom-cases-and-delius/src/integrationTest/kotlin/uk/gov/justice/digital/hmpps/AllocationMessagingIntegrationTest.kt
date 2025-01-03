@@ -17,15 +17,16 @@ import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.repository.PrisonStaffRepository
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
@@ -45,17 +46,20 @@ internal class AllocationMessagingIntegrationTest {
     @Autowired
     lateinit var wireMockServer: WireMockServer
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var staffRepository: PrisonStaffRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var prisonManagerRepository: PrisonManagerRepository
 
     @Autowired
     lateinit var contactRepository: ContactRepository
+
+    @Autowired
+    lateinit var staffRepo: StaffRepository
 
     @Order(1)
     @Test
@@ -169,6 +173,8 @@ internal class AllocationMessagingIntegrationTest {
     @Order(4)
     @Test
     fun `deallocate POM successfully`() {
+        staffRepo.save(ProviderGenerator.UNALLOCATED_STAFF)
+
         val existingPom =
             prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())!!
 

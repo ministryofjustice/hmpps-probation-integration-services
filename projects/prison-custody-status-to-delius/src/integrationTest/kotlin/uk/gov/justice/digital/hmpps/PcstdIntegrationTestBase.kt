@@ -11,7 +11,7 @@ import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
@@ -83,10 +83,10 @@ open class PcstdIntegrationTestBase {
     @Autowired
     internal lateinit var licenceConditionRepository: LicenceConditionRepository
 
-    @MockBean
+    @MockitoBean
     internal lateinit var telemetryService: TelemetryService
 
-    @MockBean
+    @MockitoBean
     internal lateinit var featureFlags: FeatureFlags
 
     internal fun withBooking(booking: Booking, lastMovement: Movement = booking.lastMovement()) {

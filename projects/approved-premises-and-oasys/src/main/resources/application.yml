@@ -1,5 +1,4 @@
 # Default config
-server.shutdown: graceful
 spring:
   jackson:
     default-property-inclusion: non_empty
@@ -37,7 +36,6 @@ spring.config.activate.on-profile: [ "dev", "integration-test" ]
 server.shutdown: immediate
 
 wiremock.enabled: true
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 ords:
   client-id: approved-premises-and-oasys

@@ -1,14 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import java.time.LocalDate
 
 @Immutable
@@ -27,10 +21,12 @@ class Nsi(
     val offenderId: Long,
     val eventId: Long? = null,
 
-    @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
+    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false
 )
 

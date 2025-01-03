@@ -28,7 +28,6 @@ import java.time.LocalDate
 @ConditionalOnProperty("seed.database")
 class DataLoader(
     private val auditUserRepository: AuditUserRepository,
-    private val staffUserRepository: StaffUserRepository,
     private val referenceDataSetRepository: ReferenceDataSetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val registerTypeRepository: RegisterTypeRepository,
@@ -38,7 +37,6 @@ class DataLoader(
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val personRepository: PersonRepository,
-    private val personManagerRepository: PersonManagerRepository,
     private val eventRepository: EventRepository,
     private val disposalRepository: DisposalRepository,
     private val custodyRepository: CustodyRepository,
@@ -77,18 +75,8 @@ class DataLoader(
 
         districtRepository.save(ProviderGenerator.DEFAULT_DISTRICT)
         teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM + ProviderGenerator.UNALLOCATED_TEAM)
-        val staffMap =
-            staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff } + ProviderGenerator.UNALLOCATED_STAFF)
-                .associateBy { it.code }
 
-        val staff = staffRepository.save(ProviderGenerator.generateStaff("Test", "Test", "Test"))
-        UserGenerator.DEFAULT_STAFF_USER = staffUserRepository.save(
-            StaffUser(
-                UserGenerator.DEFAULT_STAFF_USER.username,
-                staffMap[ProviderGenerator.DEFAULT_STAFF.code],
-                UserGenerator.DEFAULT_STAFF_USER.id
-            )
-        )
+        staffRepository.save(ProviderGenerator.generateStaff("Test", "Test", "Test"))
 
         personRepository.saveAll(
             listOf(
@@ -101,17 +89,6 @@ class DataLoader(
                 PersonGenerator.PERSON_NOT_FOUND,
                 PersonGenerator.PERSON_MULTIPLE_CUSTODIAL
             )
-        )
-        personManagerRepository.saveAll(
-            PersonManagerGenerator.ALL.map {
-                PersonManagerGenerator.generate(
-                    team = it.team,
-                    staff = staffMap[it.staff.code]!!,
-                    person = it.person,
-                    active = it.active,
-                    softDeleted = it.softDeleted
-                )
-            }
         )
 
         eventRepository.saveAll(CaseAllocationGenerator.ALL.map { it.event })

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referr
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -99,6 +100,7 @@ class Referral(
     val id: Long = 0
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false
 
     @Version
@@ -151,9 +153,11 @@ class Event(
     val personId: Long,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 )
 

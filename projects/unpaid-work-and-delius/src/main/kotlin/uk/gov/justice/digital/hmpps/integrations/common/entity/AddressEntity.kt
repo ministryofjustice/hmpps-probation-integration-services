@@ -1,11 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.common.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 
 @Immutable
 @Entity
@@ -24,6 +22,7 @@ class AddressEntity(
     val county: String?,
     val postcode: String?,
     val telephoneNumber: String?,
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )

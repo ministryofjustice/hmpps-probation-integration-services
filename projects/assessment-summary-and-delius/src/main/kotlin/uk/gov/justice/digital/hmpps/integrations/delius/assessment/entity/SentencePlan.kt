@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import java.io.Serializable
 
@@ -21,6 +22,7 @@ class SentencePlan(
     val objective: String,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version
@@ -75,6 +77,7 @@ class Need(
     val person: Person,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version
@@ -97,6 +100,7 @@ class Text(
     val person: Person,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version
@@ -119,6 +123,7 @@ class WorkSummary(
     val person: Person,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version

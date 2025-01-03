@@ -11,7 +11,7 @@ object ProviderGenerator {
     val DEFAULT_TEAM = generateTeam("N03DEF", district = DEFAULT_DISTRICT)
     val POM_TEAM = generateTeam("N03POM", district = DEFAULT_DISTRICT)
     val UNALLOCATED_TEAM = generateTeam("N03ALL", district = DEFAULT_DISTRICT)
-    val DEFAULT_STAFF = generateStaff("N03DEF0", "Default", "Staff", user = UserGenerator.DEFAULT_STAFF_USER)
+    val DEFAULT_STAFF = generateStaff("N03DEF0", "Default", "Staff")
     val UNALLOCATED_STAFF = generateStaff("N03ALLU", "Unallocated", "Staff")
 
     fun generateProvider(providerCode: String, prisonCode: String?, id: Long = IdGenerator.getAndIncrement()) =
@@ -40,6 +40,5 @@ object ProviderGenerator {
         middleName: String? = null,
         user: StaffUser? = null,
         startDate: ZonedDateTime = ZonedDateTime.now(),
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Staff(code, forename, surname, middleName, user, providerId, startDate, id).apply { user?.set("staff", this) }
+    ) = Staff(code, forename, surname, middleName, user, providerId, startDate).apply { user?.set("staff", this) }
 }

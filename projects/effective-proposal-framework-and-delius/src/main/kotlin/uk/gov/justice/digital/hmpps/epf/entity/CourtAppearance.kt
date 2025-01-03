@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.epf.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -42,7 +43,8 @@ class CourtAppearance(
     @ManyToOne
     val court: Court,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 

@@ -15,7 +15,7 @@ import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.data.entity.IapsPersonRepository
@@ -80,10 +80,10 @@ internal class IntegrationTest {
     @Autowired
     lateinit var entityManager: EntityManager
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @MockBean
+    @MockitoBean
     lateinit var featureFlags: FeatureFlags
 
     lateinit var transactionTemplate: TransactionTemplate

@@ -16,14 +16,12 @@ object ResponsibleOfficerGenerator {
         prisonManager: PrisonManager? = null,
         startDateTime: ZonedDateTime = communityManager?.startDate ?: ZonedDateTime.now(),
         endDateTime: ZonedDateTime? = null,
-        id: Long = IdGenerator.getAndIncrement(),
         createdDateTime: ZonedDateTime = ZonedDateTime.now(),
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.AUDIT_USER.id,
         lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
         version: Long = 0
     ) = ResponsibleOfficer(
-        id,
         personId,
         communityManager,
         prisonManager,

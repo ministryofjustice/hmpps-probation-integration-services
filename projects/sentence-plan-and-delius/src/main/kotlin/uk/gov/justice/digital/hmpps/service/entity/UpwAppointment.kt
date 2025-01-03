@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
@@ -16,6 +17,8 @@ class UpwAppointment(
     val minutesCredited: Long?,
     @Column(columnDefinition = "char(1)")
     val attended: String?,
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
     @JoinColumn(name = "upw_details_id")
     @ManyToOne
@@ -34,6 +37,8 @@ class UpwDetails(
     @ManyToOne
     val disposal: Disposal,
 
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 )
 

@@ -11,8 +11,8 @@ import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
@@ -42,7 +42,7 @@ class AllocateEventIntegrationTest {
     @Autowired
     private lateinit var orderManagerRepository: OrderManagerRepository
 
-    @MockBean
+    @MockitoBean
     private lateinit var telemetryService: TelemetryService
 
     @Autowired

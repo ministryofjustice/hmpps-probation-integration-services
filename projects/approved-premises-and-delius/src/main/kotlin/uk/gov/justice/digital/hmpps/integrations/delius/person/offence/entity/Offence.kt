@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
@@ -38,6 +39,7 @@ class MainOffence(
     val date: LocalDate,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -63,6 +65,7 @@ class AdditionalOffence(
     val date: LocalDate?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id

@@ -1,14 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 
 @Immutable
 @Entity
@@ -22,10 +17,12 @@ data class Event(
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 
-    @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
+    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {
@@ -59,10 +56,12 @@ class Disposal(
     @JoinColumn(name = "disposal_type_id", updatable = false)
     val disposalType: DisposalType,
 
-    @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
+    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 

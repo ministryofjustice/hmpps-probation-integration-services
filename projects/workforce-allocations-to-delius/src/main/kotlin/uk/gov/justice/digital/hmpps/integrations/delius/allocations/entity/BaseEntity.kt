@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.Version
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -12,7 +14,8 @@ import java.time.ZonedDateTime
 @MappedSuperclass
 abstract class BaseEntity {
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false
 
     @Column(name = "row_version", nullable = false)

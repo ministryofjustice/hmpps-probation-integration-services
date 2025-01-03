@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -36,6 +37,7 @@ class PersonManager(
     val staffEmployeeId: Long,
 
     @Column(name = "trust_provider_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean,
 
     @ManyToOne
@@ -89,9 +91,11 @@ class PersonManager(
     val endDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false
 
 ) {

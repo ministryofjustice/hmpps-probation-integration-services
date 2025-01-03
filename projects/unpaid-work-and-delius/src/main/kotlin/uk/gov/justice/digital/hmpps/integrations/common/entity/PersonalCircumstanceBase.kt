@@ -1,12 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.common.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
 
@@ -35,6 +31,7 @@ open class PersonalCircumstanceBase(
     val endDate: LocalDate? = null,
 
     @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Convert(converter = YesNoConverter::class)

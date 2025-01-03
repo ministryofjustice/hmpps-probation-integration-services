@@ -1,0 +1,1 @@
+org.springframework.context.ApplicationContextInitializer=uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -45,6 +46,7 @@ class PrisonManager(
     val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
 
     @Column(columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id
@@ -56,6 +58,7 @@ class PrisonManager(
     var endDate: ZonedDateTime? = null
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     var active: Boolean = true
 
     @CreatedBy

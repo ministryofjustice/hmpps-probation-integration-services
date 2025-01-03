@@ -2,9 +2,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
-import uk.gov.justice.digital.hmpps.api.model.Institution
-import uk.gov.justice.digital.hmpps.api.model.keyValueOf
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.io.Serializable
 
@@ -27,6 +26,7 @@ class Institution(
     val establishmentType: ReferenceData?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val private: Boolean?,
 
     val nomisCdeCode: String?

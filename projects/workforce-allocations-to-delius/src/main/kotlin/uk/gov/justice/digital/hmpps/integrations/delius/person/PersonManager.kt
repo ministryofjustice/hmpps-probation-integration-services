@@ -19,11 +19,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.Manag
 @Table(name = "offender_manager")
 @SequenceGenerator(name = "offender_manager_id_seq", sequenceName = "offender_manager_id_seq", allocationSize = 1)
 class PersonManager(
+    @Column(name = "offender_id")
+    var personId: Long = 0,
+
     @Id
     @Column(name = "offender_manager_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_manager_id_seq")
-    var id: Long = 0,
-
-    @Column(name = "offender_id")
-    var personId: Long = 0
+    var id: Long = 0
 ) : ManagerBaseEntity()

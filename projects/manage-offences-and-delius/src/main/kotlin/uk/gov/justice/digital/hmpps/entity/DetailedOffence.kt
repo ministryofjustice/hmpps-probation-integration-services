@@ -1,17 +1,7 @@
 package uk.gov.justice.digital.hmpps.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
+import jakarta.persistence.*
 import jakarta.persistence.GenerationType.SEQUENCE
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -26,15 +16,6 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "detailed_offence_id_seq", sequenceName = "detailed_offence_id_seq", allocationSize = 1)
 class DetailedOffence(
-    @Id
-    @Column(name = "detailed_offence_id")
-    @GeneratedValue(strategy = SEQUENCE, generator = "detailed_offence_id_seq")
-    val id: Long = 0,
-
-    @Version
-    @Column(name = "row_version")
-    var version: Long = 0,
-
     @Column(name = "cja_code", columnDefinition = "varchar2(10)")
     var code: String, // Criminal Justice System code
 
@@ -61,7 +42,7 @@ class DetailedOffence(
 
     @ManyToOne
     @JoinColumn(name = "court_category_id")
-    var category: ReferenceData,
+    var category: ReferenceData?,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "schedule15_sexual_offence")
@@ -85,5 +66,14 @@ class DetailedOffence(
     var createdDatetime: ZonedDateTime? = null,
 
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime? = null
+    var lastUpdatedDatetime: ZonedDateTime? = null,
+
+    @Id
+    @Column(name = "detailed_offence_id")
+    @GeneratedValue(strategy = SEQUENCE, generator = "detailed_offence_id_seq")
+    val id: Long? = null,
+
+    @Version
+    @Column(name = "row_version")
+    var version: Long = 0,
 )
