@@ -73,7 +73,8 @@ class DataLoader(
     private val disabilityRepository: DisabilityRepository,
     private val offenceRepository: OffenceRepository,
     private val mainOffenceRepository: MainOffenceRepository,
-    private val teamOfficeLinkRepository: TeamOfficeLinkRepository
+    private val teamOfficeLinkRepository: TeamOfficeLinkRepository,
+    private val entityManagerDataLoader: EntityManagerDataLoader
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -279,6 +280,8 @@ class DataLoader(
         )
 
         personRepository.save(PersonGenerator.FUZZY_SEARCH)
+        entityManagerDataLoader.loadData()
+        nsiManagerRepository.save(NsiGenerator.generateManager(entityManagerDataLoader.NSI_FUZZY_SEARCH!!))
 
         auditUserRepository.save(UserGenerator.LIMITED_ACCESS_USER)
         personRepository.saveAll(
