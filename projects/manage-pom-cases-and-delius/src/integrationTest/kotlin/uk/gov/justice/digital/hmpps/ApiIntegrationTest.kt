@@ -13,12 +13,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
-import uk.gov.justice.digital.hmpps.data.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.data.StaffUserRepository
-import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -29,52 +27,9 @@ internal class ApiIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var staffRepository: StaffRepository
-
-    @Autowired
-    lateinit var staffUserRepository: StaffUserRepository
-
-    @Autowired
-    lateinit var personManagerRepository: PersonManagerRepository
-
-    fun loadTestData() {
-        val staffMap = staffRepository.saveAll(
-            PersonManagerGenerator.ALL.map { it.staff } +
-                ProviderGenerator.UNALLOCATED_STAFF).associateBy { it.code }
-
-        UserGenerator.DEFAULT_STAFF_USER = staffUserRepository.save(
-            StaffUser(
-                UserGenerator.DEFAULT_STAFF_USER.username,
-                staffMap[ProviderGenerator.DEFAULT_STAFF.code],
-                UserGenerator.DEFAULT_STAFF_USER.id
-            )
-        )
-
-        personManagerRepository.saveAll(
-            PersonManagerGenerator.ALL.map {
-                PersonManagerGenerator.generate(
-                    team = it.team,
-                    staff = staffMap[it.staff.code]!!,
-                    person = it.person,
-                    active = it.active,
-                    softDeleted = it.softDeleted
-                )
-            }
-        )
-    }
-
     @ParameterizedTest
     @MethodSource("caseIdentifiers")
-    fun `successful retrieval of a case record by crn or noms id`(
-        identifier: String,
-        person: Person,
-        loadData: Boolean
-    ) {
-        if (loadData) {
-            loadTestData()
-        }
-
+    fun `successful retrieval of a case record by crn or noms id`(identifier: String, person: Person) {
         val record = mockMvc
             .perform(get("/case-records/$identifier").withToken())
             .andExpect(status().is2xxSuccessful)
@@ -111,8 +66,8 @@ internal class ApiIntegrationTest {
     companion object {
         @JvmStatic
         fun caseIdentifiers() = listOf(
-            Arguments.of(PersonGenerator.DEFAULT.crn, PersonGenerator.DEFAULT, true),
-            Arguments.of(PersonGenerator.DEFAULT.nomsId, PersonGenerator.DEFAULT, false)
+            Arguments.of(PersonGenerator.DEFAULT.crn, PersonGenerator.DEFAULT),
+            Arguments.of(PersonGenerator.DEFAULT.nomsId, PersonGenerator.DEFAULT)
         )
     }
 }

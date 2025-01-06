@@ -26,7 +26,6 @@ import uk.gov.justice.digital.hmpps.entity.PrisonStaff
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.repository.PrisonStaffRepository
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
@@ -57,9 +56,6 @@ internal class AllocationMessagingIntegrationTest {
 
     @Autowired
     lateinit var contactRepository: ContactRepository
-
-    @Autowired
-    lateinit var staffRepo: StaffRepository
 
     @Order(1)
     @Test
@@ -173,8 +169,6 @@ internal class AllocationMessagingIntegrationTest {
     @Order(4)
     @Test
     fun `deallocate POM successfully`() {
-        staffRepo.save(ProviderGenerator.UNALLOCATED_STAFF)
-
         val existingPom =
             prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())!!
 
