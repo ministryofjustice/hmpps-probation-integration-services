@@ -281,7 +281,7 @@ class DataLoader(
 
         personRepository.save(PersonGenerator.FUZZY_SEARCH)
         entityManagerDataLoader.loadData()
-        nsiManagerRepository.save(NsiGenerator.generateManager(entityManagerDataLoader.NSI_FUZZY_SEARCH!!))
+        nsiManagerRepository.save(NsiGenerator.generateManager(entityManagerDataLoader.nsiFuzzySearch!!))
 
         auditUserRepository.save(UserGenerator.LIMITED_ACCESS_USER)
         personRepository.saveAll(

@@ -13,11 +13,11 @@ class EntityManagerDataLoader {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    var NSI_FUZZY_SEARCH: Nsi? = null
+    var nsiFuzzySearch: Nsi? = null
 
     @Transactional
     fun loadData() {
-        NSI_FUZZY_SEARCH = entityManager.merge(NsiGenerator.FUZZY_SEARCH)
+        nsiFuzzySearch = entityManager.merge(NsiGenerator.FUZZY_SEARCH)
         entityManager.merge(NsiGenerator.TERMINATED)
     }
 }
