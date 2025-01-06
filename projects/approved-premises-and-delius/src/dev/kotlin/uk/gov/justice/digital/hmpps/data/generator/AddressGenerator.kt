@@ -13,8 +13,6 @@ object AddressGenerator {
         postcode = "MB01 3TD"
     )
 
-    var PERSON_ADDRESS_ID: Long? = null
-
     var INACTIVE_PERSON_ADDRESS = generatePersonAddress(
         personId = PersonGenerator.PERSON_INACTIVE_EVENT.id,
         addressNumber = "12",
@@ -22,8 +20,6 @@ object AddressGenerator {
         town = "Some Place",
         postcode = "MB01 3TD"
     )
-
-    var INACTIVE_PERSON_ADDRESS_ID: Long? = null
 
     val Q001 = generateAddress(
         addressNumber = "1",

@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
+import uk.gov.justice.digital.hmpps.data.EntityManagerDataLoader
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
@@ -85,6 +86,9 @@ internal class MessagingIntegrationTest {
 
     @Autowired
     private lateinit var staffRepository: StaffRepository
+
+    @Autowired
+    private lateinit var entityManagerDataLoader: EntityManagerDataLoader
 
     @BeforeEach
     fun clearTopic() {
@@ -295,7 +299,7 @@ internal class MessagingIntegrationTest {
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
-            .associateBy { it.id == AddressGenerator.PERSON_ADDRESS_ID }
+            .associateBy { it.id == entityManagerDataLoader.personAddressId }
         assertThat(addresses.size, equalTo(2))
         val previous = addresses[true]!!
         assertThat(previous.endDate, equalTo(details.arrivedAt.toLocalDate()))

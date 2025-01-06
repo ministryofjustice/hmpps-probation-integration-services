@@ -9,21 +9,22 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 @Component
 class ReferralBookingDataLoader(
     private val personRepository: PersonRepository,
-    private val residenceRepository: ResidenceRepository
+    private val residenceRepository: ResidenceRepository,
+    private val entityManagerDataLoader: EntityManagerDataLoader
 ) {
     fun loadData() {
         personRepository.save(PersonGenerator.PERSON_WITH_BOOKING)
         ReferralGenerator.ARRIVAL = residenceRepository.save(
             ReferralGenerator.generateResidence(
                 PersonGenerator.PERSON_WITH_BOOKING,
-                ReferralGenerator.BOOKING_ARRIVED_DB_RECORD!!,
+                entityManagerDataLoader.bookingArrivedDbRecord!!,
                 arrivalDateTime = ReferralGenerator.ARRIVAL.arrivalDate,
             )
         )
         ReferralGenerator.DEPARTURE = residenceRepository.save(
             ReferralGenerator.generateResidence(
                 PersonGenerator.PERSON_WITH_BOOKING,
-                ReferralGenerator.BOOKING_DEPARTED_DB_RECORD!!,
+                entityManagerDataLoader.bookingDepartedDbRecord!!,
                 arrivalDateTime = ReferralGenerator.DEPARTURE.arrivalDate,
                 departureDateTime = ReferralGenerator.DEPARTURE.departureDate
             )

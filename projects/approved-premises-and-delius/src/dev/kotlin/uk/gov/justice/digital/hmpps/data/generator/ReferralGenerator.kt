@@ -31,7 +31,6 @@ object ReferralGenerator {
         expectedArrivalDate = LocalDate.now(),
         expectedDepartureDate = LocalDate.now().plusDays(7),
     )
-    var BOOKING_ARRIVED_DB_RECORD: Referral? = null
 
     var ARRIVAL = generateResidence(PersonGenerator.PERSON_WITH_BOOKING, BOOKING_ARRIVED)
 
@@ -43,8 +42,6 @@ object ReferralGenerator {
         expectedArrivalDate = LocalDate.now().minusDays(8),
         expectedDepartureDate = LocalDate.now().minusDays(1)
     )
-
-    var BOOKING_DEPARTED_DB_RECORD: Referral? = null
 
     var DEPARTURE = generateResidence(
         PersonGenerator.PERSON_WITH_BOOKING, BOOKING_DEPARTED,
