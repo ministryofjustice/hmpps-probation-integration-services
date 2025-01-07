@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
@@ -63,7 +64,7 @@ class SentenceAppointmentServiceTest {
 
     private val uuid: UUID = UUID.randomUUID()
 
-    private val user = User("user", "team")
+    private val user = User("user", DEFAULT_LOCATION.id)
 
     @Test
     fun `licence and requirement id provided`() {
@@ -147,6 +148,7 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
+
         val exception = assertThrows<InvalidRequestException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)
         }
@@ -272,7 +274,7 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(staffUserRepository.findUserAndLocation(appointment.user.username, appointment.user.team))
+        whenever(staffUserRepository.findUserAndLocation(appointment.user.username, appointment.user.locationId))
             .thenReturn(UserLoc(1, 2, 3, 4, 5))
 
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)
@@ -305,7 +307,7 @@ class SentenceAppointmentServiceTest {
         whenever(offenderManagerRepository.findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(PersonGenerator.PERSON_1.crn)).thenReturn(
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE
         )
-        whenever(staffUserRepository.findUserAndLocation(appointment.user.username, appointment.user.team))
+        whenever(staffUserRepository.findUserAndLocation(appointment.user.username, appointment.user.locationId))
             .thenReturn(UserLoc(1, 2, 3, 4, 5))
 
         whenever(eventSentenceRepository.existsById(appointment.eventId)).thenReturn(true)

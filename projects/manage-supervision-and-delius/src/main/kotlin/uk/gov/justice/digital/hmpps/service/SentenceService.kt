@@ -46,6 +46,18 @@ class SentenceService(
         )
     }
 
+    fun getActiveSentences(crn: String): MinimalSentenceOverview {
+        val person = personRepository.getPerson(crn)
+        val activeEvents = eventRepository.findSentencesByPersonId(person.id).filter {
+            it.active
+        }
+
+        return MinimalSentenceOverview(
+            personSummary = person.toSummary(),
+            activeEvents.map { it.toMinimalSentence() }
+        )
+    }
+
     fun getProbationHistory(crn: String): History {
         val person = personRepository.getPerson(crn)
         val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
@@ -66,6 +78,19 @@ class SentenceService(
         eventNumber,
         disposal?.type?.description ?: "Pre-Sentence"
     )
+
+    fun Event.toMinimalSentence(): MinimalSentence =
+        MinimalSentence(
+            id,
+            disposal?.toMinimalOrder(),
+            licenceConditions = disposal?.let {
+                licenceConditionRepository.findAllByDisposalId(disposal.id).map {
+                    it.toMinimalLicenceCondition()
+                }
+            } ?: emptyList(),
+            requirements = requirementRepository.getRequirements(id, eventNumber)
+                .map { it.toMinimalRequirement() },
+        )
 
     fun Event.toSentence(crn: String): Sentence {
         val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
@@ -114,6 +139,8 @@ class SentenceService(
         )
     }
 
+    fun Disposal.toMinimalOrder() = MinimalOrder(type.description, date, expectedEndDate())
+
     fun RequirementDetails.toRequirement(): Requirement {
         val rar = getRar(id, code)
 
@@ -132,6 +159,11 @@ class SentenceService(
         )
 
         return requirement
+    }
+
+    fun RequirementDetails.toMinimalRequirement(): MinimalRequirement {
+        val rar = getRar(id, code)
+        return MinimalRequirement(id, populateRequirementDescription(description, codeDescription, rar))
     }
 
     fun populateRequirementDescription(description: String, codeDescription: String?, rar: Rar?): String {

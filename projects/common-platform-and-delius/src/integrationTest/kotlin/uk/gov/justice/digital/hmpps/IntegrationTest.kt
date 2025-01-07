@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -60,10 +61,16 @@ internal class IntegrationTest {
     lateinit var personRepository: PersonRepository
 
     @SpyBean
+    lateinit var addressRepository: PersonAddressRepository
+
+    @SpyBean
     lateinit var personManagerRepository: PersonManagerRepository
 
     @SpyBean
-    lateinit var addressRepository: PersonAddressRepository
+    lateinit var personService: PersonService
+
+    @MockBean
+    private lateinit var featureFlags: FeatureFlags
 
     @SpyBean
     lateinit var eventRepository: EventRepository
@@ -81,14 +88,12 @@ internal class IntegrationTest {
     lateinit var orderManagerRepository: OrderManagerRepository
 
     @SpyBean
-    lateinit var personService: PersonService
-
-    @SpyBean
     lateinit var eventService: EventService
 
     @BeforeEach
     fun setup() {
         doReturn("A111111").whenever(personService).generateCrn()
+        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(true)
     }
 
     @Test
@@ -117,16 +122,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a message with no prosecution cases is found no insert is performed`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_CASES)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
@@ -134,16 +129,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a message without a judicial result of remanded in custody is found`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_REMAND)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
@@ -151,16 +136,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a person under 10 years old is found no insert is performed`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_DOB_ERROR)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
@@ -168,16 +143,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a probation search match is not detected then a person is inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -201,16 +166,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a hearing message with missing required fields is detected no records are inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
         channelManager.getChannel(queueName).publishAndWait(notification)
         thenNoRecordsAreInserted()
@@ -218,20 +173,11 @@ internal class IntegrationTest {
 
     @Test
     fun `When a hearing with an address is received then an address record is inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(personService).insertAddress(any())
+        verify(personService).findAddressByFreeText(any())
 
         verify(addressRepository).save(check<PersonAddress> {
             assertThat(it.start, Matchers.equalTo(LocalDate.now()))
@@ -255,16 +201,6 @@ internal class IntegrationTest {
 
     @Test
     fun `When a hearing with an empty address is received then an address record is not inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_BLANK_ADDRESS)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -284,16 +220,6 @@ internal class IntegrationTest {
     @Order(1)
     @Test
     fun `engagement created and address created sns messages are published on insert person`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -304,6 +230,17 @@ internal class IntegrationTest {
             assertThat(it.surname, Matchers.equalTo("Example Last Name"))
             assertThat(it.mobileNumber, Matchers.equalTo("07000000000"))
             assertThat(it.telephoneNumber, Matchers.equalTo("01234567890"))
+        })
+
+        verify(addressRepository).save(check<PersonAddress> {
+            assertThat(it.start, Matchers.equalTo(LocalDate.now()))
+            assertNull(it.endDate)
+            assertNotNull(it.notes)
+            assertThat(it.softDeleted, Matchers.equalTo(false))
+            assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
+            assertThat(it.noFixedAbode, Matchers.equalTo(false))
+            assertThat(it.type.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code))
+            assertThat(it.typeVerified, Matchers.equalTo(false))
         })
 
         val topic = hmppsChannelManager.getChannel(topicName)
@@ -351,28 +288,75 @@ internal class IntegrationTest {
         }
     }
 
-    private fun thenNoRecordsAreInserted() {
-        verify(personService, never()).insertAddress(any())
-        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any())
-        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any())
-        verify(addressRepository, never()).save(any())
-        verify(personRepository, never()).save(any())
+    @Test
+    fun `court hearing address is inserted when no address lookup is found`() {
+        wireMockServer.stubFor(
+            get(urlPathEqualTo("/address-lookup/search/places/v1/find"))
+                .willReturn(
+                    okJson(
+                        """
+                {
+                    "header": { "totalresults": 0 },
+                    "results": []
+                }
+            """
+                    )
+                )
+        )
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(addressRepository).save(check<PersonAddress> {
+            assertThat(it.start, Matchers.equalTo(LocalDate.now()))
+            assertThat(it.streetName, Matchers.containsString("Example Address Line 1"))
+            assertThat(it.district, Matchers.containsString("Example Address Line 2"))
+            assertThat(it.town, Matchers.containsString("Example Address Line 3"))
+            assertThat(it.postcode, Matchers.containsString("AA1 1AA"))
+            assertNull(it.endDate)
+            assertNull(it.notes)
+            assertThat(it.softDeleted, Matchers.equalTo(false))
+            assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
+            assertThat(it.noFixedAbode, Matchers.equalTo(false))
+            assertThat(it.type.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code))
+            assertThat(it.typeVerified, Matchers.equalTo(false))
+        })
+    }
+
+    @Test
+    fun `Address lookup api is inserted when result is found`() {
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(addressRepository).save(check<PersonAddress> {
+            assertThat(it.start, Matchers.equalTo(LocalDate.now()))
+            assertThat(it.notes, Matchers.containsString("UPRN: 123456789012"))
+            assertThat(it.postcode, Matchers.containsString("AB1 2CD"))
+            assertThat(it.streetName, Matchers.containsString("Test Street"))
+            assertThat(it.addressNumber, Matchers.containsString("123"))
+            assertThat(it.town, Matchers.containsString("Test"))
+            assertNull(it.endDate)
+            assertNotNull(it.notes)
+            assertThat(it.softDeleted, Matchers.equalTo(false))
+            assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
+            assertThat(it.noFixedAbode, Matchers.equalTo(false))
+            assertThat(it.type.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.AWAITING_ASSESSMENT.code))
+            assertThat(it.typeVerified, Matchers.equalTo(false))
+        })
+    }
+
+    @Test
+    fun `When feature flag is disabled no records are inserted`() {
+        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(false)
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(personService, never()).insertPerson(any(), any())
+        thenNoRecordsAreInserted()
         verify(auditedInteractionService, Mockito.never())
-            .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
+            .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.FAIL), any(), anyOrNull())
     }
 
     @Test
     fun `A hearing message with a remanded offence is received and an event is inserted`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-no-results.json")
-                )
-        )
-
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -396,15 +380,22 @@ internal class IntegrationTest {
         )
     }
 
+    private fun thenNoRecordsAreInserted() {
+        verify(orderManagerRepository, never()).save(any())
+        verify(courtAppearanceRepository, never()).save(any())
+        verify(contactRepository, never()).save(any())
+        verify(eventRepository, never()).save(any())
+        verify(mainOffenceRepository, never()).save(any())
+        verify(addressRepository, never()).save(any())
+        verify(personRepository, never()).save(any())
+        verify(personManagerRepository, never()).save(any())
+        verify(auditedInteractionService, Mockito.never())
+            .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
+    }
+
+
     @AfterEach
-    fun cleanup() {
-        courtAppearanceRepository.deleteAll()
-        mainOffenceRepository.deleteAll()
-        orderManagerRepository.deleteAll()
-        eventRepository.deleteAll()
-        addressRepository.deleteAll()
-        contactRepository.deleteAll()
-        personManagerRepository.deleteAll()
-        personRepository.deleteAll()
+    fun resetWireMock() {
+        wireMockServer.resetAll()
     }
 }

@@ -30,7 +30,7 @@ class AwsNotificationListenerTest {
 
     @BeforeEach
     fun setUp() {
-        listener = AwsNotificationListener(handler, objectMapper, listOf("my-sensitive-event-type"), "my-queue")
+        listener = AwsNotificationListener(handler, objectMapper, "my-queue")
     }
 
     @Test

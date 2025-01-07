@@ -4,14 +4,19 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 object PersonGenerator {
-    val NO_RISK = generate("N123456")
-    val LOW_RISK = generate("L123456")
-    val MEDIUM_RISK = generate("M123456")
-    val HIGH_RISK = generate("H123456")
-    val VERY_HIGH_RISK = generate("V123456")
-    val PERSON_NO_EVENT = generate("E123456")
-    val PERSON_SOFT_DELETED_EVENT = generate("F123456")
-    val PRISON_ASSESSMENT = generate("O123456")
+    val NO_ROSH = generate("A000001")
+    val LOW_ROSH = generate("A000002")
+    val MEDIUM_ROSH = generate("A000003")
+    val HIGH_ROSH = generate("A000004")
+    val VERY_HIGH_ROSH = generate("A000005")
+    val PERSON_NO_EVENT = generate("A000006")
+    val PERSON_SOFT_DELETED_EVENT = generate("A000007")
+    val PRISON_ASSESSMENT = generate("A000008")
+
+    val NO_EXISTING_RISKS = generate("A000009")
+    val EXISTING_RISKS = generate("A000010")
+    val FEATURE_FLAG = generate("A000011")
+    val EXISTING_RISKS_WITHOUT_LEVEL = generate("A000012")
 
     fun generate(
         crn: String,

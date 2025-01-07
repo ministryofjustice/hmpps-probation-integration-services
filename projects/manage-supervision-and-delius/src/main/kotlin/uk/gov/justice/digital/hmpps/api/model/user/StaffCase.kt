@@ -5,11 +5,12 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import java.time.LocalDate
 
 data class StaffCase(
-    val caseName: Name,
+    val caseName: Name? = null,
     val crn: String,
-    val dob: LocalDate,
+    val dob: LocalDate? = null,
     val nextAppointment: Appointment? = null,
     val previousAppointment: Appointment? = null,
     val latestSentence: String? = null,
-    val numberOfAdditionalSentences: Long
+    val numberOfAdditionalSentences: Long? = null,
+    val limitedAccess: Boolean? = false
 )

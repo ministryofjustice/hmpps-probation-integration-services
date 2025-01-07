@@ -22,14 +22,11 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.PreferredResidence
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.PreferredResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi.Companion.EXT_REF_BOOKING_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
@@ -40,6 +37,7 @@ import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
+import uk.gov.justice.digital.hmpps.service.EXT_REF_BOOKING_PREFIX
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.LocalDate

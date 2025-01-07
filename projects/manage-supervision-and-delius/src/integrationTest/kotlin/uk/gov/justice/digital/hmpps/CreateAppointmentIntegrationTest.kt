@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROV
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
@@ -41,7 +40,7 @@ class CreateAppointmentIntegrationTest {
     @Autowired
     internal lateinit var appointmentRepository: AppointmentRepository
 
-    private val user = User(STAFF_USER_1.username, TEAM.description)
+    private val user = User(STAFF_USER_1.username, DEFAULT_LOCATION.id)
 
     private val person = PersonGenerator.PERSON_1
 
@@ -156,7 +155,7 @@ class CreateAppointmentIntegrationTest {
     }
 
     companion object {
-        private val user = User(STAFF_USER_1.username, TEAM.description)
+        private val user = User(STAFF_USER_1.username, DEFAULT_LOCATION.id)
 
         @JvmStatic
         fun createAppointment() = listOf(

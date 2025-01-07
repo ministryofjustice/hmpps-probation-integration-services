@@ -4,6 +4,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentMatchers.anyList
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
@@ -36,12 +38,16 @@ internal class UserServiceTest {
     @Mock
     lateinit var teamRepository: TeamRepository
 
+    @Mock
+    lateinit var userAccessService: UserAccessService
+
     @InjectMocks
     lateinit var service: UserService
 
     @Test
     fun `calls get person activity function`() {
         val username = "username"
+        whenever(userAccessService.userAccessFor(anyString(), anyList())).thenReturn(UserAccess(emptyList()))
         whenever(userRepository.findByUsername(username)).thenReturn(USER)
         whenever(caseloadRepository.findByStaffId(USER.staff!!.id, Pageable.ofSize(1))).thenReturn(
             PageImpl(

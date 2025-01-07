@@ -42,7 +42,7 @@ data class CreateAppointment(
 
 data class User(
     val username: String,
-    val team: String
+    val locationId: Long
 )
 
 data class OverlappingAppointment(

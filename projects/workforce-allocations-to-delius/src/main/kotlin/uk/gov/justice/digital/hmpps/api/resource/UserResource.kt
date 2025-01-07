@@ -2,8 +2,11 @@ package uk.gov.justice.digital.hmpps.api.resource
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.constraints.Size
+import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.service.UserAccessService
 import uk.gov.justice.digital.hmpps.service.UserService
 
@@ -34,7 +37,9 @@ class UserResource(
 
     @GetMapping("/users")
     @Operation(summary = "Returns all users with the Delius `MAABT001` role")
-    fun allUsers() = userService.findAllUsersWithRole()
+    fun allUsers() = ResponseEntity.ok()
+        .contentType(APPLICATION_JSON)
+        .body(StreamingResponseBody { userService.writeAllUsersWithRole(it) })
 
     @GetMapping("/person/{crn}/limited-access/all")
     @Operation(summary = "Returns all limited access information (restrictions and exclusions) for a Delius CRN")

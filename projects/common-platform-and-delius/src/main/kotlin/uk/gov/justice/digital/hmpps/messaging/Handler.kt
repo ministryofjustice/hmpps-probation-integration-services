@@ -6,6 +6,7 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CourtAppearanceRepository
@@ -14,6 +15,8 @@ import uk.gov.justice.digital.hmpps.service.EventService
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
+import java.time.Period
 
 @Component
 @Channel("common-platform-and-delius-queue")
@@ -22,8 +25,9 @@ class Handler(
     private val notifier: Notifier,
     private val telemetryService: TelemetryService,
     private val personService: PersonService,
-    private val eventService: EventService,
     private val probationSearchClient: ProbationSearchClient,
+    private val featureFlags: FeatureFlags,
+    private val eventService: EventService,
     private val courtAppearanceRepository: CourtAppearanceRepository
 ) : NotificationHandler<CommonPlatformHearing> {
 
@@ -31,10 +35,8 @@ class Handler(
     override fun handle(notification: Notification<CommonPlatformHearing>) {
         telemetryService.notificationReceived(notification)
 
-        val hearing = notification.message.hearing
-        val courtCode = hearing.courtCentre.code
-
-        val defendants = hearing.prosecutionCases
+        // Filter hearing message for defendants with a convicted judicial result of Remanded in custody
+        val defendants = notification.message.hearing.prosecutionCases
             .flatMap { it.defendants }
             .filter { defendant ->
                 defendant.offences.any { offence ->
@@ -48,78 +50,114 @@ class Handler(
         }
 
         defendants.forEach { defendant ->
+
             val matchRequest = defendant.toProbationMatchRequest() ?: return@forEach
+
             val matchedPersonResponse = probationSearchClient.match(matchRequest)
+
             if (matchedPersonResponse.matches.isNotEmpty()) {
+                telemetryService.trackEvent(
+                    "ProbationSearchMatchDetected",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id,
+                        "crns" to matchedPersonResponse.matches.joinToString(", ") { it.offender.otherIds.crn }
+                    )
+                )
                 return@forEach
             }
 
-            // Insert each defendant as a person record, send relevant SNS messages
-            val savedPersonEntities = personService.insertPerson(defendant, courtCode)
-            notifier.caseCreated(savedPersonEntities.person)
-            savedPersonEntities.address?.let { notifier.addressCreated(it) }
+            val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
+                ?: throw IllegalArgumentException("Date of birth not found in message")
 
-            telemetryService.trackEvent(
-                "PersonCreated", mapOf(
-                    "hearingId" to hearing.id,
-                    "CRN" to savedPersonEntities.person.crn,
-                    "personId" to savedPersonEntities.person.id.toString(),
-                    "personManagerId" to savedPersonEntities.personManager.id.toString(),
-                    "equalityId" to savedPersonEntities.equality.id.toString(),
-                    "addressId" to savedPersonEntities.address?.id.toString()
-                )
-            )
-
-            val remandedOffences = defendant.offences.filter { offence ->
-                offence.judicialResults?.any { it.label == "Remanded in custody" } == true
+            // Under 10 years old validation
+            dateOfBirth.let {
+                val age = Period.between(it, LocalDate.now()).years
+                require(age > 10) {
+                    "Date of birth would indicate person is under ten years old: $it"
+                }
             }
 
-            val mainOffence = remandedOffences.firstOrNull()
-                ?: return@forEach
+            if (featureFlags.enabled("common-platform-record-creation-toggle")) {
+                // Insert each defendant as a person record
+                val savedEntities = personService.insertPerson(defendant, notification.message.hearing.courtCentre.code)
 
-            val caseUrn = hearing.prosecutionCases
-                .find { it.defendants.contains(defendant) }
-                ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
+                notifier.caseCreated(savedEntities.person)
+                savedEntities.address?.let { notifier.addressCreated(it) }
 
-            val existingCourtAppearance = courtAppearanceRepository.findLatestByCaseUrn(caseUrn)
-
-            if (existingCourtAppearance != null) {
-                val savedCourtAppearance = eventService.insertCourtAppearance(
-                    existingCourtAppearance.event,
-                    courtCode,
-                    hearing.hearingDays.first().sittingDay,
-                    caseUrn
-                )
                 telemetryService.trackEvent(
-                    "CourtAppearanceCreated", mapOf(
-                        "hearingId" to hearing.id,
-                        "courtAppearanceId" to savedCourtAppearance.id.toString(),
-                        "personId" to savedCourtAppearance.person.id.toString(),
-                        "eventId" to savedCourtAppearance.event.id.toString(),
+                    "PersonCreated",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id,
+                        "CRN" to savedEntities.person.crn,
+                        "personId" to savedEntities.person.id.toString(),
+                        "personManagerId" to savedEntities.personManager.id.toString(),
+                        "equalityId" to savedEntities.equality.id.toString(),
+                        "addressId" to savedEntities.address?.id.toString(),
                     )
                 )
+
+                val remandedOffences = defendant.offences.filter { offence ->
+                    offence.judicialResults?.any { it.label == "Remanded in custody" } == true
+                }
+
+                val mainOffence = remandedOffences.firstOrNull()
+                    ?: return@forEach
+
+                val caseUrn = hearing.prosecutionCases
+                    .find { it.defendants.contains(defendant) }
+                    ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
+
+                val existingCourtAppearance = courtAppearanceRepository.findLatestByCaseUrn(caseUrn)
+
+                if (existingCourtAppearance != null) {
+                    val savedCourtAppearance = eventService.insertCourtAppearance(
+                        existingCourtAppearance.event,
+                        courtCode,
+                        hearing.hearingDays.first().sittingDay,
+                        caseUrn
+                    )
+                    telemetryService.trackEvent(
+                        "CourtAppearanceCreated", mapOf(
+                            "hearingId" to hearing.id,
+                            "courtAppearanceId" to savedCourtAppearance.id.toString(),
+                            "personId" to savedCourtAppearance.person.id.toString(),
+                            "eventId" to savedCourtAppearance.event.id.toString(),
+                        )
+                    )
+                } else {
+                    val savedEventEntities = eventService.insertEvent(
+                        mainOffence,
+                        savedPersonEntities.person,
+                        courtCode,
+                        hearing.hearingDays.first().sittingDay,
+                        caseUrn
+                    )
+                    telemetryService.trackEvent(
+                        "EventCreated", mapOf(
+                            "hearingId" to hearing.id,
+                            "eventId" to savedEventEntities.event.id.toString(),
+                            "eventNumber" to savedEventEntities.event.number,
+                            "CRN" to savedEventEntities.event.person.crn,
+                            "personId" to savedEventEntities.event.person.id.toString(),
+                            "orderManagerId" to savedEventEntities.orderManager.id.toString(),
+                            "mainOffenceId" to savedEventEntities.mainOffence.id.toString(),
+                            "courtAppearanceIds" to savedEventEntities.courtAppearances.joinToString(",") { it.id.toString() },
+                            "contactIds" to savedEventEntities.contacts.joinToString(",") { it.id.toString() }
+                        )
+                    )
+                }
             } else {
-                val savedEventEntities = eventService.insertEvent(
-                    mainOffence,
-                    savedPersonEntities.person,
-                    courtCode,
-                    hearing.hearingDays.first().sittingDay,
-                    caseUrn
-                )
                 telemetryService.trackEvent(
-                    "EventCreated", mapOf(
-                        "hearingId" to hearing.id,
-                        "eventId" to savedEventEntities.event.id.toString(),
-                        "eventNumber" to savedEventEntities.event.number,
-                        "CRN" to savedEventEntities.event.person.crn,
-                        "personId" to savedEventEntities.event.person.id.toString(),
-                        "orderManagerId" to savedEventEntities.orderManager.id.toString(),
-                        "mainOffenceId" to savedEventEntities.mainOffence.id.toString(),
-                        "courtAppearanceIds" to savedEventEntities.courtAppearances.joinToString(",") { it.id.toString() },
-                        "contactIds" to savedEventEntities.contacts.joinToString(",") { it.id.toString() }
+                    "SimulatedPersonCreated",
+                    mapOf(
+                        "hearingId" to notification.message.hearing.id,
+                        "defendantId" to defendant.id
                     )
                 )
             }
+
         }
     }
 
@@ -144,4 +182,3 @@ class Handler(
         )
     }
 }
-

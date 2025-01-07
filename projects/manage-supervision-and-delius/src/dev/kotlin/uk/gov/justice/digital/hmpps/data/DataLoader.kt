@@ -41,6 +41,7 @@ class DataLoader(
             ContactGenerator.DEFAULT_BOROUGH,
             ContactGenerator.DEFAULT_DISTRICT,
             ContactGenerator.DEFAULT_STAFF,
+            ContactGenerator.LIMITED_ACCESS_STAFF,
             ContactGenerator.STAFF_1,
             ContactGenerator.DEFAULT_TEAM,
             ContactGenerator.LOCATION_BRK_1,
@@ -49,7 +50,14 @@ class DataLoader(
 
         entityManager.persist(ContactGenerator.USER_1)
 
-        entityManager.persist(PersonGenerator.OVERVIEW.gender)
+        entityManager.persist(ContactGenerator.LIMITED_ACCESS_USER)
+
+        entityManager.persistAll(
+            PersonGenerator.GENDER_MALE,
+            PersonGenerator.MAPPA_TYPE,
+            PersonGenerator.MAPPA_CATEGORY,
+            PersonGenerator.MAPPA_LEVEL
+        )
 
         PersonGenerator.DISABILITIES.forEach { entityManager.persist(it.type) }
         PersonGenerator.PROVISIONS.forEach { entityManager.persist(it.type) }
@@ -62,7 +70,6 @@ class DataLoader(
         entityManager.persistCollection(PersonGenerator.PROVISIONS)
         entityManager.persistCollection(PersonGenerator.PERSONAL_CIRCUMSTANCES)
         entityManager.persist(PersonGenerator.OVERVIEW)
-
         entityManager.persist(CourtGenerator.BHAM)
         entityManager.persist(PersonGenerator.EVENT_1)
         entityManager.persist(PersonGenerator.EVENT_2)
@@ -100,6 +107,7 @@ class DataLoader(
             OffenderManagerGenerator.STAFF_2,
             OffenderManagerGenerator.STAFF_USER_1,
             OffenderManagerGenerator.STAFF_USER_2,
+            OffenderManagerGenerator.STAFF_TEAM,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.DEFAULT_LOCATION,
@@ -154,9 +162,11 @@ class DataLoader(
             PersonGenerator.REQUIREMENT_CONTACT_2,
             PersonGenerator.REGISTER_TYPE_1,
             PersonGenerator.REGISTER_TYPE_2,
+            PersonGenerator.MAPPA_TYPE,
             PersonGenerator.REGISTRATION_1,
             PersonGenerator.REGISTRATION_2,
             PersonGenerator.REGISTRATION_3,
+            PersonGenerator.MAPPA_REGISTRATION,
             PersonGenerator.REGISTRATION_REVIEW_1,
             PersonGenerator.REGISTRATION_REVIEW_2,
             PersonGenerator.REGISTRATION_REVIEW_3,
@@ -164,10 +174,12 @@ class DataLoader(
             PersonGenerator.MAIN_CAT_F_TYPE,
             PersonGenerator.MAIN_CAT_W_TYPE,
             PersonGenerator.NSI_BREACH_TYPE,
+            PersonGenerator.NSI_OPD_TYPE,
             PersonGenerator.NSI_STATUS,
             PersonGenerator.BREACH_PREVIOUS_ORDER_1,
             PersonGenerator.BREACH_PREVIOUS_ORDER_2,
             PersonGenerator.BREACH_ON_ACTIVE_ORDER,
+            PersonGenerator.OPD_NSI,
             UnpaidWorkApptGenerator.UNPAID_WORK_DETAILS_1,
             UnpaidWorkApptGenerator.APPT1,
             UnpaidWorkApptGenerator.APPT2,
@@ -188,6 +200,9 @@ class DataLoader(
             PersonDetailsGenerator.LANGUAGE_RD,
             PersonDetailsGenerator.GENDER_IDENTITY_RD,
             PersonDetailsGenerator.PERSONAL_DETAILS,
+            PersonDetailsGenerator.RESTRICTION,
+            PersonDetailsGenerator.EXCLUSION,
+            PersonDetailsGenerator.RESTRICTION_EXCLUSION,
             PersonDetailsGenerator.DISABILITY_1_RD,
             PersonDetailsGenerator.DISABILITY_2_RD,
             PersonDetailsGenerator.PERSONAL_CIRCUMSTANCE_1_RD,
@@ -222,10 +237,23 @@ class DataLoader(
         entityManager.flush()
         entityManager.merge(PersonGenerator.PERSON_1)
         entityManager.merge(PersonGenerator.PERSON_2)
+        entityManager.merge(PersonGenerator.CL_EXCLUDED)
+        entityManager.merge(PersonGenerator.CL_RESTRICTED)
+        entityManager.merge(PersonGenerator.CL_RESTRICTED_EXCLUDED)
         entityManager.flush()
         entityManager.persist(PersonGenerator.CASELOAD_PERSON_1)
         entityManager.persist(PersonGenerator.CASELOAD_PERSON_2)
         entityManager.persist(PersonGenerator.CASELOAD_PERSON_3)
+
+        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_EXCLUSION)
+        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_RESTRICTION)
+        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_BOTH)
+        entityManager.persist(PersonGenerator.CASELOAD_LIMITED_ACCESS_NEITHER)
+
+        entityManager.persist(LimitedAccessGenerator.EXCLUSION)
+        entityManager.persist(LimitedAccessGenerator.RESTRICTION)
+        entityManager.persist(LimitedAccessGenerator.BOTH_EXCLUSION)
+        entityManager.persist(LimitedAccessGenerator.BOTH_RESTRICTION)
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {

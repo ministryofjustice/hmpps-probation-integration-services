@@ -12,7 +12,7 @@ function deploymentEnabled() {
   env=$1
   while IFS= read -r project; do
     file="projects/$project/deploy/values-$env.yml"
-    if [ -f "$file" ] && ! grep -q 'enabled: false' "$file"; then echo "$project"; fi
+    if [ -f "$file" ] && ! grep -q '^enabled: false' "$file"; then echo "$project"; fi
   done
 }
 

@@ -1,9 +1,10 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.integrations.client.OsClient
+import uk.gov.justice.digital.hmpps.integrations.client.OsPlacesResponse
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -12,7 +13,6 @@ import uk.gov.justice.digital.hmpps.messaging.Address
 import uk.gov.justice.digital.hmpps.messaging.Defendant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.Period
 
 @Service
 class PersonService(
@@ -24,24 +24,12 @@ class PersonService(
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val personAddressRepository: PersonAddressRepository
+    private val personAddressRepository: PersonAddressRepository,
+    private val osClient: OsClient
 ) : AuditableService(auditedInteractionService) {
 
-    @Transactional
     fun insertPerson(defendant: Defendant, courtCode: String): InsertPersonResult =
         audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
-
-            val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
-                ?: throw IllegalArgumentException("Date of birth not found in message")
-
-            // Under 10 years old validation
-            dateOfBirth.let {
-                val age = Period.between(it, LocalDate.now()).years
-                require(age > 10) {
-                    "Date of birth would indicate person is under ten years old: $it"
-                }
-            }
-
             // Person record
             val savedPerson = personRepository.save(defendant.toPerson())
 
@@ -75,25 +63,54 @@ class PersonService(
 
             val savedEquality = equalityRepository.save(equality)
 
-            val savedAddress =
-                defendant.personDefendant.personDetails.address.takeIf { it.containsInformation() }?.let {
+            val addressInfo = defendant.personDefendant?.personDetails?.address
+            val osPlacesResponse = addressInfo?.takeIf { it.containsInformation() && !it.postcode.isNullOrBlank() }
+                ?.let { findAddressByFreeText(it) }
+
+            val deliveryPointAddress = osPlacesResponse?.results?.firstOrNull()?.dpa
+
+            val savedAddress = if (deliveryPointAddress != null) {
+                insertAddress(
+                    PersonAddress(
+                        id = null,
+                        start = LocalDate.now(),
+                        status = referenceDataRepository.mainAddressStatus(),
+                        person = savedPerson,
+                        type = referenceDataRepository.awaitingAssessmentAddressType(),
+                        postcode = deliveryPointAddress.postcode,
+                        notes = "UPRN: ${deliveryPointAddress.uprn}",
+                        buildingName = listOfNotNull(
+                            deliveryPointAddress.subBuildingName,
+                            deliveryPointAddress.buildingName
+                        ).joinToString(" "),
+                        addressNumber = deliveryPointAddress.buildingNumber?.toString(),
+                        streetName = deliveryPointAddress.thoroughfareName,
+                        town = deliveryPointAddress.postTown,
+                        district = deliveryPointAddress.localCustodianCodeDescription
+                    )
+                )
+            } else {
+                addressInfo?.takeIf { it.containsInformation() }?.let {
                     insertAddress(
                         PersonAddress(
                             id = null,
                             start = LocalDate.now(),
                             status = referenceDataRepository.mainAddressStatus(),
                             person = savedPerson,
-                            notes = it.buildNotes(),
                             postcode = it.postcode,
-                            type = referenceDataRepository.awaitingAssessmentAddressType()
+                            type = referenceDataRepository.awaitingAssessmentAddressType(),
+                            streetName = it.address1,
+                            district = it.address2,
+                            town = it.address3,
+                            county = listOfNotNull(it.address4, it.address5).joinToString(", ")
                         )
                     )
                 }
+            }
             audit["offenderId"] = savedPerson.id
             InsertPersonResult(savedPerson, savedManager, savedEquality, savedAddress)
         }
 
-    @Transactional
     fun insertAddress(address: PersonAddress): PersonAddress = audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
         val savedAddress = personAddressRepository.save(address)
         audit["addressId"] = address.id!!
@@ -137,14 +154,19 @@ class PersonService(
         ).any { !it.isNullOrBlank() }
     }
 
-    fun Address.buildNotes(): String {
-        return listOf(
-            "Address record automatically created by common-platform-delius-service with the following information:",
-            "Address1: ${this.address1 ?: "N/A"}",
-            "Address2: ${this.address2 ?: "N/A"}",
-            "Address3: ${this.address3 ?: "N/A"}",
-            "Address4: ${this.address4 ?: "N/A"}",
-            "Postcode: ${this.postcode ?: "N/A"}"
-        ).joinToString("\n")
+    fun findAddressByFreeText(address: Address): OsPlacesResponse {
+        val freeText = address.toFreeText()
+        return osClient.searchByFreeText(query = freeText, maxResults = 1, minMatch = 0.6)
+    }
+
+    fun Address.toFreeText(): String {
+        return listOfNotNull(
+            this.address1?.trim(),
+            this.address2?.trim(),
+            this.address3?.trim(),
+            this.address4?.trim(),
+            this.address5?.trim(),
+            this.postcode?.trim()
+        ).joinToString(", ")
     }
 }

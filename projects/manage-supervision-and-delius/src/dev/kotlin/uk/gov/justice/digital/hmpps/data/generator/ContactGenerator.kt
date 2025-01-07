@@ -30,6 +30,7 @@ object ContactGenerator {
 
     val DEFAULT_STAFF = generateStaff("N01BDT1", "John", "Smith", emptyList())
     val STAFF_1 = generateStaff("N01BDT2", "Jim", "Brown", emptyList())
+    val LIMITED_ACCESS_STAFF = generateStaff("N01BDT3", "Limited", "Access", emptyList())
 
     val DEFAULT_TEAM = generateTeam(code = "TEAM11", description = "Main Team", staff = listOf(DEFAULT_STAFF, STAFF_1))
 
@@ -46,6 +47,14 @@ object ContactGenerator {
         surname = "Brown",
         staff = STAFF_1,
         username = "JimBrown"
+    )
+
+    val LIMITED_ACCESS_USER = User(
+        id = IdGenerator.getAndIncrement(),
+        forename = "Limited",
+        surname = "Access",
+        staff = LIMITED_ACCESS_STAFF,
+        username = "LimitedAccess"
     )
 
     val COMMUNICATION_CATEGORY_RD = ReferenceData(IdGenerator.getAndIncrement(), "LT", "Communication")

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
+import java.time.ZoneId
 
 object CourtAppearanceGenerator {
     val DEFAULT_PERSON = CourtAppearancePerson(
@@ -28,7 +29,7 @@ object CourtAppearanceGenerator {
         "Breach - Continued/Fine"
     )
     val DEFAULT_CA = CourtAppearanceEntity(
-        LocalDate.now(),
+        LocalDate.now().plusDays(1).atTime(12, 30).atZone(ZoneId.systemDefault()),
         IdGenerator.getAndIncrement(),
         DEFAULT_EVENT,
         DEFAULT_CA_TYPE,
@@ -44,14 +45,14 @@ object CourtAppearanceGenerator {
         PERSON_2
     )
     val CA_2 = CourtAppearanceEntity(
-        LocalDate.now(),
+        LocalDate.now().plusDays(1).atTime(12, 30).atZone(ZoneId.systemDefault()),
         IdGenerator.getAndIncrement(),
         EVENT_2,
         DEFAULT_CA_TYPE,
         DEFAULT_COURT
     )
     val CA_3 = CourtAppearanceEntity(
-        LocalDate.of(2090, 1, 1),
+        LocalDate.of(2090, 1, 1).atStartOfDay(ZoneId.systemDefault()),
         IdGenerator.getAndIncrement(),
         EVENT_2,
         DEFAULT_CA_TYPE,

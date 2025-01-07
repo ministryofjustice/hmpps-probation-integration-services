@@ -34,7 +34,6 @@ import java.util.concurrent.CompletionException
 class AwsNotificationListener(
     private val handler: NotificationHandler<*>,
     private val objectMapper: ObjectMapper,
-    @Value("\${messaging.consumer.sensitive-event-types:[]}") private val sensitiveEventTypes: List<String>,
     @Value("\${messaging.consumer.queue}") private val queueName: String
 ) {
     @SentryTransaction(operation = "messaging")

@@ -66,24 +66,24 @@ internal class OverviewIntegrationTest {
             equalTo(ContactGenerator.FIRST_APPT_CONTACT.type.description)
         )
         assertThat(res.sentences.size, equalTo(2))
-        assertThat(res.sentences[0].mainOffence.description, equalTo(MAIN_OFFENCE_1.offence.description))
+        assertThat(res.sentences[1].mainOffence.description, equalTo(MAIN_OFFENCE_1.offence.description))
         assertThat(
-            res.sentences[0].additionalOffences[0].description,
+            res.sentences[1].additionalOffences[0].description,
             equalTo(ADDITIONAL_OFFENCE_1.offence.description)
         )
         assertThat(
-            res.sentences[0].additionalOffences[1].description,
+            res.sentences[1].additionalOffences[1].description,
             equalTo(ADDITIONAL_OFFENCE_2.offence.description)
         )
         assertThat(res.previousOrders.count, equalTo(2))
         assertThat(res.previousOrders.breaches, equalTo(2))
-        assertThat(res.sentences[0].rar?.completed, equalTo(1))
-        assertThat(res.sentences[0].rar?.scheduled, equalTo(1))
-        assertThat(res.sentences[0].rar?.totalDays, equalTo(2))
-        assertThat(res.sentences[0].eventNumber, equalTo(EVENT_1.eventNumber))
+        assertThat(res.sentences[1].rar?.completed, equalTo(1))
+        assertThat(res.sentences[1].rar?.scheduled, equalTo(1))
+        assertThat(res.sentences[1].rar?.totalDays, equalTo(2))
+        assertThat(res.sentences[1].eventNumber, equalTo(EVENT_1.eventNumber))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
-        assertThat(res.registrations, equalTo(listOf("Restraining Order", "Domestic Abuse Perpetrator")))
+        assertThat(res.registrations, equalTo(listOf("Restraining Order", "Domestic Abuse Perpetrator", "Mappa")))
     }
 
     @Test

@@ -40,9 +40,9 @@ class NsiService(
         details: PersonArrived,
         ap: ApprovedPremises
     ): Pair<PersonAddress?, PersonAddress>? {
-        val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
+        val externalReference = EXT_REF_BOOKING_PREFIX + details.bookingId
         nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference) ?: run {
-            val staff = staffRepository.getByCode(details.keyWorker.staffCode)
+            val staff = staffRepository.getByCode(details.recordedBy.staffCode)
             val nsi = nsiRepository.save(
                 Nsi(
                     person = person,
@@ -95,7 +95,7 @@ class NsiService(
 
     fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises): PersonAddress? {
         val nsi =
-            nsiRepository.findByPersonIdAndExternalReference(person.id, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
+            nsiRepository.findByPersonIdAndExternalReference(person.id, EXT_REF_BOOKING_PREFIX + details.bookingId)
         nsi?.actualEndDate = details.departedAt
         nsi?.outcome = referenceDataRepository.referralCompleted()
         contactService.createContact(
@@ -111,7 +111,7 @@ class NsiService(
             person = person,
             eventId = eventRepository.getEvent(person.id, details.eventNumber).id,
             team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode),
-            staff = staffRepository.getByCode(details.keyWorker.staffCode),
+            staff = staffRepository.getByCode(details.recordedBy.staffCode),
             probationAreaCode = ap.probationArea.code
         )
         referralService.personDeparted(person, details)

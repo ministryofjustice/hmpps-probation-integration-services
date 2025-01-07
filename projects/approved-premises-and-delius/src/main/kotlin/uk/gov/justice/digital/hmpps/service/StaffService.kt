@@ -77,7 +77,6 @@ class StaffService(
             code = probationArea.code,
             description = probationArea.description
         ),
-        active = isActive(),
-        staffIdentifier = id
+        active = isActive()
     )
 }

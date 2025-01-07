@@ -54,7 +54,7 @@ class ClassPathPlugin : Plugin<Project> {
                 }
             }
 
-            project.tasks.create("integrationTest", Test::class.java) {
+            project.tasks.register("integrationTest", Test::class.java) {
                 testClassesDirs = getByName("integrationTest").output.classesDirs
                 classpath = getByName("integrationTest").runtimeClasspath
                 val profiles = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))
