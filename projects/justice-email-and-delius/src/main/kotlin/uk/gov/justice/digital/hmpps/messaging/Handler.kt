@@ -119,6 +119,5 @@ class Handler(
         get() = "at ${DateTimeFormatter.ofPattern("hh:mm").format(receivedDateTime)} on " +
             DeliusDateFormatter.format(receivedDateTime)
 
-    private fun String.truncated(max: Int = 200) =
-        substring(0, length.coerceAtMost(max)) + if (length > max) "~" else ""
+    private fun String.truncated() = if (length > 200) "${take(198)} ~" else take(200)
 }
