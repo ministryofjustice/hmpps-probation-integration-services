@@ -398,4 +398,16 @@ internal class IntegrationTest {
     fun resetWireMock() {
         wireMockServer.resetAll()
     }
+
+    @AfterEach
+    fun cleanup() {
+        courtAppearanceRepository.deleteAll()
+        mainOffenceRepository.deleteAll()
+        orderManagerRepository.deleteAll()
+        eventRepository.deleteAll()
+        addressRepository.deleteAll()
+        contactRepository.deleteAll()
+        personManagerRepository.deleteAll()
+        personRepository.deleteAll()
+    }
 }

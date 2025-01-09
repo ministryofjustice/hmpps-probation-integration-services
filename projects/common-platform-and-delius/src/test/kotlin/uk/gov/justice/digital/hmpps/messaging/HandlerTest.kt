@@ -8,12 +8,8 @@ import org.mockito.Mockito.anyMap
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonAddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Equality
@@ -77,7 +73,7 @@ internal class HandlerTest {
         )
 
         probationSearchMatchNotFound()
-        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(true)
+        featureFlagIsEnabled(true)
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
@@ -124,14 +120,23 @@ internal class HandlerTest {
     @Test
     fun `Person created logged when feature flag enabled`() {
         probationSearchMatchNotFound()
-
-        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(true)
+        featureFlagIsEnabled(true)
         whenever(personService.insertPerson(any(), any())).thenReturn(
             InsertPersonResult(
                 person = PersonGenerator.DEFAULT,
                 personManager = PersonManagerGenerator.DEFAULT,
                 equality = Equality(id = 1L, personId = 1L, softDeleted = false),
                 address = PersonAddressGenerator.MAIN_ADDRESS,
+            )
+        )
+        whenever(courtAppearanceRepository.findLatestByCaseUrn(any())).thenReturn(null)
+        whenever(eventService.insertEvent(any(), any(), any(), any(), any())).thenReturn(
+            InsertEventResult(
+                EventGenerator.DEFAULT,
+                MainOffenceGenerator.DEFAULT,
+                listOf(CourtAppearanceGenerator.TRIAL_ADJOURNMENT, CourtAppearanceGenerator.TRIAL_ADJOURNMENT),
+                listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
+                OrderManagerGenerator.DEFAULT
             )
         )
 
@@ -148,8 +153,7 @@ internal class HandlerTest {
     @Test
     fun `Simulated person created logged when feature flag disabled`() {
         probationSearchMatchNotFound()
-        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(false)
-
+        featureFlagIsEnabled(false)
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
 
@@ -162,8 +166,9 @@ internal class HandlerTest {
 
     @Test
     fun `Inserts event when case urn does not exist`() {
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
         whenever(courtAppearanceRepository.findLatestByCaseUrn(any())).thenReturn(null)
-
         whenever(personService.insertPerson(any(), any())).thenReturn(
             InsertPersonResult(
                 person = PersonGenerator.DEFAULT,
@@ -172,7 +177,6 @@ internal class HandlerTest {
                 address = PersonAddressGenerator.MAIN_ADDRESS,
             )
         )
-
         whenever(eventService.insertEvent(any(), any(), any(), any(), any())).thenReturn(
             InsertEventResult(
                 EventGenerator.DEFAULT,
@@ -180,13 +184,6 @@ internal class HandlerTest {
                 listOf(CourtAppearanceGenerator.TRIAL_ADJOURNMENT, CourtAppearanceGenerator.TRIAL_ADJOURNMENT),
                 listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
                 OrderManagerGenerator.DEFAULT
-            )
-        )
-
-        whenever(probationSearchClient.match(any())).thenReturn(
-            ProbationMatchResponse(
-                matches = emptyList(),
-                matchedBy = "NONE"
             )
         )
 
@@ -204,6 +201,8 @@ internal class HandlerTest {
 
     @Test
     fun `Inserts court appearance record when case urn exists`() {
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
         whenever(courtAppearanceRepository.findLatestByCaseUrn(any())).thenReturn(CourtAppearanceGenerator.TRIAL_ADJOURNMENT)
 
         whenever(personService.insertPerson(any(), any())).thenReturn(
@@ -217,13 +216,6 @@ internal class HandlerTest {
 
         whenever(eventService.insertCourtAppearance(any(), any(), any(), any())).thenReturn(
             CourtAppearanceGenerator.TRIAL_ADJOURNMENT
-        )
-
-        whenever(probationSearchClient.match(any())).thenReturn(
-            ProbationMatchResponse(
-                matches = emptyList(),
-                matchedBy = "NONE"
-            )
         )
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
@@ -262,5 +254,9 @@ internal class HandlerTest {
             matchedBy = "PNC"
         )
         whenever(probationSearchClient.match(any())).thenReturn(fakeMatchResponse)
+    }
+
+    private fun featureFlagIsEnabled(flag: Boolean) {
+        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(flag)
     }
 }

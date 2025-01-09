@@ -102,10 +102,11 @@ class Handler(
                     offence.judicialResults?.any { it.label == "Remanded in custody" } == true
                 }
 
+                // TODO: Currently using the first offence, We will need to identify the main offence
                 val mainOffence = remandedOffences.firstOrNull()
                     ?: return@forEach
 
-                val caseUrn = hearing.prosecutionCases
+                val caseUrn = notification.message.hearing.prosecutionCases
                     .find { it.defendants.contains(defendant) }
                     ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
 
@@ -114,13 +115,13 @@ class Handler(
                 if (existingCourtAppearance != null) {
                     val savedCourtAppearance = eventService.insertCourtAppearance(
                         existingCourtAppearance.event,
-                        courtCode,
-                        hearing.hearingDays.first().sittingDay,
+                        notification.message.hearing.courtCentre.code,
+                        notification.message.hearing.hearingDays.first().sittingDay,
                         caseUrn
                     )
                     telemetryService.trackEvent(
                         "CourtAppearanceCreated", mapOf(
-                            "hearingId" to hearing.id,
+                            "hearingId" to notification.message.hearing.id,
                             "courtAppearanceId" to savedCourtAppearance.id.toString(),
                             "personId" to savedCourtAppearance.person.id.toString(),
                             "eventId" to savedCourtAppearance.event.id.toString(),
@@ -129,14 +130,14 @@ class Handler(
                 } else {
                     val savedEventEntities = eventService.insertEvent(
                         mainOffence,
-                        savedPersonEntities.person,
-                        courtCode,
-                        hearing.hearingDays.first().sittingDay,
+                        savedEntities.person,
+                        notification.message.hearing.courtCentre.code,
+                        notification.message.hearing.hearingDays.first().sittingDay,
                         caseUrn
                     )
                     telemetryService.trackEvent(
                         "EventCreated", mapOf(
-                            "hearingId" to hearing.id,
+                            "hearingId" to notification.message.hearing.id,
                             "eventId" to savedEventEntities.event.id.toString(),
                             "eventNumber" to savedEventEntities.event.number,
                             "CRN" to savedEventEntities.event.person.crn,
