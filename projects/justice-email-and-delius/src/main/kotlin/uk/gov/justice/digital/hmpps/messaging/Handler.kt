@@ -85,7 +85,8 @@ class Handler(
                 )
             )
         }
-    } catch (_: IgnorableMessageException) {}
+    } catch (_: IgnorableMessageException) {
+    }
 
     private fun EmailMessage.extractCrn(): String {
         val crns = CRN_REGEX.toRegex().findAll(subject).map { it.value }.distinct()
