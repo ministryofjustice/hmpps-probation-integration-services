@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
@@ -222,4 +223,38 @@ class SentenceService(
         }
         return null
     }
+}
+
+fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
+    return notes?.let {
+        val splitParam = "---------------------------------------------------------" + System.lineSeparator()
+        notes.split(splitParam).asReversed().mapIndexed { index, note ->
+            val matchResult = Regex(
+                "^Comment added by (.+?) on (\\d{2}/\\d{2}/\\d{4}) at \\d{2}:\\d{2}"
+                    + System.lineSeparator()
+            ).find(note)
+            val commentLine = matchResult?.value
+            val commentText =
+                commentLine?.let { note.removePrefix(commentLine).removeSuffix(System.lineSeparator()) } ?: note
+
+            val userCreatedBy = matchResult?.groupValues?.get(1)
+            val dateCreatedBy = matchResult?.groupValues?.get(2)
+                ?.let { LocalDate.parse(it, DeliusDateFormatter) }
+
+
+            NoteDetail(
+                index,
+                userCreatedBy,
+                dateCreatedBy,
+                when (truncateNote) {
+                    true -> commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0]
+                    else -> commentText
+                },
+                when (truncateNote) {
+                    true -> commentText.length > 1500
+                    else -> null
+                }
+            )
+        }
+    } ?: listOf()
 }

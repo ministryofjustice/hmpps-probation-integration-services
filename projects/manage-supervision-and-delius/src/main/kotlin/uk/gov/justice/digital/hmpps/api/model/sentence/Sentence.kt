@@ -25,3 +25,11 @@ data class MinimalOrder(
     val startDate: LocalDate,
     val endDate: LocalDate? = null,
 )
+
+data class NoteDetail(
+    val id: Int,
+    val createdBy: String? = null,
+    val createdByDate: LocalDate? = null,
+    val note: String,
+    val hasNoteBeenTruncated: Boolean? = null
+)

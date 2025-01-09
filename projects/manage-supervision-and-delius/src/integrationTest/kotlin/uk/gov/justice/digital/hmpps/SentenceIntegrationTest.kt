@@ -159,7 +159,7 @@ class SentenceIntegrationTest {
                         LocalDate.now().minusDays(7),
                         LocalDate.now(),
                         listOf(
-                            LicenceConditionNote(
+                            NoteDetail(
                                 0,
                                 "Joe Root",
                                 LocalDate.of(2024, 4, 23),
@@ -170,7 +170,7 @@ class SentenceIntegrationTest {
                                     """.trimIndent(),
                                 false
                             ),
-                            LicenceConditionNote(
+                            NoteDetail(
                                 1,
                                 "CVL Service",
                                 LocalDate.of(2024, 4, 22),
@@ -194,7 +194,7 @@ class SentenceIntegrationTest {
                         LocalDate.now().minusDays(7),
                         LocalDate.now(),
                         listOf(
-                            LicenceConditionNote(
+                            NoteDetail(
                                 0,
                                 note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
                                 hasNoteBeenTruncated = false
@@ -208,7 +208,7 @@ class SentenceIntegrationTest {
                         LocalDate.now().minusDays(7),
                         LocalDate.now(),
                         listOf(
-                            LicenceConditionNote(
+                            NoteDetail(
                                 0,
                                 "Tom Brady",
                                 LocalDate.of(2024, 10, 29),
@@ -217,7 +217,7 @@ class SentenceIntegrationTest {
                                     """.trimIndent(),
                                 false
                             ),
-                            LicenceConditionNote(
+                            NoteDetail(
                                 1,
                                 "Harry Kane",
                                 LocalDate.of(2024, 10, 29),
