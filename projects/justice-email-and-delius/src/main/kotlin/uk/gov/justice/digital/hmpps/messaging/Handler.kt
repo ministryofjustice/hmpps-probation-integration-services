@@ -15,11 +15,14 @@ import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode.ADD_CONTACT
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.entity.*
-import uk.gov.justice.digital.hmpps.entity.ContactType.Code.EMAIL_TEXT_FROM_OTHER
+import uk.gov.justice.digital.hmpps.entity.ContactType.Code.EMAIL
+import uk.gov.justice.digital.hmpps.entity.Person.Companion.CRN_REGEX
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.format.DateTimeFormatter
 
 @Component
 @Channel("justice-email-and-delius-queue")
@@ -47,14 +50,21 @@ class Handler(
         val person = personRepository.getByCrn(crn)
         val manager = personManagerRepository.getManager(person.id)
         val staffId = findStaffIdForEmailAddress(emailAddress) ?: manager.staffId
+        val fullNotes = """
+            |This contact was created automatically from a forwarded email sent by ${message.fromEmailAddress} ${message.onAt}.
+            |Subject: ${message.subject}
+            |
+            |${htmlToMarkdownConverter.convert(message.bodyContent)}
+            """.trimMargin()
         val contact = contactRepository.save(
             Contact(
                 personId = person.id,
                 externalReference = "urn:uk:gov:hmpps:justice-email:${message.id}",
-                type = contactTypeRepository.getByCode(EMAIL_TEXT_FROM_OTHER),
+                type = contactTypeRepository.getByCode(EMAIL),
                 date = message.receivedDateTime,
                 startTime = message.receivedDateTime,
-                notes = htmlToMarkdownConverter.convert(message.bodyContent),
+                description = "Email - ${message.subject.replace(CRN_REGEX.toRegex(), "").trim()}".truncated(),
+                notes = fullNotes,
                 staffId = staffId,
                 teamId = manager.teamId,
                 providerId = manager.providerId,
@@ -73,7 +83,7 @@ class Handler(
     }
 
     private fun EmailMessage.extractCrn(): String {
-        val crns = Regex("[A-Za-z][0-9]{6}").findAll(subject).map { it.value }.distinct()
+        val crns = CRN_REGEX.toRegex().findAll(subject).map { it.value }.distinct()
         return when (crns.count()) {
             1 -> crns.single().uppercase()
             0 -> throw IllegalArgumentException("No CRN in message subject")
@@ -104,4 +114,10 @@ class Handler(
             else -> error("Multiple staff records found for $emailAddress")
         }
     }
+
+    private val EmailMessage.onAt: String
+        get() = "at ${DateTimeFormatter.ofPattern("hh:mm").format(receivedDateTime)} on " +
+            DeliusDateFormatter.format(receivedDateTime)
+
+    private fun String.truncated() = if (length > 200) "${take(198)} ~" else take(200)
 }
