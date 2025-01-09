@@ -5,6 +5,7 @@ import org.openfolder.kotlinasyncapi.annotation.Schema
 import org.openfolder.kotlinasyncapi.annotation.channel.Channel
 import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
@@ -37,6 +38,7 @@ class Handler(
     private val personManagerRepository: PersonManagerRepository,
     private val staffRepository: StaffRepository,
     private val ldapTemplate: LdapTemplate,
+    private val eventPublisher: ApplicationEventPublisher,
 ) : NotificationHandler<EmailMessage>, AuditableService(auditedInteractionService) {
     @Publish(messages = [Message(title = "email-message", payload = Schema(EmailMessage::class))])
     override fun handle(notification: Notification<EmailMessage>) = audit(ADD_CONTACT) { audit ->
@@ -86,7 +88,13 @@ class Handler(
         val crns = CRN_REGEX.toRegex().findAll(subject).map { it.value }.distinct()
         return when (crns.count()) {
             1 -> crns.single().uppercase()
-            0 -> throw IllegalArgumentException("No CRN in message subject")
+            0 -> {
+                eventPublisher.publishEvent(
+                    UnableToCreateContactFromEmail(this, "Unable to parse CRN from message subject")
+                )
+                throw IllegalArgumentException("No CRN in message subject")
+            }
+
             else -> throw IllegalArgumentException("Multiple CRNs in message subject")
         }
     }
