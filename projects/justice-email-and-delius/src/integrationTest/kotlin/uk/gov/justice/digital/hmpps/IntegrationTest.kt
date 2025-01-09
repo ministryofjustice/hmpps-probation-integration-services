@@ -72,7 +72,7 @@ internal class IntegrationTest {
         assertThat(contact.type.code, equalTo(EMAIL.code))
         assertThat(
             contact.description,
-            equalTo("Email - was involved in an incident that has a very, very long subject that surpassed the 200 character limit and therefore has been truncated to meet the character limitations for the description in ~")
+            equalTo("Email - was involved in an incident that has a very, very long subject that surpassed the 200 character limit and therefore has been truncated to meet the character limitations for the description i ~")
         )
         assertThat(
             contact.notes, equalTo(
