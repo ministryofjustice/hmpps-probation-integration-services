@@ -15,7 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.Data
 import uk.gov.justice.digital.hmpps.entity.Contact
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.entity.ContactType.Code.EMAIL_TEXT_FROM_OTHER
+import uk.gov.justice.digital.hmpps.entity.ContactType.Code.EMAIL
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.EmailMessage
 import uk.gov.justice.digital.hmpps.messaging.Handler
@@ -41,8 +41,38 @@ internal class IntegrationTest {
         verify(telemetryService).notificationReceived(notification)
 
         val contact = verifyContactCreated()
-        assertThat(contact.type.code, equalTo(EMAIL_TEXT_FROM_OTHER.code))
-        assertThat(contact.notes, equalTo("Example message\n"))
+        assertThat(contact.type.code, equalTo(EMAIL.code))
+        assertThat(contact.description, equalTo("Email - was involved in an incident"))
+        assertThat(contact.notes, equalTo("""
+            |This contact was created automatically from a forwarded email sent by example@justice.gov.uk at 12:34 on 01/01/2020.
+            |Subject: A000001 was involved in an incident
+            |
+            |Example message
+            |""".trimMargin()))
+        assertThat(
+            contact.externalReference,
+            equalTo("urn:uk:gov:hmpps:justice-email:00000000-0000-0000-0000-000000000000")
+        )
+        assertThat(contact.staffId, equalTo(Data.STAFF.id))
+        assertThat(contact.teamId, equalTo(Data.MANAGER.teamId))
+        assertThat(contact.providerId, equalTo(Data.MANAGER.providerId))
+    }
+
+    @Test
+    fun `description is truncated if over 200 chars`() {
+        val notification = Notification(get<EmailMessage>("successful-long-message"))
+        handler.handle(notification)
+        verify(telemetryService).notificationReceived(notification)
+
+        val contact = verifyContactCreated()
+        assertThat(contact.type.code, equalTo(EMAIL.code))
+        assertThat(contact.description, equalTo("Email - was involved in an incident that has a very, very long subject that surpassed the 200 character limit and therefore has been truncated to meet the character limitations for the description in ~"))
+        assertThat(contact.notes, equalTo("""
+            |This contact was created automatically from a forwarded email sent by example@justice.gov.uk at 12:34 on 01/01/2020.
+            |Subject: A000001 was involved in an incident that has a very, very long subject that surpassed the 200 character limit and therefore has been truncated to meet the character limitations for the description in Delius.
+            |
+            |Example message
+            |""".trimMargin()))
         assertThat(
             contact.externalReference,
             equalTo("urn:uk:gov:hmpps:justice-email:00000000-0000-0000-0000-000000000000")
@@ -113,6 +143,9 @@ internal class IntegrationTest {
         assertThat(
             contact.notes, equalTo(
                 """
+                This contact was created automatically from a forwarded email sent by example@justice.gov.uk at 12:34 on 01/01/2020.
+                Subject: A000001 was involved in an incident
+                
                 Paragraph 1
                 
                 Paragraph 2 with **bold** text
