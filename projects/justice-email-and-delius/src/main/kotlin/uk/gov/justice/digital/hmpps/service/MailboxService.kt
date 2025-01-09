@@ -10,16 +10,13 @@ import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.event.EventListener
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.EmailMessage
 import uk.gov.justice.digital.hmpps.messaging.UnableToCreateContactFromEmail
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
-import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.time.Duration.ofMillis
 
 @Service
 class MailboxService(
@@ -40,9 +37,8 @@ class MailboxService(
             }
     }
 
-    @Async
     @EventListener(UnableToCreateContactFromEmail::class)
-    fun onUnableToCreateContactFromEmail(event: UnableToCreateContactFromEmail) = retry(3, delay = ofMillis(250)) {
+    fun onUnableToCreateContactFromEmail(event: UnableToCreateContactFromEmail) {
         val toEmailAddress = EmailAddress().apply { address = event.email.fromEmailAddress }
         val message = Message().apply {
             subject = "Unable to create contact from email"
@@ -50,6 +46,10 @@ class MailboxService(
             toRecipients = listOf(Recipient().apply { emailAddress = toEmailAddress })
         }
         graphServiceClient.me().sendMail().post(SendMailPostRequestBody().apply { setMessage(message) })
+        telemetryService.trackEvent(
+            "UnableToCreateContactFromEmail",
+            mapOf("emailId" to event.email.id, "reason" to event.reason)
+        )
     }
 
     private fun getUnreadMessages() = graphServiceClient
