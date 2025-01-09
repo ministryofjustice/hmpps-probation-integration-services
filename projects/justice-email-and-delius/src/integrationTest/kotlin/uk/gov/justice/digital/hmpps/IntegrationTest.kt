@@ -43,12 +43,16 @@ internal class IntegrationTest {
         val contact = verifyContactCreated()
         assertThat(contact.type.code, equalTo(EMAIL.code))
         assertThat(contact.description, equalTo("Email - was involved in an incident"))
-        assertThat(contact.notes, equalTo("""
+        assertThat(
+            contact.notes, equalTo(
+                """
             |This contact was created automatically from a forwarded email sent by example@justice.gov.uk at 12:34 on 01/01/2020.
             |Subject: A000001 was involved in an incident
             |
             |Example message
-            |""".trimMargin()))
+            |""".trimMargin()
+            )
+        )
         assertThat(
             contact.externalReference,
             equalTo("urn:uk:gov:hmpps:justice-email:00000000-0000-0000-0000-000000000000")
@@ -66,13 +70,20 @@ internal class IntegrationTest {
 
         val contact = verifyContactCreated()
         assertThat(contact.type.code, equalTo(EMAIL.code))
-        assertThat(contact.description, equalTo("Email - was involved in an incident that has a very, very long subject that surpassed the 200 character limit and therefore has been truncated to meet the character limitations for the description in ~"))
-        assertThat(contact.notes, equalTo("""
+        assertThat(
+            contact.description,
+            equalTo("Email - was involved in an incident that has a very, very long subject that surpassed the 200 character limit and therefore has been truncated to meet the character limitations for the description in ~")
+        )
+        assertThat(
+            contact.notes, equalTo(
+                """
             |This contact was created automatically from a forwarded email sent by example@justice.gov.uk at 12:34 on 01/01/2020.
             |Subject: A000001 was involved in an incident that has a very, very long subject that surpassed the 200 character limit and therefore has been truncated to meet the character limitations for the description in Delius.
             |
             |Example message
-            |""".trimMargin()))
+            |""".trimMargin()
+            )
+        )
         assertThat(
             contact.externalReference,
             equalTo("urn:uk:gov:hmpps:justice-email:00000000-0000-0000-0000-000000000000")
