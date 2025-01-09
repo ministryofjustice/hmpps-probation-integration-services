@@ -393,7 +393,6 @@ internal class IntegrationTest {
             .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
     }
 
-
     @AfterEach
     fun resetWireMock() {
         wireMockServer.resetAll()
