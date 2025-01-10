@@ -33,7 +33,7 @@ internal class IntegrationTest {
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @MockBean
+    @MockitoBean
     lateinit var mailBoxService: MailboxService
 
     @Test
