@@ -45,6 +45,8 @@ class Contact(
     @Column
     val staffId: Long,
 
+    val eventId: Long?,
+
     @Column(name = "contact_date")
     val date: ZonedDateTime = ZonedDateTime.now(),
 

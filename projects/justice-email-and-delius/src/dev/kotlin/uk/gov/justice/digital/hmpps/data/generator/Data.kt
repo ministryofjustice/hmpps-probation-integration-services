@@ -8,6 +8,7 @@ import java.time.ZonedDateTime
 
 object Data {
     val PERSON = Person(id(), crn = "A000001")
+    val EVENT = Event(number = "1", personId = PERSON.id, id())
     val STAFF = staffWithUser(StaffUser(id(), username = "test-user"))
     val DUPLICATE_STAFF_1 = staffWithUser(StaffUser(id(), username = "duplicate1"))
     val DUPLICATE_STAFF_2 = staffWithUser(StaffUser(id(), username = "duplicate2"))

@@ -134,6 +134,16 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `links to event when event number provided`() {
+        val notification = Notification(get<EmailMessage>("successful-message-for-event"))
+        handler.handle(notification)
+        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+
+        val contact = verifyContactCreated()
+        assertThat(contact.eventId, equalTo(Data.EVENT.id))
+    }
+
+    @Test
     fun `error when multiple crns`() {
         val notification = Notification(get<EmailMessage>("multiple-crns"))
         val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
