@@ -45,7 +45,8 @@ class MailboxService(
             body = ItemBody().apply { content = "Reason for the contact not being created: ${event.reason}" }
             toRecipients = listOf(Recipient().apply { emailAddress = toEmailAddress })
         }
-        graphServiceClient.me().sendMail().post(SendMailPostRequestBody().apply { setMessage(message) })
+        graphServiceClient.users().byUserId(emailAddress)
+            .sendMail().post(SendMailPostRequestBody().apply { setMessage(message); saveToSentItems = true })
         telemetryService.trackEvent(
             "UnableToCreateContactFromEmail",
             mapOf("emailId" to event.email.id, "reason" to event.reason)
