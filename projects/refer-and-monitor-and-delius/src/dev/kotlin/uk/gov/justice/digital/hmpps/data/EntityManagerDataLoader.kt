@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
+import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator.NSI_FUZZY_SEARCH
 
 @Component
 class EntityManagerDataLoader {
@@ -13,11 +13,9 @@ class EntityManagerDataLoader {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    var nsiFuzzySearch: Nsi? = null
-
     @Transactional
     fun loadData() {
-        nsiFuzzySearch = entityManager.merge(NsiGenerator.FUZZY_SEARCH)
+        NSI_FUZZY_SEARCH = entityManager.merge(NsiGenerator.FUZZY_SEARCH)
         entityManager.merge(NsiGenerator.TERMINATED)
     }
 }

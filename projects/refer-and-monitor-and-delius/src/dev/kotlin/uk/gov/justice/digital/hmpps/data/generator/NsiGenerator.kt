@@ -49,6 +49,8 @@ object NsiGenerator {
         eventId = 97
     )
 
+    var NSI_FUZZY_SEARCH: Nsi? = null
+
     var TERMINATED = generate(
         TYPES.values.first(),
         eventId = SentenceGenerator.EVENT_WITH_NSI.id,
