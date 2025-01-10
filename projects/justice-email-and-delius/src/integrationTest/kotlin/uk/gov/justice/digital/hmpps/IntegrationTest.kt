@@ -65,6 +65,34 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `moj footer is removed if present`() {
+        val notification = Notification(get<EmailMessage>("successful-message-with-footer"))
+        handler.handle(notification)
+        verify(telemetryService).notificationReceived(notification)
+
+        val contact = verifyContactCreated()
+        assertThat(contact.type.code, equalTo(EMAIL.code))
+        assertThat(contact.description, equalTo("Email - was involved in an incident"))
+        assertThat(
+            contact.notes, equalTo(
+                """
+            |This contact was created automatically from a forwarded email sent by example@justice.gov.uk at 10:24 on 10/01/2025.
+            |Subject: A000001 was involved in an incident
+            |
+            |Example message
+            |""".trimMargin()
+            )
+        )
+        assertThat(
+            contact.externalReference,
+            equalTo("urn:uk:gov:hmpps:justice-email:00000000-0000-0000-0000-000000000000")
+        )
+        assertThat(contact.staffId, equalTo(Data.STAFF.id))
+        assertThat(contact.teamId, equalTo(Data.MANAGER.teamId))
+        assertThat(contact.providerId, equalTo(Data.MANAGER.providerId))
+    }
+
+    @Test
     fun `description is truncated if over 200 chars`() {
         val notification = Notification(get<EmailMessage>("successful-long-message"))
         handler.handle(notification)
