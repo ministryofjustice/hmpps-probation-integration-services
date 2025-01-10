@@ -17,8 +17,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.bean.override.mockito.MockitoBean
-import uk.gov.justice.digital.hmpps.data.EntityManagerDataLoader
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator.INACTIVE_PERSON_ADDRESS_ID
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
@@ -75,9 +75,6 @@ internal class MessagingIntegrationInactiveTest {
 
     @Autowired
     private lateinit var staffRepository: StaffRepository
-
-    @Autowired
-    private lateinit var entityManagerDataLoader: EntityManagerDataLoader
 
     @Test
     fun `application submission with an inactive event creates an alert contact`() {
@@ -239,7 +236,7 @@ internal class MessagingIntegrationInactiveTest {
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses =
             personAddressRepository.findAll().filter { it.personId == PersonGenerator.PERSON_INACTIVE_EVENT.id }
-                .associateBy { it.id == entityManagerDataLoader.inactivePersonAddressId }
+                .associateBy { it.id == INACTIVE_PERSON_ADDRESS_ID }
         assertThat(addresses.size, equalTo(2))
         val previous = addresses[true]!!
         assertThat(previous.endDate, equalTo(details.arrivedAt.toLocalDate()))

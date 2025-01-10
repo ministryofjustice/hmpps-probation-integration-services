@@ -68,7 +68,6 @@ class DataLoader(
     private val referralBookingDataLoader: ReferralBookingDataLoader,
     private val documentDataLoader: DocumentDataLoader,
     private val entityManagerDataLoader: EntityManagerDataLoader
-
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
