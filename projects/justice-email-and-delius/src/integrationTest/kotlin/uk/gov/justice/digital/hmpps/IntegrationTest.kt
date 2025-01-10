@@ -3,12 +3,10 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.atLeastOnce
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -20,6 +18,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.EmailMessage
 import uk.gov.justice.digital.hmpps.messaging.Handler
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.get
+import uk.gov.justice.digital.hmpps.service.MailboxService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -33,6 +32,9 @@ internal class IntegrationTest {
 
     @MockBean
     lateinit var telemetryService: TelemetryService
+
+    @MockBean
+    lateinit var mailBoxService: MailboxService
 
     @Test
     fun `contact is created`() {
@@ -113,8 +115,8 @@ internal class IntegrationTest {
     @Test
     fun `error when missing crn`() {
         val notification = Notification(get<EmailMessage>("no-crn"))
-        val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
-        assertThat(exception.message, equalTo("No CRN in message subject"))
+        assertDoesNotThrow { handler.handle(notification) }
+        verify(mailBoxService).onUnableToCreateContactFromEmail(any())
     }
 
     @Test
