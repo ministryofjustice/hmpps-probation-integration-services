@@ -235,7 +235,7 @@ class SentenceServiceTest {
                         "${requirement1._description} - ${requirement1._codeDescription}",
                         requirement1._length,
                         requirement1.lengthUnitValue,
-                        requirement1._notes,
+                        listOf(NoteDetail(0, note = requirement1._notes!!, hasNoteBeenTruncated = false)),
                         null
                     ),
                     Requirement(
@@ -248,7 +248,7 @@ class SentenceServiceTest {
                         "3 days RAR, 1 completed",
                         requirement2._length,
                         requirement2.lengthUnitValue,
-                        requirement2._notes,
+                        listOf(NoteDetail(0, note = requirement2._notes!!, hasNoteBeenTruncated = false)),
                         Rar(1, 2, 3)
                     ),
                     Requirement(
@@ -261,7 +261,7 @@ class SentenceServiceTest {
                         requirement3._description,
                         requirement3._length,
                         requirement3.lengthUnitValue,
-                        requirement3._notes,
+                        listOf(NoteDetail(0, note = requirement3._notes!!, hasNoteBeenTruncated = false)),
                         null
                     )
                 ),
@@ -374,7 +374,7 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            requirement1._notes,
+            listOf(NoteDetail(0, note = requirement1._notes!!, hasNoteBeenTruncated = false)),
             null
         )
 
@@ -446,8 +446,7 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            requirement1._notes,
-            null
+            listOf(NoteDetail(0, note = requirement1._notes!!, hasNoteBeenTruncated = false))
         )
 
         assertEquals(expected, response.sentence!!.requirements[0])

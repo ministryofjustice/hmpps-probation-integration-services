@@ -129,7 +129,7 @@ class SentenceIntegrationTest {
                         "1 days RAR, 1 completed",
                         12,
                         null,
-                        "my notes",
+                        listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
                         Rar(completed = 1, scheduled = 0, totalDays = 1)
                     ),
                     Requirement(
@@ -142,7 +142,7 @@ class SentenceIntegrationTest {
                         "Unpaid Work - Intensive",
                         12,
                         null,
-                        "my notes",
+                        listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
                         null
                     )
                 ),

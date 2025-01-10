@@ -155,11 +155,15 @@ class SentenceService(
             populateRequirementDescription(description, codeDescription, rar),
             length,
             lengthUnitValue,
-            notes,
+            toRequirementNote(true),
             rar
         )
 
         return requirement
+    }
+
+    fun RequirementDetails.toRequirementNote(truncateNote: Boolean): List<NoteDetail> {
+        return formatNote(notes, truncateNote)
     }
 
     fun RequirementDetails.toMinimalRequirement(): MinimalRequirement {

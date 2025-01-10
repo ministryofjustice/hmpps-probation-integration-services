@@ -13,7 +13,7 @@ data class Requirement(
     val description: String,
     val length: Long?,
     val lengthUnitValue: String?,
-    val notes: String?,
+    val requirementNotes: List<NoteDetail>? = null,
     val rar: Rar? = null
 )
 
