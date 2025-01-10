@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionReposito
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateExclusion
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateRestriction
+import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator.NSI_FUZZY_SEARCH
 import uk.gov.justice.digital.hmpps.entity.Exclusion
 import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -73,7 +74,8 @@ class DataLoader(
     private val disabilityRepository: DisabilityRepository,
     private val offenceRepository: OffenceRepository,
     private val mainOffenceRepository: MainOffenceRepository,
-    private val teamOfficeLinkRepository: TeamOfficeLinkRepository
+    private val teamOfficeLinkRepository: TeamOfficeLinkRepository,
+    private val entityManagerDataLoader: EntityManagerDataLoader
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -279,10 +281,8 @@ class DataLoader(
         )
 
         personRepository.save(PersonGenerator.FUZZY_SEARCH)
-        NsiGenerator.FUZZY_SEARCH = nsiRepository.save(NsiGenerator.FUZZY_SEARCH)
-        nsiManagerRepository.save(NsiGenerator.generateManager(NsiGenerator.FUZZY_SEARCH))
-
-        NsiGenerator.TERMINATED = nsiRepository.save(NsiGenerator.TERMINATED)
+        entityManagerDataLoader.loadData()
+        nsiManagerRepository.save(NsiGenerator.generateManager(NSI_FUZZY_SEARCH!!))
 
         auditUserRepository.save(UserGenerator.LIMITED_ACCESS_USER)
         personRepository.saveAll(

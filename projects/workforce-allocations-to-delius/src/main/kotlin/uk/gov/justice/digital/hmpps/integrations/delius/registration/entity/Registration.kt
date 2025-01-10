@@ -5,6 +5,7 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
@@ -37,9 +38,11 @@ class Registration(
     val deRegistrations: List<DeRegistration>,
 
     @Column(name = "deregistered", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val deRegistered: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 ) {
     val endDate: LocalDate?
@@ -79,5 +82,6 @@ class DeRegistration(
     val registration: Registration,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 )

@@ -1,20 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
@@ -25,11 +14,6 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "contact")
 data class CaseNote(
-    @Id
-    @Column(name = "contact_id", updatable = false)
-    @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long = 0,
 
     @Column(updatable = false)
     val offenderId: Long,
@@ -96,14 +80,22 @@ data class CaseNote(
     @Column(updatable = false)
     val trustProviderTeamId: Long = teamId,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false,
 
     @Column(updatable = false)
     val partitionAreaId: Long = 0L,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    var softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "contact_id", updatable = false)
+    @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
+    val id: Long = 0,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

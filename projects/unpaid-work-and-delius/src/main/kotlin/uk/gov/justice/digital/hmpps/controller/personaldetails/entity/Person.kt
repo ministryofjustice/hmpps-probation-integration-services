@@ -1,13 +1,9 @@
 package uk.gov.justice.digital.hmpps.controller.personaldetails.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 
 @Immutable
 @Entity
@@ -22,6 +18,7 @@ class Person(
     val crn: String,
 
     @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)

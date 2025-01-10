@@ -56,7 +56,7 @@ class ReferenceOffence(
     @Id
     @GeneratedValue(strategy = SEQUENCE, generator = "offence_id_seq")
     @Column(name = "offence_id")
-    val id: Long = 0
+    val id: Long? = null
 ) {
 
     @Version

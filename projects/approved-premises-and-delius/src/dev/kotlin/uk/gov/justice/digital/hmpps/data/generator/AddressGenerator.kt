@@ -13,6 +13,8 @@ object AddressGenerator {
         postcode = "MB01 3TD"
     )
 
+    var PERSON_ADDRESS_ID: Long? = null
+
     var INACTIVE_PERSON_ADDRESS = generatePersonAddress(
         personId = PersonGenerator.PERSON_INACTIVE_EVENT.id,
         addressNumber = "12",
@@ -20,6 +22,8 @@ object AddressGenerator {
         town = "Some Place",
         postcode = "MB01 3TD"
     )
+
+    var INACTIVE_PERSON_ADDRESS_ID: Long? = null
 
     val Q001 = generateAddress(
         addressNumber = "1",
@@ -196,9 +200,7 @@ object AddressGenerator {
         county: String? = null,
         postcode: String? = null,
         telephoneNumber: String? = null,
-        id: Long = IdGenerator.getAndIncrement()
     ) = PersonAddress(
-        id,
         personId,
         type,
         status,
@@ -209,6 +211,6 @@ object AddressGenerator {
         town,
         county,
         postcode,
-        telephoneNumber
+        telephoneNumber,
     )
 }

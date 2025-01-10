@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import java.time.ZonedDateTime
 
 @Entity
@@ -51,6 +48,7 @@ class Document(
     var rowVersion: Long = 0,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Column(name = "partition_area_id")

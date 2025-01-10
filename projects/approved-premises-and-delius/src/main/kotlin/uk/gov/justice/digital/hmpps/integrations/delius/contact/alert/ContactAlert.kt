@@ -1,13 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact.alert
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Version
+import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 @Entity
@@ -42,5 +36,6 @@ class ContactAlert(
     val personManagerId: Long,
 
     @Column(name = "trust_provider_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val trustProviderFlag: Boolean = false
 )

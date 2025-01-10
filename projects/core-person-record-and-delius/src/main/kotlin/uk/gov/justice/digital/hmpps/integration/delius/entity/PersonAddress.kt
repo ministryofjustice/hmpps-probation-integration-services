@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -29,6 +30,8 @@ class PersonAddress(
     val noFixedAbode: Boolean,
     val startDate: LocalDate,
     val endDate: LocalDate?,
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
     @Id
     @Column(name = "offender_address_id")

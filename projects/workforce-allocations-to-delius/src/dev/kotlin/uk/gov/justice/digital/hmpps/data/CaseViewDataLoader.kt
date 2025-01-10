@@ -94,6 +94,6 @@ class CaseViewDataLoader(
             )
         )
 
-        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT_CASE_VIEW)
+//        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT_CASE_VIEW)
     }
 }

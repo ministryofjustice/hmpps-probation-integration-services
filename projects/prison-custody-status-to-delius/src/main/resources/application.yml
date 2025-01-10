@@ -1,11 +1,9 @@
 # Default config
-server.shutdown: graceful
 spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
     hibernate.ddl-auto: validate
-    database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE
@@ -54,7 +52,7 @@ seed.database: true
 
 messaging.consumer.queue: prison-custody-status-events
 
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+wiremock.enabled: true
 
 integrations:
   prison-api:

@@ -9,7 +9,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.Data
 import uk.gov.justice.digital.hmpps.entity.Contact
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
@@ -30,10 +30,10 @@ internal class IntegrationTest {
     @Autowired
     lateinit var contactRepository: ContactRepository
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @MockBean
+    @MockitoBean
     lateinit var mailBoxService: MailboxService
 
     @Test

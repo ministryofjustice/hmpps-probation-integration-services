@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -95,7 +96,8 @@ class Contact(
     @JoinColumn(name = "last_updated_user_id")
     val lastUpdatedUser: User,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     val partitionAreaId: Long = 0
@@ -156,6 +158,7 @@ class ContactType(
     val categories: List<ContactCategory> = emptyList(),
 
     @Column(name = "sgc_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val systemGenerated: Boolean = false,
 
     @Column(name = "national_standards_contact")
