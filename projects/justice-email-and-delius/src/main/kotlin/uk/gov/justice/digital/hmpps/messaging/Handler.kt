@@ -58,7 +58,7 @@ class Handler(
             |This contact was created automatically from a forwarded email sent by ${message.fromEmailAddress} ${message.onAt}.
             |Subject: ${message.subject}
             |
-            |${htmlToMarkdownConverter.convert(message.bodyContent)}
+            |${htmlToMarkdownConverter.convert(message.bodyContent.withoutFooter())}
             """.trimMargin()
             val contact = contactRepository.save(
                 Contact(
