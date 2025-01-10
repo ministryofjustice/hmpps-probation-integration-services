@@ -40,6 +40,7 @@ class Handler(
     private val staffRepository: StaffRepository,
     private val ldapTemplate: LdapTemplate,
     private val eventPublisher: ApplicationEventPublisher,
+    private val eventRepository: EventRepository,
 ) : NotificationHandler<EmailMessage>, AuditableService(auditedInteractionService) {
     @Publish(messages = [Message(title = "email-message", payload = Schema(EmailMessage::class))])
     override fun handle(notification: Notification<EmailMessage>) = try {
@@ -52,6 +53,7 @@ class Handler(
                 message.fromEmailAddress.takeIf { it.endsWith("@justice.gov.uk") || it.endsWith("@digital.justice.gov.uk") }
                     ?: throw IllegalArgumentException("Email address does not end with @justice.gov.uk or @digital.justice.gov.uk")
             val person = personRepository.getByCrn(crn)
+            val event = message.findEvent(person.id)
             val manager = personManagerRepository.getManager(person.id)
             val staffId = findStaffIdForEmailAddress(emailAddress) ?: manager.staffId
             val fullNotes = """
@@ -72,6 +74,7 @@ class Handler(
                     staffId = staffId,
                     teamId = manager.teamId,
                     providerId = manager.providerId,
+                    eventId = event?.id,
                 )
             )
             audit["contactId"] = contact.id
@@ -101,6 +104,13 @@ class Handler(
 
             else -> throw IllegalArgumentException("Multiple CRNs in message subject")
         }
+    }
+
+    private fun EmailMessage.findEvent(personId: Long): Event? {
+        val crnWithEvent = ("$CRN_REGEX:[0-9]+").toRegex().find(subject)?.value?.split(":")
+        return if (crnWithEvent?.size == 2) {
+            eventRepository.getByPersonIdAndNumber(personId, crnWithEvent[1])
+        } else null
     }
 
     private fun findStaffIdForEmailAddress(emailAddress: String): Long? {
