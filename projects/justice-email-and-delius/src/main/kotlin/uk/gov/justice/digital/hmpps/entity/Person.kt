@@ -22,7 +22,11 @@ class Person(
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-)
+) {
+    companion object {
+        const val CRN_REGEX = "[A-Za-z][0-9]{6}"
+    }
+}
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?

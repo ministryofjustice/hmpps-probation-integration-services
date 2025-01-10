@@ -34,6 +34,8 @@ class Contact(
     @Lob
     val notes: String,
 
+    val description: String?,
+
     @Column(name = "probation_area_id")
     val providerId: Long,
 
@@ -84,7 +86,7 @@ class ContactType(
     val code: String
 ) {
     enum class Code(val code: String) {
-        EMAIL_TEXT_FROM_OTHER("CM3A")
+        EMAIL("C135")
     }
 }
 
