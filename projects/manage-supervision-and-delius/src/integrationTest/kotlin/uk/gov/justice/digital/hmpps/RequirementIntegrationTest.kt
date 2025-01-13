@@ -57,8 +57,9 @@ class RequirementIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<RequirementNoteDetail>()
 
-        val expected = RequirementNoteDetail(PersonGenerator.OVERVIEW.toSummary(),
-                Requirement(
+        val expected = RequirementNoteDetail(
+            PersonGenerator.OVERVIEW.toSummary(),
+            Requirement(
                 REQUIREMENT.id,
                 "F",
                 LocalDate.now().minusDays(1),
