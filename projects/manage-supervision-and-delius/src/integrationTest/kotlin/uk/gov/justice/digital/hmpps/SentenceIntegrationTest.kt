@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_SUB_CAT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_UNPAID_WORK
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -120,6 +122,7 @@ class SentenceIntegrationTest {
                 ),
                 listOf(
                     Requirement(
+                        REQUIREMENT.id,
                         "F",
                         LocalDate.now().minusDays(1),
                         LocalDate.now(),
@@ -130,9 +133,10 @@ class SentenceIntegrationTest {
                         12,
                         null,
                         listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
-                        Rar(completed = 1, scheduled = 0, totalDays = 1)
+                        rar = Rar(completed = 1, scheduled = 0, totalDays = 1)
                     ),
                     Requirement(
+                        REQUIREMENT_UNPAID_WORK.id,
                         "W",
                         LocalDate.now().minusDays(1),
                         LocalDate.now(),

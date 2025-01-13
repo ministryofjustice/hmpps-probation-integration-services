@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
-import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
@@ -28,6 +27,7 @@ class SentenceService(
     private val upwAppointmentRepository: UpwAppointmentRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
     private val custodyRepository: CustodyRepository,
+    private val requirementService: RequirementService
 ) {
     fun getEvents(crn: String, eventNumber: String?): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -143,9 +143,10 @@ class SentenceService(
     fun Disposal.toMinimalOrder() = MinimalOrder(type.description, date, expectedEndDate())
 
     fun RequirementDetails.toRequirement(): Requirement {
-        val rar = getRar(id, code)
+        val rar = requirementService.getRar(id, code)
 
         val requirement = Requirement(
+            id,
             code,
             expectedStartDate,
             startDate,
@@ -156,40 +157,15 @@ class SentenceService(
             length,
             lengthUnitValue,
             toRequirementNote(true),
-            rar
+            rar = rar
         )
 
         return requirement
     }
 
-    fun RequirementDetails.toRequirementNote(truncateNote: Boolean): List<NoteDetail> {
-        return formatNote(notes, truncateNote)
-    }
-
     fun RequirementDetails.toMinimalRequirement(): MinimalRequirement {
-        val rar = getRar(id, code)
+        val rar = requirementService.getRar(id, code)
         return MinimalRequirement(id, populateRequirementDescription(description, codeDescription, rar))
-    }
-
-    fun populateRequirementDescription(description: String, codeDescription: String?, rar: Rar?): String {
-        rar?.let { return "" + it.totalDays + " days RAR, " + it.completed + " completed" }
-
-        if (codeDescription != null) {
-            return "$description - $codeDescription"
-        }
-
-        return description
-    }
-
-    private fun getRar(requirementId: Long, requirementType: String): Rar? {
-        if (requirementType.equals("F", true)) {
-            val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
-            val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
-            val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
-            return Rar(completed = completedDays, scheduled = scheduledDays)
-        }
-
-        return null
     }
 
     fun getUnpaidWorkTime(disposalId: Long): String? {
