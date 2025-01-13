@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.Data.BUSINESS_INTERACTIONS
 import uk.gov.justice.digital.hmpps.data.generator.Data.CONTACT_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.Data.DUPLICATE_STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.Data.DUPLICATE_STAFF_2
+import uk.gov.justice.digital.hmpps.data.generator.Data.EVENT
 import uk.gov.justice.digital.hmpps.data.generator.Data.MANAGER
 import uk.gov.justice.digital.hmpps.data.generator.Data.MANAGER_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.Data.PERSON
@@ -33,6 +34,7 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         listOf(
             PERSON,
+            EVENT,
             STAFF,
             STAFF.user,
             DUPLICATE_STAFF_1,

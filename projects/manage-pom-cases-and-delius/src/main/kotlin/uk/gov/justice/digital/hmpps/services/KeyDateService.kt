@@ -61,7 +61,7 @@ class KeyDateService(
     }
 
     private fun keyDate(custodyId: Long, typeCode: KeyDate.TypeCode, date: LocalDate): KeyDate =
-        KeyDate(custodyId, referenceDataRepository.keyDateType(typeCode.value), date, null)
+        KeyDate(custodyId, referenceDataRepository.keyDateType(typeCode.value), date)
 }
 
 enum class KeyDateMergeResult {

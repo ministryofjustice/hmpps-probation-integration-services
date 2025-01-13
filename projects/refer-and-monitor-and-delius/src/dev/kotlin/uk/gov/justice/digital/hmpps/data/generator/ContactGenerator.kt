@@ -108,8 +108,7 @@ object ContactGenerator {
         rarActivity: Boolean? = null,
         person: Person = PersonGenerator.DEFAULT,
         externalReference: String? = null,
-        softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
+        softDeleted: Boolean = false
     ) = Contact(
         person,
         type,
@@ -118,7 +117,6 @@ object ContactGenerator {
         endTime = endTime,
         nsiId = nsi?.id,
         eventId = nsi?.eventId,
-        id = id,
         providerId = ProviderGenerator.INTENDED_PROVIDER.id,
         teamId = ProviderGenerator.INTENDED_TEAM.id,
         staffId = ProviderGenerator.INTENDED_STAFF.id,

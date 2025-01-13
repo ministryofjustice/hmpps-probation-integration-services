@@ -17,9 +17,9 @@ import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.entity.PrisonStaff
@@ -45,13 +45,13 @@ internal class AllocationMessagingIntegrationTest {
     @Autowired
     lateinit var wireMockServer: WireMockServer
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var staffRepository: PrisonStaffRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var prisonManagerRepository: PrisonManagerRepository
 
     @Autowired

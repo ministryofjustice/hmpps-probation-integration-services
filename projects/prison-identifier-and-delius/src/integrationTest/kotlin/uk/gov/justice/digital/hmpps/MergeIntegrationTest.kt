@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_NOMS
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -25,7 +25,7 @@ internal class MergeIntegrationTest {
     @Autowired
     lateinit var channelManager: HmppsChannelManager
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Test

@@ -45,7 +45,8 @@ class DataLoader(
     private val caseAllocationRepository: CaseAllocationRepository,
     private val registrationRepository: RegistrationRepository,
     private val keyDateRepository: KeyDateRepository,
-    private val contactTypeRepository: ContactTypeRepository
+    private val contactTypeRepository: ContactTypeRepository,
+    private val entityManagerDataLoader: EntityManagerDataLoader
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -77,11 +78,10 @@ class DataLoader(
 
         districtRepository.save(ProviderGenerator.DEFAULT_DISTRICT)
         teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM + ProviderGenerator.UNALLOCATED_TEAM)
-        val staffMap =
-            staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff } + ProviderGenerator.UNALLOCATED_STAFF)
-                .associateBy { it.code }
+        val staffMap = entityManagerDataLoader.loadData()
 
-        val staff = staffRepository.save(ProviderGenerator.generateStaff("Test", "Test", "Test"))
+        staffRepository.save(ProviderGenerator.generateStaff("Test", "Test", "Test"))
+
         UserGenerator.DEFAULT_STAFF_USER = staffUserRepository.save(
             StaffUser(
                 UserGenerator.DEFAULT_STAFF_USER.username,

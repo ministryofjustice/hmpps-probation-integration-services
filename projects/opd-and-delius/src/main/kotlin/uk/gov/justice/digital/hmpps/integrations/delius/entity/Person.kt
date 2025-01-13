@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -20,6 +21,7 @@ class Person(
     val nomsId: String?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -46,9 +48,11 @@ class PersonManager(
     val staffId: Long,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id

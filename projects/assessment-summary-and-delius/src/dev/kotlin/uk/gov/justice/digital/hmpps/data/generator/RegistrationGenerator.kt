@@ -44,8 +44,7 @@ object RegistrationGenerator {
         nextReviewDate: LocalDate? = type.reviewPeriod?.let { date.plusMonths(it) },
         notes: String? = null,
         softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Registration(personId, date, contact, teamId, staffId, type, level, nextReviewDate, notes, softDeleted, id)
+    ) = Registration(personId, date, contact, teamId, staffId, type, level, nextReviewDate, notes, softDeleted)
 
     fun generateType(
         code: String,

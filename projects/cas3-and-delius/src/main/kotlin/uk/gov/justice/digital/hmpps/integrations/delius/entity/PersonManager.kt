@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -28,9 +26,11 @@ class PersonManager(
     override val probationAreaId: Long,
 
     @Column(name = "active_flag", columnDefinition = "NUMBER")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 
 ) : ManagerIds

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -42,12 +43,15 @@ class LicenceCondition(
     val cvlText: String?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val pendingTransfer: Boolean = false,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version
@@ -108,9 +112,11 @@ class LicenceConditionManager(
     val allocationReason: ReferenceData?,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version

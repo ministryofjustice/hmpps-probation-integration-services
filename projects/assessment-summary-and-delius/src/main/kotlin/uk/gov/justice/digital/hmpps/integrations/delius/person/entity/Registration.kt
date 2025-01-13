@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
@@ -53,6 +54,7 @@ class Registration(
     val notes: String? = null,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id
@@ -62,6 +64,7 @@ class Registration(
 ) : AuditableEntity() {
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var deregistered: Boolean = false
         private set
 
@@ -174,6 +177,7 @@ class RegistrationReview(
     val completed: Boolean = false,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id
@@ -209,6 +213,7 @@ class DeRegistration(
     val staffId: Long,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id

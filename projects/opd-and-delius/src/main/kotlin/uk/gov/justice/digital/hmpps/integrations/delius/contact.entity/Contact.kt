@@ -1,18 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -52,6 +42,7 @@ class Contact(
     val staffId: Long,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version

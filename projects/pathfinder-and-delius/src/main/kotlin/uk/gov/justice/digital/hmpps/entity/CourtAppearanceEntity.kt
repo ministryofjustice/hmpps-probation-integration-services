@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -50,7 +51,8 @@ class CourtAppearanceEntity(
     @ManyToOne
     val court: Court,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -68,9 +70,11 @@ class CourtAppearanceEventEntity(
     val courtAppearancePerson: CourtAppearancePerson,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -90,6 +94,7 @@ class CourtAppearancePerson(
     val nomsNumber: String? = null,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 
 )

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -61,15 +62,18 @@ class ProbationCase(
     val genderIdentityDescription: String?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val currentExclusion: Boolean?,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val currentRestriction: Boolean?,
 
     @OneToMany(mappedBy = "person")
     val communityManagers: List<CommunityManager>,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id
@@ -94,9 +98,11 @@ class CommunityManager(
     val team: CommunityManagerTeam,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id

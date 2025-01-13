@@ -1,15 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
 import java.time.LocalDate
@@ -38,6 +32,7 @@ class Custody(
     val disposal: Disposal,
 
     @Column(columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -61,5 +56,6 @@ class KeyDate(
     var date: LocalDate,
 
     @Column(columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )

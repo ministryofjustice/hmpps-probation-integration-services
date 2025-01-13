@@ -1,11 +1,9 @@
 # Default config
-server.shutdown: graceful
 spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
     #    hibernate.ddl-auto: validate # TODO re-enable this after "tier-end-date" feature flag is enabled
-    database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE
@@ -56,7 +54,6 @@ spring:
 
 seed.database: true
 wiremock.enabled: true
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 messaging.consumer.queue: message-queue
 integrations.tier.url: http://localhost:${wiremock.port}/hmpps-tier

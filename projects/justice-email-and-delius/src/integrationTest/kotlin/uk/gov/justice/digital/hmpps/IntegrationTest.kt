@@ -3,15 +3,13 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.atLeastOnce
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.Data
 import uk.gov.justice.digital.hmpps.entity.Contact
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
@@ -20,6 +18,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.EmailMessage
 import uk.gov.justice.digital.hmpps.messaging.Handler
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.get
+import uk.gov.justice.digital.hmpps.service.MailboxService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -31,8 +30,11 @@ internal class IntegrationTest {
     @Autowired
     lateinit var contactRepository: ContactRepository
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
+
+    @MockitoBean
+    lateinit var mailBoxService: MailboxService
 
     @Test
     fun `contact is created`() {
@@ -47,6 +49,34 @@ internal class IntegrationTest {
             contact.notes, equalTo(
                 """
             |This contact was created automatically from a forwarded email sent by example@justice.gov.uk at 12:34 on 01/01/2020.
+            |Subject: A000001 was involved in an incident
+            |
+            |Example message
+            |""".trimMargin()
+            )
+        )
+        assertThat(
+            contact.externalReference,
+            equalTo("urn:uk:gov:hmpps:justice-email:00000000-0000-0000-0000-000000000000")
+        )
+        assertThat(contact.staffId, equalTo(Data.STAFF.id))
+        assertThat(contact.teamId, equalTo(Data.MANAGER.teamId))
+        assertThat(contact.providerId, equalTo(Data.MANAGER.providerId))
+    }
+
+    @Test
+    fun `moj footer is removed if present`() {
+        val notification = Notification(get<EmailMessage>("successful-message-with-footer"))
+        handler.handle(notification)
+        verify(telemetryService).notificationReceived(notification)
+
+        val contact = verifyContactCreated()
+        assertThat(contact.type.code, equalTo(EMAIL.code))
+        assertThat(contact.description, equalTo("Email - was involved in an incident"))
+        assertThat(
+            contact.notes, equalTo(
+                """
+            |This contact was created automatically from a forwarded email sent by example@justice.gov.uk at 10:24 on 10/01/2025.
             |Subject: A000001 was involved in an incident
             |
             |Example message
@@ -104,6 +134,16 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `links to event when event number provided`() {
+        val notification = Notification(get<EmailMessage>("successful-message-for-event"))
+        handler.handle(notification)
+        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+
+        val contact = verifyContactCreated()
+        assertThat(contact.eventId, equalTo(Data.EVENT.id))
+    }
+
+    @Test
     fun `error when multiple crns`() {
         val notification = Notification(get<EmailMessage>("multiple-crns"))
         val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
@@ -113,8 +153,8 @@ internal class IntegrationTest {
     @Test
     fun `error when missing crn`() {
         val notification = Notification(get<EmailMessage>("no-crn"))
-        val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
-        assertThat(exception.message, equalTo("No CRN in message subject"))
+        assertDoesNotThrow { handler.handle(notification) }
+        verify(mailBoxService).onUnableToCreateContactFromEmail(any())
     }
 
     @Test

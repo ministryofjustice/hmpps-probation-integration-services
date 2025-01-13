@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Approve
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
@@ -22,7 +21,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationR
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
@@ -55,7 +53,6 @@ class DataLoader(
     private val teamRepository: TeamRepository,
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
-    private val personAddressRepository: PersonAddressRepository,
     private val eventRepository: EventRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
@@ -64,15 +61,14 @@ class DataLoader(
     private val transferReasonRepository: TransferReasonRepository,
     private val caseloadRepository: CaseloadRepository,
     private val registrationRepository: RegistrationRepository,
-    private val referralRepository: ReferralRepository,
     private val probationCaseDataLoader: ProbationCaseDataLoader,
     private val lduRepository: LduRepository,
     private val staffUserRepository: StaffUserRepository,
     private val boroughRepository: BoroughRepository,
     private val referralBookingDataLoader: ReferralBookingDataLoader,
     private val documentDataLoader: DocumentDataLoader,
-
-    ) : ApplicationListener<ApplicationReadyEvent> {
+    private val entityManagerDataLoader: EntityManagerDataLoader
+) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
     fun saveAuditUser() {
@@ -171,9 +167,7 @@ class DataLoader(
             )
         )
 
-        AddressGenerator.PERSON_ADDRESS = personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
-        AddressGenerator.INACTIVE_PERSON_ADDRESS =
-            personAddressRepository.save(AddressGenerator.INACTIVE_PERSON_ADDRESS)
+        entityManagerDataLoader.loadData()
         eventRepository.save(PersonGenerator.EVENT)
         eventRepository.save(PersonGenerator.INACTIVE_EVENT)
         registrationRepository.save(
@@ -219,7 +213,6 @@ class DataLoader(
         )
 
         eventRepository.save(ANOTHER_EVENT)
-        referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
 
         probationCaseDataLoader.loadData()
         referralBookingDataLoader.loadData()

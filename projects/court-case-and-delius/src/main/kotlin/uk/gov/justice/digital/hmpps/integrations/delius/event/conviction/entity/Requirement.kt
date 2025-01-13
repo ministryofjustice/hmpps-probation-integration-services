@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.conviction.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
@@ -75,9 +76,11 @@ class Requirement(
     val rarCount: Long? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @ManyToOne

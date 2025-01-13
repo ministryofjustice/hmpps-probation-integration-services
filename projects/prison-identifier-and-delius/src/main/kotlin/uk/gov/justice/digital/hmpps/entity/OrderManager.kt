@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
@@ -29,9 +31,11 @@ class OrderManager(
     val providerId: Long,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 

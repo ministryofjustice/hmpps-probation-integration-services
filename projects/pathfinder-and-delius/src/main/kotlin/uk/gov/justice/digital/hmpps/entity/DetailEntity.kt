@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -57,9 +58,11 @@ class DetailPerson(
     val thirdName: String? = null,
 
     @Column(name = "current_disposal", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val currentDisposal: Boolean,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 
 )
@@ -90,6 +93,7 @@ class PersonManager(
     val team: Team,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true
 )
 
@@ -196,6 +200,7 @@ class PersonAlias(
     val gender: ReferenceData,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id

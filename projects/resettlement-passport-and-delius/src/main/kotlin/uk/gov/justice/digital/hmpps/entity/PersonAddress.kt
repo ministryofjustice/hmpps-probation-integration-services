@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -32,6 +33,9 @@ class PersonAddress(
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean? = false,
     var endDate: LocalDate? = null,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 

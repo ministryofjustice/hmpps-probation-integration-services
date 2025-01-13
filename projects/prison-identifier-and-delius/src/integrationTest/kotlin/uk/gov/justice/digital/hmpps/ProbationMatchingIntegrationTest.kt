@@ -12,10 +12,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.annotation.DirtiesContext
-import org.springframework.test.context.TestPropertySource
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.entity.AdditionalIdentifierRepository
 import uk.gov.justice.digital.hmpps.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
@@ -35,16 +34,16 @@ internal class ProbationMatchingIntegrationTest {
     @Autowired
     lateinit var wireMockServer: WireMockServer
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var personRepository: PersonRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var custodyRepository: CustodyRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var additionalIdentifierRepository: AdditionalIdentifierRepository
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Test

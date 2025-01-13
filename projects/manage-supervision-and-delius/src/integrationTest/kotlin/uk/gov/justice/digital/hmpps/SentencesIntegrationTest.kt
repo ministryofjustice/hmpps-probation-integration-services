@@ -69,8 +69,8 @@ class SentencesIntegrationTest {
                     EVENT_1.id,
                     order = MinimalOrder(ACTIVE_ORDER.type.description, ACTIVE_ORDER.date),
                     licenceConditions = listOf(
-                        MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),
                         MinimalLicenceCondition(LC_WITHOUT_NOTES.id, LIC_COND_MAIN_CAT.description),
+                        MinimalLicenceCondition(LC_WITH_NOTES.id, LIC_COND_MAIN_CAT.description),
                         MinimalLicenceCondition(LC_WITH_NOTES_WITHOUT_ADDED_BY.id, LIC_COND_MAIN_CAT.description),
                         MinimalLicenceCondition(LC_WITH_1500_CHAR_NOTE.id, LIC_COND_MAIN_CAT.description)
                     ),

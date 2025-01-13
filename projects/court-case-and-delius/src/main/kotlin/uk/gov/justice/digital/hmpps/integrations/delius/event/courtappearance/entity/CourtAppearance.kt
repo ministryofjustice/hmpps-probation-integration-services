@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.e
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
@@ -28,6 +29,7 @@ class CourtAppearance(
     val appearanceDate: LocalDateTime,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -180,6 +182,7 @@ class CourtReport(
     val reportManagers: List<ReportManager> = listOf(),
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean = false,
 
     @Id
@@ -201,9 +204,11 @@ class ReportManager(
     val staff: Staff? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var active: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     var softDeleted: Boolean,
 
     @Id

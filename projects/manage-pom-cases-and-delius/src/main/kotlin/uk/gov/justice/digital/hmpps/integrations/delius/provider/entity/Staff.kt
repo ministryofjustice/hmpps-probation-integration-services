@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -40,7 +41,8 @@ class Staff(
 ) {
     fun isUnallocated() = code.endsWith("U")
 
-    @Column(name = "private", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "private", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     var privateStaff: Boolean = false
 
     @CreatedDate
