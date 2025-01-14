@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 sealed interface PrisonerMovement {
@@ -77,8 +78,13 @@ fun PrisonerMovement.receivedDateValid(custody: Custody): Boolean {
     return occurredAt <= ZonedDateTime.now() && (releaseDate == null || occurredAt >= releaseDate)
 }
 
-fun PrisonerMovement.statusDateValid(custody: Custody): Boolean =
-    occurredAt <= ZonedDateTime.now() && occurredAt.toLocalDate() >= custody.statusChangeDate
+fun PrisonerMovement.occurredAfter(date: LocalDate?): Boolean =
+    occurredAt <= ZonedDateTime.now() && (date == null || occurredAt.toLocalDate() >= date)
 
-fun PrisonerMovement.locationDateValid(custody: Custody): Boolean =
-    occurredAt <= ZonedDateTime.now() && (custody.locationChangeDate == null || occurredAt.toLocalDate() >= custody.locationChangeDate)
+fun PrisonerMovement.isReceived() = this is PrisonerMovement.Received
+
+fun PrisonerMovement.isReleased() = this is PrisonerMovement.Released &&
+    !(isHospitalRelease() || isIrcRelease() || isAbsconded())
+
+fun PrisonerMovement.isToSecureUnitOutsidePrison() = this is PrisonerMovement.Released &&
+    (isHospitalRelease() || isIrcRelease())
