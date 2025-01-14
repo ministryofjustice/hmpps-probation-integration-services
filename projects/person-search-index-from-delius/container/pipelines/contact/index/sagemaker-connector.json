@@ -1,0 +1,27 @@
+{
+  "name": "sagemaker-embeddings",
+  "description": "Generate text embeddings using a model provided by a SageMaker endpoint in an external account",
+  "version": 1,
+  "protocol": "aws_sigv4",
+  "credential": {
+    "roleArn": "${CONNECTOR_ROLE_ARN}",
+    "externalAccountRoleArn": "${CONNECTOR_EXTERNAL_ACCOUNT_ROLE_ARN}"
+  },
+  "parameters": {
+    "region": "eu-west-2",
+    "service_name": "sagemaker"
+  },
+  "actions": [
+    {
+      "action_type": "predict",
+      "method": "POST",
+      "url": "https://runtime.sagemaker.eu-west-2.amazonaws.com/endpoints/${SAGEMAKER_ENDPOINT_NAME}/invocations",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "request_body": "${parameters.input}",
+      "pre_process_function": "connector.pre_process.default.embedding",
+      "post_process_function": "connector.post_process.default.embedding"
+    }
+  ]
+}
