@@ -55,6 +55,9 @@ class SentenceServiceTest {
     @Mock
     lateinit var custodyRepository: CustodyRepository
 
+    @Mock
+    lateinit var requirementService: RequirementService
+
     @InjectMocks
     lateinit var service: SentenceService
 
@@ -183,13 +186,6 @@ class SentenceServiceTest {
         whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
             .thenReturn(listOf(requirement1, requirement2, requirement3))
 
-        whenever(requirementRepository.getRarDaysByRequirementId(requirement2._id)).thenReturn(
-            listOf(
-                completedRarDays,
-                scheduledRarDays
-            )
-        )
-
         whenever(documentRepository.getCourtDocuments(event.id, event.eventNumber)).thenReturn(
             listOf(
                 courtDocumentDetails
@@ -198,6 +194,10 @@ class SentenceServiceTest {
 
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(70)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(3936)
+
+        whenever(requirementService.getRar(requirement1._id, requirement1._code)).thenReturn(null)
+        whenever(requirementService.getRar(requirement2._id, requirement2._code)).thenReturn(Rar(1, 2, 3))
+        whenever(requirementService.getRar(requirement3._id, requirement3._code)).thenReturn(null)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
@@ -226,6 +226,7 @@ class SentenceServiceTest {
                 Order("Default Sentence Type", 12, null, startDate = LocalDate.now().minusDays(14)),
                 listOf(
                     Requirement(
+                        requirement1._id,
                         requirement1._code,
                         requirement1._expectedStartDate,
                         requirement1._startDate,
@@ -235,10 +236,11 @@ class SentenceServiceTest {
                         "${requirement1._description} - ${requirement1._codeDescription}",
                         requirement1._length,
                         requirement1.lengthUnitValue,
-                        requirement1._notes,
+                        listOf(NoteDetail(0, note = requirement1._notes!!, hasNoteBeenTruncated = false)),
                         null
                     ),
                     Requirement(
+                        requirement2._id,
                         requirement2._code,
                         requirement2._expectedStartDate,
                         requirement2._startDate,
@@ -248,10 +250,11 @@ class SentenceServiceTest {
                         "3 days RAR, 1 completed",
                         requirement2._length,
                         requirement2.lengthUnitValue,
-                        requirement2._notes,
-                        Rar(1, 2, 3)
+                        listOf(NoteDetail(0, note = requirement2._notes!!, hasNoteBeenTruncated = false)),
+                        rar = Rar(1, 2, 3)
                     ),
                     Requirement(
+                        requirement3._id,
                         requirement3._code,
                         requirement3._expectedStartDate,
                         requirement3._startDate,
@@ -261,8 +264,7 @@ class SentenceServiceTest {
                         requirement3._description,
                         requirement3._length,
                         requirement3.lengthUnitValue,
-                        requirement3._notes,
-                        null
+                        listOf(NoteDetail(0, note = requirement3._notes!!, hasNoteBeenTruncated = false))
                     )
                 ),
                 listOf(CourtDocument("A001", LocalDate.now(), "Pre Sentence Event")),
@@ -365,6 +367,7 @@ class SentenceServiceTest {
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = Requirement(
+            requirement1._id,
             requirement1._code,
             requirement1._expectedStartDate,
             requirement1._startDate,
@@ -374,7 +377,7 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            requirement1._notes,
+            listOf(NoteDetail(0, note = requirement1._notes!!, hasNoteBeenTruncated = false)),
             null
         )
 
@@ -437,6 +440,7 @@ class SentenceServiceTest {
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
         val expected = Requirement(
+            requirement1._id,
             requirement1._code,
             requirement1._expectedStartDate,
             requirement1._startDate,
@@ -446,8 +450,7 @@ class SentenceServiceTest {
             "${requirement1._description} - ${requirement1._codeDescription}",
             requirement1._length,
             requirement1.lengthUnitValue,
-            requirement1._notes,
-            null
+            listOf(NoteDetail(0, note = requirement1._notes!!, hasNoteBeenTruncated = false))
         )
 
         assertEquals(expected, response.sentence!!.requirements[0])

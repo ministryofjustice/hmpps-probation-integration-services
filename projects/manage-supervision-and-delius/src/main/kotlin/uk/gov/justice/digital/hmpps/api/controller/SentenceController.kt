@@ -15,7 +15,8 @@ class SentenceController(
     private val ordersService: OrdersService,
     private val offenceService: OffenceService,
     private val contactService: ContactService,
-    private val licenceConditionService: LicenceConditionService
+    private val licenceConditionService: LicenceConditionService,
+    private val requirementService: RequirementService
 ) {
 
     @GetMapping
@@ -49,4 +50,12 @@ class SentenceController(
         @PathVariable licenceConditionId: Long,
         @PathVariable noteId: Int
     ) = licenceConditionService.getLicenceConditionNote(crn, licenceConditionId, noteId)
+
+    @GetMapping("/requirement/{requirementId}/note/{noteId}")
+    @Operation(summary = "Get licence condition note")
+    fun getRequirementNote(
+        @PathVariable crn: String,
+        @PathVariable requirementId: Long,
+        @PathVariable noteId: Int
+    ) = requirementService.getRequirementNote(crn, requirementId, noteId)
 }

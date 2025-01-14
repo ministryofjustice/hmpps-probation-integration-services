@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_SUB_CAT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT_UNPAID_WORK
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.service.toSummary
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -120,6 +122,7 @@ class SentenceIntegrationTest {
                 ),
                 listOf(
                     Requirement(
+                        REQUIREMENT.id,
                         "F",
                         LocalDate.now().minusDays(1),
                         LocalDate.now(),
@@ -129,10 +132,11 @@ class SentenceIntegrationTest {
                         "1 days RAR, 1 completed",
                         12,
                         null,
-                        "my notes",
-                        Rar(completed = 1, scheduled = 0, totalDays = 1)
+                        listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
+                        rar = Rar(completed = 1, scheduled = 0, totalDays = 1)
                     ),
                     Requirement(
+                        REQUIREMENT_UNPAID_WORK.id,
                         "W",
                         LocalDate.now().minusDays(1),
                         LocalDate.now(),
@@ -142,7 +146,7 @@ class SentenceIntegrationTest {
                         "Unpaid Work - Intensive",
                         12,
                         null,
-                        "my notes",
+                        listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
                         null
                     )
                 ),
@@ -165,7 +169,7 @@ class SentenceIntegrationTest {
                         LocalDate.now().minusDays(7),
                         LocalDate.now(),
                         listOf(
-                            LicenceConditionNote(
+                            NoteDetail(
                                 0,
                                 "Joe Root",
                                 LocalDate.of(2024, 4, 23),
@@ -176,7 +180,7 @@ class SentenceIntegrationTest {
                                     """.trimIndent(),
                                 false
                             ),
-                            LicenceConditionNote(
+                            NoteDetail(
                                 1,
                                 "CVL Service",
                                 LocalDate.of(2024, 4, 22),
@@ -194,7 +198,7 @@ class SentenceIntegrationTest {
                         LocalDate.now().minusDays(7),
                         LocalDate.now(),
                         listOf(
-                            LicenceConditionNote(
+                            NoteDetail(
                                 0,
                                 note = "He shall not contact or associate with Peter Jones without the prior approval of the supervising officer;",
                                 hasNoteBeenTruncated = false
@@ -208,7 +212,7 @@ class SentenceIntegrationTest {
                         LocalDate.now().minusDays(7),
                         LocalDate.now(),
                         listOf(
-                            LicenceConditionNote(
+                            NoteDetail(
                                 0,
                                 "Tom Brady",
                                 LocalDate.of(2024, 10, 29),
@@ -217,7 +221,7 @@ class SentenceIntegrationTest {
                                     """.trimIndent(),
                                 false
                             ),
-                            LicenceConditionNote(
+                            NoteDetail(
                                 1,
                                 "Harry Kane",
                                 LocalDate.of(2024, 10, 29),
