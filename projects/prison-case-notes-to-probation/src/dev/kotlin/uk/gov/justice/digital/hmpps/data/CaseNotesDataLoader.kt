@@ -75,6 +75,7 @@ class CaseNotesDataLoader(
         StaffGenerator.DEFAULT = staffRepository.save(StaffGenerator.DEFAULT)
 
         offenderRepository.save(OffenderGenerator.DEFAULT)
+        offenderRepository.save(OffenderGenerator.NEW_IDENTIFIER)
 
         eventRepository.save(EventGenerator.CUSTODIAL_EVENT)
         disposalTypeRepository.save(EventGenerator.CUSTODIAL_EVENT.disposal!!.disposalType)

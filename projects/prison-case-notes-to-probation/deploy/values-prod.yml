@@ -5,3 +5,4 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/oauth/token
+    INTEGRATIONS_PRISON_CASE_NOTES_BASE_URL: https://offender-case-notes.service.justice.gov.uk
