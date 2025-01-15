@@ -1,0 +1,69 @@
+{
+  "content": [
+    {
+      "caseNoteId": "ff0cfa55-3193-41c9-9332-7766c03a06ff",
+      "eventId": 77701,
+      "offenderIdentifier": "A4578BX",
+      "type": "GEN",
+      "subType": "OSE",
+      "creationDateTime": "2025-01-12T11:22:33+01:00",
+      "occurrenceDateTime": "2025-01-11T10:11:22+01:00",
+      "authorName": "Some Name",
+      "text": "note content",
+      "locationId": "LEI",
+      "amendments": []
+    },
+    {
+      "caseNoteId": "2dd32070-4af0-4d3c-ad8d-5108a43a9322",
+      "eventId": 77702,
+      "offenderIdentifier": "A4578BX",
+      "type": "ALERT",
+      "subType": "ACTIVE",
+      "creationDateTime": "2025-01-12T11:22:33+01:00",
+      "occurrenceDateTime": "2025-01-11T10:11:22+01:00",
+      "authorName": "Some Name",
+      "text": "note content",
+      "locationId": "LEI",
+      "amendments": []
+    },
+    {
+      "caseNoteId": "7f283166-2c7e-404e-9b0c-fa21cfbd338e",
+      "eventId": 77704,
+      "offenderIdentifier": "A4578BX",
+      "type": "KA",
+      "subType": "KS",
+      "creationDateTime": "2025-01-12T11:22:33+01:00",
+      "occurrenceDateTime": "2025-01-11T10:11:22+01:00",
+      "authorName": "Some Name",
+      "text": "note content",
+      "locationId": "LEI",
+      "amendments": []
+    },
+    {
+      "caseNoteId": "d9e02743-3e8a-4ab8-923b-01d4214afeaf",
+      "eventId": 77705,
+      "offenderIdentifier": "A4578BX",
+      "type": "PRISON",
+      "subType": "RELEASE",
+      "creationDateTime": "2025-01-12T11:22:33+01:00",
+      "occurrenceDateTime": "2025-01-11T10:11:22+01:00",
+      "authorName": "Some Name",
+      "text": "note content",
+      "locationId": "LEI",
+      "amendments": []
+    },
+    {
+      "caseNoteId": "bdc8b4af-01a3-44b5-9160-23c4d289f9a2",
+      "eventId": 77703,
+      "offenderIdentifier": "A4578BX",
+      "type": "TRANSFER",
+      "subType": "FROMTOL",
+      "creationDateTime": "2025-01-12T11:22:33+01:00",
+      "occurrenceDateTime": "2025-01-11T10:11:22+01:00",
+      "authorName": "Some Name",
+      "text": "note content",
+      "locationId": "TRN",
+      "amendments": []
+    }
+  ]
+}

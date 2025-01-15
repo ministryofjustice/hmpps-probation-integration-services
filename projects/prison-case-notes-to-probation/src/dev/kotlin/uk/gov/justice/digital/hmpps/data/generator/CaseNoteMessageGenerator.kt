@@ -8,4 +8,5 @@ object CaseNoteMessageGenerator {
     val NEW_TO_DELIUS: HmppsDomainEvent = ResourceLoader.message("case-note-new-to-delius")
     val NOT_FOUND: HmppsDomainEvent = ResourceLoader.message("case-note-not-found")
     val RESETTLEMENT_PASSPORT: HmppsDomainEvent = ResourceLoader.message("resettlement-passport-casenote")
+    val NOMS_NUMBER_ADDED: HmppsDomainEvent = ResourceLoader.message("noms-number-added")
 }
