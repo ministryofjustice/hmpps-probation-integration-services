@@ -5,12 +5,14 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 @Table(name = "court_appearance")
 @SequenceGenerator(name = "court_appearance_id_seq", sequenceName = "court_appearance_id_seq", allocationSize = 1)
 class CourtAppearance(
@@ -98,11 +100,17 @@ class CourtAppearance(
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
     @Query(
-        """
-        SELECT c FROM CourtAppearance c
-        WHERE c.crownCourtCalendarNumber = :crownCourtCalendarNumber
-        ORDER BY c.appearanceDate DESC
-    """
+        "SELECT ca FROM CourtAppearance ca " +
+            "WHERE LOWER(ca.courtNotes) LIKE LOWER(CONCAT('%', :hearingId, '%')) " +
+            "AND ca.event.id = :eventId"
     )
-    fun findLatestByCaseUrn(crownCourtCalendarNumber: String): CourtAppearance?
+    fun findAppearanceByHearingIdAndEventId(hearingId: String?, eventId: Long?): CourtAppearance?
+
+    @Query(
+        "SELECT ca FROM CourtAppearance ca " +
+            "WHERE (ca.courtNotes IS NULL OR LOWER(ca.courtNotes) NOT LIKE LOWER(CONCAT('%', :hearingId, '%'))) " +
+            "AND ca.event.id = :eventId"
+    )
+    fun findAppearancesExcludingHearingId(hearingId: String?, eventId: Long?): List<CourtAppearance>?
+
 }

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -14,6 +15,7 @@ import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 @Table(name = "event")
 @SequenceGenerator(name = "event_id_seq", sequenceName = "event_id_seq", allocationSize = 1)
 class Event(
@@ -96,6 +98,7 @@ class Event(
 )
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "order_manager_id_seq", sequenceName = "order_manager_id_seq", allocationSize = 1)
 @Table(name = "order_manager")
 class OrderManager(
@@ -185,6 +188,23 @@ interface EventRepository : JpaRepository<Event, Long> {
     """
     )
     fun getNextEventNumber(personId: Long): String
+
+    @Query(
+        "SELECT e FROM Event e " +
+            "JOIN Person p ON p.id = e.person.id " +
+            "WHERE LOWER(e.notes) LIKE LOWER(CONCAT('%', :caseUrn, '%')) " +
+            "AND p.crn = :crn"
+    )
+    fun findEventByCaseUrnAndCrn(caseUrn: String?, crn: String?): Event?
+
+    @Query(
+        "SELECT e FROM Event e " +
+            "JOIN Person p ON p.id = e.person.id " +
+            "WHERE LOWER(e.notes) NOT LIKE LOWER(CONCAT('%', :caseUrn, '%')) " +
+            "AND e.active " +
+            "AND p.crn = :crn"
+    )
+    fun findActiveEventsExcludingCaseUrn(caseUrn: String?, crn: String?): List<Event>?
 }
 
 interface OrderManagerRepository : JpaRepository<OrderManager, Long>

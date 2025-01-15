@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.util.*
 
 object EventGenerator {
     val DEFAULT = generate(person = PersonGenerator.DEFAULT)
@@ -70,6 +71,14 @@ object CourtAppearanceGenerator {
         event = EventGenerator.DEFAULT,
         appearanceType = ReferenceDataGenerator.TRIAL_ADJOURNMENT_APPEARANCE_TYPE,
         court = CourtGenerator.UNKNOWN_COURT_N07_PROVIDER,
+        person = PersonGenerator.DEFAULT,
+        hearingId = UUID.randomUUID().toString()
+    )
+
+    val TRIAL_ADJOURNMENT_NO_HEARING = generate(
+        event = EventGenerator.DEFAULT,
+        appearanceType = ReferenceDataGenerator.TRIAL_ADJOURNMENT_APPEARANCE_TYPE,
+        court = CourtGenerator.UNKNOWN_COURT_N07_PROVIDER,
         person = PersonGenerator.DEFAULT
     )
 
@@ -79,7 +88,8 @@ object CourtAppearanceGenerator {
         event: Event,
         appearanceType: ReferenceData,
         court: Court,
-        person: Person
+        person: Person,
+        hearingId: String? = null
     ) = CourtAppearance(
         id = id,
         appearanceDate = appearanceDate,
@@ -87,6 +97,7 @@ object CourtAppearanceGenerator {
         softDeleted = false,
         appearanceType = appearanceType,
         person = person,
-        court = court
+        court = court,
+        courtNotes = hearingId
     )
 }

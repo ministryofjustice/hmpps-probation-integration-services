@@ -34,7 +34,8 @@ class EventService(
         person: Person,
         courtCode: String,
         sittingDay: ZonedDateTime,
-        caseUrn: String
+        caseUrn: String,
+        hearingId: String
     ): InsertEventResult =
         audit(BusinessInteractionCode.INSERT_EVENT) { audit ->
 
@@ -46,7 +47,8 @@ class EventService(
                     number = eventRepository.getNextEventNumber(person.id!!),
                     referralDate = sittingDay.toLocalDate(), // TODO: Identify event's referral date
                     active = true,
-                    ftcCount = 0
+                    ftcCount = 0,
+                    notes = "caseUrn:$caseUrn"
                 )
             )
 
@@ -101,13 +103,13 @@ class EventService(
                 CourtAppearance(
                     id = null,
                     appearanceDate = sittingDay.toLocalDate(),
-                    crownCourtCalendarNumber = caseUrn,
+                    courtNotes = hearingId, // TODO: Store in the courtAppearance.hearing_Id after PDM change
                     event = savedEvent,
                     teamId = unallocatedTeam.id,
                     staffId = unallocatedStaff.id,
                     softDeleted = false,
                     court = court,
-                    appearanceType = trialAdjournmentRefData, // TODO: Are all initial hearing messages pre-sentence events Trial / Adjournment?
+                    appearanceType = trialAdjournmentRefData,
                     plea = plea,
                     outcome = remandedInCustodyOutcome, // TODO: Determine the outcome, for now use Remanded in custody
                     remandStatus = remandedInCustodyStatus,
@@ -119,7 +121,6 @@ class EventService(
                 CourtAppearance(
                     id = null,
                     appearanceDate = sittingDay.toLocalDate(), // TODO: Identify the 2nd (future) court appearance date
-                    crownCourtCalendarNumber = caseUrn,
                     event = savedEvent,
                     teamId = unallocatedTeam.id,
                     staffId = unallocatedStaff.id,
@@ -203,7 +204,8 @@ class EventService(
         event: Event,
         courtCode: String,
         sittingDay: ZonedDateTime,
-        caseUrn: String
+        caseUrn: String,
+        hearingId: String
     ): CourtAppearance =
         audit(BusinessInteractionCode.INSERT_COURT_APPEARANCE) { audit ->
             val court = courtRepository.getByOuCode(courtCode)
@@ -215,7 +217,7 @@ class EventService(
                 CourtAppearance(
                     id = null,
                     appearanceDate = sittingDay.toLocalDate(),
-                    crownCourtCalendarNumber = caseUrn,
+                    courtNotes = hearingId, // TODO: Store in the courtAppearance.hearing_Id after PDM change
                     event = event,
                     teamId = unallocatedTeam.id,
                     staffId = unallocatedStaff.id,

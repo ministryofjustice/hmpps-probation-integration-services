@@ -13,6 +13,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generatorimport.HearingGenerator
 import uk.gov.justice.digital.hmpps.data.generatorimport.HearingOffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generatorimport.ProsecutionCaseIdentifierGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
@@ -75,6 +76,7 @@ internal class EventServiceTest {
         val offence = OffenceGenerator.DEFAULT
         val mainOffence = MainOffenceGenerator.generate(event = event, person = person, offence = offence)
         val hearingOffence = HearingOffenceGenerator.generate()
+        val hearing = HearingGenerator.generate()
         val court = CourtGenerator.UNKNOWN_COURT_N07_PROVIDER
         val sittingDay = ZonedDateTime.now()
         val caseUrn = ProsecutionCaseIdentifierGenerator.DEFAULT.caseURN
@@ -135,7 +137,7 @@ internal class EventServiceTest {
             )
         ).thenReturn(ReferenceDataGenerator.ORDER_MANAGER_INITIAL_ALLOCATION)
 
-        val result = eventService.insertEvent(hearingOffence, person, court.ouCode!!, sittingDay, caseUrn)
+        val result = eventService.insertEvent(hearingOffence, person, court.ouCode!!, sittingDay, caseUrn, hearing.id)
 
         verify(eventRepository).save(any<Event>())
         verify(mainOffenceRepository).save(any<MainOffence>())

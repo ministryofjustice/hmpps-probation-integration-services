@@ -360,8 +360,8 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(eventService).insertEvent(any(), any(), any(), any(), any())
-        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any())
+        verify(eventService).insertEvent(any(), any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any(), any())
 
         verify(eventRepository).save(check<Event> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))

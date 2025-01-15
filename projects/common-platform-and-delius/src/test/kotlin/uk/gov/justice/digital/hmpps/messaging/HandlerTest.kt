@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Equality
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.EventService
 import uk.gov.justice.digital.hmpps.service.InsertEventResult
@@ -40,6 +41,9 @@ internal class HandlerTest {
     lateinit var courtAppearanceRepository: CourtAppearanceRepository
 
     @Mock
+    lateinit var eventRepository: EventRepository
+
+    @Mock
     lateinit var probationSearchClient: ProbationSearchClient
 
     @Mock
@@ -61,16 +65,21 @@ internal class HandlerTest {
                 address = PersonAddressGenerator.MAIN_ADDRESS,
             )
         )
-
-        whenever(eventService.insertEvent(any(), any(), any(), any(), any())).thenReturn(
+        val hearingAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT
+        val futureAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT_NO_HEARING
+        whenever(eventService.insertEvent(any(), any(), any(), any(), any(), any())).thenReturn(
             InsertEventResult(
                 EventGenerator.DEFAULT,
                 MainOffenceGenerator.DEFAULT,
-                listOf(CourtAppearanceGenerator.TRIAL_ADJOURNMENT, CourtAppearanceGenerator.TRIAL_ADJOURNMENT),
+                listOf(hearingAppearance, futureAppearance),
                 listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
                 OrderManagerGenerator.DEFAULT
             )
         )
+        whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(null)
+        whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any())).thenReturn(emptyList())
+        whenever(courtAppearanceRepository.findAppearanceByHearingIdAndEventId(anyOrNull(), anyOrNull())).thenReturn(hearingAppearance)
+        whenever(courtAppearanceRepository.findAppearancesExcludingHearingId(anyOrNull(), anyOrNull())).thenReturn(listOf(futureAppearance))
 
         probationSearchMatchNotFound()
         featureFlagIsEnabled(true)
@@ -100,8 +109,8 @@ internal class HandlerTest {
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
         verify(personService, never()).insertPerson(any(), any())
-        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any())
-        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any())
+        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any(), any())
         verify(notifier, never()).caseCreated(any())
         verify(notifier, never()).addressCreated(any())
     }
@@ -129,16 +138,21 @@ internal class HandlerTest {
                 address = PersonAddressGenerator.MAIN_ADDRESS,
             )
         )
-        whenever(courtAppearanceRepository.findLatestByCaseUrn(any())).thenReturn(null)
-        whenever(eventService.insertEvent(any(), any(), any(), any(), any())).thenReturn(
+        val hearingAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT
+        val futureAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT_NO_HEARING
+        whenever(eventService.insertEvent(any(), any(), any(), any(), any(), any())).thenReturn(
             InsertEventResult(
                 EventGenerator.DEFAULT,
                 MainOffenceGenerator.DEFAULT,
-                listOf(CourtAppearanceGenerator.TRIAL_ADJOURNMENT, CourtAppearanceGenerator.TRIAL_ADJOURNMENT),
+                listOf(hearingAppearance, futureAppearance),
                 listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
                 OrderManagerGenerator.DEFAULT
             )
         )
+        whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(null)
+        whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any())).thenReturn(emptyList())
+        whenever(courtAppearanceRepository.findAppearanceByHearingIdAndEventId(anyOrNull(), anyOrNull())).thenReturn(hearingAppearance)
+        whenever(courtAppearanceRepository.findAppearancesExcludingHearingId(anyOrNull(), anyOrNull())).thenReturn(listOf(futureAppearance))
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
@@ -162,72 +176,6 @@ internal class HandlerTest {
         verify(personService, never()).insertPerson(any(), any())
         verify(notifier, never()).caseCreated(any())
         verify(notifier, never()).addressCreated(any())
-    }
-
-    @Test
-    fun `Inserts event when case urn does not exist`() {
-        probationSearchMatchNotFound()
-        featureFlagIsEnabled(true)
-        whenever(courtAppearanceRepository.findLatestByCaseUrn(any())).thenReturn(null)
-        whenever(personService.insertPerson(any(), any())).thenReturn(
-            InsertPersonResult(
-                person = PersonGenerator.DEFAULT,
-                personManager = PersonManagerGenerator.DEFAULT,
-                equality = Equality(id = 1L, personId = 1L, softDeleted = false),
-                address = PersonAddressGenerator.MAIN_ADDRESS,
-            )
-        )
-        whenever(eventService.insertEvent(any(), any(), any(), any(), any())).thenReturn(
-            InsertEventResult(
-                EventGenerator.DEFAULT,
-                MainOffenceGenerator.DEFAULT,
-                listOf(CourtAppearanceGenerator.TRIAL_ADJOURNMENT, CourtAppearanceGenerator.TRIAL_ADJOURNMENT),
-                listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
-                OrderManagerGenerator.DEFAULT
-            )
-        )
-
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
-
-        handler.handle(notification)
-
-        verify(telemetryService).notificationReceived(notification)
-        verify(personService).insertPerson(any(), any())
-        verify(eventService).insertEvent(any(), any(), any(), any(), any())
-        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any())
-        verify(notifier).caseCreated(any())
-        verify(notifier).addressCreated(any())
-    }
-
-    @Test
-    fun `Inserts court appearance record when case urn exists`() {
-        probationSearchMatchNotFound()
-        featureFlagIsEnabled(true)
-        whenever(courtAppearanceRepository.findLatestByCaseUrn(any())).thenReturn(CourtAppearanceGenerator.TRIAL_ADJOURNMENT)
-
-        whenever(personService.insertPerson(any(), any())).thenReturn(
-            InsertPersonResult(
-                person = PersonGenerator.DEFAULT,
-                personManager = PersonManagerGenerator.DEFAULT,
-                equality = Equality(id = 1L, personId = 1L, softDeleted = false),
-                address = PersonAddressGenerator.MAIN_ADDRESS,
-            )
-        )
-
-        whenever(eventService.insertCourtAppearance(any(), any(), any(), any())).thenReturn(
-            CourtAppearanceGenerator.TRIAL_ADJOURNMENT
-        )
-
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
-
-        handler.handle(notification)
-
-        verify(telemetryService).notificationReceived(notification)
-        verify(personService).insertPerson(any(), any())
-        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any())
-        verify(eventService).insertCourtAppearance(any(), any(), any(), any())
-        verify(notifier).caseCreated(any())
-        verify(notifier).addressCreated(any())
     }
 
     private fun probationSearchMatchNotFound() {
