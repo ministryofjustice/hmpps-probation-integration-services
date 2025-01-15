@@ -19,7 +19,7 @@
       "headers": {
         "content-type": "application/json"
       },
-      "request_body": "${parameters.input}",
+      "request_body": "[${parameters.input}]",
       "pre_process_function": "connector.pre_process.default.embedding",
       "post_process_function": "connector.post_process.default.embedding"
     }
