@@ -112,5 +112,4 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
             "AND ca.event.id = :eventId"
     )
     fun findAppearancesExcludingHearingId(hearingId: String?, eventId: Long?): List<CourtAppearance>?
-
 }

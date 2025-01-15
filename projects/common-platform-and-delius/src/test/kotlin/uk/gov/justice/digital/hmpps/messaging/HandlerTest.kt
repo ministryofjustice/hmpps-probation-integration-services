@@ -78,8 +78,12 @@ internal class HandlerTest {
         )
         whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(null)
         whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any())).thenReturn(emptyList())
-        whenever(courtAppearanceRepository.findAppearanceByHearingIdAndEventId(anyOrNull(), anyOrNull())).thenReturn(hearingAppearance)
-        whenever(courtAppearanceRepository.findAppearancesExcludingHearingId(anyOrNull(), anyOrNull())).thenReturn(listOf(futureAppearance))
+        whenever(courtAppearanceRepository.findAppearanceByHearingIdAndEventId(anyOrNull(), anyOrNull())).thenReturn(
+            hearingAppearance
+        )
+        whenever(courtAppearanceRepository.findAppearancesExcludingHearingId(anyOrNull(), anyOrNull())).thenReturn(
+            listOf(futureAppearance)
+        )
 
         probationSearchMatchNotFound()
         featureFlagIsEnabled(true)
@@ -151,8 +155,12 @@ internal class HandlerTest {
         )
         whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(null)
         whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any())).thenReturn(emptyList())
-        whenever(courtAppearanceRepository.findAppearanceByHearingIdAndEventId(anyOrNull(), anyOrNull())).thenReturn(hearingAppearance)
-        whenever(courtAppearanceRepository.findAppearancesExcludingHearingId(anyOrNull(), anyOrNull())).thenReturn(listOf(futureAppearance))
+        whenever(courtAppearanceRepository.findAppearanceByHearingIdAndEventId(anyOrNull(), anyOrNull())).thenReturn(
+            hearingAppearance
+        )
+        whenever(courtAppearanceRepository.findAppearancesExcludingHearingId(anyOrNull(), anyOrNull())).thenReturn(
+            listOf(futureAppearance)
+        )
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)

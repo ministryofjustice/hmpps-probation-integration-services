@@ -171,7 +171,6 @@ class Handler(
                     notification.message.hearing.id, savedEventEntities?.event?.id
                 )
 
-
                 // If an existing court appearance with hearing ID exists, update it.
                 // Unless other court appearances exist on the event, in which case do nothing
                 // If no existing appearances are found and no hearing id appearance is found then create a new court appearance
@@ -210,7 +209,8 @@ class Handler(
                         telemetryService.trackEvent(
                             "CourtAppearanceCreatedSkipped", mapOf(
                                 "hearingId" to notification.message.hearing.id,
-                                "existingCourtAppearanceFoundIds" to otherCourtAppearances.orEmpty().joinToString(",") { it.id.toString() },
+                                "existingCourtAppearanceFoundIds" to otherCourtAppearances.orEmpty()
+                                    .joinToString(",") { it.id.toString() },
                             )
                         )
                         return@forEach
