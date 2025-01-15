@@ -8,7 +8,6 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: dev
-    SAGEMAKER_ENDPOINT_NAME: probation-search-sagemaker-endpoint
 
 generic-prometheus-alerts:
   businessHoursOnly: true
