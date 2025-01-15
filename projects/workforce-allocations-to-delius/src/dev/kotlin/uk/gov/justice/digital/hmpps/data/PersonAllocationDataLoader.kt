@@ -74,7 +74,7 @@ class PersonAllocationDataLoader(
         keyDateRepository.save(KeyDateGenerator.DEFAULT)
         institutionalReportRepository.save(InstitutionalReportGenerator.DEFAULT)
 
-        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT)
+//        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT)
 
         courtReportRepository.save(CourtReportGenerator.DEFAULT)
 

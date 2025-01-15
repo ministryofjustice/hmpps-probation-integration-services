@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.documents.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
 import java.time.ZonedDateTime
 
@@ -26,6 +27,7 @@ class CourtAppearance(
     val outcome: ReferenceData?,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @Id

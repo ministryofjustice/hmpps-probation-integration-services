@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
@@ -45,10 +46,12 @@ class Requirement(
     @JoinColumn(name = "rqmnt_type_main_category_id")
     val mainCategory: RequirementMainCategory?,
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
-    @Column(columnDefinition = "NUMBER")
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -157,6 +160,42 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         """, nativeQuery = true
     )
     fun getRequirements(id: Long, eventNumber: String): List<RequirementDetails>
+
+    @Query(
+        """
+            SELECT  r.rqmnt_id AS id,
+                    r.expected_start_date as expectedStartDate, 
+                    r.start_date as startDate, 
+                    r.commencement_date as commencementDate, 
+                    r.expected_end_date as expectedEndDate, 
+                    r.termination_date as terminationDate,
+                    rsrl3.code_description as terminationReason,
+                    r."LENGTH", 
+                    rsrl2.code_description as lengthUnitValue,
+                    rrtmc.code, 
+                    rrtmc.description, 
+                    rsrl.code_description AS codeDescription, 
+                    TO_CHAR(SUBSTR(r.rqmnt_notes, 1, 4000)) AS notes 
+            FROM rqmnt r
+            JOIN r_rqmnt_type_main_category rrtmc 
+            ON rrtmc.rqmnt_type_main_category_id  = r.rqmnt_type_main_category_id 
+            JOIN disposal d 
+            ON d.disposal_id = r.disposal_id 
+            JOIN event e 
+            ON e.event_id = d.event_id
+            LEFT JOIN r_standard_reference_list rsrl 
+            ON rsrl.standard_reference_list_id = r.rqmnt_type_sub_category_id 
+            LEFT JOIN r_standard_reference_list rsrl2 
+            ON rsrl2.standard_reference_list_id = rrtmc.units_id  
+            LEFT JOIN r_standard_reference_list rsrl3
+            ON rsrl3.standard_reference_list_id = r.rqmnt_termination_reason_id 
+            WHERE r.rqmnt_id = :id
+            AND e.soft_deleted = 0 
+            AND e.active_flag = 1
+            ORDER BY rrtmc.description
+        """, nativeQuery = true
+    )
+    fun getRequirement(id: Long): RequirementDetails?
 
     @Query(
         """

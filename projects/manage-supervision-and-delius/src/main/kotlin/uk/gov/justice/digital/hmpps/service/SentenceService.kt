@@ -2,10 +2,10 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.overview.Order
-import uk.gov.justice.digital.hmpps.api.model.overview.Rar
 import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
@@ -27,6 +27,7 @@ class SentenceService(
     private val upwAppointmentRepository: UpwAppointmentRepository,
     private val licenceConditionRepository: LicenceConditionRepository,
     private val custodyRepository: CustodyRepository,
+    private val requirementService: RequirementService
 ) {
     fun getEvents(crn: String, eventNumber: String?): SentenceOverview {
         val person = personRepository.getPerson(crn)
@@ -142,9 +143,10 @@ class SentenceService(
     fun Disposal.toMinimalOrder() = MinimalOrder(type.description, date, expectedEndDate())
 
     fun RequirementDetails.toRequirement(): Requirement {
-        val rar = getRar(id, code)
+        val rar = requirementService.getRar(id, code)
 
         val requirement = Requirement(
+            id,
             code,
             expectedStartDate,
             startDate,
@@ -154,37 +156,16 @@ class SentenceService(
             populateRequirementDescription(description, codeDescription, rar),
             length,
             lengthUnitValue,
-            notes,
-            rar
+            toRequirementNote(true),
+            rar = rar
         )
 
         return requirement
     }
 
     fun RequirementDetails.toMinimalRequirement(): MinimalRequirement {
-        val rar = getRar(id, code)
+        val rar = requirementService.getRar(id, code)
         return MinimalRequirement(id, populateRequirementDescription(description, codeDescription, rar))
-    }
-
-    fun populateRequirementDescription(description: String, codeDescription: String?, rar: Rar?): String {
-        rar?.let { return "" + it.totalDays + " days RAR, " + it.completed + " completed" }
-
-        if (codeDescription != null) {
-            return "$description - $codeDescription"
-        }
-
-        return description
-    }
-
-    private fun getRar(requirementId: Long, requirementType: String): Rar? {
-        if (requirementType.equals("F", true)) {
-            val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
-            val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
-            val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
-            return Rar(completed = completedDays, scheduled = scheduledDays)
-        }
-
-        return null
     }
 
     fun getUnpaidWorkTime(disposalId: Long): String? {
@@ -222,4 +203,38 @@ class SentenceService(
         }
         return null
     }
+}
+
+fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
+    return notes?.let {
+        val splitParam = "---------------------------------------------------------" + System.lineSeparator()
+        notes.split(splitParam).asReversed().mapIndexed { index, note ->
+            val matchResult = Regex(
+                "^Comment added by (.+?) on (\\d{2}/\\d{2}/\\d{4}) at \\d{2}:\\d{2}"
+                    + System.lineSeparator()
+            ).find(note)
+            val commentLine = matchResult?.value
+            val commentText =
+                commentLine?.let { note.removePrefix(commentLine).removeSuffix(System.lineSeparator()) } ?: note
+
+            val userCreatedBy = matchResult?.groupValues?.get(1)
+            val dateCreatedBy = matchResult?.groupValues?.get(2)
+                ?.let { LocalDate.parse(it, DeliusDateFormatter) }
+
+
+            NoteDetail(
+                index,
+                userCreatedBy,
+                dateCreatedBy,
+                when (truncateNote) {
+                    true -> commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0]
+                    else -> commentText
+                },
+                when (truncateNote) {
+                    true -> commentText.length > 1500
+                    else -> null
+                }
+            )
+        }
+    } ?: listOf()
 }

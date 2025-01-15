@@ -13,11 +13,9 @@ object StaffGenerator {
         code: String,
         forename: String,
         surname: String,
-        id: Long = IdGenerator.getAndIncrement(),
         probationAreaId: Long = ProbationAreaGenerator.DEFAULT.id
     ): Staff {
         return Staff(
-            id,
             forename,
             surname,
             code,

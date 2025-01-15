@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Mappings
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -19,8 +20,13 @@ class AllocationCompletedIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
+    @Autowired
+    lateinit var contactRepository: ContactRepository
+
     @Test
     fun `successful response`() {
+        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT)
+
         val person = PersonGenerator.DEFAULT
         val event = EventGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT

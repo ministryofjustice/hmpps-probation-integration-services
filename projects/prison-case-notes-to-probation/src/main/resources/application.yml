@@ -1,11 +1,12 @@
 # Default config
-server.shutdown: graceful
 spring:
   jackson:
     default-property-inclusion: non_null
+  datasource:
+    hikari:
+      auto-commit: false
   jpa:
     hibernate.ddl-auto: validate
-    database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE
@@ -16,6 +17,8 @@ spring:
         query.mutation_strategy.global_temporary:
             create_tables: false
             drop_tables: false
+    open-in-view: false
+
   security.oauth2.client:
     registration:
       default:
@@ -52,7 +55,6 @@ spring:
 
 seed.database: true
 wiremock.enabled: true
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 messaging.consumer.queue: events
 
@@ -60,6 +62,7 @@ integrations:
   prison-case-notes:
     client-id: prison-case-notes-to-probation
     client-secret: prison-case-notes-to-probation
+    base_url: "http://localhost:${wiremock.port}"
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

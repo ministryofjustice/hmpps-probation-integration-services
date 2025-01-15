@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -64,15 +65,19 @@ class Person(
     val mobileNumber: String? = null,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Column(name = "current_disposal", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val currentDisposal: Boolean = false,
 
     @Column(name = "current_restriction", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val currentRestriction: Boolean = false,
 
     @Column(name = "pending_transfer", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val pendingTransfer: Boolean = false,
 
     @Column

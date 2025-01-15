@@ -1,12 +1,10 @@
 # Default config
-server.shutdown: graceful
 
 spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
     hibernate.ddl-auto: validate
-    database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
         order_by:
@@ -55,7 +53,6 @@ spring:
 seed.database: true
 
 wiremock.enabled: true
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
@@ -64,7 +61,7 @@ logging.level:
 
 ---
 spring.config.activate.on-profile: integration-test
-spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
+spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle
 
 ---
 spring.config.activate.on-profile: oracle

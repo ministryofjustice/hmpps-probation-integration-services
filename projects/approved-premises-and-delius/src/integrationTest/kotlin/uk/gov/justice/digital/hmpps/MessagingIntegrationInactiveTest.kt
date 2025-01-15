@@ -16,13 +16,13 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator.INACTIVE_PERSON_ADDRESS_ID
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.PreferredResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -64,7 +64,7 @@ internal class MessagingIntegrationInactiveTest {
     @Autowired
     lateinit var personAddressRepository: PersonAddressRepository
 
-    @MockBean
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     @Autowired
@@ -72,9 +72,6 @@ internal class MessagingIntegrationInactiveTest {
 
     @Autowired
     private lateinit var residenceRepository: ResidenceRepository
-
-    @Autowired
-    private lateinit var preferredResidenceRepository: PreferredResidenceRepository
 
     @Autowired
     private lateinit var staffRepository: StaffRepository
@@ -239,7 +236,7 @@ internal class MessagingIntegrationInactiveTest {
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses =
             personAddressRepository.findAll().filter { it.personId == PersonGenerator.PERSON_INACTIVE_EVENT.id }
-                .associateBy { it.id == AddressGenerator.INACTIVE_PERSON_ADDRESS.id }
+                .associateBy { it.id == INACTIVE_PERSON_ADDRESS_ID }
         assertThat(addresses.size, equalTo(2))
         val previous = addresses[true]!!
         assertThat(previous.endDate, equalTo(details.arrivedAt.toLocalDate()))

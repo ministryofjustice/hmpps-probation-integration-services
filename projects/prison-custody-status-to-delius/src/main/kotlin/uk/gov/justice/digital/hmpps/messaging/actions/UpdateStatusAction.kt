@@ -76,26 +76,11 @@ class UpdateStatusAction(
         ActionResult.Success(ActionResult.Type.StatusUpdated, prisonerMovement.telemetryProperties())
     }
 
-    private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody): ActionResult? {
-        if (prisonerMovement is PrisonerMovement.Received &&
-            !(custody.status.canChange() && prisonerMovement.receivedDateValid(custody))
-        ) {
-            return ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
-        }
-
-        if (prisonerMovement is PrisonerMovement.Released &&
-            !(prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded()) &&
-            !(custody.canBeReleased() && prisonerMovement.releaseDateValid(custody))
-        ) {
-            return ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
-        }
-
-        if (!prisonerMovement.statusDateValid(custody)) {
-            return ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
-        }
-
-        return null
-    }
+    private fun checkPreconditions(movement: PrisonerMovement, custody: Custody) = if (
+        (movement.isReceived() && !(custody.status.canChange() && movement.receivedDateValid(custody))) ||
+        (movement.isReleased() && !(custody.canBeReleased() && movement.releaseDateValid(custody))) ||
+        (movement.isToSecureUnitOutsidePrison() && !movement.occurredAfter(custody.statusChangeDate))
+    ) ActionResult.Ignored("PrisonerStatusCorrect", movement.telemetryProperties()) else null
 }
 
 private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)

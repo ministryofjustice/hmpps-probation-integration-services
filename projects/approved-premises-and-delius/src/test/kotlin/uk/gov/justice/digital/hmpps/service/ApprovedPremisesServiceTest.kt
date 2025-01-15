@@ -45,6 +45,7 @@ import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.url
 import uk.gov.justice.digital.hmpps.prepEvent
 import uk.gov.justice.digital.hmpps.security.ServiceContext
+import uk.gov.justice.digital.hmpps.set
 import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -309,7 +310,7 @@ internal class ApprovedPremisesServiceTest {
         givenAddressTypes(listOf(ReferenceDataGenerator.AP_ADDRESS_TYPE))
         givenAuditUser()
         givenReferral(person, details.eventDetails.bookingId)
-        whenever(personAddressRepository.save(any())).thenAnswer { it.arguments[0] }
+        whenever(personAddressRepository.save(any())).thenAnswer { it.arguments[0].apply { set("id", 0L) } }
 
         approvedPremisesService.personArrived(personArrivedEvent)
 

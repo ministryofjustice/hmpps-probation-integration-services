@@ -116,26 +116,11 @@ class UpdateLocationAction(
         }
     }
 
-    private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody): ActionResult? {
-        if (prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.toPrisonId) {
-            return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
-        }
+    private fun checkPreconditions(movement: PrisonerMovement, custody: Custody) = if (
+        (movement.isReceived() && !(movement.locationChanged(custody) && movement.receivedDateValid(custody))) ||
+        (movement.isReleased() && !movement.releaseDateValid(custody)) ||
+        (movement.isToSecureUnitOutsidePrison() && !movement.occurredAfter(custody.locationChangeDate))
+    ) ActionResult.Ignored("PrisonerLocationCorrect", movement.telemetryProperties()) else null
 
-        if (prisonerMovement is PrisonerMovement.Received && !prisonerMovement.receivedDateValid(custody)) {
-            return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
-        }
-
-        if (prisonerMovement is PrisonerMovement.Released &&
-            !(prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded()) &&
-            !prisonerMovement.releaseDateValid(custody)
-        ) {
-            return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
-        }
-
-        if (!prisonerMovement.locationDateValid(custody)) {
-            return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
-        }
-
-        return null
-    }
+    private fun PrisonerMovement.locationChanged(custody: Custody) = custody.institution?.nomisCdeCode != toPrisonId
 }

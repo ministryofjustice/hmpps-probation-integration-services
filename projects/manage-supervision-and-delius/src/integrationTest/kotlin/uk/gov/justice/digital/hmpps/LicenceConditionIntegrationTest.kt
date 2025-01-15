@@ -9,8 +9,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceCondition
-import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNote
 import uk.gov.justice.digital.hmpps.api.model.sentence.LicenceConditionNoteDetail
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LC_WITH_NOTES
 import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LIC_COND_MAIN_CAT
@@ -91,7 +91,7 @@ class LicenceConditionIntegrationTest {
                 LIC_COND_SUB_CAT.description,
                 LocalDate.now().minusDays(7),
                 LocalDate.now(),
-                licenceConditionNote = LicenceConditionNote(
+                licenceConditionNote = NoteDetail(
                     1,
                     "CVL Service",
                     LocalDate.of(2024, 4, 22),

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disposal
 import java.time.ZonedDateTime
@@ -26,6 +27,7 @@ class Custody(
     val releases: List<Release> = listOf(),
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 ) {
     fun mostRecentRelease() = releases.maxWithOrNull(compareBy({ it.date }, { it.createdDateTime }))
@@ -54,5 +56,6 @@ class Release(
     val createdDateTime: ZonedDateTime,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean
 )

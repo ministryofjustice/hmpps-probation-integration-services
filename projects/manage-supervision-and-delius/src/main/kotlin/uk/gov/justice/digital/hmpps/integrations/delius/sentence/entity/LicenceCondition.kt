@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -38,9 +39,11 @@ class LicenceCondition(
     val notes: String?,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -52,7 +55,7 @@ interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
             JOIN FETCH lc.mainCategory mc
             LEFT JOIN FETCH lc.subCategory
             WHERE lc.disposalId = :disposalId
-            ORDER BY mc.description ASC
+            ORDER BY mc.description, lc.id ASC
         """
     )
     fun findAllByDisposalId(disposalId: Long): List<LicenceCondition>

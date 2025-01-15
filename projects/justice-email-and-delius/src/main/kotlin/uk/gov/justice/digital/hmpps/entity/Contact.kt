@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -33,6 +34,8 @@ class Contact(
     @Lob
     val notes: String,
 
+    val description: String?,
+
     @Column(name = "probation_area_id")
     val providerId: Long,
 
@@ -42,6 +45,8 @@ class Contact(
     @Column
     val staffId: Long,
 
+    val eventId: Long?,
+
     @Column(name = "contact_date")
     val date: ZonedDateTime = ZonedDateTime.now(),
 
@@ -49,6 +54,7 @@ class Contact(
     val startTime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Version
@@ -82,7 +88,7 @@ class ContactType(
     val code: String
 ) {
     enum class Code(val code: String) {
-        EMAIL_TEXT_FROM_OTHER("CM3A")
+        EMAIL("C135")
     }
 }
 

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -52,6 +53,7 @@ class Disposal(
     val terminationReason: ReferenceData?,
 
     @Column(name = "upw", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val upw: Boolean = false,
 
     val effectiveLength: Long? = null,
@@ -69,9 +71,11 @@ class Disposal(
     val enteredSentenceEndDate: LocalDate? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
     @OneToOne(mappedBy = "disposal")
@@ -98,6 +102,7 @@ class Release(
     val date: LocalDateTime,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 )
 
@@ -214,6 +219,7 @@ class Custody(
     val status: ReferenceData,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     val prisonerNumber: String?,
@@ -257,9 +263,11 @@ class PssRequirement(
     val subCategory: PssRequirementSubCat?,
 
     @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
     @Id
@@ -321,6 +329,7 @@ class AdditionalSentence(
     val notes: String? = null,
 
     @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 )
 

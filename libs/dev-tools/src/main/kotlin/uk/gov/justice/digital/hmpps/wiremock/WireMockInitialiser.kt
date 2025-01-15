@@ -17,6 +17,8 @@ class WireMockInitialiser : ApplicationContextInitializer<ConfigurableApplicatio
     }
 
     override fun initialize(ctx: ConfigurableApplicationContext) {
+        if (ctx.environment.getProperty("wiremock.enabled", Boolean::class.java) != true) return
+
         val wmPort = if (ctx.environment.activeProfiles.contains("integration-test")) {
             0
         } else {

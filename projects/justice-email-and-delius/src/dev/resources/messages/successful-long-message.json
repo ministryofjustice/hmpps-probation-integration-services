@@ -1,0 +1,7 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "subject": "A000001 was involved in an incident that has a very, very long subject that surpassed the 200 character limit and therefore has been truncated to meet the character limitations for the description in Delius.",
+  "bodyContent": "Example message",
+  "fromEmailAddress": "example@justice.gov.uk",
+  "receivedDateTime": "2020-01-01T12:34:56Z[Europe/London]"
+}
