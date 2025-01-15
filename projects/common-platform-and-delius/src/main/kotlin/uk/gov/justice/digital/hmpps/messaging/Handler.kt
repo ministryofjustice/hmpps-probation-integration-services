@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.EventService
@@ -30,7 +29,6 @@ class Handler(
     private val probationSearchClient: ProbationSearchClient,
     private val featureFlags: FeatureFlags,
     private val eventService: EventService,
-    private val courtAppearanceRepository: CourtAppearanceRepository,
     private val eventRepository: EventRepository
 ) : NotificationHandler<CommonPlatformHearing> {
 
@@ -108,7 +106,7 @@ class Handler(
                         ?: return@forEach
 
                 // Event logic
-                var savedEventEntities: InsertEventResult? = null
+                val savedEventEntities: InsertEventResult?
                 val existingCaseUrnEvent = eventRepository.findEventByCaseUrnAndCrn(caseUrn, savedEntities.person.crn)
                 val otherActiveEvents =
                     eventRepository.findActiveEventsExcludingCaseUrn(caseUrn, savedEntities.person.crn)
@@ -125,6 +123,8 @@ class Handler(
                         )
                         return@forEach
                     } else {
+                        // TODO: Implement update event logic here
+                        // savedEventEntities = eventService.updateEvent()
                         telemetryService.trackEvent(
                             "SimulatedUpdateEvent", mapOf("hearingId" to notification.message.hearing.id)
                         )
@@ -156,61 +156,6 @@ class Handler(
                             "EventCreatedSkipped", mapOf(
                                 "hearingId" to notification.message.hearing.id,
                                 "existingActiveEventIds" to otherActiveEvents.joinToString(",") { it.id.toString() },
-                            )
-                        )
-                        return@forEach
-                    }
-                }
-
-                // Court Appearance Logic
-                val hearingCourtAppearance = courtAppearanceRepository.findAppearanceByHearingIdAndEventId(
-                    notification.message.hearing.id, savedEventEntities?.event?.id
-                )
-
-                val otherCourtAppearances = courtAppearanceRepository.findAppearancesExcludingHearingId(
-                    notification.message.hearing.id, savedEventEntities?.event?.id
-                )
-
-                // If an existing court appearance with hearing ID exists, update it.
-                // Unless other court appearances exist on the event, in which case do nothing
-                // If no existing appearances are found and no hearing id appearance is found then create a new court appearance
-                if (hearingCourtAppearance != null) {
-                    if (!otherCourtAppearances.isNullOrEmpty()) {
-                        telemetryService.trackEvent(
-                            "CourtAppearanceUpdateSkipped", mapOf(
-                                "hearingId" to notification.message.hearing.id,
-                                "existingCourtAppearanceFoundIds" to otherCourtAppearances.joinToString(",") { it.id.toString() },
-                            )
-                        )
-                        return@forEach
-                    } else {
-                        telemetryService.trackEvent(
-                            "SimulatedCourtAppearanceUpdated", mapOf("hearingId" to notification.message.hearing.id)
-                        )
-                    }
-                } else {
-                    if (otherCourtAppearances.isNullOrEmpty() && savedEventEntities != null) {
-                        val savedCourtAppearance = eventService.insertCourtAppearance(
-                            savedEventEntities.event,
-                            notification.message.hearing.courtCentre.code,
-                            notification.message.hearing.hearingDays.first().sittingDay,
-                            caseUrn,
-                            notification.message.hearing.id
-                        )
-                        telemetryService.trackEvent(
-                            "CourtAppearanceCreated", mapOf(
-                                "hearingId" to notification.message.hearing.id,
-                                "courtAppearanceId" to savedCourtAppearance.id.toString(),
-                                "personId" to savedCourtAppearance.person.id.toString(),
-                                "eventId" to savedCourtAppearance.event.id.toString(),
-                            )
-                        )
-                    } else {
-                        telemetryService.trackEvent(
-                            "CourtAppearanceCreatedSkipped", mapOf(
-                                "hearingId" to notification.message.hearing.id,
-                                "existingCourtAppearanceFoundIds" to otherCourtAppearances.orEmpty()
-                                    .joinToString(",") { it.id.toString() },
                             )
                         )
                         return@forEach

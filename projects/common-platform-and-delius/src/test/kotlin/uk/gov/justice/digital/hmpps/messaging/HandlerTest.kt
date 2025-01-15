@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Equality
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -38,9 +37,6 @@ internal class HandlerTest {
     lateinit var eventService: EventService
 
     @Mock
-    lateinit var courtAppearanceRepository: CourtAppearanceRepository
-
-    @Mock
     lateinit var eventRepository: EventRepository
 
     @Mock
@@ -57,14 +53,8 @@ internal class HandlerTest {
 
     @Test
     fun `inserts records when probation search match is not found`() {
-        whenever(personService.insertPerson(any(), any())).thenReturn(
-            InsertPersonResult(
-                person = PersonGenerator.DEFAULT,
-                personManager = PersonManagerGenerator.DEFAULT,
-                equality = Equality(id = 1L, personId = 1L, softDeleted = false),
-                address = PersonAddressGenerator.MAIN_ADDRESS,
-            )
-        )
+        personIsSuccessfullyCreated()
+
         val hearingAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT
         val futureAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT_NO_HEARING
         whenever(eventService.insertEvent(any(), any(), any(), any(), any(), any())).thenReturn(
@@ -78,12 +68,6 @@ internal class HandlerTest {
         )
         whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(null)
         whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any())).thenReturn(emptyList())
-        whenever(courtAppearanceRepository.findAppearanceByHearingIdAndEventId(anyOrNull(), anyOrNull())).thenReturn(
-            hearingAppearance
-        )
-        whenever(courtAppearanceRepository.findAppearancesExcludingHearingId(anyOrNull(), anyOrNull())).thenReturn(
-            listOf(futureAppearance)
-        )
 
         probationSearchMatchNotFound()
         featureFlagIsEnabled(true)
@@ -91,6 +75,7 @@ internal class HandlerTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
+        verify(telemetryService).trackEvent(eq("EventCreated"), anyMap(), anyMap())
         verify(personService).insertPerson(any(), any())
         verify(notifier).caseCreated(any())
         verify(notifier).addressCreated(any())
@@ -134,14 +119,8 @@ internal class HandlerTest {
     fun `Person created logged when feature flag enabled`() {
         probationSearchMatchNotFound()
         featureFlagIsEnabled(true)
-        whenever(personService.insertPerson(any(), any())).thenReturn(
-            InsertPersonResult(
-                person = PersonGenerator.DEFAULT,
-                personManager = PersonManagerGenerator.DEFAULT,
-                equality = Equality(id = 1L, personId = 1L, softDeleted = false),
-                address = PersonAddressGenerator.MAIN_ADDRESS,
-            )
-        )
+        personIsSuccessfullyCreated()
+
         val hearingAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT
         val futureAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT_NO_HEARING
         whenever(eventService.insertEvent(any(), any(), any(), any(), any(), any())).thenReturn(
@@ -155,12 +134,6 @@ internal class HandlerTest {
         )
         whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(null)
         whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any())).thenReturn(emptyList())
-        whenever(courtAppearanceRepository.findAppearanceByHearingIdAndEventId(anyOrNull(), anyOrNull())).thenReturn(
-            hearingAppearance
-        )
-        whenever(courtAppearanceRepository.findAppearancesExcludingHearingId(anyOrNull(), anyOrNull())).thenReturn(
-            listOf(futureAppearance)
-        )
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         handler.handle(notification)
@@ -168,6 +141,7 @@ internal class HandlerTest {
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(eq("PersonCreated"), anyMap(), anyMap())
         verify(personService).insertPerson(any(), any())
+        verify(eventService).insertEvent(any(), any(), any(), any(), any(), any())
         verify(notifier).caseCreated(any())
         verify(notifier).addressCreated(any())
     }
@@ -184,6 +158,79 @@ internal class HandlerTest {
         verify(personService, never()).insertPerson(any(), any())
         verify(notifier, never()).caseCreated(any())
         verify(notifier, never()).addressCreated(any())
+    }
+
+    @Test
+    fun `updates event when existing event with case urn found`() {
+        personIsSuccessfullyCreated()
+
+        val event = EventGenerator.DEFAULT
+        whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(event)
+        whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any())).thenReturn(emptyList())
+
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        handler.handle(notification)
+        verify(telemetryService).notificationReceived(notification)
+        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any(), any())
+        verify(telemetryService).trackEvent(eq("SimulatedUpdateEvent"), anyMap(), anyMap())
+    }
+
+    @Test
+    fun `skips update event when other active events are found`() {
+        personIsSuccessfullyCreated()
+
+        val event = EventGenerator.DEFAULT
+        whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(event)
+        whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any()))
+            .thenReturn(listOf(EventGenerator.DEFAULT))
+
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        handler.handle(notification)
+        verify(telemetryService).notificationReceived(notification)
+        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any(), any())
+        verify(telemetryService).trackEvent(eq("EventUpdateSkipped"), anyMap(), anyMap())
+    }
+
+    @Test
+    fun `skips create event when other active events are found`() {
+        personIsSuccessfullyCreated()
+
+        whenever(eventRepository.findEventByCaseUrnAndCrn(any(), any())).thenReturn(null)
+        whenever(eventRepository.findActiveEventsExcludingCaseUrn(any(), any()))
+            .thenReturn(listOf(EventGenerator.DEFAULT))
+
+        probationSearchMatchNotFound()
+        featureFlagIsEnabled(true)
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        handler.handle(notification)
+        verify(telemetryService).notificationReceived(notification)
+        verify(eventService, never()).insertEvent(any(), any(), any(), any(), any(), any())
+        verify(eventService, never()).insertCourtAppearance(any(), any(), any(), any(), any())
+        verify(telemetryService).trackEvent(eq("EventCreatedSkipped"), anyMap(), anyMap())
+    }
+
+    private fun featureFlagIsEnabled(flag: Boolean) {
+        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(flag)
+    }
+
+    private fun personIsSuccessfullyCreated() {
+        whenever(personService.insertPerson(any(), any())).thenReturn(
+            InsertPersonResult(
+                person = PersonGenerator.DEFAULT,
+                personManager = PersonManagerGenerator.DEFAULT,
+                equality = Equality(id = 1L, personId = 1L, softDeleted = false),
+                address = PersonAddressGenerator.MAIN_ADDRESS,
+            )
+        )
     }
 
     private fun probationSearchMatchNotFound() {
@@ -210,9 +257,5 @@ internal class HandlerTest {
             matchedBy = "PNC"
         )
         whenever(probationSearchClient.match(any())).thenReturn(fakeMatchResponse)
-    }
-
-    private fun featureFlagIsEnabled(flag: Boolean) {
-        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(flag)
     }
 }
