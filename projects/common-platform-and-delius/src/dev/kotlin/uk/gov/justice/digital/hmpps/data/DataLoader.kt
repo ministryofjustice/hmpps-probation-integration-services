@@ -56,9 +56,8 @@ class DataLoader(
             persist(StaffGenerator.ALLOCATED)
             persist(CourtGenerator.UNKNOWN_COURT_N07_PROVIDER)
             persist(OffenceGenerator.DEFAULT)
-            entityManager.merge(DetailedOffenceGenerator.DEFAULT)
-            entityManager.merge(OffenceGenerator.DEFAULT)
-            entityManager.merge(ContactTypeGenerator.EAPP)
+            persist(ContactTypeGenerator.EAPP)
+            persist(DetailedOffenceGenerator.DEFAULT)
         }
     }
 }

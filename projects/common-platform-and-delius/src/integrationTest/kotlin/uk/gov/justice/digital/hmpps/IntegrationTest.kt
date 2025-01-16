@@ -71,22 +71,22 @@ internal class IntegrationTest {
     @MockitoSpyBean
     private lateinit var featureFlags: FeatureFlags
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var eventRepository: EventRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var courtAppearanceRepository: CourtAppearanceRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var contactRepository: ContactRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var mainOffenceRepository: MainOffenceRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var orderManagerRepository: OrderManagerRepository
 
-    @SpyBean
+    @MockitoSpyBean
     lateinit var eventService: EventService
 
     @BeforeEach
