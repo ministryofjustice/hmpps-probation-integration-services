@@ -10,6 +10,8 @@ generic-service:
     LOGGING_LEVEL_COM_AMAZON_SQS: DEBUG
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/oauth/token
+    INTEGRATIONS_PRISON_CASE_NOTES_BASE_URL: https://dev.offender-case-notes.service.justice.gov.uk
+
 
 generic-prometheus-alerts:
   businessHoursOnly: true

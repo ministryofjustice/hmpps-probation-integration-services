@@ -1,0 +1,11 @@
+{
+  "Type": "Notification",
+  "Message": "{\"eventType\":\"probation-case.prison-identifier.added\",\"version\":1,\"occurredAt\":\"2025-01-15T09:47:39+01:00\",\"publishedAt\":\"2025-01-15T09:47:39+01:00\",\"description\":\"A prisoner identifier has been added\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A4578BX\"}]}}",
+  "Timestamp": "2025-01-15T09:47:39+01:00",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "probation-case.prison-identifier.added"
+    }
+  }
+}

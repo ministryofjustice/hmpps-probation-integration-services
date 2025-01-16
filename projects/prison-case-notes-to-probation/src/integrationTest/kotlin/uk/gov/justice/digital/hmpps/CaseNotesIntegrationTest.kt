@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepositor
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -31,6 +32,9 @@ const val CASE_NOTE_MERGED = "CaseNoteMerged"
 
 @SpringBootTest
 class CaseNotesIntegrationTest {
+
+    @Autowired
+    private lateinit var offenderRepository: OffenderRepository
 
     @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
@@ -166,5 +170,24 @@ class CaseNotesIntegrationTest {
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
         assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
+    }
+
+    @Test
+    fun `migrate case notes succesfully when noms number added`() {
+        val offender = requireNotNull(offenderRepository.findByNomsIdAndSoftDeletedIsFalse("A4578BX"))
+        val originals = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
+        assert(originals.isEmpty())
+
+        channelManager.getChannel(queueName).publishAndWait(
+            prepMessage(CaseNoteMessageGenerator.NOMS_NUMBER_ADDED, wireMockserver.port())
+        )
+
+        verify(telemetryService).trackEvent(
+            eq("CaseNotesMigrated"),
+            eq(mapOf("nomsId" to "A4578BX", "cause" to "probation-case.prison-identifier.added", "count" to "4")),
+            anyMap()
+        )
+        val saved = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
+        assertThat(saved.size, equalTo(4))
     }
 }

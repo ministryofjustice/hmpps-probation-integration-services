@@ -57,6 +57,20 @@
           "developerMessage": "Resource with id [AA0001A] not found."
         }
       }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/search/case-notes/A4578BX"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "migrate-for-new-identifier.json"
+      }
     }
   ]
 }

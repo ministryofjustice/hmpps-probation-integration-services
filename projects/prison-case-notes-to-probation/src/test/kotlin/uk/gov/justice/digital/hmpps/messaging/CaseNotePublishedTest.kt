@@ -10,14 +10,12 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
-import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.StaffCodeExhaustedException
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.prepMessage
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -25,7 +23,7 @@ import java.net.URI
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
-internal class HandlerTest {
+internal class CaseNotePublishedTest {
 
     @Mock
     private lateinit var prisonCaseNotesClient: PrisonCaseNotesClient
@@ -36,11 +34,8 @@ internal class HandlerTest {
     @Mock
     private lateinit var telemetryService: TelemetryService
 
-    @Mock
-    private lateinit var converter: NotificationConverter<HmppsDomainEvent>
-
     @InjectMocks
-    private lateinit var handler: Handler
+    private lateinit var handler: CaseNotePublished
 
     @Test
     fun `when case note not found - noop`() {
@@ -48,7 +43,7 @@ internal class HandlerTest {
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!)))
             .thenReturn(null)
 
-        assertDoesNotThrow { handler.handle(Notification(message = message)) }
+        assertDoesNotThrow { handler.handle(message) }
         verify(telemetryService, never()).trackEvent(eq("CaseNoteMerged"), any(), any())
         verify(deliusService, never()).mergeCaseNote(any())
     }
@@ -69,7 +64,7 @@ internal class HandlerTest {
         )
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
-        handler.handle(Notification(message = message))
+        handler.handle(message)
         verify(deliusService, times(0)).mergeCaseNote(any())
     }
 
@@ -91,7 +86,7 @@ internal class HandlerTest {
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
 
-        handler.handle(Notification(message = message))
+        handler.handle(message)
         verify(deliusService, never()).mergeCaseNote(any())
         verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
     }
@@ -117,7 +112,7 @@ internal class HandlerTest {
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
 
-        handler.handle(Notification(message = message))
+        handler.handle(message)
         verify(deliusService, never()).mergeCaseNote(any())
 
         verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
@@ -127,7 +122,7 @@ internal class HandlerTest {
     fun `get case note from NOMIS has null caseNoteId`() {
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         val prisonOffenderEvent = Notification(message = message.copy(additionalInformation = emptyMap()))
-        handler.handle(prisonOffenderEvent)
+        handler.handle(prisonOffenderEvent.message)
         verify(deliusService, times(0)).mergeCaseNote(any())
         verify(prisonCaseNotesClient, times(0)).getCaseNote(any())
     }
@@ -151,8 +146,7 @@ internal class HandlerTest {
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(poe.message.detailUrl!!))).thenReturn(prisonCaseNote)
         whenever(deliusService.mergeCaseNote(any())).thenThrow(OffenderNotFoundException("A001"))
 
-        handler.handle(poe)
-        verify(telemetryService).trackEvent(eq("NotificationReceived"), any(), any())
+        handler.handle(poe.message)
         verify(telemetryService).trackEvent(eq("CaseNoteMergeFailed"), any(), any())
     }
 
@@ -175,8 +169,7 @@ internal class HandlerTest {
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(poe.message.detailUrl!!))).thenReturn(prisonCaseNote)
         whenever(deliusService.mergeCaseNote(any())).thenThrow(StaffCodeExhaustedException("A999"))
 
-        assertThrows<StaffCodeExhaustedException> { handler.handle(poe) }
-        verify(telemetryService).trackEvent(eq("NotificationReceived"), any(), any())
+        assertThrows<StaffCodeExhaustedException> { handler.handle(poe.message) }
         verify(telemetryService).trackEvent(eq("CaseNoteMergeFailed"), any(), any())
     }
 }
