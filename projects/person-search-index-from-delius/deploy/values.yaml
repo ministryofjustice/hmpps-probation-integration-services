@@ -31,7 +31,6 @@ generic-service:
     PIPELINES_ENABLED: person-incremental,contact-incremental
     JDK_JAVA_OPTIONS: ''
     LS_JAVA_OPTS: -Xms1536m -Xmx1536m # = 75% of pod memory limit (see above)
-    SAGEMAKER_ENDPOINT_NAME: probation-search-sagemaker-endpoint
 
   namespace_secrets:
     common:
