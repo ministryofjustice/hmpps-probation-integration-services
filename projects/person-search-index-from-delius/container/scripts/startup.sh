@@ -13,7 +13,11 @@ curl_json -XPUT "${SEARCH_INDEX_HOST}/_cluster/settings" --data '{
     "action.auto_create_index": "false",
     "plugins.ml_commons.only_run_on_ml_node": "false",
     "plugins.ml_commons.model_access_control_enabled": "false",
-    "plugins.ml_commons.native_memory_threshold": "90"
+    "plugins.ml_commons.native_memory_threshold": "90",
+    "plugins.ml_commons.trusted_connector_endpoints_regex": [
+        "^https://bedrock-runtime\\..*[a-z0-9-]\\.amazonaws\\.com/.*$",
+        "^https://runtime\\.sagemaker\\..*[a-z0-9-]\\.amazonaws\\.com/.*$"
+    ]
   }
 }'
 
@@ -39,9 +43,8 @@ if grep -q 'contact' <<<"$PIPELINES_ENABLED"; then
   fi
 
   # Setup semantic search for contacts
-  export BEDROCK_MODEL_NAME=amazon.titan-embed-text-v2:0
   /scripts/deploy-semantic-model.sh
-  model_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/_search" --data "{\"query\":{\"match\":{\"name.keyword\":\"bedrock-${BEDROCK_MODEL_NAME}\"}}}" | jq -r '.hits.hits[0]._id // ""')
+  model_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/_search" --data "{\"query\":{\"match\":{\"name.keyword\":\"sagemaker-embeddings\"}}}" | jq -r '.hits.hits[0]._id // ""')
   export model_id
   echo "Deployed semantic search model. model_id=${model_id}"
   envsubst < /pipelines/contact/index/ingest-pipeline.tpl.json > /pipelines/contact/index/ingest-pipeline.json
