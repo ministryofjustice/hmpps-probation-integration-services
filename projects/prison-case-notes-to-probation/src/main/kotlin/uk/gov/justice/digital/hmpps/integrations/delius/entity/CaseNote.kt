@@ -25,7 +25,7 @@ data class CaseNote(
     val nsiId: Long?,
 
     @Column(name = "nomis_case_note_id", updatable = false)
-    val nomisId: Long,
+    val nomisId: Long?,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
@@ -54,6 +54,8 @@ data class CaseNote(
 
     @Column(updatable = false)
     val probationAreaId: Long,
+
+    var externalReference: String? = null,
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
