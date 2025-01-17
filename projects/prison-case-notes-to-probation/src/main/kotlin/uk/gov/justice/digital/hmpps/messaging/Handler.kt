@@ -47,7 +47,7 @@ class Handler(
 }
 
 private fun Notification<*>.publishedOfInterest(): Boolean =
-    eventType == CASE_NOTE_PUBLISHED && typeIsOfInterest()
+    eventType == CASE_NOTE_PUBLISHED
 
 private fun Notification<*>.isCaseNoteOfInterest(): Boolean =
     (eventType == PERSON_CASE_NOTE_CREATED || eventType == PERSON_CASE_NOTE_UPDATED) && typeIsOfInterest()
