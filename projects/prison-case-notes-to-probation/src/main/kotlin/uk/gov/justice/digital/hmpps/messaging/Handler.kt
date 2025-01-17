@@ -6,8 +6,12 @@ import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteTypesOfInterest
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CASE_NOTE_PUBLISHED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.PERSON_CASE_NOTE_CREATED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.PERSON_CASE_NOTE_UPDATED
 
 @Component
 @Channel("prison-case-notes-to-probation-queue")
@@ -34,10 +38,21 @@ class Handler(
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        when (notification.eventType) {
-            CASE_NOTE_PUBLISHED -> caseNotePublished.handle(notification.message)
-            PRISON_IDENTIFIER_ADDED -> prisonIdentifierAdded.handle(notification.message)
-            PERSON_CASE_NOTE_CREATED, PERSON_CASE_NOTE_UPDATED -> personCaseNote.handle(notification.message)
+        when {
+            notification.eventType == PRISON_IDENTIFIER_ADDED -> prisonIdentifierAdded.handle(notification.message)
+            notification.isCaseNoteOfInterest() -> personCaseNote.handle(notification.message)
+            notification.publishedOfInterest() -> caseNotePublished.handle(notification.message)
         }
     }
 }
+
+private fun Notification<*>.publishedOfInterest(): Boolean =
+    eventType == CASE_NOTE_PUBLISHED && typeIsOfInterest()
+
+private fun Notification<*>.isCaseNoteOfInterest(): Boolean =
+    (eventType == PERSON_CASE_NOTE_CREATED || eventType == PERSON_CASE_NOTE_UPDATED) && typeIsOfInterest()
+
+val Notification<*>.type get() = attributes["type"]?.value
+val Notification<*>.subType get() = attributes["subType"]?.value
+
+private fun Notification<*>.typeIsOfInterest() = CaseNoteTypesOfInterest.verifyOfInterest(type!!, subType!!)

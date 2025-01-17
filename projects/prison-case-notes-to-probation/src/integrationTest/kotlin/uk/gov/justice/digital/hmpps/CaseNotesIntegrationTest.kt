@@ -20,12 +20,16 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
+import uk.gov.justice.digital.hmpps.message.MessageAttribute
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
+import java.time.Duration
 import java.time.ZonedDateTime
 
 const val CASE_NOTE_MERGED = "CaseNoteMerged"
@@ -62,10 +66,10 @@ class CaseNotesIntegrationTest {
         val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
 
         channelManager.getChannel(queueName).publishAndWait(
-            prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS, wireMockserver.port())
+            prepNotification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS, wireMockserver.port())
         )
 
-        val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
+        val saved = caseNoteRepository.findByExternalReference("${DeliusCaseNote.URN_PREFIX}${nomisCaseNote.id}")
 
         assertThat(
             saved?.notes,
@@ -93,7 +97,7 @@ class CaseNotesIntegrationTest {
         assertNull(original)
 
         channelManager.getChannel(queueName).publishAndWait(
-            prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS, wireMockserver.port())
+            prepNotification(CaseNoteMessageGenerator.NEW_TO_DELIUS, wireMockserver.port())
         )
 
         verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
@@ -135,7 +139,7 @@ class CaseNotesIntegrationTest {
     @Test
     fun `case note not found - noop`() {
         channelManager.getChannel(queueName).publishAndWait(
-            prepMessage(CaseNoteMessageGenerator.NOT_FOUND, wireMockserver.port())
+            prepNotification(CaseNoteMessageGenerator.NOT_FOUND, wireMockserver.port())
         )
 
         verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
@@ -146,7 +150,7 @@ class CaseNotesIntegrationTest {
         val nomisCaseNote = PrisonCaseNoteGenerator.RESETTLEMENT_PASSPORT
 
         channelManager.getChannel(queueName).publishAndWait(
-            prepMessage(CaseNoteMessageGenerator.RESETTLEMENT_PASSPORT, wireMockserver.port())
+            prepNotification(CaseNoteMessageGenerator.RESETTLEMENT_PASSPORT, wireMockserver.port())
         )
 
         verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
@@ -179,7 +183,7 @@ class CaseNotesIntegrationTest {
         assert(originals.isEmpty())
 
         channelManager.getChannel(queueName).publishAndWait(
-            prepMessage(CaseNoteMessageGenerator.NOMS_NUMBER_ADDED, wireMockserver.port())
+            prepNotification(CaseNoteMessageGenerator.NOMS_NUMBER_ADDED, wireMockserver.port())
         )
 
         verify(telemetryService).trackEvent(
@@ -189,5 +193,20 @@ class CaseNotesIntegrationTest {
         )
         val saved = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
         assertThat(saved.size, equalTo(4))
+    }
+
+    @Test
+    fun `case note not of interest - noop`() {
+        val existing = CaseNoteMessageGenerator.EXISTS_IN_DELIUS
+        channelManager.getChannel(queueName).publishAndWait(
+            prepNotification(existing.copy(
+                attributes = MessageAttributes(existing.eventType!!).apply {
+                    this["type"] = MessageAttribute("String", "NOTOF")
+                    this["subType"] = MessageAttribute("String", "INTEREST")
+                }
+            ), wireMockserver.port())
+        )
+
+        verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
     }
 }
