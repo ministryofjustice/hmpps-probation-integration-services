@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 interface PrisonCaseNotesClient {
     @GetExchange
-    fun getCaseNote(baseUrl: URI): PrisonCaseNote?
+    fun getCaseNote(baseUrl: URI): PrisonCaseNote
 
     @PostExchange
     fun searchCaseNotes(

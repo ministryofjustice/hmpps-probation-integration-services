@@ -6,10 +6,13 @@ import jakarta.validation.constraints.NotNull
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.model.StaffName
 import java.time.ZonedDateTime
+import java.util.*
 
-data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody)
+data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody) {
+    val urn = header.uuid?.let { "urn:uk:gov:hmpps:prison-case-note:${it}" }
+}
 
-data class CaseNoteHeader(val nomisId: String, val noteId: Long)
+data class CaseNoteHeader(val nomisId: String, val legacyId: Long, val uuid: UUID?)
 data class CaseNoteBody(
     @NotBlank
     val type: String,
@@ -45,7 +48,7 @@ data class CaseNoteBody(
         }
     }
 
-    fun isResettlementPassport() = type == "RESET" && subType == "BCST"
+    private fun isResettlementPassport() = type == "RESET" && subType == "BCST"
 }
 
 fun String.isAlertType() = this == "ALERT ACTIVE" || this == "ALERT INACTIVE"

@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
-import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters.filters
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -15,25 +15,13 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
 @Service
-class CaseNotePublished(
+class PersonCaseNote(
     private val prisonCaseNotesClient: PrisonCaseNotesClient,
     private val deliusService: DeliusService,
     private val telemetryService: TelemetryService,
 ) {
     fun handle(event: HmppsDomainEvent) {
-        val caseNoteId = event.additionalInformation["caseNoteId"]
-        if (caseNoteId == null) {
-            telemetryService.trackEvent(
-                "MissingCaseNoteId",
-                mapOf(
-                    "eventType" to event.eventType,
-                    "nomsNumber" to event.personReference.findNomsNumber()!!
-                )
-            )
-            return
-        }
-
-        val prisonCaseNote = try {
+        val prisonCaseNote: PrisonCaseNote = try {
             prisonCaseNotesClient.getCaseNote(URI.create(event.detailUrl!!))
         } catch (ex: HttpStatusCodeException) {
             when (ex.statusCode) {
@@ -46,19 +34,10 @@ class CaseNotePublished(
             }
         }
 
-        val reasonToIgnore: Lazy<String?> = lazy {
-            PrisonCaseNoteFilters.filters.firstOrNull { it.predicate.invoke(prisonCaseNote!!) }?.reason
-        }
-
-        if (prisonCaseNote == null || reasonToIgnore.value != null) {
-            val reason = if (prisonCaseNote == null) {
-                "case note was not able to be retrieved"
-            } else {
-                reasonToIgnore.value!!
-            }
+        filters.firstOrNull { it.predicate.invoke(prisonCaseNote) }?.reason?.also {
             telemetryService.trackEvent(
                 "CaseNoteIgnored",
-                (prisonCaseNote?.properties() ?: emptyMap()) + ("reason" to reason)
+                (prisonCaseNote.properties()) + ("reason" to it)
             )
             return
         }

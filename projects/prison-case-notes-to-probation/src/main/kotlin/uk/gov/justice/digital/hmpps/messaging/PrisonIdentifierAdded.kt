@@ -30,7 +30,7 @@ class PrisonIdentifierAdded(
         val caseNotes = caseNotesApi.searchCaseNotes(uri, SearchCaseNotes(TYPES_OF_INTEREST)).content
             .filter { cn -> PrisonCaseNoteFilters.filters.none { it.predicate.invoke(cn) } }
 
-        caseNotes.forEach { deliusService.mergeCaseNote(it.toDeliusCaseNote(it.occurrenceDateTime)) }
+        caseNotes.forEach { deliusService.mergeCaseNote(it.toDeliusCaseNote()) }
 
         telemetryService.trackEvent(
             "CaseNotesMigrated", mapOf(

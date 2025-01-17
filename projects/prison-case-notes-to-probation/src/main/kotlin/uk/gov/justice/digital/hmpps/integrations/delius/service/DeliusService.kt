@@ -28,15 +28,17 @@ class DeliusService(
     private val relatedService: CaseNoteRelatedService
 ) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) = audit(CASE_NOTES_MERGE) {
-        it["nomisId"] = caseNote.header.noteId
+    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) = audit(CASE_NOTES_MERGE) { audit ->
+        audit["nomisId"] = caseNote.header.legacyId
+        caseNote.header.uuid?.also { audit["dpsId"] = it }
 
-        val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
+        val existing = caseNote.urn?.let { caseNoteRepository.findByExternalReference(it) }
+            ?: caseNoteRepository.findByNomisId(caseNote.header.legacyId)
 
         val entity = if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote)
         if (entity != null) {
             caseNoteRepository.save(entity)
-            it["contactId"] = entity.id
+            audit["contactId"] = entity.id
         }
     }
 
@@ -48,7 +50,8 @@ class DeliusService(
                 notes = caseNote.body.notes(notes.length),
                 date = caseNote.body.contactTimeStamp,
                 startTime = caseNote.body.contactTimeStamp,
-                lastModifiedDateTime = caseNote.body.systemTimestamp
+                lastModifiedDateTime = caseNote.body.systemTimestamp,
+                externalReference = caseNote.urn
             )
         } else {
             log.warn("Case Note update ignored because it was out of sequence ${caseNote.header}")
@@ -74,7 +77,7 @@ class DeliusService(
             eventId = relatedIds.eventId,
             nsiId = relatedIds.nsiId,
             type = caseNoteType,
-            nomisId = header.noteId,
+            nomisId = header.legacyId,
             description = description,
             notes = body.notes(),
             date = body.contactTimeStamp,
@@ -83,7 +86,8 @@ class DeliusService(
             probationAreaId = assignment.first,
             teamId = assignment.second,
             staffId = assignment.third,
-            staffEmployeeId = assignment.third
+            staffEmployeeId = assignment.third,
+            externalReference = urn
         )
     }
 
