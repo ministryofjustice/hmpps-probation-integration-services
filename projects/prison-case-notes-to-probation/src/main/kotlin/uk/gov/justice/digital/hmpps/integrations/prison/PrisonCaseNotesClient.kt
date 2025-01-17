@@ -25,19 +25,7 @@ data class SearchCaseNotes(
     val page: Int = 1,
     val size: Int = Int.MAX_VALUE,
     val sort: String = "occurredAt,desc",
-) {
-    companion object {
-        val TYPES_OF_INTEREST = setOf(
-            TypeSubTypeRequest("PRISON", setOf("RELEASE")),
-            TypeSubTypeRequest("TRANSFER", setOf("FROMTOL")),
-            TypeSubTypeRequest("GEN", setOf("OSE")),
-            TypeSubTypeRequest("ALERT"),
-            TypeSubTypeRequest("OMIC"),
-            TypeSubTypeRequest("OMIC_OPD"),
-            TypeSubTypeRequest("KA"),
-        )
-    }
-}
+)
 
 data class TypeSubTypeRequest(val type: String, val subTypes: Set<String> = setOf())
 

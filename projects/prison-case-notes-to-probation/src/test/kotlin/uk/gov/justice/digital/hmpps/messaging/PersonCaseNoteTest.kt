@@ -20,8 +20,10 @@ import uk.gov.justice.digital.hmpps.exceptions.StaffCodeExhaustedException
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.prepMessage
+import uk.gov.justice.digital.hmpps.prepNotification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 import java.time.ZonedDateTime
@@ -43,7 +45,7 @@ internal class PersonCaseNoteTest {
 
     @Test
     fun `when case note not found - noop`() {
-        val message = prepMessage(CaseNoteMessageGenerator.NOT_FOUND).message
+        val message = prepNotification(CaseNoteMessageGenerator.NOT_FOUND).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!)))
             .thenThrow(HttpClientErrorException(HttpStatus.NOT_FOUND))
 
@@ -66,7 +68,7 @@ internal class PersonCaseNoteTest {
             text = "",
             amendments = listOf()
         )
-        val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
+        val message = prepNotification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
         handler.handle(message)
         verify(deliusService, times(0)).mergeCaseNote(any())
@@ -87,7 +89,7 @@ internal class PersonCaseNoteTest {
             text = "Prisoner being transferred",
             amendments = listOf()
         )
-        val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
+        val message = prepNotification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
 
         handler.handle(message)
@@ -113,7 +115,7 @@ internal class PersonCaseNoteTest {
             text = text,
             amendments = listOf()
         )
-        val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
+        val message = prepNotification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
 
         handler.handle(message)
@@ -137,7 +139,7 @@ internal class PersonCaseNoteTest {
             text = "Notes for an offender without noms number in delius",
             amendments = listOf()
         )
-        val poe = Notification(prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS).message)
+        val poe = Notification(prepNotification(CaseNoteMessageGenerator.NEW_TO_DELIUS).message)
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(poe.message.detailUrl!!))).thenReturn(prisonCaseNote)
         whenever(deliusService.mergeCaseNote(any())).thenThrow(OffenderNotFoundException("A001"))
 
@@ -160,7 +162,7 @@ internal class PersonCaseNoteTest {
             text = "Notes for an exceptional case note",
             amendments = listOf()
         )
-        val poe = Notification(prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS).message)
+        val poe = Notification(prepNotification(CaseNoteMessageGenerator.NEW_TO_DELIUS).message)
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(poe.message.detailUrl!!))).thenReturn(prisonCaseNote)
         whenever(deliusService.mergeCaseNote(any())).thenThrow(StaffCodeExhaustedException("A999"))
 

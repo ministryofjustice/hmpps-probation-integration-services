@@ -9,7 +9,11 @@ import java.time.ZonedDateTime
 import java.util.*
 
 data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody) {
-    val urn = header.uuid?.let { "urn:uk:gov:hmpps:prison-case-note:${it}" }
+    val urn = header.uuid?.let { "$URN_PREFIX${it}" }
+
+    companion object {
+        const val URN_PREFIX = "urn:uk:gov:hmpps:prison-case-note:"
+    }
 }
 
 data class CaseNoteHeader(val nomisId: String, val legacyId: Long, val uuid: UUID?)
