@@ -101,7 +101,7 @@ class CaseNotesIntegrationTest {
         )
 
         verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
-        val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
+        val saved = caseNoteRepository.findByExternalReference("${DeliusCaseNote.URN_PREFIX}${nomisCaseNote.id}")
         assertNotNull(saved)
 
         assertThat(
@@ -154,7 +154,7 @@ class CaseNotesIntegrationTest {
         )
 
         verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
-        val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
+        val saved = caseNoteRepository.findByExternalReference("${DeliusCaseNote.URN_PREFIX}${nomisCaseNote.id}")
         assertNotNull(saved)
 
         assertThat(
