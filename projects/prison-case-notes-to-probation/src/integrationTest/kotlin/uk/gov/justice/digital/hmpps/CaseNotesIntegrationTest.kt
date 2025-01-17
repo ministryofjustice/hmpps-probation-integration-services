@@ -199,12 +199,13 @@ class CaseNotesIntegrationTest {
     fun `case note not of interest - noop`() {
         val existing = CaseNoteMessageGenerator.EXISTS_IN_DELIUS
         channelManager.getChannel(queueName).publishAndWait(
-            prepNotification(existing.copy(
-                attributes = MessageAttributes(existing.eventType!!).apply {
-                    this["type"] = MessageAttribute("String", "NOTOF")
-                    this["subType"] = MessageAttribute("String", "INTEREST")
-                }
-            ), wireMockserver.port())
+            prepNotification(
+                existing.copy(
+                    attributes = MessageAttributes(existing.eventType!!).apply {
+                        this["type"] = MessageAttribute("String", "NOTOF")
+                        this["subType"] = MessageAttribute("String", "INTEREST")
+                    }
+                ), wireMockserver.port())
         )
 
         verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
