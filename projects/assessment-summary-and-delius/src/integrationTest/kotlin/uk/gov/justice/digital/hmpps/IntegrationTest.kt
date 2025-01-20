@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
@@ -343,7 +344,6 @@ internal class IntegrationTest {
         assertThat(
             review.contact.notes?.trim(), equalTo(
                 """
-                    The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
                     Type: Safeguarding - Risk to children
                     Next Review Date: ${DeliusDateFormatter.format(LocalDate.now().plusMonths(6))}
                 """.trimIndent()
@@ -361,6 +361,7 @@ internal class IntegrationTest {
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.CHILDREN.code).single()
         assertThat(riskToChildrenBefore.level?.code, equalTo(RiskLevel.H.code))
         assertThat(riskToChildrenBefore.reviews, hasSize(1))
+        assertThat(riskToChildrenBefore.reviews[0].completed, equalTo(false))
         val riskToPrisonerBefore = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PRISONER.code)
         assertThat(riskToPrisonerBefore, hasSize(0))
         val altRiskToPrisonerBefore =
@@ -382,18 +383,41 @@ internal class IntegrationTest {
 
         val domainEvents = domainEventRepository.findAllForCrn(PersonGenerator.EXISTING_RISKS.crn)
 
-        // Unchanged value from OASys - adds a review
+        // Unchanged value from OASys - completes existing review and adds a new review
         val riskToChildren =
             registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.CHILDREN.code).single()
         assertThat(riskToChildren.level?.code, equalTo(RiskLevel.H.code))
         assertThat(riskToChildren.reviews, hasSize(2))
-        val expectedReviewNotes = """
+        assertThat(riskToChildren.nextReviewDate, equalTo(LocalDate.now().plusMonths(6)))
+        val completedReview = riskToChildren.reviews.single { it.completed }
+        assertThat(completedReview.date, equalTo(LocalDate.now()))
+        assertThat(completedReview.reviewDue, equalTo(LocalDate.now().plusMonths(6)))
+        """
+            existing notes
             The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
+
+            *R10.1 Who is at risk*
+            Known adults - Joe Bloggs
+
+            *R10.2 What is the nature of the risk*
+            Physical harm - Physical assault, shown willingness to use a weapon
+        """.trimIndent().let { assertThat(completedReview.notes?.trim(), equalTo(it)) }
+        """
+            existing notes
+            The OASys assessment of Review on 07/12/2023 identified the Risk to children to be H.
+
+            See review for more details
+        """.trimIndent().let { assertThat(completedReview.contact.notes?.trim(), equalTo(it)) }
+        val newReview = riskToChildren.reviews.single { !it.completed }
+        assertThat(newReview.date, equalTo(LocalDate.now().plusMonths(6)))
+        assertThat(newReview.reviewDue, nullValue())
+        """
             Type: Safeguarding - Risk to children
-            Next Review Date: 14/12/2023
-        """.trimIndent()
-        assertThat(riskToChildren.reviews[1].notes?.trim(), equalTo(expectedReviewNotes))
-        assertThat(riskToChildren.reviews[1].contact.notes?.trim(), equalTo(expectedReviewNotes))
+            Next Review Date: ${LocalDate.now().plusMonths(6).toDeliusDate()}
+        """.trimIndent().let {
+            assertThat(newReview.notes?.trim(), equalTo(it))
+            assertThat(newReview.contact.notes?.trim(), equalTo(it))
+        }
         assertThat(domainEvents.ofType(RiskType.CHILDREN), hasSize(0))
 
         // No existing registration - add new
@@ -423,10 +447,21 @@ internal class IntegrationTest {
         val riskToPublic = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PUBLIC.code).single()
         assertThat(riskToPublic.level?.code, equalTo(RiskLevel.V.code))
         assertThat(riskToPublic.reviews, hasSize(1))
-        assertThat(
-            riskToPublic.notes,
-            startsWith("The OASys assessment of Review on 07/12/2023 identified the Risk to public to have increased to V.")
-        )
+        """
+            The OASys assessment of Review on 07/12/2023 identified the Risk to public to have increased to V.
+
+            *R10.1 Who is at risk*
+            Known adults - Joe Bloggs
+
+            *R10.2 What is the nature of the risk*
+            Physical harm - Physical assault, shown willingness to use a weapon
+        """.trimIndent().let { assertThat(riskToPublic.notes, equalTo(it)) }
+        """
+            
+            The OASys assessment of Review on 07/12/2023 identified the Risk to public to have increased to V.
+
+            See Register for more details
+        """.trimIndent().let { assertThat(riskToPublic.contact.notes, equalTo(it)) }
         assertThat(domainEvents.ofType(RiskType.PUBLIC), hasSize(2))
         assertThat(
             domainEvents.ofType(RiskType.PUBLIC).map { it.eventType },

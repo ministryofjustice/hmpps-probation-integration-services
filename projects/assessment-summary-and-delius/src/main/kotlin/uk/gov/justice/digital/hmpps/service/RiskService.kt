@@ -76,21 +76,24 @@ class RiskService(
             val (matchingRegistrations, registrationsToRemove) = registrations.partition { it.level!!.code == riskLevel.code }
             val events = registrationsToRemove.map { person.removeRegistration(it) }.toMutableList()
 
-            // Add registration with the identified level if it doesn't already exist
+            // Get RoSH answers from OASys
             val type = registerTypeRepository.getByCode(riskType.code)
             val existingLevel = RiskLevel.maxByCode(registrationsToRemove.mapNotNull { it.level?.code })
             val assessmentNote = "The OASys assessment of ${summary.furtherInformation.pOAssessmentDesc} on " +
                 "${summary.dateCompleted.toDeliusDate()} identified the ${type.description} " +
                 "${existingLevel.increasedOrDecreasedTo(riskLevel)} ${level.description}."
-
-            if (matchingRegistrations.isEmpty()) {
-                val roshSummary = ordsClient.getRoshSummary(summary.assessmentPk)?.assessments?.singleOrNull()
-                val notes = """
+            val roshSummary = ordsClient.getRoshSummary(summary.assessmentPk)?.assessments?.singleOrNull()
+            val roshNotes = """
                     |$assessmentNote
                     |${roshSummary?.whoAtRisk?.let { "\n|*R10.1 Who is at risk*\n|$it" }}
                     |${roshSummary?.natureOfRisk?.let { "\n|*R10.2 What is the nature of the risk*\n|$it" }}
                     """.trimMargin()
-                events += registrations.addRegistration(person, type, level, notes).regEvent(person.crn)
+
+            // Add registration with the identified level if it doesn't already exist
+            if (matchingRegistrations.isEmpty()) {
+                val contactNotes = "$assessmentNote\n\nSee Register for more details"
+                events += registrations.addRegistration(person, type, level, roshNotes, contactNotes)
+                    .regEvent(person.crn)
 
                 // Registrations in the type's duplicate group should also be removed
                 registerTypeRepository.findOtherTypesInGroup(riskType.code)
@@ -102,9 +105,17 @@ class RiskService(
                     }
             }
 
-            // Always add a review, regardless of whether the register level has changed
+            // Complete any open reviews and add a new one, regardless of whether the level has changed
             registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code).singleOrNull()?.let {
-                it.withReview(it.reviewContact(person, "$assessmentNote\n${it.notes()}"))
+                it.nextReviewDate = it.type.reviewPeriod?.let { LocalDate.now().plusMonths(it) }
+                it.reviews.filter { !it.completed }.forEach { review ->
+                    review.completed = true
+                    review.date = LocalDate.now()
+                    review.reviewDue = it.nextReviewDate
+                    review.notes = review.notes?.let { "$it\n$roshNotes" } ?: roshNotes
+                    review.contact.withNotes("$assessmentNote\n\nSee review for more details")
+                }
+                it.withReview(it.reviewContact(person))
             }
 
             return@flatMap events
@@ -116,13 +127,14 @@ class RiskService(
         type: RegisterType,
         level: ReferenceData? = null,
         notes: String? = null,
+        contactNotes: String? = null,
     ): Registration {
         val nextReviewDate = type.reviewPeriod?.let { LocalDate.now().plusMonths(it) }
 
         val contact = contactService.createContact(
             ContactDetail(
                 ContactType.Code.REGISTRATION,
-                notes = reviewNotes(type, nextReviewDate),
+                notes = contactNotes ?: reviewNotes(type, nextReviewDate),
                 contactType = type.registrationContactType
             ),
             person
@@ -146,7 +158,7 @@ class RiskService(
 
     private fun Person.removeRegistration(
         registration: Registration,
-        notes: String = registration.notes()
+        notes: String = registration.type.notes()
     ): HmppsDomainEvent {
         val contact = contactService.createContact(ContactDetail(DEREGISTRATION, notes = notes), this)
         registration.deregister(contact)
@@ -163,8 +175,10 @@ class RiskService(
     )
 }
 
+fun RegisterType.notes() = "Type: ${flag.description} - $description"
+
 fun reviewNotes(type: RegisterType, nextReviewDate: LocalDate?) = listOfNotNull(
-    "Type: ${type.flag.description} - ${type.description}",
+    type.notes(),
     nextReviewDate?.let { "Next Review Date: ${it.toDeliusDate()}" }
 ).joinToString(System.lineSeparator())
 
