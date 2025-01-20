@@ -87,7 +87,9 @@ class DeliusService(
             teamId = assignment.second,
             staffId = assignment.third,
             staffEmployeeId = assignment.third,
-            externalReference = urn
+            externalReference = urn,
+            createdDateTime = body.systemTimestamp,
+            lastModifiedDateTime = body.systemTimestamp,
         )
     }
 
