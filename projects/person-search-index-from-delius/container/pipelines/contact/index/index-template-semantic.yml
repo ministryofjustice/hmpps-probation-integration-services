@@ -801,6 +801,7 @@ template:
             dimension: 1024
             space_type: cosinesimil
             method:
+              name: hnsw
               engine: lucene
       notes:
         copy_to: text
