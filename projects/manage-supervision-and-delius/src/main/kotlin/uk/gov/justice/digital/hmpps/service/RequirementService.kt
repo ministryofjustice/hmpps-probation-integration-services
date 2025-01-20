@@ -60,7 +60,12 @@ class RequirementService(
     }
 }
 
-fun populateRequirementDescription(description: String, codeDescription: String?, requirementLength: Long?, rar: Rar?): String {
+fun populateRequirementDescription(
+    description: String,
+    codeDescription: String?,
+    requirementLength: Long?,
+    rar: Rar?
+): String {
     rar?.let { return "${it.totalDays} of $requirementLength RAR days completed" }
 
     if (codeDescription != null) {
