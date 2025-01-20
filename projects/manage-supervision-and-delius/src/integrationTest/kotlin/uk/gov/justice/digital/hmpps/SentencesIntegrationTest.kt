@@ -75,7 +75,7 @@ class SentencesIntegrationTest {
                         MinimalLicenceCondition(LC_WITH_1500_CHAR_NOTE.id, LIC_COND_MAIN_CAT.description)
                     ),
                     requirements = listOf(
-                        MinimalRequirement(REQUIREMENT.id, "2 days RAR, 1 completed"),
+                        MinimalRequirement(REQUIREMENT.id, "2 of 12 RAR days completed"),
                         MinimalRequirement(REQUIREMENT_UNPAID_WORK.id, "Unpaid Work - Intensive")
                     )
                 )

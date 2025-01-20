@@ -62,6 +62,7 @@ interface RarDays {
 
 interface RequirementDetails {
     val id: Long
+    val disposalId: Long
     val expectedStartDate: LocalDate?
     val startDate: LocalDate
     val commencementDate: LocalDate?
@@ -110,7 +111,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         and (c.attended is null)
         and (c.complied is null or c.complied = 'Y')
         and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
-        and r.rqmnt_id = :requirementId
+        and r.disposal_id = :disposalId
         union
         select count(r.rqmnt_id) as days, 'COMPLETED' as type from contact c
         join rqmnt r on r.rqmnt_id = c.rqmnt_id
@@ -119,7 +120,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         and (c.attended = 'Y')
         and (c.complied is null or c.complied = 'Y')
         and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
-        and r.rqmnt_id = :requirementId
+        and r.disposal_id = :disposalId
         union 
         SELECT count(r.rqmnt_id) as days, 'NSI_COMPLETED' FROM contact c
         JOIN nsi n ON n.nsi_id = c.nsi_id
@@ -129,14 +130,15 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         and (c.attended = 'Y')
         and (c.complied is null or c.complied = 'Y')
         and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
-        and r.rqmnt_id = :requirementId
+        and r.disposal_id = :disposalId
         """, nativeQuery = true
     )
-    fun getRarDaysByRequirementId(requirementId: Long): List<RarDays>
+    fun getRarDaysByDisposalId(disposalId: Long): List<RarDays>
 
     @Query(
         """
-            SELECT  r.rqmnt_id AS id,
+            SELECT  r.rqmnt_id as id,
+                    r.disposal_id as disposalId,
                     r.expected_start_date as expectedStartDate, 
                     r.start_date as startDate, 
                     r.commencement_date as commencementDate, 
@@ -174,6 +176,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
     @Query(
         """
             SELECT  r.rqmnt_id AS id,
+                    r.disposal_id as disposalId,
                     r.expected_start_date as expectedStartDate, 
                     r.start_date as startDate, 
                     r.commencement_date as commencementDate, 
