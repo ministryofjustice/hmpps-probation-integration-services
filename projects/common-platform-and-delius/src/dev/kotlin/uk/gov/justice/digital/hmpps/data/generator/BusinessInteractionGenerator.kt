@@ -15,4 +15,14 @@ object BusinessInteractionGenerator {
         BusinessInteractionCode.INSERT_ADDRESS.code,
         ZonedDateTime.now().minusMonths(6)
     )
+    val INSERT_EVENT = BusinessInteraction(
+        IdGenerator.getAndIncrement(),
+        BusinessInteractionCode.INSERT_EVENT.code,
+        ZonedDateTime.now().minusMonths(6)
+    )
+    val INSERT_COURT_APPEARANCE = BusinessInteraction(
+        IdGenerator.getAndIncrement(),
+        BusinessInteractionCode.INSERT_COURT_APPEARANCE.code,
+        ZonedDateTime.now().minusMonths(6)
+    )
 }
