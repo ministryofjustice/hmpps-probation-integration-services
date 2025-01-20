@@ -800,6 +800,8 @@ template:
             type: knn_vector
             dimension: 1024
             space_type: cosinesimil
+            method:
+              engine: lucene
       notes:
         copy_to: text
         type: text
