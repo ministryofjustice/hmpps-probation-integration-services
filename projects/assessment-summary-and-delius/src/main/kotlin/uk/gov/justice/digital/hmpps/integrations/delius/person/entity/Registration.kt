@@ -77,8 +77,8 @@ class Registration(
     var reviews: MutableList<RegistrationReview> = mutableListOf()
         private set
 
-    fun withReview(contact: Contact): Registration {
-        reviews += RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId, contact.notes)
+    fun withReview(contact: Contact, notes: String? = contact.notes): Registration {
+        reviews += RegistrationReview(personId, this, contact, nextReviewDate, null, teamId, staffId, notes)
         return this
     }
 
@@ -86,7 +86,7 @@ class Registration(
         deregistration = DeRegistration(LocalDate.now(), this, personId, contact, contact.teamId, contact.staffId)
         deregistered = true
         nextReviewDate = null
-        reviews.removeIf { !it.completed && it.notes == null }
+        reviews.removeIf { !it.completed && it.lastUpdatedDatetime == it.createdDatetime }
         reviews.firstOrNull()?.reviewDue = null
     }
 }
@@ -159,7 +159,7 @@ class RegistrationReview(
     val contact: Contact,
 
     @Column(name = "review_date")
-    val date: LocalDate?,
+    var date: LocalDate?,
 
     @Column(name = "review_date_due")
     var reviewDue: LocalDate?,
@@ -171,10 +171,10 @@ class RegistrationReview(
     val staffId: Long,
 
     @Lob
-    val notes: String? = null,
+    var notes: String? = null,
 
     @Convert(converter = YesNoConverter::class)
-    val completed: Boolean = false,
+    var completed: Boolean = false,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
