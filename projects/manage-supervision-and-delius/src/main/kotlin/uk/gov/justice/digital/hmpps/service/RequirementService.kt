@@ -27,7 +27,7 @@ class RequirementService(
     }
 
     fun RequirementDetails.toRequirementSingleNote(noteId: Int): Requirement {
-        val rar = getRar(id, code)
+        val rar = getRar(disposalId, code)
 
         val requirement = Requirement(
             id,
@@ -37,7 +37,7 @@ class RequirementService(
             expectedEndDate,
             terminationDate,
             terminationReason,
-            populateRequirementDescription(description, codeDescription, rar),
+            populateRequirementDescription(description, codeDescription, length, rar),
             length,
             lengthUnitValue,
             requirementNote = toRequirementNote(false).elementAtOrNull(noteId),
@@ -47,20 +47,26 @@ class RequirementService(
         return requirement
     }
 
-    fun getRar(requirementId: Long, requirementType: String): Rar? {
+    fun getRar(disposalId: Long, requirementType: String): Rar? {
         if (requirementType.equals("F", true)) {
-            val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
+            val rarDays = requirementRepository.getRarDaysByDisposalId(disposalId)
             val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
             val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
-            return Rar(completed = completedDays, scheduled = scheduledDays)
+            val nsiCompletedDays = rarDays.find { it.type == "NSI_COMPLETED" }?.days ?: 0
+            return Rar(completed = completedDays, nsiCompleted = nsiCompletedDays, scheduled = scheduledDays)
         }
 
         return null
     }
 }
 
-fun populateRequirementDescription(description: String, codeDescription: String?, rar: Rar?): String {
-    rar?.let { return "" + it.totalDays + " days RAR, " + it.completed + " completed" }
+fun populateRequirementDescription(
+    description: String,
+    codeDescription: String?,
+    requirementLength: Long?,
+    rar: Rar?
+): String {
+    rar?.let { return "${it.totalDays} of $requirementLength RAR days completed" }
 
     if (codeDescription != null) {
         return "$description - $codeDescription"

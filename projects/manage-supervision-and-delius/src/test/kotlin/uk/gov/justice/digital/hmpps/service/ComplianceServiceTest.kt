@@ -116,7 +116,7 @@ internal class ComplianceServiceTest {
             ),
         )
 
-        whenever(requirementRepository.getRarDays(any())).thenReturn(
+        whenever(requirementRepository.getRarDaysByDisposalId(any())).thenReturn(
             listOf(RarDays(1, "COMPLETED"), OverviewServiceTest.RarDays(2, "SCHEDULED"))
         )
 
