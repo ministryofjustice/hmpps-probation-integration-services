@@ -24,6 +24,9 @@ class Nsi(
     @Column(name = "event_id")
     val eventId: Long?,
 
+    @Column(name = "rqmnt_id")
+    val requirementId: Long? = null,
+
     @Column(name = "actual_start_date")
     val actualStartDate: LocalDate?,
 

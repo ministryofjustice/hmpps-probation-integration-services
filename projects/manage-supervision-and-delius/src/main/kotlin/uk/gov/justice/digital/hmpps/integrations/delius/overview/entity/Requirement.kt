@@ -110,10 +110,20 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         and (c.attended is null)
         and (c.complied is null or c.complied = 'Y')
         and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
-        and r.disposal_id = :requirementId
+        and r.rqmnt_id = :requirementId
         union
         select count(r.rqmnt_id) as days, 'COMPLETED' as type from contact c
         join rqmnt r on r.rqmnt_id = c.rqmnt_id
+        join r_rqmnt_type_main_category mc on r.rqmnt_type_main_category_id = mc.rqmnt_type_main_category_id
+        where c.rar_activity = 'Y' and c.soft_deleted = 0
+        and (c.attended = 'Y')
+        and (c.complied is null or c.complied = 'Y')
+        and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
+        and r.rqmnt_id = :requirementId
+        union 
+        SELECT count(r.rqmnt_id) as days, 'NSI_COMPLETED' FROM contact c
+        JOIN nsi n ON n.nsi_id = c.nsi_id
+        JOIN rqmnt r on r.rqmnt_id = n.rqmnt_id 
         join r_rqmnt_type_main_category mc on r.rqmnt_type_main_category_id = mc.rqmnt_type_main_category_id
         where c.rar_activity = 'Y' and c.soft_deleted = 0
         and (c.attended = 'Y')
@@ -214,7 +224,8 @@ fun RequirementRepository.getRar(disposalId: Long): Rar {
     val rarDays = getRarDays(disposalId)
     val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
     val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
-    return Rar(completed = completedDays, scheduled = scheduledDays)
+    val nsiCompletedDays = rarDays.find { it.type == "NSI_COMPLETED" }?.days ?: 0
+    return Rar(completed = completedDays, nsiCompleted = nsiCompletedDays, scheduled = scheduledDays)
 }
 
 @Immutable

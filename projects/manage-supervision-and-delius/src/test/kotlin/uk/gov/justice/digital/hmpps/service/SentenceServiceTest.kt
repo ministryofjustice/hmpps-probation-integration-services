@@ -247,7 +247,7 @@ class SentenceServiceTest {
                         requirement2._expectedEndDate,
                         requirement2._terminationDate,
                         requirement2._terminationReason,
-                        "3 days RAR, 1 completed",
+                        "6 days RAR, 1 completed",
                         requirement2._length,
                         requirement2.lengthUnitValue,
                         listOf(NoteDetail(0, note = requirement2._notes!!, hasNoteBeenTruncated = false)),

@@ -52,7 +52,8 @@ class RequirementService(
             val rarDays = requirementRepository.getRarDaysByRequirementId(requirementId)
             val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
             val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
-            return Rar(completed = completedDays, scheduled = scheduledDays)
+            val nsiCompletedDays = rarDays.find { it.type == "NSI_COMPLETED" }?.days ?: 0
+            return Rar(completed = completedDays, nsiCompleted = nsiCompletedDays, scheduled = scheduledDays)
         }
 
         return null

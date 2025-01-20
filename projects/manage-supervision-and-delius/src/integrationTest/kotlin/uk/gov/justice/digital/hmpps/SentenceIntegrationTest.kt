@@ -129,11 +129,11 @@ class SentenceIntegrationTest {
                         LocalDate.now().minusDays(2),
                         LocalDate.now().minusDays(3),
                         null,
-                        "1 days RAR, 1 completed",
+                        "2 days RAR, 1 completed",
                         12,
                         null,
                         listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
-                        rar = Rar(completed = 1, scheduled = 0, totalDays = 1)
+                        rar = Rar(completed = 1, scheduled = 1, nsiCompleted = 0, totalDays = 2)
                     ),
                     Requirement(
                         REQUIREMENT_UNPAID_WORK.id,
