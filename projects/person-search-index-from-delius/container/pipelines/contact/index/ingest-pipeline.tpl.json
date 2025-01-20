@@ -25,7 +25,7 @@
       "text_chunking": {
         "algorithm": {
           "fixed_token_length": {
-            "token_limit": 64,
+            "token_limit": 128,
             "overlap_rate": 0.125,
             "tokenizer": "standard"
           }
