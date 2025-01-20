@@ -224,7 +224,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
 }
 
 fun RequirementRepository.getRar(disposalId: Long): Rar {
-    val rarDays = getRarDays(disposalId)
+    val rarDays = getRarDaysByDisposalId(disposalId)
     val scheduledDays = rarDays.find { it.type == "SCHEDULED" }?.days ?: 0
     val completedDays = rarDays.find { it.type == "COMPLETED" }?.days ?: 0
     val nsiCompletedDays = rarDays.find { it.type == "NSI_COMPLETED" }?.days ?: 0
