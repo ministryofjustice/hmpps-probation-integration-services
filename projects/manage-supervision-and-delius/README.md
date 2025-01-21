@@ -2,7 +2,7 @@
 
 **Note:** This service was previously named **Manage supervision**.
 
-## Viewing offender data
+## Viewing Person on Probation data
 
 This service provides an overview of the data held for a **Person on Probation**:
 
@@ -33,7 +33,7 @@ Manage supervision depends on Delius data for **Probation Cases** and details of
 
 ## Context Map - Manage People on Probation
 
-![](./img/mpop-context-map.svg)
+![](./tech-docs/source/img/mpop-context-map.svg)
 
 ### API Access Control
 
