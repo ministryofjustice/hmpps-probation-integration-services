@@ -29,8 +29,7 @@ class OfficerCodeGeneratorTest {
     fun `if all possible options exhausted exception thrown`() {
         whenever(staffRepository.getLatestStaffReference(anyString()))
             .thenAnswer {
-                val regex = it.arguments[0] as String
-                val prefix = regex.substring(1, regex.length - 6)
+                val prefix = it.arguments[0] as String
                 prefix + "999"
             }
 
@@ -54,8 +53,7 @@ class OfficerCodeGeneratorTest {
     fun `roll over to next letter is successful`() {
         whenever(staffRepository.getLatestStaffReference(anyString()))
             .thenAnswer {
-                val regex = it.arguments[0] as String
-                val prefix = regex.substring(1, regex.length - 6)
+                val prefix = it.arguments[0] as String
                 if (prefix == "${probationAreaCode}A") {
                     prefix + "999"
                 } else {

@@ -15,7 +15,10 @@ interface PrisonStaffRepository : JpaRepository<PrisonStaff, Long> {
     @Query(
         """
         select officer_code from staff
-        where regexp_like(officer_code, ?1, 'i')
+        where officer_code like :regex || '%'
+        and substr(officer_code,5,1) in ('0','1','2','3','4','5','6','7','8','9')
+        and substr(officer_code,6,1) in ('0','1','2','3','4','5','6','7','8','9')
+        and substr(officer_code,7,1) in ('0','1','2','3','4','5','6','7','8','9')
         order by officer_code desc
         fetch next 1 rows only
         """,

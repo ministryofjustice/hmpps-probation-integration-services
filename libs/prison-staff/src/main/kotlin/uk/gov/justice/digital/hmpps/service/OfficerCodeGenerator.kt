@@ -13,7 +13,7 @@ class OfficerCodeGenerator(private val staffRepository: PrisonStaffRepository) {
             throw StaffCodeExhaustedException(probationAreaCode)
         }
         val prefix = probationAreaCode.substring(0, 3) + alphabet[index]
-        val latest = staffRepository.getLatestStaffReference("^$prefix\\d{3}$")
+        val latest = staffRepository.getLatestStaffReference(prefix)
         val number = latest?.substring(latest.length - 3)?.toInt()?.plus(1) ?: 1
         return if (number > 999) {
             generateFor(probationAreaCode, index + 1)
