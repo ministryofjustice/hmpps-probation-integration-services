@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteTypesOfInterest.forSearchRequest
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
@@ -13,7 +12,6 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
-@Transactional
 @Service
 class PrisonIdentifierAdded(
     private val caseNotesApi: PrisonCaseNotesClient,
@@ -30,8 +28,17 @@ class PrisonIdentifierAdded(
         val caseNotes = caseNotesApi.searchCaseNotes(uri, SearchCaseNotes(forSearchRequest())).content
             .filter { cn -> PrisonCaseNoteFilters.filters.none { it.predicate.invoke(cn) } }
 
-        caseNotes.forEach { pcn ->
-            deliusService.mergeCaseNote(pcn.toDeliusCaseNote())
+        val exceptions = caseNotes.mapNotNull { pcn ->
+            try {
+                deliusService.mergeCaseNote(pcn.toDeliusCaseNote())
+                null
+            } catch (e: Exception) {
+                e
+            }
+        }
+
+        if (exceptions.isNotEmpty()) {
+            throw exceptions.first()
         }
 
         telemetryService.trackEvent(
