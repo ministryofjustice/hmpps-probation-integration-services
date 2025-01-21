@@ -12,17 +12,14 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpStatusCodeException
-import org.springframework.web.server.ResponseStatusException
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.StaffCodeExhaustedException
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.prepMessage
 import uk.gov.justice.digital.hmpps.prepNotification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
@@ -30,6 +27,9 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class PersonCaseNoteTest {
+
+    @Mock
+    private lateinit var auditedInteractionService: AuditedInteractionService
 
     @Mock
     private lateinit var prisonCaseNotesClient: PrisonCaseNotesClient

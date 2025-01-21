@@ -188,7 +188,13 @@ class CaseNotesIntegrationTest {
 
         verify(telemetryService).trackEvent(
             eq("CaseNotesMigrated"),
-            eq(mapOf("nomsId" to "A4578BX", "cause" to "probation-case.prison-identifier.added", "count" to "4")),
+            eq(
+                mapOf(
+                    "nomsId" to "A4578BX",
+                    "cause" to "probation-case.prison-identifier.added",
+                    "total" to "4",
+                )
+            ),
             anyMap()
         )
         val saved = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
