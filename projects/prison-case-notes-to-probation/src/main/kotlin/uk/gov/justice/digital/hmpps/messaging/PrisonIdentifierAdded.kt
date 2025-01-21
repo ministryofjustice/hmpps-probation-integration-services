@@ -28,10 +28,10 @@ class PrisonIdentifierAdded(
         val success = caseNotes.mapNotNull {
             try {
                 deliusService.mergeCaseNote(it.toDeliusCaseNote())
-                1
+                true
             } catch (ex: Exception) {
                 telemetryService.trackEvent(
-                    "CaseNoteMergeFailed",
+                    "CaseNoteMigrationFailure",
                     it.properties() + ("exception" to (ex.message ?: ""))
                 )
                 null
@@ -42,7 +42,8 @@ class PrisonIdentifierAdded(
             "CaseNotesMigrated", mapOf(
                 "nomsId" to nomsId,
                 "cause" to event.eventType,
-                "count" to success.size.toString()
+                "total" to caseNotes.size.toString(),
+                "success" to success.size.toString()
             )
         )
     }

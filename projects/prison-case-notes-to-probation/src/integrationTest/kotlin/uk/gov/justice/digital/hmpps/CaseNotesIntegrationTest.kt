@@ -29,7 +29,6 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
-import java.time.Duration
 import java.time.ZonedDateTime
 
 const val CASE_NOTE_MERGED = "CaseNoteMerged"
@@ -188,7 +187,14 @@ class CaseNotesIntegrationTest {
 
         verify(telemetryService).trackEvent(
             eq("CaseNotesMigrated"),
-            eq(mapOf("nomsId" to "A4578BX", "cause" to "probation-case.prison-identifier.added", "count" to "4")),
+            eq(
+                mapOf(
+                    "nomsId" to "A4578BX",
+                    "cause" to "probation-case.prison-identifier.added",
+                    "total" to "4",
+                    "success" to "4"
+                )
+            ),
             anyMap()
         )
         val saved = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
