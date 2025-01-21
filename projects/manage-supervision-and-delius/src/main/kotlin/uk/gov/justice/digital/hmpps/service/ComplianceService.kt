@@ -79,7 +79,7 @@ class ComplianceService(
             previousOrders = PreviousOrders(
                 breaches = previousOrders.map { breachesForSentence(it.id) }.count(),
                 count = previousOrders.size,
-                lastEndedDate = previousOrders.first().disposal?.terminationDate,
+                lastEndedDate = previousOrders.firstOrNull()?.disposal?.terminationDate,
                 orders = previousOrders.mapNotNull {
                     it.disposal?.toOrder(
                         it.mainOffence?.offence?.description,
