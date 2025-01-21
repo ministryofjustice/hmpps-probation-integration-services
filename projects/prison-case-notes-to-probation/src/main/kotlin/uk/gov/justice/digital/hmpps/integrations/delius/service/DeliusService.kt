@@ -45,13 +45,13 @@ class DeliusService(
     private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {
         val last = lastModifiedDateTime.truncatedTo(ChronoUnit.SECONDS)
         val current = caseNote.body.systemTimestamp.truncatedTo(ChronoUnit.SECONDS)
+        externalReference = caseNote.urn
         return if (last.isBefore(current)) {
             copy(
                 notes = caseNote.body.notes(notes.length),
                 date = caseNote.body.contactTimeStamp,
                 startTime = caseNote.body.contactTimeStamp,
                 lastModifiedDateTime = caseNote.body.systemTimestamp,
-                externalReference = caseNote.urn
             )
         } else {
             log.warn("Case Note update ignored because it was out of sequence ${caseNote.header}")

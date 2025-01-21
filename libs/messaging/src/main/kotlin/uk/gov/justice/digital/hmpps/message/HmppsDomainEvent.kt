@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.message
 
+import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.fasterxml.jackson.annotation.JsonSetter
 import com.fasterxml.jackson.annotation.Nulls
-import org.openfolder.kotlinasyncapi.annotation.channel.Message
 import java.time.ZonedDateTime
 
 @Message
