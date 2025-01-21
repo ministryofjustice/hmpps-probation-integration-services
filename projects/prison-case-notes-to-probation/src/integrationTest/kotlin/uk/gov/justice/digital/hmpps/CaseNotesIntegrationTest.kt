@@ -192,7 +192,6 @@ class CaseNotesIntegrationTest {
                     "nomsId" to "A4578BX",
                     "cause" to "probation-case.prison-identifier.added",
                     "total" to "4",
-                    "success" to "4"
                 )
             ),
             anyMap()

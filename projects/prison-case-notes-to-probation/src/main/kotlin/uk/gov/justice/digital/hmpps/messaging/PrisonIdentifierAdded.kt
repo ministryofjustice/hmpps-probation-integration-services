@@ -2,21 +2,30 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
-import uk.gov.justice.digital.hmpps.integrations.prison.*
 import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteTypesOfInterest.forSearchRequest
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
+import uk.gov.justice.digital.hmpps.integrations.prison.SearchCaseNotes
+import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
+@Transactional
 @Service
 class PrisonIdentifierAdded(
+    auditedInteractionService: AuditedInteractionService,
     private val caseNotesApi: PrisonCaseNotesClient,
     private val deliusService: DeliusService,
     @Value("\${integrations.prison-case-notes.base_url}")
     private val caseNotesBaseUrl: String,
     private val telemetryService: TelemetryService
-) {
+) : AuditableService(auditedInteractionService) {
     fun handle(event: HmppsDomainEvent) {
         val nomsId = checkNotNull(event.personReference.findNomsNumber()) {
             "NomsNumber not found for ${event.eventType}"
@@ -25,16 +34,9 @@ class PrisonIdentifierAdded(
         val caseNotes = caseNotesApi.searchCaseNotes(uri, SearchCaseNotes(forSearchRequest())).content
             .filter { cn -> PrisonCaseNoteFilters.filters.none { it.predicate.invoke(cn) } }
 
-        val success = caseNotes.mapNotNull {
-            try {
-                deliusService.mergeCaseNote(it.toDeliusCaseNote())
-                true
-            } catch (ex: Exception) {
-                telemetryService.trackEvent(
-                    "CaseNoteMigrationFailure",
-                    it.properties() + ("exception" to (ex.message ?: ""))
-                )
-                null
+        audit(CASE_NOTES_MERGE) {
+            caseNotes.forEach { pcn ->
+                deliusService.mergeCaseNote(pcn.toDeliusCaseNote())
             }
         }
 
@@ -43,7 +45,6 @@ class PrisonIdentifierAdded(
                 "nomsId" to nomsId,
                 "cause" to event.eventType,
                 "total" to caseNotes.size.toString(),
-                "success" to success.size.toString()
             )
         )
     }

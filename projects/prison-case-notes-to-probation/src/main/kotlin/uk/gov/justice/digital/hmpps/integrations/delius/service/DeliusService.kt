@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
@@ -28,18 +27,12 @@ class DeliusService(
     private val relatedService: CaseNoteRelatedService
 ) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) = audit(CASE_NOTES_MERGE) { audit ->
-        audit["nomisId"] = caseNote.header.legacyId
-        caseNote.header.uuid?.also { audit["dpsId"] = it }
-
+    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote): CaseNote? {
         val existing = caseNote.urn?.let { caseNoteRepository.findByExternalReference(it) }
             ?: caseNoteRepository.findByNomisId(caseNote.header.legacyId)
 
-        val entity = if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote)
-        if (entity != null) {
-            caseNoteRepository.save(entity)
-            audit["contactId"] = entity.id
-        }
+        return (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
+            ?.let(caseNoteRepository::save)
     }
 
     private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {

@@ -3,8 +3,11 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters.filters
@@ -16,10 +19,11 @@ import java.net.URI
 
 @Service
 class PersonCaseNote(
+    auditedInteractionService: AuditedInteractionService,
     private val prisonCaseNotesClient: PrisonCaseNotesClient,
     private val deliusService: DeliusService,
     private val telemetryService: TelemetryService,
-) {
+) : AuditableService(auditedInteractionService) {
     fun handle(event: HmppsDomainEvent) {
         val prisonCaseNote: PrisonCaseNote = try {
             prisonCaseNotesClient.getCaseNote(URI.create(event.detailUrl!!))
@@ -43,8 +47,10 @@ class PersonCaseNote(
         }
 
         try {
-            deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
-            telemetryService.trackEvent("CaseNoteMerged", prisonCaseNote.properties())
+            audit(BusinessInteractionCode.CASE_NOTES_MERGE) {
+                deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
+                telemetryService.trackEvent("CaseNoteMerged", prisonCaseNote.properties())
+            }
         } catch (e: Exception) {
             telemetryService.trackEvent(
                 "CaseNoteMergeFailed",
