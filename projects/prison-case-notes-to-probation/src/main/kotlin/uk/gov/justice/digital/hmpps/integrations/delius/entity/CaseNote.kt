@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.Hibernate
+import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
+@DynamicUpdate
 @Entity
 @Table(name = "contact")
 data class CaseNote(

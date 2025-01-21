@@ -121,7 +121,9 @@ class DataLoader(
             val contact = entityManager.merge(ContactGenerator.generateContact(this, type.registrationContactType!!))
             val registration =
                 RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), contact, type, level)
-            val reviewContact = entityManager.merge(ContactGenerator.generateContact(this, type.reviewContactType!!))
+            val reviewContact = entityManager.merge(
+                ContactGenerator.generateContact(this, type.reviewContactType!!).withNotes("existing notes")
+            )
             saveAll(this, registration.withReview(reviewContact))
         }
         return this

@@ -33,7 +33,9 @@ spring:
 oauth2.roles:
   - PROBATION_API__COURT_CASE__CASE_DETAIL
 
-springdoc.default-produces-media-type: application/json
+springdoc:
+  default-produces-media-type: application/json
+  api-docs.version: openapi_3_0 # until https://github.com/kevindew/openapi3_parser/pull/22 is available
 
 delius.db.username: CourtCaseAndDelius # Should match value in [deploy/database/access.yml].
 

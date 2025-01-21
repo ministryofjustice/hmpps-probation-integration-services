@@ -73,7 +73,7 @@ internal class OverviewServiceTest {
         whenever(contactRepository.findUpComingAppointments(any(), any(), any())).thenReturn(
             listOf(FIRST_APPT_CONTACT)
         )
-        whenever(requirementRepository.getRarDays(any())).thenReturn(
+        whenever(requirementRepository.getRarDaysByDisposalId(any())).thenReturn(
             listOf(RarDays(1, "COMPLETED"), RarDays(2, "SCHEDULED"))
         )
         whenever(eventRepository.findByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(
