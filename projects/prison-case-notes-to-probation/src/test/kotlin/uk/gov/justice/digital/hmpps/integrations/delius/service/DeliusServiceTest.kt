@@ -14,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
+import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
+import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -36,6 +38,12 @@ import java.util.*
 class DeliusServiceTest {
 
     @Mock
+    lateinit var businessInteractionRepository: BusinessInteractionRepository
+
+    @Mock
+    lateinit var auditedInteractionRepository: AuditedInteractionRepository
+
+    @Mock
     lateinit var caseNoteRepository: CaseNoteRepository
 
     @Mock
@@ -49,9 +57,6 @@ class DeliusServiceTest {
 
     @Mock
     lateinit var assignmentService: AssignmentService
-
-    @Mock
-    lateinit var auditedInteractionService: AuditedInteractionService
 
     @Mock
     lateinit var caseNoteRelatedService: CaseNoteRelatedService
