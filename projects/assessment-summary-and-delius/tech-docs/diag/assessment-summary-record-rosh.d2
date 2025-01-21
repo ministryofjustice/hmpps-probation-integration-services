@@ -1,0 +1,35 @@
+# Assessment Summary Workflow: Record risks
+
+direction: right
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+# Record Risk of Serious Harm
+record-rosh: Record Risk of Serious Harm (RoSH) {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_create_dereg: Create deregistrations
+    d_create_reg: Create or update\n registrations
+    d_create_contacts: Create contacts
+    d_risk_colour: Set risk colour
+
+    d_create_dereg -> d_create_reg -> d_create_contacts -> d_risk_colour
+
+    explanation: |md
+    ## Record risk of serious harm 
+    - Create a deregistration for each registration\
+      where a RoSH no longer exists
+    - Create a contact for each\
+      new deregistration
+    - Create a new registration, if one\
+      does not exist, for each RoSH
+    - Create a contact for each\
+      new registration
+    - Set the highest risk colour\
+      in the person record
+    |
+
+}

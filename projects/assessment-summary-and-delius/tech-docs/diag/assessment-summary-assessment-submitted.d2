@@ -1,0 +1,56 @@
+# Assessment Summary Workflow: Assessment Submitted
+
+direction: right
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+# What triggers the workflow?
+assessment-submitted: Assessment Summary {
+     style.font-size: 24
+
+     explanation: |md
+     ## Assessment Summary Produced
+     - When an assessment summary is\
+       produced the previous assessment\
+       summary is overwritten
+     |
+
+     assessment_summary_produced: Assessment summary produced
+}
+
+domain_event: "assessment-summary\n.assessment.summary.produced" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_delete_prev: Delete previous assessment summary
+    d_save_assessment: Store new assessment summary
+    d_contact: Create Contact
+    d_record_risks: Record risks
+
+    d_delete_prev -> d_save_assessment -> d_contact -> d_record_risks
+
+    explanation: |md
+    ## Assessment summary 
+    - Delius is used to log and track the summary\
+      of the latest assessment of a person
+    - The risk levels of a person must be\
+      reviewed when an assessment is submitted
+    - If a person has accredited programme\
+      requirements, the IAPS is updated in the\
+      person record for syncing to the\
+      interventions manager
+    - A mapping exists in the Delius database\
+      to the full assessment summary in OASys
+    |
+
+}
+
+assessment-submitted -> domain_event -> delius
