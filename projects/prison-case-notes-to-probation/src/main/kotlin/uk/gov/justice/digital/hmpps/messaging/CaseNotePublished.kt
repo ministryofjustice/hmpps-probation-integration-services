@@ -3,12 +3,11 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
-import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
-import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
+import uk.gov.justice.digital.hmpps.integrations.prison.properties
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -74,14 +73,4 @@ class CaseNotePublished(
             if (e !is OffenderNotFoundException) throw e
         }
     }
-
-    private fun PrisonCaseNote.properties() = mapOf(
-        "caseNoteId" to id,
-        "type" to type,
-        "subType" to subType,
-        "eventId" to eventId.toString(),
-        "created" to DeliusDateTimeFormatter.format(creationDateTime),
-        "occurrence" to DeliusDateTimeFormatter.format(occurrenceDateTime),
-        "location" to locationId
-    )
 }

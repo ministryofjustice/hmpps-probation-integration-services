@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.*
 import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteTypesOfInterest.forSearchRequest
@@ -18,7 +17,6 @@ class PrisonIdentifierAdded(
     private val caseNotesBaseUrl: String,
     private val telemetryService: TelemetryService
 ) {
-    @Transactional
     fun handle(event: HmppsDomainEvent) {
         val nomsId = checkNotNull(event.personReference.findNomsNumber()) {
             "NomsNumber not found for ${event.eventType}"
@@ -27,13 +25,24 @@ class PrisonIdentifierAdded(
         val caseNotes = caseNotesApi.searchCaseNotes(uri, SearchCaseNotes(forSearchRequest())).content
             .filter { cn -> PrisonCaseNoteFilters.filters.none { it.predicate.invoke(cn) } }
 
-        caseNotes.forEach { deliusService.mergeCaseNote(it.toDeliusCaseNote()) }
+        val success = caseNotes.mapNotNull {
+            try {
+                deliusService.mergeCaseNote(it.toDeliusCaseNote())
+                1
+            } catch (ex: Exception) {
+                telemetryService.trackEvent(
+                    "CaseNoteMergeFailed",
+                    it.properties() + ("exception" to (ex.message ?: ""))
+                )
+                null
+            }
+        }
 
         telemetryService.trackEvent(
             "CaseNotesMigrated", mapOf(
                 "nomsId" to nomsId,
                 "cause" to event.eventType,
-                "count" to caseNotes.size.toString()
+                "count" to success.size.toString()
             )
         )
     }

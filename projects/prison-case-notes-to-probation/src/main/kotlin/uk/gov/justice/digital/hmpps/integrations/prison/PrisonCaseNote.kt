@@ -63,3 +63,13 @@ fun String.asUuidOrNull(): UUID? = try {
 } catch (e: Exception) {
     null
 }
+
+fun PrisonCaseNote.properties() = mapOf(
+    "caseNoteId" to id,
+    "type" to type,
+    "subType" to subType,
+    "eventId" to eventId.toString(),
+    "created" to DeliusDateTimeFormatter.format(creationDateTime),
+    "occurrence" to DeliusDateTimeFormatter.format(occurrenceDateTime),
+    "location" to locationId
+)
