@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.documentation
 
-import org.openfolder.kotlinasyncapi.springweb.service.AsyncApiExtension
+import com.asyncapi.kotlinasyncapi.context.service.AsyncApiExtension
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

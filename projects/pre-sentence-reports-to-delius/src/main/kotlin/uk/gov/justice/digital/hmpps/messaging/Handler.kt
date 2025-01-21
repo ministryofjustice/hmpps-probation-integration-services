@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import org.openfolder.kotlinasyncapi.annotation.channel.Channel
-import org.openfolder.kotlinasyncapi.annotation.channel.Message
-import org.openfolder.kotlinasyncapi.annotation.channel.Publish
+import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
+import com.asyncapi.kotlinasyncapi.annotation.channel.Message
+import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentService
