@@ -6,33 +6,48 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.audit.service.AuditableService
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction.Outcome.SUCCESS
+import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
+import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
+import uk.gov.justice.digital.hmpps.audit.repository.getByCode
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.*
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.service.AssignmentService
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 @Service
 class DeliusService(
-    auditedInteractionService: AuditedInteractionService,
+    private val businessInteractionRepository: BusinessInteractionRepository,
+    private val auditedInteractionRepository: AuditedInteractionRepository,
     private val caseNoteRepository: CaseNoteRepository,
     private val nomisTypeRepository: CaseNoteNomisTypeRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val offenderRepository: OffenderRepository,
     private val assignmentService: AssignmentService,
     private val relatedService: CaseNoteRelatedService
-) : AuditableService(auditedInteractionService) {
+) {
     @Transactional
-    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote): CaseNote? {
+    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
         val existing = caseNote.urn?.let { caseNoteRepository.findByExternalReference(it) }
             ?: caseNoteRepository.findByNomisId(caseNote.header.legacyId)
 
-        return (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
+        (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
             ?.let(caseNoteRepository::save)
+            ?.also {
+                auditCaseNoteMerge(
+                    AuditedInteraction.Parameters(
+                        "dpsId" to caseNote.header.uuid.toString(),
+                        "contactId" to it.id.toString()
+                    )
+                )
+            }
     }
 
     private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {
@@ -50,6 +65,19 @@ class DeliusService(
             log.warn("Case Note update ignored because it was out of sequence ${caseNote.header}")
             null
         }
+    }
+
+    private fun auditCaseNoteMerge(params: AuditedInteraction.Parameters) {
+        val bi = businessInteractionRepository.getByCode(CASE_NOTES_MERGE.code)
+        auditedInteractionRepository.save(
+            AuditedInteraction(
+                businessInteractionId = bi.id,
+                userId = ServiceContext.servicePrincipal()!!.userId,
+                dateTime = ZonedDateTime.now(),
+                parameters = params,
+                outcome = SUCCESS
+            )
+        )
     }
 
     private fun DeliusCaseNote.newEntity(): CaseNote {

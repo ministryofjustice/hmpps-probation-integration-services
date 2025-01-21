@@ -3,9 +3,6 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.audit.service.AuditableService
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteTypesOfInterest.forSearchRequest
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
@@ -19,13 +16,12 @@ import java.net.URI
 @Transactional
 @Service
 class PrisonIdentifierAdded(
-    auditedInteractionService: AuditedInteractionService,
     private val caseNotesApi: PrisonCaseNotesClient,
     private val deliusService: DeliusService,
     @Value("\${integrations.prison-case-notes.base_url}")
     private val caseNotesBaseUrl: String,
     private val telemetryService: TelemetryService
-) : AuditableService(auditedInteractionService) {
+) {
     fun handle(event: HmppsDomainEvent) {
         val nomsId = checkNotNull(event.personReference.findNomsNumber()) {
             "NomsNumber not found for ${event.eventType}"
@@ -34,10 +30,8 @@ class PrisonIdentifierAdded(
         val caseNotes = caseNotesApi.searchCaseNotes(uri, SearchCaseNotes(forSearchRequest())).content
             .filter { cn -> PrisonCaseNoteFilters.filters.none { it.predicate.invoke(cn) } }
 
-        audit(CASE_NOTES_MERGE) {
-            caseNotes.forEach { pcn ->
-                deliusService.mergeCaseNote(pcn.toDeliusCaseNote())
-            }
+        caseNotes.forEach { pcn ->
+            deliusService.mergeCaseNote(pcn.toDeliusCaseNote())
         }
 
         telemetryService.trackEvent(
