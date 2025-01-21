@@ -1,10 +1,10 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import com.asyncapi.kotlinasyncapi.annotation.Schema
+import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
+import com.asyncapi.kotlinasyncapi.annotation.channel.Message
+import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import com.vladsch.flexmark.html2md.converter.FlexmarkHtmlConverter
-import org.openfolder.kotlinasyncapi.annotation.Schema
-import org.openfolder.kotlinasyncapi.annotation.channel.Channel
-import org.openfolder.kotlinasyncapi.annotation.channel.Message
-import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.ldap.NameNotFoundException
 import org.springframework.ldap.core.AttributesMapper

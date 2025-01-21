@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import org.openfolder.kotlinasyncapi.annotation.channel.Message
+import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 
 @Message
 data class OffenderEvent(

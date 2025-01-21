@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import com.asyncapi.kotlinasyncapi.annotation.Schema
+import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
+import com.asyncapi.kotlinasyncapi.annotation.channel.Message
+import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import org.openfolder.kotlinasyncapi.annotation.Schema
-import org.openfolder.kotlinasyncapi.annotation.channel.Channel
-import org.openfolder.kotlinasyncapi.annotation.channel.Message
-import org.openfolder.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
