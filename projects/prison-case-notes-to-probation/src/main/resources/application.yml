@@ -5,6 +5,7 @@ spring:
   datasource:
     hikari:
       auto-commit: false
+      maximum-pool-size: 25
   jpa:
     hibernate.ddl-auto: validate
     properties:
