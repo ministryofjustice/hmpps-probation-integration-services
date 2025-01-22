@@ -200,7 +200,8 @@ interface EventRepository : JpaRepository<Event, Long> {
         select e from Event e
         where (e.notes IS NULL OR lower(e.notes) not like lower(concat('%', :caseUrn, '%')))
         and e.person.crn = :crn
-    """)
+    """
+    )
     fun findActiveEventsExcludingCaseUrn(caseUrn: String?, crn: String?): List<Event>?
 }
 

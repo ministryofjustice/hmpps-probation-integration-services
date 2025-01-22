@@ -378,8 +378,11 @@ internal class IntegrationTest {
         verify(courtAppearanceRepository).save(check<CourtAppearance> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
             assertThat(it.person.surname, Matchers.equalTo("Example Last Name"))
-            assertThat(it.appearanceType.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.TRIAL_ADJOURNMENT_APPEARANCE.code))
-            assertThat(it.appearanceDate, Matchers.equalTo(LocalDate.of(2024,1,1)))
+            assertThat(
+                it.appearanceType.code,
+                Matchers.equalTo(ReferenceData.StandardRefDataCode.TRIAL_ADJOURNMENT_APPEARANCE.code)
+            )
+            assertThat(it.appearanceDate, Matchers.equalTo(LocalDate.of(2024, 1, 1)))
 
         })
         verify(contactRepository).save(check<Contact> {
@@ -392,7 +395,7 @@ internal class IntegrationTest {
             assertThat(it.event.person.surname, Matchers.equalTo("Example Last Name"))
             assertThat(it.allocationReason.description, Matchers.equalTo("Initial Allocation"))
             assertTrue(it.active)
-            assertThat(it.allocationDate, Matchers.equalTo(LocalDate.of(2024,1,1)))
+            assertThat(it.allocationDate, Matchers.equalTo(LocalDate.of(2024, 1, 1)))
             assertNull(it.endDate)
         })
         verify(auditedInteractionService).createAuditedInteraction(

@@ -87,7 +87,8 @@ class EventService(
                     "GUILTY" -> ReferenceData.StandardRefDataCode.GUILTY.code
                     else -> ReferenceData.StandardRefDataCode.NOT_KNOWN_PLEA.code
                 },
-                DatasetCode.PLEA)
+                DatasetCode.PLEA
+            )
 
             // Create an initial court appearance for the event
             val initialCourtAppearance = courtAppearanceRepository.save(
@@ -107,7 +108,6 @@ class EventService(
                     person = person
                 )
             )
-
 
             // Create an initial contact for the court appearance
             val initialContact = contactRepository.save(
