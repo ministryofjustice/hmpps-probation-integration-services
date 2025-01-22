@@ -10,6 +10,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.api.model.overview.PreviousOrders
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ACTIVE_ORDER
@@ -147,6 +148,51 @@ internal class ComplianceServiceTest {
         assertThat(res.currentSentences[0].rar?.totalDays, equalTo(3))
         assertThat(res.previousOrders.breaches, equalTo(2))
         assertThat(res.previousOrders.orders.size, equalTo(2))
+    }
+
+    @Test
+    fun `calls get compliance function only active events`() {
+        val crn = "X000005"
+        val events = listOf(
+            Event(
+                id = 3,
+                eventNumber = "3",
+                disposal = ACTIVE_ORDER,
+                active = true,
+                mainOffence = PersonGenerator.MAIN_OFFENCE_1,
+                additionalOffences = emptyList(),
+                personId = OVERVIEW.id,
+                convictionDate = LocalDate.now(),
+                inBreach = false,
+                notes = "",
+                dateCreated = ZonedDateTime.now()
+            ),
+            Event(
+                id = 4,
+                eventNumber = "4",
+                disposal = ACTIVE_ORDER,
+                active = true,
+                mainOffence = PersonGenerator.MAIN_OFFENCE_2,
+                additionalOffences = emptyList(),
+                personId = OVERVIEW.id,
+                convictionDate = LocalDate.now(),
+                inBreach = false,
+                notes = "",
+                dateCreated = ZonedDateTime.now()
+            ),
+        )
+
+        whenever(eventRepository.findByPersonId(OVERVIEW.id)).thenReturn(events)
+
+        whenever(requirementRepository.getRarDaysByDisposalId(any())).thenReturn(
+            listOf(RarDays(1, "COMPLETED"), OverviewServiceTest.RarDays(2, "SCHEDULED"))
+        )
+
+        whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
+
+        val res = service.getPersonCompliance(crn)
+        assertThat(res.currentSentences.size, equalTo(2))
+        assertThat(res.previousOrders, equalTo(PreviousOrders(0, 0, null, emptyList())))
     }
 
     data class RarDays(val _days: Int, val _type: String) :
