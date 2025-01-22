@@ -92,7 +92,34 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>assessment-summary-and-delius</span></a>
+    <a href="./index.html"><span>Assessment Summary and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Business need</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-assessment-summary-data"><span>Context Map - Assessment Summary Data</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Workflows</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#assessment-summary-produced-workflow"><span>Assessment summary produced workflow</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Interfaces</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#message-formats"><span>Message formats</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
@@ -106,8 +133,50 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="assessment-summary-and-delius">assessment-summary-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="assessment-summary-and-delius">Assessment Summary and Delius</h1>
+<p>This service listens to domain events when a new assessment has been produced in the OASys system. The assessment is conducted for a person who has been sentenced to assess their needs and risks. Delius will record a summary of the assessment.</p>
+<p>When any new risks are identified or a change to an existing risk level, a new registration is generated. Existing registrations which are no longer required or considered to be a low risk are recorded as deregistrations.</p>
+<p>The risks are categorised as:</p>
+
+<ul>
+<li>Risk of serious harm (RoSH)</li>
+<li>Other risks</li>
+</ul>
+<p><strong>Note:</strong> The service cannot infer all types of risk from the assessment summary. Some risk registrations are manually added and maintained in Delius.</p>
+<h1 id="business-need">Business need</h1>
+<p>The users typically log into Delius on a regular basis so the assessment summaries and registrations provide a quick overview of the person and risk level. This reduces the need of users having to log into a second system (OASys).</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>Assessment summary relies on the OASys ORDS API for retrieving the assessment summary and RoSH summary. The summary data is compared against the risk levels configured within the Delius database, and the result is used to updated the registration data. The service relies on Delius data for up to date information on a person&rsquo;s latest assessment and active registrations.</p>
+<h2 id="context-map-assessment-summary-data">Context Map - Assessment Summary Data</h2>
+<p><a href="././img/assessment-summary-context-map.svg" rel="noopener noreferrer"><img src="img/assessment-summary-context-map.svg" alt="" /></a></p>
+<h1 id="workflows">Workflows</h1>
+<h2 id="assessment-summary-produced-workflow">Assessment summary produced workflow</h2>
+<p>The assessment summary is recorded in Delius. The risks are evaluated and stored as registrations.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Assessment submitted</td>
+<td>assessment.summary.produced</td>
+</tr>
+        </table>
+      </div><h3 id="record-assessment">Record assessment</h3>
+<p>The previous assessment summary is deleted and replaced with the new assessment summary. The full assessment can be retrieved from OASys.</p>
+<p><a href="././img/assessment-summary-assessment-submitted.svg" rel="noopener noreferrer"><img src="img/assessment-summary-assessment-submitted.svg" alt="" /></a></p>
+<h3 id="record-risks">Record risks</h3>
+<p>The registrations for risk of serious harm (RoSH) and other risks will be checked. Any risks which are no longer required or low risks will result in a deregistration being created. Registrations will be added or updated for active risks.</p>
+<p><strong>Note:</strong> The service cannot infer all types of risk. Some risk registrations are manually added and maintained in Delius.</p>
+<h4 id="risk-of-serious-harm">Risk of serious harm</h4>
+<p><a href="././img/assessment-summary-record-rosh.svg" rel="noopener noreferrer"><img src="img/assessment-summary-record-rosh.svg" alt="" /></a></p>
+<h4 id="other-risks">Other risks</h4>
+<p><a href="././img/assessment-summary-record-other-risks.svg" rel="noopener noreferrer"><img src="img/assessment-summary-record-other-risks.svg" alt="" /></a></p>
+<h1 id="interfaces">Interfaces</h1>
+<h2 id="message-formats">Message formats</h2>
+<p>The service responds to HMPPS Domain Event messages via the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/assessment-summary-and-delius-queue.tf">Assessment Summary and Delius Queue</a>. The events are raised by OASys to communicate the creation of an assessment of a person.</p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/assessment-summary-and-delius-queue.tf">SQS queue policy</a></p>
 
             
           </main>

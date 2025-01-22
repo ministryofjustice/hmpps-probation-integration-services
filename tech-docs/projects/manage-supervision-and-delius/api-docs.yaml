@@ -2240,6 +2240,9 @@ components:
         count:
           type: integer
           format: int32
+        lastEndedDate:
+          type: string
+          format: date
         orders:
           type: array
           items:
