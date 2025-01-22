@@ -2,13 +2,13 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual.equalTo
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -142,13 +142,13 @@ internal class EventServiceTest {
         verify(eventRepository).save(any<Event>())
         verify(mainOffenceRepository).save(any<MainOffence>())
         verify(orderManagerRepository).save(any<OrderManager>())
-        verify(contactRepository, times(2)).save(any<Contact>())
-        verify(courtAppearanceRepository, times(2)).save(any<CourtAppearance>())
+        verify(contactRepository).save(any<Contact>())
+        verify(courtAppearanceRepository).save(any<CourtAppearance>())
 
         assertThat(result.event.person.id, equalTo(person.id))
         assertThat(result.mainOffence.person.id, equalTo(person.id))
-        assertThat(result.courtAppearances.size, equalTo(2))
-        assertThat(result.contacts.size, equalTo(2))
+        assertNotNull(result.courtAppearance)
+        assertNotNull(result.contact)
         assertThat(result.orderManager.event.id, equalTo(event.id))
     }
 }

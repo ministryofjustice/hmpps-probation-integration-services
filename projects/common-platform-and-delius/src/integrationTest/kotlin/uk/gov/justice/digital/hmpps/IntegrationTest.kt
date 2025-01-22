@@ -369,7 +369,32 @@ internal class IntegrationTest {
             assertTrue(it.active)
             assertThat(it.number, Matchers.equalTo("1"))
         })
+        verify(mainOffenceRepository).save(check<MainOffence> {
+            assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
+            assertThat(it.person.surname, Matchers.equalTo("Example Last Name"))
+            assertThat(it.offence.description, Matchers.equalTo("Murder"))
+            assertNotNull(it.offence)
+        })
+        verify(courtAppearanceRepository).save(check<CourtAppearance> {
+            assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
+            assertThat(it.person.surname, Matchers.equalTo("Example Last Name"))
+            assertThat(it.appearanceType.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.TRIAL_ADJOURNMENT_APPEARANCE.code))
+            assertThat(it.appearanceDate, Matchers.equalTo(LocalDate.of(2024,1,1)))
 
+        })
+        verify(contactRepository).save(check<Contact> {
+            assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
+            assertThat(it.person.surname, Matchers.equalTo("Example Last Name"))
+            assertThat(it.type.code, Matchers.equalTo(ContactTypeCode.COURT_APPEARANCE.code))
+        })
+        verify(orderManagerRepository).save(check<OrderManager> {
+            assertThat(it.event.person.forename, Matchers.equalTo("Example First Name"))
+            assertThat(it.event.person.surname, Matchers.equalTo("Example Last Name"))
+            assertThat(it.allocationReason.description, Matchers.equalTo("Initial Allocation"))
+            assertTrue(it.active)
+            assertThat(it.allocationDate, Matchers.equalTo(LocalDate.of(2024,1,1)))
+            assertNull(it.endDate)
+        })
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.INSERT_EVENT),
             any(),

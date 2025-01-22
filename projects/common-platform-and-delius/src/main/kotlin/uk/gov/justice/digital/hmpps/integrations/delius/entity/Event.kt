@@ -174,9 +174,6 @@ class OrderManager(
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
-    @Column(name = "order_transfer_id")
-    val orderTransferId: Long? = null,
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
@@ -190,20 +187,20 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun getNextEventNumber(personId: Long): String
 
     @Query(
-        "SELECT e FROM Event e " +
-            "JOIN Person p ON p.id = e.person.id " +
-            "WHERE LOWER(e.notes) LIKE LOWER(CONCAT('%', :caseUrn, '%')) " +
-            "AND p.crn = :crn"
+        """
+        select e from Event e 
+        where lower(e.notes) like lower(concat('%', :caseUrn, '%'))
+        and e.person.crn = :crn
+    """
     )
     fun findEventByCaseUrnAndCrn(caseUrn: String?, crn: String?): Event?
 
     @Query(
-        "SELECT e FROM Event e " +
-            "JOIN Person p ON p.id = e.person.id " +
-            "WHERE LOWER(e.notes) NOT LIKE LOWER(CONCAT('%', :caseUrn, '%')) " +
-            "AND e.active " +
-            "AND p.crn = :crn"
-    )
+        """
+        select e from Event e
+        where (e.notes IS NULL OR lower(e.notes) not like lower(concat('%', :caseUrn, '%')))
+        and e.person.crn = :crn
+    """)
     fun findActiveEventsExcludingCaseUrn(caseUrn: String?, crn: String?): List<Event>?
 }
 

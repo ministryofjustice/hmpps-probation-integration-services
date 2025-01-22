@@ -55,14 +55,12 @@ internal class HandlerTest {
     fun `inserts records when probation search match is not found`() {
         personIsSuccessfullyCreated()
 
-        val hearingAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT
-        val futureAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT_NO_HEARING
         whenever(eventService.insertEvent(any(), any(), any(), any(), any(), any())).thenReturn(
             InsertEventResult(
                 EventGenerator.DEFAULT,
                 MainOffenceGenerator.DEFAULT,
-                listOf(hearingAppearance, futureAppearance),
-                listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
+                CourtAppearanceGenerator.TRIAL_ADJOURNMENT,
+                ContactGenerator.EAPP,
                 OrderManagerGenerator.DEFAULT
             )
         )
@@ -121,14 +119,12 @@ internal class HandlerTest {
         featureFlagIsEnabled(true)
         personIsSuccessfullyCreated()
 
-        val hearingAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT
-        val futureAppearance = CourtAppearanceGenerator.TRIAL_ADJOURNMENT_NO_HEARING
         whenever(eventService.insertEvent(any(), any(), any(), any(), any(), any())).thenReturn(
             InsertEventResult(
                 EventGenerator.DEFAULT,
                 MainOffenceGenerator.DEFAULT,
-                listOf(hearingAppearance, futureAppearance),
-                listOf(ContactGenerator.EAPP, ContactGenerator.EAPP),
+                CourtAppearanceGenerator.TRIAL_ADJOURNMENT,
+                ContactGenerator.EAPP,
                 OrderManagerGenerator.DEFAULT
             )
         )

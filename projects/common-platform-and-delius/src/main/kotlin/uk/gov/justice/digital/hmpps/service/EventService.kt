@@ -39,7 +39,7 @@ class EventService(
     ): InsertEventResult =
         audit(BusinessInteractionCode.INSERT_EVENT) { audit ->
 
-            // 1. Create and save the event entity
+            // Create and save the event entity
             val savedEvent = eventRepository.save(
                 Event(
                     id = null,
@@ -61,7 +61,7 @@ class EventService(
                 }
                     ?: throw IllegalArgumentException("Home Office Code cannot be null")
 
-            // 2. Create the main offence record from the hearing message
+            // Create the main offence record from the hearing message
             val savedMainOffence = mainOffenceRepository.save(
                 MainOffence(
                     id = null,
@@ -81,24 +81,15 @@ class EventService(
             val trialAdjournmentRefData = referenceDataRepository.trialAdjournmentAppearanceType()
             val remandedInCustodyOutcome = referenceDataRepository.remandedInCustodyOutcome()
             val remandedInCustodyStatus = referenceDataRepository.remandedInCustodyStatus()
-            val plea = when (hearingOffence.plea?.pleaValue) {
-                "NOT_GUILTY" -> referenceDataRepository.findByCodeAndDatasetCode(
-                    ReferenceData.StandardRefDataCode.NOT_GUILTY.code,
-                    DatasetCode.PLEA
-                )
+            val plea = referenceDataRepository.findByCodeAndDatasetCode(
+                when (hearingOffence.plea?.pleaValue) {
+                    "NOT_GUILTY" -> ReferenceData.StandardRefDataCode.NOT_GUILTY.code
+                    "GUILTY" -> ReferenceData.StandardRefDataCode.GUILTY.code
+                    else -> ReferenceData.StandardRefDataCode.NOT_KNOWN_PLEA.code
+                },
+                DatasetCode.PLEA)
 
-                "GUILTY" -> referenceDataRepository.findByCodeAndDatasetCode(
-                    ReferenceData.StandardRefDataCode.GUILTY.code,
-                    DatasetCode.PLEA
-                )
-
-                else -> referenceDataRepository.findByCodeAndDatasetCode(
-                    ReferenceData.StandardRefDataCode.NOT_KNOWN_PLEA.code,
-                    DatasetCode.PLEA
-                )
-            }
-
-            // 3. Create initial court appearances for the event
+            // Create an initial court appearance for the event
             val initialCourtAppearance = courtAppearanceRepository.save(
                 CourtAppearance(
                     id = null,
@@ -117,23 +108,8 @@ class EventService(
                 )
             )
 
-            val futureCourtAppearance = courtAppearanceRepository.save(
-                CourtAppearance(
-                    id = null,
-                    appearanceDate = sittingDay.toLocalDate(), // TODO: Identify the 2nd (future) court appearance date
-                    event = savedEvent,
-                    teamId = unallocatedTeam.id,
-                    staffId = unallocatedStaff.id,
-                    softDeleted = false,
-                    court = court, // TODO: How do we identify the 'next court', for now use the same court
-                    appearanceType = trialAdjournmentRefData,
-                    person = person
-                )
-            )
 
-            val savedCourtAppearances = listOf(initialCourtAppearance, futureCourtAppearance)
-
-            // 4. Create an initial contact for each court appearance
+            // Create an initial contact for the court appearance
             val initialContact = contactRepository.save(
                 Contact(
                     id = null,
@@ -152,27 +128,7 @@ class EventService(
                 )
             )
 
-            val futureAppearanceContact = contactRepository.save(
-                Contact(
-                    id = null,
-                    date = futureCourtAppearance.appearanceDate,
-                    person = person,
-                    startTime = sittingDay.with(LocalDate.of(1970, 1, 1)),
-                    endTime = null,
-                    alert = true,
-                    eventId = savedEvent.id,
-                    type = courtAppearanceContactType,
-                    probationAreaId = court.provider.id,
-                    team = unallocatedTeam,
-                    trustProviderTeamId = unallocatedTeam.id,
-                    staff = unallocatedStaff,
-                    staffEmployeeId = unallocatedStaff.id
-                )
-            )
-
-            val savedContacts = listOf(initialContact, futureAppearanceContact)
-
-            // 5. Create order manager record
+            // Create order manager record
             val savedOrderManager = orderManagerRepository.save(
                 OrderManager(
                     id = null,
@@ -196,7 +152,7 @@ class EventService(
 
             audit["offenderId"] = savedEvent.person.id!!
             audit["eventId"] = savedEvent.id
-            InsertEventResult(savedEvent, savedMainOffence, savedCourtAppearances, savedContacts, savedOrderManager)
+            InsertEventResult(savedEvent, savedMainOffence, initialCourtAppearance, initialContact, savedOrderManager)
         }
 
     @Transactional

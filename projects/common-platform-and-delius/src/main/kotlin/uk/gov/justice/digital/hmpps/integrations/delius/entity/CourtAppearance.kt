@@ -7,7 +7,6 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -24,12 +23,6 @@ class CourtAppearance(
 
     @Column(name = "appearance_date")
     val appearanceDate: LocalDate,
-
-    @Column(name = "crown_court_calendar_number")
-    val crownCourtCalendarNumber: String? = null,
-
-    @Column(name = "bail_conditions")
-    val bailConditions: String? = null,
 
     @Column(name = "court_notes", columnDefinition = "clob")
     val courtNotes: String? = null,
@@ -98,18 +91,4 @@ class CourtAppearance(
     val person: Person,
 )
 
-interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
-    @Query(
-        "SELECT ca FROM CourtAppearance ca " +
-            "WHERE LOWER(ca.courtNotes) LIKE LOWER(CONCAT('%', :hearingId, '%')) " +
-            "AND ca.event.id = :eventId"
-    )
-    fun findAppearanceByHearingIdAndEventId(hearingId: String?, eventId: Long?): CourtAppearance?
-
-    @Query(
-        "SELECT ca FROM CourtAppearance ca " +
-            "WHERE (ca.courtNotes IS NULL OR LOWER(ca.courtNotes) NOT LIKE LOWER(CONCAT('%', :hearingId, '%'))) " +
-            "AND ca.event.id = :eventId"
-    )
-    fun findAppearancesExcludingHearingId(hearingId: String?, eventId: Long?): List<CourtAppearance>?
-}
+interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long>

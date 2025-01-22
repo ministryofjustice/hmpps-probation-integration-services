@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
 import jakarta.persistence.GenerationType.SEQUENCE
-import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -122,27 +121,12 @@ class DetailedOffence(
     @Column(name = "ho_description")
     var homeOfficeDescription: String?,
 
-    @Column(columnDefinition = "varchar2(8)")
-    var pnldCode: String? = null, // Police National Legal Database code
-
     @Column
     var legislation: String?,
 
     @ManyToOne
     @JoinColumn(name = "court_category_id")
     var category: ReferenceData?,
-
-    @Convert(converter = YesNoConverter::class)
-    @Column(name = "schedule15_sexual_offence")
-    var schedule15SexualOffence: Boolean? = null,
-
-    @Convert(converter = YesNoConverter::class)
-    @Column(name = "schedule15_violent_offence")
-    var schedule15ViolentOffence: Boolean? = null,
-
-    @Convert(converter = YesNoConverter::class)
-    @Column(name = "cja_2003_s327_4a")
-    var cjaSection327Subsection4A: Boolean? = null, // Offences listed in CJA 2003 section 327, subsection 4A.
 
     @CreatedBy
     var createdByUserId: Long = 0,

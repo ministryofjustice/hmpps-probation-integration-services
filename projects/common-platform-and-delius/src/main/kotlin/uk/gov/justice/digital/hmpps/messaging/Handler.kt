@@ -148,8 +148,9 @@ class Handler(
                                 "personId" to savedEventEntities.event.person.id.toString(),
                                 "orderManagerId" to savedEventEntities.orderManager.id.toString(),
                                 "mainOffenceId" to savedEventEntities.mainOffence.id.toString(),
-                                "courtAppearanceIds" to savedEventEntities.courtAppearances.joinToString(",") { it.id.toString() },
-                                "contactIds" to savedEventEntities.contacts.joinToString(",") { it.id.toString() })
+                                "courtAppearanceId" to savedEventEntities.courtAppearance.id.toString(),
+                                "contactId" to savedEventEntities.contact.id.toString()
+                            )
                         )
                     } else {
                         telemetryService.trackEvent(
