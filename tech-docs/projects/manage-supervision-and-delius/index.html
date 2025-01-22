@@ -92,7 +92,26 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>manage-supervision-and-delius</span></a>
+    <a href="./index.html"><span>Manage supervision and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#viewing-person-on-probation-data"><span>Viewing Person on Probation data</span></a>
+      </li>
+      <li>
+        <a href="./index.html#admin-tasks"><span>Admin tasks</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Business need</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-manage-people-on-probation"><span>Context Map - Manage People on Probation</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -213,9 +232,47 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="manage-supervision-and-delius">manage-supervision-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="manage-supervision-and-delius">Manage supervision and Delius</h1>
+<h2 id="viewing-person-on-probation-data">Viewing Person on Probation data</h2>
+<p>This service provides an overview of the data held for a <strong>Person on Probation</strong>:</p>
 
+<ul>
+<li>Overview of the person, contact details and other personal data</li>
+<li>History of activity</li>
+<li>Sentence information</li>
+<li>Compliance information</li>
+<li>Risk flags</li>
+<li>Schedule information</li>
+</ul>
+<h2 id="admin-tasks">Admin tasks</h2>
+<p>The service also enables management of sentence appointments (creation and recording outcome) and user admin tasks.</p>
+<p>The supported user admin tasks are:</p>
+
+<ul>
+<li>Viewing user and team case loads</li>
+<li>Viewing which staff are members of a team</li>
+<li>Checking access levels and office locations of a user</li>
+</ul>
+<h1 id="business-need">Business need</h1>
+<p>The service provides a simplified view of the data relating to a <strong>Person on Probation</strong> which is held in the Delius system. The service is used by <strong>Probation Practitioners</strong> by providing a summary of the key information required for their day-to-day activities. The users can also use the service for managing sentencing appointments.</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>Manage People on Probation (MPoP) depends on Delius data for <strong>Probation Cases</strong> and details of a <strong>Person on Probation</strong>.</p>
+<h2 id="context-map-manage-people-on-probation">Context Map - Manage People on Probation</h2>
+<p><a href="././img/mpop-context-map.svg" rel="noopener noreferrer"><img src="img/mpop-context-map.svg" alt="" /></a></p>
+<h3 id="api-access-control">API Access Control</h3>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>All</td>
+<td>ROLE_PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
