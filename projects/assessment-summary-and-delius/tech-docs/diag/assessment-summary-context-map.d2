@@ -1,0 +1,40 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+context-oasys: OASys Context {
+  entities: Entities {
+    grid-columns: 3
+    pop: Person on Probation
+    assessment: Assessment Summary
+    risk: Risk Flags
+    concern: Concern Flags
+    weighted-scores: Weighted scores
+    sentence-plan: Sentence Plan
+    offence: Offence
+    objective: Objective
+    need: Need
+    action: Action
+    rosh-summary: Rosh Summary
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Assessment summary\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 2
+    assessment: OASys Assessment
+    event: Event
+    contact: Contact
+    registration: Registration
+    person: Person on Probation
+    sentence-plan: Sentence Plan
+  }
+}
+
+context-oasys--context-delius.interface: Upstream\n\n\nDownstream
