@@ -20,6 +20,9 @@ generic-service:
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     manage-supervision-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
+    manage-supervision-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
 
 generic-prometheus-alerts:
   targetApplication: manage-supervision-and-delius
