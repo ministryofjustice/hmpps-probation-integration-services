@@ -92,7 +92,26 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>domain-events-and-delius</span></a>
+    <a href="./index.html"><span>Domain events and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-domain-event-data"><span>Context map - Domain Event Data</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Workflows</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#enhancing-a-domain-event"><span>Enhancing a domain event</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>API Access Control</span></a>
   </li>
 </ul>
 
@@ -103,9 +122,41 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="domain-events-and-delius">domain-events-and-delius</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="domain-events-and-delius">Domain events and Delius</h1>
+<p>This domain event service enables enhancement of domain events from Delius. The domain events are retrieved from the database in batches, enhanced and published to SNS.</p>
+<p>The supported domain event enhancers are:</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Message event type</th>
+<th>Description</th>
+</tr><tr>
+<td>probation-case.engagement.created</td>
+<td>Adds a detail URL to retrieve engagement data</td>
+</tr>
+        </table>
+      </div><h1 id="data-dependencies">Data dependencies</h1>
+<p>Domain event service depends on Delius for retrieving batches of domain events waiting to be processed. Each domain event will contain a unique ID, message body and message attributes. The message body will contain the event type.</p>
+<h2 id="context-map-domain-event-data">Context map - Domain Event Data</h2>
+<p><a href="././img/domain-events-context-map.svg" rel="noopener noreferrer"><img src="img/domain-events-context-map.svg" alt="" /></a></p>
+<h1 id="workflows">Workflows</h1>
+<h2 id="enhancing-a-domain-event">Enhancing a domain event</h2>
+<p>Domain events are retrieved from the database in batches. Each domain event will be processed in order. The domain event will contain an event type within the message body. The event type is mapped to an enhancement if one exists, otherwise it is matched to a no enhancement catch-all which will just publish the original domain event. Once a domain event has been enhanced it will be published to SNS.</p>
+<p><a href="././img/domain-events-enhancement-workflow.svg" rel="noopener noreferrer"><img src="img/domain-events-enhancement-workflow.svg" alt="" /></a></p>
+<h1 id="api-access-control">API Access Control</h1>
+<p>API endpoints are available to retrieve additional information related to a domain event. These URLs will be added to the domain event message by enhancers within the domain event service.</p>
+<p>The API endpoints are secured by roles supplied by the HMPPS Auth client used in the requests.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API endpoint</th>
+<th>Required role</th>
+</tr><tr>
+<td>probation-case.engagement.created/{crn}</td>
+<td>PROBATION_API__DOMAIN_EVENTS__ENGAGEMENT</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
