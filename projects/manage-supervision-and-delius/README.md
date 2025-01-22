@@ -1,6 +1,4 @@
-# Manage People on Probation (MPoP) and Delius
-
-**Note:** This service was previously named **Manage supervision**.
+# Manage supervision and Delius
 
 ## Viewing Person on Probation data
 
@@ -29,7 +27,7 @@ The service provides a simplified view of the data relating to a **Person on Pro
  
 
 # Data dependencies
-Manage supervision depends on Delius data for **Probation Cases** and details of a **Person on Probation**.
+Manage People on Probation (MPoP) depends on Delius data for **Probation Cases** and details of a **Person on Probation**.
 
 ## Context Map - Manage People on Probation
 
