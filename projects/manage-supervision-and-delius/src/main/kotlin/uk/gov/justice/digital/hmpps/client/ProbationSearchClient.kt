@@ -11,7 +11,8 @@ interface ProbationSearchClient {
     fun contactSearch(
         @RequestBody body: ActivitySearchRequest,
         @RequestParam page: Int = 0,
-        @RequestParam size: Int = 10): ContactSearchResponse
+        @RequestParam size: Int = 10
+    ): ContactSearchResponse
 }
 
 data class ActivitySearchRequest(
@@ -23,7 +24,6 @@ data class ActivitySearchRequest(
     val dateTo: LocalDate? = null,
     val filters: List<String> = emptyList(),
 )
-
 
 data class ContactSearchResponse(
     val size: Int,
