@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -93,8 +93,6 @@ paths:
 components:
   schemas:
     ProbationReferenceData:
-      required:
-      - probationReferenceData
       type: object
       properties:
         probationReferenceData:
@@ -103,10 +101,9 @@ components:
             type: array
             items:
               $ref: "#/components/schemas/RefData"
-    RefData:
       required:
-      - code
-      - description
+      - probationReferenceData
+    RefData:
       type: object
       properties:
         code:
@@ -117,31 +114,30 @@ components:
           type: string
           description: reference data description
           example: MALE
-    PersonIdentifier:
       required:
-      - crn
-      - nomsId
+      - code
+      - description
+    PersonIdentifier:
       type: object
       properties:
         crn:
           type: string
         nomsId:
           type: string
-    PersonExists:
       required:
       - crn
-      - existsInDelius
+      - nomsId
+    PersonExists:
       type: object
       properties:
         crn:
           type: string
         existsInDelius:
           type: boolean
-    CourtAppearance:
       required:
-      - court
-      - date
-      - type
+      - crn
+      - existsInDelius
+    CourtAppearance:
       type: object
       properties:
         type:
@@ -153,11 +149,11 @@ components:
           type: string
         plea:
           type: string
-    DynamicRiskRegistration:
       required:
-      - code
-      - description
-      - startDate
+      - court
+      - date
+      - type
+    DynamicRiskRegistration:
       type: object
       properties:
         code:
@@ -174,12 +170,11 @@ components:
           format: date
         notes:
           type: string
-    Manager:
       required:
-      - allocated
       - code
-      - name
-      - team
+      - description
+      - startDate
+    Manager:
       type: object
       properties:
         code:
@@ -196,9 +191,12 @@ components:
           $ref: "#/components/schemas/Team"
         allocated:
           type: boolean
-    MappaDetail:
       required:
-      - startDate
+      - allocated
+      - code
+      - name
+      - team
+    MappaDetail:
       type: object
       properties:
         level:
@@ -219,20 +217,19 @@ components:
           format: date
         notes:
           type: string
-    Name:
       required:
-      - forename
-      - surname
+      - startDate
+    Name:
       type: object
       properties:
         forename:
           type: string
         surname:
           type: string
-    Offence:
       required:
-      - code
-      - description
+      - forename
+      - surname
+    Offence:
       type: object
       properties:
         date:
@@ -253,21 +250,20 @@ components:
           type: boolean
         schedule15ViolentOffence:
           type: boolean
-    OffenceCategory:
       required:
       - code
       - description
+    OffenceCategory:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    PersonStatusRegistration:
       required:
       - code
       - description
-      - startDate
+    PersonStatusRegistration:
       type: object
       properties:
         code:
@@ -284,21 +280,21 @@ components:
           format: date
         notes:
           type: string
-    Provider:
       required:
       - code
       - description
+      - startDate
+    Provider:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    Sentence:
       required:
-      - custodial
-      - date
+      - code
       - description
+    Sentence:
       type: object
       properties:
         description:
@@ -319,10 +315,11 @@ components:
           - Years
         custodial:
           type: boolean
-    Supervision:
       required:
-      - active
-      - number
+      - custodial
+      - date
+      - description
+    Supervision:
       type: object
       properties:
         number:
@@ -345,12 +342,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CourtAppearance"
-    SupervisionResponse:
       required:
-      - communityManager
-      - dynamicRisks
-      - personStatus
-      - supervisions
+      - active
+      - number
+    SupervisionResponse:
       type: object
       properties:
         communityManager:
@@ -369,11 +364,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PersonStatusRegistration"
-    Team:
       required:
-      - code
-      - description
-      - provider
+      - communityManager
+      - dynamicRisks
+      - personStatus
+      - supervisions
+    Team:
       type: object
       properties:
         code:
@@ -386,6 +382,10 @@ components:
           type: string
         provider:
           $ref: "#/components/schemas/Provider"
+      required:
+      - code
+      - description
+      - provider
   securitySchemes:
     hmpps-auth-token:
       type: http

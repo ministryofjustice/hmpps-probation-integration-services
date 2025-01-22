@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -29,8 +29,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string
@@ -215,6 +213,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SentenceOverview"
+  /sentence/{crn}/requirement/{requirementId}/note/{noteId}:
+    get:
+      tags:
+      - Sentence
+      summary: Get licence condition note
+      operationId: getRequirementNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: requirementId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequirementNoteDetail"
   /sentence/{crn}/probation-history:
     get:
       tags:
@@ -762,10 +791,6 @@ paths:
 components:
   schemas:
     CaseAccess:
-      required:
-      - crn
-      - userExcluded
-      - userRestricted
       type: object
       properties:
         crn:
@@ -778,15 +803,19 @@ components:
           type: string
         restrictionMessage:
           type: string
-    UserAccess:
       required:
-      - access
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
       type: object
       properties:
         access:
           type: array
           items:
             $ref: "#/components/schemas/CaseAccess"
+      required:
+      - access
     UserSearchFilter:
       type: object
       properties:
@@ -797,10 +826,6 @@ components:
         nextContactCode:
           type: string
     Appointment:
-      required:
-      - date
-      - description
-      - id
       type: object
       properties:
         id:
@@ -811,20 +836,21 @@ components:
           format: date-time
         description:
           type: string
-    KeyPair:
       required:
-      - code
+      - date
       - description
+      - id
+    KeyPair:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    MetaData:
       required:
-      - contactTypes
-      - sentenceTypes
+      - code
+      - description
+    MetaData:
       type: object
       properties:
         sentenceTypes:
@@ -835,10 +861,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/KeyPair"
-    Name:
       required:
-      - forename
-      - surname
+      - contactTypes
+      - sentenceTypes
+    Name:
       type: object
       properties:
         forename:
@@ -847,9 +873,10 @@ components:
           type: string
         surname:
           type: string
-    StaffCase:
       required:
-      - crn
+      - forename
+      - surname
+    StaffCase:
       type: object
       properties:
         caseName:
@@ -870,12 +897,9 @@ components:
           format: int64
         limitedAccess:
           type: boolean
-    StaffCaseload:
       required:
-      - caseload
-      - staff
-      - totalElements
-      - totalPages
+      - crn
+    StaffCaseload:
       type: object
       properties:
         totalPages:
@@ -896,17 +920,12 @@ components:
             $ref: "#/components/schemas/StaffCase"
         metaData:
           $ref: "#/components/schemas/MetaData"
-    CreateAppointment:
       required:
-      - createOverlappingAppointment
-      - end
-      - eventId
-      - interval
-      - numberOfAppointments
-      - start
-      - type
-      - user
-      - uuid
+      - caseload
+      - staff
+      - totalElements
+      - totalPages
+    CreateAppointment:
       type: object
       properties:
         user:
@@ -951,10 +970,17 @@ components:
         until:
           type: string
           format: date-time
-    User:
       required:
-      - locationId
-      - username
+      - createOverlappingAppointment
+      - end
+      - eventId
+      - interval
+      - numberOfAppointments
+      - start
+      - type
+      - user
+      - uuid
+    User:
       type: object
       properties:
         username:
@@ -962,28 +988,27 @@ components:
         locationId:
           type: integer
           format: int64
-    AppointmentDetail:
       required:
-      - appointments
+      - locationId
+      - username
+    AppointmentDetail:
       type: object
       properties:
         appointments:
           type: array
           items:
             $ref: "#/components/schemas/CreatedAppointment"
-    CreatedAppointment:
       required:
-      - id
+      - appointments
+    CreatedAppointment:
       type: object
       properties:
         id:
           type: integer
           format: int64
-    Outcome:
       required:
-      - attended
-      - code
       - id
+    Outcome:
       type: object
       properties:
         id:
@@ -997,6 +1022,10 @@ components:
           type: boolean
         notes:
           type: string
+      required:
+      - attended
+      - code
+      - id
     Address:
       type: object
       properties:
@@ -1011,10 +1040,6 @@ components:
         postcode:
           type: string
     LocationDetails:
-      required:
-      - address
-      - description
-      - id
       type: object
       properties:
         id:
@@ -1024,10 +1049,11 @@ components:
           type: string
         address:
           $ref: "#/components/schemas/Address"
-    UserOfficeLocation:
       required:
-      - locations
-      - name
+      - address
+      - description
+      - id
+    UserOfficeLocation:
       type: object
       properties:
         name:
@@ -1036,10 +1062,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LocationDetails"
-    MinimalLicenceCondition:
       required:
-      - id
-      - mainDescription
+      - locations
+      - name
+    MinimalLicenceCondition:
       type: object
       properties:
         id:
@@ -1047,10 +1073,10 @@ components:
           format: int64
         mainDescription:
           type: string
-    MinimalOrder:
       required:
-      - description
-      - startDate
+      - id
+      - mainDescription
+    MinimalOrder:
       type: object
       properties:
         description:
@@ -1061,10 +1087,10 @@ components:
         endDate:
           type: string
           format: date
-    MinimalRequirement:
       required:
       - description
-      - id
+      - startDate
+    MinimalRequirement:
       type: object
       properties:
         id:
@@ -1072,11 +1098,10 @@ components:
           format: int64
         description:
           type: string
-    MinimalSentence:
       required:
+      - description
       - id
-      - licenceConditions
-      - requirements
+    MinimalSentence:
       type: object
       properties:
         id:
@@ -1092,10 +1117,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MinimalRequirement"
-    MinimalSentenceOverview:
       required:
-      - personSummary
-      - sentences
+      - id
+      - licenceConditions
+      - requirements
+    MinimalSentenceOverview:
       type: object
       properties:
         personSummary:
@@ -1104,12 +1130,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MinimalSentence"
-    PersonSummary:
       required:
-      - crn
-      - dateOfBirth
-      - name
-      - offenderId
+      - personSummary
+      - sentences
+    PersonSummary:
       type: object
       properties:
         name:
@@ -1124,9 +1148,12 @@ components:
         dateOfBirth:
           type: string
           format: date
-    AdditionalSentence:
       required:
-      - description
+      - crn
+      - dateOfBirth
+      - name
+      - offenderId
+    AdditionalSentence:
       type: object
       properties:
         length:
@@ -1139,9 +1166,9 @@ components:
           type: string
         description:
           type: string
-    Conviction:
       required:
-      - additionalSentences
+      - description
+    Conviction:
       type: object
       properties:
         sentencingCourt:
@@ -1155,9 +1182,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AdditionalSentence"
-    CourtDocument:
       required:
-      - id
+      - additionalSentences
+    CourtDocument:
       type: object
       properties:
         id:
@@ -1167,11 +1194,9 @@ components:
           format: date
         documentName:
           type: string
-    LicenceCondition:
       required:
       - id
-      - imposedReleasedDate
-      - mainDescription
+    LicenceCondition:
       type: object
       properties:
         id:
@@ -1190,13 +1215,14 @@ components:
         licenceConditionNotes:
           type: array
           items:
-            $ref: "#/components/schemas/LicenceConditionNote"
+            $ref: "#/components/schemas/NoteDetail"
         licenceConditionNote:
-          $ref: "#/components/schemas/LicenceConditionNote"
-    LicenceConditionNote:
+          $ref: "#/components/schemas/NoteDetail"
       required:
       - id
-      - note
+      - imposedReleasedDate
+      - mainDescription
+    NoteDetail:
       type: object
       properties:
         id:
@@ -1211,10 +1237,10 @@ components:
           type: string
         hasNoteBeenTruncated:
           type: boolean
-    Offence:
       required:
-      - count
-      - description
+      - id
+      - note
+    Offence:
       type: object
       properties:
         description:
@@ -1222,10 +1248,10 @@ components:
         count:
           type: integer
           format: int64
-    OffenceDetails:
       required:
-      - additionalOffences
-      - eventNumber
+      - count
+      - description
+    OffenceDetails:
       type: object
       properties:
         eventNumber:
@@ -1241,10 +1267,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Offence"
-    Order:
       required:
-      - description
-      - startDate
+      - additionalOffences
+      - eventNumber
+    Order:
       type: object
       properties:
         description:
@@ -1268,14 +1294,16 @@ components:
         breaches:
           type: integer
           format: int32
-    Rar:
       required:
-      - completed
-      - scheduled
-      - totalDays
+      - description
+      - startDate
+    Rar:
       type: object
       properties:
         completed:
+          type: integer
+          format: int32
+        nsiCompleted:
           type: integer
           format: int32
         scheduled:
@@ -1284,13 +1312,17 @@ components:
         totalDays:
           type: integer
           format: int32
-    Requirement:
       required:
-      - actualStartDate
-      - code
-      - description
+      - completed
+      - nsiCompleted
+      - scheduled
+      - totalDays
+    Requirement:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         code:
           type: string
         expectedStartDate:
@@ -1314,16 +1346,20 @@ components:
           format: int64
         lengthUnitValue:
           type: string
-        notes:
-          type: string
+        requirementNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        requirementNote:
+          $ref: "#/components/schemas/NoteDetail"
         rar:
           $ref: "#/components/schemas/Rar"
-    Sentence:
       required:
-      - courtDocuments
-      - licenceConditions
-      - offenceDetails
-      - requirements
+      - actualStartDate
+      - code
+      - description
+      - id
+    Sentence:
       type: object
       properties:
         offenceDetails:
@@ -1346,10 +1382,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LicenceCondition"
-    SentenceOverview:
       required:
-      - personSummary
-      - sentenceSummaryList
+      - courtDocuments
+      - licenceConditions
+      - offenceDetails
+      - requirements
+    SentenceOverview:
       type: object
       properties:
         personSummary:
@@ -1360,21 +1398,29 @@ components:
             $ref: "#/components/schemas/SentenceSummary"
         sentence:
           $ref: "#/components/schemas/Sentence"
-    SentenceSummary:
       required:
-      - description
-      - eventNumber
+      - personSummary
+      - sentenceSummaryList
+    SentenceSummary:
       type: object
       properties:
         eventNumber:
           type: string
         description:
           type: string
-    History:
+      required:
+      - description
+      - eventNumber
+    RequirementNoteDetail:
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        requirement:
+          $ref: "#/components/schemas/Requirement"
       required:
       - personSummary
-      - probationHistory
-      - sentenceSummaryList
+    History:
       type: object
       properties:
         personSummary:
@@ -1385,11 +1431,11 @@ components:
             $ref: "#/components/schemas/SentenceSummary"
         probationHistory:
           $ref: "#/components/schemas/ProbationHistory"
-    ProbationHistory:
       required:
-      - numberOfProfessionalContacts
-      - numberOfTerminatedEventBreaches
-      - numberOfTerminatedEvents
+      - personSummary
+      - probationHistory
+      - sentenceSummaryList
+    ProbationHistory:
       type: object
       properties:
         numberOfTerminatedEvents:
@@ -1404,9 +1450,11 @@ components:
         numberOfProfessionalContacts:
           type: integer
           format: int64
-    PreviousOrder:
       required:
-      - title
+      - numberOfProfessionalContacts
+      - numberOfTerminatedEventBreaches
+      - numberOfTerminatedEvents
+    PreviousOrder:
       type: object
       properties:
         title:
@@ -1416,10 +1464,9 @@ components:
         terminationDate:
           type: string
           format: date
-    PreviousOrderHistory:
       required:
-      - name
-      - previousOrders
+      - title
+    PreviousOrderHistory:
       type: object
       properties:
         name:
@@ -1428,11 +1475,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PreviousOrder"
-    Offences:
       required:
-      - additionalOffences
-      - mainOffence
       - name
+      - previousOrders
+    Offences:
       type: object
       properties:
         name:
@@ -1443,20 +1489,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Offence"
-    LicenceConditionNoteDetail:
       required:
-      - personSummary
+      - additionalOffences
+      - mainOffence
+      - name
+    LicenceConditionNoteDetail:
       type: object
       properties:
         personSummary:
           $ref: "#/components/schemas/PersonSummary"
         licenceCondition:
           $ref: "#/components/schemas/LicenceCondition"
-    Contact:
       required:
-      - name
-      - probationDeliveryUnit
-      - provider
+      - personSummary
+    Contact:
       type: object
       properties:
         name:
@@ -1474,10 +1520,11 @@ components:
         allocatedUntil:
           type: string
           format: date
-    ProfessionalContact:
       required:
-      - contacts
       - name
+      - probationDeliveryUnit
+      - provider
+    ProfessionalContact:
       type: object
       properties:
         name:
@@ -1486,23 +1533,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Contact"
-    Activity:
       required:
-      - documents
-      - hasOutcome
-      - id
-      - isAppointment
-      - isCommunication
-      - isInitial
-      - isNationalStandard
-      - isPastAppointment
-      - lastUpdated
-      - lastUpdatedBy
-      - rescheduled
-      - rescheduledPop
-      - rescheduledStaff
-      - startDateTime
-      - type
+      - contacts
+      - name
+    Activity:
       type: object
       properties:
         id:
@@ -1589,10 +1623,23 @@ components:
           format: date-time
         lastUpdatedBy:
           $ref: "#/components/schemas/Name"
-    Document:
       required:
+      - documents
+      - hasOutcome
       - id
-      - name
+      - isAppointment
+      - isCommunication
+      - isInitial
+      - isNationalStandard
+      - isPastAppointment
+      - lastUpdated
+      - lastUpdatedBy
+      - rescheduled
+      - rescheduledPop
+      - rescheduledStaff
+      - startDateTime
+      - type
+    Document:
       type: object
       properties:
         id:
@@ -1602,9 +1649,10 @@ components:
         lastUpdated:
           type: string
           format: date-time
-    OfficeAddress:
       required:
-      - ldu
+      - id
+      - name
+    OfficeAddress:
       type: object
       properties:
         officeName:
@@ -1627,10 +1675,9 @@ components:
           type: string
         telephoneNumber:
           type: string
-    Schedule:
       required:
-      - appointments
-      - personSummary
+      - ldu
+    Schedule:
       type: object
       properties:
         personSummary:
@@ -1639,19 +1686,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Activity"
-    PersonAppointment:
       required:
-      - appointment
+      - appointments
       - personSummary
+    PersonAppointment:
       type: object
       properties:
         personSummary:
           $ref: "#/components/schemas/PersonSummary"
         appointment:
           $ref: "#/components/schemas/Activity"
-    MappaDetail:
       required:
-      - startDate
+      - appointment
+      - personSummary
+    MappaDetail:
       type: object
       properties:
         level:
@@ -1670,10 +1718,9 @@ components:
         reviewDate:
           type: string
           format: date
-    Opd:
       required:
-      - date
-      - eligible
+      - startDate
+    Opd:
       type: object
       properties:
         eligible:
@@ -1681,11 +1728,10 @@ components:
         date:
           type: string
           format: date-time
-    PersonRiskFlags:
       required:
-      - personSummary
-      - removedRiskFlags
-      - riskFlags
+      - date
+      - eligible
+    PersonRiskFlags:
       type: object
       properties:
         personSummary:
@@ -1702,14 +1748,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/RiskFlag"
-    RiskFlag:
       required:
-      - createdBy
-      - createdDate
-      - description
-      - id
-      - removalHistory
-      - removed
+      - personSummary
+      - removedRiskFlags
+      - riskFlags
+    RiskFlag:
       type: object
       properties:
         id:
@@ -1740,10 +1783,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/RiskFlagRemoval"
-    RiskFlagRemoval:
       required:
-      - removalDate
-      - removedBy
+      - createdBy
+      - createdDate
+      - description
+      - id
+      - removalHistory
+      - removed
+    RiskFlagRemoval:
       type: object
       properties:
         notes:
@@ -1753,19 +1800,20 @@ components:
           format: date
         removedBy:
           $ref: "#/components/schemas/Name"
-    PersonRiskFlag:
       required:
-      - personSummary
-      - riskFlag
+      - removalDate
+      - removedBy
+    PersonRiskFlag:
       type: object
       properties:
         personSummary:
           $ref: "#/components/schemas/PersonSummary"
         riskFlag:
           $ref: "#/components/schemas/RiskFlag"
-    Circumstances:
       required:
-      - circumstances
+      - personSummary
+      - riskFlag
+    Circumstances:
       type: object
       properties:
         circumstances:
@@ -1775,10 +1823,9 @@ components:
         lastUpdated:
           type: string
           format: date
-    ContactAddress:
       required:
-      - lastUpdated
-      - lastUpdatedBy
+      - circumstances
+    ContactAddress:
       type: object
       properties:
         buildingName:
@@ -1800,9 +1847,10 @@ components:
           format: date
         lastUpdatedBy:
           $ref: "#/components/schemas/Name"
-    Disabilities:
       required:
-      - disabilities
+      - lastUpdated
+      - lastUpdatedBy
+    Disabilities:
       type: object
       properties:
         disabilities:
@@ -1812,24 +1860,19 @@ components:
         lastUpdated:
           type: string
           format: date
-    PersonalCircumstance:
       required:
-      - subType
-      - type
+      - disabilities
+    PersonalCircumstance:
       type: object
       properties:
         subType:
           type: string
         type:
           type: string
-    PersonalContact:
       required:
-      - contactId
-      - lastUpdated
-      - lastUpdatedBy
-      - name
-      - personSummary
-      - relationshipType
+      - subType
+      - type
+    PersonalContact:
       type: object
       properties:
         personSummary:
@@ -1859,21 +1902,14 @@ components:
           format: date
         lastUpdatedBy:
           $ref: "#/components/schemas/Name"
-    PersonalDetails:
       required:
-      - aliases
-      - circumstances
-      - contacts
-      - crn
-      - dateOfBirth
-      - disabilities
-      - documents
+      - contactId
+      - lastUpdated
+      - lastUpdatedBy
       - name
-      - otherAddressCount
-      - preferredGender
-      - previousAddressCount
-      - provisions
-      - sex
+      - personSummary
+      - relationshipType
+    PersonalDetails:
       type: object
       properties:
         crn:
@@ -1937,9 +1973,21 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Document"
-    Provisions:
       required:
+      - aliases
+      - circumstances
+      - contacts
+      - crn
+      - dateOfBirth
+      - disabilities
+      - documents
+      - name
+      - otherAddressCount
+      - preferredGender
+      - previousAddressCount
       - provisions
+      - sex
+    Provisions:
       type: object
       properties:
         provisions:
@@ -1949,12 +1997,9 @@ components:
         lastUpdated:
           type: string
           format: date
-    Provision:
       required:
-      - description
-      - lastUpdated
-      - lastUpdatedBy
-      - startDate
+      - provisions
+    Provision:
       type: object
       properties:
         description:
@@ -1969,10 +2014,12 @@ components:
           format: date
         lastUpdatedBy:
           $ref: "#/components/schemas/Name"
-    ProvisionOverview:
       required:
-      - personSummary
-      - provisions
+      - description
+      - lastUpdated
+      - lastUpdatedBy
+      - startDate
+    ProvisionOverview:
       type: object
       properties:
         personSummary:
@@ -1981,14 +2028,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Provision"
+      required:
+      - personSummary
+      - provisions
     StreamingResponseBody:
       type: object
     Disability:
-      required:
-      - description
-      - lastUpdated
-      - lastUpdatedBy
-      - startDate
       type: object
       properties:
         description:
@@ -2003,10 +2048,12 @@ components:
           format: date
         lastUpdatedBy:
           $ref: "#/components/schemas/Name"
-    DisabilityOverview:
       required:
-      - disabilities
-      - personSummary
+      - description
+      - lastUpdated
+      - lastUpdatedBy
+      - startDate
+    DisabilityOverview:
       type: object
       properties:
         personSummary:
@@ -2015,13 +2062,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Disability"
-    Circumstance:
       required:
-      - lastUpdated
-      - lastUpdatedBy
-      - startDate
-      - subType
-      - type
+      - disabilities
+      - personSummary
+    Circumstance:
       type: object
       properties:
         type:
@@ -2040,10 +2084,13 @@ components:
           format: date
         lastUpdatedBy:
           $ref: "#/components/schemas/Name"
-    CircumstanceOverview:
       required:
-      - circumstances
-      - personSummary
+      - lastUpdated
+      - lastUpdatedBy
+      - startDate
+      - subType
+      - type
+    CircumstanceOverview:
       type: object
       properties:
         personSummary:
@@ -2052,11 +2099,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Circumstance"
-    AddressOverview:
       required:
-      - otherAddresses
+      - circumstances
       - personSummary
-      - previousAddresses
+    AddressOverview:
       type: object
       properties:
         personSummary:
@@ -2071,20 +2117,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Address"
-    ActivityCount:
       required:
-      - absentCount
-      - acceptableAbsenceCount
-      - attendedButDidNotComplyCount
-      - compliedAppointmentsCount
-      - lettersCount
-      - nationalStandardAppointmentsCount
-      - outcomeNotRecordedCount
-      - rescheduledByPersonOnProbationCount
-      - rescheduledByStaffCount
-      - rescheduledCount
-      - unacceptableAbsenceCount
-      - waitingForEvidenceCount
+      - otherAddresses
+      - personSummary
+      - previousAddresses
+    ActivityCount:
       type: object
       properties:
         acceptableAbsenceCount:
@@ -2123,13 +2160,20 @@ components:
         compliedAppointmentsCount:
           type: integer
           format: int32
-    Compliance:
       required:
-      - breachStarted
-      - breachesOnCurrentOrderCount
-      - currentBreaches
-      - failureToComplyCount
-      - priorBreachesOnCurrentOrderCount
+      - absentCount
+      - acceptableAbsenceCount
+      - attendedButDidNotComplyCount
+      - compliedAppointmentsCount
+      - lettersCount
+      - nationalStandardAppointmentsCount
+      - outcomeNotRecordedCount
+      - rescheduledByPersonOnProbationCount
+      - rescheduledByStaffCount
+      - rescheduledCount
+      - unacceptableAbsenceCount
+      - waitingForEvidenceCount
+    Compliance:
       type: object
       properties:
         currentBreaches:
@@ -2146,15 +2190,13 @@ components:
         failureToComplyCount:
           type: integer
           format: int32
-    Overview:
       required:
-      - absencesWithoutEvidence
-      - appointmentsWithoutOutcome
-      - personalDetails
-      - previousOrders
-      - registrations
-      - schedule
-      - sentences
+      - breachStarted
+      - breachesOnCurrentOrderCount
+      - currentBreaches
+      - failureToComplyCount
+      - priorBreachesOnCurrentOrderCount
+    Overview:
       type: object
       properties:
         appointmentsWithoutOutcome:
@@ -2181,11 +2223,15 @@ components:
           type: array
           items:
             type: string
-    PreviousOrders:
       required:
-      - breaches
-      - count
-      - orders
+      - absencesWithoutEvidence
+      - appointmentsWithoutOutcome
+      - personalDetails
+      - previousOrders
+      - registrations
+      - schedule
+      - sentences
+    PreviousOrders:
       type: object
       properties:
         breaches:
@@ -2198,6 +2244,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Order"
+      required:
+      - breaches
+      - count
+      - orders
     Breach:
       type: object
       properties:
@@ -2207,10 +2257,6 @@ components:
         status:
           type: string
     PersonCompliance:
-      required:
-      - currentSentences
-      - personSummary
-      - previousOrders
       type: object
       properties:
         personSummary:
@@ -2221,12 +2267,11 @@ components:
             $ref: "#/components/schemas/SentenceCompliance"
         previousOrders:
           $ref: "#/components/schemas/PreviousOrders"
-    SentenceCompliance:
       required:
-      - activity
-      - compliance
-      - eventNumber
-      - mainOffence
+      - currentSentences
+      - personSummary
+      - previousOrders
+    SentenceCompliance:
       type: object
       properties:
         eventNumber:
@@ -2245,19 +2290,22 @@ components:
           $ref: "#/components/schemas/Compliance"
         activity:
           $ref: "#/components/schemas/ActivityCount"
-    Team:
       required:
-      - code
-      - description
+      - activity
+      - compliance
+      - eventNumber
+      - mainOffence
+    Team:
       type: object
       properties:
         description:
           type: string
         code:
           type: string
-    UserTeam:
       required:
-      - teams
+      - code
+      - description
+    UserTeam:
       type: object
       properties:
         provider:
@@ -2266,21 +2314,19 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Team"
-    Staff:
       required:
-      - code
-      - name
+      - teams
+    Staff:
       type: object
       properties:
         name:
           $ref: "#/components/schemas/Name"
         code:
           type: string
-    TeamCase:
       required:
-      - caseName
-      - crn
-      - staff
+      - code
+      - name
+    TeamCase:
       type: object
       properties:
         staff:
@@ -2289,12 +2335,11 @@ components:
           $ref: "#/components/schemas/Name"
         crn:
           type: string
-    TeamCaseload:
       required:
-      - caseload
-      - team
-      - totalElements
-      - totalPages
+      - caseName
+      - crn
+      - staff
+    TeamCaseload:
       type: object
       properties:
         totalPages:
@@ -2311,9 +2356,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TeamCase"
-    TeamStaff:
       required:
-      - staff
+      - caseload
+      - team
+      - totalElements
+      - totalPages
+    TeamStaff:
       type: object
       properties:
         provider:
@@ -2322,10 +2370,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Staff"
-    PersonActivity:
       required:
-      - activities
-      - personSummary
+      - staff
+    PersonActivity:
       type: object
       properties:
         personSummary:
@@ -2334,6 +2381,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Activity"
+      required:
+      - activities
+      - personSummary
   securitySchemes:
     hmpps-auth-token:
       type: http

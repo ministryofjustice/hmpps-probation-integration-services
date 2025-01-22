@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -38,7 +38,7 @@ paths:
     get:
       tags:
       - appointment-controller
-      operationId: findPerson_1
+      operationId: findPerson
       parameters:
       - name: crn
         in: path
@@ -171,7 +171,7 @@ paths:
     get:
       tags:
       - duty-to-refer-controller
-      operationId: findPerson
+      operationId: findPerson_1
       parameters:
       - name: value
         in: path
@@ -197,10 +197,6 @@ paths:
 components:
   schemas:
     Author:
-      required:
-      - forename
-      - prisonCode
-      - surname
       type: object
       properties:
         prisonCode:
@@ -209,12 +205,11 @@ components:
           type: string
         surname:
           type: string
-    CreateContact:
       required:
-      - author
-      - dateTime
-      - notes
-      - type
+      - forename
+      - prisonCode
+      - surname
+    CreateContact:
       type: object
       properties:
         type:
@@ -230,12 +225,12 @@ components:
           type: string
         author:
           $ref: "#/components/schemas/Author"
-    CreateAppointment:
       required:
-      - duration
-      - start
+      - author
+      - dateTime
+      - notes
       - type
-      - uuid
+    CreateAppointment:
       type: object
       properties:
         type:
@@ -254,21 +249,26 @@ components:
           format: date-time
         duration:
           type: string
-          description: ISO-8601 representation of the duration
           format: duration
+          description: ISO-8601 representation of the duration
           example: PT30M
         notes:
           type: string
         uuid:
           type: string
           format: uuid
-    CaseIdentifiers:
       required:
-      - crn
+      - duration
+      - start
+      - type
+      - uuid
+    CaseIdentifiers:
       type: object
       properties:
         crn:
           type: string
+      required:
+      - crn
     ContactDetails:
       type: object
       properties:
@@ -279,20 +279,16 @@ components:
         email:
           type: string
     Name:
-      required:
-      - forename
-      - surname
       type: object
       properties:
         forename:
           type: string
         surname:
           type: string
-    PersonDetail:
       required:
-      - crn
-      - dateOfBirth
-      - name
+      - forename
+      - surname
+    PersonDetail:
       type: object
       properties:
         crn:
@@ -304,9 +300,11 @@ components:
           format: date
         contactDetails:
           $ref: "#/components/schemas/ContactDetails"
-    MappaDetail:
       required:
-      - startDate
+      - crn
+      - dateOfBirth
+      - name
+    MappaDetail:
       type: object
       properties:
         level:
@@ -325,20 +323,18 @@ components:
         reviewDate:
           type: string
           format: date
-    Manager:
       required:
-      - unallocated
+      - startDate
+    Manager:
       type: object
       properties:
         name:
           $ref: "#/components/schemas/Name"
         unallocated:
           type: boolean
-    DutyToReferNSI:
       required:
-      - nsiSubType
-      - referralDate
-      - status
+      - unallocated
+    DutyToReferNSI:
       type: object
       properties:
         nsiSubType:
@@ -361,6 +357,10 @@ components:
           type: string
         mainAddress:
           $ref: "#/components/schemas/MainAddress"
+      required:
+      - nsiSubType
+      - referralDate
+      - status
     MainAddress:
       type: object
       properties:
@@ -381,9 +381,6 @@ components:
         noFixedAbode:
           type: boolean
     Officer:
-      required:
-      - forename
-      - surname
       type: object
       properties:
         forename:
@@ -392,6 +389,9 @@ components:
           type: string
         middleName:
           type: string
+      required:
+      - forename
+      - surname
     Address:
       type: object
       properties:
@@ -410,12 +410,6 @@ components:
         postcode:
           type: string
     Appointment:
-      required:
-      - dateTime
-      - description
-      - duration
-      - staff
-      - type
       type: object
       properties:
         type:
@@ -425,8 +419,8 @@ components:
           format: date-time
         duration:
           type: string
-          description: ISO-8601 representation of the duration
           format: duration
+          description: ISO-8601 representation of the duration
           example: PT30M
         staff:
           $ref: "#/components/schemas/Staff"
@@ -436,10 +430,13 @@ components:
           type: string
         outcome:
           $ref: "#/components/schemas/Outcome"
-    Location:
       required:
-      - code
+      - dateTime
       - description
+      - duration
+      - staff
+      - type
+    Location:
       type: object
       properties:
         code:
@@ -450,23 +447,20 @@ components:
           $ref: "#/components/schemas/Address"
         telephoneNumber:
           type: string
-    Outcome:
       required:
       - code
       - description
+    Outcome:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    ResultSetAppointment:
       required:
-      - page
-      - results
-      - size
-      - totalElements
-      - totalPages
+      - code
+      - description
+    ResultSetAppointment:
       type: object
       properties:
         results:
@@ -485,10 +479,13 @@ components:
         size:
           type: integer
           format: int32
-    Staff:
       required:
-      - code
-      - name
+      - page
+      - results
+      - size
+      - totalElements
+      - totalPages
+    Staff:
       type: object
       properties:
         code:
@@ -499,16 +496,19 @@ components:
           type: string
         telephone:
           type: string
-    Type:
       required:
       - code
-      - description
+      - name
+    Type:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
+      required:
+      - code
+      - description
   securitySchemes:
     hmpps-auth-token:
       type: http

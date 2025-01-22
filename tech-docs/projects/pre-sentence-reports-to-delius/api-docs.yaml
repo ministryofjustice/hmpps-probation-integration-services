@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -55,8 +55,6 @@ paths:
 components:
   schemas:
     Address:
-      required:
-      - noFixedAbode
       type: object
       properties:
         noFixedAbode:
@@ -75,27 +73,26 @@ components:
           type: string
         postcode:
           type: string
-    Court:
       required:
-      - localJusticeArea
-      - name
+      - noFixedAbode
+    Court:
       type: object
       properties:
         name:
           type: string
         localJusticeArea:
           $ref: "#/components/schemas/LocalJusticeArea"
-    LocalJusticeArea:
       required:
+      - localJusticeArea
       - name
+    LocalJusticeArea:
       type: object
       properties:
         name:
           type: string
-    Name:
       required:
-      - forename
-      - surname
+      - name
+    Name:
       type: object
       properties:
         forename:
@@ -104,20 +101,17 @@ components:
           type: string
         middleName:
           type: string
-    Offence:
       required:
-      - description
+      - forename
+      - surname
+    Offence:
       type: object
       properties:
         description:
           type: string
-    PreSentenceReportContext:
       required:
-      - court
-      - crn
-      - dateOfBirth
-      - mainOffence
-      - name
+      - description
+    PreSentenceReportContext:
       type: object
       properties:
         crn:
@@ -139,6 +133,12 @@ components:
             $ref: "#/components/schemas/Offence"
         court:
           $ref: "#/components/schemas/Court"
+      required:
+      - court
+      - crn
+      - dateOfBirth
+      - mainOffence
+      - name
   securitySchemes:
     hmpps-auth-token:
       type: http

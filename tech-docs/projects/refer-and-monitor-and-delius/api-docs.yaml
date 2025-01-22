@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -25,15 +25,14 @@ paths:
         required: true
         schema:
           type: string
-      - name: crns
-        in: query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
         required: true
-        schema:
-          maxItems: 500
-          minItems: 1
-          type: array
-          items:
-            type: string
       responses:
         "200":
           description: OK
@@ -55,8 +54,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string
@@ -296,10 +293,6 @@ paths:
 components:
   schemas:
     CaseAccess:
-      required:
-      - crn
-      - userExcluded
-      - userRestricted
       type: object
       properties:
         crn:
@@ -312,23 +305,20 @@ components:
           type: string
         restrictionMessage:
           type: string
-    UserAccess:
       required:
-      - access
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
       type: object
       properties:
         access:
           type: array
           items:
             $ref: "#/components/schemas/CaseAccess"
-    ReferralStarted:
       required:
-      - contractType
-      - notes
-      - referralId
-      - sentenceId
-      - startedAt
-      - urn
+      - access
+    ReferralStarted:
       type: object
       properties:
         referralId:
@@ -346,19 +336,14 @@ components:
           type: string
         urn:
           type: string
-    MergeAppointment:
       required:
-      - countsTowardsRar
-      - durationInMinutes
-      - end
-      - id
+      - contractType
+      - notes
       - referralId
-      - referralReference
-      - referralUrn
-      - rescheduleOutcome
-      - start
-      - typeCode
+      - sentenceId
+      - startedAt
       - urn
+    MergeAppointment:
       type: object
       properties:
         id:
@@ -418,11 +403,19 @@ components:
           type: string
         rescheduleOutcome:
           type: string
-    Outcome:
       required:
-      - attended
-      - notify
-      - sessionHappened
+      - countsTowardsRar
+      - durationInMinutes
+      - end
+      - id
+      - referralId
+      - referralReference
+      - referralUrn
+      - rescheduleOutcome
+      - start
+      - typeCode
+      - urn
+    Outcome:
       type: object
       properties:
         attended:
@@ -444,38 +437,39 @@ components:
           type: boolean
         sessionHappened:
           type: boolean
-    CaseIdentifier:
       required:
-      - crn
+      - attended
+      - notify
+      - sessionHappened
+    CaseIdentifier:
       type: object
       properties:
         crn:
           type: string
         nomsId:
           type: string
-    ManagedCases:
       required:
-      - managedCases
+      - crn
+    ManagedCases:
       type: object
       properties:
         managedCases:
           type: array
           items:
             $ref: "#/components/schemas/CaseIdentifier"
-    Name:
       required:
-      - forename
-      - surname
+      - managedCases
+    Name:
       type: object
       properties:
         forename:
           type: string
         surname:
           type: string
-    UserDetail:
       required:
-      - name
-      - username
+      - forename
+      - surname
+    UserDetail:
       type: object
       properties:
         username:
@@ -484,11 +478,10 @@ components:
           $ref: "#/components/schemas/Name"
         email:
           type: string
-    DeliveryUnit:
       required:
-      - code
-      - description
-      - region
+      - name
+      - username
+    DeliveryUnit:
       type: object
       properties:
         code:
@@ -497,16 +490,20 @@ components:
           type: string
         region:
           $ref: "#/components/schemas/Region"
-    Region:
       required:
       - code
       - description
+      - region
+    Region:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
+      required:
+      - code
+      - description
     Address:
       type: object
       properties:
@@ -525,14 +522,6 @@ components:
         postcode:
           type: string
     Manager:
-      required:
-      - code
-      - name
-      - officeLocations
-      - pdu
-      - responsibleOfficer
-      - team
-      - unallocated
       type: object
       properties:
         code:
@@ -557,11 +546,15 @@ components:
             $ref: "#/components/schemas/OfficeLocation"
         unallocated:
           type: boolean
-    OfficeLocation:
       required:
       - code
-      - description
-      - provider
+      - name
+      - officeLocations
+      - pdu
+      - responsibleOfficer
+      - team
+      - unallocated
+    OfficeLocation:
       type: object
       properties:
         code:
@@ -574,39 +567,40 @@ components:
           type: string
         provider:
           $ref: "#/components/schemas/Provider"
+      required:
+      - code
+      - description
+      - provider
     Pdu:
-      required:
-      - code
-      - description
       type: object
       properties:
         code:
           type: string
         description:
           type: string
+      required:
+      - code
+      - description
     Provider:
-      required:
-      - code
-      - description
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    ResponsibleOfficer:
       required:
-      - communityManager
+      - code
+      - description
+    ResponsibleOfficer:
       type: object
       properties:
         communityManager:
           $ref: "#/components/schemas/Manager"
         prisonManager:
           $ref: "#/components/schemas/Manager"
-    Team:
       required:
-      - code
-      - description
+      - communityManager
+    Team:
       type: object
       properties:
         code:
@@ -617,12 +611,10 @@ components:
           type: string
         telephoneNumber:
           type: string
-    CaseDetail:
       required:
-      - contactDetails
-      - crn
-      - dateOfBirth
-      - name
+      - code
+      - description
+    CaseDetail:
       type: object
       properties:
         crn:
@@ -638,9 +630,12 @@ components:
           $ref: "#/components/schemas/Profile"
         contactDetails:
           $ref: "#/components/schemas/ContactDetails"
-    ContactDetails:
       required:
-      - noFixedAbode
+      - contactDetails
+      - crn
+      - dateOfBirth
+      - name
+    ContactDetails:
       type: object
       properties:
         noFixedAbode:
@@ -653,10 +648,9 @@ components:
           type: string
         mobileNumber:
           type: string
-    Disability:
       required:
-      - startDate
-      - type
+      - noFixedAbode
+    Disability:
       type: object
       properties:
         type:
@@ -666,9 +660,10 @@ components:
           format: date
         notes:
           type: string
-    Profile:
       required:
-      - disabilities
+      - startDate
+      - type
+    Profile:
       type: object
       properties:
         primaryLanguage:
@@ -681,10 +676,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Disability"
-    CaseConvictions:
       required:
-      - caseDetail
-      - convictions
+      - disabilities
+    CaseConvictions:
       type: object
       properties:
         caseDetail:
@@ -693,12 +687,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Conviction"
-    Conviction:
       required:
-      - active
-      - id
-      - mainOffence
-      - sentence
+      - caseDetail
+      - convictions
+    Conviction:
       type: object
       properties:
         id:
@@ -713,19 +705,22 @@ components:
           $ref: "#/components/schemas/Offence"
         active:
           type: boolean
-    Offence:
       required:
-      - category
-      - subCategory
+      - active
+      - id
+      - mainOffence
+      - sentence
+    Offence:
       type: object
       properties:
         category:
           type: string
         subCategory:
           type: string
-    Sentence:
       required:
-      - description
+      - category
+      - subCategory
+    Sentence:
       type: object
       properties:
         description:
@@ -733,16 +728,18 @@ components:
         expectedEndDate:
           type: string
           format: date
-    CaseConviction:
       required:
-      - caseDetail
-      - conviction
+      - description
+    CaseConviction:
       type: object
       properties:
         caseDetail:
           $ref: "#/components/schemas/CaseDetail"
         conviction:
           $ref: "#/components/schemas/Conviction"
+      required:
+      - caseDetail
+      - conviction
   securitySchemes:
     hmpps-auth-token:
       type: http

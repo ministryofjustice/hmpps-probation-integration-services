@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -78,11 +78,6 @@ paths:
 components:
   schemas:
     Manager:
-      required:
-      - code
-      - name
-      - team
-      - unallocated
       type: object
       properties:
         code:
@@ -97,20 +92,22 @@ components:
           type: string
         unallocated:
           type: boolean
-    Name:
       required:
-      - forename
-      - surname
+      - code
+      - name
+      - team
+      - unallocated
+    Name:
       type: object
       properties:
         forename:
           type: string
         surname:
           type: string
-    Team:
       required:
-      - code
-      - description
+      - forename
+      - surname
+    Team:
       type: object
       properties:
         code:
@@ -121,12 +118,10 @@ components:
           type: string
         telephone:
           type: string
-    Conviction:
       required:
-      - active
-      - date
-      - documents
-      - offence
+      - code
+      - description
+    Conviction:
       type: object
       properties:
         title:
@@ -144,11 +139,12 @@ components:
             $ref: "#/components/schemas/Document"
         institutionName:
           type: string
-    Document:
       required:
-      - id
-      - name
-      - type
+      - active
+      - date
+      - documents
+      - offence
+    Document:
       type: object
       properties:
         id:
@@ -164,12 +160,11 @@ components:
         createdAt:
           type: string
           format: date-time
-    ProbationDocumentsResponse:
       required:
-      - convictions
-      - crn
-      - documents
+      - id
       - name
+      - type
+    ProbationDocumentsResponse:
       type: object
       properties:
         crn:
@@ -184,6 +179,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Conviction"
+      required:
+      - convictions
+      - crn
+      - documents
+      - name
     StreamingResponseBody:
       type: object
   securitySchemes:

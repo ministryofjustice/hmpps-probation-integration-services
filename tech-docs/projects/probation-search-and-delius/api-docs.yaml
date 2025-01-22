@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -51,11 +51,6 @@ paths:
 components:
   schemas:
     ContactSearchAuditRequest:
-      required:
-      - dateTime
-      - pagination
-      - search
-      - username
       type: object
       properties:
         search:
@@ -67,10 +62,12 @@ components:
         dateTime:
           type: string
           format: date-time
-    ContactSearchRequest:
       required:
-      - crn
-      - matchAllTerms
+      - dateTime
+      - pagination
+      - search
+      - username
+    ContactSearchRequest:
       type: object
       properties:
         crn:
@@ -79,10 +76,10 @@ components:
           type: string
         matchAllTerms:
           type: boolean
-    PageRequest:
       required:
-      - page
-      - pageSize
+      - crn
+      - matchAllTerms
+    PageRequest:
       type: object
       properties:
         page:
@@ -95,10 +92,10 @@ components:
           type: string
         direction:
           type: string
-    ContactJsonResponse:
       required:
-      - contactId
-      - json
+      - page
+      - pageSize
+    ContactJsonResponse:
       type: object
       properties:
         contactId:
@@ -106,6 +103,9 @@ components:
           format: int64
         json:
           type: string
+      required:
+      - contactId
+      - json
   securitySchemes:
     hmpps-auth-token:
       type: http

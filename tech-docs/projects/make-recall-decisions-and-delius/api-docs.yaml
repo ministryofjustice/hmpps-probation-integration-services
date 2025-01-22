@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -282,9 +282,9 @@ paths:
         required: false
         schema:
           type: array
+          default: []
           items:
             type: string
-          default: []
       - name: includeSystemGenerated
         in: query
         description: Include (true) or exclude (false) any contact types that are
@@ -322,9 +322,6 @@ paths:
 components:
   schemas:
     Name:
-      required:
-      - forename
-      - surname
       type: object
       properties:
         forename:
@@ -333,20 +330,20 @@ components:
           type: string
         surname:
           type: string
-    Provider:
       required:
-      - code
-      - name
+      - forename
+      - surname
+    Provider:
       type: object
       properties:
         code:
           type: string
         name:
           type: string
-    UserDetails:
       required:
+      - code
       - name
-      - username
+    UserDetails:
       type: object
       properties:
         name:
@@ -359,10 +356,10 @@ components:
           $ref: "#/components/schemas/Provider"
         staffCode:
           type: string
-    UserAccess:
       required:
-      - userExcluded
-      - userRestricted
+      - name
+      - username
+    UserAccess:
       type: object
       properties:
         exclusionMessage:
@@ -373,6 +370,9 @@ components:
           type: boolean
         userRestricted:
           type: boolean
+      required:
+      - userExcluded
+      - userRestricted
     StreamingResponseBody:
       type: object
     Address:
@@ -395,10 +395,6 @@ components:
         noFixedAbode:
           type: boolean
     Conviction:
-      required:
-      - additionalOffences
-      - mainOffence
-      - number
       type: object
       properties:
         number:
@@ -411,11 +407,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Offence"
-    ConvictionDetails:
       required:
       - additionalOffences
       - mainOffence
       - number
+    ConvictionDetails:
       type: object
       properties:
         number:
@@ -428,10 +424,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Offence"
-    ExtendedSentence:
       required:
-      - description
-      - isCustodial
+      - additionalOffences
+      - mainOffence
+      - number
+    ExtendedSentence:
       type: object
       properties:
         description:
@@ -459,6 +456,9 @@ components:
         sentenceExpiryDate:
           type: string
           format: date
+      required:
+      - description
+      - isCustodial
     Identifiers:
       type: object
       properties:
@@ -471,17 +471,15 @@ components:
         bookingNumber:
           type: string
     Institution:
-      required:
-      - description
       type: object
       properties:
         name:
           type: string
         description:
           type: string
-    Mappa:
       required:
-      - startDate
+      - description
+    Mappa:
       type: object
       properties:
         category:
@@ -493,10 +491,9 @@ components:
         startDate:
           type: string
           format: date
-    Offence:
       required:
-      - code
-      - description
+      - startDate
+    Offence:
       type: object
       properties:
         date:
@@ -506,12 +503,10 @@ components:
           type: string
         description:
           type: string
-    PersonalDetailsOverview:
       required:
-      - dateOfBirth
-      - gender
-      - identifiers
-      - name
+      - code
+      - description
+    PersonalDetailsOverview:
       type: object
       properties:
         name:
@@ -527,11 +522,12 @@ components:
           type: string
         primaryLanguage:
           type: string
-    RecommendationModel:
       required:
-      - activeConvictions
-      - activeCustodialConvictions
-      - personalDetails
+      - dateOfBirth
+      - gender
+      - identifiers
+      - name
+    RecommendationModel:
       type: object
       properties:
         personalDetails:
@@ -552,9 +548,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ConvictionDetails"
-    Release:
       required:
-      - releaseDate
+      - activeConvictions
+      - activeCustodialConvictions
+      - personalDetails
+    Release:
       type: object
       properties:
         releaseDate:
@@ -563,10 +561,9 @@ components:
         recallDate:
           type: string
           format: date
-    Sentence:
       required:
-      - description
-      - isCustodial
+      - releaseDate
+    Sentence:
       type: object
       properties:
         description:
@@ -586,12 +583,10 @@ components:
         sentenceExpiryDate:
           type: string
           format: date
-    Manager:
       required:
-      - name
-      - provider
-      - staffCode
-      - team
+      - description
+      - isCustodial
+    Manager:
       type: object
       properties:
         staffCode:
@@ -602,9 +597,12 @@ components:
           $ref: "#/components/schemas/Provider"
         team:
           $ref: "#/components/schemas/Team"
-    PersonalDetails:
       required:
-      - personalDetails
+      - name
+      - provider
+      - staffCode
+      - team
+    PersonalDetails:
       type: object
       properties:
         personalDetails:
@@ -613,11 +611,9 @@ components:
           $ref: "#/components/schemas/Address"
         communityManager:
           $ref: "#/components/schemas/Manager"
-    Team:
       required:
-      - code
-      - localAdminUnit
-      - name
+      - personalDetails
+    Team:
       type: object
       properties:
         code:
@@ -630,11 +626,11 @@ components:
           type: string
         email:
           type: string
-    Overview:
       required:
-      - activeConvictions
-      - personalDetails
-      - registerFlags
+      - code
+      - localAdminUnit
+      - name
+    Overview:
       type: object
       properties:
         personalDetails:
@@ -649,10 +645,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Conviction"
-    MappaAndRoshHistory:
       required:
+      - activeConvictions
       - personalDetails
-      - roshHistory
+      - registerFlags
+    MappaAndRoshHistory:
       type: object
       properties:
         personalDetails:
@@ -663,12 +660,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Rosh"
-    Rosh:
       required:
-      - active
-      - startDate
-      - type
-      - typeDescription
+      - personalDetails
+      - roshHistory
+    Rosh:
       type: object
       properties:
         active:
@@ -682,12 +677,12 @@ components:
         startDate:
           type: string
           format: date
-    ConvictionWithLicenceConditions:
       required:
-      - additionalOffences
-      - licenceConditions
-      - mainOffence
-      - number
+      - active
+      - startDate
+      - type
+      - typeDescription
+    ConvictionWithLicenceConditions:
       type: object
       properties:
         number:
@@ -704,10 +699,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LicenceCondition"
-    LicenceCondition:
       required:
-      - mainCategory
-      - startDate
+      - additionalOffences
+      - licenceConditions
+      - mainOffence
+      - number
+    LicenceCondition:
       type: object
       properties:
         startDate:
@@ -719,20 +716,20 @@ components:
           $ref: "#/components/schemas/LicenceConditionCategory"
         notes:
           type: string
-    LicenceConditionCategory:
       required:
-      - code
-      - description
+      - mainCategory
+      - startDate
+    LicenceConditionCategory:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    LicenceConditions:
       required:
-      - activeConvictions
-      - personalDetails
+      - code
+      - description
+    LicenceConditions:
       type: object
       properties:
         personalDetails:
@@ -741,11 +738,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ConvictionWithLicenceConditions"
-    Contact:
       required:
-      - documents
-      - startDateTime
-      - type
+      - activeConvictions
+      - personalDetails
+    Contact:
       type: object
       properties:
         description:
@@ -767,11 +763,11 @@ components:
           format: date-time
         type:
           $ref: "#/components/schemas/Type"
-    ContactHistory:
       required:
-      - contacts
-      - personalDetails
-      - summary
+      - documents
+      - startDateTime
+      - type
+    ContactHistory:
       type: object
       properties:
         personalDetails:
@@ -782,11 +778,11 @@ components:
             $ref: "#/components/schemas/Contact"
         summary:
           $ref: "#/components/schemas/ContactSummary"
-    ContactSummary:
       required:
-      - hits
-      - total
-      - types
+      - contacts
+      - personalDetails
+      - summary
+    ContactSummary:
       type: object
       properties:
         types:
@@ -799,11 +795,11 @@ components:
         total:
           type: integer
           format: int32
-    ContactTypeSummary:
       required:
-      - code
-      - description
+      - hits
       - total
+      - types
+    ContactTypeSummary:
       type: object
       properties:
         code:
@@ -813,11 +809,11 @@ components:
         total:
           type: integer
           format: int32
-    DocumentReference:
       required:
-      - id
-      - lastUpdated
-      - name
+      - code
+      - description
+      - total
+    DocumentReference:
       type: object
       properties:
         id:
@@ -827,11 +823,11 @@ components:
         lastUpdated:
           type: string
           format: date-time
-    Type:
       required:
-      - code
-      - description
-      - systemGenerated
+      - id
+      - lastUpdated
+      - name
+    Type:
       type: object
       properties:
         code:
@@ -840,11 +836,11 @@ components:
           type: string
         systemGenerated:
           type: boolean
-    Document:
       required:
-      - id
-      - name
-      - type
+      - code
+      - description
+      - systemGenerated
+    Document:
       type: object
       properties:
         id:
@@ -863,6 +859,10 @@ components:
         lastUpdatedAt:
           type: string
           format: date-time
+      required:
+      - id
+      - name
+      - type
   securitySchemes:
     hmpps-auth-token:
       type: http

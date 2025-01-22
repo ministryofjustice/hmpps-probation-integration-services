@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -71,8 +71,6 @@ paths:
 components:
   schemas:
     Address:
-      required:
-      - noFixedAbode
       type: object
       properties:
         noFixedAbode:
@@ -91,10 +89,9 @@ components:
           type: string
         postcode:
           type: string
-    CaseDetails:
       required:
-      - identifiers
-      - person
+      - noFixedAbode
+    CaseDetails:
       type: object
       properties:
         identifiers:
@@ -105,16 +102,19 @@ components:
           $ref: "#/components/schemas/Profile"
         contactDetails:
           $ref: "#/components/schemas/ContactDetails"
-    CodeDescription:
       required:
-      - code
-      - description
+      - identifiers
+      - person
+    CodeDescription:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
+      required:
+      - code
+      - description
     ContactDetails:
       type: object
       properties:
@@ -127,8 +127,6 @@ components:
         mobileNumber:
           type: string
     Identifiers:
-      required:
-      - crn
       type: object
       properties:
         crn:
@@ -139,11 +137,9 @@ components:
           type: string
         cro:
           type: string
-    Name:
       required:
-      - forename
-      - middleNames
-      - surname
+      - crn
+    Name:
       type: object
       properties:
         surname:
@@ -154,10 +150,11 @@ components:
           type: array
           items:
             type: string
-    Person:
       required:
-      - dateOfBirth
-      - name
+      - forename
+      - middleNames
+      - surname
+    Person:
       type: object
       properties:
         name:
@@ -167,6 +164,9 @@ components:
           format: date
         gender:
           $ref: "#/components/schemas/CodeDescription"
+      required:
+      - dateOfBirth
+      - name
     Profile:
       type: object
       properties:
@@ -177,11 +177,6 @@ components:
         religion:
           $ref: "#/components/schemas/CodeDescription"
     Institution:
-      required:
-      - code
-      - description
-      - institutionId
-      - isEstablishment
       type: object
       properties:
         institutionId:
@@ -201,10 +196,12 @@ components:
           type: boolean
         nomsPrisonInstitutionCode:
           type: string
-    Recall:
       required:
-      - date
-      - reason
+      - code
+      - description
+      - institutionId
+      - isEstablishment
+    Recall:
       type: object
       properties:
         date:
@@ -214,10 +211,10 @@ components:
           $ref: "#/components/schemas/CodeDescription"
         notes:
           type: string
-    Release:
       required:
       - date
       - reason
+    Release:
       type: object
       properties:
         date:
@@ -229,6 +226,9 @@ components:
           $ref: "#/components/schemas/Institution"
         reason:
           $ref: "#/components/schemas/CodeDescription"
+      required:
+      - date
+      - reason
     ReleaseRecall:
       type: object
       properties:
@@ -237,11 +237,6 @@ components:
         lastRecall:
           $ref: "#/components/schemas/Recall"
     Officer:
-      required:
-      - code
-      - forename
-      - isUnallocated
-      - surname
       type: object
       properties:
         code:
@@ -252,18 +247,12 @@ components:
           type: string
         isUnallocated:
           type: boolean
-    Registration:
       required:
-      - active
-      - offenderId
-      - registeringOfficer
-      - registeringProbationArea
-      - registeringTeam
-      - registrationId
-      - registrationReviews
-      - startDate
-      - type
-      - warnUser
+      - code
+      - forename
+      - isUnallocated
+      - surname
+    Registration:
       type: object
       properties:
         registrationId:
@@ -307,21 +296,27 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Review"
-    Registrations:
       required:
-      - registrations
+      - active
+      - offenderId
+      - registeringOfficer
+      - registeringProbationArea
+      - registeringTeam
+      - registrationId
+      - registrationReviews
+      - startDate
+      - type
+      - warnUser
+    Registrations:
       type: object
       properties:
         registrations:
           type: array
           items:
             $ref: "#/components/schemas/Registration"
-    Review:
       required:
-      - completed
-      - reviewDate
-      - reviewingOfficer
-      - reviewingTeam
+      - registrations
+    Review:
       type: object
       properties:
         reviewDate:
@@ -338,6 +333,11 @@ components:
           $ref: "#/components/schemas/Officer"
         completed:
           type: boolean
+      required:
+      - completed
+      - reviewDate
+      - reviewingOfficer
+      - reviewingTeam
   securitySchemes:
     hmpps-auth-token:
       type: http

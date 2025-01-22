@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -109,10 +109,6 @@ paths:
 components:
   schemas:
     CaseAccess:
-      required:
-      - crn
-      - userExcluded
-      - userRestricted
       type: object
       properties:
         crn:
@@ -125,6 +121,10 @@ components:
           type: string
         restrictionMessage:
           type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
     Address:
       type: object
       properties:
@@ -143,9 +143,6 @@ components:
         postcode:
           type: string
     Alias:
-      required:
-      - dateOfBirth
-      - name
       type: object
       properties:
         name:
@@ -153,11 +150,10 @@ components:
         dateOfBirth:
           type: string
           format: date
-    CaseDetails:
       required:
-      - crn
       - dateOfBirth
       - name
+    CaseDetails:
       type: object
       properties:
         crn:
@@ -215,9 +211,11 @@ components:
             $ref: "#/components/schemas/RegisterFlag"
         sentence:
           $ref: "#/components/schemas/Sentence"
-    Disability:
       required:
-      - type
+      - crn
+      - dateOfBirth
+      - name
+    Disability:
       type: object
       properties:
         type:
@@ -226,31 +224,29 @@ components:
           $ref: "#/components/schemas/Type"
         notes:
           type: string
-    Language:
       required:
-      - primaryLanguage
-      - requiresInterpreter
+      - type
+    Language:
       type: object
       properties:
         requiresInterpreter:
           type: boolean
         primaryLanguage:
           type: string
-    MainOffence:
       required:
-      - category
-      - subCategory
+      - primaryLanguage
+      - requiresInterpreter
+    MainOffence:
       type: object
       properties:
         category:
           $ref: "#/components/schemas/Type"
         subCategory:
           $ref: "#/components/schemas/Type"
-    MappaRegistration:
       required:
       - category
-      - level
-      - startDate
+      - subCategory
+    MappaRegistration:
       type: object
       properties:
         startDate:
@@ -260,10 +256,11 @@ components:
           $ref: "#/components/schemas/Type"
         category:
           $ref: "#/components/schemas/Type"
-    Name:
       required:
-      - forename
-      - surname
+      - category
+      - level
+      - startDate
+    Name:
       type: object
       properties:
         forename:
@@ -272,10 +269,10 @@ components:
           type: string
         surname:
           type: string
-    PersonalCircumstance:
       required:
-      - evidenced
-      - type
+      - forename
+      - surname
+    PersonalCircumstance:
       type: object
       properties:
         type:
@@ -286,11 +283,10 @@ components:
           type: string
         evidenced:
           type: boolean
-    PersonalContact:
       required:
-      - name
-      - relationship
-      - relationshipType
+      - evidenced
+      - type
+    PersonalContact:
       type: object
       properties:
         relationship:
@@ -305,19 +301,21 @@ components:
           type: string
         address:
           $ref: "#/components/schemas/Address"
-    PhoneNumber:
       required:
-      - number
-      - type
+      - name
+      - relationship
+      - relationshipType
+    PhoneNumber:
       type: object
       properties:
         type:
           type: string
         number:
           type: string
-    Provision:
       required:
+      - number
       - type
+    Provision:
       type: object
       properties:
         type:
@@ -326,10 +324,9 @@ components:
           $ref: "#/components/schemas/Type"
         notes:
           type: string
-    RegisterFlag:
       required:
-      - code
-      - description
+      - type
+    RegisterFlag:
       type: object
       properties:
         code:
@@ -338,10 +335,10 @@ components:
           type: string
         riskColour:
           type: string
-    Sentence:
       required:
-      - mainOffence
-      - startDate
+      - code
+      - description
+    Sentence:
       type: object
       properties:
         startDate:
@@ -349,21 +346,20 @@ components:
           format: date
         mainOffence:
           $ref: "#/components/schemas/MainOffence"
-    Type:
       required:
-      - code
-      - description
+      - mainOffence
+      - startDate
+    Type:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    PersonalDetails:
       required:
-      - crn
-      - personalCircumstances
-      - personalContacts
+      - code
+      - description
+    PersonalDetails:
       type: object
       properties:
         crn:
@@ -376,6 +372,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PersonalContact"
+      required:
+      - crn
+      - personalCircumstances
+      - personalContacts
   securitySchemes:
     hmpps-auth-token:
       type: http

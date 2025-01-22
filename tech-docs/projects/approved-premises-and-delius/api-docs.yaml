@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -25,15 +25,14 @@ paths:
         required: false
         schema:
           type: string
-      - name: crns
-        in: query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
         required: true
-        schema:
-          maxItems: 500
-          minItems: 1
-          type: array
-          items:
-            type: string
       responses:
         "200":
           description: OK
@@ -55,8 +54,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string
@@ -73,16 +70,14 @@ paths:
       tags:
       - case-controller
       operationId: getCaseSummaries
-      parameters:
-      - name: crns
-        in: query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
         required: true
-        schema:
-          maxItems: 500
-          minItems: 1
-          type: array
-          items:
-            type: string
       responses:
         "200":
           description: OK
@@ -98,8 +93,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string
@@ -342,10 +335,6 @@ paths:
 components:
   schemas:
     CaseAccess:
-      required:
-      - crn
-      - userExcluded
-      - userRestricted
       type: object
       properties:
         crn:
@@ -358,42 +347,39 @@ components:
           type: string
         restrictionMessage:
           type: string
-    UserAccess:
       required:
-      - access
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
       type: object
       properties:
         access:
           type: array
           items:
             $ref: "#/components/schemas/CaseAccess"
-    Borough:
       required:
-      - code
-      - description
+      - access
+    Borough:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    CaseSummaries:
       required:
-      - cases
+      - code
+      - description
+    CaseSummaries:
       type: object
       properties:
         cases:
           type: array
           items:
             $ref: "#/components/schemas/CaseSummary"
-    CaseSummary:
       required:
-      - crn
-      - currentExclusion
-      - currentRestriction
-      - dateOfBirth
-      - manager
-      - name
+      - cases
+    CaseSummary:
       type: object
       properties:
         crn:
@@ -417,28 +403,31 @@ components:
           type: boolean
         currentRestriction:
           type: boolean
-    Ldu:
       required:
-      - code
+      - crn
+      - currentExclusion
+      - currentRestriction
+      - dateOfBirth
+      - manager
       - name
+    Ldu:
       type: object
       properties:
         code:
           type: string
         name:
           type: string
-    Manager:
       required:
-      - team
+      - code
+      - name
+    Manager:
       type: object
       properties:
         team:
           $ref: "#/components/schemas/Team"
-    Name:
       required:
-      - forename
-      - middleNames
-      - surname
+      - team
+    Name:
       type: object
       properties:
         forename:
@@ -449,6 +438,10 @@ components:
           type: array
           items:
             type: string
+      required:
+      - forename
+      - middleNames
+      - surname
     Profile:
       type: object
       properties:
@@ -461,11 +454,6 @@ components:
         religion:
           type: string
     Team:
-      required:
-      - code
-      - ldu
-      - name
-      - startDate
       type: object
       properties:
         code:
@@ -482,19 +470,21 @@ components:
         endDate:
           type: string
           format: date
-    TeamCodeResponse:
       required:
-      - teamCodes
+      - code
+      - ldu
+      - name
+      - startDate
+    TeamCodeResponse:
       type: object
       properties:
         teamCodes:
           type: array
           items:
             type: string
-    PersonName:
       required:
-      - forename
-      - surname
+      - teamCodes
+    PersonName:
       type: object
       properties:
         forename:
@@ -503,23 +493,20 @@ components:
           type: string
         middleName:
           type: string
-    ProbationArea:
       required:
-      - code
-      - description
+      - forename
+      - surname
+    ProbationArea:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    StaffDetail:
       required:
-      - active
       - code
-      - name
-      - probationArea
-      - teams
+      - description
+    StaffDetail:
       type: object
       properties:
         email:
@@ -540,13 +527,13 @@ components:
           type: string
         active:
           type: boolean
-    CaseDetail:
       required:
-      - careLeaver
-      - case
-      - offences
-      - registrations
-      - veteran
+      - active
+      - code
+      - name
+      - probationArea
+      - teams
+    CaseDetail:
       type: object
       properties:
         case:
@@ -565,10 +552,13 @@ components:
           type: boolean
         veteran:
           type: boolean
-    MappaDetail:
       required:
-      - lastUpdated
-      - startDate
+      - careLeaver
+      - case
+      - offences
+      - registrations
+      - veteran
+    MappaDetail:
       type: object
       properties:
         level:
@@ -587,16 +577,10 @@ components:
         lastUpdated:
           type: string
           format: date-time
-    Offence:
       required:
-      - code
-      - description
-      - eventId
-      - eventNumber
-      - id
-      - main
-      - mainCategoryDescription
-      - subCategoryDescription
+      - lastUpdated
+      - startDate
+    Offence:
       type: object
       properties:
         id:
@@ -619,11 +603,16 @@ components:
           format: int64
         eventNumber:
           type: string
-    Registration:
       required:
       - code
       - description
-      - startDate
+      - eventId
+      - eventNumber
+      - id
+      - main
+      - mainCategoryDescription
+      - subCategoryDescription
+    Registration:
       type: object
       properties:
         code:
@@ -633,10 +622,11 @@ components:
         startDate:
           type: string
           format: date
-    ApReferral:
       required:
-      - approvedPremises
-      - referralDate
+      - code
+      - description
+      - startDate
+    ApReferral:
       type: object
       properties:
         referralDate:
@@ -653,17 +643,17 @@ components:
           format: date-time
         approvedPremises:
           $ref: "#/components/schemas/ApprovedPremises"
-    ApprovedPremises:
       required:
-      - description
+      - approvedPremises
+      - referralDate
+    ApprovedPremises:
       type: object
       properties:
         description:
           type: string
-    ExistingReferrals:
       required:
-      - crn
-      - referrals
+      - description
+    ExistingReferrals:
       type: object
       properties:
         crn:
@@ -672,9 +662,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ApReferral"
-    ReferralDetail:
       required:
-      - referral
+      - crn
+      - referrals
+    ReferralDetail:
       type: object
       properties:
         referral:
@@ -685,16 +676,11 @@ components:
         departedAt:
           type: string
           format: date-time
+      required:
+      - referral
     StreamingResponseBody:
       type: object
     DocumentResponse:
-      required:
-      - dateCreated
-      - dateSaved
-      - filename
-      - level
-      - typeCode
-      - typeDescription
       type: object
       properties:
         id:
@@ -717,17 +703,24 @@ components:
           format: date-time
         description:
           type: string
+      required:
+      - dateCreated
+      - dateSaved
+      - filename
+      - level
+      - typeCode
+      - typeDescription
     Pageable:
       type: object
       properties:
         page:
+          type: integer
+          format: int32
           minimum: 0
-          type: integer
-          format: int32
         size:
-          minimum: 1
           type: integer
           format: int32
+          minimum: 1
         sort:
           type: array
           items:
@@ -757,20 +750,16 @@ components:
         page:
           $ref: "#/components/schemas/PageMetadata"
     StaffGrade:
-      required:
-      - code
-      - description
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    StaffResponse:
       required:
       - code
-      - keyWorker
-      - name
+      - description
+    StaffResponse:
       type: object
       properties:
         code:
@@ -781,6 +770,10 @@ components:
           $ref: "#/components/schemas/StaffGrade"
         keyWorker:
           type: boolean
+      required:
+      - code
+      - keyWorker
+      - name
   securitySchemes:
     hmpps-auth-token:
       type: http

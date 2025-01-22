@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -35,24 +35,24 @@ paths:
 components:
   schemas:
     Need:
-      required:
-      - description
-      - key
       type: object
       properties:
         key:
           type: string
         description:
           type: string
-    Needs:
       required:
-      - criminogenicNeeds
+      - description
+      - key
+    Needs:
       type: object
       properties:
         criminogenicNeeds:
           type: array
           items:
             $ref: "#/components/schemas/Need"
+      required:
+      - criminogenicNeeds
   securitySchemes:
     hmpps-auth-token:
       type: http

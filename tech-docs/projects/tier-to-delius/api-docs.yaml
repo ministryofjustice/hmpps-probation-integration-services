@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -102,10 +102,6 @@ paths:
 components:
   schemas:
     CaseAccess:
-      required:
-      - crn
-      - userExcluded
-      - userRestricted
       type: object
       properties:
         crn:
@@ -118,10 +114,11 @@ components:
           type: string
         restrictionMessage:
           type: string
-    Conviction:
       required:
-      - breached
-      - requirements
+      - crn
+      - userExcluded
+      - userRestricted
+    Conviction:
       type: object
       properties:
         terminationDate:
@@ -135,11 +132,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Requirement"
-    Registration:
       required:
-      - code
-      - date
-      - description
+      - breached
+      - requirements
+    Registration:
       type: object
       properties:
         code:
@@ -151,22 +147,21 @@ components:
         date:
           type: string
           format: date
-    Requirement:
       required:
-      - mainCategoryTypeCode
-      - restrictive
+      - code
+      - date
+      - description
+    Requirement:
       type: object
       properties:
         mainCategoryTypeCode:
           type: string
         restrictive:
           type: boolean
-    TierDetails:
       required:
-      - convictions
-      - gender
-      - previousEnforcementActivity
-      - registrations
+      - mainCategoryTypeCode
+      - restrictive
+    TierDetails:
       type: object
       properties:
         gender:
@@ -191,32 +186,37 @@ components:
             $ref: "#/components/schemas/Conviction"
         previousEnforcementActivity:
           type: boolean
-        rsrscore:
-          type: number
-          format: double
         ogrsscore:
           type: integer
           format: int64
-    Name:
+        rsrscore:
+          type: number
+          format: double
       required:
-      - forenames
-      - surname
+      - convictions
+      - gender
+      - previousEnforcementActivity
+      - registrations
+    Name:
       type: object
       properties:
         forenames:
           type: string
         surname:
           type: string
-    PersonDetails:
       required:
-      - crn
-      - name
+      - forenames
+      - surname
+    PersonDetails:
       type: object
       properties:
         crn:
           type: string
         name:
           $ref: "#/components/schemas/Name"
+      required:
+      - crn
+      - name
   securitySchemes:
     hmpps-auth-token:
       type: http

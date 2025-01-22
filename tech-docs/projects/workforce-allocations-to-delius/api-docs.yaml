@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -31,20 +31,19 @@ paths:
         \ user that\n            has a restriction in place\n        "
       operationId: limitedAccessCheck
       parameters:
-      - name: crns
-        in: query
-        required: true
-        schema:
-          maxItems: 500
-          minItems: 1
-          type: array
-          items:
-            type: string
       - name: username
         in: query
         required: false
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
       responses:
         "200":
           description: OK
@@ -77,8 +76,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string
@@ -141,8 +138,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 0
               type: array
               items:
                 type: string
@@ -591,9 +586,9 @@ paths:
         required: false
         schema:
           type: array
+          default: []
           items:
             type: string
-          default: []
       responses:
         "200":
           description: OK
@@ -662,10 +657,6 @@ paths:
 components:
   schemas:
     CaseAccess:
-      required:
-      - crn
-      - userExcluded
-      - userRestricted
       type: object
       properties:
         crn:
@@ -678,20 +669,20 @@ components:
           type: string
         restrictionMessage:
           type: string
-    UserAccess:
       required:
-      - access
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
       type: object
       properties:
         access:
           type: array
           items:
             $ref: "#/components/schemas/CaseAccess"
-    ActiveCasesResponse:
       required:
-      - cases
-      - code
-      - name
+      - access
+    ActiveCasesResponse:
       type: object
       properties:
         code:
@@ -706,11 +697,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Case"
-    Case:
       required:
-      - crn
+      - cases
+      - code
       - name
-      - type
+    Case:
       type: object
       properties:
         crn:
@@ -719,10 +710,11 @@ components:
           $ref: "#/components/schemas/Name"
         type:
           type: string
-    Name:
       required:
-      - forename
-      - surname
+      - crn
+      - name
+      - type
+    Name:
       type: object
       properties:
         forename:
@@ -731,11 +723,10 @@ components:
           type: string
         surname:
           type: string
-    CaseAccessList:
       required:
-      - crn
-      - excludedFrom
-      - restrictedTo
+      - forename
+      - surname
+    CaseAccessList:
       type: object
       properties:
         crn:
@@ -752,43 +743,47 @@ components:
           type: string
         restrictionMessage:
           type: string
-    User:
       required:
-      - username
+      - crn
+      - excludedFrom
+      - restrictedTo
+    User:
       type: object
       properties:
         username:
           type: string
         staffCode:
           type: string
-    AllocationDetailRequest:
       required:
-      - crn
-      - staffCode
+      - username
+    AllocationDetailRequest:
       type: object
       properties:
         crn:
           type: string
         staffCode:
           type: string
-    AllocationDetailRequests:
       required:
-      - cases
+      - crn
+      - staffCode
+    AllocationDetailRequests:
       type: object
       properties:
         cases:
           type: array
           items:
             $ref: "#/components/schemas/AllocationDetailRequest"
-    AllocationDetails:
       required:
       - cases
+    AllocationDetails:
       type: object
       properties:
         cases:
           type: array
           items:
             $ref: "#/components/schemas/AllocationImpact"
+      required:
+      - cases
     AllocationImpact:
       type: object
       properties:
@@ -799,9 +794,6 @@ components:
         staff:
           $ref: "#/components/schemas/StaffMember"
     StaffMember:
-      required:
-      - code
-      - name
       type: object
       properties:
         code:
@@ -812,46 +804,42 @@ components:
           type: string
         grade:
           type: string
-    AllocationDemandRequest:
       required:
-      - cases
+      - code
+      - name
+    AllocationDemandRequest:
       type: object
       properties:
         cases:
-          maxItems: 500
-          minItems: 0
           type: array
           items:
             $ref: "#/components/schemas/AllocationRequest"
-    AllocationRequest:
+          maxItems: 500
+          minItems: 0
       required:
-      - crn
-      - eventNumber
+      - cases
+    AllocationRequest:
       type: object
       properties:
         crn:
+          type: string
           pattern: "^[a-zA-Z]\\d{6}$"
-          type: string
         eventNumber:
-          pattern: "^\\d{1,4}$"
           type: string
-    AllocationDemandResponse:
+          pattern: "^\\d{1,4}$"
       required:
-      - cases
+      - crn
+      - eventNumber
+    AllocationDemandResponse:
       type: object
       properties:
         cases:
           type: array
           items:
             $ref: "#/components/schemas/AllocationResponse"
-    AllocationResponse:
       required:
-      - court
-      - crn
-      - event
-      - name
-      - probationStatus
-      - type
+      - cases
+    AllocationResponse:
       type: object
       properties:
         crn:
@@ -880,19 +868,23 @@ components:
         handoverDate:
           type: string
           format: date
-    Event:
       required:
-      - number
+      - court
+      - crn
+      - event
+      - name
+      - probationStatus
+      - type
+    Event:
       type: object
       properties:
         number:
           type: string
         manager:
           $ref: "#/components/schemas/Manager"
-    InitialAppointment:
       required:
-      - date
-      - staff
+      - number
+    InitialAppointment:
       type: object
       properties:
         date:
@@ -900,12 +892,10 @@ components:
           format: date
         staff:
           $ref: "#/components/schemas/StaffMember"
-    Manager:
       required:
-      - allocated
-      - code
-      - name
-      - teamCode
+      - date
+      - staff
+    Manager:
       type: object
       properties:
         code:
@@ -918,17 +908,19 @@ components:
           type: string
         allocated:
           type: boolean
-    NamedCourt:
       required:
+      - allocated
+      - code
       - name
+      - teamCode
+    NamedCourt:
       type: object
       properties:
         name:
           type: string
-    ProbationStatus:
       required:
-      - description
-      - status
+      - name
+    ProbationStatus:
       type: object
       properties:
         status:
@@ -940,11 +932,10 @@ components:
           - UNKNOWN
         description:
           type: string
-    Sentence:
       required:
-      - date
-      - length
-      - type
+      - description
+      - status
+    Sentence:
       type: object
       properties:
         type:
@@ -954,15 +945,13 @@ components:
           format: date
         length:
           type: string
+      required:
+      - date
+      - length
+      - type
     StreamingResponseBody:
       type: object
     OfficerView:
-      required:
-      - casesDueToEndInNext4Weeks
-      - code
-      - name
-      - paroleReportsToCompleteInNext4Weeks
-      - releasesWithinNext4Weeks
       type: object
       properties:
         code:
@@ -975,24 +964,27 @@ components:
           type: string
         casesDueToEndInNext4Weeks:
           type: integer
+          format: int64
           description: The number of sentenced events with an end date in the next
             four weeks on cases managed by the officer.
-          format: int64
         releasesWithinNext4Weeks:
           type: integer
+          format: int64
           description: The number of sentenced custodial events with an "Expected
             Release Date" key date in the next four weeks on cases managed by the
             officer.
-          format: int64
         paroleReportsToCompleteInNext4Weeks:
           type: integer
+          format: int64
           description: The number of parole reports required in the next four weeks
             on cases managed by the officer.
-          format: int64
-    RiskItem:
       required:
-      - colour
-      - description
+      - casesDueToEndInNext4Weeks
+      - code
+      - name
+      - paroleReportsToCompleteInNext4Weeks
+      - releasesWithinNext4Weeks
+    RiskItem:
       type: object
       properties:
         description:
@@ -1004,6 +996,9 @@ components:
           - AMBER
           - GREEN
           - WHITE
+      required:
+      - colour
+      - description
     RiskSummary:
       type: object
       properties:
@@ -1018,10 +1013,6 @@ components:
         publicProtection:
           $ref: "#/components/schemas/RiskItem"
     Person:
-      required:
-      - crn
-      - name
-      - type
       type: object
       properties:
         crn:
@@ -1035,11 +1026,11 @@ components:
           - CUSTODY
           - COMMUNITY
           - UNKNOWN
-    DocumentEvent:
       required:
-      - eventNumber
-      - eventType
-      - mainOffence
+      - crn
+      - name
+      - type
+    DocumentEvent:
       type: object
       properties:
         eventType:
@@ -1051,11 +1042,11 @@ components:
           type: string
         mainOffence:
           type: string
-    PersonDocument:
       required:
-      - name
-      - relatedTo
-      - sensitive
+      - eventNumber
+      - eventType
+      - mainOffence
+    PersonDocument:
       type: object
       properties:
         id:
@@ -1072,11 +1063,11 @@ components:
           format: date-time
         sensitive:
           type: boolean
-    RelatedTo:
       required:
-      - description
       - name
-      - type
+      - relatedTo
+      - sensitive
+    RelatedTo:
       type: object
       properties:
         type:
@@ -1108,10 +1099,11 @@ components:
           $ref: "#/components/schemas/DocumentEvent"
         description:
           type: string
-    PrEvent:
       required:
-      - offences
-      - sentence
+      - description
+      - name
+      - type
+    PrEvent:
       type: object
       properties:
         sentence:
@@ -1122,21 +1114,20 @@ components:
             $ref: "#/components/schemas/PrOffence"
         manager:
           $ref: "#/components/schemas/StaffMember"
-    PrOffence:
       required:
-      - description
-      - main
+      - offences
+      - sentence
+    PrOffence:
       type: object
       properties:
         description:
           type: string
         main:
           type: boolean
-    PrSentence:
       required:
       - description
-      - length
-      - startDate
+      - main
+    PrSentence:
       type: object
       properties:
         description:
@@ -1149,13 +1140,11 @@ components:
         terminationDate:
           type: string
           format: date
-    ProbationRecord:
       required:
-      - activeEvents
-      - crn
-      - event
-      - inactiveEvents
-      - name
+      - description
+      - length
+      - startDate
+    ProbationRecord:
       type: object
       properties:
         crn:
@@ -1172,14 +1161,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PrEvent"
-    CaseView:
       required:
-      - age
-      - dateOfBirth
+      - activeEvents
+      - crn
+      - event
+      - inactiveEvents
       - name
-      - offences
-      - requirements
-      - sentence
+    CaseView:
       type: object
       properties:
         name:
@@ -1212,11 +1200,14 @@ components:
         age:
           type: integer
           format: int32
-    CvAddress:
       required:
-      - noFixedAbode
-      - startDate
-      - typeVerified
+      - age
+      - dateOfBirth
+      - name
+      - offences
+      - requirements
+      - sentence
+    CvAddress:
       type: object
       properties:
         buildingName:
@@ -1240,11 +1231,11 @@ components:
         startDate:
           type: string
           format: date
-    CvDocument:
       required:
-      - dateCreated
-      - documentId
-      - documentName
+      - noFixedAbode
+      - startDate
+      - typeVerified
+    CvDocument:
       type: object
       properties:
         documentId:
@@ -1256,11 +1247,11 @@ components:
           format: date
         description:
           type: string
-    CvOffence:
       required:
-      - mainCategory
-      - mainOffence
-      - subCategory
+      - dateCreated
+      - documentId
+      - documentName
+    CvOffence:
       type: object
       properties:
         mainCategory:
@@ -1269,10 +1260,11 @@ components:
           type: string
         mainOffence:
           type: boolean
-    CvRequirement:
       required:
-      - length
       - mainCategory
+      - mainOffence
+      - subCategory
+    CvRequirement:
       type: object
       properties:
         mainCategory:
@@ -1281,12 +1273,10 @@ components:
           type: string
         length:
           type: string
-    CvSentence:
       required:
-      - description
-      - endDate
       - length
-      - startDate
+      - mainCategory
+    CvSentence:
       type: object
       properties:
         description:
@@ -1299,12 +1289,12 @@ components:
         endDate:
           type: string
           format: date
-    AllocationDemandSentence:
       required:
-      - code
-      - date
       - description
+      - endDate
       - length
+      - startDate
+    AllocationDemandSentence:
       type: object
       properties:
         description:
@@ -1323,12 +1313,12 @@ components:
           writeOnly: true
         length:
           type: string
-    AllocationDemandStaffResponse:
       required:
-      - activeRequirements
-      - crn
-      - name
-      - offences
+      - code
+      - date
+      - description
+      - length
+    AllocationDemandStaffResponse:
       type: object
       properties:
         crn:
@@ -1355,10 +1345,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Requirement"
-    Court:
       required:
-      - appearanceDate
+      - activeRequirements
+      - crn
       - name
+      - offences
+    Court:
       type: object
       properties:
         name:
@@ -1366,23 +1358,20 @@ components:
         appearanceDate:
           type: string
           format: date
-    Offence:
       required:
-      - mainCategory
-      - mainOffence
+      - appearanceDate
+      - name
+    Offence:
       type: object
       properties:
         mainCategory:
           type: string
         mainOffence:
           type: boolean
-    Requirement:
       required:
-      - id
-      - isUnpaidWork
-      - length
       - mainCategory
-      - manager
+      - mainOffence
+    Requirement:
       type: object
       properties:
         mainCategory:
@@ -1398,10 +1387,13 @@ components:
           $ref: "#/components/schemas/Manager"
         isUnpaidWork:
           type: boolean
-    RiskOGRS:
       required:
-      - lastUpdatedDate
-      - score
+      - id
+      - isUnpaidWork
+      - length
+      - mainCategory
+      - manager
+    RiskOGRS:
       type: object
       properties:
         lastUpdatedDate:
@@ -1410,11 +1402,10 @@ components:
         score:
           type: integer
           format: int64
-    ActiveEvent:
       required:
-      - eventNumber
-      - providerCode
-      - teamCode
+      - lastUpdatedDate
+      - score
+    ActiveEvent:
       type: object
       properties:
         eventNumber:
@@ -1423,11 +1414,11 @@ components:
           type: string
         providerCode:
           type: string
-    UnallocatedEventsResponse:
       required:
-      - activeEvents
-      - crn
-      - name
+      - eventNumber
+      - providerCode
+      - teamCode
+    UnallocatedEventsResponse:
       type: object
       properties:
         crn:
@@ -1438,19 +1429,18 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ActiveEvent"
-    RegistrationFlag:
       required:
-      - description
+      - activeEvents
+      - crn
+      - name
+    RegistrationFlag:
       type: object
       properties:
         description:
           type: string
-    RiskRecord:
       required:
-      - activeRegistrations
-      - crn
-      - inactiveRegistrations
-      - name
+      - description
+    RiskRecord:
       type: object
       properties:
         crn:
@@ -1467,10 +1457,12 @@ components:
             $ref: "#/components/schemas/RiskRegistration"
         ogrs:
           $ref: "#/components/schemas/RiskOGRS"
-    RiskRegistration:
       required:
-      - description
-      - startDate
+      - activeRegistrations
+      - crn
+      - inactiveRegistrations
+      - name
+    RiskRegistration:
       type: object
       properties:
         description:
@@ -1485,12 +1477,10 @@ components:
           type: string
         flag:
           $ref: "#/components/schemas/RegistrationFlag"
-    ChoosePractitionerResponse:
       required:
-      - crn
-      - name
-      - probationStatus
-      - teams
+      - description
+      - startDate
+    ChoosePractitionerResponse:
       type: object
       properties:
         crn:
@@ -1507,12 +1497,12 @@ components:
             type: array
             items:
               $ref: "#/components/schemas/StaffMember"
-    AllocationCompletedResponse:
       required:
       - crn
-      - event
       - name
-      - type
+      - probationStatus
+      - teams
+    AllocationCompletedResponse:
       type: object
       properties:
         crn:
@@ -1532,6 +1522,11 @@ components:
           $ref: "#/components/schemas/InitialAppointment"
         staff:
           $ref: "#/components/schemas/StaffMember"
+      required:
+      - crn
+      - event
+      - name
+      - type
   securitySchemes:
     hmpps-auth-token:
       type: http

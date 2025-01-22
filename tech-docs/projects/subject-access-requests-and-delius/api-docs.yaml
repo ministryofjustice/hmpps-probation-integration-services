@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -49,19 +49,16 @@ paths:
 components:
   schemas:
     User:
-      required:
-      - lastName
-      - username
       type: object
       properties:
         username:
           type: string
         lastName:
           type: string
-    Name:
       required:
-      - forename
-      - surname
+      - lastName
+      - username
+    Name:
       type: object
       properties:
         forename:
@@ -70,13 +67,16 @@ components:
           type: string
         surname:
           type: string
-    Person:
       required:
-      - name
+      - forename
+      - surname
+    Person:
       type: object
       properties:
         name:
           $ref: "#/components/schemas/Name"
+      required:
+      - name
   securitySchemes:
     hmpps-auth-token:
       type: http

@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -164,10 +164,6 @@ components:
           - VERY_HIGH
           - NOT_APPLICABLE
     AssessmentSummary:
-      required:
-      - id
-      - status
-      - type
       type: object
       properties:
         id:
@@ -180,9 +176,11 @@ components:
           type: string
         status:
           type: string
-    Timeline:
       required:
-      - timeline
+      - id
+      - status
+      - type
+    Timeline:
       type: object
       properties:
         crn:
@@ -193,6 +191,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AssessmentSummary"
+      required:
+      - timeline
   securitySchemes:
     hmpps-auth-token:
       type: http

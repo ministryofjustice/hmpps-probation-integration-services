@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -62,11 +62,6 @@ components:
     StreamingResponseBody:
       type: object
     Conviction:
-      required:
-      - active
-      - date
-      - documents
-      - offence
       type: object
       properties:
         title:
@@ -84,11 +79,12 @@ components:
             $ref: "#/components/schemas/Document"
         institutionName:
           type: string
-    Document:
       required:
-      - id
-      - name
-      - type
+      - active
+      - date
+      - documents
+      - offence
+    Document:
       type: object
       properties:
         id:
@@ -104,10 +100,11 @@ components:
         createdAt:
           type: string
           format: date-time
-    Name:
       required:
-      - forename
-      - surname
+      - id
+      - name
+      - type
+    Name:
       type: object
       properties:
         forename:
@@ -116,12 +113,10 @@ components:
           type: string
         surname:
           type: string
-    ProbationDocumentsResponse:
       required:
-      - convictions
-      - crn
-      - documents
-      - name
+      - forename
+      - surname
+    ProbationDocumentsResponse:
       type: object
       properties:
         crn:
@@ -136,6 +131,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Conviction"
+      required:
+      - convictions
+      - crn
+      - documents
+      - name
   securitySchemes:
     hmpps-auth-token:
       type: http

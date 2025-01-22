@@ -122,6 +122,9 @@
         <a href="./api-reference.html#sentence-crn"><span>/sentence/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#sentence-crn-requirement-requirementid-note-noteid"><span>/sentence/{crn}/requirement/{requirementId}/note/{noteId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#sentence-crn-probation-history"><span>/sentence/{crn}/probation-history</span></a>
       </li>
       <li>
@@ -908,6 +911,7 @@
     },
     "requirements": [
       {
+        "id": "integer",
         "code": "string",
         "expectedStartDate": "string",
         "actualStartDate": "string",
@@ -917,9 +921,25 @@
         "description": "string",
         "length": "integer",
         "lengthUnitValue": "string",
-        "notes": "string",
+        "requirementNotes": [
+          {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          }
+        ],
+        "requirementNote": {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        },
         "rar": {
           "completed": "integer",
+          "nsiCompleted": "integer",
           "scheduled": "integer",
           "totalDays": "integer"
         }
@@ -964,6 +984,132 @@
 </td>
 <td>
 <a href='#schema-sentenceoverview'>SentenceOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="sentence-crn-requirement-requirementid-note-noteid">/sentence/{crn}/requirement/{requirementId}/note/{noteId}</h2>
+
+<h3 id="sentence-crn-requirement-requirementid-note-noteid-get">get</h3>
+
+  <p><em>Get licence condition note</em></p>
+
+
+
+
+<h4 id="sentence-crn-requirement-requirementid-note-noteid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>requirementId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>noteId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="sentence-crn-requirement-requirementid-note-noteid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "requirement": {
+    "id": "integer",
+    "code": "string",
+    "expectedStartDate": "string",
+    "actualStartDate": "string",
+    "expectedEndDate": "string",
+    "actualEndDate": "string",
+    "terminationReason": "string",
+    "description": "string",
+    "length": "integer",
+    "lengthUnitValue": "string",
+    "requirementNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "requirementNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
+    "rar": {
+      "completed": "integer",
+      "nsiCompleted": "integer",
+      "scheduled": "integer",
+      "totalDays": "integer"
+    }
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-requirementnotedetail'>RequirementNoteDetail</a>
 </td>
 </tr>
 
@@ -3215,6 +3361,7 @@
       },
       "requirements": [
         {
+          "id": "integer",
           "code": "string",
           "expectedStartDate": "string",
           "actualStartDate": "string",
@@ -3224,9 +3371,25 @@
           "description": "string",
           "length": "integer",
           "lengthUnitValue": "string",
-          "notes": "string",
+          "requirementNotes": [
+            {
+              "id": "integer",
+              "createdBy": "string",
+              "createdByDate": "string",
+              "note": "string",
+              "hasNoteBeenTruncated": "boolean"
+            }
+          ],
+          "requirementNote": {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          },
           "rar": {
             "completed": "integer",
+            "nsiCompleted": "integer",
             "scheduled": "integer",
             "totalDays": "integer"
           }
@@ -3366,6 +3529,7 @@
       },
       "rar": {
         "completed": "integer",
+        "nsiCompleted": "integer",
         "scheduled": "integer",
         "totalDays": "integer"
       },
@@ -5260,7 +5424,7 @@
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-licenceconditionnote'>LicenceConditionNote</a>
+  <a href='#schema-notedetail'>NoteDetail</a>
 </td>
 </tr>
 
@@ -5270,17 +5434,17 @@
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-licenceconditionnote'>LicenceConditionNote</a>
+  <a href='#schema-notedetail'>NoteDetail</a>
 </td>
 </tr>
 
 </tbody>
 </table>
 
-<h3 id="schema-licenceconditionnote">LicenceConditionNote</h3>
+<h3 id="schema-notedetail">NoteDetail</h3>
 
 
-<table class='schema-licenceconditionnote'>
+<table class='schema-notedetail'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
@@ -5545,6 +5709,16 @@
 </tr>
 
 <tr>
+<td>nsiCompleted</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>scheduled</td>
 <td>integer</td>
 <td>true</td>
@@ -5575,6 +5749,16 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>code</td>
@@ -5667,12 +5851,22 @@
 </tr>
 
 <tr>
-<td>notes</td>
-<td>string</td>
+<td>requirementNotes</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
-  
+  <a href='#schema-notedetail'>NoteDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>requirementNote</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-notedetail'>NoteDetail</a>
 </td>
 </tr>
 
@@ -5839,6 +6033,38 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-requirementnotedetail">RequirementNoteDetail</h3>
+
+
+<table class='schema-requirementnotedetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>requirement</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-requirement'>Requirement</a>
 </td>
 </tr>
 

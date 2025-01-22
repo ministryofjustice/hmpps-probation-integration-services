@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -80,8 +80,6 @@ paths:
 components:
   schemas:
     ErrorResponse:
-      required:
-      - status
       type: object
       properties:
         status:
@@ -93,6 +91,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/FieldError"
+      required:
+      - status
     FieldError:
       type: object
       properties:
@@ -103,18 +103,16 @@ components:
         field:
           type: string
     LocalDeliveryUnit:
-      required:
-      - code
-      - description
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    Manager:
       required:
-      - team
+      - code
+      - description
+    Manager:
       type: object
       properties:
         team:
@@ -125,22 +123,19 @@ components:
           $ref: "#/components/schemas/Name"
         email:
           type: string
-    Name:
       required:
-      - forename
-      - surname
+      - team
+    Name:
       type: object
       properties:
         forename:
           type: string
         surname:
           type: string
-    ProbationRecord:
       required:
-      - crn
-      - manager
-      - mappaLevel
-      - vloAssigned
+      - forename
+      - surname
+    ProbationRecord:
       type: object
       properties:
         crn:
@@ -161,10 +156,12 @@ components:
           format: int32
         vloAssigned:
           type: boolean
-    Team:
       required:
-      - code
-      - description
+      - crn
+      - manager
+      - mappaLevel
+      - vloAssigned
+    Team:
       type: object
       properties:
         code:
@@ -173,47 +170,50 @@ components:
           type: string
         localDeliveryUnit:
           $ref: "#/components/schemas/LocalDeliveryUnit"
-    MappaDetail:
       required:
-      - startDate
+      - code
+      - description
+    MappaDetail:
       type: object
       properties:
         level:
           type: integer
+          format: int32
           description: MAPPA Level (0=unknown). If the level is unknown due to an
             unrecognised Delius MAPPA level code (e.g. one not used anymore) the original
             Delius level description will still be returned
-          format: int32
-          example: 1
           enum:
-          - null
+          - "0,1,2,3"
+          example: 1
         levelDescription:
           type: string
           description: MAPPA Level Description
           example: MAPPA Level 1
         category:
           type: integer
+          format: int32
           description: MAPPA Category (0 = unknown). If the category is unknown due
             to an unrecognised Delius MAPPA category code (e.g. one not used anymore)
             the original Delius category  description will still be returned
-          format: int32
-          example: 3
           enum:
-          - null
+          - "0,1,2,3"
+          example: 3
         categoryDescription:
           type: string
           description: MAPPA Category Description
           example: MAPPA Cat 1
         startDate:
           type: string
-          description: Start date
           format: date
+          description: Start date
           example: 2021-01-27
         reviewDate:
           type: string
-          description: Next review date
           format: date
+          description: Next review date
           example: 2021-04-27
+      required:
+      - startDate
   securitySchemes:
     hmpps-auth-token:
       type: http

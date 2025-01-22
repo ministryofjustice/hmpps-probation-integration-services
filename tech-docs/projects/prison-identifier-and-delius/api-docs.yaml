@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -26,15 +26,14 @@ paths:
         schema:
           type: boolean
           default: true
-      - name: nomsNumbers
-        in: query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
         required: true
-        schema:
-          maxItems: 500
-          minItems: 1
-          type: array
-          items:
-            type: string
       responses:
         "202":
           description: Accepted
@@ -53,8 +52,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string
@@ -74,15 +71,13 @@ paths:
         schema:
           type: boolean
           default: true
-      - name: crns
-        in: query
-        required: false
-        schema:
-          maxItems: 500
-          minItems: 1
-          type: array
-          items:
-            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
       responses:
         "202":
           description: Accepted
@@ -101,8 +96,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string

@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -50,12 +50,12 @@ paths:
               $ref: "#/components/schemas/AuthenticationRequest"
         required: true
       responses:
-        "200":
-          description: User authenticated
-          content:
-            text/plain: {}
         "401":
           description: Authentication failure
+          content:
+            text/plain: {}
+        "200":
+          description: User authenticated
           content:
             text/plain: {}
         "403":
@@ -125,30 +125,23 @@ paths:
 components:
   schemas:
     PasswordChangeRequest:
-      required:
-      - password
       type: object
       properties:
         password:
           type: string
-    AuthenticationRequest:
       required:
       - password
-      - username
+    AuthenticationRequest:
       type: object
       properties:
         username:
           type: string
         password:
           type: string
-    UserDetails:
       required:
-      - enabled
-      - firstName
-      - roles
-      - surname
-      - userId
+      - password
       - username
+    UserDetails:
       type: object
       properties:
         userId:
@@ -168,6 +161,13 @@ components:
           type: array
           items:
             type: string
+      required:
+      - enabled
+      - firstName
+      - roles
+      - surname
+      - userId
+      - username
   securitySchemes:
     hmpps-auth-token:
       type: http

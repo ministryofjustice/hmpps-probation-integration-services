@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -175,9 +175,6 @@ paths:
 components:
   schemas:
     Name:
-      required:
-      - forename
-      - surname
       type: object
       properties:
         forename:
@@ -186,11 +183,10 @@ components:
           type: string
         surname:
           type: string
-    StaffName:
       required:
-      - code
-      - id
-      - name
+      - forename
+      - surname
+    StaffName:
       type: object
       properties:
         id:
@@ -202,30 +198,30 @@ components:
           type: string
         username:
           type: string
-    StaffEmail:
       required:
       - code
+      - id
+      - name
+    StaffEmail:
       type: object
       properties:
         code:
           type: string
         email:
           type: string
-    Borough:
       required:
       - code
-      - description
+    Borough:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    District:
       required:
-      - borough
       - code
       - description
+    District:
       type: object
       properties:
         code:
@@ -234,11 +230,11 @@ components:
           type: string
         borough:
           $ref: "#/components/schemas/Borough"
-    ManagedOffender:
       required:
-      - crn
-      - name
-      - staff
+      - borough
+      - code
+      - description
+    ManagedOffender:
       type: object
       properties:
         crn:
@@ -252,11 +248,11 @@ components:
           $ref: "#/components/schemas/Staff"
         team:
           $ref: "#/components/schemas/Team"
-    OfficeAddress:
       required:
-      - from
-      - ldu
-      - officeName
+      - crn
+      - name
+      - staff
+    OfficeAddress:
       type: object
       properties:
         officeName:
@@ -285,24 +281,21 @@ components:
         to:
           type: string
           format: date
-    Provider:
       required:
-      - code
-      - description
+      - from
+      - ldu
+      - officeName
+    Provider:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    Staff:
       required:
       - code
-      - id
-      - name
-      - provider
-      - teams
-      - unallocated
+      - description
+    Staff:
       type: object
       properties:
         id:
@@ -326,13 +319,14 @@ components:
           type: string
         unallocated:
           type: boolean
-    Team:
       required:
-      - borough
       - code
-      - description
-      - district
-      - startDate
+      - id
+      - name
+      - provider
+      - teams
+      - unallocated
+    Team:
       type: object
       properties:
         code:
@@ -357,23 +351,22 @@ components:
         endDate:
           type: string
           format: date
-    PDUHead:
       required:
-      - name
+      - borough
+      - code
+      - description
+      - district
+      - startDate
+    PDUHead:
       type: object
       properties:
         name:
           $ref: "#/components/schemas/Name"
         email:
           type: string
-    Manager:
       required:
-      - code
-      - id
       - name
-      - provider
-      - team
-      - unallocated
+    Manager:
       type: object
       properties:
         id:
@@ -393,6 +386,13 @@ components:
           type: string
         unallocated:
           type: boolean
+      required:
+      - code
+      - id
+      - name
+      - provider
+      - team
+      - unallocated
   securitySchemes:
     hmpps-auth-token:
       type: http

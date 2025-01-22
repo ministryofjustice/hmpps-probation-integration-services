@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -25,8 +25,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string
@@ -155,8 +153,6 @@ paths:
 components:
   schemas:
     AllCourtAppearancesContainer:
-      required:
-      - courtAppearances
       type: object
       properties:
         courtAppearances:
@@ -165,15 +161,9 @@ components:
             type: array
             items:
               $ref: "#/components/schemas/CourtAppearance"
-    CourtAppearance:
       required:
-      - appearanceDate
-      - courtAppearanceId
-      - courtCode
-      - courtName
-      - crn
-      - offenderId
-      - type
+      - courtAppearances
+    CourtAppearance:
       type: object
       properties:
         appearanceDate:
@@ -193,31 +183,35 @@ components:
         offenderId:
           type: integer
           format: int64
+      required:
+      - appearanceDate
+      - courtAppearanceId
+      - courtCode
+      - courtName
+      - crn
+      - offenderId
+      - type
     Type:
-      required:
-      - code
-      - description
       type: object
       properties:
         code:
           type: string
         description:
           type: string
+      required:
+      - code
+      - description
     LocalDeliveryUnit:
-      required:
-      - code
-      - description
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    ProbationArea:
       required:
       - code
       - description
-      - localDeliveryUnits
+    ProbationArea:
       type: object
       properties:
         code:
@@ -228,25 +222,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LocalDeliveryUnit"
-    ProbationAreaContainer:
       required:
-      - probationAreas
+      - code
+      - description
+      - localDeliveryUnits
+    ProbationAreaContainer:
       type: object
       properties:
         probationAreas:
           type: array
           items:
             $ref: "#/components/schemas/ProbationArea"
-    Detail:
       required:
-      - activeProbationManagedSentence
-      - crn
-      - currentlyInPrison
-      - dateOfBirth
-      - keyDates
-      - name
-      - offenderAliases
-      - offenderManager
+      - probationAreas
+    Detail:
       type: object
       properties:
         name:
@@ -296,11 +285,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OffenderAlias"
-    KeyDate:
       required:
-      - code
-      - data
-      - description
+      - activeProbationManagedSentence
+      - crn
+      - currentlyInPrison
+      - dateOfBirth
+      - keyDates
+      - name
+      - offenderAliases
+      - offenderManager
+    KeyDate:
       type: object
       properties:
         code:
@@ -310,21 +304,21 @@ components:
         data:
           type: string
           format: date
-    Ldu:
       required:
       - code
-      - name
+      - data
+      - description
+    Ldu:
       type: object
       properties:
         code:
           type: string
         name:
           type: string
-    Manager:
       required:
+      - code
       - name
-      - provider
-      - team
+    Manager:
       type: object
       properties:
         name:
@@ -333,10 +327,11 @@ components:
           $ref: "#/components/schemas/Team"
         provider:
           $ref: "#/components/schemas/Provider"
-    Name:
       required:
-      - forename
-      - surname
+      - name
+      - provider
+      - team
+    Name:
       type: object
       properties:
         forename:
@@ -345,13 +340,10 @@ components:
           type: string
         surname:
           type: string
-    OffenderAlias:
       required:
-      - firstName
-      - gender
-      - id
-      - middleNames
+      - forename
       - surname
+    OffenderAlias:
       type: object
       properties:
         id:
@@ -370,6 +362,12 @@ components:
           type: string
         gender:
           type: string
+      required:
+      - firstName
+      - gender
+      - id
+      - middleNames
+      - surname
     Profile:
       type: object
       properties:
@@ -378,42 +376,35 @@ components:
         religion:
           type: string
     Provider:
-      required:
-      - code
-      - description
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    Team:
       required:
       - code
-      - localDeliveryUnit
+      - description
+    Team:
       type: object
       properties:
         code:
           type: string
         localDeliveryUnit:
           $ref: "#/components/schemas/Ldu"
-    CourtAppearancesContainer:
       required:
-      - courtAppearances
+      - code
+      - localDeliveryUnit
+    CourtAppearancesContainer:
       type: object
       properties:
         courtAppearances:
           type: array
           items:
             $ref: "#/components/schemas/CourtAppearance"
-    Conviction:
       required:
-      - active
-      - convictionId
-      - latestCourtAppearanceOutcome
-      - offences
-      - outcome
-      - referralDate
+      - courtAppearances
+    Conviction:
       type: object
       properties:
         convictionId:
@@ -437,19 +428,23 @@ components:
           $ref: "#/components/schemas/Sentence"
         active:
           type: boolean
-    ConvictionsContainer:
       required:
-      - convictions
+      - active
+      - convictionId
+      - latestCourtAppearanceOutcome
+      - offences
+      - outcome
+      - referralDate
+    ConvictionsContainer:
       type: object
       properties:
         convictions:
           type: array
           items:
             $ref: "#/components/schemas/Conviction"
-    Custody:
       required:
-      - keyDates
-      - status
+      - convictions
+    Custody:
       type: object
       properties:
         bookingNumber:
@@ -460,21 +455,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/KeyDate"
-    CustodyStatus:
       required:
-      - code
-      - description
+      - keyDates
+      - status
+    CustodyStatus:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    Offence:
       required:
+      - code
       - description
-      - mainOffence
-      - offenceId
+    Offence:
       type: object
       properties:
         offenceId:
@@ -486,10 +480,11 @@ components:
           type: string
         mainOffence:
           type: boolean
-    Sentence:
       required:
-      - sentenceId
-      - startDate
+      - description
+      - mainOffence
+      - offenceId
+    Sentence:
       type: object
       properties:
         sentenceId:
@@ -503,6 +498,9 @@ components:
           format: date
         custody:
           $ref: "#/components/schemas/Custody"
+      required:
+      - sentenceId
+      - startDate
   securitySchemes:
     hmpps-auth-token:
       type: http

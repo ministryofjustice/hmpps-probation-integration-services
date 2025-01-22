@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -53,12 +53,6 @@ paths:
 components:
   schemas:
     Address:
-      required:
-      - fullAddress
-      - noFixedAbode
-      - postcode
-      - startDate
-      - status
       type: object
       properties:
         fullAddress:
@@ -75,10 +69,13 @@ components:
         endDate:
           type: string
           format: date
-    Alias:
       required:
-      - dateOfBirth
-      - name
+      - fullAddress
+      - noFixedAbode
+      - postcode
+      - startDate
+      - status
+    Alias:
       type: object
       properties:
         name:
@@ -86,16 +83,19 @@ components:
         dateOfBirth:
           type: string
           format: date
-    CodeDescription:
       required:
-      - code
-      - description
+      - dateOfBirth
+      - name
+    CodeDescription:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
+      required:
+      - code
+      - description
     ContactDetails:
       type: object
       properties:
@@ -106,9 +106,6 @@ components:
         email:
           type: string
     Identifiers:
-      required:
-      - crn
-      - deliusId
       type: object
       properties:
         deliusId:
@@ -126,9 +123,10 @@ components:
           type: string
         ni:
           type: string
-    LimitedAccess:
       required:
-      - users
+      - crn
+      - deliusId
+    LimitedAccess:
       type: object
       properties:
         message:
@@ -137,17 +135,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LimitedAccessUser"
-    LimitedAccessUser:
       required:
-      - username
+      - users
+    LimitedAccessUser:
       type: object
       properties:
         username:
           type: string
-    Name:
       required:
-      - forename
-      - surname
+      - username
+    Name:
       type: object
       properties:
         forename:
@@ -160,14 +157,10 @@ components:
           type: string
         preferred:
           type: string
-    PersonDetail:
       required:
-      - addresses
-      - aliases
-      - dateOfBirth
-      - identifiers
-      - name
-      - sentences
+      - forename
+      - surname
+    PersonDetail:
       type: object
       properties:
         identifiers:
@@ -205,10 +198,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Sentence"
-    Sentence:
       required:
-      - active
-      - date
+      - addresses
+      - aliases
+      - dateOfBirth
+      - identifiers
+      - name
+      - sentences
+    Sentence:
       type: object
       properties:
         date:
@@ -216,17 +213,20 @@ components:
           format: date
         active:
           type: boolean
+      required:
+      - active
+      - date
     Pageable:
       type: object
       properties:
         page:
+          type: integer
+          format: int32
           minimum: 0
-          type: integer
-          format: int32
         size:
-          minimum: 1
           type: integer
           format: int32
+          minimum: 1
         sort:
           type: array
           items:

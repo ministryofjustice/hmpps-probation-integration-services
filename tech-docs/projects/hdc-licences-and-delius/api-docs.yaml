@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -79,7 +79,7 @@ paths:
     get:
       tags:
       - staff-controller
-      operationId: getStaffByUsername_1
+      operationId: getStaffByUsername
       parameters:
       - name: username
         in: query
@@ -236,10 +236,6 @@ paths:
 components:
   schemas:
     UserDetails:
-      required:
-      - enabled
-      - roles
-      - username
       type: object
       properties:
         username:
@@ -250,42 +246,41 @@ components:
           type: array
           items:
             type: string
-    LocalAdminUnit:
       required:
-      - code
-      - description
+      - enabled
+      - roles
+      - username
+    LocalAdminUnit:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    Name:
       required:
-      - forenames
-      - surname
+      - code
+      - description
+    Name:
       type: object
       properties:
         forenames:
           type: string
         surname:
           type: string
-    ProbationDeliveryUnit:
       required:
-      - code
-      - description
+      - forenames
+      - surname
+    ProbationDeliveryUnit:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    Staff:
       required:
       - code
-      - name
-      - staffId
-      - teams
+      - description
+    Staff:
       type: object
       properties:
         code:
@@ -293,6 +288,8 @@ components:
         staffId:
           type: integer
           format: int64
+          deprecated: true
+          description: Use `code` instead
         name:
           $ref: "#/components/schemas/Name"
         teams:
@@ -303,12 +300,12 @@ components:
           type: string
         email:
           type: string
-    TeamDetails:
       required:
       - code
-      - description
-      - localAdminUnit
-      - probationDeliveryUnit
+      - name
+      - staffId
+      - teams
+    TeamDetails:
       type: object
       properties:
         code:
@@ -323,21 +320,22 @@ components:
           $ref: "#/components/schemas/ProbationDeliveryUnit"
         localAdminUnit:
           $ref: "#/components/schemas/LocalAdminUnit"
-    Provider:
       required:
       - code
       - description
+      - localAdminUnit
+      - probationDeliveryUnit
+    Provider:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    LocalAdminUnitWithTeams:
       required:
       - code
       - description
-      - teams
+    LocalAdminUnitWithTeams:
       type: object
       properties:
         code:
@@ -348,21 +346,21 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Team"
-    Team:
       required:
       - code
       - description
+      - teams
+    Team:
       type: object
       properties:
         code:
           type: string
         description:
           type: string
-    ProviderWithLaus:
       required:
       - code
       - description
-      - localAdminUnits
+    ProviderWithLaus:
       type: object
       properties:
         code:
@@ -373,15 +371,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LocalAdminUnit"
-    CommunityManager:
       required:
       - code
-      - isUnallocated
-      - localAdminUnit
-      - name
-      - provider
-      - staffId
-      - team
+      - description
+      - localAdminUnits
+    CommunityManager:
       type: object
       properties:
         code:
@@ -399,6 +393,14 @@ components:
           $ref: "#/components/schemas/Provider"
         isUnallocated:
           type: boolean
+      required:
+      - code
+      - isUnallocated
+      - localAdminUnit
+      - name
+      - provider
+      - staffId
+      - team
   securitySchemes:
     hmpps-auth-token:
       type: http

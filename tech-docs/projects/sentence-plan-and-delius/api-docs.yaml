@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -53,13 +53,6 @@ paths:
 components:
   schemas:
     CaseDetails:
-      required:
-      - crn
-      - dateOfBirth
-      - inCustody
-      - keyWorker
-      - name
-      - sentences
       type: object
       properties:
         name:
@@ -83,19 +76,23 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Sentence"
-    Manager:
       required:
-      - unallocated
+      - crn
+      - dateOfBirth
+      - inCustody
+      - keyWorker
+      - name
+      - sentences
+    Manager:
       type: object
       properties:
         name:
           $ref: "#/components/schemas/Name"
         unallocated:
           type: boolean
-    Name:
       required:
-      - forename
-      - surname
+      - unallocated
+    Name:
       type: object
       properties:
         forename:
@@ -104,13 +101,10 @@ components:
           type: string
         surname:
           type: string
-    Sentence:
       required:
-      - programmeRequirement
-      - rarDaysCompleted
-      - rarDaysOrdered
-      - unpaidWorkHoursOrdered
-      - unpaidWorkMinutesCompleted
+      - forename
+      - surname
+    Sentence:
       type: object
       properties:
         description:
@@ -135,6 +129,12 @@ components:
         rarDaysCompleted:
           type: integer
           format: int32
+      required:
+      - programmeRequirement
+      - rarDaysCompleted
+      - rarDaysOrdered
+      - unpaidWorkHoursOrdered
+      - unpaidWorkMinutesCompleted
     FirstAppointment:
       type: object
       properties:

@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -245,13 +245,6 @@ components:
           - MEDIUM
           - LOW
     RoshDetails:
-      required:
-      - assessmentId
-      - assessmentStatus
-      - assessmentType
-      - initiationDate
-      - limitedAccessOffender
-      - rosh
       type: object
       properties:
         assessmentId:
@@ -281,6 +274,13 @@ components:
           format: date-time
         rosh:
           $ref: "#/components/schemas/Rosh"
+      required:
+      - assessmentId
+      - assessmentStatus
+      - assessmentType
+      - initiationDate
+      - limitedAccessOffender
+      - rosh
     RoshSummary:
       type: object
       properties:
@@ -295,13 +295,6 @@ components:
         natureOfRisk:
           type: string
     RoshSummaryDetails:
-      required:
-      - assessmentId
-      - assessmentStatus
-      - assessmentType
-      - initiationDate
-      - limitedAccessOffender
-      - roshSummary
       type: object
       properties:
         assessmentId:
@@ -331,6 +324,13 @@ components:
           format: date-time
         roshSummary:
           $ref: "#/components/schemas/RoshSummary"
+      required:
+      - assessmentId
+      - assessmentStatus
+      - assessmentType
+      - initiationDate
+      - limitedAccessOffender
+      - roshSummary
     RiskToTheIndividual:
       type: object
       properties:
@@ -363,13 +363,6 @@ components:
         concernsRiskOfSelfHarm:
           type: boolean
     RiskToTheIndividualDetails:
-      required:
-      - assessmentId
-      - assessmentStatus
-      - assessmentType
-      - initiationDate
-      - limitedAccessOffender
-      - riskToTheIndividual
       type: object
       properties:
         assessmentId:
@@ -399,6 +392,13 @@ components:
           format: date-time
         riskToTheIndividual:
           $ref: "#/components/schemas/RiskToTheIndividual"
+      required:
+      - assessmentId
+      - assessmentStatus
+      - assessmentType
+      - initiationDate
+      - limitedAccessOffender
+      - riskToTheIndividual
     RiskManagementPlan:
       type: object
       properties:
@@ -419,13 +419,6 @@ components:
         keyInformationAboutCurrentSituation:
           type: string
     RiskManagementPlanDetails:
-      required:
-      - assessmentId
-      - assessmentStatus
-      - assessmentType
-      - initiationDate
-      - limitedAccessOffender
-      - riskManagementPlan
       type: object
       properties:
         assessmentId:
@@ -455,6 +448,13 @@ components:
           format: date-time
         riskManagementPlan:
           $ref: "#/components/schemas/RiskManagementPlan"
+      required:
+      - assessmentId
+      - assessmentStatus
+      - assessmentType
+      - initiationDate
+      - limitedAccessOffender
+      - riskManagementPlan
     RiskAssessment:
       type: object
       properties:
@@ -487,13 +487,6 @@ components:
         previousWhatDone:
           type: string
     RiskAssessmentDetails:
-      required:
-      - assessmentId
-      - assessmentStatus
-      - assessmentType
-      - initiationDate
-      - limitedAccessOffender
-      - riskAssessment
       type: object
       properties:
         assessmentId:
@@ -523,6 +516,13 @@ components:
           format: date-time
         riskAssessment:
           $ref: "#/components/schemas/RiskAssessment"
+      required:
+      - assessmentId
+      - assessmentStatus
+      - assessmentType
+      - initiationDate
+      - limitedAccessOffender
+      - riskAssessment
     Offence:
       type: object
       properties:
@@ -545,12 +545,6 @@ components:
         acceptsResponsibility:
           type: string
     OffenceDetails:
-      required:
-      - assessmentId
-      - assessmentStatus
-      - assessmentType
-      - initiationDate
-      - limitedAccessOffender
       type: object
       properties:
         assessmentId:
@@ -580,6 +574,12 @@ components:
           format: date-time
         offence:
           $ref: "#/components/schemas/Offence"
+      required:
+      - assessmentId
+      - assessmentStatus
+      - assessmentType
+      - initiationDate
+      - limitedAccessOffender
     LinksToHarm:
       type: object
       properties:
@@ -652,12 +652,6 @@ components:
         thinkingBehaviouralIssuesDetails:
           type: string
     NeedsDetails:
-      required:
-      - assessmentId
-      - assessmentStatus
-      - assessmentType
-      - initiationDate
-      - limitedAccessOffender
       type: object
       properties:
         assessmentId:
@@ -691,12 +685,13 @@ components:
           $ref: "#/components/schemas/LinksToHarm"
         linksToReOffending:
           $ref: "#/components/schemas/LinksToReOffending"
-    OasysTimelineAssessment:
       required:
-      - assessmentPk
+      - assessmentId
+      - assessmentStatus
       - assessmentType
       - initiationDate
-      - status
+      - limitedAccessOffender
+    OasysTimelineAssessment:
       type: object
       properties:
         assessmentPk:
@@ -712,6 +707,11 @@ components:
         completedDate:
           type: string
           format: date-time
+      required:
+      - assessmentPk
+      - assessmentType
+      - initiationDate
+      - status
     Health:
       type: object
       properties:
@@ -769,13 +769,6 @@ components:
         programme:
           type: string
     HealthDetails:
-      required:
-      - assessmentId
-      - assessmentStatus
-      - assessmentType
-      - health
-      - initiationDate
-      - limitedAccessOffender
       type: object
       properties:
         assessmentId:
@@ -805,6 +798,13 @@ components:
           format: date-time
         health:
           $ref: "#/components/schemas/Health"
+      required:
+      - assessmentId
+      - assessmentStatus
+      - assessmentType
+      - health
+      - initiationDate
+      - limitedAccessOffender
   securitySchemes:
     hmpps-auth-token:
       type: http

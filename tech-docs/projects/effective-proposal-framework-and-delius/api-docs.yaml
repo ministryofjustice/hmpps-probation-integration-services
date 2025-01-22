@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -56,9 +56,6 @@ paths:
 components:
   schemas:
     Appearance:
-      required:
-      - court
-      - date
       type: object
       properties:
         date:
@@ -66,12 +63,10 @@ components:
           format: date
         court:
           $ref: "#/components/schemas/Court"
-    CaseDetails:
       required:
-      - age
-      - dateOfBirth
-      - gender
-      - name
+      - court
+      - date
+    CaseDetails:
       type: object
       properties:
         nomsId:
@@ -101,17 +96,19 @@ components:
         ageAtRelease:
           type: integer
           format: int64
-    Court:
       required:
+      - age
+      - dateOfBirth
+      - gender
       - name
+    Court:
       type: object
       properties:
         name:
           type: string
-    Name:
       required:
-      - forename
-      - surname
+      - name
+    Name:
       type: object
       properties:
         forename:
@@ -120,16 +117,19 @@ components:
           type: string
         surname:
           type: string
-    Provider:
       required:
-      - code
-      - name
+      - forename
+      - surname
+    Provider:
       type: object
       properties:
         code:
           type: string
         name:
           type: string
+      required:
+      - code
+      - name
     Sentence:
       type: object
       properties:

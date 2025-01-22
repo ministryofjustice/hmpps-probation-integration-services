@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: API Reference
   contact:
@@ -25,15 +25,14 @@ paths:
         required: false
         schema:
           type: string
-      - name: crns
-        in: query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
         required: true
-        schema:
-          maxItems: 500
-          minItems: 1
-          type: array
-          items:
-            type: string
       responses:
         "200":
           description: OK
@@ -55,8 +54,6 @@ paths:
         content:
           application/json:
             schema:
-              maxItems: 500
-              minItems: 1
               type: array
               items:
                 type: string
@@ -71,10 +68,6 @@ paths:
 components:
   schemas:
     CaseAccess:
-      required:
-      - crn
-      - userExcluded
-      - userRestricted
       type: object
       properties:
         crn:
@@ -87,15 +80,19 @@ components:
           type: string
         restrictionMessage:
           type: string
-    UserAccess:
       required:
-      - access
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
       type: object
       properties:
         access:
           type: array
           items:
             $ref: "#/components/schemas/CaseAccess"
+      required:
+      - access
   securitySchemes:
     hmpps-auth-token:
       type: http
