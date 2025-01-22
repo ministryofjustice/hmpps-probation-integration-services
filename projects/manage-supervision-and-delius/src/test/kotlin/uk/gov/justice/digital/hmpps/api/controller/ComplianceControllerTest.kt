@@ -44,7 +44,7 @@ internal class ComplianceControllerTest {
         val mainOffence = Offence(code = "CD1", description = "Main Offence")
         val order = Order(description = "Order", endDate = LocalDate.now(), length = 1, startDate = LocalDate.now())
         val breach = Breach(LocalDate.now(), "A Breach")
-        val rar = Rar(10, 5)
+        val rar = Rar(completed = 10, scheduled = 5, nsiCompleted = 0)
         val activityCount = ActivityCount(1, 0, 1, 0, 1, 1, 1, 2, 4, 1, 0, 1)
         val compliance = Compliance(1, true, 1, 1, 2)
         val sentenceCompliance = SentenceCompliance(

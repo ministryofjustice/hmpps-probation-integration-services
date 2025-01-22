@@ -12,6 +12,9 @@ generic-service:
   ingress:
     tlsSecretName: prison-case-notes-to-probation-cert
 
+  env:
+    JDK_JAVA_OPTIONS: "-javaagent:/agent/agent.jar -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC"
+
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL

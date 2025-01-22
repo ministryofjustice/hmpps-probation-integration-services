@@ -143,7 +143,7 @@ class SentenceService(
     fun Disposal.toMinimalOrder() = MinimalOrder(type.description, date, expectedEndDate())
 
     fun RequirementDetails.toRequirement(): Requirement {
-        val rar = requirementService.getRar(id, code)
+        val rar = requirementService.getRar(disposalId, code)
 
         val requirement = Requirement(
             id,
@@ -153,7 +153,7 @@ class SentenceService(
             expectedEndDate,
             terminationDate,
             terminationReason,
-            populateRequirementDescription(description, codeDescription, rar),
+            populateRequirementDescription(description, codeDescription, length, rar),
             length,
             lengthUnitValue,
             toRequirementNote(true),
@@ -164,8 +164,8 @@ class SentenceService(
     }
 
     fun RequirementDetails.toMinimalRequirement(): MinimalRequirement {
-        val rar = requirementService.getRar(id, code)
-        return MinimalRequirement(id, populateRequirementDescription(description, codeDescription, rar))
+        val rar = requirementService.getRar(disposalId, code)
+        return MinimalRequirement(id, populateRequirementDescription(description, codeDescription, length, rar))
     }
 
     fun getUnpaidWorkTime(disposalId: Long): String? {

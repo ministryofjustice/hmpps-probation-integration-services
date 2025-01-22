@@ -74,6 +74,7 @@ class SentenceServiceTest {
 
     private val requirement1 = RequirementDetails(
         1,
+        2,
         LocalDate.now().minusDays(21),
         LocalDate.now(),
         LocalDate.now().minusDays(14),
@@ -122,6 +123,7 @@ class SentenceServiceTest {
 
         val requirement1 = RequirementDetails(
             1,
+            2,
             LocalDate.now().minusDays(21),
             LocalDate.now(),
             LocalDate.now().minusDays(14),
@@ -137,13 +139,14 @@ class SentenceServiceTest {
         )
         val requirement2 = RequirementDetails(
             2,
+            3,
             null,
             LocalDate.now(),
             null,
             null,
             null,
             null,
-            null,
+            30,
             null,
             "F",
             "Main",
@@ -153,6 +156,7 @@ class SentenceServiceTest {
 
         val requirement3 = RequirementDetails(
             1,
+            4,
             LocalDate.now(),
             LocalDate.now(),
             null,
@@ -195,9 +199,9 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(70)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(3936)
 
-        whenever(requirementService.getRar(requirement1._id, requirement1._code)).thenReturn(null)
-        whenever(requirementService.getRar(requirement2._id, requirement2._code)).thenReturn(Rar(1, 2, 3))
-        whenever(requirementService.getRar(requirement3._id, requirement3._code)).thenReturn(null)
+        whenever(requirementService.getRar(requirement1._disposalId, requirement1._code)).thenReturn(null)
+        whenever(requirementService.getRar(requirement2._disposalId, requirement2._code)).thenReturn(Rar(1, 2, 3))
+        whenever(requirementService.getRar(requirement3._disposalId, requirement3._code)).thenReturn(null)
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 
@@ -247,7 +251,7 @@ class SentenceServiceTest {
                         requirement2._expectedEndDate,
                         requirement2._terminationDate,
                         requirement2._terminationReason,
-                        "3 days RAR, 1 completed",
+                        "6 of 30 RAR days completed",
                         requirement2._length,
                         requirement2.lengthUnitValue,
                         listOf(NoteDetail(0, note = requirement2._notes!!, hasNoteBeenTruncated = false)),
@@ -498,6 +502,7 @@ class SentenceServiceTest {
 
     data class RequirementDetails(
         val _id: Long,
+        val _disposalId: Long,
         val _expectedStartDate: LocalDate?,
         val _startDate: LocalDate,
         val _commencementDate: LocalDate?,
@@ -513,6 +518,9 @@ class SentenceServiceTest {
     ) : uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails {
         override val id: Long
             get() = _id
+
+        override val disposalId: Long
+            get() = _disposalId
 
         override val expectedStartDate: LocalDate?
             get() = _expectedStartDate

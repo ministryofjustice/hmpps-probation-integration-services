@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/AA0001A/1111"
+        "url": "/case-notes/AA0001A/0ec15f8b-6b57-471f-b02a-c89169a6a3e5"
       },
       "response": {
         "headers": {
@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/AA0001A/2222"
+        "url": "/case-notes/AA0001A/2cf4f9e1-df22-49a1-a2a7-5968a96529e3"
       },
       "response": {
         "headers": {
@@ -30,7 +30,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/AA0001A/5767"
+        "url": "/case-notes/AA0001A/9f0a2112-acde-4501-b1f9-3f2f5f04e426"
       },
       "response": {
         "headers": {
@@ -44,7 +44,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/AA0001A/4444"
+        "url": "/case-notes/AA0001A/da82e1df-1a74-486e-842c-6ce961575211"
       },
       "response": {
         "status": 404,

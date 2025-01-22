@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.documentation
 
+import com.asyncapi.kotlinasyncapi.context.service.AsyncApiSerializer
+import com.asyncapi.kotlinasyncapi.model.AsyncApi
+import com.asyncapi.kotlinasyncapi.model.channel.*
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.openfolder.kotlinasyncapi.model.AsyncApi
-import org.openfolder.kotlinasyncapi.model.channel.*
-import org.openfolder.kotlinasyncapi.springweb.service.AsyncApiSerializer
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
