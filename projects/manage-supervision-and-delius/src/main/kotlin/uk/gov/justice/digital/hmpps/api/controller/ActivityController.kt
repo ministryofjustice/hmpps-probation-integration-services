@@ -15,11 +15,11 @@ import uk.gov.justice.digital.hmpps.service.ActivityService
 class ActivityController(private val activityService: ActivityService) {
 
     @GetMapping
-    @Operation(summary = "Gets all activity for a person’ ")
+    @Operation(summary = "Gets all activity for a person")
     fun getPersonActivity(@PathVariable crn: String) = activityService.getPersonActivity(crn)
 
     @PostMapping
-    @Operation(summary = "Activity Log Search’ ")
+    @Operation(summary = "Activity log search for a person")
     fun activitySearch(
         @PathVariable crn: String,
         @RequestBody searchRequest: PersonActivitySearchRequest,
