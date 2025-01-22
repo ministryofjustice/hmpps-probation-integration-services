@@ -125,7 +125,7 @@ class CaseNotesIntegrationTest {
         )
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
-        assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
+        assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B000"))
 
         assertThat(saved.createdByUserId, equalTo(UserGenerator.AUDIT_USER.id))
         assertThat(saved.lastModifiedUserId, equalTo(UserGenerator.AUDIT_USER.id))
@@ -173,7 +173,7 @@ class CaseNotesIntegrationTest {
         )
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
-        assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
+        assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B000"))
     }
 
     @Test
@@ -188,7 +188,13 @@ class CaseNotesIntegrationTest {
 
         verify(telemetryService).trackEvent(
             eq("CaseNotesMigrated"),
-            eq(mapOf("nomsId" to "A4578BX", "cause" to "probation-case.prison-identifier.added", "count" to "4")),
+            eq(
+                mapOf(
+                    "nomsId" to "A4578BX",
+                    "cause" to "probation-case.prison-identifier.added",
+                    "total" to "4",
+                )
+            ),
             anyMap()
         )
         val saved = caseNoteRepository.findAll().filter { it.offenderId == offender.id }

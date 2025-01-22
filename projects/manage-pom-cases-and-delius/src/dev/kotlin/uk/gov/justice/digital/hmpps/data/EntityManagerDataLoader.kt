@@ -17,8 +17,8 @@ class EntityManagerDataLoader {
     @Transactional
     fun loadData(): Map<String, Staff> {
 
-        val staffMap =
-            (PersonManagerGenerator.ALL.map { it.staff } + ProviderGenerator.UNALLOCATED_STAFF).associateBy { it.code }
+        val staffMap = (PersonManagerGenerator.ALL.map { it.staff } + ProviderGenerator.UNALLOCATED_STAFF)
+            .associateBy { it.code }
 
         val savedStaffMap = staffMap.map {
             entityManager.merge(it.value)
