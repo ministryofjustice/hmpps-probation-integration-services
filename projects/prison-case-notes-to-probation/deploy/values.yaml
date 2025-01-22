@@ -12,14 +12,6 @@ generic-service:
   ingress:
     tlsSecretName: prison-case-notes-to-probation-cert
 
-  resources:
-    requests:
-      cpu: 128m
-      memory: 1024Mi
-    limits:
-      cpu: 2048m
-      memory: 1280Mi
-
   env:
     JDK_JAVA_OPTIONS: "-javaagent:/agent/agent.jar -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC"
 
