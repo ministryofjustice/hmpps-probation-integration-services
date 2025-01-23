@@ -304,7 +304,10 @@ internal class ApprovedPremisesServiceTest {
         val approvedPremisesTeam = givenApprovedPremisesTeam()
         val details = givenPersonArrivedDetails(keyWorker = staff)
         givenContactTypes(listOf(ContactTypeCode.ARRIVED))
-        givenNsiTypes(listOf(NsiTypeCode.APPROVED_PREMISES_RESIDENCE), listOf(NsiStatusCode.IN_RESIDENCE))
+        givenNsiTypes(
+            listOf(NsiTypeCode.APPROVED_PREMISES_RESIDENCE, NsiTypeCode.REHABILITATIVE_ACTIVITY),
+            listOf(NsiStatusCode.IN_RESIDENCE, NsiStatusCode.ACTIVE)
+        )
         givenAnApprovedPremises(ApprovedPremisesGenerator.DEFAULT)
         givenAddressStatuses(listOf(ReferenceDataGenerator.MAIN_ADDRESS_STATUS))
         givenAddressTypes(listOf(ReferenceDataGenerator.AP_ADDRESS_TYPE))
