@@ -342,3 +342,4 @@ class ReferralService(
 }
 
 const val EXT_REF_BOOKING_PREFIX = "urn:uk:gov:hmpps:approved-premises-service:booking:"
+const val EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX = "urn:uk:gov:hmpps:approved-premises-service:rehabilitative-activity:"
