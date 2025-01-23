@@ -32,6 +32,7 @@ object CustomMatchers {
             description.appendText("a value at the same time as <$expected>")
         }
 
-        override fun matchesSafely(actual: ZonedDateTime) = expected.withZoneSameInstant(EuropeLondon) == actual.withZoneSameInstant(EuropeLondon)
+        override fun matchesSafely(actual: ZonedDateTime) =
+            expected.withZoneSameInstant(EuropeLondon) == actual.withZoneSameInstant(EuropeLondon)
     }
 }
