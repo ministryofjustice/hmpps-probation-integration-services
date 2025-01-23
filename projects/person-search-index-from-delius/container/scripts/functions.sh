@@ -45,7 +45,7 @@ function track_custom_event() {
         "properties": '"${2:-"{}"}"'
       }
     }
-  }'
+  }' || echo 'Failed to send custom event to Application Insights'
 }
 
 function track_exception() {
@@ -76,5 +76,5 @@ function track_exception() {
         ]
       }
     }
-  }'
+  }' || echo 'Failed to send exception to Application Insights'
 }
