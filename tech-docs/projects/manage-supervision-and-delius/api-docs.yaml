@@ -109,6 +109,63 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AppointmentDetail"
+  /activity/{crn}:
+    get:
+      tags:
+      - Activity
+      summary: Gets all activity for a person
+      operationId: getPersonActivity
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonActivity"
+    post:
+      tags:
+      - Activity
+      summary: Activity log search for a person
+      operationId: activitySearch
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PersonActivitySearchRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonActivitySearchResponse"
   /appointment:
     patch:
       tags:
@@ -769,25 +826,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamStaff"
-  /activity/{crn}:
-    get:
-      tags:
-      - Activity
-      summary: 'Gets all activity for a person’ '
-      operationId: getPersonActivity
-      parameters:
-      - name: crn
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PersonActivity"
 components:
   schemas:
     CaseAccess:
@@ -1008,6 +1046,212 @@ components:
           format: int64
       required:
       - id
+    PersonActivitySearchRequest:
+      type: object
+      properties:
+        keywords:
+          type: string
+        dateFrom:
+          type: string
+          format: date
+        dateTo:
+          type: string
+          format: date
+        filters:
+          type: array
+          items:
+            type: string
+      required:
+      - filters
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        eventNumber:
+          type: string
+        type:
+          type: string
+        startDateTime:
+          type: string
+          format: date-time
+        endDateTime:
+          type: string
+          format: date-time
+        rarToolKit:
+          type: string
+        notes:
+          type: string
+        isSensitive:
+          type: boolean
+        hasOutcome:
+          type: boolean
+        wasAbsent:
+          type: boolean
+        officerName:
+          $ref: "#/components/schemas/Name"
+        isInitial:
+          type: boolean
+        isNationalStandard:
+          type: boolean
+        location:
+          $ref: "#/components/schemas/OfficeAddress"
+        rescheduled:
+          type: boolean
+        rescheduledStaff:
+          type: boolean
+        rescheduledPop:
+          type: boolean
+        didTheyComply:
+          type: boolean
+        absentWaitingEvidence:
+          type: boolean
+        rearrangeOrCancelReason:
+          type: string
+        rescheduledBy:
+          $ref: "#/components/schemas/Name"
+        repeating:
+          type: boolean
+        nonComplianceReason:
+          type: string
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
+        rarCategory:
+          type: string
+        acceptableAbsence:
+          type: boolean
+        acceptableAbsenceReason:
+          type: string
+        isAppointment:
+          type: boolean
+        isCommunication:
+          type: boolean
+        action:
+          type: string
+        isSystemContact:
+          type: boolean
+        isEmailOrTextFromPop:
+          type: boolean
+        isPhoneCallFromPop:
+          type: boolean
+        isEmailOrTextToPop:
+          type: boolean
+        isPhoneCallToPop:
+          type: boolean
+        isPastAppointment:
+          type: boolean
+        countsTowardsRAR:
+          type: boolean
+        lastUpdated:
+          type: string
+          format: date-time
+        lastUpdatedBy:
+          $ref: "#/components/schemas/Name"
+      required:
+      - documents
+      - hasOutcome
+      - id
+      - isAppointment
+      - isCommunication
+      - isInitial
+      - isNationalStandard
+      - isPastAppointment
+      - lastUpdated
+      - lastUpdatedBy
+      - rescheduled
+      - rescheduledPop
+      - rescheduledStaff
+      - startDateTime
+      - type
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+    OfficeAddress:
+      type: object
+      properties:
+        officeName:
+          type: string
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        ldu:
+          type: string
+        telephoneNumber:
+          type: string
+      required:
+      - ldu
+    PersonActivitySearchResponse:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        totalResults:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        activities:
+          type: array
+          items:
+            $ref: "#/components/schemas/Activity"
+      required:
+      - activities
+      - page
+      - personSummary
+      - size
+      - totalPages
+      - totalResults
+    PersonSummary:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        crn:
+          type: string
+        offenderId:
+          type: integer
+          format: int64
+        pnc:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+      required:
+      - crn
+      - dateOfBirth
+      - name
+      - offenderId
     Outcome:
       type: object
       properties:
@@ -1133,26 +1377,6 @@ components:
       required:
       - personSummary
       - sentences
-    PersonSummary:
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        crn:
-          type: string
-        offenderId:
-          type: integer
-          format: int64
-        pnc:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-      required:
-      - crn
-      - dateOfBirth
-      - name
-      - offenderId
     AdditionalSentence:
       type: object
       properties:
@@ -1536,147 +1760,6 @@ components:
       required:
       - contacts
       - name
-    Activity:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        eventNumber:
-          type: string
-        type:
-          type: string
-        startDateTime:
-          type: string
-          format: date-time
-        endDateTime:
-          type: string
-          format: date-time
-        rarToolKit:
-          type: string
-        notes:
-          type: string
-        isSensitive:
-          type: boolean
-        hasOutcome:
-          type: boolean
-        wasAbsent:
-          type: boolean
-        officerName:
-          $ref: "#/components/schemas/Name"
-        isInitial:
-          type: boolean
-        isNationalStandard:
-          type: boolean
-        location:
-          $ref: "#/components/schemas/OfficeAddress"
-        rescheduled:
-          type: boolean
-        rescheduledStaff:
-          type: boolean
-        rescheduledPop:
-          type: boolean
-        didTheyComply:
-          type: boolean
-        absentWaitingEvidence:
-          type: boolean
-        rearrangeOrCancelReason:
-          type: string
-        rescheduledBy:
-          $ref: "#/components/schemas/Name"
-        repeating:
-          type: boolean
-        nonComplianceReason:
-          type: string
-        documents:
-          type: array
-          items:
-            $ref: "#/components/schemas/Document"
-        rarCategory:
-          type: string
-        acceptableAbsence:
-          type: boolean
-        acceptableAbsenceReason:
-          type: string
-        isAppointment:
-          type: boolean
-        isCommunication:
-          type: boolean
-        action:
-          type: string
-        isSystemContact:
-          type: boolean
-        isEmailOrTextFromPop:
-          type: boolean
-        isPhoneCallFromPop:
-          type: boolean
-        isEmailOrTextToPop:
-          type: boolean
-        isPhoneCallToPop:
-          type: boolean
-        isPastAppointment:
-          type: boolean
-        countsTowardsRAR:
-          type: boolean
-        lastUpdated:
-          type: string
-          format: date-time
-        lastUpdatedBy:
-          $ref: "#/components/schemas/Name"
-      required:
-      - documents
-      - hasOutcome
-      - id
-      - isAppointment
-      - isCommunication
-      - isInitial
-      - isNationalStandard
-      - isPastAppointment
-      - lastUpdated
-      - lastUpdatedBy
-      - rescheduled
-      - rescheduledPop
-      - rescheduledStaff
-      - startDateTime
-      - type
-    Document:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        lastUpdated:
-          type: string
-          format: date-time
-      required:
-      - id
-      - name
-    OfficeAddress:
-      type: object
-      properties:
-        officeName:
-          type: string
-        buildingName:
-          type: string
-        buildingNumber:
-          type: string
-        streetName:
-          type: string
-        district:
-          type: string
-        town:
-          type: string
-        county:
-          type: string
-        postcode:
-          type: string
-        ldu:
-          type: string
-        telephoneNumber:
-          type: string
-      required:
-      - ldu
     Schedule:
       type: object
       properties:

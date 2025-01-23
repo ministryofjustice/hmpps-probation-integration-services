@@ -126,6 +126,9 @@
         <a href="./api-reference.html#appointment-crn"><span>/appointment/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#activity-crn"><span>/activity/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#appointment"><span>/appointment</span></a>
       </li>
       <li>
@@ -214,9 +217,6 @@
       </li>
       <li>
         <a href="./api-reference.html#caseload-team-teamcode-staff"><span>/caseload/team/{teamCode}/staff</span></a>
-      </li>
-      <li>
-        <a href="./api-reference.html#activity-crn"><span>/activity/{crn}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -513,6 +513,314 @@
 </td>
 <td>
 <a href='#schema-appointmentdetail'>AppointmentDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="activity-crn">/activity/{crn}</h2>
+
+<h3 id="activity-crn-get">get</h3>
+
+  <p><em>Gets all activity for a person</em></p>
+
+
+
+
+<h4 id="activity-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="activity-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "activities": [
+    {
+      "id": "integer",
+      "eventNumber": "string",
+      "type": "string",
+      "startDateTime": "string",
+      "endDateTime": "string",
+      "rarToolKit": "string",
+      "notes": "string",
+      "isSensitive": "boolean",
+      "hasOutcome": "boolean",
+      "wasAbsent": "boolean",
+      "officerName": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "isInitial": "boolean",
+      "isNationalStandard": "boolean",
+      "location": {
+        "officeName": "string",
+        "buildingName": "string",
+        "buildingNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string",
+        "ldu": "string",
+        "telephoneNumber": "string"
+      },
+      "rescheduled": "boolean",
+      "rescheduledStaff": "boolean",
+      "rescheduledPop": "boolean",
+      "didTheyComply": "boolean",
+      "absentWaitingEvidence": "boolean",
+      "rearrangeOrCancelReason": "string",
+      "rescheduledBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "repeating": "boolean",
+      "nonComplianceReason": "string",
+      "documents": [
+        {
+          "id": "string",
+          "name": "string",
+          "lastUpdated": "string"
+        }
+      ],
+      "rarCategory": "string",
+      "acceptableAbsence": "boolean",
+      "acceptableAbsenceReason": "string",
+      "isAppointment": "boolean",
+      "isCommunication": "boolean",
+      "action": "string",
+      "isSystemContact": "boolean",
+      "isEmailOrTextFromPop": "boolean",
+      "isPhoneCallFromPop": "boolean",
+      "isEmailOrTextToPop": "boolean",
+      "isPhoneCallToPop": "boolean",
+      "isPastAppointment": "boolean",
+      "countsTowardsRAR": "boolean",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personactivity'>PersonActivity</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="activity-crn-post">post</h3>
+
+  <p><em>Activity log search for a person</em></p>
+
+
+
+
+<h4 id="activity-crn-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="activity-crn-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "size": "integer",
+  "page": "integer",
+  "totalResults": "integer",
+  "totalPages": "integer",
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "dateOfBirth": "string"
+  },
+  "activities": [
+    {
+      "id": "integer",
+      "eventNumber": "string",
+      "type": "string",
+      "startDateTime": "string",
+      "endDateTime": "string",
+      "rarToolKit": "string",
+      "notes": "string",
+      "isSensitive": "boolean",
+      "hasOutcome": "boolean",
+      "wasAbsent": "boolean",
+      "officerName": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "isInitial": "boolean",
+      "isNationalStandard": "boolean",
+      "location": {
+        "officeName": "string",
+        "buildingName": "string",
+        "buildingNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string",
+        "ldu": "string",
+        "telephoneNumber": "string"
+      },
+      "rescheduled": "boolean",
+      "rescheduledStaff": "boolean",
+      "rescheduledPop": "boolean",
+      "didTheyComply": "boolean",
+      "absentWaitingEvidence": "boolean",
+      "rearrangeOrCancelReason": "string",
+      "rescheduledBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "repeating": "boolean",
+      "nonComplianceReason": "string",
+      "documents": [
+        {
+          "id": "string",
+          "name": "string",
+          "lastUpdated": "string"
+        }
+      ],
+      "rarCategory": "string",
+      "acceptableAbsence": "boolean",
+      "acceptableAbsenceReason": "string",
+      "isAppointment": "boolean",
+      "isCommunication": "boolean",
+      "action": "string",
+      "isSystemContact": "boolean",
+      "isEmailOrTextFromPop": "boolean",
+      "isPhoneCallFromPop": "boolean",
+      "isEmailOrTextToPop": "boolean",
+      "isPhoneCallToPop": "boolean",
+      "isPastAppointment": "boolean",
+      "countsTowardsRAR": "boolean",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personactivitysearchresponse'>PersonActivitySearchResponse</a>
 </td>
 </tr>
 
@@ -3982,150 +4290,6 @@
 
 
 
-<h2 id="activity-crn">/activity/{crn}</h2>
-
-<h3 id="activity-crn-get">get</h3>
-
-  <p><em>Gets all activity for a person’ </em></p>
-
-
-
-
-<h4 id="activity-crn-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
-<h4 id="activity-crn-get-responses">Responses</h4>
-<table>
-<thead>
-<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>200</td>
-<td>
-<p>OK</p>
-
-
-
-<pre><code>{
-  "personSummary": {
-    "name": {
-      "forename": "string",
-      "middleName": "string",
-      "surname": "string"
-    },
-    "crn": "string",
-    "offenderId": "integer",
-    "pnc": "string",
-    "dateOfBirth": "string"
-  },
-  "activities": [
-    {
-      "id": "integer",
-      "eventNumber": "string",
-      "type": "string",
-      "startDateTime": "string",
-      "endDateTime": "string",
-      "rarToolKit": "string",
-      "notes": "string",
-      "isSensitive": "boolean",
-      "hasOutcome": "boolean",
-      "wasAbsent": "boolean",
-      "officerName": {
-        "forename": "string",
-        "middleName": "string",
-        "surname": "string"
-      },
-      "isInitial": "boolean",
-      "isNationalStandard": "boolean",
-      "location": {
-        "officeName": "string",
-        "buildingName": "string",
-        "buildingNumber": "string",
-        "streetName": "string",
-        "district": "string",
-        "town": "string",
-        "county": "string",
-        "postcode": "string",
-        "ldu": "string",
-        "telephoneNumber": "string"
-      },
-      "rescheduled": "boolean",
-      "rescheduledStaff": "boolean",
-      "rescheduledPop": "boolean",
-      "didTheyComply": "boolean",
-      "absentWaitingEvidence": "boolean",
-      "rearrangeOrCancelReason": "string",
-      "rescheduledBy": {
-        "forename": "string",
-        "middleName": "string",
-        "surname": "string"
-      },
-      "repeating": "boolean",
-      "nonComplianceReason": "string",
-      "documents": [
-        {
-          "id": "string",
-          "name": "string",
-          "lastUpdated": "string"
-        }
-      ],
-      "rarCategory": "string",
-      "acceptableAbsence": "boolean",
-      "acceptableAbsenceReason": "string",
-      "isAppointment": "boolean",
-      "isCommunication": "boolean",
-      "action": "string",
-      "isSystemContact": "boolean",
-      "isEmailOrTextFromPop": "boolean",
-      "isPhoneCallFromPop": "boolean",
-      "isEmailOrTextToPop": "boolean",
-      "isPhoneCallToPop": "boolean",
-      "isPastAppointment": "boolean",
-      "countsTowardsRAR": "boolean",
-      "lastUpdated": "string",
-      "lastUpdatedBy": {
-        "forename": "string",
-        "middleName": "string",
-        "surname": "string"
-      }
-    }
-  ]
-}</code></pre>
-
-</td>
-<td>
-<a href='#schema-personactivity'>PersonActivity</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-
-
-
 
 <h2 id="schemas">Schemas</h2>
 <h3 id="schema-caseaccess">CaseAccess</h3>
@@ -4784,6 +4948,748 @@
 </tbody>
 </table>
 
+<h3 id="schema-personactivitysearchrequest">PersonActivitySearchRequest</h3>
+
+
+<table class='schema-personactivitysearchrequest'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>keywords</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateFrom</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateTo</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>filters</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-activity">Activity</h3>
+
+
+<table class='schema-activity'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDateTime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDateTime</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rarToolKit</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isSensitive</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>hasOutcome</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>wasAbsent</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>officerName</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>isInitial</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isNationalStandard</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>location</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-officeaddress'>OfficeAddress</a>
+</td>
+</tr>
+
+<tr>
+<td>rescheduled</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduledStaff</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduledPop</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>didTheyComply</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>absentWaitingEvidence</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rearrangeOrCancelReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>rescheduledBy</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>repeating</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nonComplianceReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-document'>Document</a>
+</td>
+</tr>
+
+<tr>
+<td>rarCategory</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>acceptableAbsence</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>acceptableAbsenceReason</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isAppointment</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isCommunication</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>action</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isSystemContact</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isEmailOrTextFromPop</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isPhoneCallFromPop</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isEmailOrTextToPop</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isPhoneCallToPop</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isPastAppointment</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>countsTowardsRAR</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedBy</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-document">Document</h3>
+
+
+<table class='schema-document'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-officeaddress">OfficeAddress</h3>
+
+
+<table class='schema-officeaddress'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>officeName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ldu</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personactivitysearchresponse">PersonActivitySearchResponse</h3>
+
+
+<table class='schema-personactivitysearchresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>size</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalResults</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalPages</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>activities</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-activity'>Activity</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personsummary">PersonSummary</h3>
+
+
+<table class='schema-personsummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pnc</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-outcome">Outcome</h3>
 
 
@@ -5166,68 +6072,6 @@
 <td></td>
 <td>
   <a href='#schema-minimalsentence'>MinimalSentence</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personsummary">PersonSummary</h3>
-
-
-<table class='schema-personsummary'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>offenderId</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pnc</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>dateOfBirth</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
@@ -6442,562 +7286,6 @@
 <td></td>
 <td>
   <a href='#schema-contact'>Contact</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-activity">Activity</h3>
-
-
-<table class='schema-activity'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>eventNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>type</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>startDateTime</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>endDateTime</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>rarToolKit</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>notes</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isSensitive</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>hasOutcome</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>wasAbsent</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>officerName</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>isInitial</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isNationalStandard</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>location</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-officeaddress'>OfficeAddress</a>
-</td>
-</tr>
-
-<tr>
-<td>rescheduled</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>rescheduledStaff</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>rescheduledPop</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>didTheyComply</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>absentWaitingEvidence</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>rearrangeOrCancelReason</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>rescheduledBy</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>repeating</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>nonComplianceReason</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>documents</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-document'>Document</a>
-</td>
-</tr>
-
-<tr>
-<td>rarCategory</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>acceptableAbsence</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>acceptableAbsenceReason</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isAppointment</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isCommunication</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>action</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isSystemContact</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isEmailOrTextFromPop</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isPhoneCallFromPop</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isEmailOrTextToPop</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isPhoneCallToPop</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>isPastAppointment</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>countsTowardsRAR</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>lastUpdated</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>lastUpdatedBy</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-document">Document</h3>
-
-
-<table class='schema-document'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>lastUpdated</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-officeaddress">OfficeAddress</h3>
-
-
-<table class='schema-officeaddress'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>officeName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>buildingName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>buildingNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>streetName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>district</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>town</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>county</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>postcode</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>ldu</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
