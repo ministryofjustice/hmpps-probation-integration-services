@@ -25,6 +25,7 @@ data class PersonalDetails(
     val disabilities: Disabilities,
     val provisions: Provisions,
     val pnc: String?,
+    val noms: String?,
     val sex: String,
     val religionOrBelief: String?,
     val sexualOrientation: String?,
