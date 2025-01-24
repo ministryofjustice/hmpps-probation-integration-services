@@ -74,6 +74,7 @@ class PersonalDetailsService(
                 provisions = provisions.map { it.type.description }),
             documents = documents.map(PersonDocument::toDocument),
             pnc = person.pnc,
+            noms = person.noms,
             religionOrBelief = person.religion?.description,
             sex = person.gender.description,
             sexualOrientation = person.sexualOrientation?.description,

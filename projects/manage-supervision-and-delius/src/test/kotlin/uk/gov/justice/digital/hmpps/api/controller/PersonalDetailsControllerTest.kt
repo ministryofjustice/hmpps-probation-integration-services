@@ -46,6 +46,7 @@ internal class PersonalDetailsControllerTest {
         val personalDetails = PersonalDetails(
             crn = "X000005",
             pnc = "pnc123",
+            noms = "noms123",
             name = Name(forename = "Stephen", middleName = "Harry", surname = "Bloggs"),
             circumstances = Circumstances(emptyList(), lastUpdated = null),
             disabilities = Disabilities(emptyList(), lastUpdated = null),
