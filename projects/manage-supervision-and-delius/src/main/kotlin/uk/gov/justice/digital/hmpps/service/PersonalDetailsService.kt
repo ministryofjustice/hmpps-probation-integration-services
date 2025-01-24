@@ -192,6 +192,7 @@ fun Person.toSummary() =
         pnc = pnc,
         dateOfBirth = dateOfBirth,
         crn = crn,
+        noms = noms,
         offenderId = id
     )
 
@@ -230,4 +231,4 @@ fun ContactAddress.toAddress() = uk.gov.justice.digital.hmpps.api.model.personal
 
 fun PersonDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)
 fun PersonSummaryEntity.toPersonSummary() =
-    PersonSummary(Name(forename, secondName, surname), crn, id, pnc, dateOfBirth)
+    PersonSummary(Name(forename, secondName, surname), crn, id, pnc, noms, dateOfBirth)

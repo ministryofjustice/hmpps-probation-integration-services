@@ -33,7 +33,7 @@ internal class ScheduleControllerTest {
     fun setup() {
         personSummary = PersonSummary(
             Name(forename = "TestName", middleName = null, surname = "TestSurname"), pnc = "Test PNC",
-            crn = "CRN",
+            crn = "CRN", noms = "NOMS",
             dateOfBirth = LocalDate.now(), offenderId = 1L
         )
     }
