@@ -294,6 +294,7 @@ object PersonDetailsGenerator {
         id = IdGenerator.getAndIncrement(),
         crn = crn,
         pnc = "1964/6108598D",
+        noms = "G9566GQ",
         forename = forename,
         secondName = secondName,
         surname = surname,

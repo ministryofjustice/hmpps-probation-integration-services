@@ -65,7 +65,7 @@ internal class PersonalDetailsServiceTest {
         personSummary = Summary(
             id = 1,
             forename = "TestName",
-            surname = "TestSurname", crn = "CRN", pnc = "PNC", dateOfBirth = LocalDate.now().minusYears(50)
+            surname = "TestSurname", crn = "CRN", pnc = "PNC", noms = "NOMS", dateOfBirth = LocalDate.now().minusYears(50)
         )
     }
 

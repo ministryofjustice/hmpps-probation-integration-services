@@ -354,6 +354,7 @@ object PersonGenerator {
         telephoneNumber = telephoneNumber,
         preferredName = preferredName,
         pnc = "pnc1234567890",
+        noms = "noms123",
         religion = null,
         sexualOrientation = null,
         genderIdentity = null,
