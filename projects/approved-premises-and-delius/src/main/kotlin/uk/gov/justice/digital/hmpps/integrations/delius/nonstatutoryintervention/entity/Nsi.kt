@@ -37,7 +37,7 @@ class Nsi(
 
     @ManyToOne
     @JoinColumn(name = "nsi_status_id")
-    val status: NsiStatus,
+    var status: NsiStatus,
 
     @Column(name = "nsi_status_date")
     val statusDate: ZonedDateTime = ZonedDateTime.now(),

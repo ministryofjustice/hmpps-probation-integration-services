@@ -76,6 +76,7 @@ object ReferenceDataGenerator {
         .associateBy { it.code }
 
     val REFERRAL_COMPLETED = generate("APRC", ALL_DATASETS[DatasetCode.NSI_OUTCOME]!!.id)
+    val END_OF_ENGAGEMENT = generate("GRAS1", ALL_DATASETS[DatasetCode.NSI_OUTCOME]!!.id)
 
     val ETHNICITY_WHITE = generate("W1", ETHNICITY.id, "White: British/English/Welsh/Scottish/Northern Irish")
     val GENDER_FEMALE = generate("F", GENDER.id, "Female")
@@ -137,6 +138,7 @@ object ReferenceDataGenerator {
         ORDER_EXPIRED,
         NON_ARRIVAL,
         REFERRAL_COMPLETED,
+        END_OF_ENGAGEMENT,
         ETHNICITY_WHITE,
         GENDER_FEMALE,
         GENDER_MALE,
