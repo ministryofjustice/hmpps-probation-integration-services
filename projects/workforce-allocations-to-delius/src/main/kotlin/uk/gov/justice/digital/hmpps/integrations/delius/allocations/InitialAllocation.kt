@@ -20,8 +20,12 @@ import java.util.stream.Stream
     "officerCode",
     "teamCode",
     "teamDescription",
+    "pduCode",
+    "pduDescription",
     "providerCode",
-    "providerDescription"
+    "providerDescription",
+    "hasExclusion",
+    "hasRestriction",
 )
 interface InitialAllocation {
     val crn: String
@@ -41,6 +45,8 @@ interface InitialAllocation {
     val pduDescription: String
     val providerCode: String
     val providerDescription: String
+    val hasExclusion: String
+    val hasRestriction: String
 }
 
 @Repository
@@ -60,10 +66,15 @@ interface InitialAllocationRepository : JpaRepository<Person, Long> {
                     borough.code as "pduCode",
                     borough.description as "pduDescription",
                     probation_area.code as "providerCode",
-                    probation_area.description as "providerDescription"
+                    probation_area.description as "providerDescription",
+                    (case when exists (select 1 from exclusion where exclusion.offender_id = allocation.offender_id and (exclusion_end_time is null or exclusion_end_time > current_date)) 
+                          then 'Y' else 'N' end) as "hasExclusion",
+                    (case when exists (select 1 from restriction where restriction.offender_id = allocation.offender_id and (restriction_end_time is null or restriction_end_time > current_date)) 
+                          then 'Y' else 'N' end) as "hasRestriction"
             from (
                 select 
-                    offender.crn, 
+                    offender.crn,
+                    offender.offender_id,
                     event.event_number,
                     (case when r_disposal_type.sentence_type is null then 'None' when r_disposal_type.sentence_type in ('NC','SC') then 'Custody' else 'Community' end) as sentence_type,
                     order_manager.created_by_user_id,
