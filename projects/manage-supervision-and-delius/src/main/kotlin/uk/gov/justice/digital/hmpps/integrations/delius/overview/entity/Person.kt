@@ -26,6 +26,9 @@ class Person(
     @Column(name = "pnc_number", columnDefinition = "char(13)")
     val pnc: String?,
 
+    @Column(name = "noms_number", columnDefinition = "char(7)")
+    val noms: String?,
+
     @Column(name = "first_name", length = 35)
     val forename: String,
 
@@ -99,6 +102,7 @@ interface PersonSummaryEntity {
     val surname: String
     val crn: String
     val pnc: String?
+    val noms: String?
     val dateOfBirth: LocalDate
 }
 
@@ -116,6 +120,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         p.surname, 
         p.crn, 
         p.pnc_number as pnc, 
+        p.noms_number as noms,
         p.date_of_birth_date as dateofbirth
         from offender p 
         where p.crn = :crn and p.soft_deleted = 0  
