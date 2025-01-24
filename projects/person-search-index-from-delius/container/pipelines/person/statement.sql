@@ -143,7 +143,10 @@ SELECT json_object(
                                                                    'code' VALUE staff.OFFICER_CODE, 'forenames' VALUE
                                                                    staff.FORENAME ||
                                                                    DECODE(staff.FORENAME2, NULL, '', ' ' || staff.FORENAME2),
-                                                                   'surname' VALUE staff.SURNAME
+                                                                   'surname' VALUE staff.SURNAME,
+                                                                   'unallocated' VALUE
+                                                                   CASE WHEN staff.OFFICER_CODE like '%U'
+                                                                       THEN 'true' ELSE 'false' END FORMAT JSON
                                                                    ABSENT ON NULL),
                                                            'team' VALUE json_object(
                                                                    'code' VALUE team.CODE,
