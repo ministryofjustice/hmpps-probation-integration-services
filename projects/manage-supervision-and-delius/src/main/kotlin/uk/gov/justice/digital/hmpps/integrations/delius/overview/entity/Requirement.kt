@@ -168,7 +168,6 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
             AND e.event_number = :eventNumber
             AND e.soft_deleted = 0 
             AND e.active_flag = 1
-            AND r.active_flag = 1
             AND r.soft_deleted = 0
             ORDER BY rrtmc.description
         """, nativeQuery = true
@@ -207,7 +206,6 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
             WHERE r.rqmnt_id = :id
             AND e.soft_deleted = 0 
             AND e.active_flag = 1
-            AND r.active_flag = 1
             AND r.soft_deleted = 0            
         """, nativeQuery = true
     )
