@@ -128,15 +128,17 @@ object PersonGenerator {
         LocalDate.now()
     )
 
+
     val MAIN_CAT_F_SUB_ID = IdGenerator.getAndIncrement()
     val MAIN_CAT_F_TYPE = ReferenceData(MAIN_CAT_F_SUB_ID, "G03", "High Intensity")
-    val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main", 1)
-    val REQUIREMENT = generateRequirement(ACTIVE_ORDER, MAIN_CAT_F_SUB_ID, mainCategory = MAIN_CAT_F)
+    val UNIT = ReferenceData(IdGenerator.getAndIncrement(), "D", "Days")
+    val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main", UNIT.id, UNIT)
+    val REQUIREMENT = generateRequirement(ACTIVE_ORDER, MAIN_CAT_F_SUB_ID, subCategory = MAIN_CAT_F_TYPE, mainCategory = MAIN_CAT_F,  terminationDetails = null)
 
     val MAIN_CAT_W_SUB_ID = IdGenerator.getAndIncrement()
     val MAIN_CAT_W_TYPE = ReferenceData(MAIN_CAT_W_SUB_ID, "W02", "Intensive")
-    val MAIN_CAT_W = RequirementMainCategory(IdGenerator.getAndIncrement(), "W", "Unpaid Work", 1107)
-    val REQUIREMENT_UNPAID_WORK = generateRequirement(ACTIVE_ORDER, MAIN_CAT_W_SUB_ID, mainCategory = MAIN_CAT_W)
+    val MAIN_CAT_W = RequirementMainCategory(IdGenerator.getAndIncrement(), "W", "Unpaid Work", UNIT.id, UNIT)
+    val REQUIREMENT_UNPAID_WORK = generateRequirement(ACTIVE_ORDER, MAIN_CAT_W_SUB_ID, subCategory = MAIN_CAT_W_TYPE, mainCategory = MAIN_CAT_W,  terminationDetails = null)
 
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
@@ -377,6 +379,8 @@ object PersonGenerator {
         expectedEndDate: LocalDate? = LocalDate.now().minusDays(2),
         terminationDate: LocalDate? = LocalDate.now().minusDays(3),
         rqmntTerminationReasonId: Long? = null,
+        subCategory: ReferenceData?,
+        terminationDetails: ReferenceData?,
         id: Long = IdGenerator.getAndIncrement()
     ) = Requirement(
         id,
@@ -391,6 +395,8 @@ object PersonGenerator {
         rqmntTerminationReasonId,
         disposal,
         mainCategory,
+        subCategory,
+        terminationDetails,
         active,
         softDeleted
     )

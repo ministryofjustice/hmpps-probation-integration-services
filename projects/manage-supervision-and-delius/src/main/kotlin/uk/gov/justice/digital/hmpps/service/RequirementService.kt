@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement as RequirementEntity
 
 @Service
 class RequirementService(
@@ -79,3 +80,6 @@ fun RequirementDetails.toRequirementNote(truncateNote: Boolean): List<NoteDetail
     return formatNote(notes, truncateNote)
 }
 
+fun RequirementEntity.toRequirementNote(truncateNote: Boolean): List<NoteDetail> {
+    return formatNote(notes, truncateNote)
+}
