@@ -74,16 +74,16 @@ dependencyResolutionManagement {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.4")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.3.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.30.2")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.30.6")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.3.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.3.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.3.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.30.2")
+            library("aws-sts", "software.amazon.awssdk:sts:2.30.6")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.6.2")
             library("azure-identity", "com.azure:azure-identity:1.15.0")
             library("flipt", "io.flipt:flipt-java:1.1.1")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
-            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.25.1")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.26.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
@@ -105,7 +105,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.develocity") version "3.19" }
+plugins { id("com.gradle.develocity") version "3.19.1" }
 develocity {
     buildScan {
         publishing.onlyIf { !System.getenv("CI").isNullOrEmpty() }
