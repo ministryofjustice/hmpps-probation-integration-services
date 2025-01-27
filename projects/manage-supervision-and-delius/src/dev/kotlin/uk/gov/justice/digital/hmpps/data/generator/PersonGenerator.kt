@@ -128,17 +128,28 @@ object PersonGenerator {
         LocalDate.now()
     )
 
-
     val MAIN_CAT_F_SUB_ID = IdGenerator.getAndIncrement()
     val MAIN_CAT_F_TYPE = ReferenceData(MAIN_CAT_F_SUB_ID, "G03", "High Intensity")
     val UNIT = ReferenceData(IdGenerator.getAndIncrement(), "D", "Days")
     val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main", UNIT.id, UNIT)
-    val REQUIREMENT = generateRequirement(ACTIVE_ORDER, MAIN_CAT_F_SUB_ID, subCategory = MAIN_CAT_F_TYPE, mainCategory = MAIN_CAT_F,  terminationDetails = null)
+    val REQUIREMENT = generateRequirement(
+        ACTIVE_ORDER,
+        MAIN_CAT_F_SUB_ID,
+        subCategory = MAIN_CAT_F_TYPE,
+        mainCategory = MAIN_CAT_F,
+        terminationDetails = null
+    )
 
     val MAIN_CAT_W_SUB_ID = IdGenerator.getAndIncrement()
     val MAIN_CAT_W_TYPE = ReferenceData(MAIN_CAT_W_SUB_ID, "W02", "Intensive")
     val MAIN_CAT_W = RequirementMainCategory(IdGenerator.getAndIncrement(), "W", "Unpaid Work", UNIT.id, UNIT)
-    val REQUIREMENT_UNPAID_WORK = generateRequirement(ACTIVE_ORDER, MAIN_CAT_W_SUB_ID, subCategory = MAIN_CAT_W_TYPE, mainCategory = MAIN_CAT_W,  terminationDetails = null)
+    val REQUIREMENT_UNPAID_WORK = generateRequirement(
+        ACTIVE_ORDER,
+        MAIN_CAT_W_SUB_ID,
+        subCategory = MAIN_CAT_W_TYPE,
+        mainCategory = MAIN_CAT_W,
+        terminationDetails = null
+    )
 
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
