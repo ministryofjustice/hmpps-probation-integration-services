@@ -47,6 +47,7 @@ internal class PersonalDetailsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonalDetails>()
         assertThat(res.crn, equalTo(person.crn))
+        assertThat(res.noms, equalTo(person.noms))
         assertThat(res.name, equalTo(Name("Caroline", "Louise", "Bloggs")))
         assertThat(res.preferredName, equalTo("Caz"))
         assertThat(res.preferredGender, equalTo("Female"))

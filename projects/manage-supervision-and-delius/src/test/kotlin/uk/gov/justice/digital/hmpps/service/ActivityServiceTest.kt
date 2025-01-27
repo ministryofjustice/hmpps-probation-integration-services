@@ -10,6 +10,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
@@ -25,6 +26,9 @@ internal class ActivityServiceTest {
     @Mock
     lateinit var contactRepository: ContactRepository
 
+    @Mock
+    lateinit var probationSearchClient: ProbationSearchClient
+
     @InjectMocks
     lateinit var service: ActivityService
 
@@ -37,7 +41,7 @@ internal class ActivityServiceTest {
             forename = PERSONAL_DETAILS.forename,
             secondName = PERSONAL_DETAILS.secondName,
             surname = PERSONAL_DETAILS.surname, crn = PERSONAL_DETAILS.crn, pnc = PERSONAL_DETAILS.pnc,
-            dateOfBirth = PERSONAL_DETAILS.dateOfBirth
+            noms = PERSONAL_DETAILS.noms, dateOfBirth = PERSONAL_DETAILS.dateOfBirth
         )
     }
 

@@ -30,7 +30,7 @@ spring:
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
-  threads.virtual.enabled: false
+  threads.virtual.enabled: true
 
 delius.db.username: PrisonCaseNotesToProbation
 

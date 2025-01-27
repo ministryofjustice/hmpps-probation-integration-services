@@ -74,6 +74,7 @@ class PersonalDetailsService(
                 provisions = provisions.map { it.type.description }),
             documents = documents.map(PersonDocument::toDocument),
             pnc = person.pnc,
+            noms = person.noms,
             religionOrBelief = person.religion?.description,
             sex = person.gender.description,
             sexualOrientation = person.sexualOrientation?.description,
@@ -192,6 +193,7 @@ fun Person.toSummary() =
         pnc = pnc,
         dateOfBirth = dateOfBirth,
         crn = crn,
+        noms = noms,
         offenderId = id
     )
 
@@ -230,4 +232,4 @@ fun ContactAddress.toAddress() = uk.gov.justice.digital.hmpps.api.model.personal
 
 fun PersonDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)
 fun PersonSummaryEntity.toPersonSummary() =
-    PersonSummary(Name(forename, secondName, surname), crn, id, pnc, dateOfBirth)
+    PersonSummary(Name(forename, secondName, surname), crn, id, pnc, noms, dateOfBirth)

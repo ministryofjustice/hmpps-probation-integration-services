@@ -1,0 +1,44 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+context-mpop: Manage People on Probation Context {
+  entities: Entities {
+    grid-columns: 3
+    activity: Activity
+    appointment: Appointment
+    compliance: Compliance
+    offence: Offence
+    pop: Person on Probation
+    risk: Risk
+    schedule: Schedule
+    sentence: Sentence
+    team: Team
+    staff: Staff
+    caseload: Caseload
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Manage People on Probation\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 2
+    nsi: NSI Compliance
+    pop: Person on Probation
+    contact: Contact
+    event: Event
+    registration: Registration
+    sentence: Sentence
+    court: Court
+    licence-condition: Licence condition
+    offender-manager: Offender manager
+    caseload: Caseload
+  }
+}
+
+context-mpop--context-delius.interface: Upstream\n\n\nDownstream

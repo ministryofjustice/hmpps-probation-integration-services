@@ -24,7 +24,7 @@ dependencies {
     dev(project(":libs:dev-tools"))
     dev("com.unboundid:unboundid-ldapsdk")
     dev("com.h2database:h2")
-    dev("org.testcontainers:oracle-xe")
+    dev("org.testcontainers:oracle-free")
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 

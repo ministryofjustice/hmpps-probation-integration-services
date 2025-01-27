@@ -255,6 +255,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     )
     fun findByPersonId(personId: Long): List<Contact>
 
+    fun findByPersonIdAndIdIn(personId: Long, ids: List<Long>): List<Contact>
+
     fun findByPersonIdAndEventIdIn(personId: Long, eventId: List<Long>): List<Contact>
 
     fun findByPersonIdAndId(personId: Long, id: Long): Contact?

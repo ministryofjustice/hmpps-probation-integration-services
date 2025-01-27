@@ -23,7 +23,8 @@ class NsiType(
 )
 
 enum class NsiTypeCode(val code: String) {
-    APPROVED_PREMISES_RESIDENCE("APR01")
+    APPROVED_PREMISES_RESIDENCE("APR01"),
+    REHABILITATIVE_ACTIVITY("APR04")
 }
 
 interface NsiTypeRepository : JpaRepository<NsiType, Long> {

@@ -5,9 +5,10 @@ apply(plugin = "com.google.cloud.tools.jib")
 dependencies {
     implementation(project(":libs:audit"))
     implementation(project(":libs:commons"))
-    implementation(project(":libs:oauth-server"))
-    implementation(project(":libs:limited-access"))
     implementation(project(":libs:document-management"))
+    implementation(project(":libs:limited-access"))
+    implementation(project(":libs:oauth-client"))
+    implementation(project(":libs:oauth-server"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -22,7 +23,7 @@ dependencies {
     dev(project(":libs:dev-tools"))
     dev("com.unboundid:unboundid-ldapsdk")
     dev("com.h2database:h2")
-    dev("org.testcontainers:oracle-xe")
+    dev("org.testcontainers:oracle-free")
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
