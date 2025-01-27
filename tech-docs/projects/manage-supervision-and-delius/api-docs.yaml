@@ -1244,6 +1244,8 @@ components:
           format: int64
         pnc:
           type: string
+        noms:
+          type: string
         dateOfBirth:
           type: string
           format: date
@@ -2043,6 +2045,8 @@ components:
         provisions:
           $ref: "#/components/schemas/Provisions"
         pnc:
+          type: string
+        noms:
           type: string
         sex:
           type: string
