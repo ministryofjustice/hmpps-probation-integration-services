@@ -24,9 +24,6 @@ class Requirement(
     @Column(name = "rqmnt_notes", columnDefinition = "clob")
     val notes: String?,
 
-    @Column(name = "rqmnt_type_sub_category_id")
-    val subCategoryId: Long? = null,
-
     val expectedStartDate: LocalDate?,
 
     val startDate: LocalDate,
@@ -37,9 +34,6 @@ class Requirement(
 
     val terminationDate: LocalDate?,
 
-    @Column(name = "rqmnt_termination_reason_id")
-    val rqmntTerminationReasonId: Long?,
-
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal? = null,
@@ -49,11 +43,11 @@ class Requirement(
     val mainCategory: RequirementMainCategory?,
 
     @ManyToOne
-    @JoinColumn(name = "rqmnt_type_sub_category_id", updatable = false, insertable = false)
+    @JoinColumn(name = "rqmnt_type_sub_category_id")
     val subCategory: ReferenceData?,
 
     @ManyToOne
-    @JoinColumn(name = "rqmnt_termination_reason_id", updatable = false, insertable = false)
+    @JoinColumn(name = "rqmnt_termination_reason_id")
     val terminationDetails: ReferenceData?,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
