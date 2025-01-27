@@ -115,7 +115,7 @@ class SentenceService(
                 additionalSentences.map { it.toAdditionalSentence() }
             ),
             order = disposal?.toOrder(),
-            requirements = requirementRepository.getReqs(id, eventNumber)
+            requirements = requirementRepository.getRequirements(id, eventNumber)
                 .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
             unpaidWorkProgress = disposal?.id?.let { getUnpaidWorkTime(it) },
@@ -164,9 +164,9 @@ class SentenceService(
         return requirement
     }
 
-    fun RequirementDetails.toMinimalRequirement(): MinimalRequirement {
-        val rar = requirementService.getRar(disposalId, code)
-        return MinimalRequirement(id, populateRequirementDescription(description, codeDescription, length, rar))
+    fun RequirementEntity.toMinimalRequirement(): MinimalRequirement {
+        val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
+        return MinimalRequirement(id, populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar))
     }
 
     fun getUnpaidWorkTime(disposalId: Long): String? {

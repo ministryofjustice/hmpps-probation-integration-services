@@ -69,7 +69,7 @@ class RequirementIntegrationTest {
                 null,
                 "2 of 12 RAR days completed",
                 12,
-                null,
+                "Days",
                 requirementNote = NoteDetail(0, note = "my notes"),
                 rar = Rar(completed = 1, scheduled = 1, nsiCompleted = 0, totalDays = 2)
             )
