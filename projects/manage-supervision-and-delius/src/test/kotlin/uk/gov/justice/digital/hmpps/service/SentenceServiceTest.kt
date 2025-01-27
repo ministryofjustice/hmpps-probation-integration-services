@@ -130,7 +130,9 @@ class SentenceServiceTest {
         whenever(requirementRepository.sumTotalUnpaidWorkHoursByDisposal(event.disposal!!.id)).thenReturn(70)
         whenever(upwAppointmentRepository.calculateUnpaidTimeWorked(event.disposal!!.id)).thenReturn(3936)
 
-        whenever(requirementService.getRar(requirement1.disposal!!.id, requirement1.mainCategory!!.code)).thenReturn(null)
+        whenever(requirementService.getRar(requirement1.disposal!!.id, requirement1.mainCategory!!.code)).thenReturn(
+            null
+        )
 
         val response = service.getEvents(PersonGenerator.OVERVIEW.crn, null)
 

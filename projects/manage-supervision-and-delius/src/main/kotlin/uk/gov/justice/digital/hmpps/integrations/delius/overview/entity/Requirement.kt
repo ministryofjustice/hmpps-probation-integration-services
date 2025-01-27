@@ -202,10 +202,8 @@ class RequirementMainCategory(
     val code: String,
     val description: String,
 
-    @Column(name = "units_id")
-    val unitsId: Long? = null,
     @ManyToOne
-    @JoinColumn(name = "units_id", updatable = false, insertable = false)
+    @JoinColumn(name = "units_id")
     val unitDetails: ReferenceData? = null,
 )
 

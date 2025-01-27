@@ -166,7 +166,10 @@ class SentenceService(
 
     fun RequirementEntity.toMinimalRequirement(): MinimalRequirement {
         val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
-        return MinimalRequirement(id, populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar))
+        return MinimalRequirement(
+            id,
+            populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar)
+        )
     }
 
     fun getUnpaidWorkTime(disposalId: Long): String? {
