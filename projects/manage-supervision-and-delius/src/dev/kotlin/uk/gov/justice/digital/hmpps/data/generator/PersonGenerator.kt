@@ -131,11 +131,21 @@ object PersonGenerator {
     val MAIN_CAT_F_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "G03", "High Intensity")
     val UNIT = ReferenceData(IdGenerator.getAndIncrement(), "D", "Days")
     val MAIN_CAT_F = RequirementMainCategory(IdGenerator.getAndIncrement(), "F", "Main", UNIT)
-    val REQUIREMENT = generateRequirement(ACTIVE_ORDER, subCategory = MAIN_CAT_F_TYPE, mainCategory = MAIN_CAT_F,  terminationDetails = null)
+    val REQUIREMENT = generateRequirement(
+        ACTIVE_ORDER,
+        subCategory = MAIN_CAT_F_TYPE,
+        mainCategory = MAIN_CAT_F,
+        terminationDetails = null
+    )
 
     val MAIN_CAT_W_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "W02", "Intensive")
     val MAIN_CAT_W = RequirementMainCategory(IdGenerator.getAndIncrement(), "W", "Unpaid Work", UNIT)
-    val REQUIREMENT_UNPAID_WORK = generateRequirement(ACTIVE_ORDER, subCategory = MAIN_CAT_W_TYPE, mainCategory = MAIN_CAT_W,  terminationDetails = null)
+    val REQUIREMENT_UNPAID_WORK = generateRequirement(
+        ACTIVE_ORDER,
+        subCategory = MAIN_CAT_W_TYPE,
+        mainCategory = MAIN_CAT_W,
+        terminationDetails = null
+    )
 
     val REQUIREMENT_CONTACT_1 = ContactGenerator.generateContact(
         OVERVIEW,
