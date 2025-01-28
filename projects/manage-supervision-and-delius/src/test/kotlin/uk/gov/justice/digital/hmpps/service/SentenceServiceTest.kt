@@ -14,13 +14,17 @@ import uk.gov.justice.digital.hmpps.data.generator.AdditionalSentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ACTIVE_ORDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REQUIREMENT
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.LocalDate
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement as RequirementEntity
 
 @ExtendWith(MockitoExtension::class)
 class SentenceServiceTest {
@@ -106,6 +110,20 @@ class SentenceServiceTest {
     @Test
     fun `recent active sentences`() {
 
+        val requirement2 = RequirementEntity(
+            2,
+            30,
+            "rar requirement",
+            null,
+            LocalDate.now(),
+            null,
+            null,
+            null,
+            ACTIVE_ORDER,
+            RequirementMainCategory(1, "F", "Main"),
+            null,
+            ReferenceData(1, "T", "Ended")
+            )
         val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
@@ -119,7 +137,7 @@ class SentenceServiceTest {
             .thenReturn(listOf(AdditionalSentenceGenerator.SENTENCE_DISQ, AdditionalSentenceGenerator.SENTENCE_FINE))
 
         whenever(requirementRepository.getRequirements(event.id, event.eventNumber))
-            .thenReturn(listOf(requirement1))
+            .thenReturn(listOf(requirement2))
 
         whenever(documentRepository.getCourtDocuments(event.id, event.eventNumber)).thenReturn(
             listOf(
@@ -161,17 +179,17 @@ class SentenceServiceTest {
                 Order("Default Sentence Type", 12, null, startDate = LocalDate.now().minusDays(14)),
                 listOf(
                     Requirement(
-                        requirement1.id,
-                        requirement1.mainCategory!!.code,
-                        requirement1.expectedStartDate,
-                        requirement1.startDate,
-                        requirement1.expectedEndDate,
-                        requirement1.terminationDate,
-                        requirement1.terminationDetails?.description,
-                        "${requirement1.mainCategory!!.description} - ${requirement1.subCategory!!.description}",
-                        requirement1.length,
-                        requirement1.mainCategory!!.unitDetails!!.description,
-                        listOf(NoteDetail(0, note = requirement1.notes!!, hasNoteBeenTruncated = false)),
+                        requirement2.id,
+                        requirement2.mainCategory!!.code,
+                        requirement2.expectedStartDate,
+                        requirement2.startDate,
+                        requirement2.expectedEndDate,
+                        requirement2.terminationDate,
+                        requirement2.terminationDetails?.description,
+                        requirement2.mainCategory!!.description,
+                        requirement2.length,
+                        null,
+                        listOf(NoteDetail(0, note = requirement2.notes!!, hasNoteBeenTruncated = false)),
                         null
                     ),
                 ),
@@ -220,7 +238,6 @@ class SentenceServiceTest {
 
     @Test
     fun `unpaid work one minute`() {
-
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
 
         whenever(eventRepository.findSentencesByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(listOf(event))
