@@ -123,7 +123,7 @@ class SentenceServiceTest {
             RequirementMainCategory(1, "F", "Main"),
             null,
             ReferenceData(1, "T", "Ended")
-            )
+        )
         val courtDocumentDetails = CourtDocs("A001", LocalDate.now(), "Pre Sentence Event")
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
