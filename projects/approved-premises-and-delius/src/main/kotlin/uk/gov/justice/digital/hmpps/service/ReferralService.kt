@@ -28,7 +28,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.getUnallocatedTeam
 import uk.gov.justice.digital.hmpps.model.ApReferral
 import uk.gov.justice.digital.hmpps.model.ExistingReferrals
 import uk.gov.justice.digital.hmpps.model.ReferralDetail
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.time.ZonedDateTime
 
 @Transactional
@@ -187,14 +186,12 @@ class ReferralService(
     }
 
     fun personDeparted(person: Person, details: PersonDeparted) {
-        val serviceUserId = ServiceContext.servicePrincipal()!!.userId
         val externalReference = EXT_REF_BOOKING_PREFIX + details.bookingId
         val referral = getReferral(person, externalReference)
-        val residence = residenceRepository.findByReferralIdAndCreatedByUserId(referral.id, serviceUserId)
-            ?: throw IgnorableMessageException(
-                "Residence not found",
-                mapOf("crn" to person.crn, "externalReference" to externalReference)
-            )
+        val residence = residenceRepository.findByReferralId(referral.id) ?: throw IgnorableMessageException(
+            "Residence not found",
+            mapOf("crn" to person.crn, "externalReference" to externalReference)
+        )
         residence.departureDate = details.departedAt
         residence.departureReasonId = referenceDataRepository.findByCodeAndDatasetCode(
             details.legacyReasonCode,
