@@ -6,9 +6,9 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.api.model.sentence.RequirementNoteDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement as RequirementEntity
 
 @Service
 class RequirementService(
@@ -26,20 +26,20 @@ class RequirementService(
         )
     }
 
-    fun RequirementDetails.toRequirementSingleNote(noteId: Int): Requirement {
-        val rar = getRar(disposalId, code)
+    fun RequirementEntity.toRequirementSingleNote(noteId: Int): Requirement {
+        val rar = getRar(disposal!!.id, mainCategory!!.code)
 
         val requirement = Requirement(
             id,
-            code,
+            mainCategory.code,
             expectedStartDate,
             startDate,
             expectedEndDate,
             terminationDate,
-            terminationReason,
-            populateRequirementDescription(description, codeDescription, length, rar),
+            terminationDetails?.description,
+            populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar),
             length,
-            lengthUnitValue,
+            mainCategory.unitDetails?.description,
             requirementNote = toRequirementNote(false).elementAtOrNull(noteId),
             rar = rar
         )
@@ -75,7 +75,6 @@ fun populateRequirementDescription(
     return description
 }
 
-fun RequirementDetails.toRequirementNote(truncateNote: Boolean): List<NoteDetail> {
+fun RequirementEntity.toRequirementNote(truncateNote: Boolean): List<NoteDetail> {
     return formatNote(notes, truncateNote)
 }
-

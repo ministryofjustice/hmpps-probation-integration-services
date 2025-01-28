@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -131,7 +132,7 @@ class SentenceIntegrationTest {
                         null,
                         "2 of 12 RAR days completed",
                         12,
-                        null,
+                        "Days",
                         listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
                         rar = Rar(completed = 1, scheduled = 1, nsiCompleted = 0, totalDays = 2)
                     ),
@@ -145,7 +146,7 @@ class SentenceIntegrationTest {
                         null,
                         "Unpaid Work - Intensive",
                         12,
-                        null,
+                        "Days",
                         listOf(NoteDetail(0, note = "my notes", hasNoteBeenTruncated = false)),
                         null
                     )

@@ -7,12 +7,13 @@ import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.overview.Rar
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "rqmnt")
-@SQLRestriction("soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0")
 class Requirement(
     @Id
     @Column(name = "rqmnt_id", nullable = false)
@@ -22,9 +23,6 @@ class Requirement(
 
     @Column(name = "rqmnt_notes", columnDefinition = "clob")
     val notes: String?,
-
-    @Column(name = "rqmnt_type_sub_category_id")
-    val subCategoryId: Long?,
 
     val expectedStartDate: LocalDate?,
 
@@ -36,8 +34,6 @@ class Requirement(
 
     val terminationDate: LocalDate?,
 
-    val rqmntTerminationReasonId: Long?,
-
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal? = null,
@@ -45,6 +41,14 @@ class Requirement(
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_main_category_id")
     val mainCategory: RequirementMainCategory?,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_type_sub_category_id")
+    val subCategory: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_termination_reason_id")
+    val terminationDetails: ReferenceData?,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
@@ -137,79 +141,35 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
 
     @Query(
         """
-            SELECT  r.rqmnt_id as id,
-                    r.disposal_id as disposalId,
-                    r.expected_start_date as expectedStartDate, 
-                    r.start_date as startDate, 
-                    r.commencement_date as commencementDate, 
-                    r.expected_end_date as expectedEndDate, 
-                    r.termination_date as terminationDate,
-                    rsrl3.code_description as terminationReason,
-                    r."LENGTH", 
-                    rsrl2.code_description as lengthUnitValue,
-                    rrtmc.code, 
-                    rrtmc.description, 
-                    rsrl.code_description AS codeDescription, 
-                    TO_CHAR(SUBSTR(r.rqmnt_notes, 1, 4000)) AS notes 
-            FROM rqmnt r
-            JOIN r_rqmnt_type_main_category rrtmc 
-            ON rrtmc.rqmnt_type_main_category_id  = r.rqmnt_type_main_category_id 
-            JOIN disposal d 
-            ON d.disposal_id = r.disposal_id 
-            JOIN event e 
-            ON e.event_id = d.event_id
-            LEFT JOIN r_standard_reference_list rsrl 
-            ON rsrl.standard_reference_list_id = r.rqmnt_type_sub_category_id 
-            LEFT JOIN r_standard_reference_list rsrl2 
-            ON rsrl2.standard_reference_list_id = rrtmc.units_id  
-            LEFT JOIN r_standard_reference_list rsrl3
-            ON rsrl3.standard_reference_list_id = r.rqmnt_termination_reason_id 
-            WHERE e.event_id = :id
-            AND e.event_number = :eventNumber
-            AND e.soft_deleted = 0 
-            AND e.active_flag = 1
-            AND r.soft_deleted = 0
-            ORDER BY rrtmc.description
-        """, nativeQuery = true
+            SELECT r, m, d, sc, td, ud
+            FROM Requirement r
+            JOIN r.mainCategory m
+            JOIN r.disposal d 
+            JOIN d.event e
+            LEFT JOIN r.subCategory sc
+            LEFT JOIN r.terminationDetails td
+            LEFT JOIN m.unitDetails ud
+            WHERE e.id = :id
+            AND e.eventNumber = :eventNumber
+            ORDER BY m.description
+        """
     )
-    fun getRequirements(id: Long, eventNumber: String): List<RequirementDetails>
+    fun getRequirements(id: Long, eventNumber: String): List<Requirement>
 
     @Query(
         """
-            SELECT  r.rqmnt_id AS id,
-                    r.disposal_id as disposalId,
-                    r.expected_start_date as expectedStartDate, 
-                    r.start_date as startDate, 
-                    r.commencement_date as commencementDate, 
-                    r.expected_end_date as expectedEndDate, 
-                    r.termination_date as terminationDate,
-                    rsrl3.code_description as terminationReason,
-                    r."LENGTH", 
-                    rsrl2.code_description as lengthUnitValue,
-                    rrtmc.code, 
-                    rrtmc.description, 
-                    rsrl.code_description AS codeDescription, 
-                    TO_CHAR(SUBSTR(r.rqmnt_notes, 1, 4000)) AS notes 
-            FROM rqmnt r
-            JOIN r_rqmnt_type_main_category rrtmc 
-            ON rrtmc.rqmnt_type_main_category_id  = r.rqmnt_type_main_category_id 
-            JOIN disposal d 
-            ON d.disposal_id = r.disposal_id 
-            JOIN event e 
-            ON e.event_id = d.event_id
-            LEFT JOIN r_standard_reference_list rsrl 
-            ON rsrl.standard_reference_list_id = r.rqmnt_type_sub_category_id 
-            LEFT JOIN r_standard_reference_list rsrl2 
-            ON rsrl2.standard_reference_list_id = rrtmc.units_id  
-            LEFT JOIN r_standard_reference_list rsrl3
-            ON rsrl3.standard_reference_list_id = r.rqmnt_termination_reason_id 
-            WHERE r.rqmnt_id = :id
-            AND e.soft_deleted = 0 
-            AND e.active_flag = 1
-            AND r.soft_deleted = 0            
-        """, nativeQuery = true
+            SELECT r, m, d, sc, td, ud
+            FROM Requirement r
+            JOIN r.mainCategory m
+            JOIN r.disposal d 
+            JOIN d.event e
+            LEFT JOIN r.subCategory sc
+            LEFT JOIN r.terminationDetails td
+            LEFT JOIN m.unitDetails ud
+            WHERE r.id = :id
+        """
     )
-    fun getRequirement(id: Long): RequirementDetails?
+    fun getRequirement(id: Long): Requirement?
 
     @Query(
         """
@@ -241,6 +201,9 @@ class RequirementMainCategory(
     val id: Long,
     val code: String,
     val description: String,
-    val unitsId: Long?,
+
+    @ManyToOne
+    @JoinColumn(name = "units_id")
+    val unitDetails: ReferenceData? = null,
 )
 

@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.Offence
 import uk.gov.justice.digital.hmpps.api.model.sentence.Requirement
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Requirement as RequirementEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
@@ -142,20 +143,20 @@ class SentenceService(
 
     fun Disposal.toMinimalOrder() = MinimalOrder(type.description, date, expectedEndDate())
 
-    fun RequirementDetails.toRequirement(): Requirement {
-        val rar = requirementService.getRar(disposalId, code)
+    fun RequirementEntity.toRequirement(): Requirement {
+        val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
 
         val requirement = Requirement(
             id,
-            code,
+            mainCategory.code,
             expectedStartDate,
             startDate,
             expectedEndDate,
             terminationDate,
-            terminationReason,
-            populateRequirementDescription(description, codeDescription, length, rar),
+            terminationDetails?.description,
+            populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar),
             length,
-            lengthUnitValue,
+            mainCategory.unitDetails?.description,
             toRequirementNote(true),
             rar = rar
         )
@@ -163,9 +164,12 @@ class SentenceService(
         return requirement
     }
 
-    fun RequirementDetails.toMinimalRequirement(): MinimalRequirement {
-        val rar = requirementService.getRar(disposalId, code)
-        return MinimalRequirement(id, populateRequirementDescription(description, codeDescription, length, rar))
+    fun RequirementEntity.toMinimalRequirement(): MinimalRequirement {
+        val rar = requirementService.getRar(disposal!!.id, mainCategory!!.code)
+        return MinimalRequirement(
+            id,
+            populateRequirementDescription(mainCategory.description, subCategory?.description, length, rar)
+        )
     }
 
     fun getUnpaidWorkTime(disposalId: Long): String? {
