@@ -593,13 +593,8 @@ internal class ApprovedPremisesServiceTest {
             null,
             EXT_REF_BOOKING_PREFIX + bookingId,
         )
-        whenever(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndExternalReference(
-                person.id,
-                UserGenerator.AUDIT_USER.id,
-                EXT_REF_BOOKING_PREFIX + bookingId
-            )
-        ).thenReturn(ref)
+        whenever(referralRepository.findByPersonIdAndExternalReference(person.id, EXT_REF_BOOKING_PREFIX + bookingId))
+            .thenReturn(ref)
         return ref
     }
 }

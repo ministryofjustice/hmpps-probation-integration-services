@@ -162,11 +162,7 @@ class Event(
 )
 
 interface ReferralRepository : JpaRepository<Referral, Long> {
-    fun findByPersonIdAndCreatedByUserIdAndExternalReference(
-        personId: Long,
-        createdByUserId: Long,
-        externalRef: String
-    ): Referral?
+    fun findByPersonIdAndExternalReference(personId: Long, externalRef: String): Referral?
 
     @Query(
         """
