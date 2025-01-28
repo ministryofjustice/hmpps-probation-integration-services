@@ -55,11 +55,7 @@ class ReferralService(
         val rTeam = teamRepository.getUnallocatedTeam(ap.probationArea.code)
         val rStaff = staffRepository.getByCode(details.bookedBy.staffMember.staffCode)
         val findReferral = {
-            referralRepository.findByPersonIdAndCreatedByUserIdAndExternalReference(
-                person.id,
-                ServiceContext.servicePrincipal()!!.userId,
-                EXT_REF_BOOKING_PREFIX + details.bookingId
-            )
+            referralRepository.findByPersonIdAndExternalReference(person.id, EXT_REF_BOOKING_PREFIX + details.bookingId)
         }
         findReferral() ?: run {
             eventRepository.findForUpdate(event.id)
@@ -229,11 +225,7 @@ class ReferralService(
     }
 
     fun findReferral(person: Person, externalReference: String): Referral? =
-        referralRepository.findByPersonIdAndCreatedByUserIdAndExternalReference(
-            person.id,
-            ServiceContext.servicePrincipal()!!.userId,
-            externalReference
-        )
+        referralRepository.findByPersonIdAndExternalReference(person.id, externalReference)
 
     fun getReferralDetails(crn: String, bookingId: String): ReferralDetail =
         referralRepository.findReferralDetail(crn, EXT_REF_BOOKING_PREFIX + bookingId)?.let {
