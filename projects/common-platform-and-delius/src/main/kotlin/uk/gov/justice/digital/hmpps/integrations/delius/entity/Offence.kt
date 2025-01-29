@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.*
-import jakarta.persistence.GenerationType.SEQUENCE
+import org.hibernate.annotations.Immutable
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -92,11 +92,10 @@ class Offence(
 @Entity
 @Table(name = "r_detailed_offence")
 @EntityListeners(AuditingEntityListener::class)
-@SequenceGenerator(name = "detailed_offence_id_seq", sequenceName = "detailed_offence_id_seq", allocationSize = 1)
+@Immutable
 class DetailedOffence(
     @Id
     @Column(name = "detailed_offence_id")
-    @GeneratedValue(strategy = SEQUENCE, generator = "detailed_offence_id_seq")
     val id: Long = 0,
 
     @Version
