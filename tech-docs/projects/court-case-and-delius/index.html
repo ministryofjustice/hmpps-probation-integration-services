@@ -92,7 +92,37 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>court-case-and-delius</span></a>
+    <a href="./index.html"><span>Court Case and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Business need</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-court-case-data"><span>Context Map - Court Case data</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Workflows</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#court-case-notes-submitted"><span>Court case notes submitted</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Interface</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#message-formats"><span>Message formats</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>API Access Control</span></a>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -222,9 +252,54 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="court-case-and-delius">court-case-and-delius</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="court-case-and-delius">Court Case and Delius</h1>
+<p>This service listens for domain events containing case notes. The notes are merged with an existing case note or a new case note is created if one does not exist. If a case note arrives out of order, a warning will be logged and it will be ignored.</p>
+<p>This service also provides a read-only API for authorised users to get information about a <strong>Court case</strong> and the <strong>Conviction</strong>.</p>
+<h1 id="business-need">Business need</h1>
+<p>The consumer is used to update the Delius system when a case note is published for a Court case. The Delius system is used to inform practitioners, who manage cases, when there has been an update to the case notes.</p>
+<p>The service also provides an API which is used by the Prepare a Case for Sentence service to get Court case details.</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>This service enables adding or updating data for case notes (contact entity in Delius) only. It provides read-only access relating to a <strong>Person on Probation</strong>, the <strong>Event</strong> (convictions, offences and Court appearances outcomes) and the <strong>Court case</strong> details.</p>
+<h2 id="context-map-court-case-data">Context Map - Court Case data</h2>
+<p><a href="././img/court-case-context-map.svg" rel="noopener noreferrer"><img src="img/court-case-context-map.svg" alt="Context Map" /></a></p>
+<h1 id="workflows">Workflows</h1>
+<h2 id="court-case-notes-submitted">Court case notes submitted</h2>
+<p>The notes are merged with an existing case note or a new case note is created if one does not exist. If a case note arrives out of order, a warning will be logged and it will be ignored.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Court case note published</td>
+<td>court-case.comment.published</td>
+</tr>
+        </table>
+      </div><p><a href="././img/court-case-notes-submitted-workflow.svg" rel="noopener noreferrer"><img src="img/court-case-notes-submitted-workflow.svg" alt="Context Map" /></a></p>
+<h1 id="interface">Interface</h1>
+<h2 id="message-formats">Message formats</h2>
+<p>The service responds to HMPPS Domain Event messages via the
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/court-case-and-delius-queue.tf">Court Case and Delius Queue</a>.
+The events are raised by TODO.</p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/court-case-and-delius-queue.tf">SQS queue policy</a></p>
+<h1 id="api-access-control">API Access Control</h1>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/secure/offenders/</td>
+<td>PROBATION_API__COURT_CASE__CASE_DETAILS</td>
+</tr><tr>
+<td>/probation-case/{urn}/</td>
+<td>PROBATION_API__COURT_CASE__CASE_DETAILS</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
