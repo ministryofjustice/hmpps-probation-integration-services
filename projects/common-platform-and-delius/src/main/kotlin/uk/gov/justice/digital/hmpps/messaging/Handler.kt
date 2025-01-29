@@ -9,7 +9,10 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.EventService
+import uk.gov.justice.digital.hmpps.service.InsertEventResult
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -24,7 +27,9 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val personService: PersonService,
     private val probationSearchClient: ProbationSearchClient,
-    private val featureFlags: FeatureFlags
+    private val featureFlags: FeatureFlags,
+    private val eventService: EventService,
+    private val eventRepository: EventRepository
 ) : NotificationHandler<CommonPlatformHearing> {
 
     @Publish(messages = [Message(title = "COMMON_PLATFORM_HEARING", payload = Schema(CommonPlatformHearing::class))])
@@ -32,15 +37,13 @@ class Handler(
         telemetryService.notificationReceived(notification)
 
         // Filter hearing message for defendants with a convicted judicial result of Remanded in custody
-        val defendants = notification.message.hearing.prosecutionCases
-            .flatMap { it.defendants }
-            .filter { defendant ->
-                defendant.offences.any { offence ->
-                    offence.judicialResults?.any { judicialResult ->
-                        judicialResult.isConvictedResult == true && judicialResult.label == "Remanded in custody"
-                    } ?: false
-                }
+        val defendants = notification.message.hearing.prosecutionCases.flatMap { it.defendants }.filter { defendant ->
+            defendant.offences.any { offence ->
+                offence.judicialResults?.any { judicialResult ->
+                    judicialResult.isConvictedResult == true && judicialResult.label == "Remanded in custody"
+                } ?: false
             }
+        }
         if (defendants.isEmpty()) {
             return
         }
@@ -53,12 +56,10 @@ class Handler(
 
             if (matchedPersonResponse.matches.isNotEmpty()) {
                 telemetryService.trackEvent(
-                    "ProbationSearchMatchDetected",
-                    mapOf(
+                    "ProbationSearchMatchDetected", mapOf(
                         "hearingId" to notification.message.hearing.id,
                         "defendantId" to defendant.id,
-                        "crns" to matchedPersonResponse.matches.joinToString(", ") { it.offender.otherIds.crn }
-                    )
+                        "crns" to matchedPersonResponse.matches.joinToString(", ") { it.offender.otherIds.crn })
                 )
                 return@forEach
             }
@@ -82,8 +83,7 @@ class Handler(
                 savedEntities.address?.let { notifier.addressCreated(it) }
 
                 telemetryService.trackEvent(
-                    "PersonCreated",
-                    mapOf(
+                    "PersonCreated", mapOf(
                         "hearingId" to notification.message.hearing.id,
                         "defendantId" to defendant.id,
                         "CRN" to savedEntities.person.crn,
@@ -93,12 +93,79 @@ class Handler(
                         "addressId" to savedEntities.address?.id.toString(),
                     )
                 )
+
+                val remandedOffences = defendant.offences.filter { offence ->
+                    offence.judicialResults?.any { it.label == "Remanded in custody" } == true
+                }
+
+                // TODO: Currently using the first offence, We will need to identify the main offence
+                val mainOffence = remandedOffences.firstOrNull() ?: return@forEach
+
+                val caseUrn =
+                    notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }?.prosecutionCaseIdentifier?.caseURN
+                        ?: return@forEach
+
+                // Event logic
+                val savedEventEntities: InsertEventResult?
+                val existingCaseUrnEvent = eventRepository.findEventByCaseUrnAndCrn(caseUrn, savedEntities.person.crn)
+                val otherActiveEvents =
+                    eventRepository.findActiveEventsExcludingCaseUrn(caseUrn, savedEntities.person.crn)
+
+                // If an existing event with case urn exists, update it.
+                // Unless other active events exist on the person, in which case do nothing
+                // If no existing events are found and no case urn event is found then create a new event
+                if (existingCaseUrnEvent != null) {
+                    if (!otherActiveEvents.isNullOrEmpty()) {
+                        telemetryService.trackEvent(
+                            "EventUpdateSkipped", mapOf(
+                                "hearingId" to notification.message.hearing.id,
+                                "existingEventIdsFound" to otherActiveEvents.joinToString(",") { it.id.toString() })
+                        )
+                        return@forEach
+                    } else {
+                        // TODO: Implement update event logic here
+                        // savedEventEntities = eventService.updateEvent()
+                        telemetryService.trackEvent(
+                            "SimulatedUpdateEvent", mapOf("hearingId" to notification.message.hearing.id)
+                        )
+                    }
+                } else {
+                    if (otherActiveEvents.isNullOrEmpty()) {
+                        savedEventEntities = eventService.insertEvent(
+                            mainOffence,
+                            savedEntities.person,
+                            notification.message.hearing.courtCentre.code,
+                            notification.message.hearing.hearingDays.first().sittingDay,
+                            caseUrn,
+                            notification.message.hearing.id
+                        )
+                        telemetryService.trackEvent(
+                            "EventCreated", mapOf(
+                                "hearingId" to notification.message.hearing.id,
+                                "eventId" to savedEventEntities.event.id.toString(),
+                                "eventNumber" to savedEventEntities.event.number,
+                                "CRN" to savedEventEntities.event.person.crn,
+                                "personId" to savedEventEntities.event.person.id.toString(),
+                                "orderManagerId" to savedEventEntities.orderManager.id.toString(),
+                                "mainOffenceId" to savedEventEntities.mainOffence.id.toString(),
+                                "courtAppearanceId" to savedEventEntities.courtAppearance.id.toString(),
+                                "contactId" to savedEventEntities.contact.id.toString()
+                            )
+                        )
+                    } else {
+                        telemetryService.trackEvent(
+                            "EventCreatedSkipped", mapOf(
+                                "hearingId" to notification.message.hearing.id,
+                                "existingActiveEventIds" to otherActiveEvents.joinToString(",") { it.id.toString() },
+                            )
+                        )
+                        return@forEach
+                    }
+                }
             } else {
                 telemetryService.trackEvent(
-                    "SimulatedPersonCreated",
-                    mapOf(
-                        "hearingId" to notification.message.hearing.id,
-                        "defendantId" to defendant.id
+                    "SimulatedPersonCreated", mapOf(
+                        "hearingId" to notification.message.hearing.id, "defendantId" to defendant.id
                     )
                 )
             }

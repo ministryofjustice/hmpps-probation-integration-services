@@ -9,6 +9,11 @@ database:
       - equality
       - audited_interaction
       - offender_address
+      - event
+      - court_appearance
+      - order_manager
+      - contact
+      - main_offence
     packages:
       - offender_support_api # for generating crn
 
