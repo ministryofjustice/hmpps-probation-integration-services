@@ -18,6 +18,7 @@ jobs:
     with:
       push: true
       force-deploy: "${{ inputs.force-deploy || false }}"
+    concurrency: pipeline-build-${{ github.ref_name }}
     secrets:
       GRADLE_ENCRYPTION_KEY: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
