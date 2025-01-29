@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.C
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -153,10 +154,14 @@ object PersonDetailsGenerator {
         USER
     )
 
-    val PERSON_ADDRESS_STATUS_1 = ReferenceData(IdGenerator.getAndIncrement(), "M", "Main Address")
-    val PERSON_ADDRESS_STATUS_2 = ReferenceData(IdGenerator.getAndIncrement(), "A", "Another Address")
-    val PERSON_ADDRESS_TYPE_1 = ReferenceData(IdGenerator.getAndIncrement(), "T1", "Address type 1")
-    val PERSON_ADDRESS_TYPE_2 = ReferenceData(IdGenerator.getAndIncrement(), "T2", "Address type 2")
+    val ADDRESS_TYPE = Dataset(IdGenerator.getAndIncrement(), "ADDRESS TYPE")
+    val ADDRESS_STATUS = Dataset(IdGenerator.getAndIncrement(), "ADDRESS STATUS")
+
+    val PERSON_ADDRESS_STATUS_1 = ReferenceData(IdGenerator.getAndIncrement(), "M", "Main Address", ADDRESS_STATUS.id)
+    val PERSON_ADDRESS_STATUS_2 =
+        ReferenceData(IdGenerator.getAndIncrement(), "A", "Another Address", ADDRESS_STATUS.id)
+    val PERSON_ADDRESS_TYPE_1 = ReferenceData(IdGenerator.getAndIncrement(), "T1", "Address type 1", ADDRESS_TYPE.id)
+    val PERSON_ADDRESS_TYPE_2 = ReferenceData(IdGenerator.getAndIncrement(), "T2", "Address type 2", ADDRESS_TYPE.id)
     val PERSON_ADDRESS_1 = generatePersonAddress(
         "31",
         "Test Street",
@@ -195,6 +200,7 @@ object PersonDetailsGenerator {
 
     val NULL_ADDRESS = PersonAddress(
         PERSONAL_DETAILS.id,
+        0L,
         PERSON_ADDRESS_STATUS_2,
         PERSON_ADDRESS_TYPE_2,
         null,
@@ -204,15 +210,19 @@ object PersonDetailsGenerator {
         null,
         null,
         null,
-        telephoneNumber = null,
+        null,
         LocalDate.now(),
         null,
         true,
+        false,
         LocalDate.now(),
+        USER.id,
         USER,
+        LocalDate.now(),
+        0,
         false,
         "Some Notes",
-        IdGenerator.getAndIncrement(),
+        null,
     )
 
     val DOCUMENT_1 = generateDocument(PERSONAL_DETAILS.id, "A001", "induction.doc", "DOCUMENT")
@@ -254,7 +264,7 @@ object PersonDetailsGenerator {
 
     ) = PersonAddress(
         personId = personId,
-        id = IdGenerator.getAndIncrement(),
+        id = null,
         buildingName = null,
         buildingNumber = addressNumber,
         county = county,
@@ -270,6 +280,7 @@ object PersonDetailsGenerator {
         type = type,
         typeVerified = verified,
         telephoneNumber = "0191876865",
+        lastUpdatedUserId = USER.id,
         lastUpdatedUser = USER,
         notes = notes,
     )

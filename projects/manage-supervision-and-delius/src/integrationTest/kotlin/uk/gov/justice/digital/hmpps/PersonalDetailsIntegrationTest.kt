@@ -10,12 +10,19 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.AUDIT_USER
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.ALIAS_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.DISABILITY_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.DISABILITY_2
@@ -29,6 +36,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_2
 import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
@@ -37,6 +45,11 @@ import java.time.LocalDate
 internal class PersonalDetailsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
+
+    @Autowired
+    lateinit var transactionManager: PlatformTransactionManager
+
+    lateinit var transactionTemplate: TransactionTemplate
 
     @Test
     fun `personal details are returned`() {
@@ -248,5 +261,199 @@ internal class PersonalDetailsIntegrationTest {
         mockMvc
             .perform(get("/personal-details/X999999/provisions").withToken())
             .andExpect(status().isNotFound)
+    }
+
+    @Test
+    @Transactional
+    fun `main address updated with valid end date results in no main address and more previous addresses`() {
+        transactionTemplate = TransactionTemplate(transactionManager)
+        transactionTemplate.execute {
+            val person = PERSONAL_DETAILS
+            mockMvc
+                .perform(
+                    post("/personal-details/${person.crn}").withToken()
+                        .withJson(
+                            PersonalContactEditRequest(
+                                postcode = "NE1 UPD",
+                                startDate = LocalDate.now().minusDays(10),
+                                endDate = LocalDate.now()
+
+                            )
+                        )
+                )
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsJson<PersonalDetails>()
+            val res = mockMvc
+                .perform(get("/personal-details/${person.crn}/addresses").withToken())
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsJson<AddressOverview>()
+            assertThat(res.personSummary, equalTo(person.toSummary()))
+            assertThat(res.mainAddress, equalTo(null))
+            assertThat(res.previousAddresses.size, equalTo(2))
+        }
+    }
+
+    @Test
+    @Transactional
+    fun `when no main address new main address is created`() {
+        transactionTemplate = TransactionTemplate(transactionManager)
+        transactionTemplate.execute {
+            val person = PERSONAL_DETAILS
+            mockMvc
+                .perform(
+                    post("/personal-details/${person.crn}").withToken()
+                        .withJson(
+                            PersonalContactEditRequest(
+                                postcode = "NE1 UPD",
+                                startDate = LocalDate.now().minusDays(10),
+                                endDate = LocalDate.now()
+
+                            )
+                        )
+                )
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsJson<PersonalDetails>()
+            mockMvc
+                .perform(
+                    post("/personal-details/${person.crn}").withToken()
+                        .withJson(
+                            PersonalContactEditRequest(
+                                postcode = "NE1 NEW",
+                                startDate = LocalDate.now().minusDays(9),
+                                endDate = null
+
+                            )
+                        )
+                )
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsJson<PersonalDetails>()
+            val res = mockMvc
+                .perform(get("/personal-details/${person.crn}/addresses").withToken())
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsJson<AddressOverview>()
+            assertThat(res.personSummary, equalTo(person.toSummary()))
+            assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
+            assertThat(res.previousAddresses.size, equalTo(2))
+        }
+    }
+
+    @Test
+    @Transactional
+    fun `when all fields are posted for an existing main address all are updated`() {
+        val request = PersonalContactEditRequest(
+            phoneNumber = "0191255446",
+            mobileNumber = "077989988",
+            emailAddress = "updated@test.none",
+            buildingName = "Building",
+            buildingNumber = "23",
+            streetName = "The Street",
+            town = "Town",
+            county = "County",
+            postcode = "NE1 UPD",
+            addressTypeCode = PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1.code,
+            verified = false,
+            noFixedAddress = false,
+            startDate = LocalDate.now().minusDays(10),
+            notes = "This has been updated for testing"
+        )
+        transactionTemplate = TransactionTemplate(transactionManager)
+        transactionTemplate.execute {
+            val person = PERSONAL_DETAILS
+            val updateResponse = mockMvc
+                .perform(
+                    post("/personal-details/${person.crn}").withToken()
+                        .withJson(request)
+                )
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsJson<PersonalDetails>()
+            val res = mockMvc
+                .perform(get("/personal-details/${person.crn}/addresses").withToken())
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsJson<AddressOverview>()
+            assertThat(res.personSummary, equalTo(person.toSummary()))
+
+            assertThat(updateResponse.telephoneNumber, equalTo(request.phoneNumber))
+            assertThat(updateResponse.mobileNumber, equalTo(request.mobileNumber))
+            assertThat(updateResponse.email, equalTo(request.emailAddress))
+            assertThat(updateResponse.lastUpdated, equalTo(LocalDate.now()))
+            assertThat(
+                updateResponse.lastUpdatedBy,
+                equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname))
+            )
+
+            assertThat(res.mainAddress?.buildingName, equalTo(request.buildingName))
+            assertThat(res.mainAddress?.buildingNumber, equalTo(request.buildingNumber))
+            assertThat(res.mainAddress?.streetName, equalTo(request.streetName))
+            assertThat(res.mainAddress?.town, equalTo(request.town))
+            assertThat(res.mainAddress?.county, equalTo(request.county))
+            assertThat(res.mainAddress?.postcode, equalTo(request.postcode))
+            assertThat(res.mainAddress?.type, equalTo(PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1.description))
+            assertThat(res.mainAddress?.verified, equalTo(request.verified))
+            assertThat(res.mainAddress?.noFixedAddress, equalTo(request.noFixedAddress))
+            assertThat(res.mainAddress?.lastUpdated, equalTo(LocalDate.now()))
+            assertThat(
+                res.mainAddress?.lastUpdatedBy,
+                equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname))
+            )
+
+            assertThat(res.previousAddresses.size, equalTo(1))
+        }
+    }
+
+    @Test
+    fun `when personal details update request does not have a start date`() {
+        val request = PersonalContactEditRequest()
+        val res = mockMvc.perform(
+            post("/personal-details/X000001").withToken()
+                .withJson(request)
+        )
+            .andExpect(status().isBadRequest)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(res.message, equalTo("Start date must be provided"))
+    }
+
+    @Test
+    fun `when personal details update request has a start date later than today`() {
+        val request = PersonalContactEditRequest(startDate = LocalDate.now().plusDays(1))
+        val res = mockMvc.perform(
+            post("/personal-details/X000001").withToken()
+                .withJson(request)
+        )
+            .andExpect(status().isBadRequest)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(res.message, equalTo("Start date must not be later than today"))
+    }
+
+    @Test
+    fun `when personal details update request has an date later than today`() {
+        val request = PersonalContactEditRequest(startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
+        val res = mockMvc.perform(
+            post("/personal-details/X000001").withToken()
+                .withJson(request)
+        )
+            .andExpect(status().isBadRequest)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(res.message, equalTo("End date must not be later than today"))
+    }
+
+    @Test
+    fun `when street name greater than 35 chars`() {
+        val request = PersonalContactEditRequest(
+            startDate = LocalDate.now(),
+            streetName = "U".repeat(100),
+            emailAddress = "X".repeat(257)
+        )
+        val res = mockMvc.perform(
+            post("/personal-details/X000001").withToken()
+                .withJson(request)
+        )
+            .andExpect(status().isBadRequest)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(res.message, equalTo("Validation failure"))
+        assertThat(res.fields?.size, equalTo(2))
     }
 }

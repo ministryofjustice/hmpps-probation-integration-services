@@ -16,10 +16,11 @@ data class Address(
     val to: LocalDate?,
     val verified: Boolean?,
     val lastUpdated: LocalDate?,
-    val lastUpdatedBy: Name,
+    val lastUpdatedBy: Name?,
     val type: String?,
     val status: String?,
-    val notes: String?
+    val notes: String?,
+    val noFixedAddress: Boolean?
 ) {
     companion object {
         fun from(
@@ -35,10 +36,11 @@ data class Address(
             to: LocalDate? = null,
             verified: Boolean? = null,
             lastUpdated: LocalDate? = null,
-            lastUpdatedBy: Name,
+            lastUpdatedBy: Name? = null,
             type: String? = null,
             status: String? = null,
-            notes: String? = null
+            notes: String? = null,
+            noFixedAddress: Boolean?
         ): Address? =
             if (
                 buildingName == null && buildingNumber == null && streetName == null &&
@@ -62,7 +64,8 @@ data class Address(
                     lastUpdatedBy,
                     type,
                     status,
-                    notes
+                    notes,
+                    noFixedAddress
                 )
             }
     }

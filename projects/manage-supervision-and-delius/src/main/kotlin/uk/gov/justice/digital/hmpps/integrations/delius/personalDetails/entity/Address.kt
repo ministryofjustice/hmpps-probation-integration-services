@@ -5,6 +5,11 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -14,11 +19,17 @@ import java.time.LocalDate
 @Immutable
 @Entity(name = "PersonalDetailsAddress")
 @Table(name = "offender_address")
+@EntityListeners(AuditingEntityListener::class)
+@SequenceGenerator(name = "offender_address_id_generator", sequenceName = "offender_address_id_seq", allocationSize = 1)
 @SQLRestriction("soft_deleted = 0")
 class PersonAddress(
 
     @Column(name = "offender_id")
     val personId: Long,
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "address_status_id")
@@ -26,44 +37,68 @@ class PersonAddress(
 
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData?,
+    var type: ReferenceData?,
 
     @Column(name = "building_name")
-    val buildingName: String?,
+    var buildingName: String?,
     @Column(name = "address_number")
-    val buildingNumber: String?,
+    var buildingNumber: String?,
     @Column(name = "street_name")
-    val streetName: String?,
-    val district: String?,
+    var streetName: String?,
+    val district: String? = null,
     @Column(name = "town_city")
-    val town: String?,
-    val county: String?,
-    val postcode: String?,
-    val telephoneNumber: String?,
-    val startDate: LocalDate,
-    val endDate: LocalDate? = null,
+    var town: String?,
+    var county: String?,
+    var postcode: String?,
+    val telephoneNumber: String? = null,
+    var startDate: LocalDate,
+    var endDate: LocalDate? = null,
 
     @Convert(converter = YesNoConverter::class)
-    val typeVerified: Boolean? = false,
+    var typeVerified: Boolean? = false,
+
+    @Convert(converter = YesNoConverter::class)
+    var noFixedAbode: Boolean? = false,
 
     @Column(name = "last_updated_datetime")
-    val lastUpdated: LocalDate?,
+    @LastModifiedDate
+    var lastUpdated: LocalDate? = LocalDate.now(),
+
+    @Column(name = "last_updated_user_id")
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0,
 
     @ManyToOne
-    @JoinColumn(name = "last_updated_user_id")
-    val lastUpdatedUser: User,
+    @JoinColumns(
+        JoinColumn(
+            name = "last_updated_user_id",
+            referencedColumnName = "user_id",
+            insertable = false,
+            updatable = false
+        )
+    )
+    val lastUpdatedUser: User? = null,
+
+    @CreatedDate
+    @Column(nullable = false)
+    var createdDatetime: LocalDate = LocalDate.now(),
+
+    @Column(nullable = false)
+    @CreatedBy
+    var createdByUserId: Long = 0,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 
     @Lob
     @Column
-    val notes: String?,
+    var notes: String?,
 
     @Id
     @Column(name = "offender_address_id")
-    val id: Long
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_address_id_generator")
+    val id: Long? = null,
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
