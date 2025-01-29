@@ -40,7 +40,7 @@ class Dataset(
     val code: String,
 )
 
-interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>{
+interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
 
     @Query(
         """
@@ -59,12 +59,15 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>{
     """
     )
     fun findByDatasetCode(datasetCode: String): List<ReferenceData>
-
 }
 
 fun ReferenceDataRepository.getAddressTypeByCode(code: String) =
     findByCodeAndDatasetCode(code, "ADDRESS TYPE") ?: throw InvalidRequestException("address type code", code)
 
 fun ReferenceDataRepository.getMainAddressType() =
-    findByCodeAndDatasetCode("M", "ADDRESS STATUS") ?: throw NotFoundException("ReferenceData", "address status code", "M")
+    findByCodeAndDatasetCode("M", "ADDRESS STATUS") ?: throw NotFoundException(
+        "ReferenceData",
+        "address status code",
+        "M"
+    )
 
