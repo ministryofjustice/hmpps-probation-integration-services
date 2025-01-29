@@ -29,9 +29,9 @@ Assessment summary relies on the OASys ORDS API for retrieving the assessment su
 ## Assessment summary produced workflow
 The assessment summary is recorded in Delius. The risks are evaluated and stored as registrations.
 
-| Business Event        | Message Event Type / Filter  |
-| --------------------- | ---------------------------- |
-| Assessment submitted  | assessment.summary.produced  |
+| Business Event        | Message Event Type / Filter       |
+| --------------------- | --------------------------------- |
+| Assessment submitted  | risk-assessment.scores.determined |
 
 ### Record assessment
 The previous assessment summary is deleted and replaced with the new assessment summary. The full assessment can be retrieved from OASys.
