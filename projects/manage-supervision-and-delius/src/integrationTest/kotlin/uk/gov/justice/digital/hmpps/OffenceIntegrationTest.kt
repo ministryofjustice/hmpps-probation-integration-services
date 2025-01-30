@@ -74,7 +74,6 @@ class OffenceIntegrationTest {
             .andReturn().response.contentAsJson<Offences>()
 
         assertEquals(expected, response)
-
     }
 
     @Test
