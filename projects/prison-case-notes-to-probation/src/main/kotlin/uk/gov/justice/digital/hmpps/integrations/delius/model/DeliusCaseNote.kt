@@ -57,8 +57,7 @@ data class CaseNoteBody(
                 count += it.toString().encodeToByteArray().size
                 count < 199
             } + " ~"
-        }
-        else this
+        } else this
     }
 
     private fun isResettlementPassport() = type == "RESET" && subType == "BCST"
