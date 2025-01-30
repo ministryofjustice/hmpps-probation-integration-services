@@ -95,6 +95,9 @@ class PersonAddress(
     @Column
     var notes: String?,
 
+    @Column(nullable = false)
+    val partitionAreaId: Long = 0,
+
     @Id
     @Column(name = "offender_address_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_address_id_generator")
