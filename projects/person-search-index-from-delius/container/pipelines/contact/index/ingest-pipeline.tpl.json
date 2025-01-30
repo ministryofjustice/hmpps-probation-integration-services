@@ -2,26 +2,6 @@
   "description": "Split text into chunks and generate embeddings",
   "processors": [
     {
-      "append": {
-        "field": "text",
-        "value": [
-          "{{{date}}}",
-          "{{{startTime}}}",
-          "{{{typeDescription}}}",
-          "{{{typeShortDescription}}}",
-          "{{{outcomeDescription}}}",
-          "{{{description}}}",
-          "{{{notes}}}"
-        ]
-      }
-    },
-    {
-      "join": {
-        "field": "text",
-        "separator": "\n"
-      }
-    },
-    {
       "text_chunking": {
         "algorithm": {
           "fixed_token_length": {
@@ -31,8 +11,19 @@
           }
         },
         "field_map": {
-          "text": "textChunks"
+          "notes": "textChunks"
         }
+      }
+    },
+    {
+      "append": {
+        "field": "textChunks",
+        "value": [
+          "{{{date}}} {{{startTime}}}",
+          "{{{typeDescription}}} {{{typeShortDescription}}}",
+          "{{{outcomeDescription}}}",
+          "{{{description}}}"
+        ]
       }
     },
     {
