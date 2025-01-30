@@ -158,6 +158,8 @@ object PersonDetailsGenerator {
     val ADDRESS_STATUS = Dataset(IdGenerator.getAndIncrement(), "ADDRESS STATUS")
 
     val PERSON_ADDRESS_STATUS_1 = ReferenceData(IdGenerator.getAndIncrement(), "M", "Main Address", ADDRESS_STATUS.id)
+    val PERSON_PREVIOUS_ADDRESS_STATUS =
+        ReferenceData(IdGenerator.getAndIncrement(), "P", "Previous Address", ADDRESS_STATUS.id)
     val PERSON_ADDRESS_STATUS_2 =
         ReferenceData(IdGenerator.getAndIncrement(), "A", "Another Address", ADDRESS_STATUS.id)
     val PERSON_ADDRESS_TYPE_1 = ReferenceData(IdGenerator.getAndIncrement(), "T1", "Address type 1", ADDRESS_TYPE.id)
@@ -193,7 +195,7 @@ object PersonDetailsGenerator {
         "Test County",
         "NE4 END",
         PERSONAL_DETAILS.id,
-        PERSON_ADDRESS_STATUS_2,
+        PERSON_PREVIOUS_ADDRESS_STATUS,
         PERSON_ADDRESS_TYPE_2,
         endDate = LocalDate.now().minusYears(1)
     )

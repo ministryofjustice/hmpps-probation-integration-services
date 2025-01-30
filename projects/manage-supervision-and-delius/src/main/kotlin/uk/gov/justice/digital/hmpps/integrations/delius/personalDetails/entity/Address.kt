@@ -33,7 +33,7 @@ class PersonAddress(
 
     @ManyToOne
     @JoinColumn(name = "address_status_id")
-    val status: ReferenceData,
+    var status: ReferenceData,
 
     @ManyToOne
     @JoinColumn(name = "address_type_id")

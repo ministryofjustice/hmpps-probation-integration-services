@@ -4,6 +4,8 @@ database:
     password_key: /manage-supervision-and-delius/db-password
     tables:
       - contact
+      - offender
+      - offender_address
 
   audit:
     username: ManageSupervisionAndDelius

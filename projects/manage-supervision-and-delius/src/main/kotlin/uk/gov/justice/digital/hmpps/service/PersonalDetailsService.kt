@@ -16,10 +16,7 @@ import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.getAddressTypeByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.getMainAddressType
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.*
 import java.time.LocalDate
 
 @Service
@@ -64,13 +61,13 @@ class PersonalDetailsService(
         person.telephoneNumber = request.phoneNumber
         person.mobileNumber = request.mobileNumber
         person.emailAddress = request.emailAddress
-        val updated = toMainAddress(person.id, mainAddress, addressType, request, startDate)
+        val updated = toUpdatedAddress(person.id, mainAddress, addressType, request, startDate)
         addressRepository.save(updated)
         personRepository.save(person)
         return getPersonalDetails(crn)
     }
 
-    private fun toMainAddress(
+    private fun toUpdatedAddress(
         personId: Long,
         mainAddress: PersonAddress?,
         addressType: ReferenceData?,
@@ -78,6 +75,8 @@ class PersonalDetailsService(
         startDate: LocalDate
     ): PersonAddress {
         val postcode = if (request.noFixedAddress == true) "NF1 1NF" else request.postcode
+        val status =
+            if (request.endDate != null) referenceDataRepository.getPreviousAddressType() else referenceDataRepository.getMainAddressType()
         if (mainAddress != null) {
             mainAddress.buildingName = request.buildingName
             mainAddress.buildingNumber = request.buildingNumber
@@ -91,11 +90,12 @@ class PersonalDetailsService(
             mainAddress.startDate = startDate
             mainAddress.endDate = request.endDate
             mainAddress.notes = request.notes
+            mainAddress.status = status
             return mainAddress
         } else {
             return PersonAddress(
                 personId = personId,
-                status = referenceDataRepository.getMainAddressType(),
+                status = status,
                 type = addressType,
                 buildingName = request.buildingName,
                 buildingNumber = request.buildingNumber,
@@ -122,15 +122,18 @@ class PersonalDetailsService(
         val allAddresses = addressRepository.findByPersonId(person.id)
         val currentAddresses = allAddresses.filter { it.endDate == null }
         val previousAddresses =
-            allAddresses.filter { it.endDate != null }.map(PersonAddress::toAddress).mapNotNull { it }
+            allAddresses.filter { it.endDate != null && it.status.code == AddressStatus.PREVIOUS.code }
+                .map(PersonAddress::toAddress).mapNotNull { it }
         val aliases = aliasRepository.findByPersonId(person.id)
         val personalContacts = personalContactRepository.findByPersonId(person.id)
-        val mainAddress = currentAddresses.firstOrNull { it.status.code == "M" }?.toAddress()
+        val mainAddress = currentAddresses.firstOrNull { it.status.code == AddressStatus.MAIN.code }?.toAddress()
         val otherAddresses =
-            currentAddresses.filter { it.status.code != "M" }.map(PersonAddress::toAddress).mapNotNull { it }
+            currentAddresses.filter { it.status.code != AddressStatus.MAIN.code }.map(PersonAddress::toAddress)
+                .mapNotNull { it }
         val documents = documentRepository.findByPersonId(person.id)
         val addressTypes =
-            referenceDataRepository.findByDatasetCode("ADDRESS TYPE").map { AddressType(it.code, it.description) }
+            referenceDataRepository.findByDatasetCode(DatasetCode.ADDRESS_TYPE.code)
+                .map { AddressType(it.code, it.description) }
 
         return PersonalDetails(
             crn = person.crn,
@@ -200,7 +203,8 @@ class PersonalDetailsService(
             mainAddress = currentAddresses.firstOrNull { it.status.code == "M" }?.toAddress(),
             otherAddresses = currentAddresses.filter { it.status.code != "M" }.map(PersonAddress::toAddress)
                 .mapNotNull { it },
-            previousAddresses = addresses.filter { it.endDate != null }.map(PersonAddress::toAddress).mapNotNull { it }
+            previousAddresses = addresses.filter { it.endDate != null && it.status.code == AddressStatus.PREVIOUS.code }
+                .map(PersonAddress::toAddress).mapNotNull { it }
         )
     }
 

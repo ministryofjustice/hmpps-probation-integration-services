@@ -2,13 +2,11 @@ package uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.springframework.data.jpa.repository.EntityGraph
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
 
 @Entity
 @Immutable
@@ -26,6 +24,9 @@ class ReferenceData(
 
     @Column(name = "reference_data_master_id", nullable = false)
     val datasetId: Long = 0,
+
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean = true
 )
 
 @Immutable
@@ -55,19 +56,38 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
         """
         select rd from ReferenceData rd
         join Dataset ds on rd.datasetId = ds.id
-        where ds.code = :datasetCode
+        where ds.code = :datasetCode and rd.selectable = true
     """
     )
     fun findByDatasetCode(datasetCode: String): List<ReferenceData>
 }
 
 fun ReferenceDataRepository.getAddressTypeByCode(code: String) =
-    findByCodeAndDatasetCode(code, "ADDRESS TYPE") ?: throw InvalidRequestException("address type code", code)
-
-fun ReferenceDataRepository.getMainAddressType() =
-    findByCodeAndDatasetCode("M", "ADDRESS STATUS") ?: throw NotFoundException(
-        "ReferenceData",
-        "address status code",
-        "M"
+    findByCodeAndDatasetCode(code, DatasetCode.ADDRESS_TYPE.code) ?: throw InvalidRequestException(
+        "address type code",
+        code
     )
 
+fun ReferenceDataRepository.getMainAddressType() =
+    findByCodeAndDatasetCode(AddressStatus.MAIN.code, DatasetCode.ADDRESS_STATUS.code) ?: throw NotFoundException(
+        "ReferenceData",
+        DatasetCode.ADDRESS_STATUS.code,
+        AddressStatus.MAIN.code
+    )
+
+fun ReferenceDataRepository.getPreviousAddressType() =
+    findByCodeAndDatasetCode(AddressStatus.PREVIOUS.code, DatasetCode.ADDRESS_STATUS.code) ?: throw NotFoundException(
+        "ReferenceData",
+        DatasetCode.ADDRESS_STATUS.code,
+        AddressStatus.PREVIOUS.code
+    )
+
+enum class DatasetCode(val code: String) {
+    ADDRESS_STATUS("ADDRESS STATUS"),
+    ADDRESS_TYPE("ADDRESS TYPE");
+}
+
+enum class AddressStatus(val code: String) {
+    MAIN("M"),
+    PREVIOUS("P");
+}

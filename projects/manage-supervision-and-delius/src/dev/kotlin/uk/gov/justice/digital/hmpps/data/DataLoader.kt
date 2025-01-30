@@ -225,6 +225,7 @@ class DataLoader(
             PersonDetailsGenerator.CONTACT_ADDRESS,
             PersonDetailsGenerator.PERSONAL_CONTACT_1,
             PersonDetailsGenerator.PERSON_ADDRESS_STATUS_1,
+            PersonDetailsGenerator.PERSON_PREVIOUS_ADDRESS_STATUS,
             PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1,
             PersonDetailsGenerator.PERSON_ADDRESS_1,
             PersonDetailsGenerator.PERSON_ADDRESS_STATUS_2,

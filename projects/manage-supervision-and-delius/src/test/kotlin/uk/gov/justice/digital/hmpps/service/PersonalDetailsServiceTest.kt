@@ -29,6 +29,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.D
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.AddressStatus
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDate
@@ -242,9 +244,17 @@ internal class PersonalDetailsServiceTest {
         whenever(
             referenceDataRepository.findByCodeAndDatasetCode(
                 PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1.code,
-                "ADDRESS TYPE"
+                DatasetCode.ADDRESS_TYPE.code
             )
         ).thenReturn(PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1)
+
+        whenever(
+            referenceDataRepository.findByCodeAndDatasetCode(
+                AddressStatus.MAIN.code,
+                DatasetCode.ADDRESS_STATUS.code
+            )
+        ).thenReturn(PersonDetailsGenerator.PERSON_ADDRESS_STATUS_1)
+
         whenever(personRepository.findByCrn(crn)).thenReturn(PersonDetailsGenerator.PERSONAL_DETAILS)
         whenever(provisionRepository.findByPersonId(any())).thenReturn(emptyList())
         whenever(disabilityRepository.findByPersonId(any())).thenReturn(emptyList())
