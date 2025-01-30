@@ -23,18 +23,10 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
     )
     fun findSentencesByPersonId(id: Long): List<Event>
 
-    fun findEventByPersonIdAndEventNumberAndActiveIsFalse(id: Long, eventNumber: String): Event?
+    fun findEventByPersonIdAndEventNumber(id: Long, eventNumber: String): Event?
 
-    fun findEventByPersonIdAndEventNumberAndActiveIsTrue(id: Long, eventNumber: String): Event?
 
 }
-
-fun EventSentenceRepository.getEvent(id: Long, eventNumber: String) =
-    findEventByPersonIdAndEventNumberAndActiveIsTrue(id, eventNumber) ?: throw NotFoundException(
-        "Event",
-        "number",
-        eventNumber
-    )
 
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
     fun getFirstCourtAppearanceByEventIdOrderByDate(id: Long): CourtAppearance?

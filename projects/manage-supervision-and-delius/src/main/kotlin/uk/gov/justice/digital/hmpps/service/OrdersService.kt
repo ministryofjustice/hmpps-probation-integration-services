@@ -25,7 +25,7 @@ class OrdersService(
 
     fun getPreviousEvent(crn: String, eventNumber: String): PreviousOrderInformation {
         val person = personRepository.getPerson(crn)
-        val event = eventRepository.findEventByPersonIdAndEventNumberAndActiveIsFalse(person.id, eventNumber)
+        val event = eventRepository.findEventByPersonIdAndEventNumber(person.id, eventNumber).takeIf { it?.active == false }
 
         return PreviousOrderInformation(person.toName(), event?.setTitle() , sentenceService.getInactiveEvent(event))
     }

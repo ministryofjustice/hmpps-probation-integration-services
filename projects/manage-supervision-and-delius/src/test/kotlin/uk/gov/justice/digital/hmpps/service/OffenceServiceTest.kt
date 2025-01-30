@@ -59,7 +59,7 @@ class OffenceServiceTest {
     fun `no active events`() {
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
-            eventRepository.findEventByPersonIdAndEventNumberAndActiveIsTrue(
+            eventRepository.findEventByPersonIdAndEventNumber(
                 PersonGenerator.OVERVIEW.id,
                 PersonGenerator.EVENT_1.eventNumber
             )
@@ -72,7 +72,7 @@ class OffenceServiceTest {
         assertEquals("Event with number of 7654321 not found", exception.message)
 
         verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
-        verify(eventRepository, times(1)).findEventByPersonIdAndEventNumberAndActiveIsTrue(
+        verify(eventRepository, times(1)).findEventByPersonIdAndEventNumber(
             PersonGenerator.OVERVIEW.id,
             PersonGenerator.EVENT_1.eventNumber
         )
@@ -113,7 +113,7 @@ class OffenceServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
-            eventRepository.findEventByPersonIdAndEventNumberAndActiveIsTrue(
+            eventRepository.findEventByPersonIdAndEventNumber(
                 PersonGenerator.OVERVIEW.id,
                 PersonGenerator.EVENT_1.eventNumber
             )
@@ -127,7 +127,7 @@ class OffenceServiceTest {
         assertEquals(expected, response)
 
         verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
-        verify(eventRepository, times(1)).findEventByPersonIdAndEventNumberAndActiveIsTrue(
+        verify(eventRepository, times(1)).findEventByPersonIdAndEventNumber(
             PersonGenerator.OVERVIEW.id,
             PersonGenerator.EVENT_1.eventNumber
         )
