@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
+import uk.gov.justice.digital.hmpps.enum.RiskType
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.SUBMIT_ASSESSMENT_SUMMARY
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_RISK_DATA
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
@@ -26,8 +28,11 @@ class AssessmentSubmitted(
             "crn" to crn,
             "dateCompleted" to summary.dateCompleted.toString(),
             "assessmentType" to summary.assessmentType,
-            "assessmentId" to summary.assessmentPk.toString()
-        )
+            "assessmentId" to summary.assessmentPk.toString(),
+            "ROSH" to summary.riskFlags.mapNotNull(RiskOfSeriousHarmType::of).maxByOrNull { it.ordinal }.toString(),
+        ) + RiskType.entries.map {
+            it.name to it.riskLevel(summary)?.name.toString()
+        }
 
         val person = personRepository.getByCrn(crn)
 
