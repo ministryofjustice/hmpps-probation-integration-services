@@ -12,9 +12,12 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Disability
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Provision
+import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.*
+import java.time.LocalDate
 
 @Service
 class PersonalDetailsService(
@@ -26,8 +29,89 @@ class PersonalDetailsService(
     private val personalCircumstanceRepository: PersonCircumstanceRepository,
     private val aliasRepository: AliasRepository,
     private val personalContactRepository: PersonalContactRepository,
-    private val alfrescoClient: AlfrescoClient
+    private val alfrescoClient: AlfrescoClient,
+    private val referenceDataRepository: ReferenceDataRepository
 ) {
+
+    @Transactional
+    fun updatePersonalDetails(crn: String, request: PersonalContactEditRequest): PersonalDetails {
+
+        val startDate = request.startDate ?: throw InvalidRequestException("Start date must be provided")
+        val addressType = request.addressTypeCode?.let {
+            referenceDataRepository.getAddressTypeByCode(it)
+        }
+
+        if (request.endDate != null && request.endDate > LocalDate.now()) {
+            throw InvalidRequestException("End date must not be later than today")
+        }
+
+        if (startDate > LocalDate.now()) {
+            throw InvalidRequestException("Start date must not be later than today")
+        }
+
+        if (request.endDate != null && startDate > request.endDate) {
+            throw InvalidRequestException("Start date must not be later than end date")
+        }
+
+        val person = personRepository.getPerson(crn)
+        val mainAddress = addressRepository.findByPersonId(person.id)
+            .filter { it.endDate == null }
+            .firstOrNull { it.status.code == "M" }
+
+        person.telephoneNumber = request.phoneNumber
+        person.mobileNumber = request.mobileNumber
+        person.emailAddress = request.emailAddress
+        val updated = toUpdatedAddress(person.id, mainAddress, addressType, request, startDate)
+        addressRepository.save(updated)
+        personRepository.save(person)
+        return getPersonalDetails(crn)
+    }
+
+    private fun toUpdatedAddress(
+        personId: Long,
+        mainAddress: PersonAddress?,
+        addressType: ReferenceData?,
+        request: PersonalContactEditRequest,
+        startDate: LocalDate
+    ): PersonAddress {
+        val postcode = if (request.noFixedAddress == true) "NF1 1NF" else request.postcode
+        val status =
+            if (request.endDate != null) referenceDataRepository.getPreviousAddressType() else referenceDataRepository.getMainAddressType()
+        if (mainAddress != null) {
+            mainAddress.buildingName = request.buildingName
+            mainAddress.buildingNumber = request.buildingNumber
+            mainAddress.streetName = request.streetName
+            mainAddress.town = request.town
+            mainAddress.county = request.county
+            mainAddress.postcode = postcode
+            mainAddress.type = addressType
+            mainAddress.typeVerified = request.verified
+            mainAddress.noFixedAbode = request.noFixedAddress
+            mainAddress.startDate = startDate
+            mainAddress.endDate = request.endDate
+            mainAddress.notes = request.notes
+            mainAddress.status = status
+            return mainAddress
+        } else {
+            return PersonAddress(
+                personId = personId,
+                status = status,
+                type = addressType,
+                buildingName = request.buildingName,
+                buildingNumber = request.buildingNumber,
+                streetName = request.streetName,
+                town = request.town,
+                county = request.county,
+                postcode = postcode,
+                startDate = startDate,
+                endDate = request.endDate,
+                typeVerified = request.verified,
+                noFixedAbode = request.noFixedAddress,
+                notes = request.notes,
+                id = null
+            )
+        }
+    }
 
     @Transactional
     fun getPersonalDetails(crn: String): PersonalDetails {
@@ -38,13 +122,18 @@ class PersonalDetailsService(
         val allAddresses = addressRepository.findByPersonId(person.id)
         val currentAddresses = allAddresses.filter { it.endDate == null }
         val previousAddresses =
-            allAddresses.filter { it.endDate != null }.map(PersonAddress::toAddress).mapNotNull { it }
+            allAddresses.filter { it.endDate != null && it.status.code == AddressStatus.PREVIOUS.code }
+                .map(PersonAddress::toAddress).mapNotNull { it }
         val aliases = aliasRepository.findByPersonId(person.id)
         val personalContacts = personalContactRepository.findByPersonId(person.id)
-        val mainAddress = currentAddresses.firstOrNull { it.status.code == "M" }?.toAddress()
+        val mainAddress = currentAddresses.firstOrNull { it.status.code == AddressStatus.MAIN.code }?.toAddress()
         val otherAddresses =
-            currentAddresses.filter { it.status.code != "M" }.map(PersonAddress::toAddress).mapNotNull { it }
+            currentAddresses.filter { it.status.code != AddressStatus.MAIN.code }.map(PersonAddress::toAddress)
+                .mapNotNull { it }
         val documents = documentRepository.findByPersonId(person.id)
+        val addressTypes =
+            referenceDataRepository.findByDatasetCode(DatasetCode.ADDRESS_TYPE.code)
+                .map { AddressType(it.code, it.description) }
 
         return PersonalDetails(
             crn = person.crn,
@@ -84,7 +173,10 @@ class PersonalDetailsService(
             aliases = aliases.map { Name(forename = it.forename, middleName = it.secondName, it.surname) },
             genderIdentity = person.genderIdentity?.description,
             selfDescribedGender = person.genderIdentityDescription,
-            requiresInterpreter = person.requiresInterpreter
+            requiresInterpreter = person.requiresInterpreter,
+            lastUpdated = person.lastUpdatedDatetime.toLocalDate(),
+            lastUpdatedBy = person.lastUpdatedUser?.let { Name(forename = it.forename, surname = it.surname) },
+            addressTypes = addressTypes
         )
     }
 
@@ -111,7 +203,8 @@ class PersonalDetailsService(
             mainAddress = currentAddresses.firstOrNull { it.status.code == "M" }?.toAddress(),
             otherAddresses = currentAddresses.filter { it.status.code != "M" }.map(PersonAddress::toAddress)
                 .mapNotNull { it },
-            previousAddresses = addresses.filter { it.endDate != null }.map(PersonAddress::toAddress).mapNotNull { it }
+            previousAddresses = addresses.filter { it.endDate != null && it.status.code == AddressStatus.PREVIOUS.code }
+                .map(PersonAddress::toAddress).mapNotNull { it }
         )
     }
 
@@ -213,8 +306,14 @@ fun PersonAddress.toAddress() = Address.from(
     status = status.description,
     type = type?.description,
     telephoneNumber = telephoneNumber,
-    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
-    notes = notes
+    lastUpdatedBy = lastUpdatedUser?.let {
+        Name(
+            forename = lastUpdatedUser.forename,
+            surname = lastUpdatedUser.surname
+        )
+    },
+    notes = notes,
+    noFixedAddress = noFixedAbode
 
 )
 

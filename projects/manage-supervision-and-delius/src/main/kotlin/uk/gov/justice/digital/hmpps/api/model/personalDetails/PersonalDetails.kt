@@ -30,6 +30,13 @@ data class PersonalDetails(
     val religionOrBelief: String?,
     val sexualOrientation: String?,
     val requiresInterpreter: Boolean? = false,
-    val documents: List<Document>
+    val documents: List<Document>,
+    val lastUpdated: LocalDate? = null,
+    val lastUpdatedBy: Name? = null,
+    val addressTypes: List<AddressType> = emptyList()
+)
 
+data class AddressType(
+    val code: String,
+    val description: String
 )
