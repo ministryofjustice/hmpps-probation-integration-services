@@ -5,16 +5,22 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
 class Person(
     @Id
     @Column(name = "offender_id")
@@ -48,13 +54,13 @@ class Person(
     val dateOfBirth: LocalDate,
 
     @Column(name = "telephone_number")
-    val telephoneNumber: String?,
+    var telephoneNumber: String?,
 
     @Column(name = "mobile_number")
-    val mobileNumber: String?,
+    var mobileNumber: String?,
 
     @Column(name = "e_mail_address")
-    val emailAddress: String?,
+    var emailAddress: String?,
 
     @Column(name = "previous_surname")
     val previousSurname: String? = null,
@@ -91,6 +97,24 @@ class Person(
 
     val exclusionMessage: String? = null,
     val restrictionMessage: String? = null,
+
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "last_updated_user_id")
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0,
+
+    @ManyToOne
+    @JoinColumns(
+        JoinColumn(
+            name = "last_updated_user_id",
+            referencedColumnName = "user_id",
+            insertable = false,
+            updatable = false
+        )
+    )
+    val lastUpdatedUser: User? = null,
 
     )
 

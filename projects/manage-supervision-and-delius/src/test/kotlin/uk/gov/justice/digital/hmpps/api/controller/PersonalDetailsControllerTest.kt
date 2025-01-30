@@ -155,4 +155,42 @@ internal class PersonalDetailsControllerTest {
         val res = controller.getPersonProvisions(crn)
         assertThat(res, equalTo(expectedResponse))
     }
+
+    @Test
+    fun `calls update personal details function with invalid payload`() {
+        val crn = "X000005"
+        val request = PersonalContactEditRequest(startDate = LocalDate.now())
+        val personalDetails = PersonalDetails(
+            crn = "X000005",
+            pnc = "pnc123",
+            noms = "noms123",
+            name = Name(forename = "Stephen", middleName = "Harry", surname = "Bloggs"),
+            circumstances = Circumstances(emptyList(), lastUpdated = null),
+            disabilities = Disabilities(emptyList(), lastUpdated = null),
+            provisions = Provisions(emptyList(), lastUpdated = null),
+            contacts = emptyList(),
+            dateOfBirth = LocalDate.now().minusYears(50),
+            documents = emptyList(),
+            email = "testemail",
+            mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
+            mobileNumber = "0897672332",
+            telephoneNumber = "090876522",
+            otherAddressCount = 1,
+            previousAddressCount = 1,
+            preferredGender = "Male",
+            preferredName = "Steve",
+            religionOrBelief = "Christian",
+            sex = "Male",
+            sexualOrientation = "Heterosexual",
+            previousSurname = "Smith",
+            preferredLanguage = "English",
+            aliases = emptyList(),
+            genderIdentity = null,
+            selfDescribedGender = null
+        )
+        whenever(personalDetailsService.updatePersonalDetails(crn, request)).thenReturn(personalDetails)
+        val res = controller.updatePersonalDetails(crn, request)
+        assertThat(res.preferredName, equalTo("Steve"))
+        assertThat(res.mainAddress?.streetName, equalTo("Test Street"))
+    }
 }

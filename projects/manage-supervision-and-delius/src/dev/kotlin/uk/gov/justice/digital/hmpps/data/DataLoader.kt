@@ -12,19 +12,19 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator.COURT_APPEARANCE
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository
 import java.time.ZonedDateTime
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
     private val entityManager: EntityManager,
-    private val auditUserRepository: AuditUserRepository
+    private val userRepository: UserRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
     fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
+        userRepository.save(UserGenerator.AUDIT_USER)
     }
 
     @Transactional
@@ -46,6 +46,7 @@ class DataLoader(
             ContactGenerator.DEFAULT_TEAM,
             ContactGenerator.LOCATION_BRK_1,
         )
+
         entityManager.persist(ContactGenerator.USER)
 
         entityManager.persist(ContactGenerator.USER_1)
@@ -195,6 +196,8 @@ class DataLoader(
 
     fun personalDetailsData() {
         entityManager.persistAll(
+            PersonDetailsGenerator.ADDRESS_TYPE,
+            PersonDetailsGenerator.ADDRESS_STATUS,
             PersonDetailsGenerator.GENDER_FEMALE,
             PersonDetailsGenerator.RELIGION_DEFAULT,
             PersonDetailsGenerator.SEXUAL_ORIENTATION,
@@ -223,6 +226,7 @@ class DataLoader(
             PersonDetailsGenerator.CONTACT_ADDRESS,
             PersonDetailsGenerator.PERSONAL_CONTACT_1,
             PersonDetailsGenerator.PERSON_ADDRESS_STATUS_1,
+            PersonDetailsGenerator.PERSON_PREVIOUS_ADDRESS_STATUS,
             PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1,
             PersonDetailsGenerator.PERSON_ADDRESS_1,
             PersonDetailsGenerator.PERSON_ADDRESS_STATUS_2,
