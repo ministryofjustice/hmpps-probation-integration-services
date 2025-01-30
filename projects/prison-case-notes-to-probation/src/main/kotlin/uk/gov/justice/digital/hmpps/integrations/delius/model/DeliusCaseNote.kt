@@ -53,8 +53,7 @@ data class CaseNoteBody(
         val bytes = this.toByteArray()
         return if (bytes.size > 200) {
             String(bytes.slice(0..197).toByteArray()) + " ~"
-        }
-        else this
+        } else this
     }
 
     private fun isResettlementPassport() = type == "RESET" && subType == "BCST"
