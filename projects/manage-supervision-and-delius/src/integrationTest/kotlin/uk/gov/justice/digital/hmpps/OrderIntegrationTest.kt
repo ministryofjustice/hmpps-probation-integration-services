@@ -87,7 +87,12 @@ class OrderIntegrationTest {
                     "Burglary, other than a dwelling - 03000",
                     LocalDate.now().minusDays(7)
                 ),
-                PreviousOrder(INACTIVE_EVENT_1.eventNumber,"Default Sentence Type (25 Years)", "Murder", LocalDate.now().minusDays(8))
+                PreviousOrder(
+                    INACTIVE_EVENT_1.eventNumber,
+                    "Default Sentence Type (25 Years)",
+                    "Murder",
+                    LocalDate.now().minusDays(8)
+                )
             )
         )
 
