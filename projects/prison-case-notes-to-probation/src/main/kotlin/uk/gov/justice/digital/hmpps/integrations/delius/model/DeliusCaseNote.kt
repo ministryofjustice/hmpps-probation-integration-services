@@ -42,14 +42,19 @@ data class CaseNoteBody(
 
     fun description(caseNoteType: CaseNoteType): String? {
         return when {
-            typeLookup().isAlertType() -> "NOMIS ${
-                if (content.length > 194) "${content.take(192)} ~" else content.take(194)
-            }"
-
+            typeLookup().isAlertType() -> "NOMIS $content".truncatedDescription()
             isResettlementPassport() -> BcstPathway.from(content)?.let { "BCST case note for $it" }
             caseNoteType.code == CaseNoteType.DEFAULT_CODE -> "NOMIS Case Note - $type - $subType"
             else -> null
         }
+    }
+
+    private fun String.truncatedDescription(): String {
+        val bytes = this.toByteArray()
+        return if (bytes.size > 200) {
+            String(bytes.slice(0..197).toByteArray()) + " ~"
+        }
+        else this
     }
 
     private fun isResettlementPassport() = type == "RESET" && subType == "BCST"
