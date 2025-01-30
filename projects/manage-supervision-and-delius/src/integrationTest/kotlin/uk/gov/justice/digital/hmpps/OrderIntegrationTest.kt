@@ -38,8 +38,6 @@ class OrderIntegrationTest {
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
 
-
-
     @Test
     fun `no previous orders`() {
         val response = mockMvc
@@ -98,7 +96,8 @@ class OrderIntegrationTest {
     fun `return previous orders by crn and event id`() {
         val response = mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders/${INACTIVE_EVENT_1.eventNumber}").withToken()
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders/${INACTIVE_EVENT_1.eventNumber}")
+                    .withToken()
             )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<PreviousOrderInformation>()
@@ -115,7 +114,13 @@ class OrderIntegrationTest {
                     listOf()
                 ),
                 Conviction(null, null, null, listOf()),
-                Order(INACTIVE_ORDER_1.type.description, INACTIVE_ORDER_1.length, startDate = INACTIVE_ORDER_1.date, breaches = 0, endDate = null),
+                Order(
+                    INACTIVE_ORDER_1.type.description,
+                    INACTIVE_ORDER_1.length,
+                    startDate = INACTIVE_ORDER_1.date,
+                    breaches = 0,
+                    endDate = null
+                ),
                 courtDocuments = listOf(),
                 requirements = null,
                 licenceConditions = null

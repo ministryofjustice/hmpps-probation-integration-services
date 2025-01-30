@@ -26,7 +26,6 @@ interface EventSentenceRepository : JpaRepository<Event, Long> {
     fun findEventByPersonIdAndEventNumberAndActiveIsFalse(id: Long, eventNumber: String): Event?
 
     fun findEventByPersonIdAndEventNumberAndActiveIsTrue(id: Long, eventNumber: String): Event?
-
 }
 
 fun EventSentenceRepository.getEvent(id: Long, eventNumber: String) =

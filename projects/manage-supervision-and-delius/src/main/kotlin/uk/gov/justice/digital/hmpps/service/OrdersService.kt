@@ -27,7 +27,7 @@ class OrdersService(
         val person = personRepository.getPerson(crn)
         val event = eventRepository.findEventByPersonIdAndEventNumberAndActiveIsFalse(person.id, eventNumber)
 
-        return PreviousOrderInformation(person.toName(), event?.setTitle() , sentenceService.getInactiveEvent(event))
+        return PreviousOrderInformation(person.toName(), event?.setTitle(), sentenceService.getInactiveEvent(event))
     }
 
     fun Person.toName() =
@@ -42,5 +42,4 @@ class OrdersService(
     fun Event.setTitle(): String? {
         return "${disposal?.type?.description} (${disposal?.length} ${disposal?.lengthUnit?.description})"
     }
-
 }
