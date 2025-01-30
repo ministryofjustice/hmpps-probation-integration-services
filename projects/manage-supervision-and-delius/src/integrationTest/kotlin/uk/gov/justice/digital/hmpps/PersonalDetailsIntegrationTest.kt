@@ -347,6 +347,7 @@ internal class PersonalDetailsIntegrationTest {
             buildingName = "Building",
             buildingNumber = "23",
             streetName = "The Street",
+            district = "A District",
             town = "Town",
             county = "County",
             postcode = "NE1 UPD",
@@ -384,6 +385,7 @@ internal class PersonalDetailsIntegrationTest {
             assertThat(res.mainAddress?.buildingName, equalTo(request.buildingName))
             assertThat(res.mainAddress?.buildingNumber, equalTo(request.buildingNumber))
             assertThat(res.mainAddress?.streetName, equalTo(request.streetName))
+            assertThat(res.mainAddress?.district, equalTo(request.district))
             assertThat(res.mainAddress?.town, equalTo(request.town))
             assertThat(res.mainAddress?.county, equalTo(request.county))
             assertThat(res.mainAddress?.postcode, equalTo(request.postcode))

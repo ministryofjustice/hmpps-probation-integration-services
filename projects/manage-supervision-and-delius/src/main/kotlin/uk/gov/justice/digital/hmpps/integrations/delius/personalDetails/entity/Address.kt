@@ -45,7 +45,7 @@ class PersonAddress(
     var buildingNumber: String?,
     @Column(name = "street_name")
     var streetName: String?,
-    val district: String? = null,
+    var district: String? = null,
     @Column(name = "town_city")
     var town: String?,
     var county: String?,

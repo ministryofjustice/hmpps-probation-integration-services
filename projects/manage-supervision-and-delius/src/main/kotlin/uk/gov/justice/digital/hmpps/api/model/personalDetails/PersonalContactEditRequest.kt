@@ -17,6 +17,8 @@ data class PersonalContactEditRequest(
     @field:Size(max = 35)
     val streetName: String? = null,
     @field:Size(max = 35)
+    val district: String? = null,
+    @field:Size(max = 35)
     val town: String? = null,
     @field:Size(max = 35)
     val county: String? = null,

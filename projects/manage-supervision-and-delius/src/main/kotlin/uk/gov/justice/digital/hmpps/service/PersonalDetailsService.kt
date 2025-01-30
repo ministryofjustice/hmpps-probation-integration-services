@@ -81,6 +81,7 @@ class PersonalDetailsService(
             mainAddress.buildingName = request.buildingName
             mainAddress.buildingNumber = request.buildingNumber
             mainAddress.streetName = request.streetName
+            mainAddress.district = request.district
             mainAddress.town = request.town
             mainAddress.county = request.county
             mainAddress.postcode = postcode
@@ -100,6 +101,7 @@ class PersonalDetailsService(
                 buildingName = request.buildingName,
                 buildingNumber = request.buildingNumber,
                 streetName = request.streetName,
+                district = request.district,
                 town = request.town,
                 county = request.county,
                 postcode = postcode,
