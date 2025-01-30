@@ -23,6 +23,9 @@ class OrderServiceTest {
     @Mock
     lateinit var eventRepository: EventSentenceRepository
 
+    @Mock
+    lateinit var sentenceService: SentenceService
+
     @InjectMocks
     lateinit var service: OrdersService
 
