@@ -51,8 +51,12 @@ data class CaseNoteBody(
 
     private fun String.truncatedDescription(): String {
         val bytes = this.toByteArray()
+        var count = 0
         return if (bytes.size > 200) {
-            String(bytes.slice(0..197).toByteArray()) + " ~"
+            takeWhile {
+                count += it.toString().encodeToByteArray().size
+                count < 199
+            } + " ~"
         }
         else this
     }
