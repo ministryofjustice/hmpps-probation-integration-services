@@ -76,7 +76,7 @@ class SentenceService(
         )
     }
 
-    fun getInactiveEvent(event: Event?)  = event?.toInactiveSentence()
+    fun getInactiveEvent(event: Event?) = event?.toInactiveSentence()
 
     fun Event.toSentenceSummary() = SentenceSummary(
         eventNumber,
@@ -105,7 +105,7 @@ class SentenceService(
             toConviction(courtAppearance, additionalSentences),
             order = disposal?.toOrder(),
             requirements = requirementRepository.getRequirements(id, eventNumber)
-                .map { it.toRequirement() } ,
+                .map { it.toRequirement() },
             courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
             unpaidWorkProgress = disposal?.id?.let { getUnpaidWorkTime(it) },
             licenceConditions = disposal?.let {
@@ -146,6 +146,7 @@ class SentenceService(
         convictionDate = convictionDate,
         additionalSentences.map { it.toAdditionalSentence() }
     )
+
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)
 
