@@ -62,6 +62,7 @@ class OrderServiceTest {
             Name("Forename", "Middle1", "Surname"),
             listOf(
                 PreviousOrder(
+                    event.eventNumber,
                     "Default Sentence Type (25 Years)",
                     "Murder",
                     LocalDate.now().minusDays(8)

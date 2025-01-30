@@ -35,6 +35,7 @@ class OrdersService(
         Name(forename, secondName, surname)
 
     fun Event.toPreviousOrder(): PreviousOrder = PreviousOrder(
+        eventNumber,
         "${disposal?.type?.description} (${disposal?.length} ${disposal?.lengthUnit?.description})",
         mainOffence?.offence?.description,
         disposal?.terminationDate
