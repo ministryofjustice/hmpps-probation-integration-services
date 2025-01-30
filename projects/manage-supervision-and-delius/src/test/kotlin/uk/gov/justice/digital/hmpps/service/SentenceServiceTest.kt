@@ -69,7 +69,7 @@ class SentenceServiceTest {
         person = PersonGenerator.OVERVIEW,
         active = true,
         inBreach = true,
-        disposal = PersonGenerator.ACTIVE_ORDER,
+        disposal = ACTIVE_ORDER,
         eventNumber = "123457",
         mainOffence = PersonGenerator.MAIN_OFFENCE_1,
         notes = "overview",
@@ -306,7 +306,7 @@ class SentenceServiceTest {
             null
         )
 
-        assertEquals(expected, response.sentence!!.requirements[0])
+        assertEquals(expected, response.sentence!!.requirements!![0])
     }
 
     @Test
@@ -379,7 +379,7 @@ class SentenceServiceTest {
             null
         )
 
-        assertEquals(expected, response.sentence!!.requirements[0])
+        assertEquals(expected, response.sentence!!.requirements!![0])
     }
 
     @Test

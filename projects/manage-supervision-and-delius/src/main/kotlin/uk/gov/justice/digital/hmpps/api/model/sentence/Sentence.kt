@@ -7,10 +7,10 @@ data class Sentence(
     val offenceDetails: OffenceDetails,
     val conviction: Conviction? = null,
     val order: Order? = null,
-    val requirements: List<Requirement> = listOf(),
+    val requirements: List<Requirement>?,
     val courtDocuments: List<CourtDocument> = listOf(),
     val unpaidWorkProgress: String? = null,
-    val licenceConditions: List<LicenceCondition> = listOf()
+    val licenceConditions: List<LicenceCondition>?
 )
 
 data class MinimalSentence(

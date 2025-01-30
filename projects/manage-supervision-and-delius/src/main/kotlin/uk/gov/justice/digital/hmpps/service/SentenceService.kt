@@ -44,7 +44,7 @@ class SentenceService(
                     null -> true
                     else -> eventNumber == it.eventNumber
                 }
-            }?.toSentence(crn)
+            }?.toSentence()
         )
     }
 
@@ -76,6 +76,8 @@ class SentenceService(
         )
     }
 
+    fun getInactiveEvent(event: Event?) = event?.toInactiveSentence()
+
     fun Event.toSentenceSummary() = SentenceSummary(
         eventNumber,
         disposal?.type?.description ?: "Pre-Sentence"
@@ -94,26 +96,13 @@ class SentenceService(
                 .map { it.toMinimalRequirement() },
         )
 
-    fun Event.toSentence(crn: String): Sentence {
+    fun Event.toSentence(): Sentence {
         val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
         val additionalSentences = additionalSentenceRepository.getAllByEventId(id)
 
         return Sentence(
-            OffenceDetails(
-                eventNumber = eventNumber,
-                offence = mainOffence?.let { Offence(it.offence.description, it.offenceCount) },
-                dateOfOffence = mainOffence?.date,
-                notes = notes,
-                additionalOffences = additionalOffences.map {
-                    Offence(description = it.offence.description, count = it.offenceCount ?: 0)
-                }
-            ),
-            Conviction(
-                sentencingCourt = courtAppearance?.court?.name,
-                responsibleCourt = court?.name,
-                convictionDate = convictionDate,
-                additionalSentences.map { it.toAdditionalSentence() }
-            ),
+            toOffenceDetails(),
+            toConviction(courtAppearance, additionalSentences),
             order = disposal?.toOrder(),
             requirements = requirementRepository.getRequirements(id, eventNumber)
                 .map { it.toRequirement() },
@@ -126,6 +115,37 @@ class SentenceService(
             } ?: emptyList()
         )
     }
+
+    fun Event.toInactiveSentence(): Sentence {
+        val courtAppearance = courtAppearanceRepository.getFirstCourtAppearanceByEventIdOrderByDate(id)
+        val additionalSentences = additionalSentenceRepository.getAllByEventId(id)
+
+        return Sentence(
+            toOffenceDetails(),
+            toConviction(courtAppearance, additionalSentences),
+            order = disposal?.toOrder(),
+            courtDocuments = documentRepository.getCourtDocuments(id, eventNumber).map { it.toCourtDocument() },
+            requirements = null,
+            licenceConditions = null
+        )
+    }
+
+    fun Event.toOffenceDetails() = OffenceDetails(
+        eventNumber = eventNumber,
+        offence = mainOffence?.let { Offence(it.offence.description, it.offenceCount) },
+        dateOfOffence = mainOffence?.date,
+        notes = notes,
+        additionalOffences = additionalOffences.map {
+            Offence(description = it.offence.description, count = it.offenceCount ?: 0)
+        }
+    )
+
+    fun Event.toConviction(courtAppearance: CourtAppearance?, additionalSentences: List<ExtraSentence>) = Conviction(
+        sentencingCourt = courtAppearance?.court?.name,
+        responsibleCourt = court?.name,
+        convictionDate = convictionDate,
+        additionalSentences.map { it.toAdditionalSentence() }
+    )
 
     fun ExtraSentence.toAdditionalSentence(): AdditionalSentence =
         AdditionalSentence(length, amount, notes, type.description)

@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.api.model.offence.Offence
 import uk.gov.justice.digital.hmpps.api.model.offence.Offences
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getEvent
 
 @Service
 class OffenceService(
@@ -16,12 +15,12 @@ class OffenceService(
 
     fun getOffencesForPerson(crn: String, eventNumber: String): Offences {
         val person = personRepository.getPerson(crn)
-        val event = eventRepository.getEvent(person.id, eventNumber)
+        val event = eventRepository.findEventByPersonIdAndEventNumber(person.id, eventNumber)
 
         return Offences(
             person.toName(),
-            event.toOffence(),
-            event.additionalOffences.map { it.toOffence() })
+            event?.toOffence(),
+            event?.additionalOffences?.map { it.toOffence() })
     }
 
     fun Person.toName() =

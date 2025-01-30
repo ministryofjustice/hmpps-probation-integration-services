@@ -33,6 +33,12 @@ class OffenceIntegrationTest {
 
     @Test
     fun `person does not exist`() {
+        val name = Name(
+            PersonGenerator.OVERVIEW.forename,
+            PersonGenerator.OVERVIEW.secondName,
+            PersonGenerator.OVERVIEW.surname
+        )
+
         mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sentence/X123456/offences/1")
@@ -49,18 +55,25 @@ class OffenceIntegrationTest {
 
     @Test
     fun `no active events`() {
-        mockMvc
+        val name = Name(
+            PersonDetailsGenerator.PERSONAL_DETAILS.forename,
+            PersonDetailsGenerator.PERSONAL_DETAILS.secondName,
+            PersonDetailsGenerator.PERSONAL_DETAILS.surname
+        )
+
+        val expected = Offences(
+            name
+        )
+
+        val response = mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sentence/${PersonDetailsGenerator.PERSONAL_DETAILS.crn}/offences/1")
                     .withToken()
             )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect { result: MvcResult ->
-                assertEquals(
-                    "Event with number of 1 not found",
-                    result.resolvedException!!.message
-                )
-            }
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<Offences>()
+
+        assertEquals(expected, response)
     }
 
     @Test
