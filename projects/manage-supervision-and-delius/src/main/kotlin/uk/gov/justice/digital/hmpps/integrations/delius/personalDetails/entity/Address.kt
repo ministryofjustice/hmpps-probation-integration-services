@@ -45,7 +45,7 @@ class PersonAddress(
     var buildingNumber: String?,
     @Column(name = "street_name")
     var streetName: String?,
-    val district: String? = null,
+    var district: String? = null,
     @Column(name = "town_city")
     var town: String?,
     var county: String?,
@@ -94,6 +94,9 @@ class PersonAddress(
     @Lob
     @Column
     var notes: String?,
+
+    @Column(nullable = false)
+    val partitionAreaId: Long = 0,
 
     @Id
     @Column(name = "offender_address_id")
