@@ -20,10 +20,22 @@
         "field": "textChunks",
         "value": [
           "{{{date}}} {{{startTime}}}",
-          "{{{typeDescription}}} {{{typeShortDescription}}}",
-          "{{{outcomeDescription}}}",
-          "{{{description}}}"
+          "{{{typeDescription}}} {{{typeShortDescription}}}"
         ]
+      }
+    },
+    {
+      "append": {
+        "field": "textChunks",
+        "value": ["{{{description}}}"],
+        "if": "ctx.description != null && ctx.description != \"\""
+      }
+    },
+    {
+      "append": {
+        "field": "textChunks",
+        "value": ["{{{outcomeDescription}}}"],
+        "if": "ctx.outcomeDescription != null && ctx.outcomeDescription != \"\""
       }
     },
     {
