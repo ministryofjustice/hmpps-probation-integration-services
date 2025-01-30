@@ -67,7 +67,7 @@ template:
                 [\ \-\./](?:19|20)?\d{2}\b
             | \(?\+?\d+[\ \-\./\(\)][\d\ \-\./\(\)]+\d+  # capture space-separated numbers (e.g. "phone 0123 456 78" => ["phone", "0123 456 78"])
             | [a-z]{1,2}\d[a-z\d]?\ \d[a-z]{2}           # capture space-separated postcodes (e.g. "M20 0AA is the postcode" => ["M20 0AA", "is", "the", "postcode"])
-            | \S+                                        # tokenize everything else on whitespace
+            | \b\S+\b                                    # tokenize everything else on whitespace
             )
           flags: CASE_INSENSITIVE|COMMENTS
           group: 1
