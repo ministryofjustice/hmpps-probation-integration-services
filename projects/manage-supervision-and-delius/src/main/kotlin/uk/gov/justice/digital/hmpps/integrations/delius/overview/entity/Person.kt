@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
@@ -16,7 +15,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
-@Immutable
 @Entity
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")

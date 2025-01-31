@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Ref
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.time.LocalDate
 
-@Immutable
 @Entity(name = "PersonalDetailsAddress")
 @Table(name = "offender_address")
 @EntityListeners(AuditingEntityListener::class)
