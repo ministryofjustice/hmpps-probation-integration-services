@@ -40,6 +40,49 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserAccess"
+  /personal-details/{crn}:
+    get:
+      tags:
+      - Personal Details
+      summary: "Personal Details containing address, personal contacts and documents "
+      operationId: getPersonalDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetails"
+    post:
+      tags:
+      - Personal Details
+      summary: Update personal details
+      operationId: updatePersonalDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PersonalContactEditRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetails"
   /caseload/user/{username}/search:
     post:
       tags:
@@ -339,6 +382,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PreviousOrderHistory"
+  /sentence/{crn}/previous-orders/{eventNumber}:
+    get:
+      tags:
+      - Sentence
+      summary: Display inactive events
+      operationId: getPreviousEvent
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: eventNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreviousOrderInformation"
   /sentence/{crn}/offences/{eventNumber}:
     get:
       tags:
@@ -520,25 +587,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonRiskFlag"
-  /personal-details/{crn}:
-    get:
-      tags:
-      - Personal Details
-      summary: "Personal Details containing address, personal contacts and documents "
-      operationId: getPersonalDetails
-      parameters:
-      - name: crn
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PersonalDetails"
   /personal-details/{crn}/summary:
     get:
       tags:
@@ -854,6 +902,360 @@ components:
             $ref: "#/components/schemas/CaseAccess"
       required:
       - access
+    PersonalContactEditRequest:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+          maxLength: 35
+          minLength: 0
+        mobileNumber:
+          type: string
+          maxLength: 35
+          minLength: 0
+        emailAddress:
+          type: string
+          maxLength: 255
+          minLength: 0
+        buildingName:
+          type: string
+          maxLength: 35
+          minLength: 0
+        buildingNumber:
+          type: string
+          maxLength: 35
+          minLength: 0
+        streetName:
+          type: string
+          maxLength: 35
+          minLength: 0
+        district:
+          type: string
+          maxLength: 35
+          minLength: 0
+        town:
+          type: string
+          maxLength: 35
+          minLength: 0
+        county:
+          type: string
+          maxLength: 35
+          minLength: 0
+        postcode:
+          type: string
+          maxLength: 35
+          minLength: 0
+        addressTypeCode:
+          type: string
+        verified:
+          type: boolean
+        noFixedAddress:
+          type: boolean
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        notes:
+          type: string
+    Address:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        telephoneNumber:
+          type: string
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        verified:
+          type: boolean
+        lastUpdated:
+          type: string
+          format: date
+        lastUpdatedBy:
+          $ref: "#/components/schemas/Name"
+        type:
+          type: string
+        status:
+          type: string
+        notes:
+          type: string
+        noFixedAddress:
+          type: boolean
+      required:
+      - from
+    AddressType:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    Circumstances:
+      type: object
+      properties:
+        circumstances:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalCircumstance"
+        lastUpdated:
+          type: string
+          format: date
+      required:
+      - circumstances
+    ContactAddress:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        lastUpdated:
+          type: string
+          format: date
+        lastUpdatedBy:
+          $ref: "#/components/schemas/Name"
+      required:
+      - lastUpdated
+      - lastUpdatedBy
+    Disabilities:
+      type: object
+      properties:
+        disabilities:
+          type: array
+          items:
+            type: string
+        lastUpdated:
+          type: string
+          format: date
+      required:
+      - disabilities
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    PersonSummary:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        crn:
+          type: string
+        offenderId:
+          type: integer
+          format: int64
+        pnc:
+          type: string
+        noms:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+      required:
+      - crn
+      - dateOfBirth
+      - name
+      - offenderId
+    PersonalCircumstance:
+      type: object
+      properties:
+        subType:
+          type: string
+        type:
+          type: string
+      required:
+      - subType
+      - type
+    PersonalContact:
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        contactId:
+          type: integer
+          format: int64
+        name:
+          $ref: "#/components/schemas/Name"
+        relationship:
+          type: string
+        relationshipType:
+          type: string
+        address:
+          $ref: "#/components/schemas/ContactAddress"
+        notes:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        startDate:
+          type: string
+          format: date
+        lastUpdated:
+          type: string
+          format: date
+        lastUpdatedBy:
+          $ref: "#/components/schemas/Name"
+      required:
+      - contactId
+      - lastUpdated
+      - lastUpdatedBy
+      - name
+      - personSummary
+      - relationshipType
+    PersonalDetails:
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalContact"
+        mainAddress:
+          $ref: "#/components/schemas/Address"
+        otherAddressCount:
+          type: integer
+          format: int32
+        previousAddressCount:
+          type: integer
+          format: int32
+        preferredGender:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        preferredName:
+          type: string
+        previousSurname:
+          type: string
+        preferredLanguage:
+          type: string
+        genderIdentity:
+          type: string
+        selfDescribedGender:
+          type: string
+        aliases:
+          type: array
+          items:
+            $ref: "#/components/schemas/Name"
+        telephoneNumber:
+          type: string
+        mobileNumber:
+          type: string
+        email:
+          type: string
+        circumstances:
+          $ref: "#/components/schemas/Circumstances"
+        disabilities:
+          $ref: "#/components/schemas/Disabilities"
+        provisions:
+          $ref: "#/components/schemas/Provisions"
+        pnc:
+          type: string
+        noms:
+          type: string
+        sex:
+          type: string
+        religionOrBelief:
+          type: string
+        sexualOrientation:
+          type: string
+        requiresInterpreter:
+          type: boolean
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
+        lastUpdated:
+          type: string
+          format: date
+        lastUpdatedBy:
+          $ref: "#/components/schemas/Name"
+        addressTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddressType"
+      required:
+      - addressTypes
+      - aliases
+      - circumstances
+      - contacts
+      - crn
+      - dateOfBirth
+      - disabilities
+      - documents
+      - name
+      - otherAddressCount
+      - preferredGender
+      - previousAddressCount
+      - provisions
+      - sex
+    Provisions:
+      type: object
+      properties:
+        provisions:
+          type: array
+          items:
+            type: string
+        lastUpdated:
+          type: string
+          format: date
+      required:
+      - provisions
     UserSearchFilter:
       type: object
       properties:
@@ -902,18 +1304,6 @@ components:
       required:
       - contactTypes
       - sentenceTypes
-    Name:
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
-          type: string
-      required:
-      - forename
-      - surname
     StaffCase:
       type: object
       properties:
@@ -1166,19 +1556,6 @@ components:
       - rescheduledStaff
       - startDateTime
       - type
-    Document:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        lastUpdated:
-          type: string
-          format: date-time
-      required:
-      - id
-      - name
     OfficeAddress:
       type: object
       properties:
@@ -1232,28 +1609,6 @@ components:
       - size
       - totalPages
       - totalResults
-    PersonSummary:
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        crn:
-          type: string
-        offenderId:
-          type: integer
-          format: int64
-        pnc:
-          type: string
-        noms:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-      required:
-      - crn
-      - dateOfBirth
-      - name
-      - offenderId
     Outcome:
       type: object
       properties:
@@ -1272,19 +1627,6 @@ components:
       - attended
       - code
       - id
-    Address:
-      type: object
-      properties:
-        buildingNumber:
-          type: string
-        streetName:
-          type: string
-        town:
-          type: string
-        county:
-          type: string
-        postcode:
-          type: string
     LocationDetails:
       type: object
       properties:
@@ -1610,9 +1952,7 @@ components:
             $ref: "#/components/schemas/LicenceCondition"
       required:
       - courtDocuments
-      - licenceConditions
       - offenceDetails
-      - requirements
     SentenceOverview:
       type: object
       properties:
@@ -1683,6 +2023,8 @@ components:
     PreviousOrder:
       type: object
       properties:
+        eventNumber:
+          type: string
         title:
           type: string
         description:
@@ -1691,6 +2033,7 @@ components:
           type: string
           format: date
       required:
+      - eventNumber
       - title
     PreviousOrderHistory:
       type: object
@@ -1704,6 +2047,17 @@ components:
       required:
       - name
       - previousOrders
+    PreviousOrderInformation:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        title:
+          type: string
+        sentence:
+          $ref: "#/components/schemas/Sentence"
+      required:
+      - name
     Offences:
       type: object
       properties:
@@ -1716,8 +2070,6 @@ components:
           items:
             $ref: "#/components/schemas/Offence"
       required:
-      - additionalOffences
-      - mainOffence
       - name
     LicenceConditionNoteDetail:
       type: object
@@ -1898,194 +2250,6 @@ components:
       required:
       - personSummary
       - riskFlag
-    Circumstances:
-      type: object
-      properties:
-        circumstances:
-          type: array
-          items:
-            $ref: "#/components/schemas/PersonalCircumstance"
-        lastUpdated:
-          type: string
-          format: date
-      required:
-      - circumstances
-    ContactAddress:
-      type: object
-      properties:
-        buildingName:
-          type: string
-        buildingNumber:
-          type: string
-        streetName:
-          type: string
-        district:
-          type: string
-        town:
-          type: string
-        county:
-          type: string
-        postcode:
-          type: string
-        lastUpdated:
-          type: string
-          format: date
-        lastUpdatedBy:
-          $ref: "#/components/schemas/Name"
-      required:
-      - lastUpdated
-      - lastUpdatedBy
-    Disabilities:
-      type: object
-      properties:
-        disabilities:
-          type: array
-          items:
-            type: string
-        lastUpdated:
-          type: string
-          format: date
-      required:
-      - disabilities
-    PersonalCircumstance:
-      type: object
-      properties:
-        subType:
-          type: string
-        type:
-          type: string
-      required:
-      - subType
-      - type
-    PersonalContact:
-      type: object
-      properties:
-        personSummary:
-          $ref: "#/components/schemas/PersonSummary"
-        contactId:
-          type: integer
-          format: int64
-        name:
-          $ref: "#/components/schemas/Name"
-        relationship:
-          type: string
-        relationshipType:
-          type: string
-        address:
-          $ref: "#/components/schemas/ContactAddress"
-        notes:
-          type: string
-        phone:
-          type: string
-        email:
-          type: string
-        startDate:
-          type: string
-          format: date
-        lastUpdated:
-          type: string
-          format: date
-        lastUpdatedBy:
-          $ref: "#/components/schemas/Name"
-      required:
-      - contactId
-      - lastUpdated
-      - lastUpdatedBy
-      - name
-      - personSummary
-      - relationshipType
-    PersonalDetails:
-      type: object
-      properties:
-        crn:
-          type: string
-        name:
-          $ref: "#/components/schemas/Name"
-        contacts:
-          type: array
-          items:
-            $ref: "#/components/schemas/PersonalContact"
-        mainAddress:
-          $ref: "#/components/schemas/Address"
-        otherAddressCount:
-          type: integer
-          format: int32
-        previousAddressCount:
-          type: integer
-          format: int32
-        preferredGender:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        preferredName:
-          type: string
-        previousSurname:
-          type: string
-        preferredLanguage:
-          type: string
-        genderIdentity:
-          type: string
-        selfDescribedGender:
-          type: string
-        aliases:
-          type: array
-          items:
-            $ref: "#/components/schemas/Name"
-        telephoneNumber:
-          type: string
-        mobileNumber:
-          type: string
-        email:
-          type: string
-        circumstances:
-          $ref: "#/components/schemas/Circumstances"
-        disabilities:
-          $ref: "#/components/schemas/Disabilities"
-        provisions:
-          $ref: "#/components/schemas/Provisions"
-        pnc:
-          type: string
-        noms:
-          type: string
-        sex:
-          type: string
-        religionOrBelief:
-          type: string
-        sexualOrientation:
-          type: string
-        requiresInterpreter:
-          type: boolean
-        documents:
-          type: array
-          items:
-            $ref: "#/components/schemas/Document"
-      required:
-      - aliases
-      - circumstances
-      - contacts
-      - crn
-      - dateOfBirth
-      - disabilities
-      - documents
-      - name
-      - otherAddressCount
-      - preferredGender
-      - previousAddressCount
-      - provisions
-      - sex
-    Provisions:
-      type: object
-      properties:
-        provisions:
-          type: array
-          items:
-            type: string
-        lastUpdated:
-          type: string
-          format: date
-      required:
-      - provisions
     Provision:
       type: object
       properties:
