@@ -176,7 +176,7 @@ class SentenceServiceTest {
                         AdditionalSentence(null, 500, "fine notes", "Fine")
                     )
                 ),
-                Order("Default Sentence Type", 12, null, startDate = LocalDate.now().minusDays(14)),
+                Order(description = "Default Sentence Type", length = 12, endDate = null, startDate = LocalDate.now().minusDays(14)),
                 listOf(
                     Requirement(
                         requirement2.id,

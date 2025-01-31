@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.compliance.PersonCompliance
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_ORDER_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.TERMINATION_REASON
@@ -46,6 +47,7 @@ internal class ComplianceIntegrationTest {
         assertThat(res.currentSentences[1].activity.compliedAppointmentsCount, equalTo(2))
         assertThat(res.currentSentences[1].activity.outcomeNotRecordedCount, equalTo(2))
         assertThat(res.currentSentences[1].activity.acceptableAbsenceCount, equalTo(0))
+        assertThat(res.previousOrders.orders[1].eventNumber, equalTo(INACTIVE_EVENT_1.eventNumber))
         assertThat(res.previousOrders.orders[1].status, equalTo(TERMINATION_REASON.description))
         assertThat(res.previousOrders.lastEndedDate, equalTo(INACTIVE_ORDER_2.terminationDate))
     }
