@@ -4,18 +4,23 @@ import com.asyncapi.kotlinasyncapi.annotation.Schema
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
+import com.fasterxml.jackson.dataformat.csv.CsvMapper
+import com.fasterxml.jackson.dataformat.csv.CsvSchema
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.OffenceCsvRecord
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.EventService
 import uk.gov.justice.digital.hmpps.service.InsertEventResult
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.io.File
+import java.io.FileNotFoundException
 import java.time.LocalDate
 import java.time.Period
 
@@ -98,8 +103,7 @@ class Handler(
                     offence.judicialResults?.any { it.label == "Remanded in custody" } == true
                 }
 
-                // TODO: Currently using the first offence, We will need to identify the main offence
-                val mainOffence = remandedOffences.firstOrNull() ?: return@forEach
+                val mainOffence = findMainOffence(remandedOffences) ?: return@forEach
 
                 val caseUrn =
                     notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }?.prosecutionCaseIdentifier?.caseURN
@@ -191,5 +195,35 @@ class Handler(
             pncNumber = this.pncId,
             croNumber = this.croNumber
         )
+    }
+
+    fun findMainOffence(remandedOffences: List<HearingOffence>): HearingOffence? {
+        return remandedOffences.minByOrNull { offencePriorityMap[it.offenceCode] ?: Int.MAX_VALUE }
+    }
+
+    private val offencePriorityMap: Map<String, Int> by lazy {
+        loadOffencePriorities()
+    }
+
+    private fun loadOffencePriorities(): Map<String, Int> {
+        val csvFilePath = this::class.java.classLoader.getResource("offence_priority.csv")?.path
+            ?: throw FileNotFoundException("offence_priority.csv not found in resources")
+
+        val priorityMap = mutableMapOf<String, Int>()
+        val mapper = CsvMapper()
+        val schema = CsvSchema.emptySchema().withHeader().withColumnSeparator(',')
+
+        File(csvFilePath).bufferedReader().use { reader ->
+            val it = mapper.readerFor(OffenceCsvRecord::class.java)
+                .with(schema)
+                .readValues<OffenceCsvRecord>(reader)
+
+            it.forEach { record ->
+                record.priority?.toIntOrNull()?.let { priority ->
+                    priorityMap[record.cjsOffenceCode] = priority
+                }
+            }
+        }
+        return priorityMap
     }
 }

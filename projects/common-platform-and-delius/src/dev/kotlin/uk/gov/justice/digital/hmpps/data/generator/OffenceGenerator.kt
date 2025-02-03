@@ -23,12 +23,15 @@ object MainOffenceGenerator {
 }
 
 object DetailedOffenceGenerator {
-    val DEFAULT = generate(code = "AA00000", description = "Murder", homeOfficeCode = "00100")
+    val DEFAULT = generate(code = "TN42001", description = "62 Treason Acts 1351-1842", homeOfficeCode = "06200")
+    val OTHER = generate(code = "ZZ00120", description = "91.2 Other Public Health offences", homeOfficeCode = "09166")
     fun generate(
+        id: Long = IdGenerator.getAndIncrement(),
         code: String,
         description: String,
         homeOfficeCode: String
     ) = DetailedOffence(
+        id = id,
         code = code,
         description = description,
         homeOfficeCode = homeOfficeCode,
@@ -41,7 +44,8 @@ object DetailedOffenceGenerator {
 }
 
 object OffenceGenerator {
-    val DEFAULT = generate(code = "00100", description = "Murder")
+    val DEFAULT = generate(code = "06200", description = "High treason and other offences against Treason Acts")
+    val OTHER = generate(code = "09166", description = "Triable either way offences under The Food Hygiene (Wales) Regulations 2006")
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,

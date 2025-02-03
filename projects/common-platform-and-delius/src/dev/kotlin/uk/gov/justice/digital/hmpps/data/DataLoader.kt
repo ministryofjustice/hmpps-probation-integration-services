@@ -56,8 +56,10 @@ class DataLoader(
             persist(StaffGenerator.ALLOCATED)
             persist(CourtGenerator.UNKNOWN_COURT_N07_PROVIDER)
             persist(OffenceGenerator.DEFAULT)
+            persist(OffenceGenerator.OTHER)
             persist(ContactTypeGenerator.EAPP)
             persist(DetailedOffenceGenerator.DEFAULT)
+            persist(DetailedOffenceGenerator.OTHER)
         }
     }
 }

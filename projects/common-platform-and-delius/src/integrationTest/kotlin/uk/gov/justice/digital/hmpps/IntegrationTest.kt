@@ -372,7 +372,7 @@ internal class IntegrationTest {
         verify(mainOffenceRepository).save(check<MainOffence> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
             assertThat(it.person.surname, Matchers.equalTo("Example Last Name"))
-            assertThat(it.offence.description, Matchers.equalTo("Murder"))
+            assertThat(it.offence.description, Matchers.equalTo("High treason and other offences against Treason Acts"))
             assertNotNull(it.offence)
         })
         verify(courtAppearanceRepository).save(check<CourtAppearance> {
