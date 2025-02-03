@@ -307,6 +307,7 @@ fun PersonAddress.toAddress() = Address.from(
     lastUpdated = lastUpdated,
     status = status.description,
     type = type?.description,
+    typeCode = type?.code,
     telephoneNumber = telephoneNumber,
     lastUpdatedBy = lastUpdatedUser?.let {
         Name(
