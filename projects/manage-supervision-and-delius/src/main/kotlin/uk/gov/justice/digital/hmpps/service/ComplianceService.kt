@@ -83,6 +83,7 @@ class ComplianceService(
                 lastEndedDate = previousOrders.firstOrNull()?.disposal?.terminationDate,
                 orders = previousOrders.mapNotNull {
                     it.disposal?.toOrder(
+                        it.eventNumber,
                         it.mainOffence?.offence?.description,
                         breachesForSentence(it.id).size
                     )
@@ -90,8 +91,9 @@ class ComplianceService(
             ))
     }
 
-    fun Disposal.toOrder(mainOffence: String?, breachCount: Int) =
+    fun Disposal.toOrder(eventNumber: String, mainOffence: String?, breachCount: Int) =
         Order(
+            eventNumber,
             description = type.description,
             length = length,
             startDate = date,

@@ -122,8 +122,8 @@ class OrderIntegrationTest {
                 ),
                 Conviction(null, null, null, listOf()),
                 Order(
-                    INACTIVE_ORDER_1.type.description,
-                    INACTIVE_ORDER_1.length,
+                    description = INACTIVE_ORDER_1.type.description,
+                    length = INACTIVE_ORDER_1.length,
                     startDate = INACTIVE_ORDER_1.date,
                     breaches = 0,
                     endDate = null

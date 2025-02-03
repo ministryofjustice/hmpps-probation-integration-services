@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model.overview
 import java.time.LocalDate
 
 data class Order(
+    val eventNumber: String? = null,
     val description: String,
     val length: Long? = null,
     val endDate: LocalDate?,
