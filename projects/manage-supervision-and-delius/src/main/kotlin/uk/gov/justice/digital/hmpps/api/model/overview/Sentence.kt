@@ -5,5 +5,5 @@ data class Sentence(
     val eventNumber: String,
     val mainOffence: Offence,
     val order: Order? = null,
-    val rar: Rar? = null
+    val rarDescription: String? = null,
 )

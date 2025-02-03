@@ -37,6 +37,7 @@ internal class ComplianceIntegrationTest {
             equalTo(2)
         )
         assertThat(res.currentSentences[1].rarCategory, equalTo("Main"))
+        assertThat(res.currentSentences[1].rarDescription, equalTo("0 of 12 RAR days completed"))
         assertThat(res.currentSentences[0].rarCategory, equalTo(null))
         assertThat(res.currentSentences[1].eventNumber, equalTo("7654321"))
         assertThat(res.currentSentences[0].eventNumber, equalTo("1234567"))

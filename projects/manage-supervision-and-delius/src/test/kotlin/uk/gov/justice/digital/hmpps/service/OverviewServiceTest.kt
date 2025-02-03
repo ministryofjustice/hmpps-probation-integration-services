@@ -47,6 +47,9 @@ internal class OverviewServiceTest {
     @Mock
     lateinit var nsiRepository: NsiRepository
 
+    @Mock
+    lateinit var requirementService: RequirementService
+
     @InjectMocks
     lateinit var service: OverviewService
 
@@ -73,9 +76,7 @@ internal class OverviewServiceTest {
         whenever(contactRepository.findUpComingAppointments(any(), any(), any())).thenReturn(
             listOf(FIRST_APPT_CONTACT)
         )
-        whenever(requirementRepository.getRarDaysByDisposalId(any())).thenReturn(
-            listOf(RarDays(1, "COMPLETED"), RarDays(2, "SCHEDULED"))
-        )
+
         whenever(eventRepository.findByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(
             listOf(
                 generateEvent(
@@ -112,9 +113,6 @@ internal class OverviewServiceTest {
             equalTo(PersonGenerator.PERSONAL_CIRCUMSTANCES[0].type.description)
         )
         assertThat(res.sentences.size, equalTo(2))
-        assertThat(res.sentences[0].rar?.scheduled, equalTo(2))
-        assertThat(res.sentences[0].rar?.completed, equalTo(1))
-        assertThat(res.sentences[0].rar?.totalDays, equalTo(3))
         assertThat(res.schedule.nextAppointment?.date, equalTo(expectedAppointmentDateTime))
     }
 

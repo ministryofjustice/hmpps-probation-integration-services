@@ -22,7 +22,8 @@ class OverviewService(
     private val disabilityRepository: DisabilityRepository,
     private val personalCircumstanceRepository: PersonCircumstanceRepository,
     private val nsiRepository: NsiRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val requirementService: RequirementService
 ) {
 
     @Transactional
@@ -69,7 +70,10 @@ class OverviewService(
             eventNumber = eventNumber,
             additionalOffences = additionalOffences.map { it.offence.toOffence() },
             order = disposal?.toOrder(),
-            rar = disposal?.let { requirementRepository.getRar(it.id) })
+            rarDescription = disposal?.let {
+                requirementService.getRarDescription(id, eventNumber)
+            })
+
     }
 
     fun Person.toPersonalDetails(
