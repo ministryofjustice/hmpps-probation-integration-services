@@ -188,5 +188,4 @@ internal class ComplianceServiceTest {
         assertThat(res.currentSentences.size, equalTo(2))
         assertThat(res.previousOrders, equalTo(PreviousOrders(0, 0, null, emptyList())))
     }
-
 }

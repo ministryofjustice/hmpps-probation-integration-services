@@ -59,7 +59,7 @@ class RequirementService(
         return null
     }
 
-    fun getRarDescription(id: Long, eventNumber: String):String?  {
+    fun getRarDescription(id: Long, eventNumber: String): String? {
         val sumRarRequirementLength = requirementRepository.getRequirements(id, eventNumber)
             .filter { it.mainCategory!!.code == "F" }
             .sumOf { it.length!! }
