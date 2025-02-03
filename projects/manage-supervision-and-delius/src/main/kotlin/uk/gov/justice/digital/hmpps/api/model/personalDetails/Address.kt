@@ -18,6 +18,7 @@ data class Address(
     val lastUpdated: LocalDate?,
     val lastUpdatedBy: Name?,
     val type: String?,
+    val typeCode: String?,
     val status: String?,
     val notes: String?,
     val noFixedAddress: Boolean?
@@ -38,13 +39,15 @@ data class Address(
             lastUpdated: LocalDate? = null,
             lastUpdatedBy: Name? = null,
             type: String? = null,
+            typeCode: String?,
             status: String? = null,
             notes: String? = null,
             noFixedAddress: Boolean?
         ): Address? =
             if (
                 buildingName == null && buildingNumber == null && streetName == null &&
-                district == null && town == null && county == null && postcode == null
+                district == null && town == null && county == null && postcode == null && typeCode == null
+                && verified == null
             ) {
                 null
             } else {
@@ -63,6 +66,7 @@ data class Address(
                     lastUpdated,
                     lastUpdatedBy,
                     type,
+                    typeCode,
                     status,
                     notes,
                     noFixedAddress
