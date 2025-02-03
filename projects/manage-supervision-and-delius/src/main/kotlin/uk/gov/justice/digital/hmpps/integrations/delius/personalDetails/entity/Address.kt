@@ -56,8 +56,9 @@ class PersonAddress(
     @Convert(converter = YesNoConverter::class)
     var typeVerified: Boolean? = false,
 
+    @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    var noFixedAbode: Boolean? = false,
+    var noFixedAbode: Boolean = false,
 
     @Column(name = "last_updated_datetime")
     @LastModifiedDate

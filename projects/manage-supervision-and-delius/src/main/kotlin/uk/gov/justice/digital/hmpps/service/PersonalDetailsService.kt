@@ -87,7 +87,7 @@ class PersonalDetailsService(
             mainAddress.postcode = postcode
             mainAddress.type = addressType
             mainAddress.typeVerified = request.verified
-            mainAddress.noFixedAbode = request.noFixedAddress
+            mainAddress.noFixedAbode = request.noFixedAddress ?: false
             mainAddress.startDate = startDate
             mainAddress.endDate = request.endDate
             mainAddress.notes = request.notes
@@ -108,7 +108,7 @@ class PersonalDetailsService(
                 startDate = startDate,
                 endDate = request.endDate,
                 typeVerified = request.verified,
-                noFixedAbode = request.noFixedAddress,
+                noFixedAbode = request.noFixedAddress ?: false,
                 notes = request.notes,
                 id = null
             )
