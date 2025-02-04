@@ -444,6 +444,7 @@
       "surname": "string"
     },
     "type": "string",
+    "typeCode": "string",
     "status": "string",
     "notes": "string",
     "noFixedAddress": "boolean"
@@ -646,6 +647,7 @@
       "surname": "string"
     },
     "type": "string",
+    "typeCode": "string",
     "status": "string",
     "notes": "string",
     "noFixedAddress": "boolean"
@@ -1354,6 +1356,7 @@
           "surname": "string"
         },
         "type": "string",
+        "typeCode": "string",
         "status": "string",
         "notes": "string",
         "noFixedAddress": "boolean"
@@ -1658,6 +1661,7 @@
       ]
     },
     "order": {
+      "eventNumber": "string",
       "description": "string",
       "length": "integer",
       "endDate": "string",
@@ -2130,6 +2134,7 @@
       ]
     },
     "order": {
+      "eventNumber": "string",
       "description": "string",
       "length": "integer",
       "endDate": "string",
@@ -3794,6 +3799,7 @@
       "surname": "string"
     },
     "type": "string",
+    "typeCode": "string",
     "status": "string",
     "notes": "string",
     "noFixedAddress": "boolean"
@@ -3818,6 +3824,7 @@
         "surname": "string"
       },
       "type": "string",
+      "typeCode": "string",
       "status": "string",
       "notes": "string",
       "noFixedAddress": "boolean"
@@ -3843,6 +3850,7 @@
         "surname": "string"
       },
       "type": "string",
+      "typeCode": "string",
       "status": "string",
       "notes": "string",
       "noFixedAddress": "boolean"
@@ -4007,6 +4015,7 @@
         "surname": "string"
       },
       "type": "string",
+      "typeCode": "string",
       "status": "string",
       "notes": "string",
       "noFixedAddress": "boolean"
@@ -4085,6 +4094,7 @@
     "lastEndedDate": "string",
     "orders": [
       {
+        "eventNumber": "string",
         "description": "string",
         "length": "integer",
         "endDate": "string",
@@ -4213,6 +4223,7 @@
         ]
       },
       "order": {
+        "eventNumber": "string",
         "description": "string",
         "length": "integer",
         "endDate": "string",
@@ -4378,6 +4389,7 @@
         "count": "integer"
       },
       "order": {
+        "eventNumber": "string",
         "description": "string",
         "length": "integer",
         "endDate": "string",
@@ -4391,12 +4403,7 @@
         "startDate": "string",
         "status": "string"
       },
-      "rar": {
-        "completed": "integer",
-        "nsiCompleted": "integer",
-        "scheduled": "integer",
-        "totalDays": "integer"
-      },
+      "rarDescription": "string",
       "rarCategory": "string",
       "compliance": {
         "currentBreaches": "integer",
@@ -4427,6 +4434,7 @@
     "lastEndedDate": "string",
     "orders": [
       {
+        "eventNumber": "string",
         "description": "string",
         "length": "integer",
         "endDate": "string",
@@ -5225,6 +5233,16 @@
 
 <tr>
 <td>type</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>typeCode</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -8016,6 +8034,16 @@
 <tbody>
 
 <tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>description</td>
 <td>string</td>
 <td>true</td>
@@ -10143,12 +10171,12 @@
 </tr>
 
 <tr>
-<td>rar</td>
-<td>object</td>
+<td>rarDescription</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-rar'>Rar</a>
+  
 </td>
 </tr>
 

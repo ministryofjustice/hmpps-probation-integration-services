@@ -993,6 +993,8 @@ components:
           $ref: "#/components/schemas/Name"
         type:
           type: string
+        typeCode:
+          type: string
         status:
           type: string
         notes:
@@ -1841,6 +1843,8 @@ components:
     Order:
       type: object
       properties:
+        eventNumber:
+          type: string
         description:
           type: string
         length:
@@ -2536,8 +2540,8 @@ components:
           $ref: "#/components/schemas/Order"
         activeBreach:
           $ref: "#/components/schemas/Breach"
-        rar:
-          $ref: "#/components/schemas/Rar"
+        rarDescription:
+          type: string
         rarCategory:
           type: string
         compliance:
