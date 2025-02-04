@@ -191,6 +191,10 @@ class PersonalDetailsService(
         return personalContactRepository.getContact(crn, contactId).toContact()
     }
 
+    fun getPersonContactSingleNote(crn: String, contactId: Long, noteId: Int): PersonalContact {
+        return personalContactRepository.getContact(crn, contactId).toContact(true, 0)
+    }
+
     fun getPersonSummary(crn: String): PersonSummary {
         return personRepository.getSummary(crn).toPersonSummary()
     }
@@ -268,12 +272,13 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
 )
 
-fun PersonalContactEntity.toContact() = PersonalContact(
+fun PersonalContactEntity.toContact(singleNote:Boolean = false, noteId: Int? = null) = PersonalContact(
     personSummary = person.toSummary(),
     name = Name(forename, middleNames, surname),
     relationship = relationship,
     address = address.toAddress(),
-    notes = formatNote(notes, true),
+    notes =   if (!singleNote) formatNote(notes, true) else null,
+    note = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
     relationshipType = relationshipType.description,
     contactId = id,
     lastUpdated = lastUpdated,

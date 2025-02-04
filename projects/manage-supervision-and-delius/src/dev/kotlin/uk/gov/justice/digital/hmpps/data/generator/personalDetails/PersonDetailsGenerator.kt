@@ -160,7 +160,13 @@ object PersonDetailsGenerator {
         RELATIONSHIP_TYPE,
         CONTACT_ADDRESS,
         USER,
-        notes = NOTE_1500_CHARS,
+        notes =         """
+            Comment added by Harry Kane on 29/10/2024 at 14:39
+            Contact note 1
+            ---------------------------------------------------------
+            Comment added by Tom Brady on 29/10/2024 at 14:56
+            Contact note 2
+        """.trimIndent(),
     )
 
     val ADDRESS_TYPE = Dataset(IdGenerator.getAndIncrement(), "ADDRESS TYPE")
