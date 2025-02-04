@@ -45,7 +45,11 @@ object DetailedOffenceGenerator {
 
 object OffenceGenerator {
     val DEFAULT = generate(code = "06200", description = "High treason and other offences against Treason Acts")
-    val OTHER = generate(code = "09166", description = "Triable either way offences under The Food Hygiene (Wales) Regulations 2006")
+    val OTHER = generate(
+        code = "09166",
+        description = "Triable either way offences under The Food Hygiene (Wales) Regulations 2006"
+    )
+
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
         code: String,
