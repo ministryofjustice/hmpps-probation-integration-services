@@ -78,6 +78,7 @@ class DataLoader(
             RegistrationGenerator.TYPES[RiskType.CHILDREN.code]!! to null
         )
         PersonGenerator.FEATURE_FLAG.withEvent().withRiskOfSeriousHarm(V)
+        PersonGenerator.LOCKED_INCOMPLETE.withEvent()
     }
 
     private fun Person.withEvent(softDeleted: Boolean = false, custodial: Boolean = false): Person {
@@ -94,7 +95,7 @@ class DataLoader(
             entityManager.merge(
                 ContactGenerator.generateContact(
                     this,
-                    ContactGenerator.TYPES[ContactType.Code.OASYS_ASSESSMENT.value]!!
+                    ContactGenerator.TYPES[ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value]!!
                 )
             )
         val assessment = AssessmentGenerator.generate(this, contact, LocalDate.parse("2013-06-07"), oasysId = oasysId)
