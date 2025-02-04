@@ -64,7 +64,6 @@ class RequirementService(
         val rarRequirements = requirementRepository.getRequirements(eventId, eventNumber)
             .filter { it.mainCategory!!.code == rarCode }
 
-
         if (rarRequirements.isNotEmpty()) {
             val rar = getRar(disposalId, rarCode)
 
