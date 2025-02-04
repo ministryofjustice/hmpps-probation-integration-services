@@ -501,7 +501,7 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `locked incomplete assessments result in contact with a different type`() {
+    fun `locked incomplete assessments result in contact with a different type and do not change registrations`() {
         val person = PersonGenerator.LOCKED_INCOMPLETE
         val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(person.crn)
 
@@ -512,6 +512,11 @@ internal class IntegrationTest {
             .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value }
         assertThat(contact.date, equalTo(assessment?.date))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
+
+        val registrationDomainEvents = domainEventRepository.findAll()
+            .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
+            .filter { it.crn() == person.crn }
+        assertThat(registrationDomainEvents, empty())
     }
 
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {

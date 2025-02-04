@@ -42,15 +42,16 @@ class AssessmentSubmitted(
             assessmentService.recordAssessment(person, summary)
         }
 
-        val regEvents = audit(UPDATE_RISK_DATA) {
+        if (summary.assessmentStatus == "COMPLETE") audit(UPDATE_RISK_DATA) {
             it["CRN"] = person.crn
-            riskService.recordRisk(person, summary)
+            val registrationEvents = riskService.recordRisk(person, summary)
+            domainEventService.publishEvents(registrationEvents)
         }
 
         if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
             personRepository.updateIaps(person.id)
         }
-        domainEventService.publishEvents(regEvents)
+
         telemetryService.trackEvent("AssessmentSummarySuccess", telemetryParams)
     }
 }
