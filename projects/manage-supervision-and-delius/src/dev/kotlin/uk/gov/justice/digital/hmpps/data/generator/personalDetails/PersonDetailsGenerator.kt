@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.NOTE_1500_CHARS
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
@@ -151,7 +152,8 @@ object PersonDetailsGenerator {
         LocalDate.now(),
         RELATIONSHIP_TYPE,
         CONTACT_ADDRESS,
-        USER
+        USER,
+        notes = NOTE_1500_CHARS,
     )
 
     val ADDRESS_TYPE = Dataset(IdGenerator.getAndIncrement(), "ADDRESS TYPE")

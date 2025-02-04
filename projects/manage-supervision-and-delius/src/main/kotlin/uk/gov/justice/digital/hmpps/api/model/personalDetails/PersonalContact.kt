@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.LocalDate
 
 data class PersonalContact(
@@ -11,7 +12,7 @@ data class PersonalContact(
     val relationship: String?,
     val relationshipType: String,
     val address: ContactAddress?,
-    val notes: String?,
+    val notes: List<NoteDetail> = listOf(),
     val phone: String?,
     val email: String?,
     val startDate: LocalDate?,
