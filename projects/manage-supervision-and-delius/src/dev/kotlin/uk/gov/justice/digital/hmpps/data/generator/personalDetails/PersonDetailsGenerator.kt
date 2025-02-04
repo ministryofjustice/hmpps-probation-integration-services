@@ -72,6 +72,13 @@ object PersonDetailsGenerator {
         LocalDate.now().minusDays(1),
         LocalDate.now().minusDays(1),
         USER,
+        """
+            Comment added by Harry Kane on 29/10/2024 at 14:39
+            Note 1
+            ---------------------------------------------------------
+            Comment added by Tom Brady on 29/10/2024 at 14:56
+            Note 2
+        """.trimIndent()
     )
     val DISABILITY_2 = Disability(
         IdGenerator.getAndIncrement(),

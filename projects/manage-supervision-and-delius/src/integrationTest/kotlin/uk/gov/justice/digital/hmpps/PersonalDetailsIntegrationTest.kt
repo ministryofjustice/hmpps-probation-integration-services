@@ -233,8 +233,8 @@ internal class PersonalDetailsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<DisabilityOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
-        assertThat(res.disabilities[0], equalTo(DISABILITY_1.toDisability()))
-        assertThat(res.disabilities[1], equalTo(DISABILITY_2.toDisability()))
+        assertThat(res.disabilities[0], equalTo(DISABILITY_1.toDisability(0)))
+        assertThat(res.disabilities[1], equalTo(DISABILITY_2.toDisability(1)))
     }
 
     @Test

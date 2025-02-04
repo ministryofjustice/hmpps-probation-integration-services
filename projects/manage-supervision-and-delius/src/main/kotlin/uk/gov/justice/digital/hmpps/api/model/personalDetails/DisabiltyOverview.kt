@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.LocalDate
 
 data class DisabilityOverview(
@@ -11,8 +12,9 @@ data class DisabilityOverview(
 )
 
 data class Disability(
+    val disabilityId: Int,
     val description: String,
-    val notes: String?,
+    val notes: List<NoteDetail> = listOf(),
     val startDate: LocalDate,
     val lastUpdated: LocalDate,
     val lastUpdatedBy: Name

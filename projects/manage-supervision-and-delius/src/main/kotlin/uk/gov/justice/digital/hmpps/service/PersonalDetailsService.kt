@@ -236,7 +236,7 @@ class PersonalDetailsService(
 
         return DisabilityOverview(
             personSummary = person.toPersonSummary(),
-            disabilities = disabilities.map { it.toDisability() }
+            disabilities = disabilities.mapIndexed { index, disability ->  disability.toDisability(index) }
         )
     }
 }
@@ -259,9 +259,10 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.t
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
 )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability() = Disability(
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability(index: Int) = Disability(
+    disabilityId = index,
     description = type.description,
-    notes = notes,
+    notes = formatNote(notes, true),
     startDate = startDate,
     lastUpdated = lastUpdated,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
