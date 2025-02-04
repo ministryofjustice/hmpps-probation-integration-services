@@ -16,13 +16,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provisio
 class OverviewService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
-    private val requirementRepository: RequirementRepository,
     private val registrationRepository: RegistrationRepository,
     private val provisionRepository: ProvisionRepository,
     private val disabilityRepository: DisabilityRepository,
     private val personalCircumstanceRepository: PersonCircumstanceRepository,
     private val nsiRepository: NsiRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val requirementService: RequirementService
 ) {
 
     @Transactional
@@ -69,7 +69,10 @@ class OverviewService(
             eventNumber = eventNumber,
             additionalOffences = additionalOffences.map { it.offence.toOffence() },
             order = disposal?.toOrder(),
-            rar = disposal?.let { requirementRepository.getRar(it.id) })
+            rarDescription = disposal?.let {
+                requirementService.getRarDescription(id, eventNumber, disposal.id)
+            })
+
     }
 
     fun Person.toPersonalDetails(

@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/eor/oasys/ap/rmp/D006296/ALLOW/9641348/OPEN",
+        "url": "/eor/oasys/ap/rmp/D006296/ALLOW/9641348/COMPLETE",
         "headers": {
           "Authorization": {
             "matches": "^Bearer (.*)$"

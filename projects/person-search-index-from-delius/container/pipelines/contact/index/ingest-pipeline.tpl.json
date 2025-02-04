@@ -2,6 +2,16 @@
   "description": "Split text into chunks and generate embeddings",
   "processors": [
     {
+      "gsub": {
+        "tag": "Remove any repeated non-alphanumeric strings. The pattern looks for 2 or more non-alphanumeric characters surrounded by whitespace.",
+        "field": "notes",
+        "pattern": "(^|\\s)[^\\w\\s]{2,}(\\s|$)",
+        "replacement": " ",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
       "text_chunking": {
         "algorithm": {
           "fixed_token_length": {

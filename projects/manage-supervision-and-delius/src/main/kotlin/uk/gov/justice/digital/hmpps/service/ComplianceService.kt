@@ -17,9 +17,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 class ComplianceService(
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
-    private val requirementRepository: RequirementRepository,
     private val nsiRepository: NsiRepository,
-    private val activityService: ActivityService
+    private val activityService: ActivityService,
+    private val requirementService: RequirementService
 ) {
 
     @Transactional
@@ -49,7 +49,7 @@ class ComplianceService(
                 eventNumber = eventNumber,
                 mainOffence = Offence(code = offence.code, description = offence.description),
                 rarCategory = getRarCategoryFromSentence(eventNumber),
-                rar = disposal?.let { requirementRepository.getRar(it.id) },
+                rarDescription = disposal?.let { requirementService.getRarDescription(id, eventNumber, disposal.id) },
                 order = disposal?.let {
                     Order(
                         description = it.type.description,

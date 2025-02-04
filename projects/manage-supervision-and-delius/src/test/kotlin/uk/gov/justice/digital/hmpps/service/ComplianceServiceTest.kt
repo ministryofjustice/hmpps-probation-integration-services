@@ -45,6 +45,9 @@ internal class ComplianceServiceTest {
     @Mock
     lateinit var activityService: ActivityService
 
+    @Mock
+    lateinit var requirementService: RequirementService
+
     @InjectMocks
     lateinit var service: ComplianceService
 
@@ -117,10 +120,6 @@ internal class ComplianceServiceTest {
             ),
         )
 
-        whenever(requirementRepository.getRarDaysByDisposalId(any())).thenReturn(
-            listOf(RarDays(1, "COMPLETED"), OverviewServiceTest.RarDays(2, "SCHEDULED"))
-        )
-
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
 
         whenever(nsiRepository.findByPersonIdAndTypeCode(any(), any())).thenReturn(
@@ -145,7 +144,6 @@ internal class ComplianceServiceTest {
         val res = service.getPersonCompliance(crn)
         assertThat(res.personSummary, equalTo(OVERVIEW.toSummary()))
         assertThat(res.currentSentences.size, equalTo(2))
-        assertThat(res.currentSentences[0].rar?.totalDays, equalTo(3))
         assertThat(res.previousOrders.breaches, equalTo(2))
         assertThat(res.previousOrders.orders.size, equalTo(2))
     }
@@ -184,22 +182,10 @@ internal class ComplianceServiceTest {
 
         whenever(eventRepository.findByPersonId(OVERVIEW.id)).thenReturn(events)
 
-        whenever(requirementRepository.getRarDaysByDisposalId(any())).thenReturn(
-            listOf(RarDays(1, "COMPLETED"), OverviewServiceTest.RarDays(2, "SCHEDULED"))
-        )
-
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
 
         val res = service.getPersonCompliance(crn)
         assertThat(res.currentSentences.size, equalTo(2))
         assertThat(res.previousOrders, equalTo(PreviousOrders(0, 0, null, emptyList())))
-    }
-
-    data class RarDays(val _days: Int, val _type: String) :
-        uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RarDays {
-        override val days: Int
-            get() = _days
-        override val type: String
-            get() = _type
     }
 }

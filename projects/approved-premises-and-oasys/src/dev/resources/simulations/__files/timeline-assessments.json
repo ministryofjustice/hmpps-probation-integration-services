@@ -44,14 +44,14 @@
       "completedDate": "2022-07-21T15:43:12"
     },
     {
-      "assessmentPk": 9639348,
+      "assessmentPk": 9641348,
       "assessmentType": "LAYER3",
       "initiationDate": "2022-07-21T15:43:58",
       "status": "COMPLETE",
       "completedDate": "2022-07-27T12:09:41"
     },
     {
-      "assessmentPk": 9641348,
+      "assessmentPk": 9639349,
       "assessmentType": "LAYER3",
       "initiationDate": "2022-07-27T12:10:58",
       "status": "OPEN"
