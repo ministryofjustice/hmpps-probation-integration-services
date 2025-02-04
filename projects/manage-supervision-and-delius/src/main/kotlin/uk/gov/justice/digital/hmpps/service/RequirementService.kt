@@ -59,12 +59,12 @@ class RequirementService(
         return null
     }
 
-    fun getRarDescription(id: Long, eventNumber: String): String? {
-        val sumRarRequirementLength = requirementRepository.getRequirements(id, eventNumber)
+    fun getRarDescription(eventId: Long, eventNumber: String, disposalId: Long): String? {
+        val sumRarRequirementLength = requirementRepository.getRequirements(eventId, eventNumber)
             .filter { it.mainCategory!!.code == "F" }
             .sumOf { it.length!! }
 
-        val rar = getRar(id, "F")
+        val rar = getRar(disposalId, "F")
 
         return rar?.let { "${it.totalDays} of $sumRarRequirementLength RAR days completed" }
     }
