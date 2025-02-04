@@ -22,7 +22,7 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             val ordsAssessmentTimeline = oasysClient.getAssessmentTimeline(crn)
             val assessments =
                 ordsAssessmentTimeline.timeline.sortedByDescending { it.initiationDate }.stream().filter {
-                    it.assessmentType == "LAYER3"
+                    it.assessmentType == "LAYER3" && (it.status == "COMPLETE" || it.status == "LOCKED_INCOMPLETE")
                 }
             return assessments.findFirst().orElseThrow {
                 NotFoundException("Latest layer 3 assessment not found for crn=$crn")
