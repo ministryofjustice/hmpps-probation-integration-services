@@ -28,6 +28,7 @@ class AssessmentSubmitted(
             "crn" to crn,
             "dateCompleted" to summary.dateCompleted.toString(),
             "assessmentType" to summary.assessmentType,
+            "assessmentStatus" to summary.assessmentStatus,
             "assessmentId" to summary.assessmentPk.toString(),
             "ROSH" to summary.riskFlags.mapNotNull(RiskOfSeriousHarmType::of).maxByOrNull { it.ordinal }.toString(),
         ) + RiskType.entries.map {
