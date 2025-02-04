@@ -30,7 +30,7 @@ internal class AssessmentTimelineTest {
             .andReturn().response.contentAsJson<OasysTimelineAssessment>()
 
         assertThat(oasysTimelineAssessment.initiationDate)
-            .isEqualTo(ZonedDateTime.parse("2022-07-27T12:10:58+01:00").withZoneSameInstant(EuropeLondon))
+            .isEqualTo(ZonedDateTime.parse("2022-07-21T15:43:58+01:00").withZoneSameInstant(EuropeLondon))
     }
 
     @Test
