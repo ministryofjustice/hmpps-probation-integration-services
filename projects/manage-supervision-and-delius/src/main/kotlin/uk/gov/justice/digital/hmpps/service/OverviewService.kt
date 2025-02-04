@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provisio
 class OverviewService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
-    private val requirementRepository: RequirementRepository,
     private val registrationRepository: RegistrationRepository,
     private val provisionRepository: ProvisionRepository,
     private val disabilityRepository: DisabilityRepository,
@@ -71,7 +70,7 @@ class OverviewService(
             additionalOffences = additionalOffences.map { it.offence.toOffence() },
             order = disposal?.toOrder(),
             rarDescription = disposal?.let {
-                requirementService.getRarDescription(id, eventNumber)
+                requirementService.getRarDescription(id, eventNumber, disposal.id)
             })
 
     }

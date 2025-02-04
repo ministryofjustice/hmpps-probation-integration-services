@@ -78,7 +78,7 @@ internal class OverviewIntegrationTest {
         assertThat(res.previousOrders.count, equalTo(2))
         assertThat(res.previousOrders.breaches, equalTo(2))
         assertThat(res.sentences[1].eventNumber, equalTo(EVENT_1.eventNumber))
-        assertThat(res.sentences[1].rarDescription, equalTo("0 of 12 RAR days completed"))
+        assertThat(res.sentences[1].rarDescription, equalTo("2 of 12 RAR days completed"))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
         assertThat(res.registrations, equalTo(listOf("Restraining Order", "Domestic Abuse Perpetrator", "Mappa")))
