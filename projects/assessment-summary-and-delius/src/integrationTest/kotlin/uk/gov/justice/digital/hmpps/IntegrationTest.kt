@@ -11,7 +11,10 @@ import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
-import org.mockito.kotlin.*
+import org.mockito.kotlin.check
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.timeout
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -27,7 +30,6 @@ import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -84,15 +86,11 @@ internal class IntegrationTest {
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @MockitoBean
-    lateinit var featureFlags: FeatureFlags
-
     lateinit var transactionTemplate: TransactionTemplate
 
     @BeforeEach
     fun setUp() {
         transactionTemplate = TransactionTemplate(transactionManager)
-        whenever(featureFlags.enabled("assessment-summary-additional-risks")).thenReturn(true)
     }
 
     @Test
@@ -483,21 +481,6 @@ internal class IntegrationTest {
 
         val domainEvents = domainEventRepository.findAllForCrn(PersonGenerator.EXISTING_RISKS_WITHOUT_LEVEL.crn)
         assertThat(domainEvents.ofType(RiskType.CHILDREN), hasSize(0))
-    }
-
-    @Test
-    fun `risks are not changed when feature flag is disabled`() {
-        whenever(featureFlags.enabled("assessment-summary-additional-risks")).thenReturn(false)
-
-        val person = personRepository.getByCrn(PersonGenerator.FEATURE_FLAG.crn)
-        val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(person.crn)
-
-        channelManager.getChannel(queueName).publishAndWait(message)
-
-        val domainEvents = domainEventRepository.findAll()
-            .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
-            .filter { it.crn() == PersonGenerator.FEATURE_FLAG.crn }
-        assertThat(domainEvents, empty())
     }
 
     @Test
