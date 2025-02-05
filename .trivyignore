@@ -2,3 +2,4 @@
 #
 # Ignored because we don't use JSP compilation. Closes https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/4534
 CVE-2024-56337 exp:2025-10-01
+CVE-2024-50379 exp:2025-10-01
