@@ -7,6 +7,7 @@ import org.hamcrest.Matchers
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.mockito.Mockito
+import org.mockito.Mockito.anyString
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -79,6 +80,9 @@ internal class IntegrationTest {
 
     @MockitoSpyBean
     lateinit var contactRepository: ContactRepository
+
+    @MockitoSpyBean
+    lateinit var courtRepository: CourtRepository
 
     @MockitoSpyBean
     lateinit var mainOffenceRepository: MainOffenceRepository
@@ -405,6 +409,15 @@ internal class IntegrationTest {
             any(),
             anyOrNull()
         )
+    }
+
+    @Test
+    fun `When an error occurs during insertPerson, the created person record is rolled back`() {
+        whenever(courtRepository.findByOuCode(anyString())).thenThrow(IllegalArgumentException("Court not found"))
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(personRepository).save(any())
+        assertEquals(personRepository.count(), 0)
     }
 
     private fun thenNoRecordsAreInserted() {
