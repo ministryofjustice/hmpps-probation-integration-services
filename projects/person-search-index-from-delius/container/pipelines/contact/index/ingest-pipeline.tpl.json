@@ -5,7 +5,7 @@
       "gsub": {
         "tag": "Remove any repeated non-alphanumeric strings. The pattern looks for 2 or more non-alphanumeric characters surrounded by whitespace.",
         "field": "notes",
-        "pattern": "(^|\\s)[^\\w\\s]{2,}(\\s|$)",
+        "pattern": "(^|\\s)[^A-Za-z0-9\\s]{2,}(\\s|$)",
         "replacement": " ",
         "ignore_missing": true,
         "ignore_failure": true
