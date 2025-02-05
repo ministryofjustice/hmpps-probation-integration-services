@@ -21,6 +21,8 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.AUDIT_USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.ALIAS_1
@@ -160,19 +162,18 @@ internal class PersonalDetailsIntegrationTest {
 
     @Test
     fun `personal contact is returned`() {
-
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
         val res = mockMvc
             .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonalContact>()
+
         assertThat(res, equalTo(contact.toContact()))
     }
 
     @Test
     fun `personal contact single note is returned`() {
-
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
         val res = mockMvc
@@ -246,8 +247,29 @@ internal class PersonalDetailsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<DisabilityOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
-        assertThat(res.disabilities[0], equalTo(DISABILITY_1.toDisability(0)))
-        assertThat(res.disabilities[1], equalTo(DISABILITY_2.toDisability(1)))
+        assertThat(res.disabilities!![0], equalTo(DISABILITY_1.toDisability(0)))
+        assertThat(res.disabilities!![1], equalTo(DISABILITY_2.toDisability(1)))
+    }
+
+    @Test
+    fun `disabilities are returned single note`() {
+        val person = PERSONAL_DETAILS
+
+        val expected = Disability(
+            0,
+            DISABILITY_1.type.description,
+            note = NoteDetail(1, "Harry Kane", LocalDate.of(2024,10,29), "Note 1"),
+            startDate = DISABILITY_1.startDate,
+            lastUpdated = DISABILITY_1.lastUpdated,
+            lastUpdatedBy = Name(forename = USER.forename, surname = USER.surname)
+        )
+
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/disabilities/0/note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<DisabilityOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.disability, equalTo(expected))
     }
 
     @Test

@@ -240,7 +240,28 @@ class PersonalDetailsService(
 
         return DisabilityOverview(
             personSummary = person.toPersonSummary(),
-            disabilities = disabilities.mapIndexed { index, disability ->  disability.toDisability(index) }
+            disabilities = disabilities.mapIndexed { index, disability ->  disability.toDisability(index) },
+        )
+    }
+
+    fun getPersonDisabilitySingleNote(crn: String, disabilityId: Int, noteId: Int): DisabilityOverview {
+        val person = personRepository.getSummary(crn)
+        val disabilities = disabilityRepository.findByPersonId(person.id)
+
+        val disabilityEntity = disabilities.elementAtOrNull(disabilityId)
+
+        return DisabilityOverview(
+            personSummary = person.toPersonSummary(),
+            disability = disabilityEntity?.let {
+                Disability(
+                    disabilityId,
+                    disabilityEntity.type.description,
+                    note = formatNote(disabilityEntity.notes, false).elementAtOrNull(noteId),
+                    startDate = disabilityEntity.startDate,
+                    lastUpdated = disabilityEntity.lastUpdated,
+                    lastUpdatedBy = Name(forename = disabilityEntity.lastUpdatedUser.forename, surname = disabilityEntity.lastUpdatedUser.surname)
+                )
+            }
         )
     }
 }
@@ -263,8 +284,8 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.t
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
 )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability(index: Int) = Disability(
-    disabilityId = index,
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability(disabilityIndex: Int) = Disability(
+    disabilityId = disabilityIndex,
     description = type.description,
     notes = formatNote(notes, true),
     startDate = startDate,

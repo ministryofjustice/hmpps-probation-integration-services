@@ -7,14 +7,15 @@ import java.time.LocalDate
 
 data class DisabilityOverview(
     val personSummary: PersonSummary,
-    val disabilities: List<Disability>
-
+    val disabilities: List<Disability>? = null,
+    val disability: Disability? = null,
 )
 
 data class Disability(
     val disabilityId: Int,
     val description: String,
-    val notes: List<NoteDetail> = listOf(),
+    val notes: List<NoteDetail>? = null,
+    val note: NoteDetail? = null,
     val startDate: LocalDate,
     val lastUpdated: LocalDate,
     val lastUpdatedBy: Name
