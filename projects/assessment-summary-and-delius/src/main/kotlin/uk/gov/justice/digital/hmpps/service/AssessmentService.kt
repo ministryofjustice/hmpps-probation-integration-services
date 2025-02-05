@@ -93,7 +93,11 @@ class AssessmentService(
 
 private fun AssessmentSummary.contactDetail(contactDate: LocalDate) =
     ContactDetail(
-        ContactType.Code.OASYS_ASSESSMENT,
+        when (assessmentStatus) {
+            "COMPLETE" -> ContactType.Code.OASYS_ASSESSMENT_COMPLETE
+            "LOCKED_INCOMPLETE" -> ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE
+            else -> throw IllegalArgumentException("Unexpected assessment status: $assessmentStatus")
+        },
         contactDate,
         "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}",
         "urn:uk:gov:hmpps:oasys:assessment:${assessmentPk}"

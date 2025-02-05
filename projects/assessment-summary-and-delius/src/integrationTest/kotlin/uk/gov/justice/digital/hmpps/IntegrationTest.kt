@@ -127,7 +127,7 @@ internal class IntegrationTest {
         assertThat(assessment?.sentencePlanReviewDate, equalTo(LocalDate.of(2024, 8, 12)))
 
         val contact = contactRepository.findAll()
-            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT.value }
+            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value }
         assertThat(contact.date, equalTo(assessment?.date))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
     }
@@ -498,6 +498,25 @@ internal class IntegrationTest {
             .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
             .filter { it.crn() == PersonGenerator.FEATURE_FLAG.crn }
         assertThat(domainEvents, empty())
+    }
+
+    @Test
+    fun `locked incomplete assessments result in contact with a different type and do not change registrations`() {
+        val person = PersonGenerator.LOCKED_INCOMPLETE
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
+        val contact = contactRepository.findAll()
+            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value }
+        assertThat(contact.date, equalTo(assessment?.date))
+        assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
+
+        val registrationDomainEvents = domainEventRepository.findAll()
+            .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
+            .filter { it.crn() == person.crn }
+        assertThat(registrationDomainEvents, empty())
     }
 
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {
