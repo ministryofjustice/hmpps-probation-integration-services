@@ -2,6 +2,7 @@
 generic-service:
   productId: HMPPS518
   nameOverride: manage-supervision-and-delius
+  serviceAccountName: manage-supervision-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-supervision-and-delius

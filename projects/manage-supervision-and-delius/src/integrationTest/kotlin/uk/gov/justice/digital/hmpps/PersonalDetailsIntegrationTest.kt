@@ -343,13 +343,13 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
         assertThat(res.previousAddresses.size, equalTo(2))
 
-        val domainEvents = channelManager.getChannel(topicName).pollFor(2)
-        val updateAddressEvent =
+        val domainEvents = channelManager.getChannel(topicName).pollFor(3)
+        val createAddressEvent =
             domainEvents.firstOrNull { it.eventType == "probation-case.address.created" }?.message as HmppsDomainEvent?
         val updatePersonEvent =
             domainEvents.firstOrNull { it.eventType == "probation-case.personal-details.updated" }?.message as HmppsDomainEvent?
 
-        assertThat(updateAddressEvent?.eventType, equalTo("probation-case.address.created"))
+        assertThat(createAddressEvent?.eventType, equalTo("probation-case.address.created"))
         assertThat(updatePersonEvent?.eventType, equalTo("probation-case.personal-details.updated"))
 
         val updatePersonId = businessInteractionRepository.getByCode(BusinessInteractionCode.UPDATE_PERSON.code)
