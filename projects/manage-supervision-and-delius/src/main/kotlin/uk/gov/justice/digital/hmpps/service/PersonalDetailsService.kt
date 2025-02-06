@@ -69,7 +69,7 @@ class PersonalDetailsService(
         person.emailAddress = request.emailAddress
 
         val updatedAddress = toUpdatedAddress(person.id, mainAddress, addressType, request, startDate)
-        val isAddressUpdate = (updatedAddress.id == null)
+        val isAddressUpdate = (updatedAddress.id != null)
         val updated = update(person, updatedAddress)
 
         if (isAddressUpdate) {
