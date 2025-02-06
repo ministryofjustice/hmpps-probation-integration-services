@@ -265,7 +265,7 @@ internal class PersonalDetailsIntegrationTest {
         )
 
         val res = mockMvc
-            .perform(get("/personal-details/${person.crn}/disabilities/0/note/1").withToken())
+            .perform(get("/personal-details/${person.crn}/disability/0/note/1").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<DisabilityOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
