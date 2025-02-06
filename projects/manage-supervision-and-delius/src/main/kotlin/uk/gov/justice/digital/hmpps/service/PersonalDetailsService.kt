@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.Name
@@ -36,10 +36,10 @@ class PersonalDetailsService(
     private val personalContactRepository: PersonalContactRepository,
     private val alfrescoClient: AlfrescoClient,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val notifier: Notifier
+    private val notifier: Notifier,
+    private val transactionTemplate: TransactionTemplate
 ) : AuditableService(auditedInteractionService) {
 
-    @Transactional
     fun updatePersonalDetails(crn: String, request: PersonalContactEditRequest): PersonalDetails {
 
         val startDate = request.startDate ?: throw InvalidRequestException("Start date must be provided")
@@ -81,17 +81,17 @@ class PersonalDetailsService(
         return getPersonalDetails(crn)
     }
 
-    @Transactional
-    fun update(person: Person, personAddress: PersonAddress): Pair<Person, PersonAddress> {
-        val updatedAddress = if (personAddress.id == null) {
-            createMainAddress(personAddress)
-        } else {
-            updateMainAddress(personAddress)
-        }
-        val updatedPerson = updatePerson(person)
+    private fun update(person: Person, personAddress: PersonAddress): Pair<Person, PersonAddress> =
+        transactionTemplate.execute {
+            val updatedAddress = if (personAddress.id == null) {
+                createMainAddress(personAddress)
+            } else {
+                updateMainAddress(personAddress)
+            }
+            val updatedPerson = updatePerson(person)
 
-        return Pair(updatedPerson, updatedAddress)
-    }
+            Pair(updatedPerson, updatedAddress)
+        }!!
 
     private fun createMainAddress(personAddress: PersonAddress) =
         audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
@@ -162,7 +162,6 @@ class PersonalDetailsService(
         }
     }
 
-    @Transactional
     fun getPersonalDetails(crn: String): PersonalDetails {
         val person = personRepository.getPerson(crn)
         val provisions = provisionRepository.findByPersonId(person.id)
