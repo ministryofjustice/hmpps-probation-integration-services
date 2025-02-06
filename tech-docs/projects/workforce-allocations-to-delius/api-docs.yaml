@@ -208,6 +208,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StreamingResponseBody"
+  /teams:
+    get:
+      tags:
+      - team-resource
+      operationId: activeCases_1
+      parameters:
+      - name: teamCode
+        in: query
+        required: false
+        schema:
+          type: array
+          default: []
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamsResponse"
   /staff/{code}/officer-view:
     get:
       tags:
@@ -951,6 +972,17 @@ components:
       - type
     StreamingResponseBody:
       type: object
+    TeamsResponse:
+      type: object
+      properties:
+        teams:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/StaffMember"
+      required:
+      - teams
     OfficerView:
       type: object
       properties:

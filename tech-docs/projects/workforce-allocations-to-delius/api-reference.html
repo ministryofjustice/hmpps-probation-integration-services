@@ -133,6 +133,9 @@
         <a href="./api-reference.html#users"><span>/users</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#teams"><span>/teams</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#staff-code-officer-view"><span>/staff/{code}/officer-view</span></a>
       </li>
       <li>
@@ -747,6 +750,67 @@
 </td>
 <td>
 <a href='#schema-streamingresponsebody'>StreamingResponseBody</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="teams">/teams</h2>
+
+<h3 id="teams-get">get</h3>
+
+
+
+
+<h4 id="teams-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>teamCode</td>
+<td>query</td>
+<td>array</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="teams-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "teams": {
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-teamsresponse'>TeamsResponse</a>
 </td>
 </tr>
 
@@ -3262,6 +3326,28 @@
 
 <h3 id="schema-streamingresponsebody">StreamingResponseBody</h3>
 
+
+<h3 id="schema-teamsresponse">TeamsResponse</h3>
+
+
+<table class='schema-teamsresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>teams</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
 
 <h3 id="schema-officerview">OfficerView</h3>
 
