@@ -258,7 +258,7 @@ internal class PersonalDetailsIntegrationTest {
         val expected = Disability(
             0,
             DISABILITY_1.type.description,
-            note = NoteDetail(1, "Harry Kane", LocalDate.of(2024,10,29), "Note 1"),
+            disabilityNote = NoteDetail(1, "Harry Kane", LocalDate.of(2024,10,29), "Note 1"),
             startDate = DISABILITY_1.startDate,
             lastUpdated = DISABILITY_1.lastUpdated,
             lastUpdatedBy = Name(forename = USER.forename, surname = USER.surname)

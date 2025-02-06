@@ -256,7 +256,7 @@ class PersonalDetailsService(
                 Disability(
                     disabilityId,
                     disabilityEntity.type.description,
-                    note = formatNote(disabilityEntity.notes, false).elementAtOrNull(noteId),
+                    disabilityNote = formatNote(disabilityEntity.notes, false).elementAtOrNull(noteId),
                     startDate = disabilityEntity.startDate,
                     lastUpdated = disabilityEntity.lastUpdated,
                     lastUpdatedBy = Name(forename = disabilityEntity.lastUpdatedUser.forename, surname = disabilityEntity.lastUpdatedUser.surname)
@@ -287,7 +287,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.t
 fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability(disabilityIndex: Int) = Disability(
     disabilityId = disabilityIndex,
     description = type.description,
-    notes = formatNote(notes, true),
+    disabilityNotes = formatNote(notes, true),
     startDate = startDate,
     lastUpdated = lastUpdated,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
@@ -298,8 +298,8 @@ fun PersonalContactEntity.toContact(singleNote:Boolean = false, noteId: Int? = n
     name = Name(forename, middleNames, surname),
     relationship = relationship,
     address = address.toAddress(),
-    notes =   if (!singleNote) formatNote(notes, true) else null,
-    note = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
+    contactNotes =   if (!singleNote) formatNote(notes, true) else null,
+    contactNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
     relationshipType = relationshipType.description,
     contactId = id,
     lastUpdated = lastUpdated,

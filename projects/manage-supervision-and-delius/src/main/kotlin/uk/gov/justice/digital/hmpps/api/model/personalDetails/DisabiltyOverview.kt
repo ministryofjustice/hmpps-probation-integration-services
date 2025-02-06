@@ -14,8 +14,8 @@ data class DisabilityOverview(
 data class Disability(
     val disabilityId: Int,
     val description: String,
-    val notes: List<NoteDetail>? = null,
-    val note: NoteDetail? = null,
+    val disabilityNotes: List<NoteDetail>? = null,
+    val disabilityNote: NoteDetail? = null,
     val startDate: LocalDate,
     val lastUpdated: LocalDate,
     val lastUpdatedBy: Name
