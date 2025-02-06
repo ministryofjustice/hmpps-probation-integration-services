@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -9,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generatorimport.HearingOffenceGenerator
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Equality
@@ -253,5 +255,27 @@ internal class HandlerTest {
             matchedBy = "PNC"
         )
         whenever(probationSearchClient.match(any())).thenReturn(fakeMatchResponse)
+    }
+
+    @Test
+    fun `main offence is the lowest priority offence`() {
+        val offence1 = HearingOffenceGenerator.generate("1", "PL97019", "Falsification") // priority 150
+        val offence2 = HearingOffenceGenerator.generate("2", "TN42001", "High treason") // priority 10
+
+        val offences = listOf(offence1, offence2)
+
+        val mainOffence = handler.findMainOffence(offences)
+        assertEquals(offence2, mainOffence)
+    }
+
+    @Test
+    fun `returns first offence if no priority is found`() {
+        val offence1 = HearingOffenceGenerator.generate("1", "ABC1111", "Example 1")
+        val offence2 = HearingOffenceGenerator.generate("2", "ABC9999", "Example 2")
+        val offences = listOf(offence1, offence2)
+
+        val mainOffence = handler.findMainOffence(offences)
+
+        assertEquals(offence1, mainOffence)
     }
 }
