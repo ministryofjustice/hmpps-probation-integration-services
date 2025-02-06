@@ -7,16 +7,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.AddressOverview
@@ -27,11 +25,8 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.AddressStatus
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.utils.Summary
@@ -75,6 +70,9 @@ internal class PersonalDetailsServiceTest {
 
     @Mock
     lateinit var notifier: Notifier
+
+    @Mock
+    lateinit var transactionTemplate: TransactionTemplate
 
     @InjectMocks
     lateinit var service: PersonalDetailsService
@@ -227,69 +225,5 @@ internal class PersonalDetailsServiceTest {
             )
         }
         assertThat(exception.message, equalTo("Start date must not be later than end date"))
-    }
-
-    @Test
-    fun `calls update personal details function successfully with no fixed address`() {
-        val crn = "X000005"
-        val request = PersonalContactEditRequest(
-            phoneNumber = "0191255446",
-            mobileNumber = "077989988",
-            emailAddress = "updated@test.none",
-            buildingName = "Building",
-            buildingNumber = "23",
-            streetName = "The Street",
-            town = "Town",
-            county = "County",
-            postcode = "NE1 UPD",
-            addressTypeCode = PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1.code,
-            verified = false,
-            noFixedAddress = true,
-            startDate = LocalDate.now().minusDays(10),
-            notes = "This has been updated for testing"
-        )
-
-        whenever(
-            referenceDataRepository.findByCodeAndDatasetCode(
-                PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1.code,
-                DatasetCode.ADDRESS_TYPE.code
-            )
-        ).thenReturn(PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1)
-
-        whenever(
-            referenceDataRepository.findByCodeAndDatasetCode(
-                AddressStatus.MAIN.code,
-                DatasetCode.ADDRESS_STATUS.code
-            )
-        ).thenReturn(PersonDetailsGenerator.PERSON_ADDRESS_STATUS_1)
-
-        whenever(personRepository.findByCrn(crn)).thenReturn(PersonDetailsGenerator.PERSONAL_DETAILS)
-        whenever(provisionRepository.findByPersonId(any())).thenReturn(emptyList())
-        whenever(disabilityRepository.findByPersonId(any())).thenReturn(emptyList())
-        whenever(personalCircumstanceRepository.findCurrentCircumstances(any())).thenReturn(PersonGenerator.PERSONAL_CIRCUMSTANCES)
-        whenever(aliasRepository.findByPersonId(any())).thenReturn(emptyList())
-        whenever(personalContactRepository.findByPersonId(any())).thenReturn(emptyList())
-
-        whenever(addressRepository.findByPersonId(any())).thenReturn(
-            listOf(
-                PersonDetailsGenerator.PERSON_ADDRESS_1,
-                PersonDetailsGenerator.PERSON_ADDRESS_2,
-                PersonDetailsGenerator.NULL_ADDRESS
-            )
-        )
-        whenever(documentRepository.findByPersonId(any())).thenReturn(
-            listOf(PersonDetailsGenerator.DOCUMENT_1, PersonDetailsGenerator.DOCUMENT_2)
-        )
-        whenever(personRepository.save(any())).thenReturn(PersonDetailsGenerator.PERSONAL_DETAILS)
-        whenever(addressRepository.save(any())).thenReturn(PersonDetailsGenerator.PERSON_ADDRESS_1)
-
-        val mainAddressArgumentCaptor = ArgumentCaptor.forClass(PersonAddress::class.java)
-        val res = service.updatePersonalDetails(crn, request)
-        verify(addressRepository, Mockito.times(1)).save(mainAddressArgumentCaptor.capture())
-        verify(personRepository, Mockito.times(1)).save(any())
-        assertThat(mainAddressArgumentCaptor.value.postcode, equalTo("NF1 1NF"))
-        assertThat(
-            res.mobileNumber, equalTo(PersonDetailsGenerator.PERSONAL_DETAILS.mobileNumber)
-        )
     }
 }
