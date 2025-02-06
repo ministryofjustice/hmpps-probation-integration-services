@@ -44,7 +44,7 @@ data class NeedsDetails(
                         eTEIssuesDetails,
                         accIssuesDetails,
                         attIssuesDetails,
-                        thingIssuesDetails
+                        thinkIssuesDetails
                     ),
                     LinksToHarm.from(
                         LinksToHarm(

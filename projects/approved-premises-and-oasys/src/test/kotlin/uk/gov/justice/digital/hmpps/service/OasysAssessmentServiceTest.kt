@@ -188,7 +188,7 @@ internal class OasysAssessmentServiceTest {
                     attLinkedToReoffending = "No",
                     relLinkedToReoffending = "Yes",
                     lifestyleIssuesDetails = "Has lifestyle issues",
-                    thingIssuesDetails = "Thinking issues",
+                    thinkIssuesDetails = "Thinking issues",
                     lastUpdatedDate = now
                 )
             )
@@ -245,7 +245,7 @@ internal class OasysAssessmentServiceTest {
                     financeLinkedToHarm = "Yes",
                     relLinkedToReoffending = "Yes",
                     lifestyleIssuesDetails = "Has lifestyle issues",
-                    thingIssuesDetails = "Thinking issues",
+                    thinkIssuesDetails = "Thinking issues",
                     lastUpdatedDate = now
                 )
             )
