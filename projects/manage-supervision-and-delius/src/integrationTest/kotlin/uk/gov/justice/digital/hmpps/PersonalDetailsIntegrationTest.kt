@@ -343,7 +343,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
         assertThat(res.previousAddresses.size, equalTo(2))
 
-        val domainEvents = channelManager.getChannel(topicName).pollFor(2)
+        val domainEvents = channelManager.getChannel(topicName).pollFor(3)
         val createAddressEvent =
             domainEvents.firstOrNull { it.eventType == "probation-case.address.created" }?.message as HmppsDomainEvent?
         val updatePersonEvent =
