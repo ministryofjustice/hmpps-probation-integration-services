@@ -60,6 +60,8 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
   ldap.embedded.base-dn: ${spring.ldap.base}
 
+messaging.producer.topic: domain-events
+
 seed.database: true
 
 wiremock.enabled: true

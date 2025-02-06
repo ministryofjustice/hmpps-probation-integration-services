@@ -12,15 +12,20 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Disability
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Provision
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.*
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.LocalDate
 
 @Service
 class PersonalDetailsService(
+    auditedInteractionService: AuditedInteractionService,
     private val personRepository: PersonRepository,
     private val addressRepository: PersonAddressRepository,
     private val documentRepository: DocumentRepository,
@@ -30,8 +35,9 @@ class PersonalDetailsService(
     private val aliasRepository: AliasRepository,
     private val personalContactRepository: PersonalContactRepository,
     private val alfrescoClient: AlfrescoClient,
-    private val referenceDataRepository: ReferenceDataRepository
-) {
+    private val referenceDataRepository: ReferenceDataRepository,
+    private val notifier: Notifier
+) : AuditableService(auditedInteractionService) {
 
     @Transactional
     fun updatePersonalDetails(crn: String, request: PersonalContactEditRequest): PersonalDetails {
@@ -61,10 +67,51 @@ class PersonalDetailsService(
         person.telephoneNumber = request.phoneNumber
         person.mobileNumber = request.mobileNumber
         person.emailAddress = request.emailAddress
-        val updated = toUpdatedAddress(person.id, mainAddress, addressType, request, startDate)
-        addressRepository.save(updated)
-        personRepository.save(person)
+
+        val updatedAddress = toUpdatedAddress(person.id, mainAddress, addressType, request, startDate)
+        val isAddressUpdate = (updatedAddress.id == null)
+        val updated = update(person, updatedAddress)
+
+        if (isAddressUpdate) {
+            notifier.addressUpdated(updated.second, crn)
+        } else {
+            notifier.addressCreated(updated.second, crn)
+        }
+        notifier.caseUpdated(updated.first)
         return getPersonalDetails(crn)
+    }
+
+    @Transactional
+    fun update(person: Person, personAddress: PersonAddress): Pair<Person, PersonAddress> {
+        val updatedAddress = if (personAddress.id == null) {
+            createMainAddress(personAddress)
+        } else {
+            updateMainAddress(personAddress)
+        }
+        val updatedPerson = updatePerson(person)
+
+        return Pair(updatedPerson, updatedAddress)
+    }
+
+    private fun createMainAddress(personAddress: PersonAddress) =
+        audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
+            audit["offenderId"] = personAddress.personId
+            val new = addressRepository.save(personAddress)
+            new.id?.let { audit["offender_address_id"] = it }
+            return@audit new
+        }
+
+    private fun updateMainAddress(personAddress: PersonAddress) =
+        audit(BusinessInteractionCode.UPDATE_ADDRESS) { audit ->
+            audit["offenderId"] = personAddress.personId
+            personAddress.id?.let { audit["offender_address_id"] = it }
+            val updated = addressRepository.save(personAddress)
+            return@audit updated
+        }
+
+    private fun updatePerson(person: Person) = audit(BusinessInteractionCode.UPDATE_PERSON) { audit ->
+        audit["offenderId"] = person.id
+        return@audit personRepository.save(person)
     }
 
     private fun toUpdatedAddress(

@@ -3,10 +3,13 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -21,6 +24,8 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.AUDIT_USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.ALIAS_1
@@ -34,6 +39,9 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PREVIOUS_ADDRESS
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_2
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
@@ -50,6 +58,15 @@ internal class PersonalDetailsIntegrationTest {
     lateinit var transactionManager: PlatformTransactionManager
 
     lateinit var transactionTemplate: TransactionTemplate
+
+    @Value("\${messaging.producer.topic}")
+    lateinit var topicName: String
+
+    @MockitoSpyBean
+    lateinit var auditedInteractionService: AuditedInteractionService
+
+    @Autowired
+    lateinit var channelManager: HmppsChannelManager
 
     @Test
     fun `personal details are returned`() {
@@ -334,6 +351,31 @@ internal class PersonalDetailsIntegrationTest {
             assertThat(res.personSummary, equalTo(person.toSummary()))
             assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
             assertThat(res.previousAddresses.size, equalTo(2))
+
+            val domainEvents = channelManager.getChannel(topicName).pollFor(2)
+            val updateAddressEvent =
+                domainEvents.firstOrNull { it.eventType == "probation-case.address.created" }?.message as HmppsDomainEvent?
+            val updatePersonEvent =
+                domainEvents.firstOrNull { it.eventType == "probation-case.personal-details.updated" }?.message as HmppsDomainEvent?
+
+            assertThat(updateAddressEvent?.eventType, equalTo("probation-case.address.created"))
+            assertThat(updatePersonEvent?.eventType, equalTo("probation-case.personal-details.updated"))
+
+            verify(auditedInteractionService, times(2)).createAuditedInteraction(
+                eq(BusinessInteractionCode.UPDATE_PERSON),
+                any(),
+                eq(AuditedInteraction.Outcome.SUCCESS),
+                any(),
+                anyOrNull()
+            )
+
+            verify(auditedInteractionService).createAuditedInteraction(
+                eq(BusinessInteractionCode.INSERT_ADDRESS),
+                any(),
+                eq(AuditedInteraction.Outcome.SUCCESS),
+                any(),
+                anyOrNull()
+            )
         }
     }
 
@@ -367,6 +409,32 @@ internal class PersonalDetailsIntegrationTest {
                 )
                 .andExpect(status().isOk)
                 .andReturn().response.contentAsJson<PersonalDetails>()
+
+            val domainEvents = channelManager.getChannel(topicName).pollFor(2)
+            val updateAddressEvent =
+                domainEvents.firstOrNull { it.eventType == "probation-case.address.updated" }?.message as HmppsDomainEvent?
+            val updatePersonEvent =
+                domainEvents.firstOrNull { it.eventType == "probation-case.personal-details.updated" }?.message as HmppsDomainEvent?
+
+            assertThat(updateAddressEvent?.eventType, equalTo("probation-case.address.updated"))
+            assertThat(updatePersonEvent?.eventType, equalTo("probation-case.personal-details.updated"))
+
+            verify(auditedInteractionService).createAuditedInteraction(
+                eq(BusinessInteractionCode.UPDATE_PERSON),
+                any(),
+                eq(AuditedInteraction.Outcome.SUCCESS),
+                any(),
+                anyOrNull()
+            )
+
+            verify(auditedInteractionService).createAuditedInteraction(
+                eq(BusinessInteractionCode.UPDATE_ADDRESS),
+                any(),
+                eq(AuditedInteraction.Outcome.SUCCESS),
+                any(),
+                anyOrNull()
+            )
+
             val res = mockMvc
                 .perform(get("/personal-details/${person.crn}/addresses").withToken())
                 .andExpect(status().isOk)

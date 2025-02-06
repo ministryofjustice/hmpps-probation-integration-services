@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.AddressOverview
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalContactEditRequest
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
@@ -32,6 +33,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.P
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.AddressStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDate
 
@@ -67,6 +69,12 @@ internal class PersonalDetailsServiceTest {
 
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
+
+    @Mock
+    lateinit var auditedInteractionService: AuditedInteractionService
+
+    @Mock
+    lateinit var notifier: Notifier
 
     @InjectMocks
     lateinit var service: PersonalDetailsService
@@ -272,6 +280,8 @@ internal class PersonalDetailsServiceTest {
         whenever(documentRepository.findByPersonId(any())).thenReturn(
             listOf(PersonDetailsGenerator.DOCUMENT_1, PersonDetailsGenerator.DOCUMENT_2)
         )
+        whenever(personRepository.save(any())).thenReturn(PersonDetailsGenerator.PERSONAL_DETAILS)
+        whenever(addressRepository.save(any())).thenReturn(PersonDetailsGenerator.PERSON_ADDRESS_1)
 
         val mainAddressArgumentCaptor = ArgumentCaptor.forClass(PersonAddress::class.java)
         val res = service.updatePersonalDetails(crn, request)

@@ -23,6 +23,8 @@ generic-service:
     manage-supervision-and-delius-client-credentials:
       OAUTH2_CLIENT-ID: CLIENT_ID
       OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    hmpps-domain-events-topic:
+      MESSAGING_PRODUCER_TOPIC: topic_arn
 
 generic-prometheus-alerts:
   targetApplication: manage-supervision-and-delius
