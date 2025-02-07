@@ -2,10 +2,12 @@ package uk.gov.justice.digital.hmpps.integrations.prison
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.model.StaffName
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -31,6 +33,20 @@ data class PrisonCaseNote(
         } else {
             StaffName(authorName.substringBeforeLast(" ").trim(), authorName.substringAfterLast(" ").trim())
         }
+
+    fun occurredAt(): ZonedDateTime = if (type == "ALERT") {
+        /*
+        * alert type is generated as a side affect of creating an alert
+        * no time component is stored in nomis or dps
+        * it is artificially generated here using created at in order to allow a fake order in delius ui
+        * until the alerts integration is defined and delivered
+        * */
+        val date = occurrenceDateTime.toLocalDate()
+        val time = creationDateTime.toLocalTime()
+        ZonedDateTime.of(LocalDateTime.of(date, time), EuropeLondon)
+    } else {
+        occurrenceDateTime
+    }
 }
 
 data class CaseNoteAmendment(
@@ -50,7 +66,7 @@ fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
             type = type,
             subType = subType,
             content = text + amendments.joinToString(separator = "", transform = amendments()),
-            contactTimeStamp = occurrenceDateTime,
+            contactTimeStamp = occurredAt(),
             systemTimestamp = amendments.mapNotNull { it.creationDateTime }.maxOrNull() ?: creationDateTime,
             staffName = getStaffName(),
             establishmentCode = locationId

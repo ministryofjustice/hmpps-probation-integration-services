@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.DEREGISTRATION
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
@@ -24,8 +23,7 @@ class RiskService(
     private val registerTypeRepository: RegisterTypeRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val contactService: ContactService,
-    private val ordsClient: OrdsClient,
-    private val featureFlags: FeatureFlags
+    private val ordsClient: OrdsClient
 ) {
     fun recordRisk(person: Person, summary: AssessmentSummary) =
         recordRiskOfSeriousHarm(person, summary) + recordOtherRisks(person, summary)
@@ -58,9 +56,8 @@ class RiskService(
         return listOfNotNull(regEvent) + deRegEvents
     }
 
-    private fun recordOtherRisks(person: Person, summary: AssessmentSummary): List<HmppsDomainEvent> {
-        if (!featureFlags.enabled("assessment-summary-additional-risks")) return emptyList()
-        return RiskType.entries.flatMap { riskType ->
+    private fun recordOtherRisks(person: Person, summary: AssessmentSummary): List<HmppsDomainEvent> =
+        RiskType.entries.flatMap { riskType ->
             val riskLevel = riskType.riskLevel(summary) ?: return@flatMap emptyList()
             val registrations =
                 registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code).toMutableList()
@@ -120,7 +117,6 @@ class RiskService(
 
             return@flatMap events
         }
-    }
 
     private fun MutableList<Registration>.addRegistration(
         person: Person,

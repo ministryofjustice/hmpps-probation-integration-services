@@ -12,11 +12,11 @@ object PersonGenerator {
     val PERSON_NO_EVENT = generate("A000006")
     val PERSON_SOFT_DELETED_EVENT = generate("A000007")
     val PRISON_ASSESSMENT = generate("A000008")
-
     val NO_EXISTING_RISKS = generate("A000009")
     val EXISTING_RISKS = generate("A000010")
     val FEATURE_FLAG = generate("A000011")
     val EXISTING_RISKS_WITHOUT_LEVEL = generate("A000012")
+    val LOCKED_INCOMPLETE = generate("A000013")
 
     fun generate(
         crn: String,

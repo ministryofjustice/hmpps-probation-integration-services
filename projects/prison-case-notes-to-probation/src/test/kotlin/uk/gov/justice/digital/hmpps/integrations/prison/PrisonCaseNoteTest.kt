@@ -6,9 +6,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.of
 import org.junit.jupiter.params.provider.MethodSource
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.model.BcstPathway
 import uk.gov.justice.digital.hmpps.model.StaffName
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
+import java.util.*
+import java.util.concurrent.TimeUnit.SECONDS
 
 class PrisonCaseNoteTest {
     @Test
@@ -28,6 +34,25 @@ class PrisonCaseNoteTest {
 
         val staffName = StaffName("Bob", "Smith")
         assertThat(caseNote.getStaffName(), equalTo(staffName))
+    }
+
+    @Test
+    fun `occurred at date has time component generated when alert type`() {
+        val now = ZonedDateTime.now().withZoneSameLocal(EuropeLondon)
+        val caseNote = PrisonCaseNote(
+            UUID.randomUUID().toString(),
+            1234,
+            "A1234BC",
+            "ALERT",
+            "ACTIVE",
+            creationDateTime = now,
+            occurrenceDateTime = ZonedDateTime.of(LocalDate.now().minusDays(1).atStartOfDay(), EuropeLondon),
+            authorName = "Jane Smith",
+            text = "Alert Case Note",
+            amendments = listOf()
+        )
+
+        assertThat(caseNote.occurredAt(), equalTo(now.minusDays(1)))
     }
 
     @ParameterizedTest

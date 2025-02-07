@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -13,15 +14,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
+import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
+import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
+import uk.gov.justice.digital.hmpps.audit.repository.getByCode
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.AUDIT_USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
@@ -36,6 +38,9 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PREVIOUS_ADDRESS
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_2
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
@@ -48,10 +53,17 @@ internal class PersonalDetailsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var transactionManager: PlatformTransactionManager
+    @Value("\${messaging.producer.topic}")
+    lateinit var topicName: String
 
-    lateinit var transactionTemplate: TransactionTemplate
+    @Autowired
+    lateinit var auditedInteractionRepository: AuditedInteractionRepository
+
+    @Autowired
+    lateinit var businessInteractionRepository: BusinessInteractionRepository
+
+    @Autowired
+    lateinit var channelManager: HmppsChannelManager
 
     @Test
     fun `personal details are returned`() {
@@ -348,75 +360,93 @@ internal class PersonalDetailsIntegrationTest {
     @Test
     @Transactional
     fun `main address updated with valid end date results in no main address and more previous addresses`() {
-        transactionTemplate = TransactionTemplate(transactionManager)
-        transactionTemplate.execute {
-            val person = PERSONAL_DETAILS
-            mockMvc
-                .perform(
-                    post("/personal-details/${person.crn}").withToken()
-                        .withJson(
-                            PersonalContactEditRequest(
-                                postcode = "NE1 UPD",
-                                startDate = LocalDate.now().minusDays(10),
-                                endDate = LocalDate.now()
 
-                            )
+        val person = PERSONAL_DETAILS
+        mockMvc
+            .perform(
+                post("/personal-details/${person.crn}").withToken()
+                    .withJson(
+                        PersonalContactEditRequest(
+                            postcode = "NE1 UPD",
+                            startDate = LocalDate.now().minusDays(10),
+                            endDate = LocalDate.now()
+
                         )
-                )
-                .andExpect(status().isOk)
-                .andReturn().response.contentAsJson<PersonalDetails>()
-            val res = mockMvc
-                .perform(get("/personal-details/${person.crn}/addresses").withToken())
-                .andExpect(status().isOk)
-                .andReturn().response.contentAsJson<AddressOverview>()
-            assertThat(res.personSummary, equalTo(person.toSummary()))
-            assertThat(res.mainAddress, equalTo(null))
-            assertThat(res.previousAddresses.size, equalTo(2))
-        }
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>()
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/addresses").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<AddressOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.mainAddress, equalTo(null))
+        assertThat(res.previousAddresses.size, equalTo(2))
     }
 
     @Test
     @Transactional
     fun `when no main address new main address is created`() {
-        transactionTemplate = TransactionTemplate(transactionManager)
-        transactionTemplate.execute {
-            val person = PERSONAL_DETAILS
-            mockMvc
-                .perform(
-                    post("/personal-details/${person.crn}").withToken()
-                        .withJson(
-                            PersonalContactEditRequest(
-                                postcode = "NE1 UPD",
-                                startDate = LocalDate.now().minusDays(10),
-                                endDate = LocalDate.now()
+        val person = PERSONAL_DETAILS
+        mockMvc
+            .perform(
+                post("/personal-details/${person.crn}").withToken()
+                    .withJson(
+                        PersonalContactEditRequest(
+                            postcode = "NE1 UPD",
+                            startDate = LocalDate.now().minusDays(10),
+                            endDate = LocalDate.now()
 
-                            )
                         )
-                )
-                .andExpect(status().isOk)
-                .andReturn().response.contentAsJson<PersonalDetails>()
-            mockMvc
-                .perform(
-                    post("/personal-details/${person.crn}").withToken()
-                        .withJson(
-                            PersonalContactEditRequest(
-                                postcode = "NE1 NEW",
-                                startDate = LocalDate.now().minusDays(9),
-                                endDate = null
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>()
+        mockMvc
+            .perform(
+                post("/personal-details/${person.crn}").withToken()
+                    .withJson(
+                        PersonalContactEditRequest(
+                            postcode = "NE1 NEW",
+                            startDate = LocalDate.now().minusDays(9),
+                            endDate = null
 
-                            )
                         )
-                )
-                .andExpect(status().isOk)
-                .andReturn().response.contentAsJson<PersonalDetails>()
-            val res = mockMvc
-                .perform(get("/personal-details/${person.crn}/addresses").withToken())
-                .andExpect(status().isOk)
-                .andReturn().response.contentAsJson<AddressOverview>()
-            assertThat(res.personSummary, equalTo(person.toSummary()))
-            assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
-            assertThat(res.previousAddresses.size, equalTo(2))
-        }
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>()
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/addresses").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<AddressOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
+        assertThat(res.previousAddresses.size, equalTo(2))
+
+        val domainEvents = channelManager.getChannel(topicName).pollFor(3)
+        val createAddressEvent =
+            domainEvents.firstOrNull { it.eventType == "probation-case.address.created" }?.message as HmppsDomainEvent?
+        val updatePersonEvent =
+            domainEvents.firstOrNull { it.eventType == "probation-case.personal-details.updated" }?.message as HmppsDomainEvent?
+
+        assertThat(createAddressEvent?.eventType, equalTo("probation-case.address.created"))
+        assertThat(updatePersonEvent?.eventType, equalTo("probation-case.personal-details.updated"))
+
+        val updatePersonId = businessInteractionRepository.getByCode(BusinessInteractionCode.UPDATE_PERSON.code)
+        val insertAddressId = businessInteractionRepository.getByCode(BusinessInteractionCode.INSERT_ADDRESS.code)
+        val updateAddressId = businessInteractionRepository.getByCode(BusinessInteractionCode.UPDATE_ADDRESS.code)
+        val updatePersonAuditRecords =
+            auditedInteractionRepository.findAll().filter { it.businessInteractionId == updatePersonId.id }
+        val insertAddressAuditRecords =
+            auditedInteractionRepository.findAll().filter { it.businessInteractionId == insertAddressId.id }
+        val updateAddressAuditRecords =
+            auditedInteractionRepository.findAll().filter { it.businessInteractionId == updateAddressId.id }
+
+        assertThat(updatePersonAuditRecords.size, equalTo(2))
+        assertThat(insertAddressAuditRecords.size, equalTo(1))
+        assertThat(updateAddressAuditRecords.size, equalTo(1))
     }
 
     @Test
@@ -439,49 +469,61 @@ internal class PersonalDetailsIntegrationTest {
             startDate = LocalDate.now().minusDays(10),
             notes = "This has been updated for testing"
         )
-        transactionTemplate = TransactionTemplate(transactionManager)
-        transactionTemplate.execute {
-            val person = PERSONAL_DETAILS
-            val updateResponse = mockMvc
-                .perform(
-                    post("/personal-details/${person.crn}").withToken()
-                        .withJson(request)
-                )
-                .andExpect(status().isOk)
-                .andReturn().response.contentAsJson<PersonalDetails>()
-            val res = mockMvc
-                .perform(get("/personal-details/${person.crn}/addresses").withToken())
-                .andExpect(status().isOk)
-                .andReturn().response.contentAsJson<AddressOverview>()
-            assertThat(res.personSummary, equalTo(person.toSummary()))
-
-            assertThat(updateResponse.telephoneNumber, equalTo(request.phoneNumber))
-            assertThat(updateResponse.mobileNumber, equalTo(request.mobileNumber))
-            assertThat(updateResponse.email, equalTo(request.emailAddress))
-            assertThat(updateResponse.lastUpdated, equalTo(LocalDate.now()))
-            assertThat(
-                updateResponse.lastUpdatedBy,
-                equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname))
+        val person = PERSONAL_DETAILS
+        val updateResponse = mockMvc
+            .perform(
+                post("/personal-details/${person.crn}").withToken()
+                    .withJson(request)
             )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>()
 
-            assertThat(res.mainAddress?.buildingName, equalTo(request.buildingName))
-            assertThat(res.mainAddress?.buildingNumber, equalTo(request.buildingNumber))
-            assertThat(res.mainAddress?.streetName, equalTo(request.streetName))
-            assertThat(res.mainAddress?.district, equalTo(request.district))
-            assertThat(res.mainAddress?.town, equalTo(request.town))
-            assertThat(res.mainAddress?.county, equalTo(request.county))
-            assertThat(res.mainAddress?.postcode, equalTo(request.postcode))
-            assertThat(res.mainAddress?.type, equalTo(PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1.description))
-            assertThat(res.mainAddress?.verified, equalTo(request.verified))
-            assertThat(res.mainAddress?.noFixedAddress, equalTo(request.noFixedAddress))
-            assertThat(res.mainAddress?.lastUpdated, equalTo(LocalDate.now()))
-            assertThat(
-                res.mainAddress?.lastUpdatedBy,
-                equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname))
-            )
+        val domainEvents = channelManager.getChannel(topicName).pollFor(2)
+        val updateAddressEvent =
+            domainEvents.firstOrNull { it.eventType == "probation-case.address.updated" }?.message as HmppsDomainEvent?
+        val updatePersonEvent =
+            domainEvents.firstOrNull { it.eventType == "probation-case.personal-details.updated" }?.message as HmppsDomainEvent?
 
-            assertThat(res.previousAddresses.size, equalTo(1))
-        }
+        assertThat(updateAddressEvent?.eventType, equalTo("probation-case.address.updated"))
+        assertThat(updatePersonEvent?.eventType, equalTo("probation-case.personal-details.updated"))
+
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/addresses").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<AddressOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+
+        val insertAddressId = businessInteractionRepository.getByCode(BusinessInteractionCode.INSERT_ADDRESS.code)
+        val insertAddressAuditRecords =
+            auditedInteractionRepository.findAll().filter { it.businessInteractionId == insertAddressId.id }
+        assertThat(insertAddressAuditRecords.size, equalTo(1))
+
+        assertThat(updateResponse.telephoneNumber, equalTo(request.phoneNumber))
+        assertThat(updateResponse.mobileNumber, equalTo(request.mobileNumber))
+        assertThat(updateResponse.email, equalTo(request.emailAddress))
+        assertThat(updateResponse.lastUpdated, equalTo(LocalDate.now()))
+        assertThat(
+            updateResponse.lastUpdatedBy,
+            equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname))
+        )
+
+        assertThat(res.mainAddress?.buildingName, equalTo(request.buildingName))
+        assertThat(res.mainAddress?.buildingNumber, equalTo(request.buildingNumber))
+        assertThat(res.mainAddress?.streetName, equalTo(request.streetName))
+        assertThat(res.mainAddress?.district, equalTo(request.district))
+        assertThat(res.mainAddress?.town, equalTo(request.town))
+        assertThat(res.mainAddress?.county, equalTo(request.county))
+        assertThat(res.mainAddress?.postcode, equalTo(request.postcode))
+        assertThat(res.mainAddress?.type, equalTo(PersonDetailsGenerator.PERSON_ADDRESS_TYPE_1.description))
+        assertThat(res.mainAddress?.verified, equalTo(request.verified))
+        assertThat(res.mainAddress?.noFixedAddress, equalTo(request.noFixedAddress))
+        assertThat(res.mainAddress?.lastUpdated, equalTo(LocalDate.now()))
+        assertThat(
+            res.mainAddress?.lastUpdatedBy,
+            equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname))
+        )
+
+        assertThat(res.previousAddresses.size, equalTo(1))
     }
 
     @Test

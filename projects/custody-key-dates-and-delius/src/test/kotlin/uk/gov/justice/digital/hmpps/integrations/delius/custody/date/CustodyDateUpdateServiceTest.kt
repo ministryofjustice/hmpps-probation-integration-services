@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCus
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposalType
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -52,9 +51,6 @@ internal class CustodyDateUpdateServiceTest {
 
     @Mock
     lateinit var telemetryService: TelemetryService
-
-    @Mock
-    lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     lateinit var custodyDateUpdateService: CustodyDateUpdateService
@@ -148,7 +144,6 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `two-thirds point uses event first release date if present`() {
-        whenever(featureFlags.enabled("suspension-date-if-reset")).thenReturn(true)
         val event = generateEvent(firstReleaseDate = LocalDate.of(2025, 1, 1))
         val disposal = generateDisposal(event)
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = "ABC")
@@ -165,7 +160,6 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `two-thirds point is null when event is not determinate`() {
-        whenever(featureFlags.enabled("suspension-date-if-reset")).thenReturn(true)
         val event = generateEvent()
         val disposal = generateDisposal(event, generateDisposalType("L2"))
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = "ABC")
@@ -180,21 +174,6 @@ internal class CustodyDateUpdateServiceTest {
         assertThat(suspensionDateIfReset, nullValue())
     }
 
-    @Test
-    fun `two-thirds point is null when feature flag is disabled`() {
-        whenever(featureFlags.enabled("suspension-date-if-reset")).thenReturn(false)
-
-        val custody = generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = "ABC")
-        val suspensionDateIfReset = custodyDateUpdateService.suspensionDateIfReset(
-            SentenceDetail(
-                conditionalReleaseDate = LocalDate.of(2025, 1, 1),
-                sentenceExpiryDate = LocalDate.of(2026, 1, 1),
-            ), custody
-        )
-
-        assertThat(suspensionDateIfReset, nullValue())
-    }
-
     @ParameterizedTest
     @MethodSource("testCases")
     fun `check two-thirds point`(
@@ -202,8 +181,6 @@ internal class CustodyDateUpdateServiceTest {
         sentenceExpiryDate: LocalDate?,
         expected: LocalDate?
     ) {
-        whenever(featureFlags.enabled("suspension-date-if-reset")).thenReturn(true)
-
         val custody = generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = "ABC")
         val suspensionDateIfReset = custodyDateUpdateService.suspensionDateIfReset(
             SentenceDetail(

@@ -28,6 +28,7 @@ class AssessmentSubmitted(
             "crn" to crn,
             "dateCompleted" to summary.dateCompleted.toString(),
             "assessmentType" to summary.assessmentType,
+            "assessmentStatus" to summary.assessmentStatus,
             "assessmentId" to summary.assessmentPk.toString(),
             "ROSH" to summary.riskFlags.mapNotNull(RiskOfSeriousHarmType::of).maxByOrNull { it.ordinal }.toString(),
         ) + RiskType.entries.map {
@@ -42,15 +43,16 @@ class AssessmentSubmitted(
             assessmentService.recordAssessment(person, summary)
         }
 
-        val regEvents = audit(UPDATE_RISK_DATA) {
+        if (summary.assessmentStatus == "COMPLETE") audit(UPDATE_RISK_DATA) {
             it["CRN"] = person.crn
-            riskService.recordRisk(person, summary)
+            val registrationEvents = riskService.recordRisk(person, summary)
+            domainEventService.publishEvents(registrationEvents)
         }
 
         if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
             personRepository.updateIaps(person.id)
         }
-        domainEventService.publishEvents(regEvents)
+
         telemetryService.trackEvent("AssessmentSummarySuccess", telemetryParams)
     }
 }

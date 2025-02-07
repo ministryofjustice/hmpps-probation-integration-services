@@ -2,6 +2,12 @@ generic-service:
   ingress:
     host: workforce-allocations-to-delius.hmpps.service.justice.gov.uk
 
+  resources:
+    requests:
+      memory: 1Gi
+    limits:
+      memory: 2Gi
+
   env:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/oauth/token
