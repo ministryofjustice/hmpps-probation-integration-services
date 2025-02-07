@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.Person
 
 interface PersonRepository : JpaRepository<Person, Long> {
@@ -33,4 +33,5 @@ interface PersonRepository : JpaRepository<Person, Long> {
 }
 
 fun PersonRepository.getPerson(crn: String): Person =
-    findByCrn(crn) ?: findByMergedFromCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+    findByCrn(crn) ?: findByMergedFromCrn(crn)
+    ?: throw IgnorableMessageException("Person not found", mapOf("crn" to crn))

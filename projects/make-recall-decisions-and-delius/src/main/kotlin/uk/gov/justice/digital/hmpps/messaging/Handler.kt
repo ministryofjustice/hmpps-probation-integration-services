@@ -5,6 +5,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.MakeRecallDecisionsClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -28,7 +29,7 @@ class Handler(
             Message(name = "consider-a-recall/recommendation-deleted"),
         ]
     )
-    override fun handle(notification: Notification<HmppsDomainEvent>) {
+    override fun handle(notification: Notification<HmppsDomainEvent>) = try {
         telemetryService.notificationReceived(notification)
         val crn = notification.message.personReference.findCrn()
             ?: throw IllegalArgumentException("CRN not found in message")
@@ -57,6 +58,8 @@ class Handler(
 
             else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
         }
+    } catch (ime: IgnorableMessageException) {
+        telemetryService.trackEvent(ime.message, ime.additionalProperties)
     }
 
     private fun Notification<HmppsDomainEvent>.details() = makeRecallDecisionsClient.getDetails(detailUrl())
