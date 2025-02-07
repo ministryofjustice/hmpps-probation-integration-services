@@ -286,7 +286,7 @@ class PersonalDetailsService(
 
         return DisabilityOverview(
             personSummary = person.toPersonSummary(),
-            disabilities = disabilities.mapIndexed { index, disability ->  disability.toDisability(index) },
+            disabilities = disabilities.mapIndexed { index, disability -> disability.toDisability(index) },
         )
     }
 
@@ -305,7 +305,10 @@ class PersonalDetailsService(
                     disabilityNote = formatNote(disabilityEntity.notes, false).elementAtOrNull(noteId),
                     startDate = disabilityEntity.startDate,
                     lastUpdated = disabilityEntity.lastUpdated,
-                    lastUpdatedBy = Name(forename = disabilityEntity.lastUpdatedUser.forename, surname = disabilityEntity.lastUpdatedUser.surname)
+                    lastUpdatedBy = Name(
+                        forename = disabilityEntity.lastUpdatedUser.forename,
+                        surname = disabilityEntity.lastUpdatedUser.surname
+                    )
                 )
             }
         )
@@ -330,21 +333,22 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.t
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
 )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability(disabilityIndex: Int) = Disability(
-    disabilityId = disabilityIndex,
-    description = type.description,
-    disabilityNotes = formatNote(notes, true),
-    startDate = startDate,
-    lastUpdated = lastUpdated,
-    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
-)
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability.toDisability(disabilityIndex: Int) =
+    Disability(
+        disabilityId = disabilityIndex,
+        description = type.description,
+        disabilityNotes = formatNote(notes, true),
+        startDate = startDate,
+        lastUpdated = lastUpdated,
+        lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
+    )
 
-fun PersonalContactEntity.toContact(singleNote:Boolean = false, noteId: Int? = null) = PersonalContact(
+fun PersonalContactEntity.toContact(singleNote: Boolean = false, noteId: Int? = null) = PersonalContact(
     personSummary = person.toSummary(),
     name = Name(forename, middleNames, surname),
     relationship = relationship,
     address = address.toAddress(),
-    contactNotes =   if (!singleNote) formatNote(notes, true) else null,
+    contactNotes = if (!singleNote) formatNote(notes, true) else null,
     contactNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
     relationshipType = relationshipType.description,
     contactId = id,

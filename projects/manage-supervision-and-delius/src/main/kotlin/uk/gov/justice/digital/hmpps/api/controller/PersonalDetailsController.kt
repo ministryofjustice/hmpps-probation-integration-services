@@ -62,7 +62,11 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
 
     @GetMapping("/disability/{disabilityId}/note/{noteId}")
     @Operation(summary = "Person Disabilities")
-    fun getPersonDisabilitiesSingleNote(@PathVariable crn: String, @PathVariable disabilityId: Int, @PathVariable noteId: Int) =
+    fun getPersonDisabilitiesSingleNote(
+        @PathVariable crn: String,
+        @PathVariable disabilityId: Int,
+        @PathVariable noteId: Int
+    ) =
         personalDetailsService.getPersonDisabilitySingleNote(crn, disabilityId, noteId)
 
     @GetMapping("/provisions")
