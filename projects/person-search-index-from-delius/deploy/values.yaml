@@ -51,3 +51,4 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: person-search-index-from-delius
+  applicationCronJobStatusFailedWindowMinutes: 120
