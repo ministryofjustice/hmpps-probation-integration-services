@@ -185,6 +185,18 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
+    fun `personal contact single note not found`() {
+        val person = PERSONAL_DETAILS
+        val contact = PERSONAL_CONTACT_1
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}/note/10").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalContact>()
+
+        assertThat(res, equalTo(contact.toContact(true, 0)))
+    }
+
+    @Test
     fun `personal summary not found`() {
         mockMvc
             .perform(get("/personal-details/X999999/summary").withToken())
@@ -252,7 +264,7 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
-    fun `disabilities are returned single note`() {
+    fun `disability returned single note`() {
         val person = PERSONAL_DETAILS
 
         val expected = Disability(
@@ -270,6 +282,41 @@ internal class PersonalDetailsIntegrationTest {
             .andReturn().response.contentAsJson<DisabilityOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.disability, equalTo(expected))
+    }
+
+    @Test
+    fun `disability with no note`() {
+        val person = PERSONAL_DETAILS
+
+        val expected = DisabilityOverview(
+            person.toSummary(),
+            disability = Disability(
+                0,
+                DISABILITY_1.type.description,
+                startDate = DISABILITY_1.startDate,
+                lastUpdated = DISABILITY_1.lastUpdated,
+                lastUpdatedBy = Name(forename = USER.forename, surname = USER.surname)
+            )
+        )
+
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/disability/0/note/10").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<DisabilityOverview>()
+        assertThat(res, equalTo(expected))
+    }
+
+    @Test
+    fun `person summary only when disability not found`() {
+        val person = PERSONAL_DETAILS
+
+        val expected = DisabilityOverview(person.toSummary())
+
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/disability/10/note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<DisabilityOverview>()
+        assertThat(res, equalTo(expected))
     }
 
     @Test
