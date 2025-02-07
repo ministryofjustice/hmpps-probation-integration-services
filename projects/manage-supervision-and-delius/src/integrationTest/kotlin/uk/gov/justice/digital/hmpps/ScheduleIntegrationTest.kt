@@ -97,5 +97,20 @@ internal class ScheduleIntegrationTest {
         assertThat(res.appointment.location?.officeName, equalTo(expectedAppointment.location?.officeName))
         assertThat(res.appointment.documents.size, equalTo(expectedAppointment.documents.size))
         assertThat(res.appointment.location?.postcode, equalTo("H34 7TH"))
+        assertThat(res.appointment.description, equalTo(expectedAppointment.description))
+    }
+
+    @Test
+    fun `individual appointment with outcome is returned`() {
+
+        val person = OVERVIEW
+        val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
+        val res = mockMvc
+            .perform(get("/schedule/${person.crn}/appointment/${id}").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonAppointment>()
+
+        assertThat(res.appointment.description, equalTo("previous appointment"))
+        assertThat(res.appointment.outcome, equalTo("Acceptable"))
     }
 }

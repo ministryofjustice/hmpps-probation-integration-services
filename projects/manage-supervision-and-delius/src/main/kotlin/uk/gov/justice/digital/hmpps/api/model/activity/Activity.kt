@@ -45,5 +45,7 @@ data class Activity(
     val isPastAppointment: Boolean = (isAppointment && ZonedDateTime.now() > startDateTime),
     val countsTowardsRAR: Boolean?,
     val lastUpdated: ZonedDateTime,
-    val lastUpdatedBy: Name
+    val lastUpdatedBy: Name,
+    val description: String? = null,
+    val outcome: String? = null,
 )

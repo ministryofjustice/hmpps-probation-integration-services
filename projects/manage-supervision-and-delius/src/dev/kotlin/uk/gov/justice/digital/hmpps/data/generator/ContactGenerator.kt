@@ -76,6 +76,7 @@ object ContactGenerator {
         attended = false,
         action = BREACH_ENFORCEMENT_ACTION,
         startTime = null,
+        description = "previous appointment",
         outcome = ACCEPTABLE_ABSENCE
 
     )
@@ -93,12 +94,13 @@ object ContactGenerator {
     val FIRST_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_2,
-        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(2), EuropeLondon)
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(2), EuropeLondon),
     )
     val NEXT_APPT_CONTACT = generateContact(
         OVERVIEW,
         APPT_CT_3,
-        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(3), EuropeLondon)
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(3), EuropeLondon),
+        description = "next appointment"
     )
 
     val PREVIOUS_COMMUNICATION_CONTACT = generateContact(
@@ -167,6 +169,7 @@ object ContactGenerator {
         startTime: ZonedDateTime? = ZonedDateTime.of(LocalDate.EPOCH, startDateTime.toLocalTime(), startDateTime.zone),
         event: Event = PersonGenerator.EVENT_1,
         outcome: ContactOutcome? = null,
+        description: String? = null
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         personId = person.id,
@@ -185,7 +188,8 @@ object ContactGenerator {
         notes = notes,
         action = action,
         event = event,
-        outcome = outcome
+        outcome = outcome,
+        description = description
     )
 
     fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
