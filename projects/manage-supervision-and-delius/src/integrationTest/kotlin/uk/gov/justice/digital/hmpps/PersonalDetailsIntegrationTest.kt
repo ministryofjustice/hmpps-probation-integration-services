@@ -20,9 +20,11 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.AUDIT_USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.ALIAS_1
@@ -172,14 +174,38 @@ internal class PersonalDetailsIntegrationTest {
 
     @Test
     fun `personal contact is returned`() {
-
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
         val res = mockMvc
             .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonalContact>()
+
         assertThat(res, equalTo(contact.toContact()))
+    }
+
+    @Test
+    fun `personal contact single note is returned`() {
+        val person = PERSONAL_DETAILS
+        val contact = PERSONAL_CONTACT_1
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}/note/0").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalContact>()
+
+        assertThat(res, equalTo(contact.toContact(true, 0)))
+    }
+
+    @Test
+    fun `personal contact single note not found`() {
+        val person = PERSONAL_DETAILS
+        val contact = PERSONAL_CONTACT_1
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/personal-contact/${contact.id}/note/10").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalContact>()
+
+        assertThat(res, equalTo(contact.toContact(true, 0)))
     }
 
     @Test
@@ -245,8 +271,64 @@ internal class PersonalDetailsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<DisabilityOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
-        assertThat(res.disabilities[0], equalTo(DISABILITY_1.toDisability()))
-        assertThat(res.disabilities[1], equalTo(DISABILITY_2.toDisability()))
+        assertThat(res.disabilities!![0], equalTo(DISABILITY_1.toDisability(0)))
+        assertThat(res.disabilities!![1], equalTo(DISABILITY_2.toDisability(1)))
+    }
+
+    @Test
+    fun `disability returned single note`() {
+        val person = PERSONAL_DETAILS
+
+        val expected = Disability(
+            0,
+            DISABILITY_1.type.description,
+            disabilityNote = NoteDetail(1, "Harry Kane", LocalDate.of(2024, 10, 29), "Note 1"),
+            startDate = DISABILITY_1.startDate,
+            lastUpdated = DISABILITY_1.lastUpdated,
+            lastUpdatedBy = Name(forename = USER.forename, surname = USER.surname)
+        )
+
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/disability/0/note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<DisabilityOverview>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.disability, equalTo(expected))
+    }
+
+    @Test
+    fun `disability with no note`() {
+        val person = PERSONAL_DETAILS
+
+        val expected = DisabilityOverview(
+            person.toSummary(),
+            disability = Disability(
+                0,
+                DISABILITY_1.type.description,
+                startDate = DISABILITY_1.startDate,
+                lastUpdated = DISABILITY_1.lastUpdated,
+                lastUpdatedBy = Name(forename = USER.forename, surname = USER.surname)
+            )
+        )
+
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/disability/0/note/10").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<DisabilityOverview>()
+        assertThat(res, equalTo(expected))
+    }
+
+    @Test
+    fun `person summary only when disability not found`() {
+        val person = PERSONAL_DETAILS
+
+        val expected = DisabilityOverview(person.toSummary())
+
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/disability/10/note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<DisabilityOverview>()
+        assertThat(res, equalTo(expected))
     }
 
     @Test
