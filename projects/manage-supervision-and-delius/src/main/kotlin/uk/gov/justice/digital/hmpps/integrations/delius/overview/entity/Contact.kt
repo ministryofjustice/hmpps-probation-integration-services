@@ -76,6 +76,8 @@ class Contact(
 
     val nsiId: Long? = null,
 
+    val description: String? = null,
+
     @ManyToOne
     @JoinColumn(name = "rqmnt_id")
     val requirement: Requirement? = null,

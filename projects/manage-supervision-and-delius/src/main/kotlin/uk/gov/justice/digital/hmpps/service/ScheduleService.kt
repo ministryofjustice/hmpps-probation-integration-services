@@ -100,7 +100,9 @@ fun Contact.toActivity() = Activity(
     isPhoneCallFromPop = isPhoneCallFromPop(),
     isPhoneCallToPop = isPhoneCallToPop(),
     isCommunication = isCommunication(),
-    eventNumber = event?.eventNumber
+    eventNumber = event?.eventNumber,
+    description = description,
+    outcome = outcome?.description,
 )
 
 fun ContactDocument.toDocument() = Document(id = alfrescoId, name = name, lastUpdated = lastUpdated)
