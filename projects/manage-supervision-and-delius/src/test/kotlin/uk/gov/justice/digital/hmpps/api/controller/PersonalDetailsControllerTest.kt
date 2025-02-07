@@ -137,7 +137,7 @@ internal class PersonalDetailsControllerTest {
 
         val expectedResponse = DisabilityOverview(
             personSummary = personSummary,
-            disabilities = listOfNotNull(PersonDetailsGenerator.DISABILITY_1.toDisability()),
+            disabilities = listOfNotNull(PersonDetailsGenerator.DISABILITY_1.toDisability(1)),
         )
         whenever(personalDetailsService.getPersonDisabilities(crn)).thenReturn(expectedResponse)
         val res = controller.getPersonDisabilities(crn)

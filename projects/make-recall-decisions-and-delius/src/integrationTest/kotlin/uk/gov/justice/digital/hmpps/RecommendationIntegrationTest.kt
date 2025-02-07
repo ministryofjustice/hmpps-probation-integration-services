@@ -15,6 +15,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.message.PersonIdentifier
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -35,6 +37,20 @@ internal class RecommendationIntegrationTest {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
+
+    @Test
+    fun `management oversight decision to recall - crn not found`() {
+        val nonExistentCrn = "N12345"
+        val notification = prepEvent("management-oversight-recall", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(
+            notification.copy(
+                message = notification.message.copy(
+                    personReference = PersonReference(listOf(PersonIdentifier("CRN", nonExistentCrn)))
+                )
+            )
+        )
+        verify(telemetryService).trackEvent("Person not found", mapOf("crn" to nonExistentCrn))
+    }
 
     @Test
     fun `management oversight decision to recall`() {
