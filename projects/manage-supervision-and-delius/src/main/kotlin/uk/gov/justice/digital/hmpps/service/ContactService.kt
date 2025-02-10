@@ -9,27 +9,29 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getPerson
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 
 @Service
 class ContactService(
     private val personRepository: PersonRepository,
     private val offenderManagerRepository: OffenderManagerRepository,
+    private val prisonManagerRepository: PrisonManagerRepository,
     private val ldapTemplate: LdapTemplate
 ) {
 
     fun getContacts(crn: String): ProfessionalContact {
         val person = personRepository.getPerson(crn)
-        val contacts = offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(person.id)
+        val probationContacts = offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(person.id)
+        val prisonContacts = prisonManagerRepository.findManagersByPersonId(person.id)
 
-        if (contacts.isEmpty()) {
+        if (probationContacts.isEmpty()) {
             throw NotFoundException("Offender Manager records", "crn", crn)
         }
 
-        return ProfessionalContact(person.toName(), contacts.map { it.toContact() })
+        return ProfessionalContact(person.toName(), probationContacts.map { it.toContact() } + prisonContacts.map {
+            it.toContact()
+        })
     }
 
     fun Person.toName() =
@@ -49,7 +51,29 @@ class ContactService(
             provider.description,
             team.district.borough.description,
             team.description,
-            endDate
+            endDate,
+            isResponsibleOfficer = responsibleOfficer() != null,
+            isPrisonOffenderManager = false
+        )
+    }
+
+    fun PrisonManager.toContact(): Contact {
+        staff.user?.apply {
+            ldapTemplate.findByUsername<LdapUser>(username)?.let {
+                email = it.email
+                telephone = it.telephone
+            }
+        }
+        return Contact(
+            staff.forename + " " + staff.surname,
+            staff.user?.email,
+            staff.user?.telephone,
+            provider.description,
+            team.district.borough.description,
+            team.description,
+            endDate,
+            isResponsibleOfficer = responsibleOfficer() != null,
+            isPrisonOffenderManager = true
         )
     }
 }

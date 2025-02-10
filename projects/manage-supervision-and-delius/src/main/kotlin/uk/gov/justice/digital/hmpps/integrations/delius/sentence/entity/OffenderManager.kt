@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
 import java.io.Serializable
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import kotlin.jvm.Transient
 
 @Entity
@@ -38,6 +39,17 @@ class OffenderManager(
 
     val endDate: LocalDate?,
 
+    @OneToMany
+    @JoinColumns(
+        JoinColumn(
+            name = "offender_manager_id",
+            referencedColumnName = "offender_manager_id",
+            insertable = false,
+            updatable = false
+        ), JoinColumn(name = "offender_id", referencedColumnName = "offender_id", insertable = false, updatable = false)
+    )
+    val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
@@ -45,7 +57,9 @@ class OffenderManager(
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
-)
+) {
+    fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.isActive() }
+}
 
 @Immutable
 @Entity(name = "contact_staff")
@@ -93,6 +107,28 @@ class StaffUser(
 
     @Transient
     var telephone: String? = null
+}
+
+@Entity
+@Table(name = "responsible_officer")
+class ResponsibleOfficer(
+
+    @Column(name = "offender_id")
+    val personId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "PRISON_OFFENDER_MANAGER_ID")
+    var prisonManager: PrisonManager?,
+
+    val startDate: ZonedDateTime,
+
+    val endDate: ZonedDateTime? = null,
+
+    @Id
+    @Column(name = "responsible_officer_id", nullable = false)
+    val id: Long = 0
+) {
+    fun isActive() = endDate == null
 }
 
 interface StaffUserRepository : JpaRepository<StaffUser, Long> {

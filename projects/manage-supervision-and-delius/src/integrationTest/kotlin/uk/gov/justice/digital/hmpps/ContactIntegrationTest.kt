@@ -80,10 +80,21 @@ class ContactIntegrationTest {
             "Description of N01",
             "Leicestershire All",
             "OMU B",
-            null
+            null,
+            isResponsibleOfficer = false,
+            isPrisonOffenderManager = false
         )
         val contact2 =
-            Contact("Bruce Wayne", null, null, "Description of N01", "Leicestershire All", "OMU B", LocalDate.now())
+            Contact(
+                "Bruce Wayne",
+                null,
+                null,
+                "Description of N01",
+                "Leicestershire All",
+                "OMU B",
+                LocalDate.now(),
+                isResponsibleOfficer = false,
+                isPrisonOffenderManager = false)
 
         val expected = ProfessionalContact(name, listOf(contact2, contact1))
 

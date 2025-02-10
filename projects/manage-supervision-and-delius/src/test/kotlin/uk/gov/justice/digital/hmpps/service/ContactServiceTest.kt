@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.PrisonManagerRepository
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -27,6 +28,9 @@ class ContactServiceTest {
 
     @Mock
     lateinit var offenderManagerRepository: OffenderManagerRepository
+
+    @Mock
+    lateinit var prisonManagerRepository: PrisonManagerRepository
 
     @Mock
     lateinit var ldapTemplate: LdapTemplate
@@ -99,10 +103,12 @@ class ContactServiceTest {
             "Description of N01",
             "Leicestershire All",
             "OMU B",
-            null
+            null,
+            isResponsibleOfficer = false,
+            isPrisonOffenderManager = false
         )
         val contact2 =
-            Contact("Bruce Wayne", null, null, "Description of N01", "Leicestershire All", "OMU B", LocalDate.now())
+            Contact("Bruce Wayne", null, null, "Description of N01", "Leicestershire All", "OMU B", LocalDate.now(), isResponsibleOfficer = false, isPrisonOffenderManager = false)
 
         val expected = ProfessionalContact(name, listOf(contact1, contact2))
 
