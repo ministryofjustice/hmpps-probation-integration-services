@@ -81,7 +81,7 @@ jobs:
 
       - name: Create Sentry release
         if: ${{ steps.check_files.outputs.files_exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
-        uses: getsentry/action-release@v1
+        uses: getsentry/action-release@v2
         env:
           SENTRY_ORG: ministryofjustice
           SENTRY_PROJECT: ${{ matrix.project }}
