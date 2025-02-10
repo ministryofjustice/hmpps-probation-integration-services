@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Borough
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 object OffenderManagerGenerator {
 
@@ -14,8 +15,10 @@ object OffenderManagerGenerator {
 
     val STAFF_1 = Staff(IdGenerator.getAndIncrement(), "Peter", "Parker", DEFAULT_PROVIDER, null)
     val STAFF_2 = Staff(IdGenerator.getAndIncrement(), "Bruce", "Wayne", DEFAULT_PROVIDER, null)
+    val STAFF_3 = Staff(IdGenerator.getAndIncrement(), "Clark", "Kent", DEFAULT_PROVIDER, null)
     val STAFF_USER_1 = StaffUser(IdGenerator.getAndIncrement(), STAFF_1, "peter-parker", "peter", surname = "parker")
     val STAFF_USER_2 = StaffUser(IdGenerator.getAndIncrement(), STAFF_2, "bwayne", "bruce", surname = "wayne")
+    val STAFF_USER_3 = StaffUser(IdGenerator.getAndIncrement(), STAFF_3, "ckent", "clark", surname = "kent")
     val STAFF_TEAM = ContactStaffTeam(StaffTeamLinkId(STAFF_1.id, TEAM))
 
     val DEFAULT_LOCATION =
@@ -40,8 +43,9 @@ object OffenderManagerGenerator {
             ContactGenerator.DEFAULT_PROVIDER,
             TEAM,
             STAFF_1,
-            null
+            LocalDate.of(2025, 2, 10),
         )
+
     val OFFENDER_MANAGER_INACTIVE =
         OffenderManager(
             IdGenerator.getAndIncrement(),
@@ -49,7 +53,24 @@ object OffenderManagerGenerator {
             ContactGenerator.DEFAULT_PROVIDER,
             TEAM,
             STAFF_2,
-            LocalDate.now(),
+            LocalDate.of(2025, 2, 9),
+            LocalDate.of(2025, 2, 10),
             active = false
         )
+
+    val PRISON_OFFENDER_MANAGER_ACTIVE = PrisonManager(
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.OVERVIEW,
+        ContactGenerator.DEFAULT_PROVIDER,
+        TEAM,
+        STAFF_3,
+        LocalDate.of(2025, 2, 7)
+    )
+
+    val RESPONSIBLE_OFFICER = ResponsibleOfficer (
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.OVERVIEW.id,
+        PRISON_OFFENDER_MANAGER_ACTIVE,
+        ZonedDateTime.now()
+    )
 }

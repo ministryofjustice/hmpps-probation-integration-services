@@ -71,7 +71,7 @@ class ContactServiceTest {
     fun `no offender manager records`() {
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
-            offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(PersonGenerator.OVERVIEW.id)
+            offenderManagerRepository.findOffenderManagersByPersonId(PersonGenerator.OVERVIEW.id)
         ).thenReturn(listOf())
 
         val exception = assertThrows<NotFoundException> {
@@ -84,7 +84,7 @@ class ContactServiceTest {
         )
 
         verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
-        verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonOrderByEndDateDesc(
+        verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonId(
             PersonGenerator.OVERVIEW.id
         )
 
@@ -103,18 +103,29 @@ class ContactServiceTest {
             "Description of N01",
             "Leicestershire All",
             "OMU B",
-            null,
-            isResponsibleOfficer = false,
-            isPrisonOffenderManager = false
+            allocationDate = LocalDate.of(2025, 2, 10),
+            allocatedUntil = null,
+            responsibleOfficer = false,
+            prisonOffenderManager = false
         )
         val contact2 =
-            Contact("Bruce Wayne", null, null, "Description of N01", "Leicestershire All", "OMU B", LocalDate.now(), isResponsibleOfficer = false, isPrisonOffenderManager = false)
+            Contact(
+                "Bruce Wayne",
+                null,
+                null,
+                "Description of N01",
+                "Leicestershire All",
+                "OMU B",
+                LocalDate.of(2025, 2, 9),
+                LocalDate.of(2025, 2, 10),
+                responsibleOfficer = false,
+                prisonOffenderManager = false)
 
         val expected = ProfessionalContact(name, listOf(contact1, contact2))
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
-            offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(PersonGenerator.OVERVIEW.id)
+            offenderManagerRepository.findOffenderManagersByPersonId(PersonGenerator.OVERVIEW.id)
         ).thenReturn(
             listOf(OFFENDER_MANAGER_ACTIVE, OFFENDER_MANAGER_INACTIVE)
         )
@@ -124,7 +135,7 @@ class ContactServiceTest {
         assertEquals(expected, response)
 
         verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
-        verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonOrderByEndDateDesc(
+        verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonId(
             PersonGenerator.OVERVIEW.id
         )
 

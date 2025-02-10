@@ -22,8 +22,8 @@ class ContactService(
 
     fun getContacts(crn: String): ProfessionalContact {
         val person = personRepository.getPerson(crn)
-        val probationContacts = offenderManagerRepository.findOffenderManagersByPersonOrderByEndDateDesc(person.id)
-        val prisonContacts = prisonManagerRepository.findManagersByPersonId(person.id)
+        val probationContacts = offenderManagerRepository.findOffenderManagersByPersonId(person.id)
+        val prisonContacts = prisonManagerRepository.findPrisonManagersByPersonId(person.id)
 
         if (probationContacts.isEmpty()) {
             throw NotFoundException("Offender Manager records", "crn", crn)
@@ -51,9 +51,10 @@ class ContactService(
             provider.description,
             team.district.borough.description,
             team.description,
-            endDate,
-            isResponsibleOfficer = responsibleOfficer() != null,
-            isPrisonOffenderManager = false
+            allocationDate = allocationDate,
+            allocatedUntil = endDate,
+            responsibleOfficer = responsibleOfficer() != null,
+            prisonOffenderManager = false
         )
     }
 
@@ -71,9 +72,10 @@ class ContactService(
             provider.description,
             team.district.borough.description,
             team.description,
-            endDate,
-            isResponsibleOfficer = responsibleOfficer() != null,
-            isPrisonOffenderManager = true
+            allocationDate= allocationDate,
+            allocatedUntil = endDate,
+            responsibleOfficer = responsibleOfficer() != null,
+            prisonOffenderManager = true
         )
     }
 }

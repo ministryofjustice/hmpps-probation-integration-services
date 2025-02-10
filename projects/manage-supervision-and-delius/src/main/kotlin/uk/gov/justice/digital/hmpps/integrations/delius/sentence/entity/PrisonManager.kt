@@ -30,10 +30,12 @@ class PrisonManager(
     @JoinColumn(name = "allocation_staff_id", nullable = false)
     val staff: Staff,
 
+    val allocationDate: LocalDate,
+
+    val endDate: LocalDate? = null,
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "prisonManager")
     val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
-
-    val endDate: LocalDate?,
 
 ) {
     fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.isActive() }
@@ -45,8 +47,8 @@ interface PrisonManagerRepository : CrudRepository<PrisonManager, Long> {
         SELECT om
         FROM PrisonManager om
         WHERE om.person.id = :id 
-        ORDER BY om.endDate desc 
+        ORDER BY om.allocationDate desc 
         """
     )
-    fun findManagersByPersonId(id: Long): List<PrisonManager>
+    fun findPrisonManagersByPersonId(id: Long): List<PrisonManager>
 }

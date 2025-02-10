@@ -80,9 +80,10 @@ class ContactIntegrationTest {
             "Description of N01",
             "Leicestershire All",
             "OMU B",
+            LocalDate.of(2025, 2, 10),
             null,
-            isResponsibleOfficer = false,
-            isPrisonOffenderManager = false
+            responsibleOfficer = false,
+            prisonOffenderManager = false
         )
         val contact2 =
             Contact(
@@ -92,11 +93,26 @@ class ContactIntegrationTest {
                 "Description of N01",
                 "Leicestershire All",
                 "OMU B",
-                LocalDate.now(),
-                isResponsibleOfficer = false,
-                isPrisonOffenderManager = false)
+                LocalDate.of(2025, 2, 9),
+                LocalDate.of(2025, 2, 10),
+                responsibleOfficer = false,
+                prisonOffenderManager = false)
 
-        val expected = ProfessionalContact(name, listOf(contact2, contact1))
+        val contact3 = Contact(
+            "Clark Kent",
+            null,
+            null,
+            "Description of N01",
+            "Leicestershire All",
+            "OMU B",
+            LocalDate.of(2025, 2, 7),
+            null,
+            responsibleOfficer = true,
+            prisonOffenderManager = true
+
+        )
+
+        val expected = ProfessionalContact(name, listOf(contact1, contact2, contact3))
 
         val response = mockMvc
             .perform(

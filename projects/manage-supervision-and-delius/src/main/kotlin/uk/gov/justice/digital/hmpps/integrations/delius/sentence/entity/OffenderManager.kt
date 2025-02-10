@@ -37,7 +37,9 @@ class OffenderManager(
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
 
-    val endDate: LocalDate?,
+    val allocationDate: LocalDate,
+
+    val endDate: LocalDate? = null,
 
     @OneToMany
     @JoinColumns(
@@ -112,6 +114,9 @@ class StaffUser(
 @Entity
 @Table(name = "responsible_officer")
 class ResponsibleOfficer(
+    @Id
+    @Column(name = "responsible_officer_id", nullable = false)
+    val id: Long = 0,
 
     @Column(name = "offender_id")
     val personId: Long,
@@ -123,10 +128,6 @@ class ResponsibleOfficer(
     val startDate: ZonedDateTime,
 
     val endDate: ZonedDateTime? = null,
-
-    @Id
-    @Column(name = "responsible_officer_id", nullable = false)
-    val id: Long = 0
 ) {
     fun isActive() = endDate == null
 }

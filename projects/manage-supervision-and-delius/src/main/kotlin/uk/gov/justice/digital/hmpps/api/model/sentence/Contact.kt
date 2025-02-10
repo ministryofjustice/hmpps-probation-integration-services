@@ -9,7 +9,8 @@ data class Contact(
     val provider: String,
     val probationDeliveryUnit: String,
     val team: String?,
+    val allocationDate: LocalDate,
     val allocatedUntil: LocalDate?,
-    val isResponsibleOfficer: Boolean,
-    val isPrisonOffenderManager: Boolean
+    val responsibleOfficer: Boolean,
+    val prisonOffenderManager: Boolean
 )
