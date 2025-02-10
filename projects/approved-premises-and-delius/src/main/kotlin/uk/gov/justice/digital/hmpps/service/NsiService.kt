@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
@@ -25,6 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getApprovedPremisesTeam
+import java.time.ZonedDateTime
 
 @Transactional
 @Service
@@ -50,12 +52,13 @@ class NsiService(
         nsiRepository.findByPersonIdAndExternalReference(person.id, details.residencyRef()) ?: run {
             val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
             val staff = staffRepository.getByCode(details.recordedBy.staffCode)
-            person.createNsi(APPROVED_PREMISES_RESIDENCE, IN_RESIDENCE, details, details.residencyRef(), staff, team)
-            person.createNsi(REHABILITATIVE_ACTIVITY, ACTIVE, details, details.rehabilitativeActivityRef(), staff, team)
+            val event = eventRepository.getEvent(person.id, details.eventNumber)
+            event.createNsi(APPROVED_PREMISES_RESIDENCE, IN_RESIDENCE, details, details.residencyRef(), staff, team)
+            event.createNsi(REHABILITATIVE_ACTIVITY, ACTIVE, details, details.rehabilitativeActivityRef(), staff, team)
             contactService.createContact(
                 ContactDetails(
                     date = details.arrivedAt,
-                    type = ContactTypeCode.ARRIVED,
+                    typeCode = ContactTypeCode.ARRIVED.code,
                     locationCode = ap.locationCode(),
                     description = "Arrived at ${details.premises.name}",
                     notes = listOfNotNull(
@@ -64,7 +67,7 @@ class NsiService(
                     ).joinToString(System.lineSeparator() + System.lineSeparator())
                 ),
                 person = person,
-                eventId = eventRepository.getEvent(person.id, details.eventNumber).id,
+                eventId = event.id,
                 staff = staff,
                 team = team,
                 probationAreaCode = ap.probationArea.code
@@ -76,19 +79,24 @@ class NsiService(
     }
 
     fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises): PersonAddress? {
-        nsiRepository.findByPersonIdAndExternalReference(person.id, details.residencyRef())?.let { nsi ->
+        val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
+        val staff = staffRepository.getByCode(details.recordedBy.staffCode)
+        findNsi(person, APPROVED_PREMISES_RESIDENCE, details.residencyRef())?.let { nsi ->
             nsi.actualEndDate = details.departedAt
             nsi.outcome = referenceDataRepository.referralCompleted()
+            nsi.terminationContact(details.departedAt, staff, team)
         }
-        nsiRepository.findByPersonIdAndExternalReference(person.id, details.rehabilitativeActivityRef())?.let { nsi ->
+        findNsi(person, REHABILITATIVE_ACTIVITY, details.rehabilitativeActivityRef())?.let { nsi ->
             nsi.actualEndDate = details.departedAt
             nsi.status = nsiStatusRepository.getByCode(NsiStatusCode.COMPLETED.code)
             nsi.outcome = referenceDataRepository.endOfEngagementOutcome()
+            nsi.statusChangeContact(details.departedAt, staff, team)
+            nsi.terminationContact(details.departedAt, staff, team)
         }
         contactService.createContact(
             ContactDetails(
                 date = details.departedAt,
-                type = ContactTypeCode.DEPARTED,
+                typeCode = ContactTypeCode.DEPARTED.code,
                 description = "Departed from ${details.premises.name}",
                 outcomeCode = ContactOutcome.AP_DEPARTED_PREFIX + details.legacyReasonCode,
                 locationCode = ap.locationCode(),
@@ -97,15 +105,20 @@ class NsiService(
             ),
             person = person,
             eventId = eventRepository.getEvent(person.id, details.eventNumber).id,
-            team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode),
-            staff = staffRepository.getByCode(details.recordedBy.staffCode),
+            team = team,
+            staff = staff,
             probationAreaCode = ap.probationArea.code
         )
         referralService.personDeparted(person, details)
         return addressService.endMainAddress(person, details.departedAt.toLocalDate())
     }
 
-    private fun Person.createNsi(
+    private fun findNsi(person: Person, type: NsiTypeCode, externalReference: String) =
+        nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference)
+        // To handle existing NSIs created manually in Delius prior to arrival/departure moving to CAS1 service:
+            ?: nsiRepository.findByPersonIdAndTypeCode(person.id, type.code)
+
+    private fun Event.createNsi(
         nsiType: NsiTypeCode,
         nsiStatus: NsiStatusCode,
         details: PersonArrived,
@@ -113,11 +126,14 @@ class NsiService(
         staff: Staff,
         team: Team,
     ) {
+        val type = nsiTypeRepository.getByCode(nsiType.code)
+        val status = nsiStatusRepository.getByCode(nsiStatus.code)
         val nsi = nsiRepository.save(
             Nsi(
-                person = this,
-                type = nsiTypeRepository.getByCode(nsiType.code),
-                status = nsiStatusRepository.getByCode(nsiStatus.code),
+                event = this,
+                person = person,
+                type = type,
+                status = status,
                 referralDate = details.applicationSubmittedOn,
                 expectedStartDate = details.arrivedAt.toLocalDate(),
                 actualStartDate = details.arrivedAt,
@@ -139,7 +155,56 @@ class NsiService(
                 transferReason = transferReasonRepository.getNsiTransferReason()
             )
         )
+        nsi.referralContact(details.arrivedAt, staff, team)
+        nsi.statusChangeContact(details.arrivedAt, staff, team)
     }
+
+    private fun Nsi.referralContact(date: ZonedDateTime, staff: Staff, team: Team) {
+        contactService.createContact(
+            ContactDetails(
+                date = date,
+                typeCode = ContactTypeCode.NSI_REFERRAL.code,
+                createAlert = false
+            ),
+            person = person,
+            eventId = event?.id,
+            nsiId = id,
+            staff = staff,
+            team = team,
+            probationAreaCode = team.probationArea.code,
+        )
+    }
+
+    private fun Nsi.statusChangeContact(date: ZonedDateTime, staff: Staff, team: Team) = status.contactType?.let {
+        contactService.createContact(
+            ContactDetails(
+                date = date,
+                typeCode = it.code,
+                createAlert = false,
+            ),
+            person = person,
+            eventId = event?.id,
+            nsiId = id,
+            staff = staff,
+            team = team,
+            probationAreaCode = team.probationArea.code
+        )
+    }
+
+    private fun Nsi.terminationContact(date: ZonedDateTime, staff: Staff, team: Team) = contactService.createContact(
+        ContactDetails(
+            date = date,
+            typeCode = ContactTypeCode.NSI_TERMINATED.code,
+            notes = "NSI Terminated with Outcome: ${requireNotNull(outcome?.description) { "Terminating NSI with no outcome" }}",
+            createAlert = false
+        ),
+        person = person,
+        eventId = event?.id,
+        nsiId = id,
+        team = team,
+        staff = staff,
+        probationAreaCode = team.probationArea.code
+    )
 
     private fun PersonArrived.residencyRef() = EXT_REF_BOOKING_PREFIX + bookingId
     private fun PersonArrived.rehabilitativeActivityRef() = EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX + bookingId
