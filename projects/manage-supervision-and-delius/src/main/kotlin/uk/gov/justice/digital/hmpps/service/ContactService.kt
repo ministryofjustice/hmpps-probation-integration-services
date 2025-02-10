@@ -29,9 +29,11 @@ class ContactService(
             throw NotFoundException("Offender Manager records", "crn", crn)
         }
 
-        return ProfessionalContact(person.toName(), probationContacts.map { it.toContact() } + prisonContacts.map {
-            it.toContact()
-        })
+        return ProfessionalContact(
+            person.toName(),
+            probationContacts.map { it.toContact() } + prisonContacts.map {
+            it.toContact() }.sortedByDescending { it.allocatedUntil }
+        )
     }
 
     fun Person.toName() =
