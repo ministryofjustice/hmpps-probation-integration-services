@@ -192,7 +192,13 @@
         <a href="./api-reference.html#personal-details-crn-personal-contact-id"><span>/personal-details/{crn}/personal-contact/{id}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#personal-details-crn-personal-contact-id-note-noteid"><span>/personal-details/{crn}/personal-contact/{id}/note/{noteId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#personal-details-crn-document-documentid"><span>/personal-details/{crn}/document/{documentId}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#personal-details-crn-disability-disabilityid-note-noteid"><span>/personal-details/{crn}/disability/{disabilityId}/note/{noteId}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#personal-details-crn-disabilities"><span>/personal-details/{crn}/disabilities</span></a>
@@ -413,7 +419,22 @@
           "surname": "string"
         }
       },
-      "notes": "string",
+      "contactNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "contactNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "phone": "string",
       "email": "string",
       "startDate": "string",
@@ -616,7 +637,22 @@
           "surname": "string"
         }
       },
-      "notes": "string",
+      "contactNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "contactNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "phone": "string",
       "email": "string",
       "startDate": "string",
@@ -1063,7 +1099,9 @@
         "forename": "string",
         "middleName": "string",
         "surname": "string"
-      }
+      },
+      "description": "string",
+      "outcome": "string"
     }
   ]
 }</code></pre>
@@ -1228,7 +1266,9 @@
         "forename": "string",
         "middleName": "string",
         "surname": "string"
-      }
+      },
+      "description": "string",
+      "outcome": "string"
     }
   ]
 }</code></pre>
@@ -2635,7 +2675,9 @@
         "forename": "string",
         "middleName": "string",
         "surname": "string"
-      }
+      },
+      "description": "string",
+      "outcome": "string"
     }
   ]
 }</code></pre>
@@ -2780,7 +2822,9 @@
         "forename": "string",
         "middleName": "string",
         "surname": "string"
-      }
+      },
+      "description": "string",
+      "outcome": "string"
     }
   ]
 }</code></pre>
@@ -2934,7 +2978,9 @@
       "forename": "string",
       "middleName": "string",
       "surname": "string"
-    }
+    },
+    "description": "string",
+    "outcome": "string"
   }
 }</code></pre>
 
@@ -3452,7 +3498,163 @@
       "surname": "string"
     }
   },
-  "notes": "string",
+  "contactNotes": [
+    {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    }
+  ],
+  "contactNote": {
+    "id": "integer",
+    "createdBy": "string",
+    "createdByDate": "string",
+    "note": "string",
+    "hasNoteBeenTruncated": "boolean"
+  },
+  "phone": "string",
+  "email": "string",
+  "startDate": "string",
+  "lastUpdated": "string",
+  "lastUpdatedBy": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personalcontact'>PersonalContact</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="personal-details-crn-personal-contact-id-note-noteid">/personal-details/{crn}/personal-contact/{id}/note/{noteId}</h2>
+
+<h3 id="personal-details-crn-personal-contact-id-note-noteid-get">get</h3>
+
+  <p><em>Person Contact</em></p>
+
+
+
+
+<h4 id="personal-details-crn-personal-contact-id-note-noteid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>noteId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-personal-contact-id-note-noteid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "noms": "string",
+    "dateOfBirth": "string"
+  },
+  "contactId": "integer",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "relationship": "string",
+  "relationshipType": "string",
+  "address": {
+    "buildingName": "string",
+    "buildingNumber": "string",
+    "streetName": "string",
+    "district": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "lastUpdated": "string",
+    "lastUpdatedBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    }
+  },
+  "contactNotes": [
+    {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    }
+  ],
+  "contactNote": {
+    "id": "integer",
+    "createdBy": "string",
+    "createdByDate": "string",
+    "note": "string",
+    "hasNoteBeenTruncated": "boolean"
+  },
   "phone": "string",
   "email": "string",
   "startDate": "string",
@@ -3547,6 +3749,155 @@
 
 
 
+<h2 id="personal-details-crn-disability-disabilityid-note-noteid">/personal-details/{crn}/disability/{disabilityId}/note/{noteId}</h2>
+
+<h3 id="personal-details-crn-disability-disabilityid-note-noteid-get">get</h3>
+
+  <p><em>Person Disabilities</em></p>
+
+
+
+
+<h4 id="personal-details-crn-disability-disabilityid-note-noteid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>disabilityId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>noteId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-disability-disabilityid-note-noteid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "noms": "string",
+    "dateOfBirth": "string"
+  },
+  "disabilities": [
+    {
+      "disabilityId": "integer",
+      "description": "string",
+      "disabilityNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "disabilityNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
+      "startDate": "string",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ],
+  "disability": {
+    "disabilityId": "integer",
+    "description": "string",
+    "disabilityNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "disabilityNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
+    "startDate": "string",
+    "lastUpdated": "string",
+    "lastUpdatedBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    }
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-disabilityoverview'>DisabilityOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="personal-details-crn-disabilities">/personal-details/{crn}/disabilities</h2>
 
 <h3 id="personal-details-crn-disabilities-get">get</h3>
@@ -3608,8 +3959,24 @@
   },
   "disabilities": [
     {
+      "disabilityId": "integer",
       "description": "string",
-      "notes": "string",
+      "disabilityNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "disabilityNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "startDate": "string",
       "lastUpdated": "string",
       "lastUpdatedBy": {
@@ -3618,7 +3985,34 @@
         "surname": "string"
       }
     }
-  ]
+  ],
+  "disability": {
+    "disabilityId": "integer",
+    "description": "string",
+    "disabilityNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "disabilityNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
+    "startDate": "string",
+    "lastUpdated": "string",
+    "lastUpdatedBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    }
+  }
 }</code></pre>
 
 </td>
@@ -3984,7 +4378,22 @@
             "surname": "string"
           }
         },
-        "notes": "string",
+        "contactNotes": [
+          {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          }
+        ],
+        "contactNote": {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        },
         "phone": "string",
         "email": "string",
         "startDate": "string",
@@ -4188,7 +4597,9 @@
           "forename": "string",
           "middleName": "string",
           "surname": "string"
-        }
+        },
+        "description": "string",
+        "outcome": "string"
       }
     ]
   },
@@ -5566,6 +5977,68 @@
 </tbody>
 </table>
 
+<h3 id="schema-notedetail">NoteDetail</h3>
+
+
+<table class='schema-notedetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdBy</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdByDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>note</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>hasNoteBeenTruncated</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-personsummary">PersonSummary</h3>
 
 
@@ -5740,12 +6213,22 @@
 </tr>
 
 <tr>
-<td>notes</td>
-<td>string</td>
+<td>contactNotes</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
-  
+  <a href='#schema-notedetail'>NoteDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>contactNote</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-notedetail'>NoteDetail</a>
 </td>
 </tr>
 
@@ -7127,6 +7610,26 @@
 </td>
 </tr>
 
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>outcome</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -7862,68 +8365,6 @@
 <td></td>
 <td>
   <a href='#schema-notedetail'>NoteDetail</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-notedetail">NoteDetail</h3>
-
-
-<table class='schema-notedetail'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>createdBy</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>createdByDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>note</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>hasNoteBeenTruncated</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
@@ -9449,6 +9890,16 @@
 <tbody>
 
 <tr>
+<td>disabilityId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>description</td>
 <td>string</td>
 <td>true</td>
@@ -9459,12 +9910,22 @@
 </tr>
 
 <tr>
-<td>notes</td>
-<td>string</td>
+<td>disabilityNotes</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
-  
+  <a href='#schema-notedetail'>NoteDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>disabilityNote</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-notedetail'>NoteDetail</a>
 </td>
 </tr>
 
@@ -9523,7 +9984,17 @@
 <tr>
 <td>disabilities</td>
 <td>array</td>
-<td>true</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-disability'>Disability</a>
+</td>
+</tr>
+
+<tr>
+<td>disability</td>
+<td>object</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-disability'>Disability</a>

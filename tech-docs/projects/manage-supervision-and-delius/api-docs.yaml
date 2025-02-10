@@ -650,6 +650,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonalContact"
+  /personal-details/{crn}/personal-contact/{id}/note/{noteId}:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Contact
+      operationId: getPersonContactSingleNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalContact"
   /personal-details/{crn}/document/{documentId}:
     get:
       tags:
@@ -674,6 +705,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StreamingResponseBody"
+  /personal-details/{crn}/disability/{disabilityId}/note/{noteId}:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Disabilities
+      operationId: getPersonDisabilitiesSingleNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: disabilityId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DisabilityOverview"
   /personal-details/{crn}/disabilities:
     get:
       tags:
@@ -1087,6 +1149,24 @@ components:
       required:
       - forename
       - surname
+    NoteDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        createdBy:
+          type: string
+        createdByDate:
+          type: string
+          format: date
+        note:
+          type: string
+        hasNoteBeenTruncated:
+          type: boolean
+      required:
+      - id
+      - note
     PersonSummary:
       type: object
       properties:
@@ -1135,8 +1215,12 @@ components:
           type: string
         address:
           $ref: "#/components/schemas/ContactAddress"
-        notes:
-          type: string
+        contactNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        contactNote:
+          $ref: "#/components/schemas/NoteDetail"
         phone:
           type: string
         email:
@@ -1542,6 +1626,10 @@ components:
           format: date-time
         lastUpdatedBy:
           $ref: "#/components/schemas/Name"
+        description:
+          type: string
+        outcome:
+          type: string
       required:
       - documents
       - hasOutcome
@@ -1792,24 +1880,6 @@ components:
       - id
       - imposedReleasedDate
       - mainDescription
-    NoteDetail:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        createdBy:
-          type: string
-        createdByDate:
-          type: string
-          format: date
-        note:
-          type: string
-        hasNoteBeenTruncated:
-          type: boolean
-      required:
-      - id
-      - note
     Offence:
       type: object
       properties:
@@ -2291,10 +2361,17 @@ components:
     Disability:
       type: object
       properties:
+        disabilityId:
+          type: integer
+          format: int32
         description:
           type: string
-        notes:
-          type: string
+        disabilityNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        disabilityNote:
+          $ref: "#/components/schemas/NoteDetail"
         startDate:
           type: string
           format: date
@@ -2305,6 +2382,7 @@ components:
           $ref: "#/components/schemas/Name"
       required:
       - description
+      - disabilityId
       - lastUpdated
       - lastUpdatedBy
       - startDate
@@ -2317,8 +2395,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Disability"
+        disability:
+          $ref: "#/components/schemas/Disability"
       required:
-      - disabilities
       - personSummary
     Circumstance:
       type: object
