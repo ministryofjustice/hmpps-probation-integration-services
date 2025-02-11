@@ -25,14 +25,18 @@ class ContactService(
         val probationContacts = offenderManagerRepository.findOffenderManagersByPersonId(person.id)
         val prisonContacts = prisonManagerRepository.findPrisonManagersByPersonId(person.id)
 
+        val combinedContacts = probationContacts.map { it.toContact() } + prisonContacts.map {
+            it.toContact() }
+
+
         if (probationContacts.isEmpty()) {
             throw NotFoundException("Offender Manager records", "crn", crn)
         }
 
         return ProfessionalContact(
             person.toName(),
-            probationContacts.map { it.toContact() } + prisonContacts.map {
-            it.toContact() }.sortedByDescending { it.allocatedUntil }
+            combinedContacts.filter { it.allocatedUntil == null }.sortedByDescending { it.allocationDate },
+            combinedContacts.filter { it.allocatedUntil != null }.sortedByDescending { it.allocatedUntil },
         )
     }
 

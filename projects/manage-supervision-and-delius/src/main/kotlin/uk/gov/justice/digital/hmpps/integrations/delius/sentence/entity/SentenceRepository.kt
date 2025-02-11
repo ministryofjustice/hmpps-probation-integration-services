@@ -44,8 +44,7 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
         """
         SELECT om
         FROM OffenderManager om
-        WHERE om.person.id = :id 
-        ORDER BY om.allocationDate desc 
+        WHERE om.person.id = :id
     """
     )
     fun findOffenderManagersByPersonId(id: Long): List<OffenderManager>

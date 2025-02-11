@@ -121,7 +121,7 @@ class ContactServiceTest {
                 responsibleOfficer = false,
                 prisonOffenderManager = false)
 
-        val expected = ProfessionalContact(name, listOf(contact1, contact2))
+        val expected = ProfessionalContact(name, currentContacts = listOf(contact1), previousContacts =  listOf(contact2))
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(

@@ -46,8 +46,7 @@ interface PrisonManagerRepository : CrudRepository<PrisonManager, Long> {
         """
         SELECT om
         FROM PrisonManager om
-        WHERE om.person.id = :id 
-        ORDER BY om.allocationDate desc 
+        WHERE om.person.id = :id
         """
     )
     fun findPrisonManagersByPersonId(id: Long): List<PrisonManager>
