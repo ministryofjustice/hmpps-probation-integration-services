@@ -1,0 +1,29 @@
+# Common values
+generic-service:
+  productId: HMPPS518
+  nameOverride: breach-notice-and-delius
+  serviceAccountName: breach-notice-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/breach-notice-and-delius
+
+  ingress:
+    tlsSecretName: breach-notice-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    breach-notice-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    breach-notice-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    breach-notice-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    breach-notice-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: breach-notice-and-delius
+

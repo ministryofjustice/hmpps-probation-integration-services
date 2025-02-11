@@ -8,6 +8,7 @@ include(
     "arns-and-delius",
     "assess-for-early-release-and-delius",
     "assessment-summary-and-delius",
+    "breach-notice-and-delius",
     "cas2-and-delius",
     "cas3-and-delius",
     "common-platform-and-delius",
@@ -73,13 +74,13 @@ dependencyResolutionManagement {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.4")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.3.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.30.11")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.30.16")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.3.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.3.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.3.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.30.11")
+            library("aws-sts", "software.amazon.awssdk:sts:2.30.16")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.0")
-            library("azure-identity", "com.azure:azure-identity:1.15.0")
+            library("azure-identity", "com.azure:azure-identity:1.15.1")
             library("flipt", "io.flipt:flipt-java:1.1.1")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.27.0")
