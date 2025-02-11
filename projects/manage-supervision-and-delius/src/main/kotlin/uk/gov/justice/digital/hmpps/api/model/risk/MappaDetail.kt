@@ -9,4 +9,5 @@ data class MappaDetail(
     val categoryDescription: String? = null,
     val startDate: LocalDate,
     val reviewDate: LocalDate? = null,
+    val lastUpdated: LocalDate
 )
