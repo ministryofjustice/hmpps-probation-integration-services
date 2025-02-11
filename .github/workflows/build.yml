@@ -45,6 +45,7 @@ jobs:
           - arns-and-delius
           - assess-for-early-release-and-delius
           - assessment-summary-and-delius
+          - breach-notice-and-delius
           - cas2-and-delius
           - cas3-and-delius
           - common-platform-and-delius
@@ -85,7 +86,6 @@ jobs:
           - tier-to-delius
           - unpaid-work-and-delius
           - workforce-allocations-to-delius
-          - breach-notice-and-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
