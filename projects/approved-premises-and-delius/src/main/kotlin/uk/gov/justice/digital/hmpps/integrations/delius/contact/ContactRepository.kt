@@ -4,5 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.time.ZonedDateTime
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-    fun findByPersonIdAndTypeCodeAndStartTime(personId: Long, type: String, startTime: ZonedDateTime): Contact?
+    fun findByPersonIdAndEventIdAndNsiIdAndTypeCodeAndStartTime(
+        personId: Long,
+        eventId: Long?,
+        nsiId: Long?,
+        type: String,
+        startTime: ZonedDateTime
+    ): Contact?
 }

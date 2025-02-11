@@ -258,11 +258,11 @@ internal class MessagingIntegrationTest {
         verify(telemetryService).trackEvent("PersonArrived", event.message.telemetryProperties())
 
         // And a contact alert is created
-        val contact = contactRepository.findAll()
+        val alertContact = contactRepository.findAll()
             .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.ARRIVED.code }
-        assertThat(contact.alert, equalTo(true))
+        assertThat(alertContact.alert, equalTo(true))
         assertThat(
-            contact.notes,
+            alertContact.notes,
             equalTo(
                 """
                 Arrived a day late due to rail strike. Informed in advance by COM.
@@ -271,8 +271,8 @@ internal class MessagingIntegrationTest {
                 """.trimIndent()
             )
         )
-        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
-        assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(alertContact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
+        assertThat(alertContact.eventId, equalTo(PersonGenerator.EVENT.id))
 
         // And a residence NSI is created
         nsiRepository.findAll()
@@ -288,10 +288,17 @@ internal class MessagingIntegrationTest {
                         """.trimIndent()
                     )
                 )
+                assertThat(nsi.event?.id, equalTo(PersonGenerator.EVENT.id))
                 assertThat(nsi.externalReference, equalTo(EXT_REF_BOOKING_PREFIX + details.bookingId))
                 assertThat(nsi.referralDate, equalTo(details.applicationSubmittedOn))
                 assertNotNull(nsi.actualStartDate)
                 assertThat(nsi.actualStartDate, isSameTimeAs(details.arrivedAt))
+
+                val nsiReferralContact = contactRepository.findAll()
+                    .single { it.nsiId == nsi.id && it.type.code == ContactTypeCode.NSI_REFERRAL.code }
+                assertThat(nsiReferralContact.date, equalTo(details.arrivedAt.toLocalDate()))
+                assertThat(nsiReferralContact.eventId, equalTo(PersonGenerator.EVENT.id))
+                assertThat(nsiReferralContact.alert, equalTo(false))
             }
 
         // And a rehabilitative activity NSI is created
@@ -308,11 +315,25 @@ internal class MessagingIntegrationTest {
                         """.trimIndent()
                     )
                 )
+                assertThat(nsi.person.id, equalTo(PersonGenerator.DEFAULT.id))
+                assertThat(nsi.event?.id, equalTo(PersonGenerator.EVENT.id))
                 assertThat(nsi.externalReference, equalTo(EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX + details.bookingId))
                 assertThat(nsi.referralDate, equalTo(details.applicationSubmittedOn))
                 assertThat(nsi.status.code, equalTo(NsiStatusCode.ACTIVE.code))
                 assertNotNull(nsi.actualStartDate)
                 assertThat(nsi.actualStartDate, isSameTimeAs(details.arrivedAt))
+
+                val nsiReferralContact = contactRepository.findAll()
+                    .single { it.nsiId == nsi.id && it.type.code == ContactTypeCode.NSI_REFERRAL.code }
+                assertThat(nsiReferralContact.date, equalTo(details.arrivedAt.toLocalDate()))
+                assertThat(nsiReferralContact.eventId, equalTo(PersonGenerator.EVENT.id))
+                assertThat(nsiReferralContact.alert, equalTo(false))
+
+                val nsiStatusChangeContact =
+                    contactRepository.findAll().single { it.nsiId == nsi.id && it.type.code == "SMLI001" }
+                assertThat(nsiStatusChangeContact.date, equalTo(details.arrivedAt.toLocalDate()))
+                assertThat(nsiStatusChangeContact.eventId, equalTo(PersonGenerator.EVENT.id))
+                assertThat(nsiStatusChangeContact.alert, equalTo(false))
             }
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
@@ -343,7 +364,7 @@ internal class MessagingIntegrationTest {
         assertThat(domainEvent.additionalInformation["addressStatus"], equalTo("Main Address"))
 
         val keyWorker = staffRepository.getByCode("N54A001")
-        val residences = residenceRepository.findAll().filter { it.personId == contact.person.id }
+        val residences = residenceRepository.findAll().filter { it.personId == alertContact.person.id }
         assertThat(residences.size, equalTo(1))
         val residence = residences.first()
         assertThat(residence.arrivalDate, isSameTimeAs(details.arrivedAt))
@@ -361,30 +382,41 @@ internal class MessagingIntegrationTest {
 
         verify(telemetryService).trackEvent("PersonDeparted", event.message.telemetryProperties())
 
-        val contact = contactRepository.findAll()
+        val departureContact = contactRepository.findAll()
             .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.DEPARTED.code }
-        assertThat(contact.alert, equalTo(false))
+        assertThat(departureContact.alert, equalTo(false))
         assertThat(
-            contact.notes,
+            departureContact.notes,
             equalTo("For details, see the referral on the AP Service: ${details.applicationUrl}")
         )
-        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
-        assertThat(contact.outcome?.code, equalTo("AP_N"))
-        assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
-        assertThat(contact.description, equalTo("Departed from Hope House"))
-        assertThat(contact.date, equalTo(LocalDate.of(2023, 1, 16)))
+        assertThat(departureContact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
+        assertThat(departureContact.outcome?.code, equalTo("AP_N"))
+        assertThat(departureContact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(departureContact.description, equalTo("Departed from Hope House"))
+        assertThat(departureContact.date, equalTo(LocalDate.of(2023, 1, 16)))
 
-        nsiRepository.findByPersonIdAndExternalReference(contact.person.id, EXT_REF_BOOKING_PREFIX + details.bookingId)
+        nsiRepository.findByPersonIdAndExternalReference(
+            departureContact.person.id,
+            EXT_REF_BOOKING_PREFIX + details.bookingId
+        )
             .let { nsi ->
                 assertNotNull(nsi)
                 assertNotNull(nsi!!.actualEndDate)
                 assertThat(nsi.actualEndDate, isSameTimeAs(details.departedAt))
                 assertThat(nsi.active, equalTo(false))
                 assertThat(nsi.outcome!!.code, equalTo("APRC"))
+
+                val nsiTerminatedContact = contactRepository.findAll()
+                    .single { it.nsiId == nsi.id && it.type.code == ContactTypeCode.NSI_TERMINATED.code }
+                assertThat(nsiTerminatedContact.alert, equalTo(false))
+                assertThat(nsiTerminatedContact.notes, equalTo("NSI Terminated with Outcome: Description of APRC"))
+                assertThat(nsiTerminatedContact.eventId, equalTo(PersonGenerator.EVENT.id))
+                assertThat(nsiTerminatedContact.date, equalTo(LocalDate.of(2023, 1, 16)))
+
             }
 
         nsiRepository.findByPersonIdAndExternalReference(
-            contact.person.id,
+            departureContact.person.id,
             EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX + details.bookingId
         )
             .let { nsi ->
@@ -410,7 +442,7 @@ internal class MessagingIntegrationTest {
         assertThat(domainEvent.crn(), equalTo(event.message.crn()))
         assertThat(domainEvent.additionalInformation["addressStatus"], equalTo("Previous Address"))
 
-        val residence = residenceRepository.findAll().first { it.personId == contact.person.id }
+        val residence = residenceRepository.findAll().first { it.personId == departureContact.person.id }
         assertThat(residence.departureDate, isSameTimeAs(details.departedAt))
         assertThat(residence.departureReasonId, equalTo(ReferenceDataGenerator.ORDER_EXPIRED.id))
         assertThat(residence.moveOnCategoryId, equalTo(ReferenceDataGenerator.MC05.id))
