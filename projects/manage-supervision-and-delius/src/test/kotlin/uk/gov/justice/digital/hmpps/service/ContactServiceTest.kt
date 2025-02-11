@@ -121,9 +121,11 @@ class ContactServiceTest {
                 LocalDate.of(2025, 2, 10),
                 LocalDate.of(2025, 2, 9),
                 responsibleOfficer = false,
-                prisonOffenderManager = false)
+                prisonOffenderManager = false
+            )
 
-        val expected = ProfessionalContact(name, currentContacts = listOf(contact1), previousContacts =  listOf(contact2))
+        val expected =
+            ProfessionalContact(name, currentContacts = listOf(contact1), previousContacts = listOf(contact2))
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(

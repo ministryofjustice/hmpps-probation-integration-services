@@ -226,7 +226,8 @@ class PersonalDetailsService(
             lastUpdated = person.lastUpdatedDatetime.toLocalDate(),
             lastUpdatedBy = person.lastUpdatedUser?.let { Name(forename = it.forename, surname = it.surname) },
             addressTypes = addressTypes,
-            staffContacts = contactService.getCombinedContacts(person.id).filter { it.allocatedUntil == null }.sortedByDescending { it.allocationDate }
+            staffContacts = contactService.getCombinedContacts(person.id).filter { it.allocatedUntil == null }
+                .sortedByDescending { it.allocationDate }
         )
     }
 

@@ -41,7 +41,7 @@ class PrisonManager(
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "prisonManager")
     val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
 
-) {
+    ) {
     fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.isActive() }
 }
 

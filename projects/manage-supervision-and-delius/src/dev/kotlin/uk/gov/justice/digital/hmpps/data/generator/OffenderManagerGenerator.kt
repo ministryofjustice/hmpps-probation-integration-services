@@ -72,7 +72,7 @@ object OffenderManagerGenerator {
         lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 7), LocalTime.NOON, EuropeLondon)
     )
 
-    val RESPONSIBLE_OFFICER = ResponsibleOfficer (
+    val RESPONSIBLE_OFFICER = ResponsibleOfficer(
         IdGenerator.getAndIncrement(),
         PersonGenerator.OVERVIEW.id,
         PRISON_OFFENDER_MANAGER_ACTIVE,

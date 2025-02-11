@@ -41,7 +41,8 @@ class ContactService(
         val prisonContacts = prisonManagerRepository.findPrisonManagersByPersonId(id)
 
         return probationContacts.map { it.toContact() } + prisonContacts.map {
-            it.toContact() }
+            it.toContact()
+        }
     }
 
     fun Person.toName() =
@@ -83,7 +84,7 @@ class ContactService(
             provider.description,
             team.district.borough.description,
             team.description,
-            allocationDate= allocationDate,
+            allocationDate = allocationDate,
             allocatedUntil = endDate,
             lastUpdated = lastUpdated.toLocalDate(),
             responsibleOfficer = responsibleOfficer() != null,
