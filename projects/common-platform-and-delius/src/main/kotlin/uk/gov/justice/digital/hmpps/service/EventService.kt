@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.dto.InsertEventResult
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.messaging.HearingOffence
@@ -28,7 +29,6 @@ class EventService(
     private val courtAppearanceRepository: CourtAppearanceRepository
 ) : AuditableService(auditedInteractionService) {
 
-    @Transactional
     fun insertEvent(
         hearingOffence: HearingOffence,
         person: Person,

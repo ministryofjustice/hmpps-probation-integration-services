@@ -12,6 +12,7 @@ object CommonPlatformHearingGenerator {
 }
 
 object HearingGenerator {
+    val DEFAULT = generate()
     fun generate(
         id: String = UUID.randomUUID().toString(),
         courtCentre: CourtCentre = CourtCentreGenerator.generate(),
@@ -204,6 +205,7 @@ object PersonDetailsGenerator {
 }
 
 object HearingOffenceGenerator {
+    val DEFAULT = generate()
     fun generate(
         id: String = UUID.randomUUID().toString(),
         offenceCode: String = "123",
