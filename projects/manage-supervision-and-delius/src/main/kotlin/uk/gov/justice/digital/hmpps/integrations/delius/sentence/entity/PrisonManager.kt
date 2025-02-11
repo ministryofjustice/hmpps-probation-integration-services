@@ -38,12 +38,10 @@ class PrisonManager(
 
     val endDate: LocalDate? = null,
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "prisonManager")
-    val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
+    @OneToOne(mappedBy = "prisonManager")
+    val responsibleOfficer: ResponsibleOfficer? = null,
 
-    ) {
-    fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.isActive() }
-}
+    )
 
 interface PrisonManagerRepository : CrudRepository<PrisonManager, Long> {
     @Query(

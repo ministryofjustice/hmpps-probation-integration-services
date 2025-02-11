@@ -65,7 +65,7 @@ class ContactService(
             allocationDate = allocationDate,
             allocatedUntil = endDate,
             lastUpdated = lastUpdated.toLocalDate(),
-            responsibleOfficer = responsibleOfficer() != null,
+            responsibleOfficer = responsibleOfficer != null,
             prisonOffenderManager = false
         )
     }
@@ -87,7 +87,7 @@ class ContactService(
             allocationDate = allocationDate,
             allocatedUntil = endDate,
             lastUpdated = lastUpdated.toLocalDate(),
-            responsibleOfficer = responsibleOfficer() != null,
+            responsibleOfficer = responsibleOfficer != null,
             prisonOffenderManager = true
         )
     }

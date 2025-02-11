@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -41,16 +42,16 @@ class OffenderManager(
 
     val endDate: LocalDate? = null,
 
-    @OneToMany
+    @OneToOne
     @JoinColumns(
         JoinColumn(
             name = "offender_manager_id",
             referencedColumnName = "offender_manager_id",
             insertable = false,
-            updatable = false
+            updatable = false,
         ), JoinColumn(name = "offender_id", referencedColumnName = "offender_id", insertable = false, updatable = false)
     )
-    val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
+    val responsibleOfficer: ResponsibleOfficer? = null,
 
     @Column(name = "last_updated_datetime")
     val lastUpdated: ZonedDateTime,
@@ -62,9 +63,7 @@ class OffenderManager(
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
-) {
-    fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.isActive() }
-}
+)
 
 @Immutable
 @Entity(name = "contact_staff")
@@ -116,6 +115,7 @@ class StaffUser(
 
 @Entity
 @Table(name = "responsible_officer")
+@SQLRestriction("end_date IS NULL")
 class ResponsibleOfficer(
     @Id
     @Column(name = "responsible_officer_id", nullable = false)
@@ -124,16 +124,17 @@ class ResponsibleOfficer(
     @Column(name = "offender_id")
     val personId: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "PRISON_OFFENDER_MANAGER_ID")
-    var prisonManager: PrisonManager?,
+    @OneToOne
+    @JoinColumn(name = "prison_offender_manager_id")
+    var prisonManager: PrisonManager? = null,
 
     val startDate: ZonedDateTime,
 
     val endDate: ZonedDateTime? = null,
-) {
-    fun isActive() = endDate == null
-}
+
+    @Column(name = "offender_manager_id")
+    val offenderManagerId: Long? = null
+)
 
 interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 

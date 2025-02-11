@@ -76,6 +76,22 @@ object OffenderManagerGenerator {
         IdGenerator.getAndIncrement(),
         PersonGenerator.OVERVIEW.id,
         PRISON_OFFENDER_MANAGER_ACTIVE,
-        ZonedDateTime.now()
+        ZonedDateTime.now(),
+    )
+
+    val RESPONSIBLE_OFFICER_OM_ACTIVE = ResponsibleOfficer(
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.OVERVIEW.id,
+        startDate = ZonedDateTime.now(),
+        endDate = ZonedDateTime.now(),
+        offenderManagerId = OFFENDER_MANAGER_ACTIVE.id
+    )
+
+    val RESPONSIBLE_OFFICER_OM_INACTIVE = ResponsibleOfficer(
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.OVERVIEW.id,
+        startDate = ZonedDateTime.now(),
+        endDate = ZonedDateTime.now(),
+        offenderManagerId = OFFENDER_MANAGER_INACTIVE.id
     )
 }
