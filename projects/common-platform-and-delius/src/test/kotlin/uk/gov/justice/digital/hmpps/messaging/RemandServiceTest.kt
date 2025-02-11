@@ -69,8 +69,7 @@ internal class RemandServiceTest {
         verify(notifier).addressCreated(any())
     }
 
-    private fun validInsertRemandDTO(): InsertRemandDTO
-    {
+    private fun validInsertRemandDTO(): InsertRemandDTO {
         val hearing = HearingGenerator.DEFAULT
 
         return InsertRemandDTO(

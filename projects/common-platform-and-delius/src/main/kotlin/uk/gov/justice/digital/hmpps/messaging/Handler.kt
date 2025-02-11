@@ -83,14 +83,16 @@ class Handler(
                         ?: return@forEach
 
                 // Insert person and event
-                remandService.insertPersonOnRemand(InsertRemandDTO(
-                    defendant = defendant,
-                    courtCode = notification.message.hearing.courtCentre.code,
-                    hearingOffence = mainOffence,
-                    sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
-                    caseUrn = caseUrn,
-                    hearingId = notification.message.hearing.id
-                ))
+                remandService.insertPersonOnRemand(
+                    InsertRemandDTO(
+                        defendant = defendant,
+                        courtCode = notification.message.hearing.courtCentre.code,
+                        hearingOffence = mainOffence,
+                        sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
+                        caseUrn = caseUrn,
+                        hearingId = notification.message.hearing.id
+                    )
+                )
             } else {
                 telemetryService.trackEvent(
                     "SimulatedPersonCreated", mapOf(
