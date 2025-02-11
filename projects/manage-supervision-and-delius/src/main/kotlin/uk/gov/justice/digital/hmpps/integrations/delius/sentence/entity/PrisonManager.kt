@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "prison_offender_manager")
@@ -31,6 +32,9 @@ class PrisonManager(
     val staff: Staff,
 
     val allocationDate: LocalDate,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdated: ZonedDateTime,
 
     val endDate: LocalDate? = null,
 

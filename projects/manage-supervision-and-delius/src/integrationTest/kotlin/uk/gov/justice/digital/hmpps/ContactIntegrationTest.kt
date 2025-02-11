@@ -81,7 +81,8 @@ class ContactIntegrationTest {
             "Leicestershire All",
             "OMU B",
             LocalDate.of(2025, 2, 10),
-            null,
+            allocatedUntil = null,
+            lastUpdated = LocalDate.of(2025, 2, 10),
             responsibleOfficer = false,
             prisonOffenderManager = false
         )
@@ -95,6 +96,7 @@ class ContactIntegrationTest {
                 "OMU B",
                 LocalDate.of(2025, 2, 9),
                 LocalDate.of(2025, 2, 10),
+                LocalDate.of(2025, 2, 9),
                 responsibleOfficer = false,
                 prisonOffenderManager = false)
 
@@ -106,10 +108,10 @@ class ContactIntegrationTest {
             "Leicestershire All",
             "OMU B",
             LocalDate.of(2025, 2, 7),
-            null,
+            allocatedUntil = null,
+            lastUpdated = LocalDate.of(2025, 2, 7),
             responsibleOfficer = true,
             prisonOffenderManager = true
-
         )
 
         val expected = ProfessionalContact(name, currentContacts = listOf(contact1, contact3), previousContacts =  listOf(contact2))

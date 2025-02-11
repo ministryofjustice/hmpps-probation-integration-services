@@ -69,7 +69,8 @@ internal class PersonalDetailsControllerTest {
             preferredLanguage = "English",
             aliases = emptyList(),
             genderIdentity = null,
-            selfDescribedGender = null
+            selfDescribedGender = null,
+            staffContacts = listOf()
         )
         whenever(personalDetailsService.getPersonalDetails(crn)).thenReturn(personalDetails)
         val res = controller.getPersonalDetails("X000005")
@@ -186,7 +187,8 @@ internal class PersonalDetailsControllerTest {
             preferredLanguage = "English",
             aliases = emptyList(),
             genderIdentity = null,
-            selfDescribedGender = null
+            selfDescribedGender = null,
+            staffContacts = listOf()
         )
         whenever(personalDetailsService.updatePersonalDetails(crn, request)).thenReturn(personalDetails)
         val res = controller.updatePersonalDetails(crn, request)

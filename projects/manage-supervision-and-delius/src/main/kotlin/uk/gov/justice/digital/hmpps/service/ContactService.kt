@@ -22,14 +22,10 @@ class ContactService(
 
     fun getContacts(crn: String): ProfessionalContact {
         val person = personRepository.getPerson(crn)
-        val probationContacts = offenderManagerRepository.findOffenderManagersByPersonId(person.id)
-        val prisonContacts = prisonManagerRepository.findPrisonManagersByPersonId(person.id)
 
-        val combinedContacts = probationContacts.map { it.toContact() } + prisonContacts.map {
-            it.toContact() }
+        val combinedContacts = getCombinedContacts(person.id)
 
-
-        if (probationContacts.isEmpty()) {
+        if (combinedContacts.isEmpty()) {
             throw NotFoundException("Offender Manager records", "crn", crn)
         }
 
@@ -38,6 +34,14 @@ class ContactService(
             combinedContacts.filter { it.allocatedUntil == null }.sortedByDescending { it.allocationDate },
             combinedContacts.filter { it.allocatedUntil != null }.sortedByDescending { it.allocatedUntil },
         )
+    }
+
+    fun getCombinedContacts(id: Long): List<Contact> {
+        val probationContacts = offenderManagerRepository.findOffenderManagersByPersonId(id)
+        val prisonContacts = prisonManagerRepository.findPrisonManagersByPersonId(id)
+
+        return probationContacts.map { it.toContact() } + prisonContacts.map {
+            it.toContact() }
     }
 
     fun Person.toName() =
@@ -59,6 +63,7 @@ class ContactService(
             team.description,
             allocationDate = allocationDate,
             allocatedUntil = endDate,
+            lastUpdated = lastUpdated.toLocalDate(),
             responsibleOfficer = responsibleOfficer() != null,
             prisonOffenderManager = false
         )
@@ -80,6 +85,7 @@ class ContactService(
             team.description,
             allocationDate= allocationDate,
             allocatedUntil = endDate,
+            lastUpdated = lastUpdated.toLocalDate(),
             responsibleOfficer = responsibleOfficer() != null,
             prisonOffenderManager = true
         )

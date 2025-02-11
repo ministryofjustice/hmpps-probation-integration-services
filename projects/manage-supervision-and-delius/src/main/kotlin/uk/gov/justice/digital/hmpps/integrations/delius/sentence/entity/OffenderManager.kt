@@ -52,6 +52,9 @@ class OffenderManager(
     )
     val responsibleOfficers: List<ResponsibleOfficer> = emptyList(),
 
+    @Column(name = "last_updated_datetime")
+    val lastUpdated: ZonedDateTime,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

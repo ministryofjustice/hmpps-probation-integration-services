@@ -105,6 +105,7 @@ class ContactServiceTest {
             "OMU B",
             allocationDate = LocalDate.of(2025, 2, 10),
             allocatedUntil = null,
+            lastUpdated = LocalDate.of(2025, 2, 10),
             responsibleOfficer = false,
             prisonOffenderManager = false
         )
@@ -118,6 +119,7 @@ class ContactServiceTest {
                 "OMU B",
                 LocalDate.of(2025, 2, 9),
                 LocalDate.of(2025, 2, 10),
+                LocalDate.of(2025, 2, 9),
                 responsibleOfficer = false,
                 prisonOffenderManager = false)
 

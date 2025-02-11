@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Borough
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 
 object OffenderManagerGenerator {
@@ -44,6 +46,7 @@ object OffenderManagerGenerator {
             TEAM,
             STAFF_1,
             LocalDate.of(2025, 2, 10),
+            lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 10), LocalTime.NOON, EuropeLondon)
         )
 
     val OFFENDER_MANAGER_INACTIVE =
@@ -55,6 +58,7 @@ object OffenderManagerGenerator {
             STAFF_2,
             LocalDate.of(2025, 2, 9),
             LocalDate.of(2025, 2, 10),
+            lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 9), LocalTime.NOON, EuropeLondon),
             active = false
         )
 
@@ -64,7 +68,8 @@ object OffenderManagerGenerator {
         ContactGenerator.DEFAULT_PROVIDER,
         TEAM,
         STAFF_3,
-        LocalDate.of(2025, 2, 7)
+        LocalDate.of(2025, 2, 7),
+        lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 7), LocalTime.NOON, EuropeLondon)
     )
 
     val RESPONSIBLE_OFFICER = ResponsibleOfficer (
