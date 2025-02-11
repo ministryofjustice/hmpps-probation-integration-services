@@ -20,24 +20,25 @@ on:
         required: true
         options:
           - approved-premises-and-delius-queue
+          - assessment-summary-and-delius-queue
+          - breach-notice-and-delius-queue
+          - cas2-and-delius-queue
+          - cas3-and-delius-queue
+          - common-platform-and-delius-queue
           - custody-key-dates-and-delius-queue
           - make-recall-decisions-and-delius-queue
+          - manage-offences-and-delius-queue
           - manage-pom-cases-and-delius-queue
+          - opd-and-delius-queue
           - pre-sentence-reports-to-delius-queue
           - prison-case-notes-to-probation-queue
           - prison-custody-status-to-delius-queue
+          - prison-identifier-and-delius-queue
           - refer-and-monitor-and-delius-queue
           - risk-assessment-scores-to-delius-queue
           - tier-to-delius-queue
           - unpaid-work-and-delius-queue
           - workforce-allocations-to-delius-queue
-          - manage-offences-and-delius-queue
-          - opd-and-delius-queue
-          - cas3-and-delius-queue
-          - prison-identifier-and-delius-queue
-          - assessment-summary-and-delius-queue
-          - cas2-and-delius-queue
-          - common-platform-and-delius-queue
           # ^ add new queues here
 
 jobs:

@@ -14,6 +14,7 @@ on:
           - arns-and-delius
           - assess-for-early-release-and-delius
           - assessment-summary-and-delius
+          - breach-notice-and-delius
           - cas2-and-delius
           - cas3-and-delius
           - common-platform-and-delius
