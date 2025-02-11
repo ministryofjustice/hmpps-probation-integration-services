@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -149,8 +150,9 @@ class Event(
     @Column(name = "event_number")
     val number: String,
 
-    @Column(name = "offender_id")
-    val personId: Long,
+    @ManyToOne
+    @JoinColumn(name = "offender_id", nullable = false)
+    val person: Person,
 
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

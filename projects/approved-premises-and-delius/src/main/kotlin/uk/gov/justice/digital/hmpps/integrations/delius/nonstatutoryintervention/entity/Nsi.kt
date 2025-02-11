@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
@@ -30,6 +31,10 @@ class Nsi(
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
+
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    val event: Event?,
 
     @ManyToOne
     @JoinColumn(name = "nsi_type_id", nullable = false)
@@ -94,7 +99,6 @@ class Nsi(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
 ) {
-
     var actualEndDate: ZonedDateTime? = actualEndDate
         set(value) {
             field = value
@@ -104,4 +108,5 @@ class Nsi(
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
     fun findByPersonIdAndExternalReference(personId: Long, externalReference: String): Nsi?
+    fun findByPersonIdAndTypeCodeAndActualEndDateIsNull(personId: Long, typeCode: String): List<Nsi>
 }

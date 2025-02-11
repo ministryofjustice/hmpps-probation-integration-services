@@ -149,7 +149,7 @@ class ProbationCaseDataLoader(
     ) {
         val event = PersonGenerator.generateEvent(
             "1",
-            probationCase.id,
+            probationCase.asPerson(),
             id = eventId
         ).apply(eventRepository::save)
 

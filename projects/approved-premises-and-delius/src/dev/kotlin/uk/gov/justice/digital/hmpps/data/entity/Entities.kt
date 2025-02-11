@@ -74,7 +74,7 @@ class InstitutionalReport(
 
 @Entity(name = "NsiEntity")
 @Table(name = "nsi")
-class Nsi(@Id @Column(name = "nsi_id") val id: Long, val eventId: Long?)
+class Nsi(@Id @Column(name = "nsi_id") val id: Long, @Column(name = "event_id") val eventId: Long?)
 
 @Entity(name = "PersonalCircumstanceEntity")
 @Table(name = "personal_circumstance")
