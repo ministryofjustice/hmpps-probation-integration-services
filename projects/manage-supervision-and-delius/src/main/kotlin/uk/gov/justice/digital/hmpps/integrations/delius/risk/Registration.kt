@@ -64,6 +64,9 @@ class RiskFlag(
     @Column(name = "registration_date")
     val date: LocalDate,
 
+    @Column(name = "last_updated_datetime")
+    val lastUpdated: ZonedDateTime,
+
     @ManyToOne
     @JoinColumn(name = "register_level_id")
     val level: ReferenceData?,

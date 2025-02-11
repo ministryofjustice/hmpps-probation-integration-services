@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.name
@@ -11,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Disability
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision
+import uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlagRepository
 
 @Service
 class OverviewService(
@@ -22,7 +24,8 @@ class OverviewService(
     private val personalCircumstanceRepository: PersonCircumstanceRepository,
     private val nsiRepository: NsiRepository,
     private val eventRepository: EventRepository,
-    private val requirementService: RequirementService
+    private val requirementService: RequirementService,
+    private val riskFlagRepository: RiskFlagRepository
 ) {
 
     @Transactional
@@ -45,6 +48,8 @@ class OverviewService(
         val previousOrdersBreached = allBreaches.filter { it -> it.eventId in previousOrders.map { it.id } }.size
         val compliance = toSentenceCompliance(previousAppointments.map { it.toActivity() }, allBreaches)
         val registrations = registrationRepository.findByPersonId(person.id)
+        val mappa = riskFlagRepository.findActiveMappaRegistrationByOffenderId(person.id, PageRequest.of(0, 1))
+            .firstOrNull()
 
 
         return Overview(
@@ -56,7 +61,8 @@ class OverviewService(
             sentences = sentences.mapNotNull { it },
             activity = toSentenceActivityCounts(previousAppointments.map { it.toActivity() }),
             compliance = compliance,
-            registrations = registrations.map { it.type.description }
+            registrations = registrations.map { it.type.description },
+            mappa = mappa?.toMappa()
         )
     }
 

@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.LIMITED_ACCESS_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiType
@@ -17,10 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.CaseloadPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Team
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.temporal.ChronoUnit
 
 object PersonGenerator {
@@ -495,6 +493,7 @@ object PersonGenerator {
         LocalDate.now().plusDays(1),
         emptyList(),
         date,
+        ZonedDateTime.of(date, LocalTime.NOON, EuropeLondon),
         level,
         false,
         id
