@@ -81,12 +81,12 @@ class NsiService(
     fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises): PersonAddress? {
         val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
         val staff = staffRepository.getByCode(details.recordedBy.staffCode)
-        findNsi(person, APPROVED_PREMISES_RESIDENCE, details.residencyRef())?.let { nsi ->
+        findNsi(person, APPROVED_PREMISES_RESIDENCE, details.residencyRef()).forEach { nsi ->
             nsi.actualEndDate = details.departedAt
             nsi.outcome = referenceDataRepository.referralCompleted()
             nsi.terminationContact(details.departedAt, staff, team)
         }
-        findNsi(person, REHABILITATIVE_ACTIVITY, details.rehabilitativeActivityRef())?.let { nsi ->
+        findNsi(person, REHABILITATIVE_ACTIVITY, details.rehabilitativeActivityRef()).forEach { nsi ->
             nsi.actualEndDate = details.departedAt
             nsi.status = nsiStatusRepository.getByCode(NsiStatusCode.COMPLETED.code)
             nsi.outcome = referenceDataRepository.endOfEngagementOutcome()
@@ -114,9 +114,9 @@ class NsiService(
     }
 
     private fun findNsi(person: Person, type: NsiTypeCode, externalReference: String) =
-        nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference)
+        nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference)?.let { listOf(it) }
         // To handle existing NSIs created manually in Delius prior to arrival/departure moving to CAS1 service:
-            ?: nsiRepository.findByPersonIdAndTypeCode(person.id, type.code)
+            ?: nsiRepository.findByPersonIdAndTypeCodeAndActualEndDateIsNull(person.id, type.code)
 
     private fun Event.createNsi(
         nsiType: NsiTypeCode,
