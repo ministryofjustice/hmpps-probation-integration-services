@@ -9,5 +9,7 @@ enum class ContactTypeCode(val code: String) {
     BOOKING_CHANGED("EABA"),
     ARRIVED("EAPA"),
     NOT_ARRIVED("EAPX"),
-    DEPARTED("EAPD")
+    DEPARTED("EAPD"),
+    NSI_REFERRAL("NREF"),
+    NSI_TERMINATED("NTER")
 }

@@ -49,6 +49,9 @@ class Contact(
     @Column(name = "event_id")
     val eventId: Long? = null,
 
+    @Column(name = "nsi_id")
+    val nsiId: Long? = null,
+
     @Lob
     @Column
     val notes: String? = null,

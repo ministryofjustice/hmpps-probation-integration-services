@@ -186,7 +186,10 @@ class DataLoader(
             )
         )
         nsiTypeRepository.saveAll(NsiTypeCode.entries.map { NsiTypeGenerator.generate(it.code) })
-        nsiStatusRepository.saveAll(NsiStatusCode.entries.map { NsiStatusGenerator.generate(it.code) })
+        val linkedContact = contactTypeRepository.save(ContactTypeGenerator.generate("SMLI001"))
+        nsiStatusRepository.saveAll(NsiStatusCode.entries.map {
+            NsiStatusGenerator.generate(it.code, if (it.code == NsiStatusCode.ACTIVE.code) linkedContact else null)
+        })
         transferReasonRepository.save(TransferReasonGenerator.NSI)
 
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.NON_APPROVED_PREMISES_TEAM))

@@ -1,12 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 
 @Entity
 @Immutable
@@ -17,7 +15,11 @@ class NsiStatus(
     val id: Long,
 
     @Column(name = "code")
-    val code: String
+    val code: String,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_type_id")
+    val contactType: ContactType? = null,
 )
 
 enum class NsiStatusCode(val code: String) {
