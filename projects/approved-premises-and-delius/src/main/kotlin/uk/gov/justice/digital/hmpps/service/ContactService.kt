@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlert
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
@@ -38,16 +37,24 @@ class ContactService(
         staff: Staff,
         probationAreaCode: String,
         team: Team? = null,
-        eventId: Long? = null
+        eventId: Long? = null,
+        nsiId: Long? = null
     ): Contact {
-        return contactRepository.findByPersonIdAndTypeCodeAndStartTime(person.id, details.type.code, details.date)
+        return contactRepository.findByPersonIdAndEventIdAndNsiIdAndTypeCodeAndStartTime(
+            person.id,
+            eventId,
+            nsiId,
+            details.typeCode,
+            details.date
+        )
             ?: run {
                 val contactTeam = team ?: teamRepository.getUnallocatedTeam(probationAreaCode)
+                val type = contactTypeRepository.getByCode(details.typeCode)
                 val contact = contactRepository.save(
                     Contact(
                         date = details.cancellationRecordedAt ?: details.date.toLocalDate(),
                         startTime = details.date,
-                        type = contactTypeRepository.getByCode(details.type.code),
+                        type = type,
                         outcome = details.outcomeCode?.let { contactOutcomeRepository.findByCode(it) },
                         locationId = details.locationCode?.let { officeLocationRepository.findByCode(it) }?.id,
                         description = details.description,
@@ -56,7 +63,8 @@ class ContactService(
                         team = contactTeam,
                         notes = details.notes,
                         alert = details.createAlert,
-                        eventId = eventId
+                        eventId = eventId,
+                        nsiId = nsiId,
                     )
                 )
                 if (details.createAlert) {
@@ -79,7 +87,7 @@ class ContactService(
 
 data class ContactDetails(
     val date: ZonedDateTime,
-    val type: ContactTypeCode,
+    val typeCode: String,
     val outcomeCode: String? = null,
     val locationCode: String? = null,
     val notes: String? = null,

@@ -303,7 +303,7 @@ internal class ApprovedPremisesServiceTest {
         val staff = givenStaff()
         val approvedPremisesTeam = givenApprovedPremisesTeam()
         val details = givenPersonArrivedDetails(keyWorker = staff)
-        givenContactTypes(listOf(ContactTypeCode.ARRIVED))
+        givenContactTypes(listOf(ContactTypeCode.ARRIVED, ContactTypeCode.NSI_REFERRAL))
         givenNsiTypes(
             listOf(NsiTypeCode.APPROVED_PREMISES_RESIDENCE, NsiTypeCode.REHABILITATIVE_ACTIVITY),
             listOf(NsiStatusCode.IN_RESIDENCE, NsiStatusCode.ACTIVE)
@@ -433,14 +433,14 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenAnActiveEvent(person: Person, eventNumber: String): Event {
-        val event = PersonGenerator.generateEvent(eventNumber, person.id)
+        val event = PersonGenerator.generateEvent(eventNumber, person)
         whenever(eventRepository.findByPersonIdAndNumber(person.id, eventNumber))
             .thenReturn(event)
         return event
     }
 
     private fun givenAnEvent(person: Person, eventNumber: String): Event {
-        val event = PersonGenerator.generateEvent(eventNumber, person.id)
+        val event = PersonGenerator.generateEvent(eventNumber, person)
         whenever(eventRepository.findByPersonIdAndNumber(person.id, eventNumber))
             .thenReturn(event)
         return event

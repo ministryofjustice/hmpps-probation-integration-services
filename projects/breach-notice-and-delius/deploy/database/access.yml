@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /breach-notice-and-delius/db-username
+    password_key: /breach-notice-and-delius/db-password
+
+  audit:
+    username: BreachNoticeAndDelius
+    forename: Breach Notice
+    surname: Service

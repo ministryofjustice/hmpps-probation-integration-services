@@ -35,7 +35,7 @@ class ApprovedPremisesService(
         contactService.createContact(
             ContactDetails(
                 date = details.submittedAt,
-                type = APPLICATION_SUBMITTED,
+                typeCode = APPLICATION_SUBMITTED.code,
                 description = "Approved Premises Application Submitted",
                 notes = details.notes
             ),
@@ -53,7 +53,7 @@ class ApprovedPremisesService(
         contactService.createContact(
             ContactDetails(
                 date = details.assessedAt,
-                type = APPLICATION_ASSESSED,
+                typeCode = APPLICATION_ASSESSED.code,
                 notes = details.notes,
                 description = "Approved Premises Application ${details.decision}"
             ),
@@ -71,7 +71,7 @@ class ApprovedPremisesService(
         contactService.createContact(
             ContactDetails(
                 date = details.withdrawnAt,
-                type = APPLICATION_WITHDRAWN,
+                typeCode = APPLICATION_WITHDRAWN.code,
                 notes = listOfNotNull(
                     details.withdrawalReason,
                     "For more details, click here: ${details.applicationUrl}"

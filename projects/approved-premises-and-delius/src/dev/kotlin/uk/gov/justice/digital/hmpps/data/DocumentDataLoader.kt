@@ -33,7 +33,7 @@ class DocumentDataLoader(
         )
 
         val person = personRepository.getByCrn(ProbationCaseGenerator.CASE_X320741.crn)
-        val personEvent = PersonGenerator.generateEvent("1", person.id)
+        val personEvent = PersonGenerator.generateEvent("1", person)
             .apply(eventRepository::save)
 
         val personDocument = generate(

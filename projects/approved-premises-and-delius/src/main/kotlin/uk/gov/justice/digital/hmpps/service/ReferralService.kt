@@ -63,7 +63,7 @@ class ReferralService(
                 contactService.createContact(
                     ContactDetails(
                         date = details.bookingMadeAt,
-                        type = ContactTypeCode.BOOKING_MADE,
+                        typeCode = ContactTypeCode.BOOKING_MADE.code,
                         notes = """
                             Expected arrival: ${DeliusDateFormatter.format(details.arrivalOn)}
                             Expected departure: ${DeliusDateFormatter.format(details.departureOn)}
@@ -89,7 +89,7 @@ class ReferralService(
         contactService.createContact(
             ContactDetails(
                 date = details.changedAt,
-                type = ContactTypeCode.BOOKING_CHANGED,
+                typeCode = ContactTypeCode.BOOKING_CHANGED.code,
                 locationCode = ap.locationCode(),
                 description = "Booking changed for ${details.premises.name}",
                 notes = listOfNotNull(
@@ -138,7 +138,7 @@ class ReferralService(
             ContactDetails(
                 date = details.cancellationRecordedAt,
                 cancellationRecordedAt = details.cancelledAtDate,
-                type = ContactTypeCode.BOOKING_CANCELLED,
+                typeCode = ContactTypeCode.BOOKING_CANCELLED.code,
                 locationCode = ap.locationCode(),
                 description = "Booking cancelled for ${details.premises.name}",
                 notes = listOfNotNull(
@@ -162,7 +162,7 @@ class ReferralService(
         contactService.createContact(
             ContactDetails(
                 date = dateTime,
-                type = ContactTypeCode.NOT_ARRIVED,
+                typeCode = ContactTypeCode.NOT_ARRIVED.code,
                 locationCode = ap.locationCode(),
                 description = details.reason,
                 outcomeCode = ContactOutcome.AP_NON_ARRIVAL_PREFIX + details.reasonCode,

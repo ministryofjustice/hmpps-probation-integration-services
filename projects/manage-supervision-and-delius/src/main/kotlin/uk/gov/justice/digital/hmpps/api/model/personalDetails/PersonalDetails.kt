@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.sentence.Contact
 import java.time.LocalDate
 
 data class PersonalDetails(
@@ -33,7 +34,8 @@ data class PersonalDetails(
     val documents: List<Document>,
     val lastUpdated: LocalDate? = null,
     val lastUpdatedBy: Name? = null,
-    val addressTypes: List<AddressType> = emptyList()
+    val addressTypes: List<AddressType> = emptyList(),
+    val staffContacts: List<Contact>
 )
 
 data class AddressType(

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.service
+package uk.gov.justice.digital.hmpps.dto
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 

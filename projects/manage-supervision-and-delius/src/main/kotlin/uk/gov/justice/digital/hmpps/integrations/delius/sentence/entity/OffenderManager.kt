@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -11,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
 import java.io.Serializable
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import kotlin.jvm.Transient
 
 @Entity
@@ -36,7 +38,23 @@ class OffenderManager(
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
 
-    val endDate: LocalDate?,
+    val allocationDate: LocalDate,
+
+    val endDate: LocalDate? = null,
+
+    @OneToOne
+    @JoinColumns(
+        JoinColumn(
+            name = "offender_manager_id",
+            referencedColumnName = "offender_manager_id",
+            insertable = false,
+            updatable = false,
+        ), JoinColumn(name = "offender_id", referencedColumnName = "offender_id", insertable = false, updatable = false)
+    )
+    val responsibleOfficer: ResponsibleOfficer? = null,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdated: ZonedDateTime,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -94,6 +112,29 @@ class StaffUser(
     @Transient
     var telephone: String? = null
 }
+
+@Entity
+@Table(name = "responsible_officer")
+@SQLRestriction("end_date IS NULL")
+class ResponsibleOfficer(
+    @Id
+    @Column(name = "responsible_officer_id", nullable = false)
+    val id: Long = 0,
+
+    @Column(name = "offender_id")
+    val personId: Long,
+
+    @OneToOne
+    @JoinColumn(name = "prison_offender_manager_id")
+    val prisonManager: PrisonManager? = null,
+
+    val startDate: ZonedDateTime,
+
+    val endDate: ZonedDateTime? = null,
+
+    @Column(name = "offender_manager_id")
+    val offenderManagerId: Long? = null
+)
 
 interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 

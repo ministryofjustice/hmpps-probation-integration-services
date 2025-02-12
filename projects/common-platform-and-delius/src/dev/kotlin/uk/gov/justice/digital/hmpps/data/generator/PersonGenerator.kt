@@ -49,3 +49,17 @@ object PersonManagerGenerator {
         allocationReason = allocationReason
     )
 }
+
+object EqualityGenerator {
+    val DEFAULT = generate(1L, 1L, false)
+
+    fun generate(
+        id: Long = IdGenerator.getAndIncrement(),
+        personId: Long = 1L,
+        softDeleted: Boolean = false
+    ) = Equality(
+        id = id,
+        personId = personId,
+        softDeleted = softDeleted
+    )
+}

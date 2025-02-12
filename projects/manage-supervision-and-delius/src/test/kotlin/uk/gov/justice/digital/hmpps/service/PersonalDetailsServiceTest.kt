@@ -74,6 +74,9 @@ internal class PersonalDetailsServiceTest {
     @Mock
     lateinit var transactionTemplate: TransactionTemplate
 
+    @Mock
+    lateinit var contactService: ContactService
+
     @InjectMocks
     lateinit var service: PersonalDetailsService
 

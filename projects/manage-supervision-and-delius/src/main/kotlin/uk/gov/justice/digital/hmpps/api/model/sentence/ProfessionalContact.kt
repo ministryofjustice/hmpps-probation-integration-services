@@ -4,5 +4,6 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 
 data class ProfessionalContact(
     val name: Name,
-    val contacts: List<Contact>
+    val currentContacts: List<Contact>,
+    val previousContacts: List<Contact> = emptyList()
 )
