@@ -80,6 +80,9 @@ class Person(
     @Convert(converter = NumericBooleanConverter::class)
     val pendingTransfer: Boolean = false,
 
+    @Column(name = "current_remand_status")
+    var remandStatus: String? = null,
+
     @Column
     @Version
     val rowVersion: Long = 0L,

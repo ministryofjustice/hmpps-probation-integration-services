@@ -36,6 +36,9 @@ import java.time.LocalDate
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class IntegrationTest {
+    @Autowired
+    private lateinit var referenceDataRepository: ReferenceDataRepository
+
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
 
@@ -151,7 +154,7 @@ internal class IntegrationTest {
 
         verify(personService).insertPerson(any(), any())
 
-        verify(personRepository).save(check<Person> {
+        verify(personRepository, times(2)).save(check<Person> {
             assertThat(it.forename, Matchers.equalTo("Example First Name"))
             assertThat(it.surname, Matchers.equalTo("Example Last Name"))
             assertThat(it.mobileNumber, Matchers.equalTo("07000000000"))
@@ -228,7 +231,7 @@ internal class IntegrationTest {
 
         verify(personService).insertPerson(any(), any())
 
-        verify(personRepository).save(check<Person> {
+        verify(personRepository, times(2)).save(check<Person> {
             assertThat(it.forename, Matchers.equalTo("Example First Name"))
             assertThat(it.surname, Matchers.equalTo("Example Last Name"))
             assertThat(it.mobileNumber, Matchers.equalTo("07000000000"))
@@ -402,6 +405,11 @@ internal class IntegrationTest {
             assertThat(it.allocationDate, Matchers.equalTo(LocalDate.of(2024, 1, 1)))
             assertNull(it.endDate)
         })
+
+        verify(personService).updatePerson(check<Person> {
+            assertThat(it.remandStatus, Matchers.equalTo(referenceDataRepository.remandedInCustodyStatus().description))
+        })
+
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.INSERT_EVENT),
             any(),
