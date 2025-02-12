@@ -108,12 +108,13 @@ class PersonService(
                 }
             }
             audit["offenderId"] = savedPerson.id
+            audit["crn"] = savedPerson.crn
             InsertPersonResult(savedPerson, savedManager, savedEquality, savedAddress)
         }
 
     fun insertAddress(address: PersonAddress): PersonAddress = audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
         val savedAddress = personAddressRepository.save(address)
-        audit["addressId"] = savedAddress.id!!
+        audit["offenderId"] = address.person.id!!
         savedAddress
     }
 

@@ -151,7 +151,6 @@ class EventService(
             // TODO 6. Update person level remand status field?
 
             audit["offenderId"] = savedEvent.person.id!!
-            audit["eventId"] = savedEvent.id
             InsertEventResult(savedEvent, savedMainOffence, initialCourtAppearance, initialContact, savedOrderManager)
         }
 
@@ -184,7 +183,7 @@ class EventService(
                 )
             )
 
-            audit["courtAppearanceId"] = savedCourtAppearance.id!!
+            audit["eventId"] = savedCourtAppearance.event.id!!
             savedCourtAppearance
         }
 }
