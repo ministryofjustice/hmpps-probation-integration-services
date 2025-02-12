@@ -45,10 +45,13 @@ class ContactService(
     fun getActivePersonManagers(id: Long): List<Contact> {
         val communityManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(id)
         val prisonManager = prisonManagerRepository.findPrisonManagerByPersonId(id)
-        
-        return listOfNotNull(communityManager?.toContact(), prisonManager?.toContact()).sortedByDescending { it.allocationDate }
+
+        return listOfNotNull(
+            communityManager?.toContact(),
+            prisonManager?.toContact()
+        ).sortedByDescending { it.allocationDate }
     }
-    
+
     fun Person.toName() =
         Name(forename, secondName, surname)
 
