@@ -17,6 +17,12 @@ class UnpaidWorkAppointmentsService(
     fun sendUnpaidWorkAppointmentReminders(providerCode: String, templateIds: List<String>) {
         upwAppointmentRepository.getUnpaidWorkAppointments(LocalDate.now().plusDays(2), providerCode)
             .forEach {
+                val telemetryProperties = mapOf(
+                    "crn" to it.crn,
+                    "providerCode" to providerCode,
+                    "templateIds" to templateIds.joinToString(),
+                    "upwAppointmentIds" to it.upwAppointmentIds,
+                )
                 if (it.crn !in properties.excludedCrns) {
                     val responses = templateIds.map { templateId ->
                         val templateValues = mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate)
@@ -24,17 +30,9 @@ class UnpaidWorkAppointmentsService(
                     }
                     telemetryService.trackEvent(
                         "UnpaidWorkAppointmentReminderSent",
-                        mapOf(
-                            "crn" to it.crn,
-                            "upwAppointmentIds" to it.upwAppointmentIds,
-                            "templateIds" to templateIds.joinToString(),
-                            "notificationIds" to responses.joinToString { response -> response?.notificationId.toString() }
-                        )
+                        telemetryProperties + mapOf("notificationIds" to responses.joinToString { response -> response?.notificationId.toString() })
                     )
-                } else telemetryService.trackEvent(
-                    "UnpaidWorkAppointmentReminderNotSent",
-                    mapOf("crn" to it.crn, "upwAppointmentIds" to it.upwAppointmentIds)
-                )
+                } else telemetryService.trackEvent("UnpaidWorkAppointmentReminderNotSent", telemetryProperties)
             }
     }
 }

@@ -97,13 +97,19 @@ internal class IntegrationTest {
             mapOf(
                 "crn" to "A000001",
                 "upwAppointmentIds" to "123, 456",
+                "providerCode" to "N56",
                 "templateIds" to "template",
                 "notificationIds" to "null"
             )
         )
         verify(telemetryService).trackEvent(
             "UnpaidWorkAppointmentReminderNotSent",
-            mapOf("crn" to "A000002", "upwAppointmentIds" to "789")
+            mapOf(
+                "crn" to "A000002",
+                "upwAppointmentIds" to "789",
+                "providerCode" to "N56",
+                "templateIds" to "template",
+            )
         )
     }
 }
