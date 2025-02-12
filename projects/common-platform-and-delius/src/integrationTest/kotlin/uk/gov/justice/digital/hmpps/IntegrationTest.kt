@@ -160,7 +160,11 @@ internal class IntegrationTest {
 
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.INSERT_PERSON),
-            any(),
+            check {
+                assertThat(it.paramPairs().size, Matchers.equalTo(2))
+                assertThat(it["offenderId"], Matchers.notNullValue())
+                assertThat(it["crn"], Matchers.equalTo("A111111"))
+            },
             eq(AuditedInteraction.Outcome.SUCCESS),
             any(),
             anyOrNull()
@@ -195,7 +199,10 @@ internal class IntegrationTest {
 
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.INSERT_ADDRESS),
-            any(),
+            check {
+                assertThat(it.paramPairs().size, Matchers.equalTo(1))
+                assertThat(it["offenderId"], Matchers.notNullValue())
+            },
             eq(AuditedInteraction.Outcome.SUCCESS),
             any(),
             anyOrNull()
@@ -404,7 +411,10 @@ internal class IntegrationTest {
         })
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.INSERT_EVENT),
-            any(),
+            check {
+                assertThat(it.paramPairs().size, Matchers.equalTo(1))
+                assertThat(it["offenderId"], Matchers.notNullValue())
+            },
             eq(AuditedInteraction.Outcome.SUCCESS),
             any(),
             anyOrNull()
