@@ -126,7 +126,7 @@ class ResponsibleOfficer(
 
     @OneToOne
     @JoinColumn(name = "prison_offender_manager_id")
-    var prisonManager: PrisonManager? = null,
+    val prisonManager: PrisonManager? = null,
 
     val startDate: ZonedDateTime,
 
