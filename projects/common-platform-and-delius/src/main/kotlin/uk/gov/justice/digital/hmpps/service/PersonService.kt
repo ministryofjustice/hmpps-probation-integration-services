@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
 import uk.gov.justice.digital.hmpps.integrations.client.OsPlacesResponse
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -28,7 +28,6 @@ class PersonService(
     private val personAddressRepository: PersonAddressRepository,
     private val osClient: OsClient
 ) : AuditableService(auditedInteractionService) {
-    @Transactional
     fun insertPerson(defendant: Defendant, courtCode: String): InsertPersonResult =
         audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
             // Person record
@@ -112,10 +111,9 @@ class PersonService(
             InsertPersonResult(savedPerson, savedManager, savedEquality, savedAddress)
         }
 
-    @Transactional
     fun insertAddress(address: PersonAddress): PersonAddress = audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
         val savedAddress = personAddressRepository.save(address)
-        audit["addressId"] = address.id!!
+        audit["addressId"] = savedAddress.id!!
         savedAddress
     }
 
