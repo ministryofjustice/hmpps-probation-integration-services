@@ -38,11 +38,9 @@ class ContactService(
 
     fun getCombinedContacts(id: Long): List<Contact> {
         val probationContacts = offenderManagerRepository.findOffenderManagersByPersonId(id)
-        val prisonContacts = prisonManagerRepository.findPrisonManagersByPersonId(id)
+        val prisonContact = prisonManagerRepository.findPrisonManagersByPersonId(id)
 
-        return probationContacts.map { it.toContact() } + prisonContacts.map {
-            it.toContact()
-        }
+        return probationContacts.map { it.toContact() } + listOfNotNull(prisonContact?.toContact())
     }
 
     fun Person.toName() =
