@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ADDITIONAL_OF
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DISABILITIES
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EVENT_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAIN_OFFENCE_1
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAPPA_REGISTRATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSONAL_CIRCUMSTANCES
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PROVISIONS
@@ -82,6 +83,7 @@ internal class OverviewIntegrationTest {
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
         assertThat(res.registrations, equalTo(listOf("Restraining Order", "Domestic Abuse Perpetrator", "Mappa")))
+        assertThat(res.mappa!!.levelDescription, equalTo(MAPPA_REGISTRATION.level!!.description))
     }
 
     @Test

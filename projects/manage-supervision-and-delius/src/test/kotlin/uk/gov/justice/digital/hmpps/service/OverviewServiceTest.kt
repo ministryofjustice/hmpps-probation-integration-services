@@ -9,12 +9,14 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.Page
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.FIRST_APPT_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlagRepository
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -48,6 +50,9 @@ internal class OverviewServiceTest {
     lateinit var nsiRepository: NsiRepository
 
     @Mock
+    lateinit var riskFlagRepository: RiskFlagRepository
+
+    @Mock
     lateinit var requirementService: RequirementService
 
     @InjectMocks
@@ -76,6 +81,8 @@ internal class OverviewServiceTest {
         whenever(contactRepository.findUpComingAppointments(any(), any(), any())).thenReturn(
             listOf(FIRST_APPT_CONTACT)
         )
+
+        whenever(riskFlagRepository.findActiveMappaRegistrationByOffenderId(any(), any())).thenReturn(Page.empty())
 
         whenever(eventRepository.findByPersonId(PersonGenerator.OVERVIEW.id)).thenReturn(
             listOf(

@@ -70,7 +70,8 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toMappa() = M
     category = category?.code?.let { code -> MappaCategory.toCommunityCategory(code) },
     categoryDescription = category?.description,
     startDate = date,
-    reviewDate = nextReviewDate
+    reviewDate = nextReviewDate,
+    lastUpdated = lastUpdated.toLocalDate()
 )
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag() = RiskFlag(
