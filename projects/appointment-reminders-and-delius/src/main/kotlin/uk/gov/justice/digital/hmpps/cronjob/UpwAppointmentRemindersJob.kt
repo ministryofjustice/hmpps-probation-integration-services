@@ -13,13 +13,13 @@ import kotlin.system.exitProcess
 @Component
 @ConditionalOnProperty("jobs.unpaid-work-appointment-reminders.enabled")
 class UpwAppointmentRemindersJob(
-    @Value("\${jobs.unpaid-work-appointment-reminders.provider}")
-    private val providerCode: String,
     private val service: UnpaidWorkAppointmentsService,
     private val applicationContext: ApplicationContext,
+    @Value("\${jobs.unpaid-work-appointment-reminders.provider.code}") private val providerCode: String,
+    @Value("\${jobs.unpaid-work-appointment-reminders.templates}") private val templateIds: List<String>,
 ) : ApplicationListener<ApplicationStartedEvent> {
     override fun onApplicationEvent(applicationStartedEvent: ApplicationStartedEvent) {
-        service.sendUnpaidWorkAppointmentReminders(providerCode)
+        service.sendUnpaidWorkAppointmentReminders(providerCode, templateIds)
         exitProcess(exit(applicationContext, { 0 }))
     }
 }

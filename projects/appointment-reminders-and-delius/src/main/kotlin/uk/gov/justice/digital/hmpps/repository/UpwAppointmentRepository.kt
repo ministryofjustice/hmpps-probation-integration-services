@@ -92,8 +92,5 @@ interface UpwAppointmentRepository : JpaRepository<UpwAppointment, Long> {
         order by crn
         """, nativeQuery = true
     )
-    fun getUnpaidWorkAppointments(
-        date: LocalDate,
-        providerCode: String
-    ): List<UnpaidWorkAppointment>
+    fun getUnpaidWorkAppointments(date: LocalDate, providerCode: String): List<UnpaidWorkAppointment>
 }

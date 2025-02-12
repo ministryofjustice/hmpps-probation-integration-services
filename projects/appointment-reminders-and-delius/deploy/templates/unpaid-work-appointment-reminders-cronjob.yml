@@ -1,9 +1,11 @@
+{{ range $jobName, $config := index .Values "jobs" "unpaid-work-appointment-reminders" }}
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: unpaid-work-appointment-reminders
+  name: unpaid-work-appointment-reminders-{{ $jobName }}
 spec:
-  schedule: {{ index .Values "jobs" "unpaid-work-appointment-reminders" "schedule" }}
+  schedule: {{ $config.schedule }}
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
@@ -12,8 +14,8 @@ spec:
       template:
         spec:
           containers:
-            - name: unpaid-work-appointment-reminders
-              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/appointment-reminders-and-delius:{{ .Values.version }}"
+            - name: unpaid-work-appointment-reminders-{{ $jobName }}
+              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/appointment-reminders-and-delius:{{ $.Values.version }}"
               securityContext:
                 capabilities:
                   drop:
@@ -23,7 +25,7 @@ spec:
                 seccompProfile:
                   type: RuntimeDefault
               env:
-                {{- range $secret, $envs := index .Values "generic-service" "namespace_secrets" }}
+                {{- range $secret, $envs := index $.Values "generic-service" "namespace_secrets" }}
                   {{- range $key, $val := $envs }}
                 - name: {{ $key }}
                   valueFrom:
@@ -32,14 +34,23 @@ spec:
                       name: {{ $secret }}{{ if hasSuffix "?" $val }}
                       optional: true{{ end }}  {{- end }}
                 {{- end }}
-                {{- range $key, $val := index .Values "generic-service" "env" }}
+                {{- range $key, $val := index $.Values "generic-service" "env" }}
                 - name: {{ $key }}
                   value: "{{ $val }}"
                 {{- end }}
+                - name: GOVUK-NOTIFY_API-KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: appointment-reminders-and-delius-govuk-notify
+                      key: "{{ $config.apiKeySecret }}"
+                      optional: true
                 - name: MESSAGING_CONSUMER_ENABLED
                   value: "false"
                 - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_ENABLED
                   value: "true"
-                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_PROVIDER
-                  value: "N56"
+                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_PROVIDER_CODE
+                  value: "{{ $config.provider.code }}"
+                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_TEMPLATES
+                  value: "{{ $config.templates | join "," }}"
           restartPolicy: Never
+{{ end }}

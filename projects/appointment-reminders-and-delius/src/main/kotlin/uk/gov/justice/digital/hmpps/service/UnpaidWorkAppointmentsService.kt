@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.properties.UpwAppointmentRemindersJobProperties
 import uk.gov.justice.digital.hmpps.repository.UpwAppointmentRepository
@@ -14,24 +13,22 @@ class UnpaidWorkAppointmentsService(
     private val upwAppointmentRepository: UpwAppointmentRepository,
     private val notificationClient: NotificationClient,
     private val telemetryService: TelemetryService,
-    @Value("\${govuk-notify.templates.upw-appointment-reminder}") private val templateId: String,
 ) {
-    fun sendUnpaidWorkAppointmentReminders(providerCode: String) {
+    fun sendUnpaidWorkAppointmentReminders(providerCode: String, templateIds: List<String>) {
         upwAppointmentRepository.getUnpaidWorkAppointments(LocalDate.now().plusDays(2), providerCode)
             .forEach {
                 if (it.crn !in properties.excludedCrns) {
-                    val response = notificationClient.sendSms(
-                        templateId,
-                        it.mobileNumber,
-                        mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate),
-                        it.crn
-                    )
+                    val responses = templateIds.map { templateId ->
+                        val templateValues = mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate)
+                        notificationClient.sendSms(templateId, it.mobileNumber, templateValues, it.crn)
+                    }
                     telemetryService.trackEvent(
                         "UnpaidWorkAppointmentReminderSent",
                         mapOf(
                             "crn" to it.crn,
                             "upwAppointmentIds" to it.upwAppointmentIds,
-                            "notificationId" to response?.notificationId.toString()
+                            "templateIds" to templateIds.joinToString(),
+                            "notificationIds" to responses.joinToString { response -> response?.notificationId.toString() }
                         )
                     )
                 } else telemetryService.trackEvent(
