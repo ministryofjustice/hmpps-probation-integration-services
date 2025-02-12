@@ -44,11 +44,10 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
         """
         SELECT om
         FROM OffenderManager om
-        WHERE om.person.id = :id 
-        ORDER BY om.endDate
+        WHERE om.person.id = :id
     """
     )
-    fun findOffenderManagersByPersonOrderByEndDateDesc(id: Long): List<OffenderManager>
+    fun findOffenderManagersByPersonId(id: Long): List<OffenderManager>
 }
 
 fun OffenderManagerRepository.getByCrn(crn: String) =

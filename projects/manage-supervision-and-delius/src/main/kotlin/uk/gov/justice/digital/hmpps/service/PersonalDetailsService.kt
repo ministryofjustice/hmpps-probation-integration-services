@@ -37,7 +37,8 @@ class PersonalDetailsService(
     private val alfrescoClient: AlfrescoClient,
     private val referenceDataRepository: ReferenceDataRepository,
     private val notifier: Notifier,
-    private val transactionTemplate: TransactionTemplate
+    private val transactionTemplate: TransactionTemplate,
+    private val contactService: ContactService
 ) : AuditableService(auditedInteractionService) {
 
     fun updatePersonalDetails(crn: String, request: PersonalContactEditRequest): PersonalDetails {
@@ -224,7 +225,9 @@ class PersonalDetailsService(
             requiresInterpreter = person.requiresInterpreter,
             lastUpdated = person.lastUpdatedDatetime.toLocalDate(),
             lastUpdatedBy = person.lastUpdatedUser?.let { Name(forename = it.forename, surname = it.surname) },
-            addressTypes = addressTypes
+            addressTypes = addressTypes,
+            staffContacts = contactService.getCombinedContacts(person.id).filter { it.allocatedUntil == null }
+                .sortedByDescending { it.allocationDate }
         )
     }
 
