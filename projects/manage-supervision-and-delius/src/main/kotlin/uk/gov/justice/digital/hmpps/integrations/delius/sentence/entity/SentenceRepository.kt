@@ -40,14 +40,9 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 
     fun countOffenderManagersByPerson(person: Person): Long
 
-    @Query(
-        """
-        SELECT om
-        FROM OffenderManager om
-        WHERE om.person.id = :id
-    """
-    )
-    fun findOffenderManagersByPersonId(id: Long): List<OffenderManager>
+    fun findOffenderManagersByPersonIdAndActiveIsFalse(id: Long): List<OffenderManager>
+
+    fun findOffenderManagersByPersonIdAndActiveIsTrue(id: Long): OffenderManager?
 }
 
 fun OffenderManagerRepository.getByCrn(crn: String) =

@@ -61,5 +61,5 @@ interface PrisonManagerRepository : CrudRepository<PrisonManager, Long> {
         WHERE om.person.id = :id
         """
     )
-    fun findPrisonManagersByPersonId(id: Long): PrisonManager?
+    fun findPrisonManagerByPersonId(id: Long): PrisonManager?
 }

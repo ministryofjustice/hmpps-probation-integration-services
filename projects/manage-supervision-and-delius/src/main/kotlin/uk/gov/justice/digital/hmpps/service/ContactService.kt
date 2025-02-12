@@ -23,26 +23,32 @@ class ContactService(
     fun getContacts(crn: String): ProfessionalContact {
         val person = personRepository.getPerson(crn)
 
-        val combinedContacts = getCombinedContacts(person.id)
+        val activePersonManagers = getActivePersonManagers(person.id)
 
-        if (combinedContacts.isEmpty()) {
+        if (activePersonManagers.isEmpty()) {
             throw NotFoundException("Offender Manager records", "crn", crn)
         }
 
         return ProfessionalContact(
             person.toName(),
-            combinedContacts.filter { it.allocatedUntil == null }.sortedByDescending { it.allocationDate },
-            combinedContacts.filter { it.allocatedUntil != null }.sortedByDescending { it.allocatedUntil },
+            activePersonManagers,
+            getInactiveCommunityManagers(person.id).sortedByDescending { it.allocatedUntil },
         )
     }
 
-    fun getCombinedContacts(id: Long): List<Contact> {
-        val probationContacts = offenderManagerRepository.findOffenderManagersByPersonId(id)
-        val prisonContact = prisonManagerRepository.findPrisonManagersByPersonId(id)
+    fun getInactiveCommunityManagers(id: Long): List<Contact> {
+        val probationContacts = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsFalse(id)
 
-        return probationContacts.map { it.toContact() } + listOfNotNull(prisonContact?.toContact())
+        return probationContacts.map { it.toContact() }
     }
 
+    fun getActivePersonManagers(id: Long): List<Contact> {
+        val communityManager = offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(id)
+        val prisonManager = prisonManagerRepository.findPrisonManagerByPersonId(id)
+        
+        return listOfNotNull(communityManager?.toContact(), prisonManager?.toContact()).sortedByDescending { it.allocationDate }
+    }
+    
     fun Person.toName() =
         Name(forename, secondName, surname)
 
