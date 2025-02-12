@@ -24,7 +24,7 @@ class PrisonManager(
     val provider: Provider,
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "allocation_team_id")
     val team: Team,
 
     @ManyToOne
