@@ -26,7 +26,8 @@ class EventService(
     private val contactTypeRepository: ContactTypeRepository,
     private val transferReasonRepository: TransferReasonRepository,
     private val contactRepository: ContactRepository,
-    private val courtAppearanceRepository: CourtAppearanceRepository
+    private val courtAppearanceRepository: CourtAppearanceRepository,
+    private val personService: PersonService
 ) : AuditableService(auditedInteractionService) {
 
     fun insertEvent(
@@ -148,7 +149,9 @@ class EventService(
                     active = true
                 )
             )
-            // TODO 6. Update person level remand status field?
+
+            person.remandStatus = remandedInCustodyStatus.description
+            personService.updatePerson(person)
 
             audit["offenderId"] = savedEvent.person.id!!
             InsertEventResult(savedEvent, savedMainOffence, initialCourtAppearance, initialContact, savedOrderManager)

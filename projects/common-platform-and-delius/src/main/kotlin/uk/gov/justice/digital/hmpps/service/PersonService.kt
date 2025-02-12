@@ -118,6 +118,8 @@ class PersonService(
         savedAddress
     }
 
+    fun updatePerson(person: Person): Person = personRepository.save(person)
+
     fun generateCrn(): String {
         return personRepository.getNextCrn()
     }
