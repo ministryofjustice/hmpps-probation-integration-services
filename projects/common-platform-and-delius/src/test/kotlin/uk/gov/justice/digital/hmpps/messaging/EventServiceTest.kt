@@ -64,6 +64,9 @@ internal class EventServiceTest {
     @Mock
     lateinit var transferReasonRepository: TransferReasonRepository
 
+    @Mock
+    lateinit var personService: PersonService
+
     @InjectMocks
     lateinit var eventService: EventService
 
