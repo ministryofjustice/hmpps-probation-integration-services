@@ -230,6 +230,32 @@ class PersonalDetailsService(
         )
     }
 
+    fun getMainAddressSingleNote(crn: String, noteId: Int): PersonalDetailsSummary {
+        val person = personRepository.getPerson(crn)
+        val allAddresses = addressRepository.findByPersonId(person.id)
+        val currentAddresses = allAddresses.filter { it.endDate == null }
+        val mainAddress = currentAddresses.firstOrNull { it.status.code == AddressStatus.MAIN.code }
+        val personalContacts = personalContactRepository.findByPersonId(person.id)
+        val previousAddresses =
+            allAddresses.filter { it.endDate != null && it.status.code == AddressStatus.PREVIOUS.code }
+                .map(PersonAddress::toAddress).mapNotNull { it }
+        val otherAddresses =
+            currentAddresses.filter { it.status.code != AddressStatus.MAIN.code }.map(PersonAddress::toAddress)
+                .mapNotNull { it }
+
+        return PersonalDetailsSummary(
+            crn = person.crn,
+            name = person.name(),
+            contacts = personalContacts.map(PersonalContactEntity::toContact),
+            mainAddress = mainAddress?.toAddress(singleNote = true, noteId = noteId),
+            otherAddressCount = otherAddresses.size,
+            previousAddressCount = previousAddresses.size,
+            telephoneNumber = person.telephoneNumber,
+            mobileNumber = person.mobileNumber,
+            email = person.emailAddress,
+        )
+    }
+
     fun downloadDocument(crn: String, id: String): ResponseEntity<StreamingResponseBody> {
         val filename = documentRepository.getDocument(crn, id)
         return alfrescoClient.streamDocument(id, filename)
@@ -372,7 +398,7 @@ fun Person.toSummary() =
     )
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
-fun PersonAddress.toAddress() = Address.from(
+fun PersonAddress.toAddress(singleNote: Boolean = false, noteId: Int? = null) = Address.from(
     buildingName = buildingName,
     buildingNumber = buildingNumber,
     streetName = streetName,
@@ -394,7 +420,8 @@ fun PersonAddress.toAddress() = Address.from(
             surname = lastUpdatedUser.surname
         )
     },
-    notes = notes,
+    addressNotes = if (!singleNote) formatNote(notes, true) else null,
+    addressNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
     noFixedAddress = noFixedAbode
 
 )
