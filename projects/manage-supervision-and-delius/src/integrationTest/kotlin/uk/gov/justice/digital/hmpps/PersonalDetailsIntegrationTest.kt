@@ -125,13 +125,17 @@ internal class PersonalDetailsIntegrationTest {
         val res = mockMvc
             .perform(get("/personal-details/${person.crn}/main-address/note/1").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<PersonalDetailsMainAddress>()
+            .andReturn().response.contentAsJson<PersonalDetailsSummary>()
 
         assertThat(res.crn, equalTo(person.crn))
         assertThat(res.name, equalTo(person.name()))
+        assertThat(res.contacts.size, equalTo(1))
         assertThat(res.mainAddress!!.addressNote, equalTo(formatNote(PERSON_ADDRESS_1.notes, truncateNote = false)[1]))
         assertThat(res.otherAddressCount, equalTo(1))
         assertThat(res.previousAddressCount, equalTo(1))
+        assertThat(res.telephoneNumber, equalTo("0987657432"))
+        assertThat(res.mobileNumber, equalTo("07986789351"))
+        assertThat(res.email, equalTo("testemail"))
     }
 
     @Test

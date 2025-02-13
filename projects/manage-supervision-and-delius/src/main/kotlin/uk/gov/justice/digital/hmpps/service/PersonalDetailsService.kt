@@ -230,7 +230,7 @@ class PersonalDetailsService(
         )
     }
 
-    fun getMainAddressSingleNote(crn: String, noteId: Int): PersonalDetailsMainAddress {
+    fun getMainAddressSingleNote(crn: String, noteId: Int): PersonalDetailsSummary {
         val person = personRepository.getPerson(crn)
         val allAddresses = addressRepository.findByPersonId(person.id)
         val currentAddresses = allAddresses.filter { it.endDate == null }
@@ -243,7 +243,7 @@ class PersonalDetailsService(
             currentAddresses.filter { it.status.code != AddressStatus.MAIN.code }.map(PersonAddress::toAddress)
                 .mapNotNull { it }
 
-        return PersonalDetailsMainAddress(
+        return PersonalDetailsSummary(
             crn = person.crn,
             name = person.name(),
             contacts = personalContacts.map(PersonalContactEntity::toContact),

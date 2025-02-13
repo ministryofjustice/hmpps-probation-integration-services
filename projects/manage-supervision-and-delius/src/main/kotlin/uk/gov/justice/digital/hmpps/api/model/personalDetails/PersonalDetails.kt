@@ -38,7 +38,7 @@ data class PersonalDetails(
     val staffContacts: List<Contact>
 )
 
-data class PersonalDetailsMainAddress(
+data class PersonalDetailsSummary(
     val crn: String,
     val name: Name,
     val contacts: List<PersonalContact>,
