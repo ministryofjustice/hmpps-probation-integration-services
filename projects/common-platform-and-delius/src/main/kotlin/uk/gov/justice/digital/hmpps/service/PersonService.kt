@@ -164,6 +164,7 @@ class PersonService(
             surnameSoundex = personRepository.getSoundex(personDetails.lastName),
             middleNameSoundex = personDetails.middleName?.let { personRepository.getSoundex(it) },
             firstNameSoundex = personRepository.getSoundex(personDetails.firstName),
+            notes = "This case record was initially created using information from HMCTS Common Platform."
         )
     }
 

@@ -83,6 +83,9 @@ class Person(
     @Column(name = "current_remand_status")
     var remandStatus: String? = null,
 
+    @Column(name = "OFFENDER_DETAILS")
+    var notes: String? = null,
+
     @Column
     @Version
     val rowVersion: Long = 0L,
