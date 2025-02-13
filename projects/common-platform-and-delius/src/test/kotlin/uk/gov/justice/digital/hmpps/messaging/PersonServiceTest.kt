@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.core.IsEqual.equalTo
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.integrations.client.OsClient
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.service.PersonService
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @ExtendWith(MockitoExtension::class)
 internal class PersonServiceTest {
@@ -54,6 +55,9 @@ internal class PersonServiceTest {
 
     @Mock
     lateinit var osClient: OsClient
+
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
     @InjectMocks
     lateinit var personService: PersonService
@@ -119,7 +123,7 @@ internal class PersonServiceTest {
         verify(personManagerRepository).save(any())
         verify(equalityRepository).save(any())
         verify(personAddressRepository).save(check {
-            assertNull(it.notes)
+            assertThat(it.notes, Matchers.equalTo("This address record was initially created using information from HMCTS Common Platform."))
         })
 
         assertThat(savedPerson.person.id, equalTo(person.id))

@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddr
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.messaging.Address
 import uk.gov.justice.digital.hmpps.messaging.Defendant
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -26,7 +27,8 @@ class PersonService(
     private val staffRepository: StaffRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val personAddressRepository: PersonAddressRepository,
-    private val osClient: OsClient
+    private val osClient: OsClient,
+    private val telemetryService: TelemetryService
 ) : AuditableService(auditedInteractionService) {
     fun insertPerson(defendant: Defendant, courtCode: String): InsertPersonResult =
         audit(BusinessInteractionCode.INSERT_PERSON) { audit ->
@@ -69,7 +71,21 @@ class PersonService(
 
             val deliveryPointAddress = osPlacesResponse?.results?.firstOrNull()?.dpa
 
+            var addressNotes = "This address record was initially created using information from HMCTS Common Platform."
+
             val savedAddress = if (deliveryPointAddress != null) {
+                addressNotes = """
+                    $addressNotes
+                    This address was automatically added using an Address Lookup Service.
+                    UPRN: ${deliveryPointAddress.uprn}
+                """.trimIndent()
+
+                telemetryService.trackEvent(
+                    "AddressLookupMatched", mapOf(
+                        "defendantId" to defendant.id
+                    )
+                )
+
                 insertAddress(
                     PersonAddress(
                         id = null,
@@ -78,7 +94,7 @@ class PersonService(
                         person = savedPerson,
                         type = referenceDataRepository.awaitingAssessmentAddressType(),
                         postcode = deliveryPointAddress.postcode,
-                        notes = "UPRN: ${deliveryPointAddress.uprn}",
+                        notes = addressNotes,
                         buildingName = listOfNotNull(
                             deliveryPointAddress.subBuildingName,
                             deliveryPointAddress.buildingName
@@ -98,6 +114,7 @@ class PersonService(
                             status = referenceDataRepository.mainAddressStatus(),
                             person = savedPerson,
                             postcode = it.postcode,
+                            notes = addressNotes,
                             type = referenceDataRepository.awaitingAssessmentAddressType(),
                             streetName = it.address1,
                             district = it.address2,
