@@ -18,6 +18,7 @@ spring:
 
 oauth2.roles:
   - PROBATION_API__REMINDERS__UPW_APPOINTMENTS
+  - PROBATION_API__REMINDERS__USER_DETAILS
 
 springdoc.default-produces-media-type: application/json
 
