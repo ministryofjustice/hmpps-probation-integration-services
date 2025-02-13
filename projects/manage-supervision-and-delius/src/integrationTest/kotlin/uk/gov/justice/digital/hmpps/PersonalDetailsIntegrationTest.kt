@@ -129,8 +129,9 @@ internal class PersonalDetailsIntegrationTest {
 
         assertThat(res.crn, equalTo(person.crn))
         assertThat(res.name, equalTo(person.name()))
-        assertThat(res.noms, equalTo(person.noms))
         assertThat(res.mainAddress!!.addressNote, equalTo(formatNote(PERSON_ADDRESS_1.notes, truncateNote = false)[1]))
+        assertThat(res.otherAddressCount, equalTo(1))
+        assertThat(res.previousAddressCount, equalTo(1))
     }
 
     @Test

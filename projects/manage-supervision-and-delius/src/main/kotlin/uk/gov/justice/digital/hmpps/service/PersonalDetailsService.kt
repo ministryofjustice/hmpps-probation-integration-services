@@ -232,14 +232,27 @@ class PersonalDetailsService(
 
     fun getMainAddressSingleNote(crn: String, noteId: Int): PersonalDetailsMainAddress {
         val person = personRepository.getPerson(crn)
-        val mainAddress = addressRepository.findByPersonIdAndStatusCode(person.id, AddressStatus.MAIN.code)
+        val allAddresses = addressRepository.findByPersonId(person.id)
+        val currentAddresses = allAddresses.filter { it.endDate == null }
+        val mainAddress = currentAddresses.firstOrNull { it.status.code == AddressStatus.MAIN.code }
+        val personalContacts = personalContactRepository.findByPersonId(person.id)
+        val previousAddresses =
+            allAddresses.filter { it.endDate != null && it.status.code == AddressStatus.PREVIOUS.code }
+                .map(PersonAddress::toAddress).mapNotNull { it }
+        val otherAddresses =
+            currentAddresses.filter { it.status.code != AddressStatus.MAIN.code }.map(PersonAddress::toAddress)
+                .mapNotNull { it }
 
         return PersonalDetailsMainAddress(
             crn = person.crn,
             name = person.name(),
-            pnc = person.pnc,
-            noms = person.noms,
-            mainAddress?.toAddress(singleNote = true, noteId = noteId)
+            contacts = personalContacts.map(PersonalContactEntity::toContact),
+            mainAddress = mainAddress?.toAddress(singleNote = true, noteId = noteId),
+            otherAddressCount = otherAddresses.size,
+            previousAddressCount = previousAddresses.size,
+            telephoneNumber = person.telephoneNumber,
+            mobileNumber = person.mobileNumber,
+            email = person.emailAddress,
         )
     }
 
