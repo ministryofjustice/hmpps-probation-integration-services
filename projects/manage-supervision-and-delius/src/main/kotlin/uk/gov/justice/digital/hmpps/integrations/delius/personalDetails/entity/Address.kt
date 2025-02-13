@@ -107,6 +107,8 @@ class PersonAddress(
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
     @EntityGraph(attributePaths = ["status", "type"])
     fun findByPersonId(personId: Long): List<PersonAddress>
+
+    fun findByPersonIdAndStatusCode(personId: Long, code: String): PersonAddress?
 }
 
 @Immutable

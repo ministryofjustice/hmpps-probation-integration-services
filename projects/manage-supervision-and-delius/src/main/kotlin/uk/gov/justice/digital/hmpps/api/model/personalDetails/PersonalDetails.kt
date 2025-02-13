@@ -38,6 +38,14 @@ data class PersonalDetails(
     val staffContacts: List<Contact>
 )
 
+data class PersonalDetailsMainAddress(
+    val crn: String,
+    val name: Name,
+    val pnc: String?,
+    val noms: String?,
+    val mainAddress: Address? = null
+)
+
 data class AddressType(
     val code: String,
     val description: String

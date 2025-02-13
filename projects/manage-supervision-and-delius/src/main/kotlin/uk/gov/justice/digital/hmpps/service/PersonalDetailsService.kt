@@ -230,6 +230,19 @@ class PersonalDetailsService(
         )
     }
 
+    fun getMainAddressSingleNote(crn: String, noteId: Int): PersonalDetailsMainAddress {
+        val person = personRepository.getPerson(crn)
+        val mainAddress = addressRepository.findByPersonIdAndStatusCode(person.id, AddressStatus.MAIN.code)
+
+        return PersonalDetailsMainAddress(
+            crn = person.crn,
+            name = person.name(),
+            pnc = person.pnc,
+            noms = person.noms,
+            mainAddress?.toAddress(singleNote = true, noteId = noteId)
+        )
+    }
+
     fun downloadDocument(crn: String, id: String): ResponseEntity<StreamingResponseBody> {
         val filename = documentRepository.getDocument(crn, id)
         return alfrescoClient.streamDocument(id, filename)
@@ -372,7 +385,7 @@ fun Person.toSummary() =
     )
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
-fun PersonAddress.toAddress() = Address.from(
+fun PersonAddress.toAddress(singleNote: Boolean = false, noteId: Int? = null) = Address.from(
     buildingName = buildingName,
     buildingNumber = buildingNumber,
     streetName = streetName,
@@ -394,7 +407,8 @@ fun PersonAddress.toAddress() = Address.from(
             surname = lastUpdatedUser.surname
         )
     },
-    notes = notes,
+    addressNotes = if (!singleNote) formatNote(notes, true) else null,
+    addressNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
     noFixedAddress = noFixedAbode
 
 )

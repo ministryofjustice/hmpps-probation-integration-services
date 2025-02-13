@@ -35,6 +35,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CIRC_PREV
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_CONTACT_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSON_ADDRESS_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PREVIOUS_ADDRESS
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_2
@@ -83,7 +84,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.previousSurname, equalTo("Smith"))
         assertThat(res.sexualOrientation, equalTo("Heterosexual"))
         assertThat(res.mainAddress?.status, equalTo("Main Address"))
-        assertThat(res.mainAddress?.notes, equalTo("Some Notes"))
+        assertThat(res.mainAddress?.addressNotes, equalTo(formatNote(PERSON_ADDRESS_1.notes, truncateNote = true)))
         assertThat(res.mainAddress?.verified, equalTo(true))
         assertThat(res.mainAddress?.type, equalTo("Address type 1"))
         assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
@@ -116,6 +117,20 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.genderIdentity, equalTo("Test Gender Identity"))
         assertThat(res.selfDescribedGender, equalTo("Some gender description"))
         assertThat(res.requiresInterpreter, equalTo(true))
+    }
+
+    @Test
+    fun `get main address single note`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/main-address/note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetailsMainAddress>()
+
+        assertThat(res.crn, equalTo(person.crn))
+        assertThat(res.name, equalTo(person.name()))
+        assertThat(res.noms, equalTo(person.noms))
+        assertThat(res.mainAddress!!.addressNote, equalTo(formatNote(PERSON_ADDRESS_1.notes, truncateNote = false)[1]))
     }
 
     @Test

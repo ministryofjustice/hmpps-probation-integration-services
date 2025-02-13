@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.LocalDate
 
 data class Address(
@@ -20,7 +21,8 @@ data class Address(
     val type: String?,
     val typeCode: String?,
     val status: String?,
-    val notes: String?,
+    val addressNotes: List<NoteDetail>? = null,
+    val addressNote: NoteDetail? = null,
     val noFixedAddress: Boolean?
 ) {
     companion object {
@@ -41,7 +43,8 @@ data class Address(
             type: String? = null,
             typeCode: String?,
             status: String? = null,
-            notes: String? = null,
+            addressNotes: List<NoteDetail>? = null,
+            addressNote: NoteDetail? = null,
             noFixedAddress: Boolean?
         ): Address? =
             if (
@@ -68,7 +71,8 @@ data class Address(
                     type,
                     typeCode,
                     status,
-                    notes,
+                    addressNotes,
+                    addressNote,
                     noFixedAddress
                 )
             }
