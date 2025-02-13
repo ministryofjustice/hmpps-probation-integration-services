@@ -3,7 +3,7 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
-      project:
+      projects:
         description: Project
         type: choice
         required: true
