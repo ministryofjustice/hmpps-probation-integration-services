@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
@@ -10,6 +12,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "prison_offender_manager")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PrisonManager(
     @Id
     @Column(name = "prison_offender_manager_id", nullable = false)
@@ -41,7 +44,14 @@ class PrisonManager(
     @OneToOne(mappedBy = "prisonManager")
     val responsibleOfficer: ResponsibleOfficer? = null,
 
-    )
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val active: Boolean,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean
+)
 
 interface PrisonManagerRepository : CrudRepository<PrisonManager, Long> {
     @Query(
@@ -51,5 +61,5 @@ interface PrisonManagerRepository : CrudRepository<PrisonManager, Long> {
         WHERE om.person.id = :id
         """
     )
-    fun findPrisonManagersByPersonId(id: Long): List<PrisonManager>
+    fun findPrisonManagerByPersonId(id: Long): PrisonManager?
 }
