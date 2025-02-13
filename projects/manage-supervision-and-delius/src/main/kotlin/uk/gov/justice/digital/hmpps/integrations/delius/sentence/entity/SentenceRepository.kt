@@ -38,7 +38,7 @@ interface OffenderManagerRepository : JpaRepository<OffenderManager, Long> {
 
     fun findByPersonCrnAndSoftDeletedIsFalseAndActiveIsTrue(crn: String): OffenderManager?
 
-    fun countOffenderManagersByPerson(person: Person): Long
+    fun countOffenderManagersByPersonAndActiveIsFalse(person: Person): Long
 
     fun findOffenderManagersByPersonIdAndActiveIsFalse(id: Long): List<OffenderManager>
 
