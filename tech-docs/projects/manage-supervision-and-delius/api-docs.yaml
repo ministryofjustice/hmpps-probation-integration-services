@@ -1087,6 +1087,41 @@ components:
           format: date
       required:
       - circumstances
+    Contact:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        telephoneNumber:
+          type: string
+        provider:
+          type: string
+        probationDeliveryUnit:
+          type: string
+        team:
+          type: string
+        allocationDate:
+          type: string
+          format: date
+        allocatedUntil:
+          type: string
+          format: date
+        lastUpdated:
+          type: string
+          format: date
+        responsibleOfficer:
+          type: boolean
+        prisonOffenderManager:
+          type: boolean
+      required:
+      - allocationDate
+      - name
+      - prisonOffenderManager
+      - probationDeliveryUnit
+      - provider
+      - responsibleOfficer
     ContactAddress:
       type: object
       properties:
@@ -1315,6 +1350,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AddressType"
+        staffContacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Contact"
       required:
       - addressTypes
       - aliases
@@ -1330,6 +1369,7 @@ components:
       - previousAddressCount
       - provisions
       - sex
+      - staffContacts
     Provisions:
       type: object
       properties:
@@ -2154,40 +2194,23 @@ components:
           $ref: "#/components/schemas/LicenceCondition"
       required:
       - personSummary
-    Contact:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-        telephoneNumber:
-          type: string
-        provider:
-          type: string
-        probationDeliveryUnit:
-          type: string
-        team:
-          type: string
-        allocatedUntil:
-          type: string
-          format: date
-      required:
-      - name
-      - probationDeliveryUnit
-      - provider
     ProfessionalContact:
       type: object
       properties:
         name:
           $ref: "#/components/schemas/Name"
-        contacts:
+        currentContacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Contact"
+        previousContacts:
           type: array
           items:
             $ref: "#/components/schemas/Contact"
       required:
-      - contacts
+      - currentContacts
       - name
+      - previousContacts
     Schedule:
       type: object
       properties:
@@ -2229,7 +2252,11 @@ components:
         reviewDate:
           type: string
           format: date
+        lastUpdated:
+          type: string
+          format: date
       required:
+      - lastUpdated
       - startDate
     Opd:
       type: object
@@ -2557,6 +2584,8 @@ components:
           type: array
           items:
             type: string
+        mappa:
+          $ref: "#/components/schemas/MappaDetail"
       required:
       - absencesWithoutEvidence
       - appointmentsWithoutOutcome

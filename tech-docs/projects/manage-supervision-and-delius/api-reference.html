@@ -536,6 +536,21 @@
       "code": "string",
       "description": "string"
     }
+  ],
+  "staffContacts": [
+    {
+      "name": "string",
+      "email": "string",
+      "telephoneNumber": "string",
+      "provider": "string",
+      "probationDeliveryUnit": "string",
+      "team": "string",
+      "allocationDate": "string",
+      "allocatedUntil": "string",
+      "lastUpdated": "string",
+      "responsibleOfficer": "boolean",
+      "prisonOffenderManager": "boolean"
+    }
   ]
 }</code></pre>
 
@@ -753,6 +768,21 @@
     {
       "code": "string",
       "description": "string"
+    }
+  ],
+  "staffContacts": [
+    {
+      "name": "string",
+      "email": "string",
+      "telephoneNumber": "string",
+      "provider": "string",
+      "probationDeliveryUnit": "string",
+      "team": "string",
+      "allocationDate": "string",
+      "allocatedUntil": "string",
+      "lastUpdated": "string",
+      "responsibleOfficer": "boolean",
+      "prisonOffenderManager": "boolean"
     }
   ]
 }</code></pre>
@@ -2522,7 +2552,7 @@
     "middleName": "string",
     "surname": "string"
   },
-  "contacts": [
+  "currentContacts": [
     {
       "name": "string",
       "email": "string",
@@ -2530,7 +2560,26 @@
       "provider": "string",
       "probationDeliveryUnit": "string",
       "team": "string",
-      "allocatedUntil": "string"
+      "allocationDate": "string",
+      "allocatedUntil": "string",
+      "lastUpdated": "string",
+      "responsibleOfficer": "boolean",
+      "prisonOffenderManager": "boolean"
+    }
+  ],
+  "previousContacts": [
+    {
+      "name": "string",
+      "email": "string",
+      "telephoneNumber": "string",
+      "provider": "string",
+      "probationDeliveryUnit": "string",
+      "team": "string",
+      "allocationDate": "string",
+      "allocatedUntil": "string",
+      "lastUpdated": "string",
+      "responsibleOfficer": "boolean",
+      "prisonOffenderManager": "boolean"
     }
   ]
 }</code></pre>
@@ -3065,7 +3114,8 @@
     "category": "integer",
     "categoryDescription": "string",
     "startDate": "string",
-    "reviewDate": "string"
+    "reviewDate": "string",
+    "lastUpdated": "string"
   },
   "riskFlags": [
     {
@@ -4495,6 +4545,21 @@
         "code": "string",
         "description": "string"
       }
+    ],
+    "staffContacts": [
+      {
+        "name": "string",
+        "email": "string",
+        "telephoneNumber": "string",
+        "provider": "string",
+        "probationDeliveryUnit": "string",
+        "team": "string",
+        "allocationDate": "string",
+        "allocatedUntil": "string",
+        "lastUpdated": "string",
+        "responsibleOfficer": "boolean",
+        "prisonOffenderManager": "boolean"
+      }
     ]
   },
   "previousOrders": {
@@ -4718,7 +4783,16 @@
   "registrations": [
     {
     }
-  ]
+  ],
+  "mappa": {
+    "level": "integer",
+    "levelDescription": "string",
+    "category": "integer",
+    "categoryDescription": "string",
+    "startDate": "string",
+    "reviewDate": "string",
+    "lastUpdated": "string"
+  }
 }</code></pre>
 
 </td>
@@ -5759,6 +5833,128 @@
 </tbody>
 </table>
 
+<h3 id="schema-contact">Contact</h3>
+
+
+<table class='schema-contact'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationDeliveryUnit</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>allocationDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>allocatedUntil</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>responsibleOfficer</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>prisonOffenderManager</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-contactaddress">ContactAddress</h3>
 
 
@@ -6591,6 +6787,16 @@
 <td></td>
 <td>
   <a href='#schema-addresstype'>AddressType</a>
+</td>
+</tr>
+
+<tr>
+<td>staffContacts</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-contact'>Contact</a>
 </td>
 </tr>
 
@@ -9243,88 +9449,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-contact">Contact</h3>
-
-
-<table class='schema-contact'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>email</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>provider</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>probationDeliveryUnit</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>team</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>allocatedUntil</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-professionalcontact">ProfessionalContact</h3>
 
 
@@ -9345,7 +9469,17 @@
 </tr>
 
 <tr>
-<td>contacts</td>
+<td>currentContacts</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-contact'>Contact</a>
+</td>
+</tr>
+
+<tr>
+<td>previousContacts</td>
 <td>array</td>
 <td>true</td>
 <td></td>
@@ -9484,6 +9618,16 @@
 <td>reviewDate</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -10460,6 +10604,16 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>mappa</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-mappadetail'>MappaDetail</a>
 </td>
 </tr>
 
