@@ -7,10 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -28,13 +25,14 @@ class BreachNoticeLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         entityManager.persistAll(
+            *WarningGenerator.WARNING_TYPES.toTypedArray(),
             PersonGenerator.DEFAULT_ADDRESS_TYPE,
             PersonGenerator.DEFAULT_PERSON,
             PersonGenerator.DEFAULT_ADDRESS,
             TeamGenerator.DEFAULT_LOCATION,
             TeamGenerator.DEFAULT_TEAM,
             StaffGenerator.DEFAULT_STAFF,
-            StaffGenerator.DEFAULT_SU
+            StaffGenerator.DEFAULT_SU,
         )
     }
 

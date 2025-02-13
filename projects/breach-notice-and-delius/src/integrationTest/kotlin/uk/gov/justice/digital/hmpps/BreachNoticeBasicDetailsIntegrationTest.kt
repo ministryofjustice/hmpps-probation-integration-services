@@ -53,7 +53,7 @@ internal class BreachNoticeBasicDetailsIntegrationTest {
     }
 
     @Test
-    fun `API call retuns a success response`() {
+    fun `can retrieve all basic details successfully`() {
         val person = PersonGenerator.DEFAULT_PERSON
         val username = StaffGenerator.DEFAULT_SU.username
         val response = mockMvc

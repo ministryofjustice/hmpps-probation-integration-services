@@ -11,6 +11,6 @@ import uk.gov.justice.digital.hmpps.model.BasicDetails
 class BreachNoticeController(private val details: DetailsService) {
     @PreAuthorize("hasRole('PROBATION_API__BREACH_NOTICE__CASE_DETAIL')")
     @GetMapping(value = ["/basic-details/{crn}/{username}"])
-    fun handle(@PathVariable crn: String, @PathVariable username: String): BasicDetails =
+    fun getBasicDetails(@PathVariable crn: String, @PathVariable username: String): BasicDetails =
         details.basicDetails(crn, username)
 }
