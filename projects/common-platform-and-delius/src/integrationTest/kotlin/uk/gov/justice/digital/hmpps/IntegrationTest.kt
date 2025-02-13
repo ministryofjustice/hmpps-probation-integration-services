@@ -326,7 +326,10 @@ internal class IntegrationTest {
             assertThat(it.town, Matchers.containsString("Example Address Line 3"))
             assertThat(it.postcode, Matchers.containsString("AA1 1AA"))
             assertNull(it.endDate)
-            assertThat(it.notes, Matchers.equalTo("This address record was initially created using information from HMCTS Common Platform."))
+            assertThat(
+                it.notes,
+                Matchers.equalTo("This address record was initially created using information from HMCTS Common Platform.")
+            )
             assertThat(it.softDeleted, Matchers.equalTo(false))
             assertThat(it.status.code, Matchers.equalTo(ReferenceData.StandardRefDataCode.ADDRESS_MAIN_STATUS.code))
             assertThat(it.noFixedAbode, Matchers.equalTo(false))

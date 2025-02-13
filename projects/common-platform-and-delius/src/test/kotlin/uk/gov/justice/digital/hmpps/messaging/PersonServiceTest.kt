@@ -123,7 +123,10 @@ internal class PersonServiceTest {
         verify(personManagerRepository).save(any())
         verify(equalityRepository).save(any())
         verify(personAddressRepository).save(check {
-            assertThat(it.notes, Matchers.equalTo("This address record was initially created using information from HMCTS Common Platform."))
+            assertThat(
+                it.notes,
+                Matchers.equalTo("This address record was initially created using information from HMCTS Common Platform.")
+            )
         })
 
         assertThat(savedPerson.person.id, equalTo(person.id))
