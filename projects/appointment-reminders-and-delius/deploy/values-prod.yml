@@ -6,8 +6,18 @@ generic-service:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
-    GOVUK-NOTIFY_TEMPLATES_UPW-APPOINTMENT-REMINDER: 4895f1a9-50b7-481e-9fca-2ac0f8d200d2
 
 jobs:
   unpaid-work-appointment-reminders:
-    schedule: '0 10 * * *' # 10am UTC every day
+    east-of-england:
+      apiKeySecret: OLD_API_KEY
+      templates:
+        - 4895f1a9-50b7-481e-9fca-2ac0f8d200d2
+    #      apiKeySecret: N56_API_KEY
+    #      templates:
+    #        - 179d106d-fc99-45af-9d04-22716cdf5e50
+    wales:
+      apiKeySecret: N03_API_KEY
+      templates:
+        - ed494c8b-5a6f-40d1-8cef-18775bc852f9 # English
+        - cec099f5-2854-4930-a513-dbcb9e39a537 # Welsh

@@ -17,9 +17,22 @@ generic-service:
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     appointment-reminders-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
-    appointment-reminders-and-delius-govuk-notify:
-      GOVUK-NOTIFY_API-KEY: API_KEY
 
 generic-prometheus-alerts:
   targetApplication: appointment-reminders-and-delius
 
+jobs:
+  unpaid-work-appointment-reminders:
+    east-of-england:
+      provider:
+        code: N56
+        name: East of England
+      apiKeySecret: API_KEY
+      schedule: '0 10 * * *' # 10am UTC every day
+
+    wales:
+      provider:
+        code: N03
+        name: Wales
+      apiKeySecret: API_KEY
+      schedule: '0 10 * * *' # 10am UTC every day
