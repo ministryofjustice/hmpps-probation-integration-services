@@ -48,7 +48,11 @@ class RegisterType(
 
     val description: String,
 
+    val colour: String,
+
     @Id
     @Column(name = "register_type_id")
     val id: Long,
-)
+) {
+
+}

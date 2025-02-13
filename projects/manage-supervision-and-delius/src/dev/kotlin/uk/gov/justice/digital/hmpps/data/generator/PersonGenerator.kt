@@ -164,9 +164,9 @@ object PersonGenerator {
         requirement = REQUIREMENT
     )
 
-    val REGISTER_TYPE_1 = generateRegisterType("CODE1", "Restraining Order")
-    val REGISTER_TYPE_2 = generateRegisterType("CODE2", "Domestic Abuse Perpetrator")
-    val MAPPA_TYPE = generateRegisterType("MAPP", "Mappa")
+    val REGISTER_TYPE_1 = generateRegisterType("CODE1", "Restraining Order", "White")
+    val REGISTER_TYPE_2 = generateRegisterType("CODE2", "Domestic Abuse Perpetrator", "Red")
+    val MAPPA_TYPE = generateRegisterType("MAPP", "Mappa", "Green")
     val REGISTRATION_1 = generateRegistration(REGISTER_TYPE_1, null, OVERVIEW.id, "Notes")
     val REGISTRATION_2 = generateRegistration(REGISTER_TYPE_2, null, OVERVIEW.id, "Notes")
     val REGISTRATION_3 = generateRegistration(REGISTER_TYPE_2, null, OVERVIEW.id, "Notes", deRegistered = true)
@@ -469,8 +469,9 @@ object PersonGenerator {
     fun generateRegisterType(
         code: String,
         description: String,
+        colour: String,
         id: Long = IdGenerator.getAndIncrement()
-    ) = RegisterType(code, description, id)
+    ) = RegisterType(code, description, colour, id)
 
     fun generateRegistration(
         type: RegisterType,

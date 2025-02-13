@@ -44,7 +44,11 @@ class RiskService(
             personSummary = summary.toPersonSummary(),
             mappa = mappa?.toMappa(),
             opd = opd?.let { Opd(eligible = true, date = opd.lastUpdated) },
-            riskFlags = riskFlags.filter { !it.deRegistered }.map { it.toRiskFlag() },
+            riskFlags = riskFlags
+                .filter { !it.deRegistered }
+                .map { it.toRiskFlag() }
+                .sortedWith(compareByDescending<RiskFlag> { it.level.severity }.thenBy { it.description }
+                    .thenBy { it.createdDate }),
             removedRiskFlags = riskFlags.filter { it.deRegistered }.map { it.toRiskFlag() }
         )
     }
@@ -77,6 +81,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toMappa() = M
 fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag() = RiskFlag(
     id = id,
     description = type.description,
+    level = RiskLevel.fromString(type.colour),
     levelCode = level?.code,
     levelDescription = level?.description,
     notes = notes,

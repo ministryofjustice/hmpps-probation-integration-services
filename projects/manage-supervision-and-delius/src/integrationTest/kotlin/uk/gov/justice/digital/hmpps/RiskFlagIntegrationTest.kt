@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlag
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlags
+import uk.gov.justice.digital.hmpps.api.model.risk.RiskLevel
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEREGISTRATION_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAPPA_LEVEL
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
@@ -43,12 +44,15 @@ internal class RiskFlagIntegrationTest {
         assertThat(res.mappa?.category, equalTo(0))
         assertThat(res.opd?.eligible, equalTo(true))
         assertThat(res.riskFlags.size, equalTo(3))
-        assertThat(res.riskFlags[1].description, equalTo(REGISTRATION_2.type.description))
-        assertThat(res.riskFlags[1].mostRecentReviewDate, equalTo(REGISTRATION_REVIEW_2.date))
-        assertThat(res.riskFlags[1].levelCode, equalTo(null))
-        assertThat(res.riskFlags[1].levelDescription, equalTo(null))
-        assertThat(res.riskFlags[2].levelCode, equalTo(MAPPA_LEVEL.code))
-        assertThat(res.riskFlags[2].levelDescription, equalTo(MAPPA_LEVEL.description))
+        assertThat(res.riskFlags[0].level, equalTo(RiskLevel.HIGH))
+        assertThat(res.riskFlags[0].description, equalTo(REGISTRATION_2.type.description))
+        assertThat(res.riskFlags[0].mostRecentReviewDate, equalTo(REGISTRATION_REVIEW_2.date))
+        assertThat(res.riskFlags[0].levelCode, equalTo(null))
+        assertThat(res.riskFlags[0].levelDescription, equalTo(null))
+        assertThat(res.riskFlags[1].level, equalTo(RiskLevel.LOW))
+        assertThat(res.riskFlags[1].levelCode, equalTo(MAPPA_LEVEL.code))
+        assertThat(res.riskFlags[1].levelDescription, equalTo(MAPPA_LEVEL.description))
+        assertThat(res.riskFlags[2].level, equalTo(RiskLevel.INFORMATION_ONLY))
         assertThat(res.removedRiskFlags.size, equalTo(1))
         assertThat(
             res.removedRiskFlags[0], equalTo(

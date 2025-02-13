@@ -55,8 +55,8 @@ internal class RiskServiceTest {
     fun `calls get risks function`() {
         val crn = "X000005"
         val expectedRiskFlags = listOf(
-            PersonGenerator.REGISTRATION_1,
-            PersonGenerator.REGISTRATION_2
+            PersonGenerator.REGISTRATION_2,
+            PersonGenerator.REGISTRATION_1
         )
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
         whenever(riskFlagRepository.findByPersonId(any())).thenReturn(expectedRiskFlags)
