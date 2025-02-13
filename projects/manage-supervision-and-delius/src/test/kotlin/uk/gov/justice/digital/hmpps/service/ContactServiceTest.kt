@@ -71,8 +71,8 @@ class ContactServiceTest {
     fun `no offender manager records`() {
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
-            offenderManagerRepository.findOffenderManagersByPersonId(PersonGenerator.OVERVIEW.id)
-        ).thenReturn(listOf())
+            offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(PersonGenerator.OVERVIEW.id)
+        ).thenReturn(null)
 
         val exception = assertThrows<NotFoundException> {
             service.getContacts(PersonGenerator.OVERVIEW.crn)
@@ -84,7 +84,7 @@ class ContactServiceTest {
         )
 
         verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
-        verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonId(
+        verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonIdAndActiveIsTrue(
             PersonGenerator.OVERVIEW.id
         )
 
@@ -129,9 +129,15 @@ class ContactServiceTest {
 
         whenever(personRepository.findByCrn(PersonGenerator.OVERVIEW.crn)).thenReturn(PersonGenerator.OVERVIEW)
         whenever(
-            offenderManagerRepository.findOffenderManagersByPersonId(PersonGenerator.OVERVIEW.id)
+            offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsTrue(PersonGenerator.OVERVIEW.id)
         ).thenReturn(
-            listOf(OFFENDER_MANAGER_ACTIVE, OFFENDER_MANAGER_INACTIVE)
+            OFFENDER_MANAGER_ACTIVE
+        )
+
+        whenever(
+            offenderManagerRepository.findOffenderManagersByPersonIdAndActiveIsFalse(PersonGenerator.OVERVIEW.id)
+        ).thenReturn(
+            listOf(OFFENDER_MANAGER_INACTIVE)
         )
 
         val response = service.getContacts(PersonGenerator.OVERVIEW.crn)
@@ -139,7 +145,7 @@ class ContactServiceTest {
         assertEquals(expected, response)
 
         verify(personRepository, times(1)).findByCrn(PersonGenerator.OVERVIEW.crn)
-        verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonId(
+        verify(offenderManagerRepository, times(1)).findOffenderManagersByPersonIdAndActiveIsTrue(
             PersonGenerator.OVERVIEW.id
         )
 

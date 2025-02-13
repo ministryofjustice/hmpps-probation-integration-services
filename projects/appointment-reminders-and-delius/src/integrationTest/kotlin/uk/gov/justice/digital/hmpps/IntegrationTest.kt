@@ -84,21 +84,32 @@ internal class IntegrationTest {
 
     @Test
     fun `sends messages to govuk notify`() {
-        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56")
+        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56", listOf("template"))
 
         verify(notificationClient).sendSms(
-            "cd713c1b-1b27-45a0-b493-37a34666635a",
+            "template",
             "07000000001",
             mapOf("FirstName" to "Test", "NextWorkSession" to "01/01/2000"),
             "A000001"
         )
         verify(telemetryService).trackEvent(
             "UnpaidWorkAppointmentReminderSent",
-            mapOf("crn" to "A000001", "upwAppointmentIds" to "123, 456", "notificationId" to "null")
+            mapOf(
+                "crn" to "A000001",
+                "upwAppointmentIds" to "123, 456",
+                "providerCode" to "N56",
+                "templateIds" to "template",
+                "notificationIds" to "null"
+            )
         )
         verify(telemetryService).trackEvent(
             "UnpaidWorkAppointmentReminderNotSent",
-            mapOf("crn" to "A000002", "upwAppointmentIds" to "789")
+            mapOf(
+                "crn" to "A000002",
+                "upwAppointmentIds" to "789",
+                "providerCode" to "N56",
+                "templateIds" to "template",
+            )
         )
     }
 }

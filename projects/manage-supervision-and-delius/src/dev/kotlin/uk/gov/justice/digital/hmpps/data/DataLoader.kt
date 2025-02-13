@@ -116,6 +116,7 @@ class DataLoader(
             OffenderManagerGenerator.RESPONSIBLE_OFFICER_OM_INACTIVE,
             OffenderManagerGenerator.OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.PRISON_OFFENDER_MANAGER_ACTIVE,
+            OffenderManagerGenerator.PRISON_OFFENDER_MANAGER_INACTIVE,
             OffenderManagerGenerator.RESPONSIBLE_OFFICER,
             OffenderManagerGenerator.DEFAULT_LOCATION,
             OffenderManagerGenerator.TEAM_OFFICE,

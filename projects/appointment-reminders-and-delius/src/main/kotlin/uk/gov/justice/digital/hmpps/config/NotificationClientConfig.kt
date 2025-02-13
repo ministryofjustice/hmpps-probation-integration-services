@@ -8,5 +8,5 @@ import uk.gov.service.notify.NotificationClient
 @Configuration
 class NotificationClientConfig {
     @Bean
-    fun notificationClient(@Value("\${govuk-notify.api-key}") apiKey: String) = NotificationClient(apiKey)
+    fun notificationClient(@Value("\${govuk-notify.api-key:}") apiKey: String) = NotificationClient(apiKey)
 }

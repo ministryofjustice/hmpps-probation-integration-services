@@ -69,7 +69,21 @@ object OffenderManagerGenerator {
         TEAM,
         STAFF_3,
         LocalDate.of(2025, 2, 7),
-        lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 7), LocalTime.NOON, EuropeLondon)
+        lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 7), LocalTime.NOON, EuropeLondon),
+        active = true,
+        softDeleted = false
+    )
+
+    val PRISON_OFFENDER_MANAGER_INACTIVE = PrisonManager(
+        IdGenerator.getAndIncrement(),
+        PersonGenerator.OVERVIEW,
+        ContactGenerator.DEFAULT_PROVIDER,
+        TEAM,
+        STAFF_3,
+        LocalDate.of(2025, 2, 7),
+        lastUpdated = ZonedDateTime.of(LocalDate.of(2025, 2, 7), LocalTime.NOON, EuropeLondon),
+        active = false,
+        softDeleted = true
     )
 
     val RESPONSIBLE_OFFICER = ResponsibleOfficer(
