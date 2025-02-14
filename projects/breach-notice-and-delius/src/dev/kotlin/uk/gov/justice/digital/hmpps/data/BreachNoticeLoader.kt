@@ -25,14 +25,31 @@ class BreachNoticeLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         entityManager.persistAll(
-            *WarningGenerator.WARNING_TYPES.toTypedArray(),
+            PersonGenerator.DS_ADDRESS_TYPE,
             PersonGenerator.DEFAULT_ADDRESS_TYPE,
-            PersonGenerator.DEFAULT_PERSON,
-            PersonGenerator.DEFAULT_ADDRESS,
+            WarningGenerator.DS_BREACH_NOTICE_TYPE,
+            *WarningGenerator.NOTICE_TYPES.toTypedArray(),
+            WarningGenerator.DS_BREACH_REASON,
+            *WarningGenerator.BREACH_REASONS.toTypedArray(),
+            WarningGenerator.DS_BREACH_CONDITION_TYPE,
+            *WarningGenerator.CONDITION_TYPES.toTypedArray(),
+            WarningGenerator.DS_BREACH_SENTENCE_TYPE,
+            *WarningGenerator.SENTENCE_TYPES.toTypedArray(),
+            WarningGenerator.ENFORCEABLE_CONTACT_TYPE,
+            WarningGenerator.ENFORCEABLE_CONTACT_OUTCOME,
             TeamGenerator.DEFAULT_LOCATION,
             TeamGenerator.DEFAULT_TEAM,
             StaffGenerator.DEFAULT_STAFF,
             StaffGenerator.DEFAULT_SU,
+            PersonGenerator.DEFAULT_PERSON,
+            PersonGenerator.DEFAULT_ADDRESS,
+            WarningGenerator.DEFAULT_EVENT,
+            WarningGenerator.DEFAULT_DISPOSAL,
+            WarningGenerator.DEFAULT_RQMNT_CATEGORY,
+            WarningGenerator.DS_REQUIREMENT_SUB_CATEOGORY,
+            WarningGenerator.DEFAULT_RQMNT_SUB_CATEGORY,
+            WarningGenerator.DEFAULT_RQMNT,
+            WarningGenerator.DEFAULT_ENFORCEABLE_CONTACT,
         )
     }
 

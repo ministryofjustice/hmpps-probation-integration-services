@@ -2,6 +2,7 @@
 spring:
   jackson:
     default-property-inclusion: non_null
+  datasource.hikari.auto-commit: false
   jpa:
     hibernate.ddl-auto: validate
     properties:
@@ -14,6 +15,10 @@ spring:
         query.mutation_strategy.global_temporary:
             create_tables: false
             drop_tables: false
+        connection:
+          autocommit: false
+    open-in-view: false
+    show-sql: true
   security.oauth2.client:
     registration:
       default:

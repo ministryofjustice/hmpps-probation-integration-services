@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.OfficeLocation
 import uk.gov.justice.digital.hmpps.integrations.delius.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.PersonAddress
@@ -13,6 +14,7 @@ import uk.gov.justice.digital.hmpps.model.BasicDetails
 import uk.gov.justice.digital.hmpps.model.Name
 
 @Service
+@Transactional(readOnly = true)
 class DetailsService(
     private val personRepository: PersonRepository,
     private val staffUserRepository: StaffUserRepository

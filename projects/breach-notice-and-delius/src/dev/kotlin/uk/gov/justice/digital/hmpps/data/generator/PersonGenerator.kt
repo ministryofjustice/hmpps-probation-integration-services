@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.ReferenceData
@@ -17,14 +19,9 @@ object PersonGenerator {
         id = IdGenerator.getAndIncrement(),
     )
 
-    val DEFAULT_ADDRESS_TYPE = generateAddressType("ADT1")
+    val DS_ADDRESS_TYPE = ReferenceDataGenerator.generateDataset(Dataset.ADDRESS_TYPE)
+    val DEFAULT_ADDRESS_TYPE = generateReferenceData(DS_ADDRESS_TYPE, "ADT1")
     val DEFAULT_ADDRESS = generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_TYPE)
-
-    private fun generateAddressType(
-        code: String,
-        description: String = "Description of $code",
-        id: Long = IdGenerator.getAndIncrement()
-    ) = ReferenceData(code, description, id)
 
     private fun generatePersonAddress(
         person: Person,

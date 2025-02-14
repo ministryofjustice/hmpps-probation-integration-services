@@ -2,24 +2,22 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.WARNING_TYPES
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator
+import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.DEFAULT_ENFORCEABLE_CONTACT
+import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.NOTICE_TYPES
+import uk.gov.justice.digital.hmpps.integrations.delius.codedDescriptions
+import uk.gov.justice.digital.hmpps.integrations.delius.sentenceTypes
 import uk.gov.justice.digital.hmpps.model.CodedDescription
+import uk.gov.justice.digital.hmpps.model.WarningDetails
 import uk.gov.justice.digital.hmpps.model.WarningTypes
+import uk.gov.justice.digital.hmpps.service.toEnforceableContact
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class WarningIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+internal class WarningIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `can retrieve all warning types`() {
@@ -30,9 +28,27 @@ internal class WarningIntegrationTest {
 
         assertThat(response.content)
             .containsExactlyElementsOf(
-                WARNING_TYPES.filter { it.selectable }
+                NOTICE_TYPES.filter { it.selectable }
                     .map { CodedDescription(it.code, it.description) }
                     .sortedBy { it.description }
             )
+    }
+
+    @Test
+    fun `can retrieve warning details`() {
+        val person = PersonGenerator.DEFAULT_PERSON
+        val response = mockMvc
+            .perform(get("/warning-details/${person.crn}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<WarningDetails>()
+
+        assertThat(response).isEqualTo(
+            WarningDetails(
+                breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
+                sentenceTypes = WarningGenerator.SENTENCE_TYPES.sentenceTypes(),
+                enforceableContacts = listOf(DEFAULT_ENFORCEABLE_CONTACT.toEnforceableContact()),
+            )
+        )
+        assertThat(response.enforceableContacts.first()).isNotNull
     }
 }
