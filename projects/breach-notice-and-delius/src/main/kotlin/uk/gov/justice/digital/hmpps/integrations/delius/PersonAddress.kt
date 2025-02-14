@@ -22,11 +22,11 @@ class PersonAddress(
     val buildingName: String?,
     @Column(name = "address_number")
     val buildingNumber: String?,
-    var streetName: String?,
-    var townCity: String?,
-    var district: String? = null,
-    var county: String?,
-    var postcode: String?,
+    val streetName: String?,
+    val townCity: String?,
+    val district: String?,
+    val county: String?,
+    val postcode: String?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
