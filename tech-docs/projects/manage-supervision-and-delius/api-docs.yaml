@@ -681,6 +681,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonalContact"
+  /personal-details/{crn}/main-address/note/{noteId}:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Contact
+      operationId: getMainAddressSingleNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetailsSummary"
   /personal-details/{crn}/document/{documentId}:
     get:
       tags:
@@ -1059,8 +1084,12 @@ components:
           type: string
         status:
           type: string
-        notes:
-          type: string
+        addressNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        addressNote:
+          $ref: "#/components/schemas/NoteDetail"
         noFixedAddress:
           type: boolean
       required:
@@ -2298,6 +2327,13 @@ components:
           format: int64
         description:
           type: string
+        level:
+          type: string
+          enum:
+          - HIGH
+          - MEDIUM
+          - LOW
+          - INFORMATION_ONLY
         levelCode:
           type: string
         levelDescription:
@@ -2326,6 +2362,7 @@ components:
       - createdDate
       - description
       - id
+      - level
       - removalHistory
       - removed
     RiskFlagRemoval:
@@ -2383,6 +2420,37 @@ components:
       required:
       - personSummary
       - provisions
+    PersonalDetailsSummary:
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalContact"
+        mainAddress:
+          $ref: "#/components/schemas/Address"
+        otherAddressCount:
+          type: integer
+          format: int32
+        previousAddressCount:
+          type: integer
+          format: int32
+        telephoneNumber:
+          type: string
+        mobileNumber:
+          type: string
+        email:
+          type: string
+      required:
+      - contacts
+      - crn
+      - name
+      - otherAddressCount
+      - previousAddressCount
     StreamingResponseBody:
       type: object
     Disability:
