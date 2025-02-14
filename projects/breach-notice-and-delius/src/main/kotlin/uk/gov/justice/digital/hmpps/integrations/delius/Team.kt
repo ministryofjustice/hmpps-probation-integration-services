@@ -67,7 +67,7 @@ class OfficeLocation(
     @Id
     @Column(name = "office_location_id")
     val id: Long
-){
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
