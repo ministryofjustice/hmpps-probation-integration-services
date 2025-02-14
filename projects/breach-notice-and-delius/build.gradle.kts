@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.configure
-import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 
 apply(plugin = "com.google.cloud.tools.jib")
