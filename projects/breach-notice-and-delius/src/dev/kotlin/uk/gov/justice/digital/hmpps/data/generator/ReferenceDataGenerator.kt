@@ -29,6 +29,13 @@ object ReferenceDataGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = ContactOutcome(code, description, enforceable, id)
 
+    fun generateDisposalType(
+        code: String,
+        sentenceType: String? = "SC",
+        requiredInformation: String? = null,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = DisposalType(code, sentenceType, requiredInformation, id)
+
     fun generateRequirementMainCategory(
         code: String,
         description: String = "Description of $code",

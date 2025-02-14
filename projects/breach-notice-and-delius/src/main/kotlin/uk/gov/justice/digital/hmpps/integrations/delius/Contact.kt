@@ -99,7 +99,7 @@ class ContactOutcome(
 ) : CodeAndDescription
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-    fun findByPersonCrnAndOutcomeEnforceableTrue(crn: String): List<Contact>
+    fun findByEventIdAndOutcomeEnforceableTrue(eventId: Long): List<Contact>
 
     @Query(
         """

@@ -27,6 +27,7 @@ class BreachNoticeLoader(
         basicDetailsData()
         warningData()
         appointmentData()
+        entityManager.persist(DocumentGenerator.DEFAULT_BREACH_NOTICE)
     }
 
     private fun basicDetailsData() {
@@ -56,6 +57,7 @@ class BreachNoticeLoader(
             WarningGenerator.ENFORCEABLE_CONTACT_TYPE,
             WarningGenerator.ENFORCEABLE_CONTACT_OUTCOME,
             EventGenerator.DEFAULT_EVENT,
+            EventGenerator.DEFAULT_DISPOSAL_TYPE,
             EventGenerator.DEFAULT_DISPOSAL,
             EventGenerator.DEFAULT_RQMNT_CATEGORY,
             EventGenerator.DS_REQUIREMENT_SUB_CATEOGORY,

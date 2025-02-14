@@ -2,30 +2,38 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.model.EnforceableContact
 import uk.gov.justice.digital.hmpps.model.WarningDetails
 import uk.gov.justice.digital.hmpps.model.WarningTypes
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 @Transactional(readOnly = true)
 class WarningService(
     private val rdRepository: ReferenceDataRepository,
+    private val documentRepository: DocumentRepository,
+    private val disposalRepository: DisposalRepository,
     private val contactRepository: ContactRepository,
 ) {
     fun getWarningTypes(): WarningTypes = WarningTypes(
         rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_NOTICE_TYPE).codedDescriptions()
     )
 
-    fun getWarningDetails(crn: String): WarningDetails {
+    fun getWarningDetails(crn: String, breachNoticeId: UUID): WarningDetails {
         val breachReasons = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON)
         val sentenceTypes = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_SENTENCE_TYPE)
-        val enforceableContacts = contactRepository.findByPersonCrnAndOutcomeEnforceableTrue(crn)
+        val eventId = documentRepository.findEventIdFromDocument(breachNoticeId)
+            ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
+        val disposal = disposalRepository.getByEventId(eventId)
+        val enforceableContacts = contactRepository.findByEventIdAndOutcomeEnforceableTrue(eventId)
         return WarningDetails(
             breachReasons.codedDescriptions(),
             sentenceTypes.sentenceTypes(),
-            enforceableContacts.map(Contact::toEnforceableContact)
+            disposal.type.defaultSentenceTypeCode(),
+            enforceableContacts.map(Contact::toEnforceableContact),
         )
     }
 }

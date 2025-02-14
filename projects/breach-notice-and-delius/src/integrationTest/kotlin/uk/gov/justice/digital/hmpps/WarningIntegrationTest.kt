@@ -4,6 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.DEFAULT_BREACH_NOTICE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.DEFAULT_ENFORCEABLE_CONTACT
@@ -38,7 +40,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
     fun `can retrieve warning details`() {
         val person = PersonGenerator.DEFAULT_PERSON
         val response = mockMvc
-            .perform(get("/warning-details/${person.crn}").withToken())
+            .perform(get("/warning-details/${person.crn}/$BREACH_NOTICE_ID").withToken())
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsJson<WarningDetails>()
 
@@ -46,6 +48,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
                 sentenceTypes = WarningGenerator.SENTENCE_TYPES.sentenceTypes(),
+                defaultSentenceTypeCode = "PSS",
                 enforceableContacts = listOf(DEFAULT_ENFORCEABLE_CONTACT.toEnforceableContact()),
             )
         )

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.model.CodedDescription
 import uk.gov.justice.digital.hmpps.model.SentenceType
@@ -92,6 +93,7 @@ class Dataset(
 }
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
+    @EntityGraph(attributePaths = ["dataset"])
     fun findByDatasetCodeAndSelectableTrue(datasetCode: String): List<ReferenceData>
 }
 
