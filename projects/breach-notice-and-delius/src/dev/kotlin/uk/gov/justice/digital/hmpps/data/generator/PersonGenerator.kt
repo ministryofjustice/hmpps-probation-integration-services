@@ -1,21 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateReferenceData
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator.DEFAULT_TEAM
-import uk.gov.justice.digital.hmpps.integrations.delius.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.*
 
 object PersonGenerator {
 

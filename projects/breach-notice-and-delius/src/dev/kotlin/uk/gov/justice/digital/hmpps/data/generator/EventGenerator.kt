@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateDataset
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateDisposalType
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateReferenceData

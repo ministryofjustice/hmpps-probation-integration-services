@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.genera
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator.DEFAULT_TEAM
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import java.time.ZonedDateTime
 
@@ -92,7 +93,7 @@ object WarningGenerator {
     fun generateEnforceableContact(
         person: Person,
         type: ContactType,
-        dateTime: ZonedDateTime = ZonedDateTime.now().minusDays(1),
+        dateTime: ZonedDateTime = ZonedDateTime.now(EuropeLondon).minusDays(1),
         requirement: Requirement,
         team: Team = DEFAULT_TEAM,
         staff: Staff = DEFAULT_STAFF,
