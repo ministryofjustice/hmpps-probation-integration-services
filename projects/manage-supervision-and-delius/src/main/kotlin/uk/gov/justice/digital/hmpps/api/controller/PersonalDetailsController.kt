@@ -25,6 +25,11 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     @Operation(summary = "Personal Details containing address, personal contacts and documents ")
     fun getPersonalDetails(@PathVariable crn: String) = personalDetailsService.getPersonalDetails(crn)
 
+    @GetMapping("/main-address/note/{noteId}")
+    @Operation(summary = "Person Contact")
+    fun getMainAddressSingleNote(@PathVariable crn: String, @PathVariable noteId: Int) =
+        personalDetailsService.getMainAddressSingleNote(crn, noteId)
+
     @GetMapping("/document/{documentId}")
     @Operation(summary = "Download document")
     fun downloadDocument(@PathVariable crn: String, @PathVariable documentId: String) =

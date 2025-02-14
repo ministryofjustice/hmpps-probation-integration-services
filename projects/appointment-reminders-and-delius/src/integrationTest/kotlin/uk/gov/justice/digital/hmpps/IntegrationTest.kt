@@ -15,10 +15,14 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.model.Provider
+import uk.gov.justice.digital.hmpps.model.ProviderResponse
 import uk.gov.justice.digital.hmpps.model.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.repository.UpwAppointmentRepository
 import uk.gov.justice.digital.hmpps.service.UnpaidWorkAppointmentsService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.service.notify.NotificationClient
 
@@ -111,5 +115,12 @@ internal class IntegrationTest {
                 "templateIds" to "template",
             )
         )
+    }
+
+    @Test
+    fun `retrieves user's providers`() {
+        mockMvc.perform(get("/users/${UserGenerator.TEST_USER.username}/providers").withToken())
+            .andExpect(status().isOk)
+            .andExpectJson(ProviderResponse(listOf(Provider("N07", "London"))))
     }
 }

@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.data.generator.personalDetails
 
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.NOTE_1500_CHARS
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactAddress
@@ -189,7 +188,13 @@ object PersonDetailsGenerator {
         PERSON_ADDRESS_STATUS_1,
         PERSON_ADDRESS_TYPE_1,
         verified = true,
-        notes = "Some Notes"
+        notes = """
+            Comment added by Harry Kane on 29/10/2024 at 14:39
+            main address note 1
+            ---------------------------------------------------------
+            Comment added by Tom Brady on 29/10/2024 at 14:56
+            main address note 2
+        """.trimIndent()
     )
     val PERSON_ADDRESS_2 = generatePersonAddress(
         "43",
