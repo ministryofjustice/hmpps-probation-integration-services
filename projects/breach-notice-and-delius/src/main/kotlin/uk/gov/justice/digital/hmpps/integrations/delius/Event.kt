@@ -116,7 +116,6 @@ class RequirementMainCategory(
     val id: Long
 ) : CodeAndDescription
 
-
-interface DisposalRepository: JpaRepository<Disposal, Long> {
+interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun getByEventId(eventId: Long): Disposal
 }
