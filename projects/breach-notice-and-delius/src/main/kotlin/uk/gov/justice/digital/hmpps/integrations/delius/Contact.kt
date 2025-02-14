@@ -104,7 +104,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
-        where c.type.attendanceContact = true and c.outcome is null and c.date > current_date
+        where c.person.crn = :crn and c.type.attendanceContact = true 
+        and c.outcome is null and c.date > current_date
         """
     )
     fun findFutureAppointments(crn: String): List<Contact>
