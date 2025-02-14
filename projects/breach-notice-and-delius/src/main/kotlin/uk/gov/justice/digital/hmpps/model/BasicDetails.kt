@@ -9,7 +9,7 @@ data class BasicDetails(
 
 data class Name(
     val forename: String,
-    val middleName: String,
+    val middleName: String?,
     val surname: String
 )
 

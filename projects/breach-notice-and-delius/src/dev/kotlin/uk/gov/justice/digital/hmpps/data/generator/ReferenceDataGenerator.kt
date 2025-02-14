@@ -18,8 +18,9 @@ object ReferenceDataGenerator {
     fun generateContactType(
         code: String,
         description: String = "Description of $code",
+        attendanceContact: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = ContactType(code, description, id)
+    ) = ContactType(code, description, attendanceContact, id)
 
     fun generateContactOutcome(
         code: String,

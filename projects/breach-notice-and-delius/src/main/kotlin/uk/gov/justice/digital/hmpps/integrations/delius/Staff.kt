@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import kotlin.jvm.Transient
 
 @Immutable
 @Entity
@@ -18,6 +19,9 @@ class Staff(
 
     @Column(name = "forename2")
     val middleName: String?,
+
+    @OneToOne(mappedBy = "staff")
+    val user: StaffUser?,
 
     @ManyToMany
     @JoinTable(
@@ -47,7 +51,10 @@ class StaffUser(
     @Id
     @Column(name = "user_id")
     val id: Long
-)
+) {
+    @Transient
+    var telephone: String? = null
+}
 
 interface StaffUserRepository : JpaRepository<StaffUser, Long> {
     @EntityGraph(attributePaths = ["staff.teams.addresses"])

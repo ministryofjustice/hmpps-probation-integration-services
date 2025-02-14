@@ -1,10 +1,21 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateReferenceData
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_STAFF
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.integrations.delius.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.PersonAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.Team
 
 object PersonGenerator {
 
@@ -18,6 +29,7 @@ object PersonGenerator {
         softDeleted = false,
         id = IdGenerator.getAndIncrement(),
     )
+    val DEFAULT_PERSON_MANAGER = generatePersonManager(DEFAULT_PERSON)
 
     val DS_ADDRESS_TYPE = ReferenceDataGenerator.generateDataset(Dataset.ADDRESS_TYPE)
     val DEFAULT_ADDRESS_TYPE = generateReferenceData(DS_ADDRESS_TYPE, "ADT1")
@@ -48,4 +60,13 @@ object PersonGenerator {
         softDeleted,
         id
     )
+
+    fun generatePersonManager(
+        person: Person,
+        team: Team = DEFAULT_TEAM,
+        staff: Staff = DEFAULT_STAFF,
+        active: Boolean = true,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = PersonManager(person, team, staff, active, softDeleted, id)
 }

@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -74,6 +75,9 @@ class Contact(
 class ContactType(
     override val code: String,
     override val description: String,
+    @Column(name = "attendance_contact")
+    @Convert(converter = YesNoConverter::class)
+    val attendanceContact: Boolean,
     @Id
     @Column(name = "contact_type_id")
     val id: Long
@@ -96,4 +100,12 @@ class ContactOutcome(
 
 interface ContactRepository : JpaRepository<Contact, Long> {
     fun findByPersonCrnAndOutcomeEnforceableTrue(crn: String): List<Contact>
+
+    @Query(
+        """
+        select c from Contact c
+        where c.type.attendanceContact = true and c.outcome is null and c.date > current_date
+        """
+    )
+    fun findFutureAppointments(crn: String): List<Contact>
 }
