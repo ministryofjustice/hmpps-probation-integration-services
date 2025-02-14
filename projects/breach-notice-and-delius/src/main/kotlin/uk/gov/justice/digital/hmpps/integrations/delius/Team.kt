@@ -14,8 +14,6 @@ class Team(
     val code: String,
 
     val description: String,
-    val telephone: String?,
-    val emailAddress: String?,
 
     @ManyToMany
     @JoinTable(
@@ -26,7 +24,6 @@ class Team(
     @SQLRestriction("end_date is null or end_date > current_date")
     val addresses: Set<OfficeLocation>,
 
-    val startDate: LocalDate,
     val endDate: LocalDate?,
 
     @Id
@@ -60,8 +57,7 @@ class OfficeLocation(
     val townCity: String?,
     val county: String?,
     val postcode: String?,
-    val telephoneNumber: String?,
-    val startDate: LocalDate,
+
     val endDate: LocalDate?,
 
     @Id

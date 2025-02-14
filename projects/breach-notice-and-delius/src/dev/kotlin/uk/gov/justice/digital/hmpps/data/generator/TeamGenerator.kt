@@ -1,13 +1,11 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.OfficeLocation
 import uk.gov.justice.digital.hmpps.integrations.delius.Team
 import java.time.LocalDate
 
 object TeamGenerator {
     val DEFAULT_LOCATION = generateLocation(
-        code = "DEF_OFF",
         description = "Default Office",
         buildingNumber = "21",
         streetName = "Mantle Place",
@@ -20,25 +18,17 @@ object TeamGenerator {
     fun generateTeam(
         code: String,
         description: String = "Description of $code",
-        telephone: String? = "1234567890",
-        emailAddress: String? = "test@email.com",
         addresses: Set<OfficeLocation> = setOf(),
-        startDate: LocalDate = LocalDate.now(EuropeLondon).minusMonths(1),
-        endDate: LocalDate? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Team(
         code,
         description,
-        telephone,
-        emailAddress,
         addresses,
-        startDate,
-        endDate,
+        null,
         id
     )
 
     fun generateLocation(
-        code: String,
         description: String,
         buildingName: String? = null,
         buildingNumber: String? = null,
@@ -47,11 +37,8 @@ object TeamGenerator {
         town: String? = null,
         county: String? = null,
         postcode: String? = null,
-        startDate: LocalDate = LocalDate.now(EuropeLondon),
-        endDate: LocalDate? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = OfficeLocation(
-        code,
         description,
         buildingName,
         buildingNumber,
@@ -60,8 +47,7 @@ object TeamGenerator {
         town,
         county,
         postcode,
-        startDate,
-        endDate,
+        null,
         id
     )
 }
