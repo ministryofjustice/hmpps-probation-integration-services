@@ -83,7 +83,7 @@ class Person(
     @Column(name = "current_remand_status")
     var remandStatus: String? = null,
 
-    @Column(name = "OFFENDER_DETAILS")
+    @Column(name = "OFFENDER_DETAILS", columnDefinition = "clob")
     var notes: String? = null,
 
     @Column
