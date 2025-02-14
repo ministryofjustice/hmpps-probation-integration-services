@@ -27,7 +27,7 @@ internal class HandlerTest {
     @Test
     fun `message is logged to telemetry`() {
         // Given a message
-        val notification = Notification(message = MessageGenerator.EXAMPLE)
+        val notification = Notification(message = MessageGenerator.BREACH_NOTICE_ADDED)
 
         // When it is received
         try {
