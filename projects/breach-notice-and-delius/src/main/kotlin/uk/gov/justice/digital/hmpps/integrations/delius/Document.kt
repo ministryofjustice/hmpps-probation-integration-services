@@ -41,7 +41,16 @@ class Document(
 interface DocumentRepository : JpaRepository<Document, Long> {
     @Query(
         """
-        select related_event.event_id
+        select coalesce(event.event_id,
+                        court_appearance.event_id,
+                        institutional_report_disposal.event_id,
+                        approved_premises_referral.event_id,
+                        assessment_referral.event_id,
+                        case_allocation.event_id, 
+                        referral.event_id,
+                        upw_appointment_disposal.event_id, 
+                        contact.event_id,
+                        nsi.event_id)
         from document
             -- the following joins are to get the event_id from the related entities, for event-level documents
         left join event on document.table_name = 'EVENT' and document.primary_key_id = event.event_id
@@ -66,19 +75,9 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         left join disposal upw_appointment_disposal on upw_appointment_disposal.disposal_id = upw_details.disposal_id
         left join contact on document.table_name = 'CONTACT' and document.primary_key_id = contact.contact_id
         left join nsi on document.table_name = 'NSI' and document.primary_key_id = nsi.nsi_id
-        left join event related_event on related_event.event_id = coalesce(event.event_id, 
-                                                                           court_appearance.event_id,
-                                                                           institutional_report_disposal.event_id,
-                                                                           approved_premises_referral.event_id,
-                                                                           assessment_referral.event_id,
-                                                                           case_allocation.event_id, 
-                                                                           referral.event_id,
-                                                                           upw_appointment_disposal.event_id, 
-                                                                           contact.event_id,
-                                                                           nsi.event_id)
-        where lower(substr(document.external_reference, -36, 36)) = lower(:uuid) 
+        where document.external_reference = :urn 
         """,
         nativeQuery = true
     )
-    fun findEventIdFromDocument(uuid: UUID): Long?
+    fun findEventIdFromDocument(urn: String): Long?
 }

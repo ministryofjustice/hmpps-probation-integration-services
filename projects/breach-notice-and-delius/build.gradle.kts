@@ -33,10 +33,6 @@ dependencies {
     testImplementation(libs.bundles.mockito)
 }
 
-extensions.configure<NoArgExtension> {
-    annotation("org.springframework.ldap.odm.annotations.Entry")
-}
-
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
         "**/config/**",

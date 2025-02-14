@@ -35,7 +35,7 @@ class InstitutionalReport(@Id val institutionalReportId: Long, val custodyId: Lo
 
 @Immutable
 @Entity
-class Nsi(@Id @Column(name = "nsi_id") val id: Long, @Column(name = "event_id") val eventId: Long?)
+class Nsi(@Id val nsiId: Long, val eventId: Long?)
 
 @Immutable
 @Entity

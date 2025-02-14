@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.integrations.delius.Document.Companion.breachNoticeUrn
 import uk.gov.justice.digital.hmpps.model.EnforceableContact
 import uk.gov.justice.digital.hmpps.model.WarningDetails
 import uk.gov.justice.digital.hmpps.model.WarningTypes
@@ -25,7 +26,7 @@ class WarningService(
     fun getWarningDetails(crn: String, breachNoticeId: UUID): WarningDetails {
         val breachReasons = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON)
         val sentenceTypes = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_SENTENCE_TYPE)
-        val eventId = documentRepository.findEventIdFromDocument(breachNoticeId)
+        val eventId = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
             ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
         val disposal = disposalRepository.getByEventId(eventId)
         val enforceableContacts = contactRepository.findByEventIdAndOutcomeEnforceableTrue(eventId)
