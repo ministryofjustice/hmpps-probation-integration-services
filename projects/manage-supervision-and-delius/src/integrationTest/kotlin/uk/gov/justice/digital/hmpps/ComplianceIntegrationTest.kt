@@ -34,7 +34,7 @@ internal class ComplianceIntegrationTest {
         assertThat(res.personSummary.name.forename, equalTo(person.forename))
         assertThat(
             res.previousOrders.breaches,
-            equalTo(2)
+            equalTo(3)
         )
         assertThat(res.currentSentences[1].rarCategory, equalTo("Main"))
         assertThat(res.currentSentences[1].rarDescription, equalTo("2 of 12 RAR days completed"))
@@ -48,8 +48,8 @@ internal class ComplianceIntegrationTest {
         assertThat(res.currentSentences[1].activity.compliedAppointmentsCount, equalTo(2))
         assertThat(res.currentSentences[1].activity.outcomeNotRecordedCount, equalTo(2))
         assertThat(res.currentSentences[1].activity.acceptableAbsenceCount, equalTo(0))
-        assertThat(res.previousOrders.orders[1].eventNumber, equalTo(INACTIVE_EVENT_1.eventNumber))
-        assertThat(res.previousOrders.orders[1].status, equalTo(TERMINATION_REASON.description))
+        assertThat(res.previousOrders.orders[2].eventNumber, equalTo(INACTIVE_EVENT_1.eventNumber))
+        assertThat(res.previousOrders.orders[2].status, equalTo(TERMINATION_REASON.description))
         assertThat(res.previousOrders.lastEndedDate, equalTo(INACTIVE_ORDER_2.terminationDate))
     }
 
