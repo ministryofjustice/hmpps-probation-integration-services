@@ -74,26 +74,26 @@ dependencyResolutionManagement {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.4")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.3.0")
-            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.30.16")
+            library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.30.21")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.3.0")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.3.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.3.0")
-            library("aws-sts", "software.amazon.awssdk:sts:2.30.16")
+            library("aws-sts", "software.amazon.awssdk:sts:2.30.21")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.0")
-            library("azure-identity", "com.azure:azure-identity:1.15.1")
+            library("azure-identity", "com.azure:azure-identity:1.15.2")
             library("flipt", "io.flipt:flipt-java:1.1.1")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
-            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.27.0")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.28.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.12.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.1.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.2.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.2")
-            library("wiremock", "org.wiremock:wiremock-standalone:3.11.0")
+            library("wiremock", "org.wiremock:wiremock-standalone:3.12.0")
 
             bundle(
                 "aws-messaging",
