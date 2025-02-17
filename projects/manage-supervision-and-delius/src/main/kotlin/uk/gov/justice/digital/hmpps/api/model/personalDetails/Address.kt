@@ -4,7 +4,6 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.LocalDate
 
-
 data class Address(
     val id: Long?,
     val buildingName: String?,
