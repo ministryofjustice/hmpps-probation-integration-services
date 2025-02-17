@@ -14,6 +14,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByNumber
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Dataset.Code.OASYS_ASSESSMENT_STATUS
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.Objective
 import java.time.LocalDate
@@ -25,6 +28,7 @@ class AssessmentService(
     private val oasysAssessmentRepository: OasysAssessmentRepository,
     private val eventRepository: EventRepository,
     private val contactService: ContactService,
+    private val referenceDataRepository: ReferenceDataRepository,
 ) {
     fun recordAssessment(person: Person, summary: AssessmentSummary) {
         val previousAssessment = oasysAssessmentRepository.findByOasysId(summary.assessmentPk.toString())
@@ -78,6 +82,7 @@ class AssessmentService(
             ogpScore2 = ogpOvp.ogp2Year,
             ovpScore1 = ogpOvp.ovp1Year,
             ovpScore2 = ogpOvp.ovp2Year,
+            status = assessmentStatus.asOasysStatus()
         ).withSectionScores(weightedScores)
         sentencePlan?.objectives?.map { it.plan(person, assessment) }
             ?.forEach { assessment.withSentencePlan(it) }
@@ -88,6 +93,14 @@ class AssessmentService(
         val names = name.split(Regex("\\s+")).toMutableList()
         for (i in 0 until names.size - 1) names[i] = "${names[i].first()}."
         return names.joinToString(" ")
+    }
+
+    private fun String.asOasysStatus(): ReferenceData? = when (this) {
+        "COMPLETE" -> "C"
+        "LOCKED_INCOMPLETE" -> "LI"
+        else -> null
+    }?.let {
+        referenceDataRepository.findByCode(it, OASYS_ASSESSMENT_STATUS.value)
     }
 }
 

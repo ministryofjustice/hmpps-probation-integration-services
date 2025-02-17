@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.oasys.WeightedScores
 import java.io.Serializable
 import java.time.LocalDate
@@ -79,6 +80,10 @@ class OasysAssessment(
     val ovpScore1: Long?,
     @Column(name = "ovp_score_2")
     val ovpScore2: Long?,
+
+    @ManyToOne
+    @JoinColumn(name = "assessment_status_id")
+    val status: ReferenceData?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

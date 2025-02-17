@@ -76,6 +76,7 @@ class DataLoader(
         entityManager.persist(PersonGenerator.EVENT_2)
         entityManager.persist(PersonGenerator.INACTIVE_EVENT_1)
         entityManager.persist(PersonGenerator.INACTIVE_EVENT_2)
+        entityManager.persist(PersonGenerator.INACTIVE_EVENT_3)
 
         entityManager.persist(AdditionalSentenceGenerator.REF_DISQ)
         entityManager.persist(AdditionalSentenceGenerator.REF_FINE)
@@ -133,6 +134,7 @@ class DataLoader(
             PersonGenerator.INACTIVE_ORDER_1,
             PersonGenerator.REF_DATA_MONTHS,
             PersonGenerator.INACTIVE_ORDER_2,
+            PersonGenerator.INACTIVE_ORDER_3,
             ContactGenerator.COMMUNICATION_CATEGORY_RD,
             ContactGenerator.BREACH_CONTACT_TYPE,
             ContactGenerator.BREACH_ENFORCEMENT_ACTION,
@@ -158,6 +160,7 @@ class DataLoader(
             PersonGenerator.MAIN_OFFENCE_3,
             PersonGenerator.OFFENCE_4,
             PersonGenerator.MAIN_OFFENCE_4,
+            PersonGenerator.MAIN_OFFENCE_5,
             PersonGenerator.ADD_OFF_1,
             PersonGenerator.ADDITIONAL_OFFENCE_1,
             PersonGenerator.ADD_OFF_2,

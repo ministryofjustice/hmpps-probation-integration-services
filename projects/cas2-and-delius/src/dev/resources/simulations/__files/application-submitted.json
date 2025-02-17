@@ -12,6 +12,7 @@
         "name": "Tester",
         "username": "test.user"
       }
-    }
+    },
+    "cas2v2ApplicationOrigin": "homeDetentionCurfew"
   }
 }
