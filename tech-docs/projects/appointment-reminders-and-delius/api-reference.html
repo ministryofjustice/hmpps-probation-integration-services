@@ -109,6 +109,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#users-username-providers"><span>/users/{username}/providers</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#upw-appointments-csv"><span>/upw-appointments.csv</span></a>
       </li>
       <li>
@@ -141,6 +144,71 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="users-username-providers">/users/{username}/providers</h2>
+
+<h3 id="users-username-providers-get">get</h3>
+
+
+
+
+<h4 id="users-username-providers-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="users-username-providers-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "providers": [
+    {
+      "code": "string",
+      "name": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-providerresponse'>ProviderResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -213,6 +281,60 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-providerresponse">ProviderResponse</h3>
+
+
+<table class='schema-providerresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>providers</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             

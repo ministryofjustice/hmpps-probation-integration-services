@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /users/{username}/providers:
+    get:
+      tags:
+      - api-controller
+      operationId: getUserProviders
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderResponse"
   /upw-appointments.csv:
     get:
       tags:
@@ -39,6 +57,26 @@ paths:
               schema:
                 type: string
 components:
+  schemas:
+    Provider:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - code
+      - name
+    ProviderResponse:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Provider"
+      required:
+      - providers
   securitySchemes:
     hmpps-auth-token:
       type: http
