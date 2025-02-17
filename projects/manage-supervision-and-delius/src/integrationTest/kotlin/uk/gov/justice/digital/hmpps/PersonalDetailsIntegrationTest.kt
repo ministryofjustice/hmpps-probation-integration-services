@@ -257,6 +257,20 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
+    fun `previous address with single note is returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/addresses/${PREVIOUS_ADDRESS.id}/note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<AddressOverviewSummary>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.address!!.postcode, equalTo("NE4 END"))
+        assertThat(res.address!!.to, equalTo(PREVIOUS_ADDRESS.endDate))
+        assertThat(res.address!!.addressNotes, equalTo(null))
+        assertThat(res.address!!.addressNote!!.note, equalTo("previous address note 1"))
+    }
+
+    @Test
     fun `addresses person not found`() {
         mockMvc
             .perform(get("/personal-details/X999999/addresses").withToken())

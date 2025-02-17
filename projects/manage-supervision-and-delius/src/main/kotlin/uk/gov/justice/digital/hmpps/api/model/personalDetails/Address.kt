@@ -4,7 +4,9 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.LocalDate
 
+
 data class Address(
+    val id: Long?,
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,
@@ -27,6 +29,7 @@ data class Address(
 ) {
     companion object {
         fun from(
+            id: Long? = null,
             buildingName: String? = null,
             buildingNumber: String? = null,
             streetName: String? = null,
@@ -55,6 +58,7 @@ data class Address(
                 null
             } else {
                 Address(
+                    id,
                     buildingName,
                     buildingNumber,
                     streetName,
