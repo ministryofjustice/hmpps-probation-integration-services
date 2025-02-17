@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 import java.util.*
 
@@ -34,6 +35,7 @@ object AssessmentGenerator {
         ogpScore2: Long? = 26,
         ovpScore1: Long? = 6,
         ovpScore2: Long? = 12,
+        status: ReferenceData? = null,
         softDeleted: Boolean = false,
         oasysId: String = UUID.randomUUID().toString(),
         id: Long = 0
@@ -63,6 +65,7 @@ object AssessmentGenerator {
         ogpScore2,
         ovpScore1,
         ovpScore2,
+        status,
         softDeleted,
         id
     )

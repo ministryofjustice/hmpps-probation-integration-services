@@ -38,6 +38,10 @@ class DataLoader(
         saveAll(*ReferenceDataGenerator.COURTS.toTypedArray())
         saveAll(*ReferenceDataGenerator.OFFENCES.toTypedArray())
         saveAll(
+            ReferenceDataGenerator.OASYS_ASSESSMENT_STATUS_DATASET,
+            *ReferenceDataGenerator.OASYS_ASSESSMENT_STATUSES.toTypedArray(),
+        )
+        saveAll(
             ReferenceDataGenerator.FLAG_DATASET,
             ReferenceDataGenerator.ROSH_FLAG,
             ReferenceDataGenerator.SAFEGUARDING_FLAG
