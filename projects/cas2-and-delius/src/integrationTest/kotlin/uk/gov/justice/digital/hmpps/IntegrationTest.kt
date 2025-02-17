@@ -65,7 +65,7 @@ internal class IntegrationTest {
             contact.notes,
             equalTo("Details of the application can be found here: https://example.com/application/00000000-0000-0000-0000-000000000001")
         )
-        assertThat(contact.description, nullValue())
+        assertThat(contact.description, equalTo("CAS2 Referral Submitted: Home Detention Curfew"))
         assertThat(
             contact.externalReference,
             equalTo("urn:hmpps:cas2:application-submitted:00000000-0000-0000-0000-000000000001")
@@ -94,7 +94,7 @@ internal class IntegrationTest {
         // Then a contact is created
         val contact = contactRepository.findAll().single { it.type.code == REFERRAL_UPDATED }
         assertThat(contact.externalReference, equalTo("urn:hmpps:cas2:application-status-updated:1"))
-        assertThat(contact.description, equalTo("CAS2 Referral Updated - More information requested"))
+        assertThat(contact.description, equalTo("CAS2 Prison Bail Referral Updated - More information requested"))
         assertThat(
             contact.notes, equalTo(
                 """
