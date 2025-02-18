@@ -29,10 +29,12 @@ jobs:
         name: East of England
       apiKeySecret: API_KEY
       schedule: '0 10 * * *' # 10am UTC every day
+      daysInAdvance: 2
 
     wales:
       provider:
         code: N03
         name: Wales
       apiKeySecret: API_KEY
-      schedule: '0 10 * * *' # 10am UTC every day
+      schedule: '0 18 * * *' # 6pm UTC every day
+      daysInAdvance: 1
