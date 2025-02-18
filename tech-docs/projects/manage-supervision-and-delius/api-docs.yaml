@@ -818,6 +818,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AddressOverview"
+  /personal-details/{crn}/addresses/{id}/note/{noteId}:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Addresses
+      operationId: getPersonAddressesSingleNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressOverviewSummary"
   /overview/{crn}:
     get:
       tags:
@@ -1049,6 +1080,9 @@ components:
     Address:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         buildingName:
           type: string
         buildingNumber:
@@ -2550,6 +2584,15 @@ components:
       - otherAddresses
       - personSummary
       - previousAddresses
+    AddressOverviewSummary:
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        address:
+          $ref: "#/components/schemas/Address"
+      required:
+      - personSummary
     ActivityCount:
       type: object
       properties:

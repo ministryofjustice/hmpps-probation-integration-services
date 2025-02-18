@@ -213,6 +213,9 @@
         <a href="./api-reference.html#personal-details-crn-addresses"><span>/personal-details/{crn}/addresses</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#personal-details-crn-addresses-id-note-noteid"><span>/personal-details/{crn}/addresses/{id}/note/{noteId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#overview-crn"><span>/overview/{crn}</span></a>
       </li>
       <li>
@@ -450,6 +453,7 @@
     }
   ],
   "mainAddress": {
+    "id": "integer",
     "buildingName": "string",
     "buildingNumber": "string",
     "streetName": "string",
@@ -698,6 +702,7 @@
     }
   ],
   "mainAddress": {
+    "id": "integer",
     "buildingName": "string",
     "buildingNumber": "string",
     "streetName": "string",
@@ -1441,6 +1446,7 @@
       "id": "integer",
       "description": "string",
       "address": {
+        "id": "integer",
         "buildingName": "string",
         "buildingNumber": "string",
         "streetName": "string",
@@ -3907,6 +3913,7 @@
     }
   ],
   "mainAddress": {
+    "id": "integer",
     "buildingName": "string",
     "buildingNumber": "string",
     "streetName": "string",
@@ -4461,6 +4468,7 @@
     "dateOfBirth": "string"
   },
   "mainAddress": {
+    "id": "integer",
     "buildingName": "string",
     "buildingNumber": "string",
     "streetName": "string",
@@ -4501,6 +4509,7 @@
   },
   "otherAddresses": [
     {
+      "id": "integer",
       "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
@@ -4542,6 +4551,7 @@
   ],
   "previousAddresses": [
     {
+      "id": "integer",
       "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
@@ -4586,6 +4596,139 @@
 </td>
 <td>
 <a href='#schema-addressoverview'>AddressOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="personal-details-crn-addresses-id-note-noteid">/personal-details/{crn}/addresses/{id}/note/{noteId}</h2>
+
+<h3 id="personal-details-crn-addresses-id-note-noteid-get">get</h3>
+
+  <p><em>Person Addresses</em></p>
+
+
+
+
+<h4 id="personal-details-crn-addresses-id-note-noteid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>noteId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-addresses-id-note-noteid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "noms": "string",
+    "dateOfBirth": "string"
+  },
+  "address": {
+    "id": "integer",
+    "buildingName": "string",
+    "buildingNumber": "string",
+    "streetName": "string",
+    "district": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "telephoneNumber": "string",
+    "from": "string",
+    "to": "string",
+    "verified": "boolean",
+    "lastUpdated": "string",
+    "lastUpdatedBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "type": "string",
+    "typeCode": "string",
+    "status": "string",
+    "addressNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "addressNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
+    "noFixedAddress": "boolean"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-addressoverviewsummary'>AddressOverviewSummary</a>
 </td>
 </tr>
 
@@ -4737,6 +4880,7 @@
       }
     ],
     "mainAddress": {
+      "id": "integer",
       "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
@@ -5881,6 +6025,16 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>buildingName</td>
@@ -10723,6 +10877,38 @@
 <td>previousAddresses</td>
 <td>array</td>
 <td>true</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-addressoverviewsummary">AddressOverviewSummary</h3>
+
+
+<table class='schema-addressoverviewsummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>address</td>
+<td>object</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-address'>Address</a>

@@ -92,7 +92,21 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>hmpps-auth-and-delius</span></a>
+    <a href="./index.html"><span>HMPPS Auth and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Business need</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-authentication-and-user-data"><span>Context Map - Authentication and user data</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>API Access Control</span></a>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -239,19 +253,6 @@
 <tbody>
 
 <tr>
-<td>403</td>
-<td>
-<p>Client role required: <code>DELIUS_USER_AUTH</code></p>
-
-
-
-</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
 <td>401</td>
 <td>
 <p>Authentication failure</p>
@@ -268,6 +269,19 @@
 <td>200</td>
 <td>
 <p>User authenticated</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>403</td>
+<td>
+<p>Client role required: <code>DELIUS_USER_AUTH</code></p>
 
 
 
