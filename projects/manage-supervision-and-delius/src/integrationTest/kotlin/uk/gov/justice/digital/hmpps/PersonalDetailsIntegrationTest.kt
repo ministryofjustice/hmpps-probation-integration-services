@@ -385,6 +385,17 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
+    fun `provision with single note is returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/provisions/${PROVISION_1.id}/note/0").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<ProvisionOverviewSummary>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.provision, equalTo(PROVISION_1.toProvision(singleNote = true, 0)))
+    }
+
+    @Test
     fun `provisions not found`() {
         mockMvc
             .perform(get("/personal-details/X999999/provisions").withToken())

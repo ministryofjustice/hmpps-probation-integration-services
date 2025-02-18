@@ -83,4 +83,12 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     @Operation(summary = "Person Provisions")
     fun getPersonProvisions(@PathVariable crn: String) =
         personalDetailsService.getPersonProvisions(crn)
+
+    @GetMapping("/provisions/{provisionId}/note/{noteId}")
+    @Operation(summary = "Person Provisions")
+    fun getPersonProvisionsSingleNote(
+        @PathVariable crn: String,
+        @PathVariable provisionId: Long,
+        @PathVariable noteId: Int) =
+        personalDetailsService.getPersonProvisionsSingleNote(crn, provisionId, noteId)
 }
