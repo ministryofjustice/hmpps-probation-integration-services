@@ -8,3 +8,8 @@ data class AddressOverview(
     val otherAddresses: List<Address>,
     val previousAddresses: List<Address>
 )
+
+data class AddressOverviewSummary(
+    val personSummary: PersonSummary,
+    val address: Address?
+)
