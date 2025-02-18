@@ -277,6 +277,17 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
+    fun `circumstance with single note is returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc
+            .perform(get("/personal-details/${person.crn}/circumstances/${PERSONAL_CIRC_1.id}/note/0").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CircumstanceOverviewSummary>()
+        assertThat(res.personSummary, equalTo(person.toSummary()))
+        assertThat(res.circumstance, equalTo(PERSONAL_CIRC_1.toCircumstance(true, 0)))
+    }
+
+    @Test
     fun `circumstances not found`() {
         mockMvc
             .perform(get("/personal-details/X999999/circumstances").withToken())
