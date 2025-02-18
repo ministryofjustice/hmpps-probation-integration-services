@@ -360,7 +360,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCir
         type = type.description,
         subType = subType.description,
         circumstanceNotes = if (!singleNote) formatNote(notes, true) else null,
-        circumstanceNote = if (singleNote) formatNote(notes, true).elementAtOrNull(noteId!!)  else null,
+        circumstanceNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!)  else null,
         verified = evidenced,
         startDate = startDate,
         lastUpdated = lastUpdated,

@@ -112,7 +112,7 @@ object PersonDetailsGenerator {
         PERSONAL_CIRCUMSTANCE_SUBTYPE_1,
         LocalDate.now().minusDays(1),
         USER,
-        notes =         """
+        notes = """
             Comment added by Harry Kane on 29/10/2024 at 14:39
             Circumstance Note 1
             ---------------------------------------------------------
