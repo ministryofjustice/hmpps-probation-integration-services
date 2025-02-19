@@ -136,13 +136,37 @@ jobs:
           name: changes-${{ matrix.project }}
           path: ${{ matrix.project }}-changes.json
 
-      - uses: actions/upload-artifact@v4
+      - name: Store test artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.project }}
           path: |
             **/build/jacoco
             **/build/reports/jacoco/**/*.xml
             **/build/test-results
+
+      - name: Prepare test report
+        if: failure()
+        run: |
+          report_dir=test-reports/$REF/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}/${{ matrix.project }}
+          mkdir -p projects/${{ matrix.project }}/build/reports/tests
+          sed "s|DEFAULT_PATH|$report_dir|" tools/github-browser.html > projects/${{ matrix.project }}/build/reports/tests/index.html
+          echo "report_dir=$report_dir" | tee -a "$GITHUB_ENV"
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Publish test report
+        if: failure()
+        uses: JamesIves/github-pages-deploy-action@15de0f09300eea763baee31dff6c6184995c5f6a # v4
+        with:
+          folder: projects/${{ matrix.project }}/build/reports/tests
+          target-folder: ${{ env.report_dir }}
+
+      - name: Output HTML report link
+        if: failure()
+        run: echo "[🧪 Test Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/$report_dir)" | tee -a "$GITHUB_STEP_SUMMARY"
+        env:
+          report_dir: ${{ env.report_dir }}
 
   build-docker:
     name: Docker build
