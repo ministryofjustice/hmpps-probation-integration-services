@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - IntegrationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>IntegrationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/uk.gov.justice.digital.hmpps.html">uk.gov.justice.digital.hmpps</a> &gt; IntegrationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">3</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">1</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.408s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox failures" id="successRate">
+<div class="percent">66%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Failed tests</a>
+</li>
+<li>
+<a href="#tab1">Tests</a>
+</li>
+<li>
+<a href="#tab2">Standard output</a>
+</li>
+<li>
+<a href="#tab3">Standard error</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Failed tests</h2>
+<div class="test">
+<a name="returns csv report()"></a>
+<h3 class="failures">returns csv report()</h3>
+<span class="code">
+<pre>java.lang.AssertionError: Response content expected:&lt;firstName,mobileNumber,appointmentDate,crn,eventNumbers,upwAppointmentIds
+Test,07000000001,01/01/2000,A000001,1,&quot;123, 456&quot;
+Test,07000000002,01/01/2000,A000002,1,789
+&gt; but was:&lt;firstName,mobileNumber,appointmentDate,crn,eventNumbers,upwAppointmentIds
+Test,07000000001,01/01/2000,A000001,1,&quot;123, 456&quot;
+Test,07000000002,01/01/20001,A000002,1,789
+&gt;
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:61)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:128)
+	at org.springframework.test.web.servlet.result.ContentResultMatchers.lambda$string$4(ContentResultMatchers.java:148)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at uk.gov.justice.digital.hmpps.IntegrationTest.returns csv report(IntegrationTest.kt:77)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:767)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$8(TestMethodTestDescriptor.java:217)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:107)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:88)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:67)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:52)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)
+	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:124)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:99)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:94)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:63)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
+	at jdk.proxy2/jdk.proxy2.$Proxy6.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:200)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:132)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:121)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:71)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+</pre>
+</span>
+</div>
+</div>
+<div id="tab1" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">retrieves user's providers()</td>
+<td class="success">0.301s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="failures">returns csv report()</td>
+<td class="failures">0.080s</td>
+<td class="failures">failed</td>
+</tr>
+<tr>
+<td class="success">sends messages to govuk notify()</td>
+<td class="success">0.027s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+13:11:22.640 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [uk.gov.justice.digital.hmpps.IntegrationTest]: IntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+13:11:22.873 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration uk.gov.justice.digital.hmpps.App for test class uk.gov.justice.digital.hmpps.IntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.0)
+
+2025-02-19T13:11:24.702Z  WARN 2418 --- [    Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/home/runner/.gradle/caches/modules-2/files-2.1/org.json/json/20231013/e22e0c040fe16f04ffdb85d851d77b07fc05ea52/json-20231013.jar!/org/json/JSONObject.class
+	jar:file:/home/runner/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2025-02-19T13:11:26.193Z  INFO 2418 --- [    Test worker] u.g.j.d.h.wiremock.WireMockInitialiser   : WireMock server started on port 38923
+2025-02-19T13:11:26.209Z  INFO 2418 --- [    Test worker] u.g.j.digital.hmpps.IntegrationTest      : Starting IntegrationTest using Java 21.0.6 with PID 2418 (started by runner in /home/runner/work/hmpps-probation-integration-services/hmpps-probation-integration-services/projects/appointment-reminders-and-delius)
+2025-02-19T13:11:26.209Z DEBUG 2418 --- [    Test worker] u.g.j.digital.hmpps.IntegrationTest      : Running with Spring Boot v3.4.0, Spring v6.2.0
+2025-02-19T13:11:26.210Z  INFO 2418 --- [    Test worker] u.g.j.digital.hmpps.IntegrationTest      : The following 2 profiles are active: &quot;integration-test&quot;, &quot;oracle&quot;
+2025-02-19T13:11:28.103Z  INFO 2418 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-19T13:11:28.207Z  INFO 2418 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 90 ms. Found 5 JPA repository interfaces.
+2025-02-19T13:11:32.124Z  INFO 2418 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2025-02-19T13:11:32.155Z  INFO 2418 --- [    Test worker] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-19T13:11:32.156Z  INFO 2418 --- [    Test worker] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2025-02-19T13:11:32.277Z  INFO 2418 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-19T13:11:32.279Z  INFO 2418 --- [    Test worker] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 6044 ms
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+2025-02-19T13:11:33.099Z  INFO 2418 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-19T13:11:33.213Z  INFO 2418 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.2.Final
+2025-02-19T13:11:33.275Z  INFO 2418 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-19T13:11:33.511Z  INFO 2418 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-19T13:11:33.570Z  INFO 2418 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-19T13:11:33.962Z  INFO 2418 --- [    Test worker] org.testcontainers.images.PullPolicy     : Image pull policy will be performed by: DefaultPullPolicy()
+2025-02-19T13:11:33.966Z  INFO 2418 --- [    Test worker] o.t.utility.ImageNameSubstitutor         : Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+2025-02-19T13:11:33.978Z  INFO 2418 --- [    Test worker] org.testcontainers.DockerClientFactory   : Testcontainers version: 1.20.4
+2025-02-19T13:11:34.792Z  INFO 2418 --- [    Test worker] o.t.d.DockerClientProviderStrategy       : Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+2025-02-19T13:11:34.795Z  INFO 2418 --- [    Test worker] org.testcontainers.DockerClientFactory   : Docker host IP address is localhost
+2025-02-19T13:11:34.815Z  INFO 2418 --- [    Test worker] org.testcontainers.DockerClientFactory   : Connected to docker: 
+  Server Version: 26.1.3
+  API Version: 1.45
+  Operating System: Ubuntu 24.04.1 LTS
+  Total Memory: 15990 MB
+2025-02-19T13:11:34.854Z  INFO 2418 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Pulling docker image: testcontainers/ryuk:0.11.0. Please be patient; this may take some time but only needs to be done once.
+2025-02-19T13:11:35.334Z  INFO 2418 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Starting to pull image
+2025-02-19T13:11:35.369Z  INFO 2418 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  0 downloaded,  0 extracted, (0 bytes/0 bytes)
+2025-02-19T13:11:35.557Z  INFO 2418 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  2 pending,  1 downloaded,  0 extracted, (116 KB/? MB)
+2025-02-19T13:11:35.580Z  INFO 2418 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  1 pending,  2 downloaded,  0 extracted, (116 KB/? MB)
+2025-02-19T13:11:35.612Z  INFO 2418 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  3 downloaded,  0 extracted, (144 KB/10 MB)
+2025-02-19T13:11:35.729Z  INFO 2418 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  3 downloaded,  1 extracted, (3 MB/10 MB)
+2025-02-19T13:11:35.909Z  INFO 2418 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  3 downloaded,  2 extracted, (4 MB/10 MB)
+2025-02-19T13:11:35.963Z  INFO 2418 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  3 downloaded,  3 extracted, (10 MB/10 MB)
+2025-02-19T13:11:35.972Z  INFO 2418 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Image testcontainers/ryuk:0.11.0 pull took PT1.117401555S
+2025-02-19T13:11:36.014Z  INFO 2418 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Creating container for image: testcontainers/ryuk:0.11.0
+2025-02-19T13:11:36.161Z  INFO 2418 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Container testcontainers/ryuk:0.11.0 is starting: b997310413fd0e01124d14abe0f869b036799148b5356a9e91319650fd7d7767
+2025-02-19T13:11:36.590Z  INFO 2418 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Container testcontainers/ryuk:0.11.0 started in PT0.576339087S
+2025-02-19T13:11:36.595Z  INFO 2418 --- [    Test worker] o.t.utility.RyukResourceReaper           : Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+2025-02-19T13:11:36.596Z  INFO 2418 --- [    Test worker] org.testcontainers.DockerClientFactory   : Checking the system...
+2025-02-19T13:11:36.597Z  INFO 2418 --- [    Test worker] org.testcontainers.DockerClientFactory   : ✔︎ Docker server version should be at least 1.6.0
+2025-02-19T13:11:36.600Z  INFO 2418 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Pulling docker image: gvenzl/oracle-free:slim-faststart. Please be patient; this may take some time but only needs to be done once.
+2025-02-19T13:11:36.976Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Starting to pull image
+2025-02-19T13:11:36.978Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  0 downloaded,  0 extracted, (0 bytes/0 bytes)
+2025-02-19T13:11:37.430Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  8 pending,  1 downloaded,  0 extracted, (105 MB/? MB)
+2025-02-19T13:11:37.519Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  7 pending,  2 downloaded,  0 extracted, (150 MB/? MB)
+2025-02-19T13:11:37.891Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  6 pending,  3 downloaded,  0 extracted, (303 MB/? MB)
+2025-02-19T13:11:38.115Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  5 pending,  4 downloaded,  0 extracted, (376 MB/? MB)
+2025-02-19T13:11:38.547Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  4 pending,  5 downloaded,  0 extracted, (539 MB/? MB)
+2025-02-19T13:11:38.727Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  3 pending,  6 downloaded,  0 extracted, (597 MB/? MB)
+2025-02-19T13:11:39.333Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  2 pending,  7 downloaded,  0 extracted, (859 MB/? MB)
+2025-02-19T13:11:39.419Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  1 pending,  8 downloaded,  0 extracted, (893 MB/? MB)
+2025-02-19T13:11:39.991Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  0 extracted, (1023 MB/1 GB)
+2025-02-19T13:11:40.000Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  1 extracted, (1023 MB/1 GB)
+2025-02-19T13:11:44.024Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  2 extracted, (1 GB/1 GB)
+2025-02-19T13:11:47.279Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  3 extracted, (1 GB/1 GB)
+2025-02-19T13:11:49.815Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  4 extracted, (1 GB/1 GB)
+2025-02-19T13:11:51.458Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  5 extracted, (1 GB/1 GB)
+2025-02-19T13:11:52.576Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  6 extracted, (1 GB/1 GB)
+2025-02-19T13:12:00.382Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  7 extracted, (1 GB/1 GB)
+2025-02-19T13:12:02.784Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  8 extracted, (1 GB/1 GB)
+2025-02-19T13:12:08.174Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  9 extracted, (1 GB/1 GB)
+2025-02-19T13:12:08.181Z  INFO 2418 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Image gvenzl/oracle-free:slim-faststart pull took PT31.580994676S
+2025-02-19T13:12:08.181Z  INFO 2418 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pull complete. 9 layers, pulled in 31s (downloaded 1 GB at 35 MB/s)
+2025-02-19T13:12:08.185Z  INFO 2418 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Creating container for image: gvenzl/oracle-free:slim-faststart
+2025-02-19T13:12:08.212Z  INFO 2418 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container gvenzl/oracle-free:slim-faststart is starting: 4ec8c0615697ae1aee6180c2e70f8c33d83828f9a5f7694536eb8b3ca5f1049e
+2025-02-19T13:12:20.947Z  INFO 2418 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container gvenzl/oracle-free:slim-faststart started in PT12.762645157S
+2025-02-19T13:12:20.948Z  INFO 2418 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container is started (JDBC URL: jdbc:oracle:thin:@localhost:32769/freepdb1)
+2025-02-19T13:12:21.767Z  INFO 2418 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.testcontainers.jdbc.ConnectionWrapper@46191868
+2025-02-19T13:12:21.770Z  INFO 2418 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-19T13:12:22.435Z  INFO 2418 --- [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 23.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-02-19T13:12:23.014Z  WARN 2418 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000038: Composite-id class does not override equals(): uk.gov.justice.digital.hmpps.entity.ProbationAreaUserId
+2025-02-19T13:12:23.015Z  WARN 2418 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000039: Composite-id class does not override hashCode(): uk.gov.justice.digital.hmpps.entity.ProbationAreaUserId
+2025-02-19T13:12:23.629Z  INFO 2418 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-19T13:12:23.861Z  INFO 2418 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-19T13:12:24.788Z  INFO 2418 --- [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-02-19T13:12:28.128Z  WARN 2418 --- [    Test worker] a.c.CredentialsProviderAutoConfiguration : Skipping creating `StsCredentialsProvider`. `software.amazon.awssdk:sts` is on the classpath, but neither `spring.cloud.aws.credentials.sts` properties are configured nor `AWS_WEB_IDENTITY_TOKEN_FILE` or the javaproperty `aws.webIdentityTokenFile` is set
+2025-02-19T13:12:28.440Z  WARN 2418 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-19T13:12:29.065Z  INFO 2418 --- [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path ''
+2025-02-19T13:12:30.520Z  INFO 2418 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring TestDispatcherServlet ''
+2025-02-19T13:12:30.520Z  INFO 2418 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-02-19T13:12:30.522Z  INFO 2418 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2025-02-19T13:12:31.073Z  INFO 2418 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 45207 (http) with context path '/'
+2025-02-19T13:12:31.102Z  INFO 2418 --- [    Test worker] u.g.j.digital.hmpps.IntegrationTest      : Started IntegrationTest in 67.223 seconds (process running for 70.569)
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /upw-appointments.csv
+       Parameters = {providerCode=[N56]}
+          Headers = [Authorization:&quot;Bearer token&quot;]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = uk.gov.justice.digital.hmpps.controller.ApiController
+           Method = uk.gov.justice.digital.hmpps.controller.ApiController#handle(String, LocalDate)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Content-Type:&quot;text/csv;charset=UTF-8&quot;, Content-Length:&quot;166&quot;, X-Content-Type-Options:&quot;nosniff&quot;, X-XSS-Protection:&quot;0&quot;, Cache-Control:&quot;no-cache, no-store, max-age=0, must-revalidate&quot;, Pragma:&quot;no-cache&quot;, Expires:&quot;0&quot;, X-Frame-Options:&quot;DENY&quot;]
+     Content type = text/csv;charset=UTF-8
+             Body = firstName,mobileNumber,appointmentDate,crn,eventNumbers,upwAppointmentIds
+Test,07000000001,01/01/2000,A000001,1,&quot;123, 456&quot;
+Test,07000000002,01/01/20001,A000002,1,789
+
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+</pre>
+</span>
+</div>
+<div id="tab3" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/home/runner/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.15.10/e8eb255b2c378b9a6c7341e7b0e12f0a5636377/byte-buddy-agent-1.15.10.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 8.12.1</a> at Feb 19, 2025, 1:12:35 PM</p>
+</div>
+</div>
+</body>
+</html>
