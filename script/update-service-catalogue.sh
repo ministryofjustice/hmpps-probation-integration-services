@@ -40,10 +40,10 @@ echo "Project data: $data"
 component_id=$(echo "$component" | jq -r '.data[0].id // ""')
 if [ -z "$component_id" ]; then
     echo "Adding component $PROJECT_NAME to hmpps-service-catalogue"
-    curl -XPOST -fsS -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/components" --json "$data"
+    curl -XPOST -f -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/components" --json "$data"
 else
     echo "Updating component $PROJECT_NAME ($component_id) in hmpps-service-catalogue"
-    curl -XPUT -fsS -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/components/$component_id" --json "$data"
+    curl -XPUT -f -H "Authorization: Bearer $SERVICE_CATALOGUE_API_KEY" "$api_url/components/$component_id" --json "$data"
 fi
 
 echo "Done: https://developer-portal.hmpps.service.justice.gov.uk/components/$PROJECT_NAME"
