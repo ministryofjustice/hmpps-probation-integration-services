@@ -57,6 +57,9 @@ messaging.consumer.queue: message-queue
 integrations:
   probation-search.url: http://localhost:${wiremock.port}/probation-search
 
+opensearch:
+  uris: http://localhost:${wiremock.port}
+
 os-places:
   api:
     url: http://localhost:${wiremock.port}/address-lookup

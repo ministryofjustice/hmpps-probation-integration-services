@@ -10,10 +10,14 @@ import org.mockito.Mockito
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.*
+import org.opensearch.client.opensearch.OpenSearchClient
+import org.opensearch.client.opensearch.core.IndexRequest
+import org.opensearch.client.util.ObjectBuilder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -25,12 +29,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddr
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.CommonPlatformHearing
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.EventService
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
+import java.util.function.Function
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @AutoConfigureMockMvc
@@ -96,6 +102,9 @@ internal class IntegrationTest {
     @MockitoSpyBean
     lateinit var eventService: EventService
 
+    @MockitoBean
+    lateinit var openSearchClient: OpenSearchClient
+
     @BeforeEach
     fun setup() {
         doReturn("A111111").whenever(personService).generateCrn()
@@ -103,10 +112,11 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `Message is logged to telemetry`() {
+    fun `Message is logged to telemetry and opensearch`() {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+        verify(openSearchClient).index(any<Function<IndexRequest.Builder<CommonPlatformHearing>, ObjectBuilder<IndexRequest<CommonPlatformHearing>>>>())
     }
 
     @Test
