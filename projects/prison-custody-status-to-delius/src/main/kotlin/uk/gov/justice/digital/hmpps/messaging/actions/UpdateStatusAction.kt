@@ -78,9 +78,11 @@ class UpdateStatusAction(
 
     private fun checkPreconditions(movement: PrisonerMovement, custody: Custody) = if (
         (movement.isReceived() && !(custody.status.canChange() && movement.receivedDateValid(custody))) ||
-        (movement.isReleased() && !(custody.canBeReleased() && movement.releaseDateValid(custody))) ||
-        (movement.isToSecureUnitOutsidePrison() && !movement.occurredAfter(custody.statusChangeDate))
-    ) ActionResult.Ignored("PrisonerStatusCorrect", movement.telemetryProperties()) else null
+        (movement.isReleased() && !(custody.canBeReleased() && movement.releaseDateValid(custody)))
+    ) ActionResult.Ignored("PrisonerStatusCorrect", movement.telemetryProperties())
+    else if (movement.isToSecureUnitOutsidePrison() && !movement.occurredAfter(custody.statusChangeDate))
+        ActionResult.Ignored("PrisonerStatusSuperseded", movement.telemetryProperties())
+    else null
 }
 
 private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)
