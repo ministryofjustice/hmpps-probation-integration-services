@@ -28,6 +28,7 @@ class BreachNoticeLoader(
         warningData()
         appointmentData()
         entityManager.persist(DocumentGenerator.DEFAULT_BREACH_NOTICE)
+        lao()
     }
 
     private fun basicDetailsData() {
@@ -73,6 +74,20 @@ class BreachNoticeLoader(
             AppointmentGenerator.APPOINTMENT_OUTCOME,
             *AppointmentGenerator.OTHER_APPOINTMENTS.toTypedArray(),
             *AppointmentGenerator.FUTURE_APPOINTMENTS.toTypedArray(),
+        )
+    }
+
+    private fun lao() {
+        entityManager.persistAll(
+            UserGenerator.LIMITED_ACCESS_USER,
+            UserGenerator.NON_LAO_USER,
+            PersonGenerator.EXCLUSION,
+            PersonGenerator.RESTRICTION,
+            PersonGenerator.RESTRICTION_EXCLUSION,
+            LimitedAccessGenerator.EXCLUSION,
+            LimitedAccessGenerator.RESTRICTION,
+            LimitedAccessGenerator.BOTH_EXCLUSION,
+            LimitedAccessGenerator.BOTH_RESTRICTION
         )
     }
 

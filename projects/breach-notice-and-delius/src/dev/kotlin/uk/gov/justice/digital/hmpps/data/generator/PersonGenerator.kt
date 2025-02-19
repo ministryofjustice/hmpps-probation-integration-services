@@ -7,21 +7,45 @@ import uk.gov.justice.digital.hmpps.integrations.delius.*
 
 object PersonGenerator {
 
-    val DEFAULT_PERSON = Person(
-        crn = "A000001",
-        firstName = "First",
-        secondName = "Middle",
-        thirdName = null,
-        surname = "Surname",
-        addresses = listOf(),
-        softDeleted = false,
-        id = IdGenerator.getAndIncrement(),
-    )
+    val DEFAULT_PERSON = generatePerson(crn = "A000001")
     val DEFAULT_PERSON_MANAGER = generatePersonManager(DEFAULT_PERSON)
 
     val DS_ADDRESS_TYPE = ReferenceDataGenerator.generateDataset(Dataset.ADDRESS_TYPE)
     val DEFAULT_ADDRESS_TYPE = generateReferenceData(DS_ADDRESS_TYPE, "ADT1")
     val DEFAULT_ADDRESS = generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_TYPE)
+
+    val EXCLUSION = generatePerson("E123456", exclusionMessage = "There is an exclusion on this person")
+    val RESTRICTION = generatePerson("R123456", restrictionMessage = "There is a restriction on this person")
+    val RESTRICTION_EXCLUSION = generatePerson(
+        "B123456",
+        exclusionMessage = "You are excluded from viewing this case",
+        restrictionMessage = "You are restricted from viewing this case"
+    )
+
+    fun generatePerson(
+        crn: String,
+        firstName: String = "First",
+        secondName: String? = "Middle",
+        thirdName: String? = null,
+        surname: String = "Surname",
+        addresses: List<PersonAddress> = listOf(),
+        exclusionMessage: String? = null,
+        restrictionMessage: String? = null,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Person(
+        crn,
+        null,
+        firstName,
+        secondName,
+        thirdName,
+        surname,
+        addresses,
+        exclusionMessage,
+        restrictionMessage,
+        softDeleted,
+        id
+    )
 
     private fun generatePersonAddress(
         person: Person,
