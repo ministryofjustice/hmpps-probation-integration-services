@@ -35,6 +35,7 @@ data=$(jq -n '{"data": $ARGS.named}' \
     --argjson environments "$ENVIRONMENTS" \
     --argjson jira_project_keys '["PI"]'
 )
+echo "Project data: $data"
 
 component_id=$(echo "$component" | jq -r '.data[0].id // ""')
 if [ -z "$component_id" ]; then
