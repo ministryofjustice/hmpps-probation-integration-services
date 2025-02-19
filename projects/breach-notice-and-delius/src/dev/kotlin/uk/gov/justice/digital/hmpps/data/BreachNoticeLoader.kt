@@ -84,6 +84,9 @@ class BreachNoticeLoader(
             PersonGenerator.EXCLUSION,
             PersonGenerator.RESTRICTION,
             PersonGenerator.RESTRICTION_EXCLUSION,
+        )
+        entityManager.flush()
+        entityManager.persistAll(
             LimitedAccessGenerator.EXCLUSION,
             LimitedAccessGenerator.RESTRICTION,
             LimitedAccessGenerator.BOTH_EXCLUSION,

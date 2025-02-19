@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RESTRICTION_EXCLUSION
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.Person
-import uk.gov.justice.digital.hmpps.model.CaseAccess
+import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.justice.digital.hmpps.user.AuditUser
