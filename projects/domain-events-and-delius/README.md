@@ -1,4 +1,5 @@
 # Domain events and Delius
+
 This domain event service enables enhancement of domain events from Delius. The domain events are retrieved from the database in batches, enhanced and published to SNS.
 
 The supported domain event enhancers are:

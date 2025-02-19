@@ -67,6 +67,7 @@ on:
       - main
     paths:
       - 'projects/**/deploy/**'
+      - 'projects/**/README.md'
 
 jobs:
   get-projects:

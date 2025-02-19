@@ -1,5 +1,7 @@
 # Appointment Reminders and Delius
 
+Automates sending of reminders to people on probation via SMS.
+
 ## Business Need
 
 - Sending appointment reminders to people on probation to help improve compliance with supervision activities
