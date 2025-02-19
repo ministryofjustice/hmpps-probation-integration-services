@@ -18,7 +18,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.AddressOverview
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalContactEditRequest
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonAddressEditRequest
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator
@@ -186,7 +186,7 @@ internal class PersonalDetailsServiceTest {
     fun `calls update personal details function without start date`() {
 
         val exception = assertThrows<InvalidRequestException> {
-            service.updatePersonalDetails("X000001", PersonalContactEditRequest())
+            service.updatePersonalAddressDetails("X000001", PersonAddressEditRequest())
         }
         assertThat(exception.message, equalTo("Start date must be provided"))
     }
@@ -195,9 +195,9 @@ internal class PersonalDetailsServiceTest {
     fun `calls update personal details function with start date later than today`() {
 
         val exception = assertThrows<InvalidRequestException> {
-            service.updatePersonalDetails(
+            service.updatePersonalAddressDetails(
                 "X000001",
-                PersonalContactEditRequest(startDate = LocalDate.now().plusDays(1))
+                PersonAddressEditRequest(startDate = LocalDate.now().plusDays(1))
             )
         }
         assertThat(exception.message, equalTo("Start date must not be later than today"))
@@ -207,9 +207,9 @@ internal class PersonalDetailsServiceTest {
     fun `calls update personal details function with end date later than today`() {
 
         val exception = assertThrows<InvalidRequestException> {
-            service.updatePersonalDetails(
+            service.updatePersonalAddressDetails(
                 "X000001",
-                PersonalContactEditRequest(startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
+                PersonAddressEditRequest(startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
             )
         }
         assertThat(exception.message, equalTo("End date must not be later than today"))
@@ -219,9 +219,9 @@ internal class PersonalDetailsServiceTest {
     fun `calls update personal details function with end date later than start date`() {
 
         val exception = assertThrows<InvalidRequestException> {
-            service.updatePersonalDetails(
+            service.updatePersonalAddressDetails(
                 "X000001",
-                PersonalContactEditRequest(
+                PersonAddressEditRequest(
                     startDate = LocalDate.now().minusDays(2),
                     endDate = LocalDate.now().minusDays(3)
                 )
