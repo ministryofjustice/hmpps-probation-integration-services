@@ -104,6 +104,9 @@
         <a href="./api-reference.html#warning-details-crn-breachnoticeid"><span>/warning-details/{crn}/{breachNoticeId}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#users-username-access-crn"><span>/users/{username}/access/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#next-appointment-details-crn"><span>/next-appointment-details/{crn}</span></a>
       </li>
       <li>
@@ -295,6 +298,80 @@
 </td>
 <td>
 <a href='#schema-warningdetails'>WarningDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="users-username-access-crn">/users/{username}/access/{crn}</h2>
+
+<h3 id="users-username-access-crn-get">get</h3>
+
+
+
+
+<h4 id="users-username-access-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="users-username-access-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "userExcluded": "boolean",
+  "userRestricted": "boolean",
+  "exclusionMessage": "string",
+  "restrictionMessage": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-caseaccess'>CaseAccess</a>
 </td>
 </tr>
 
@@ -809,6 +886,68 @@
 <td></td>
 <td>
   <a href='#schema-enforceablecontact'>EnforceableContact</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-caseaccess">CaseAccess</h3>
+
+
+<table class='schema-caseaccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userExcluded</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userRestricted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 

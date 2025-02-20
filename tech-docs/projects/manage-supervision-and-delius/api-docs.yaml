@@ -2211,7 +2211,6 @@ components:
           format: date
       required:
       - eventNumber
-      - title
     PreviousOrderHistory:
       type: object
       properties:

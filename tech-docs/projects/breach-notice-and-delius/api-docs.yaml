@@ -50,6 +50,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WarningDetails"
+  /users/{username}/access/{crn}:
+    get:
+      tags:
+      - User access
+      operationId: checkAccess
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseAccess"
   /next-appointment-details/{crn}:
     get:
       tags:
@@ -196,6 +219,23 @@ components:
       - defaultSentenceTypeCode
       - enforceableContacts
       - sentenceTypes
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
     Address:
       type: object
       properties:
