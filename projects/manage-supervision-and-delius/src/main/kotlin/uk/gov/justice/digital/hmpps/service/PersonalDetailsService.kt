@@ -153,7 +153,7 @@ class PersonalDetailsService(
             mainAddress.noFixedAbode = request.noFixedAddress ?: false
             mainAddress.startDate = startDate
             mainAddress.endDate = request.endDate
-            mainAddress.notes = request.notes
+            mainAddress.notes = listOfNotNull(mainAddress.notes, request.notes).joinToString(System.lineSeparator())
             mainAddress.status = status
             return mainAddress
         } else {

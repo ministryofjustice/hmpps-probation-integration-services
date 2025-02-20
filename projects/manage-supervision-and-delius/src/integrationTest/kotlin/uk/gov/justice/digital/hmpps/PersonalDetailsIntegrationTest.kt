@@ -2,7 +2,10 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -419,6 +422,44 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.previousAddresses.size, equalTo(2))
     }
 
+    @ParameterizedTest
+    @MethodSource("personContactDetails")
+    fun `update contact details for a person`(editRequest: PersonContactEditRequest) {
+        val person = PERSONAL_DETAILS
+
+        val expectedResponse = (mockMvc
+            .perform(get("/personal-details/${person.crn}").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>())
+
+        val response = mockMvc
+            .perform(
+                post("/personal-details/${person.crn}/contact").withToken()
+                    .withJson(editRequest)
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>()
+
+        assertThat(response.telephoneNumber, equalTo(editRequest.phoneNumber))
+        assertThat(response.mobileNumber, equalTo(editRequest.mobileNumber))
+        assertThat(response.email, equalTo(editRequest.emailAddress))
+        assertThat(response)
+            .usingRecursiveComparison().ignoringFields("telephoneNumber", "mobileNumber", "email").
+        isEqualTo(expectedResponse)
+    }
+
+    companion object {
+        @JvmStatic
+        fun personContactDetails() = listOf(
+            PersonContactEditRequest(),
+            PersonContactEditRequest(
+                phoneNumber = "0".repeat(35),
+                mobileNumber = "0".repeat(35),
+                emailAddress = "X".repeat(255)
+            )
+        )
+    }
+
     @Test
     @Transactional
     fun `when no main address new main address is created`() {
@@ -545,7 +586,7 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
-    fun `when personal details update request does not have a start date`() {
+    fun `when address update request does not have a start date`() {
         val request = PersonAddressEditRequest()
         val res = mockMvc.perform(
             post("/personal-details/X000001/address").withToken()
@@ -558,7 +599,7 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
-    fun `when personal details update request has a start date later than today`() {
+    fun `when address update request has a start date later than today`() {
         val request = PersonAddressEditRequest(startDate = LocalDate.now().plusDays(1))
         val res = mockMvc.perform(
             post("/personal-details/X000001/address").withToken()
@@ -571,7 +612,7 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
-    fun `when personal details update request has an date later than today`() {
+    fun `when address update request has an date later than today`() {
         val request = PersonAddressEditRequest(startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
         val res = mockMvc.perform(
             post("/personal-details/X000001/address").withToken()
@@ -598,5 +639,23 @@ internal class PersonalDetailsIntegrationTest {
 
         assertThat(res.message, equalTo("Validation failure"))
         assertThat(res.fields?.size, equalTo(1))
+    }
+
+    @Test
+    fun `when person contact greater than max length`() {
+        val request = PersonContactEditRequest(
+            phoneNumber = "0".repeat(36),
+            mobileNumber = "0".repeat(36),
+            emailAddress = "X".repeat(256)
+        )
+        val res = mockMvc.perform(
+            post("/personal-details/X000001/contact").withToken()
+                .withJson(request)
+        )
+            .andExpect(status().isBadRequest)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(res.message, equalTo("Validation failure"))
+        assertThat(res.fields?.size, equalTo(3))
     }
 }
