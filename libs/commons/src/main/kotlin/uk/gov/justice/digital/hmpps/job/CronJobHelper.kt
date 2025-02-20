@@ -7,14 +7,18 @@ import org.springframework.context.ApplicationContext
 import kotlin.system.exitProcess
 
 object CronJobHelper {
-    fun ApplicationContext.runThenExit(job: () -> Unit) {
+    fun ApplicationContext.runThenExit(
+        exit: (code: Int) -> Unit = { exitProcess(exit(this, { it })) },
+        job: () -> Unit
+    ) {
         try {
             job.invoke()
+            exit(0)
         } catch (e: Exception) {
             Sentry.captureException(e)
             Span.current().recordException(e)
         } finally {
-            exitProcess(exit(this, { 0 }))
+            exit(1)
         }
     }
 }
