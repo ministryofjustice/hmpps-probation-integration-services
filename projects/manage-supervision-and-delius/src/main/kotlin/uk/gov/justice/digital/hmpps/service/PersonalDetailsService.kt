@@ -42,7 +42,21 @@ class PersonalDetailsService(
     private val contactService: ContactService
 ) : AuditableService(auditedInteractionService) {
 
-    fun updatePersonalDetails(crn: String, request: PersonalContactEditRequest): PersonalDetails {
+    fun updatePersonContactDetails(crn: String, request: PersonContactEditRequest): PersonalDetails {
+
+        val person = personRepository.getPerson(crn)
+
+        person.telephoneNumber = request.phoneNumber
+        person.mobileNumber = request.mobileNumber
+        person.emailAddress = request.emailAddress
+
+        val updated = updatePersonContact(person)
+
+        notifier.caseUpdated(updated)
+        return getPersonalDetails(crn)
+    }
+
+    fun updatePersonalAddressDetails(crn: String, request: PersonAddressEditRequest): PersonalDetails {
 
         val startDate = request.startDate ?: throw InvalidRequestException("Start date must be provided")
         val addressType = request.addressTypeCode?.let {
@@ -66,33 +80,33 @@ class PersonalDetailsService(
             .filter { it.endDate == null }
             .firstOrNull { it.status.code == "M" }
 
-        person.telephoneNumber = request.phoneNumber
-        person.mobileNumber = request.mobileNumber
-        person.emailAddress = request.emailAddress
-
         val updatedAddress = toUpdatedAddress(person.id, mainAddress, addressType, request, startDate)
         val isAddressUpdate = (updatedAddress.id != null)
-        val updated = update(person, updatedAddress)
+        val updated = updatePersonAddress(updatedAddress)
 
         if (isAddressUpdate) {
-            notifier.addressUpdated(updated.second, crn)
+            notifier.addressUpdated(updated, crn)
         } else {
-            notifier.addressCreated(updated.second, crn)
+            notifier.addressCreated(updated, crn)
         }
-        notifier.caseUpdated(updated.first)
+
         return getPersonalDetails(crn)
     }
 
-    private fun update(person: Person, personAddress: PersonAddress): Pair<Person, PersonAddress> =
+    private fun updatePersonContact(person: Person): Person =
+        transactionTemplate.execute {
+            updatePerson(person)
+        }!!
+
+    private fun updatePersonAddress(personAddress: PersonAddress): PersonAddress =
         transactionTemplate.execute {
             val updatedAddress = if (personAddress.id == null) {
                 createMainAddress(personAddress)
             } else {
                 updateMainAddress(personAddress)
             }
-            val updatedPerson = updatePerson(person)
 
-            Pair(updatedPerson, updatedAddress)
+            updatedAddress
         }!!
 
     private fun createMainAddress(personAddress: PersonAddress) =
@@ -120,7 +134,7 @@ class PersonalDetailsService(
         personId: Long,
         mainAddress: PersonAddress?,
         addressType: ReferenceData?,
-        request: PersonalContactEditRequest,
+        request: PersonAddressEditRequest,
         startDate: LocalDate
     ): PersonAddress {
         val postcode = if (request.noFixedAddress == true) "NF1 1NF" else request.postcode
@@ -139,7 +153,7 @@ class PersonalDetailsService(
             mainAddress.noFixedAbode = request.noFixedAddress ?: false
             mainAddress.startDate = startDate
             mainAddress.endDate = request.endDate
-            mainAddress.notes = request.notes
+            mainAddress.notes = listOfNotNull(mainAddress.notes, request.notes).joinToString(System.lineSeparator())
             mainAddress.status = status
             return mainAddress
         } else {

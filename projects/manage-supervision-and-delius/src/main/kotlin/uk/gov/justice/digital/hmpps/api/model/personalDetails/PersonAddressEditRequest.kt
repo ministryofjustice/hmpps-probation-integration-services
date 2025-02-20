@@ -3,13 +3,16 @@ package uk.gov.justice.digital.hmpps.api.model.personalDetails
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
-data class PersonalContactEditRequest(
+data class PersonContactEditRequest(
     @field:Size(max = 35)
     val phoneNumber: String? = null,
     @field:Size(max = 35)
     val mobileNumber: String? = null,
     @field:Size(max = 255)
-    val emailAddress: String? = null,
+    val emailAddress: String? = null
+)
+
+data class PersonAddressEditRequest(
     @field:Size(max = 35)
     val buildingName: String? = null,
     @field:Size(max = 35)

@@ -2,7 +2,10 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -420,9 +423,9 @@ internal class PersonalDetailsIntegrationTest {
         val person = PERSONAL_DETAILS
         mockMvc
             .perform(
-                post("/personal-details/${person.crn}").withToken()
+                post("/personal-details/${person.crn}/address").withToken()
                     .withJson(
-                        PersonalContactEditRequest(
+                        PersonAddressEditRequest(
                             postcode = "NE1 UPD",
                             startDate = LocalDate.now().minusDays(10),
                             endDate = LocalDate.now()
@@ -441,15 +444,53 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.previousAddresses.size, equalTo(2))
     }
 
+    @ParameterizedTest
+    @MethodSource("personContactDetails")
+    fun `update contact details for a person`(editRequest: PersonContactEditRequest) {
+        val person = PERSONAL_DETAILS
+
+        val expectedResponse = (mockMvc
+            .perform(get("/personal-details/${person.crn}").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>())
+
+        val response = mockMvc
+            .perform(
+                post("/personal-details/${person.crn}/contact").withToken()
+                    .withJson(editRequest)
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>()
+
+        assertThat(response.telephoneNumber, equalTo(editRequest.phoneNumber))
+        assertThat(response.mobileNumber, equalTo(editRequest.mobileNumber))
+        assertThat(response.email, equalTo(editRequest.emailAddress))
+        assertThat(response)
+            .usingRecursiveComparison().ignoringFields("telephoneNumber", "mobileNumber", "email")
+            .isEqualTo(expectedResponse)
+    }
+
+    companion object {
+        @JvmStatic
+        fun personContactDetails() = listOf(
+            PersonContactEditRequest(),
+            PersonContactEditRequest(
+                phoneNumber = "0".repeat(35),
+                mobileNumber = "0".repeat(35),
+                emailAddress = "X".repeat(255)
+            )
+        )
+    }
+
     @Test
     @Transactional
     fun `when no main address new main address is created`() {
         val person = PERSONAL_DETAILS
         mockMvc
             .perform(
-                post("/personal-details/${person.crn}").withToken()
+                post("/personal-details/${person.crn}/address").withToken()
                     .withJson(
-                        PersonalContactEditRequest(
+                        PersonAddressEditRequest(
                             postcode = "NE1 UPD",
                             startDate = LocalDate.now().minusDays(10),
                             endDate = LocalDate.now()
@@ -461,9 +502,9 @@ internal class PersonalDetailsIntegrationTest {
             .andReturn().response.contentAsJson<PersonalDetails>()
         mockMvc
             .perform(
-                post("/personal-details/${person.crn}").withToken()
+                post("/personal-details/${person.crn}/address").withToken()
                     .withJson(
-                        PersonalContactEditRequest(
+                        PersonAddressEditRequest(
                             postcode = "NE1 NEW",
                             startDate = LocalDate.now().minusDays(9),
                             endDate = null
@@ -481,26 +522,19 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
         assertThat(res.previousAddresses.size, equalTo(2))
 
-        val domainEvents = channelManager.getChannel(topicName).pollFor(3)
+        val domainEvents = channelManager.getChannel(topicName).pollFor(2)
         val createAddressEvent =
             domainEvents.firstOrNull { it.eventType == "probation-case.address.created" }?.message as HmppsDomainEvent?
-        val updatePersonEvent =
-            domainEvents.firstOrNull { it.eventType == "probation-case.personal-details.updated" }?.message as HmppsDomainEvent?
 
         assertThat(createAddressEvent?.eventType, equalTo("probation-case.address.created"))
-        assertThat(updatePersonEvent?.eventType, equalTo("probation-case.personal-details.updated"))
 
-        val updatePersonId = businessInteractionRepository.getByCode(BusinessInteractionCode.UPDATE_PERSON.code)
         val insertAddressId = businessInteractionRepository.getByCode(BusinessInteractionCode.INSERT_ADDRESS.code)
         val updateAddressId = businessInteractionRepository.getByCode(BusinessInteractionCode.UPDATE_ADDRESS.code)
-        val updatePersonAuditRecords =
-            auditedInteractionRepository.findAll().filter { it.businessInteractionId == updatePersonId.id }
         val insertAddressAuditRecords =
             auditedInteractionRepository.findAll().filter { it.businessInteractionId == insertAddressId.id }
         val updateAddressAuditRecords =
             auditedInteractionRepository.findAll().filter { it.businessInteractionId == updateAddressId.id }
 
-        assertThat(updatePersonAuditRecords.size, equalTo(2))
         assertThat(insertAddressAuditRecords.size, equalTo(1))
         assertThat(updateAddressAuditRecords.size, equalTo(1))
     }
@@ -508,10 +542,7 @@ internal class PersonalDetailsIntegrationTest {
     @Test
     @Transactional
     fun `when all fields are posted for an existing main address all are updated`() {
-        val request = PersonalContactEditRequest(
-            phoneNumber = "0191255446",
-            mobileNumber = "077989988",
-            emailAddress = "updated@test.none",
+        val request = PersonAddressEditRequest(
             buildingName = "Building",
             buildingNumber = "23",
             streetName = "The Street",
@@ -528,20 +559,17 @@ internal class PersonalDetailsIntegrationTest {
         val person = PERSONAL_DETAILS
         val updateResponse = mockMvc
             .perform(
-                post("/personal-details/${person.crn}").withToken()
+                post("/personal-details/${person.crn}/address").withToken()
                     .withJson(request)
             )
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonalDetails>()
 
-        val domainEvents = channelManager.getChannel(topicName).pollFor(2)
+        val domainEvents = channelManager.getChannel(topicName).pollFor(1)
         val updateAddressEvent =
             domainEvents.firstOrNull { it.eventType == "probation-case.address.updated" }?.message as HmppsDomainEvent?
-        val updatePersonEvent =
-            domainEvents.firstOrNull { it.eventType == "probation-case.personal-details.updated" }?.message as HmppsDomainEvent?
 
         assertThat(updateAddressEvent?.eventType, equalTo("probation-case.address.updated"))
-        assertThat(updatePersonEvent?.eventType, equalTo("probation-case.personal-details.updated"))
 
         val res = mockMvc
             .perform(get("/personal-details/${person.crn}/addresses").withToken())
@@ -554,9 +582,6 @@ internal class PersonalDetailsIntegrationTest {
             auditedInteractionRepository.findAll().filter { it.businessInteractionId == insertAddressId.id }
         assertThat(insertAddressAuditRecords.size, equalTo(1))
 
-        assertThat(updateResponse.telephoneNumber, equalTo(request.phoneNumber))
-        assertThat(updateResponse.mobileNumber, equalTo(request.mobileNumber))
-        assertThat(updateResponse.email, equalTo(request.emailAddress))
         assertThat(updateResponse.lastUpdated, equalTo(LocalDate.now()))
         assertThat(
             updateResponse.lastUpdatedBy,
@@ -583,10 +608,10 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
-    fun `when personal details update request does not have a start date`() {
-        val request = PersonalContactEditRequest()
+    fun `when address update request does not have a start date`() {
+        val request = PersonAddressEditRequest()
         val res = mockMvc.perform(
-            post("/personal-details/X000001").withToken()
+            post("/personal-details/X000001/address").withToken()
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)
@@ -596,10 +621,10 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
-    fun `when personal details update request has a start date later than today`() {
-        val request = PersonalContactEditRequest(startDate = LocalDate.now().plusDays(1))
+    fun `when address update request has a start date later than today`() {
+        val request = PersonAddressEditRequest(startDate = LocalDate.now().plusDays(1))
         val res = mockMvc.perform(
-            post("/personal-details/X000001").withToken()
+            post("/personal-details/X000001/address").withToken()
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)
@@ -609,10 +634,10 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
-    fun `when personal details update request has an date later than today`() {
-        val request = PersonalContactEditRequest(startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
+    fun `when address update request has an date later than today`() {
+        val request = PersonAddressEditRequest(startDate = LocalDate.now(), endDate = LocalDate.now().plusDays(1))
         val res = mockMvc.perform(
-            post("/personal-details/X000001").withToken()
+            post("/personal-details/X000001/address").withToken()
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)
@@ -623,19 +648,36 @@ internal class PersonalDetailsIntegrationTest {
 
     @Test
     fun `when street name greater than 35 chars`() {
-        val request = PersonalContactEditRequest(
+        val request = PersonAddressEditRequest(
             startDate = LocalDate.now(),
-            streetName = "U".repeat(100),
-            emailAddress = "X".repeat(257)
+            streetName = "U".repeat(100)
         )
         val res = mockMvc.perform(
-            post("/personal-details/X000001").withToken()
+            post("/personal-details/X000001/address").withToken()
                 .withJson(request)
         )
             .andExpect(status().isBadRequest)
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(res.message, equalTo("Validation failure"))
-        assertThat(res.fields?.size, equalTo(2))
+        assertThat(res.fields?.size, equalTo(1))
+    }
+
+    @Test
+    fun `when person contact greater than max length`() {
+        val request = PersonContactEditRequest(
+            phoneNumber = "0".repeat(36),
+            mobileNumber = "0".repeat(36),
+            emailAddress = "X".repeat(256)
+        )
+        val res = mockMvc.perform(
+            post("/personal-details/X000001/contact").withToken()
+                .withJson(request)
+        )
+            .andExpect(status().isBadRequest)
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(res.message, equalTo("Validation failure"))
+        assertThat(res.fields?.size, equalTo(3))
     }
 }

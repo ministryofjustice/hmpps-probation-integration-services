@@ -6,7 +6,8 @@ import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonalContactEditRequest
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonAddressEditRequest
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonContactEditRequest
 import uk.gov.justice.digital.hmpps.service.PersonalDetailsService
 
 @Validated
@@ -16,10 +17,15 @@ import uk.gov.justice.digital.hmpps.service.PersonalDetailsService
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class PersonalDetailsController(private val personalDetailsService: PersonalDetailsService) {
 
-    @PostMapping
+    @PostMapping("/contact")
     @Operation(summary = "Update personal details")
-    fun updatePersonalDetails(@PathVariable crn: String, @Valid @RequestBody request: PersonalContactEditRequest) =
-        personalDetailsService.updatePersonalDetails(crn, request)
+    fun updatePersonalContactDetails(@PathVariable crn: String, @Valid @RequestBody request: PersonContactEditRequest) =
+        personalDetailsService.updatePersonContactDetails(crn, request)
+
+    @PostMapping("/address")
+    @Operation(summary = "Update personal details")
+    fun updatePersonalAddressDetails(@PathVariable crn: String, @Valid @RequestBody request: PersonAddressEditRequest) =
+        personalDetailsService.updatePersonalAddressDetails(crn, request)
 
     @GetMapping
     @Operation(summary = "Personal Details containing address, personal contacts and documents ")

@@ -160,7 +160,7 @@ internal class PersonalDetailsControllerTest {
     @Test
     fun `calls update personal details function with invalid payload`() {
         val crn = "X000005"
-        val request = PersonalContactEditRequest(startDate = LocalDate.now())
+        val request = PersonAddressEditRequest(startDate = LocalDate.now())
         val personalDetails = PersonalDetails(
             crn = "X000005",
             pnc = "pnc123",
@@ -190,8 +190,8 @@ internal class PersonalDetailsControllerTest {
             selfDescribedGender = null,
             staffContacts = listOf()
         )
-        whenever(personalDetailsService.updatePersonalDetails(crn, request)).thenReturn(personalDetails)
-        val res = controller.updatePersonalDetails(crn, request)
+        whenever(personalDetailsService.updatePersonalAddressDetails(crn, request)).thenReturn(personalDetails)
+        val res = controller.updatePersonalAddressDetails(crn, request)
         assertThat(res.preferredName, equalTo("Steve"))
         assertThat(res.mainAddress?.streetName, equalTo("Test Street"))
     }
