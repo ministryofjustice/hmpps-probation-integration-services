@@ -308,6 +308,16 @@ class PersonalDetailsService(
         )
     }
 
+    fun getPersonCircumstancesSingleNote(crn: String, circumstanceId: Long, noteId: Int): CircumstanceOverviewSummary {
+        val person = personRepository.getSummary(crn)
+        val circumstance = personalCircumstanceRepository.findById(circumstanceId).getOrNull()
+
+        return CircumstanceOverviewSummary(
+            personSummary = person.toPersonSummary(),
+            circumstance = circumstance?.toCircumstance(singleNote = true, noteId = noteId)
+        )
+    }
+
     fun getPersonProvisions(crn: String): ProvisionOverview {
         val person = personRepository.getSummary(crn)
         val provisions = provisionRepository.findByPersonId(person.id)
@@ -363,11 +373,17 @@ class PersonalDetailsService(
     }
 }
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance.toCircumstance() =
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance.toCircumstance(
+    singleNote: Boolean = false,
+    noteId: Int? = null
+) =
     Circumstance(
+        id = id,
         type = type.description,
         subType = subType.description,
-        notes = notes, verified = evidenced,
+        circumstanceNotes = if (!singleNote) formatNote(notes, true) else null,
+        circumstanceNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
+        verified = evidenced,
         startDate = startDate,
         lastUpdated = lastUpdated,
         lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
