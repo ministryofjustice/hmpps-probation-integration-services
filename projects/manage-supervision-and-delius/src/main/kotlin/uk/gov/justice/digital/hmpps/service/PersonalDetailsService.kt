@@ -363,13 +363,16 @@ class PersonalDetailsService(
     }
 }
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance.toCircumstance(singleNote: Boolean = false, noteId: Int? = null) =
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance.toCircumstance(
+    singleNote: Boolean = false,
+    noteId: Int? = null
+) =
     Circumstance(
         id = id,
         type = type.description,
         subType = subType.description,
         circumstanceNotes = if (!singleNote) formatNote(notes, true) else null,
-        circumstanceNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!)  else null,
+        circumstanceNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
         verified = evidenced,
         startDate = startDate,
         lastUpdated = lastUpdated,
