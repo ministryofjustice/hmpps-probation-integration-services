@@ -328,6 +328,16 @@ class PersonalDetailsService(
         )
     }
 
+    fun getPersonProvisionsSingleNote(crn: String, provisionId: Long, noteId: Int): ProvisionOverviewSummary {
+        val person = personRepository.getSummary(crn)
+        val provision = provisionRepository.findById(provisionId).getOrNull()
+
+        return ProvisionOverviewSummary(
+            personSummary = person.toPersonSummary(),
+            provision = provision?.toProvision(singleNote = true, noteId = noteId)
+        )
+    }
+
     fun getPersonDisabilities(crn: String): DisabilityOverview {
         val person = personRepository.getSummary(crn)
         val disabilities = disabilityRepository.findByPersonId(person.id)
@@ -379,9 +389,14 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCir
         lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
     )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision() = Provision(
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision(
+    singleNote: Boolean = false,
+    noteId: Int? = null
+) = Provision(
+    id = id,
     description = type.description,
-    notes = notes,
+    provisionNotes = if (!singleNote) formatNote(notes, true) else null,
+    provisionNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
     startDate = startDate,
     lastUpdated = lastUpdated,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
