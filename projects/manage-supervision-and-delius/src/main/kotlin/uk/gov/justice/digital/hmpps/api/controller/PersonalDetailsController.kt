@@ -71,6 +71,15 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     fun getPersonCircumstances(@PathVariable crn: String) =
         personalDetailsService.getPersonCircumstances(crn)
 
+    @GetMapping("/circumstances/{circumstanceId}/note/{noteId}")
+    @Operation(summary = "Person Circumstances")
+    fun getPersonCircumstancesSingleNote(
+        @PathVariable crn: String,
+        @PathVariable circumstanceId: Long,
+        @PathVariable noteId: Int
+    ) =
+        personalDetailsService.getPersonCircumstancesSingleNote(crn, circumstanceId, noteId)
+
     @GetMapping("/disabilities")
     @Operation(summary = "Person Disabilities")
     fun getPersonDisabilities(@PathVariable crn: String) =
@@ -89,4 +98,13 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     @Operation(summary = "Person Provisions")
     fun getPersonProvisions(@PathVariable crn: String) =
         personalDetailsService.getPersonProvisions(crn)
+
+    @GetMapping("/provisions/{provisionId}/note/{noteId}")
+    @Operation(summary = "Person Provisions")
+    fun getPersonProvisionsSingleNote(
+        @PathVariable crn: String,
+        @PathVariable provisionId: Long,
+        @PathVariable noteId: Int
+    ) =
+        personalDetailsService.getPersonProvisionsSingleNote(crn, provisionId, noteId)
 }

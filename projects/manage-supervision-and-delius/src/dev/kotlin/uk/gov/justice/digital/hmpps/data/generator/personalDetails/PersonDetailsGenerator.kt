@@ -95,6 +95,13 @@ object PersonDetailsGenerator {
         LocalDate.now().minusDays(1),
         LocalDate.now().minusDays(1),
         USER,
+        notes = """
+            Comment added by Harry Kane on 29/10/2024 at 14:39
+            Provision Note 1
+            ---------------------------------------------------------
+            Comment added by Tom Brady on 29/10/2024 at 14:56
+            Provision Note 2
+        """.trimIndent()
     )
     val PROVISION_2 = Provision(
         IdGenerator.getAndIncrement(),
@@ -112,7 +119,13 @@ object PersonDetailsGenerator {
         PERSONAL_CIRCUMSTANCE_SUBTYPE_1,
         LocalDate.now().minusDays(1),
         USER,
-        notes = "Some Notes",
+        notes = """
+            Comment added by Harry Kane on 29/10/2024 at 14:39
+            Circumstance Note 1
+            ---------------------------------------------------------
+            Comment added by Tom Brady on 29/10/2024 at 14:56
+            Circumstance Note 2
+        """.trimIndent(),
         evidenced = true,
         LocalDate.now().minusDays(1)
     )
