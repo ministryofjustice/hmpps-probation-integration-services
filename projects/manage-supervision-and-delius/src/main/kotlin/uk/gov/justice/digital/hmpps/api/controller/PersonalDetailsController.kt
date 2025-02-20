@@ -89,6 +89,7 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     fun getPersonProvisionsSingleNote(
         @PathVariable crn: String,
         @PathVariable provisionId: Long,
-        @PathVariable noteId: Int) =
+        @PathVariable noteId: Int
+    ) =
         personalDetailsService.getPersonProvisionsSingleNote(crn, provisionId, noteId)
 }

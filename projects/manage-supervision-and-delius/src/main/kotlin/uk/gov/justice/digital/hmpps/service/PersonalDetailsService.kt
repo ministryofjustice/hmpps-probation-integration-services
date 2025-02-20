@@ -373,7 +373,10 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCir
         lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
     )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision(singleNote: Boolean = false, noteId: Int? = null) = Provision(
+fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Provision.toProvision(
+    singleNote: Boolean = false,
+    noteId: Int? = null
+) = Provision(
     id = id,
     description = type.description,
     provisionNotes = if (!singleNote) formatNote(notes, true) else null,
