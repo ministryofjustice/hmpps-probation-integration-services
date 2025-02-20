@@ -123,9 +123,10 @@ internal class IntegrationTest {
         assertThat(assessment?.totalScore, equalTo(76))
         assertThat(assessment?.initialSentencePlanDate, equalTo(LocalDate.of(2024, 2, 12)))
         assertThat(assessment?.sentencePlanReviewDate, equalTo(LocalDate.of(2024, 8, 12)))
+        assertThat(assessment?.status?.code, equalTo("LI"))
 
         val contact = contactRepository.findAll()
-            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value }
+            .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value }
         assertThat(contact.date, equalTo(assessment?.date))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
     }
@@ -162,6 +163,7 @@ internal class IntegrationTest {
         assertThat(assessment?.assessedBy, equalTo("John Smith"))
         assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-07")))
         assertThat(assessment?.totalScore, equalTo(94))
+        assertThat(assessment?.status?.code, equalTo("C"))
 
         val scores = assessment?.sectionScores?.associate { it.id.level to it.score }!!
         assertThat(scores[3L], equalTo(1))
@@ -200,6 +202,7 @@ internal class IntegrationTest {
             assertThat(assessment?.assessedBy, equalTo("R. L. Name"))
             assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-15")))
             assertThat(assessment?.totalScore, equalTo(88))
+            assertThat(assessment?.status?.code, equalTo("C"))
 
             val sentencePlans = assessment!!.sentencePlans
             assertThat(sentencePlans.size, equalTo(2))
@@ -240,6 +243,8 @@ internal class IntegrationTest {
         assertThat(assessment?.assessedBy, equalTo("LevelTwo CentralSupport"))
         assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-15")))
         assertThat(assessment?.totalScore, equalTo(108))
+        assertThat(assessment?.status?.code, equalTo("C"))
+
         val scores = assessment?.sectionScores?.associate { it.id.level to it.score }!!
         assertThat(scores[3L], equalTo(8))
         assertThat(scores[4L], equalTo(7))

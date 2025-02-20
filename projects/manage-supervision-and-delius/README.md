@@ -1,5 +1,8 @@
 # Manage supervision and Delius
 
+Enable the [Manage People on Probation](https://github.com/ministryofjustice/hmpps-manage-people-on-probation-ui)
+service to retrieve and update Delius data.
+
 ## Viewing Person on Probation data
 
 This service provides an overview of the data held for a **Person on Probation**:

@@ -17,9 +17,10 @@ class UpwAppointmentRemindersJob(
     private val applicationContext: ApplicationContext,
     @Value("\${jobs.unpaid-work-appointment-reminders.provider.code}") private val providerCode: String,
     @Value("\${jobs.unpaid-work-appointment-reminders.templates}") private val templateIds: List<String>,
+    @Value("\${jobs.unpaid-work-appointment-reminders.days-in-advance}") private val daysInAdvance: Long,
 ) : ApplicationListener<ApplicationStartedEvent> {
     override fun onApplicationEvent(applicationStartedEvent: ApplicationStartedEvent) {
-        service.sendUnpaidWorkAppointmentReminders(providerCode, templateIds)
+        service.sendUnpaidWorkAppointmentReminders(providerCode, templateIds, daysInAdvance)
         exitProcess(exit(applicationContext, { 0 }))
     }
 }

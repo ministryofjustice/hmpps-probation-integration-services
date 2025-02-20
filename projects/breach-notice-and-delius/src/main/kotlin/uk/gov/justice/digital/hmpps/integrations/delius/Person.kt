@@ -28,6 +28,9 @@ class Person(
     @OneToMany(mappedBy = "person")
     val addresses: List<PersonAddress>,
 
+    val exclusionMessage: String?,
+    val restrictionMessage: String?,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

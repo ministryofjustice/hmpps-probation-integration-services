@@ -88,7 +88,7 @@ internal class IntegrationTest {
 
     @Test
     fun `sends messages to govuk notify`() {
-        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56", listOf("template"))
+        unpaidWorkAppointmentsService.sendUnpaidWorkAppointmentReminders("N56", listOf("template"), 3)
 
         verify(notificationClient).sendSms(
             "template",

@@ -24,6 +24,11 @@ object ReferenceDataGenerator {
     val SAFEGUARDING_FLAG = generateReferenceData("3", "Safeguarding", FLAG_DATASET)
     val LEVELS_DATASET = generateDataset(Dataset.Code.REGISTER_LEVEL.value)
     val LEVELS = RiskLevel.entries.map { generateReferenceData(it.code, it.name, dataset = LEVELS_DATASET) }
+    val OASYS_ASSESSMENT_STATUS_DATASET = generateDataset(Dataset.Code.OASYS_ASSESSMENT_STATUS.value)
+    val OASYS_ASSESSMENT_STATUSES = listOf(
+        generateReferenceData("C", dataset = OASYS_ASSESSMENT_STATUS_DATASET),
+        generateReferenceData("LI", dataset = OASYS_ASSESSMENT_STATUS_DATASET),
+    )
     val OFFENCES = listOf("80400", "00857").map { generateOffence(it) }
     val COURTS = listOf("CRT150", "LVRPCC").map { generateCourt(it) }
     val REQ_MAIN_CATS = listOf("RM38").map { generateReqMainCat(it) }

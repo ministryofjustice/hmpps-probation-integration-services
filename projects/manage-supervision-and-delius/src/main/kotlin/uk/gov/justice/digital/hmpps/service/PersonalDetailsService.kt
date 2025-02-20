@@ -289,6 +289,15 @@ class PersonalDetailsService(
         )
     }
 
+    fun getPersonAddressSingleNote(crn: String, id: Long, noteId: Int): AddressOverviewSummary {
+        val person = personRepository.getSummary(crn)
+
+        return AddressOverviewSummary(
+            personSummary = person.toPersonSummary(),
+            addressRepository.findById(id).getOrNull()?.toAddress(singleNote = true, noteId = noteId),
+        )
+    }
+
     fun getPersonCircumstances(crn: String): CircumstanceOverview {
         val person = personRepository.getSummary(crn)
         val circumstances = personalCircumstanceRepository.findAllCircumstances(person.id)
@@ -413,6 +422,7 @@ fun Person.toSummary() =
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
 fun PersonAddress.toAddress(singleNote: Boolean = false, noteId: Int? = null) = Address.from(
+    id = id,
     buildingName = buildingName,
     buildingNumber = buildingNumber,
     streetName = streetName,

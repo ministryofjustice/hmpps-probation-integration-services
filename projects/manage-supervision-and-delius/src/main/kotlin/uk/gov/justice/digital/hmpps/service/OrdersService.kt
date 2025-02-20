@@ -36,12 +36,12 @@ class OrdersService(
 
     fun Event.toPreviousOrder(): PreviousOrder = PreviousOrder(
         eventNumber,
-        "${disposal?.type?.description} (${disposal?.length} ${disposal?.lengthUnit?.description})",
+        setTitle(),
         mainOffence?.offence?.description,
         disposal?.terminationDate
     )
 
-    fun Event.setTitle(): String? {
-        return "${disposal?.type?.description} (${disposal?.length} ${disposal?.lengthUnit?.description})"
+    fun Event.setTitle(): String {
+        return disposal?.type?.description + if (disposal?.length != null) " (${disposal.length} ${disposal.lengthUnit?.description})" else ""
     }
 }

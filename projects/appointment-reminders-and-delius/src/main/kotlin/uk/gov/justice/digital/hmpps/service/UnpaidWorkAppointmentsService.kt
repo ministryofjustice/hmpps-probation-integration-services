@@ -14,8 +14,8 @@ class UnpaidWorkAppointmentsService(
     private val notificationClient: NotificationClient,
     private val telemetryService: TelemetryService,
 ) {
-    fun sendUnpaidWorkAppointmentReminders(providerCode: String, templateIds: List<String>) {
-        upwAppointmentRepository.getUnpaidWorkAppointments(LocalDate.now().plusDays(2), providerCode)
+    fun sendUnpaidWorkAppointmentReminders(providerCode: String, templateIds: List<String>, daysInAdvance: Long) {
+        upwAppointmentRepository.getUnpaidWorkAppointments(LocalDate.now().plusDays(daysInAdvance), providerCode)
             .forEach {
                 val telemetryProperties = mapOf(
                     "crn" to it.crn,

@@ -223,7 +223,14 @@ object PersonDetailsGenerator {
         PERSONAL_DETAILS.id,
         PERSON_PREVIOUS_ADDRESS_STATUS,
         PERSON_ADDRESS_TYPE_2,
-        endDate = LocalDate.now().minusYears(1)
+        endDate = LocalDate.now().minusYears(1),
+        notes = """
+            Comment added by Harry Kane on 29/10/2024 at 14:39
+            previous address note 1
+            ---------------------------------------------------------
+            Comment added by Tom Brady on 29/10/2024 at 14:56
+            previous address note 2
+        """.trimIndent()
     )
 
     val NULL_ADDRESS = PersonAddress(

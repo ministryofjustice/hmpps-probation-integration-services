@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.sentence.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_2
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_3
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_ORDER_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAIN_OFFENCE_3
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OFFENCE_1
@@ -82,6 +83,12 @@ class OrderIntegrationTest {
             Name("Forename", "Middle1", "Surname"),
             listOf(
                 PreviousOrder(
+                    INACTIVE_EVENT_3.eventNumber,
+                    "Default Sentence Type",
+                    "Burglary, other than a dwelling - 03000",
+                    LocalDate.now().minusDays(7)
+                ),
+                PreviousOrder(
                     INACTIVE_EVENT_2.eventNumber,
                     "Default Sentence Type (7 Months)",
                     "Burglary, other than a dwelling - 03000",
@@ -136,5 +143,18 @@ class OrderIntegrationTest {
         )
 
         assertEquals(expected, response)
+    }
+
+    @Test
+    fun `return previous order no disposal length`() {
+        val response = mockMvc
+            .perform(
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders/${INACTIVE_EVENT_3.eventNumber}")
+                    .withToken()
+            )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<PreviousOrderInformation>()
+
+        assertEquals(response.title, "Default Sentence Type")
     }
 }

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -7,6 +9,9 @@ import org.mockito.Mock
 import org.mockito.Mockito.anyMap
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import org.opensearch.client.opensearch.OpenSearchClient
+import org.opensearch.client.opensearch.core.IndexRequest
+import org.opensearch.client.util.ObjectBuilder
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.dto.InsertEventResult
@@ -19,6 +24,7 @@ import uk.gov.justice.digital.hmpps.service.RemandService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
+import java.util.function.Function
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
@@ -33,6 +39,9 @@ internal class HandlerTest {
 
     @Mock
     lateinit var probationSearchClient: ProbationSearchClient
+
+    @Mock
+    lateinit var openSearchClient: OpenSearchClient
 
     @Mock
     private lateinit var featureFlags: FeatureFlags
@@ -89,6 +98,22 @@ internal class HandlerTest {
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(eq("SimulatedPersonCreated"), anyMap(), anyMap())
         verify(remandService, never()).insertPersonOnRemand(any())
+    }
+
+    @Test
+    fun `Incoming messages are indexed into OpenSearch`() {
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_CASES)
+        handler.handle(notification)
+        val captor =
+            argumentCaptor<Function<IndexRequest.Builder<CommonPlatformHearing>, ObjectBuilder<IndexRequest<CommonPlatformHearing>>>>()
+        verify(openSearchClient).index(captor.capture())
+
+        // OpenSearchClient.index passes in an empty IndexRequest.Builder as an arg so we do the same here to test.
+        val result = captor.firstValue.apply(IndexRequest.Builder()).build()
+
+        assertThat(result.index(), equalTo("court_messages"))
+        assertThat(result.document(), equalTo(notification.message))
+        assertThat(result.id(), equalTo(notification.id.toString()))
     }
 
     private fun featureFlagIsEnabled(flag: Boolean) {

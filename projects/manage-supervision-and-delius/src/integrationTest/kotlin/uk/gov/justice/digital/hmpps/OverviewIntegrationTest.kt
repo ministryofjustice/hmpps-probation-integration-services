@@ -76,7 +76,7 @@ internal class OverviewIntegrationTest {
             res.sentences[1].additionalOffences[1].description,
             equalTo(ADDITIONAL_OFFENCE_2.offence.description)
         )
-        assertThat(res.previousOrders.count, equalTo(2))
+        assertThat(res.previousOrders.count, equalTo(3))
         assertThat(res.previousOrders.breaches, equalTo(2))
         assertThat(res.sentences[1].eventNumber, equalTo(EVENT_1.eventNumber))
         assertThat(res.sentences[1].rarDescription, equalTo("2 of 12 RAR days completed"))
