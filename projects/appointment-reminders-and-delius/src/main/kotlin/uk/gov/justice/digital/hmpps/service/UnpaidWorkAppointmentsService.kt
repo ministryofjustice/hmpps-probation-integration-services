@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.properties.UpwAppointmentRemindersJobProperties
 import uk.gov.justice.digital.hmpps.repository.UpwAppointmentRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -25,6 +26,7 @@ class UnpaidWorkAppointmentsService(
                 )
                 if (it.crn !in properties.excludedCrns) {
                     val responses = templateIds.map { templateId ->
+                        log.info("Sending SMS template $templateId to ${it.mobileNumber}")
                         val templateValues = mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate)
                         notificationClient.sendSms(templateId, it.mobileNumber, templateValues, it.crn)
                     }
@@ -34,5 +36,9 @@ class UnpaidWorkAppointmentsService(
                     )
                 } else telemetryService.trackEvent("UnpaidWorkAppointmentReminderNotSent", telemetryProperties)
             }
+    }
+
+    companion object {
+        private val log = logger()
     }
 }
