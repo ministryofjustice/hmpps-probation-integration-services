@@ -67,6 +67,7 @@ on:
       - main
     paths:
       - 'projects/**/deploy/**'
+      - 'projects/**/README.md'
 
 jobs:
   get-projects:
@@ -82,6 +83,7 @@ jobs:
           filters: |
             projects:
               - 'projects/**/deploy/**'
+              - 'projects/**/README.md'
       - name: Get projects - changed
         if: github.event_name == 'push'
         run: echo "projects=$PROJECTS" | tee -a "$GITHUB_ENV"

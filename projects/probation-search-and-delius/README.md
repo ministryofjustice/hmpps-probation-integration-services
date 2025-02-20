@@ -1,4 +1,8 @@
 # Probation Search and Delius
+
+Service to enable auditing and provide access to Delius data from
+the [Probation Search API](https://github.com/ministryofjustice/probation-offender-search).
+
 This service provides two API endpoints:
 
 * Get for contacts for a **Person on Probation**
