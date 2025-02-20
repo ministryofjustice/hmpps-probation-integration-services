@@ -444,8 +444,8 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(response.mobileNumber, equalTo(editRequest.mobileNumber))
         assertThat(response.email, equalTo(editRequest.emailAddress))
         assertThat(response)
-            .usingRecursiveComparison().ignoringFields("telephoneNumber", "mobileNumber", "email").
-        isEqualTo(expectedResponse)
+            .usingRecursiveComparison().ignoringFields("telephoneNumber", "mobileNumber", "email")
+            .isEqualTo(expectedResponse)
     }
 
     companion object {

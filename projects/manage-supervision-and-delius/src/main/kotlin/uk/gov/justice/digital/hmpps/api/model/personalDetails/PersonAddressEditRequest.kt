@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.api.model.personalDetails
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
-
 data class PersonContactEditRequest(
     @field:Size(max = 35)
     val phoneNumber: String? = null,
