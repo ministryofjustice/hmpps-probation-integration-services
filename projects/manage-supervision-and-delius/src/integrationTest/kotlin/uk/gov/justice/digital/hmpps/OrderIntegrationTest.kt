@@ -144,4 +144,17 @@ class OrderIntegrationTest {
 
         assertEquals(expected, response)
     }
+
+    @Test
+    fun `return previous order no disposal length`() {
+        val response = mockMvc
+            .perform(
+                MockMvcRequestBuilders.get("/sentence/${PersonGenerator.OVERVIEW.crn}/previous-orders/${INACTIVE_EVENT_3.eventNumber}")
+                    .withToken()
+            )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn().response.contentAsJson<PreviousOrderInformation>()
+
+        assertEquals(response.title, "Default Sentence Type")
+    }
 }

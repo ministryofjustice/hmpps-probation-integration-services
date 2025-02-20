@@ -118,9 +118,11 @@ class UpdateLocationAction(
 
     private fun checkPreconditions(movement: PrisonerMovement, custody: Custody) = if (
         (movement.isReceived() && !(movement.locationChanged(custody) && movement.receivedDateValid(custody))) ||
-        (movement.isReleased() && !movement.releaseDateValid(custody)) ||
-        (movement.isToSecureUnitOutsidePrison() && !movement.occurredAfter(custody.locationChangeDate))
-    ) ActionResult.Ignored("PrisonerLocationCorrect", movement.telemetryProperties()) else null
+        (movement.isReleased() && !movement.releaseDateValid(custody))
+    ) ActionResult.Ignored("PrisonerLocationCorrect", movement.telemetryProperties())
+    else if (movement.isToSecureUnitOutsidePrison() && !movement.occurredAfter(custody.locationChangeDate))
+        ActionResult.Ignored("PrisonerLocationSuperseded", movement.telemetryProperties())
+    else null
 
     private fun PrisonerMovement.locationChanged(custody: Custody) = custody.institution?.nomisCdeCode != toPrisonId
 }

@@ -52,5 +52,7 @@ spec:
                   value: "{{ $config.provider.code }}"
                 - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_TEMPLATES
                   value: "{{ $config.templates | join "," }}"
+                - name: JOBS_UNPAID-WORK-APPOINTMENT-REMINDERS_DAYS-IN-ADVANCE
+                  value: "{{ $config.daysInAdvance }}"
           restartPolicy: Never
 {{ end }}
