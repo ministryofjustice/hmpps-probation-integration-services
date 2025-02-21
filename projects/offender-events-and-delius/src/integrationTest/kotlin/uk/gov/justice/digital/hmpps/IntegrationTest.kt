@@ -96,9 +96,7 @@ internal class IntegrationTest {
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "MANAGEMENT_TIER_EVENT", sourceId = 99),
-                listOf(
-                    properties + ("eventType" to "OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED")
-                )
+                emptyList<Map<String, String>>()
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "MERGE_HISTORY", sourceId = 99),

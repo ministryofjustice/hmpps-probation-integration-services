@@ -41,12 +41,12 @@ class OffenderDeltaService(
     }
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
-        fun sourceToEventType(): String = when (sourceTable) {
+        fun sourceToEventType(): String? = when (sourceTable) {
             "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
             "DISPOSAL" -> "SENTENCE_CHANGED"
             "EVENT" -> "CONVICTION_CHANGED"
-            "MANAGEMENT_TIER_EVENT" -> "OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED"
+            "MANAGEMENT_TIER_EVENT" -> null
             "MERGE_HISTORY" -> "OFFENDER_MERGED"
             "OFFENDER" -> "OFFENDER_DETAILS_CHANGED"
             "OFFICER" -> "OFFENDER_OFFICER_CHANGED"
@@ -57,7 +57,7 @@ class OffenderDeltaService(
         }
 
         return if (offender != null) {
-            sourceToEventType().let {
+            sourceToEventType()?.let {
                 val oe = OffenderEvent(
                     offender.id,
                     offender.crn,
@@ -71,9 +71,9 @@ class OffenderDeltaService(
                 }
                 list += Notification(oe, MessageAttributes(it))
                 list
-            }
+            } ?: emptyList()
         } else {
-            listOf()
+            emptyList()
         }
     }
 }
