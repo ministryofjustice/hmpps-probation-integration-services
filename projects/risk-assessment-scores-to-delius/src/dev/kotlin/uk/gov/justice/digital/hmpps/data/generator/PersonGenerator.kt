@@ -12,8 +12,6 @@ object PersonGenerator {
     val MERGED_FROM = generate("M346785", "M1234GD", softDeleted = true)
     val MERGED_TO = generate("M346787", "M3465GD")
 
-
-
     fun generate(
         crn: String,
         nomsId: String? = null,
