@@ -6,31 +6,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
-import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
-import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
-import uk.gov.justice.digital.hmpps.data.repository.MainOffenceRepository
-import uk.gov.justice.digital.hmpps.data.repository.OffenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.repository.*
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -70,8 +48,6 @@ class DataLoader(
         referenceDataRepository.saveAll(
             listOf(
                 ReferenceDataGenerator.GENDER_MALE,
-                ReferenceDataGenerator.TIER_CHANGE_REASON_OGRS,
-                ReferenceDataGenerator.TIER_NA
             )
         )
 
@@ -79,12 +55,21 @@ class DataLoader(
         staffRepository.save(StaffGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.DEFAULT)
         offenceRepository.save(OffenceGenerator.DEFAULT)
-        personRepository.save(PersonGenerator.DEFAULT)
+        personRepository.saveAll(listOf(PersonGenerator.DEFAULT, PersonGenerator.NULL_EVENT_PROCESSING))
         personManagerRepository.save(PersonManagerGenerator.DEFAULT)
-        eventRepository.save(EventGenerator.DEFAULT)
+        eventRepository.saveAll(
+            listOf(EventGenerator.DEFAULT, EventGenerator.NEP_1, EventGenerator.NEP_2, EventGenerator.NEP_3)
+        )
         disposalTypeRepository.save(DisposalTypeGenerator.DEFAULT)
-        disposalRepository.save(DisposalGenerator.DEFAULT)
+        disposalRepository.saveAll(
+            listOf(DisposalGenerator.DEFAULT, DisposalGenerator.NEP_DISPOSAL_2, DisposalGenerator.NEP_DISPOSAL_3)
+        )
         mainOffenceRepository.save(MainOffenceGenerator.DEFAULT)
-        personManagerRepository.save(PersonManagerGenerator.DEFAULT)
+        personManagerRepository.saveAll(
+            listOf(
+                PersonManagerGenerator.DEFAULT,
+                PersonManagerGenerator.generate(PersonGenerator.NULL_EVENT_PROCESSING)
+            )
+        )
     }
 }

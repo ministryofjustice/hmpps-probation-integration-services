@@ -47,22 +47,6 @@ class Handler(
 
             "risk-assessment.scores.ogrs.determined" -> {
                 try {
-                    // if the message doesn't contain the event number then the event is coming from the prison side
-                    // so ignore the message
-                    if (!message.additionalInformation.containsKey("EventNumber")) {
-                        telemetryService.trackEvent(
-                            "AddOrUpdateRiskAssessment - ignored due to no event number",
-                            message.telemetryProperties()
-                        )
-                        return
-                    } else if (message.additionalInformation["EventNumber"] == null) {
-                        // validate that the event number is present
-                        telemetryService.trackEvent(
-                            "Event number not present",
-                            mapOf("crn" to message.personReference.findCrn()!!)
-                        )
-                        return
-                    }
                     riskAssessmentService.addOrUpdateRiskAssessment(
                         message.personReference.findCrn()
                             ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),

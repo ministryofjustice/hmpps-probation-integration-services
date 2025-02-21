@@ -1,29 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
-import jakarta.persistence.AttributeConverter
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Converter
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 
-interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
-
-    @Query(
-        """
-        SELECT rd FROM ReferenceData rd
-        WHERE rd.dataset.code = :datasetCode
-        AND rd.code = :code
-    """
-    )
-    fun findByDatasetAndCode(datasetCode: DatasetCode, code: String): ReferenceData?
-}
+interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>
 
 @Immutable
 @Entity
