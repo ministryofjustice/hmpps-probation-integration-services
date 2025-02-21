@@ -10,6 +10,7 @@ object EventGenerator {
     val NEP_1 = generate(NULL_EVENT_PROCESSING, "2", createdDateTime = ZonedDateTime.now().minusMonths(1))
     val NEP_2 = generate(NULL_EVENT_PROCESSING, "3", createdDateTime = ZonedDateTime.now().minusDays(1))
     val NEP_3 = generate(NULL_EVENT_PROCESSING, "4", createdDateTime = ZonedDateTime.now().minusDays(1))
+    val MERGED_TO = generate(PersonGenerator.MERGED_TO)
 
     fun generate(
         person: Person = PersonGenerator.DEFAULT,

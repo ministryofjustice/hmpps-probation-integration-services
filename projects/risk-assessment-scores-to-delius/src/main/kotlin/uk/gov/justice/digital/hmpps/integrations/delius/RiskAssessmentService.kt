@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.messaging.OgrsScore
 import java.time.ZonedDateTime
@@ -15,6 +16,7 @@ class RiskAssessmentService(
     private val personManagerRepository: PersonManagerRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
+    private val additionalIdentifierRepository: AdditionalIdentifierRepository,
 ) {
 
     @Transactional
@@ -25,10 +27,11 @@ class RiskAssessmentService(
         ogrsScore: OgrsScore
     ) {
         // validate that the CRN is for a real offender
-        val person = personRepository.getByCrn(crn)
+        val person = getOgrsPerson(crn)
 
-        // validate that the offender has an event with this event number
-        val event = eventNumber?.let { eventRepository.getByCrn(crn, it.toString()) }
+        // if crn is different it's a merged record so use null to get latest event
+        val personEventNumber = if (person.crn == crn) eventNumber else null
+        val event = personEventNumber?.let { eventRepository.getByCrn(crn, it.toString()) }
             ?: eventRepository.findMostRecent(person.id)
             ?: throw DeliusValidationError("Event Number = Null and no active events for the case")
 
@@ -91,5 +94,13 @@ class RiskAssessmentService(
             Order: ${event.disposal?.disposalType?.description ?: ""}
             Reconviction calculation is ${ogrsScore.ogrs3Yr1}% within one year and ${ogrsScore.ogrs3Yr2}% within 2 years.
         """.trimIndent()
+    }
+
+    private fun getOgrsPerson(crn: String): Person {
+        val person = personRepository.getByCrn(crn)
+        if (!person.softDeleted) return person
+        val newCrn = additionalIdentifierRepository.findLatestMergedToCrn(person.id)?.identifier
+        return newCrn?.let { personRepository.getByCrn(it) }?.takeIf { !it.softDeleted }
+            ?: throw NotFoundException("Person", if (newCrn == null) "crn" else "mergedCrn", newCrn ?: crn)
     }
 }

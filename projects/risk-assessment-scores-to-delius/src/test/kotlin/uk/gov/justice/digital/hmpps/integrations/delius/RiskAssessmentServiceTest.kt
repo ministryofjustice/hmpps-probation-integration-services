@@ -13,6 +13,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.AdditionalIdentifierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
@@ -43,6 +44,9 @@ class RiskAssessmentServiceTest {
 
     @Mock
     private lateinit var contactRepository: ContactRepository
+
+    @Mock
+    private lateinit var additionalIdentifierRepository: AdditionalIdentifierRepository
 
     @InjectMocks
     private lateinit var riskAssessmentService: RiskAssessmentService
