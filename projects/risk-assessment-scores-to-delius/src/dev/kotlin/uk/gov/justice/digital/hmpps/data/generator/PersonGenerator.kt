@@ -5,6 +5,7 @@ import java.time.LocalDate
 
 object PersonGenerator {
     val DEFAULT = generate("X552020", "A1234YZ")
+    val NULL_EVENT_PROCESSING = generate("X854525", "N0770LL")
 
     fun generate(crn: String, nomsId: String? = null, id: Long = IdGenerator.getAndIncrement()) = Person(
         id = id,

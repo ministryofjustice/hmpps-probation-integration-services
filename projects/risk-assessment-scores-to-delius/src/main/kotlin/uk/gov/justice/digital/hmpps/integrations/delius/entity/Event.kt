@@ -37,7 +37,10 @@ class Event(
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
+
+    @Column(name = "created_datetime", nullable = false)
+    val createdDateTime: ZonedDateTime
 )
 
 @Immutable
@@ -57,6 +60,8 @@ class Disposal(
 
     @Column(name = "disposal_date", nullable = false)
     val disposalDate: ZonedDateTime,
+
+    val terminationDate: LocalDate? = null,
 
     @Column(name = "active_flag", updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -128,6 +133,19 @@ interface EventRepository : JpaRepository<Event, Long> {
     """
     )
     fun findByCrn(crn: String, eventNumber: String): Event?
+
+    @Query(
+        """
+        select e from Event e
+        left join fetch e.disposal d
+        where e.person.id = :personId
+        and (d.id is null or (d.terminationDate is null and d.active = true and d.softDeleted = false))
+        and e.softDeleted = false and e.active = true
+        order by e.createdDateTime desc
+        limit 1
+        """
+    )
+    fun findMostRecent(personId: Long): Event?
 
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select e.id from Event e where e.id = :id")
