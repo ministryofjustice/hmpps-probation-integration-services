@@ -173,4 +173,20 @@ internal class IntegrationTest {
         MatcherAssert.assertThat(assessment?.ogrs3Score1, Matchers.equalTo(5))
         MatcherAssert.assertThat(assessment?.ogrs3Score2, Matchers.equalTo(7))
     }
+
+    @Test
+    @Order(5)
+    fun `successfully create OGRS assessment on a merged crn`() {
+        val person = PersonGenerator.MERGED_TO
+        val notification = Notification(
+            message = MessageGenerator.OGRS_SCORES_MERGED,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", notification.message.telemetryProperties())
+
+        val assessment = ogrsAssessmentRepository.findAll().find { it.event.person.crn == person.crn }
+        MatcherAssert.assertThat(assessment?.ogrs3Score1, Matchers.equalTo(4))
+        MatcherAssert.assertThat(assessment?.ogrs3Score2, Matchers.equalTo(6))
+    }
 }

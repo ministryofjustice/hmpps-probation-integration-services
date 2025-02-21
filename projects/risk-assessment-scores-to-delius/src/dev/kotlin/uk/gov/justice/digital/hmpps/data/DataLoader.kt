@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generateAdditionalIdentifier
 import uk.gov.justice.digital.hmpps.data.repository.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -26,8 +27,8 @@ class DataLoader(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val personManagerRepository: PersonManagerRepository,
-    private val contactTypeRepository: ContactTypeRepository
-
+    private val contactTypeRepository: ContactTypeRepository,
+    private val additionalIdentifierRepository: AdditionalIdentifierRepository,
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -40,14 +41,14 @@ class DataLoader(
         datasetRepository.saveAll(
             listOf(
                 DatasetGenerator.GENDER,
-                DatasetGenerator.TIER_CHANGE_REASON,
-                DatasetGenerator.TIER
+                DatasetGenerator.ADDITIONAL_IDENTIFIER_TYPE
             )
         )
 
         referenceDataRepository.saveAll(
             listOf(
                 ReferenceDataGenerator.GENDER_MALE,
+                ReferenceDataGenerator.MERGED_TO_CRN
             )
         )
 
@@ -55,10 +56,22 @@ class DataLoader(
         staffRepository.save(StaffGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.DEFAULT)
         offenceRepository.save(OffenceGenerator.DEFAULT)
-        personRepository.saveAll(listOf(PersonGenerator.DEFAULT, PersonGenerator.NULL_EVENT_PROCESSING))
-        personManagerRepository.save(PersonManagerGenerator.DEFAULT)
+        personRepository.saveAll(
+            listOf(
+                PersonGenerator.DEFAULT,
+                PersonGenerator.NULL_EVENT_PROCESSING,
+                PersonGenerator.MERGED_FROM,
+                PersonGenerator.MERGED_TO,
+            )
+        )
         eventRepository.saveAll(
-            listOf(EventGenerator.DEFAULT, EventGenerator.NEP_1, EventGenerator.NEP_2, EventGenerator.NEP_3)
+            listOf(
+                EventGenerator.DEFAULT,
+                EventGenerator.NEP_1,
+                EventGenerator.NEP_2,
+                EventGenerator.NEP_3,
+                EventGenerator.MERGED_TO,
+            )
         )
         disposalTypeRepository.save(DisposalTypeGenerator.DEFAULT)
         disposalRepository.saveAll(
@@ -68,7 +81,15 @@ class DataLoader(
         personManagerRepository.saveAll(
             listOf(
                 PersonManagerGenerator.DEFAULT,
-                PersonManagerGenerator.generate(PersonGenerator.NULL_EVENT_PROCESSING)
+                PersonManagerGenerator.generate(PersonGenerator.NULL_EVENT_PROCESSING),
+                PersonManagerGenerator.generate(PersonGenerator.MERGED_TO),
+            )
+        )
+        additionalIdentifierRepository.save(
+            generateAdditionalIdentifier(
+                PersonGenerator.MERGED_FROM.id,
+                ReferenceDataGenerator.MERGED_TO_CRN,
+                PersonGenerator.MERGED_TO.crn
             )
         )
     }

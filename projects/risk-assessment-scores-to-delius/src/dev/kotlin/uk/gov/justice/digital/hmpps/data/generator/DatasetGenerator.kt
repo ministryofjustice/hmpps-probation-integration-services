@@ -5,8 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.DatasetCode
 
 object DatasetGenerator {
     val GENDER = generate(DatasetCode.GENDER)
-    val TIER = generate(DatasetCode.TIER)
-    val TIER_CHANGE_REASON = generate(DatasetCode.TIER_CHANGE_REASON)
+    val ADDITIONAL_IDENTIFIER_TYPE = generate(DatasetCode.ADDITIONAL_IDENTIFIER_TYPE)
 
     fun generate(code: DatasetCode, id: Long = IdGenerator.getAndIncrement()) = Dataset(id, code)
 }

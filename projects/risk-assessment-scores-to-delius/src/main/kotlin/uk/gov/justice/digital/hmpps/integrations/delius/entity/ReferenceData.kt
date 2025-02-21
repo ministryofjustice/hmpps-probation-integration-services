@@ -40,11 +40,10 @@ class Dataset(
 
 enum class DatasetCode(val value: String) {
     GENDER("GENDER"),
-    TIER_CHANGE_REASON("TIER CHANGE REASON"),
-    TIER("TIER");
+    ADDITIONAL_IDENTIFIER_TYPE("ADDITIONAL IDENTIFIER TYPE");
 
     companion object {
-        private val index = DatasetCode.values().associateBy { it.value }
+        private val index = DatasetCode.entries.associateBy { it.value }
         fun fromString(value: String): DatasetCode =
             index[value] ?: throw IllegalArgumentException("Invalid DatasetCode: $value")
     }

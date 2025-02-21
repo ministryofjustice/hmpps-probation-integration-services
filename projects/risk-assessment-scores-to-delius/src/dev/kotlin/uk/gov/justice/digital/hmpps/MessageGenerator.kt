@@ -12,4 +12,5 @@ object MessageGenerator {
     val OGRS_SCORES_DETERMINED = ResourceLoader.message<HmppsDomainEvent>("ogrs-scores-determined")
     val OGRS_SCORES_DETERMINED_UPDATE = ResourceLoader.message<HmppsDomainEvent>("ogrs-scores-determined-update")
     val OGRS_SCORES_NULL_EVENT = ResourceLoader.message<HmppsDomainEvent>("ogrs-scores-determined-null-event")
+    val OGRS_SCORES_MERGED = ResourceLoader.message<HmppsDomainEvent>("ogrs-scores-determined-merged")
 }
