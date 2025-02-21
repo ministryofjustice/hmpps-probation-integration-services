@@ -33,6 +33,7 @@ class DomainEventService(
 
 fun Registration.deRegEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
     eventType = ReferenceData.Code.REGISTRATION_DEREGISTERED.value,
+    description = "A registration no longer applies to the probation case",
     version = 1,
     occurredAt = ZonedDateTime.now(),
     personReference = forCrn(crn),
@@ -47,6 +48,7 @@ fun Registration.deRegEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
 
 fun Registration.regEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
     eventType = ReferenceData.Code.REGISTRATION_ADDED.value,
+    description = "A new registration has been added to the probation case",
     version = 1,
     personReference = forCrn(crn),
     additionalInformation = mapOf(
