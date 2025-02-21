@@ -73,6 +73,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AllCourtAppearancesContainer"
+  /users/{username}/details:
+    get:
+      tags:
+      - user-controller
+      operationId: getDetails
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetails"
   /probation-areas:
     get:
       tags:
@@ -238,6 +256,21 @@ components:
       required:
       - code
       - description
+    UserDetails:
+      type: object
+      properties:
+        username:
+          type: string
+        forename:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+      required:
+      - forename
+      - surname
+      - username
     LocalDeliveryUnit:
       type: object
       properties:

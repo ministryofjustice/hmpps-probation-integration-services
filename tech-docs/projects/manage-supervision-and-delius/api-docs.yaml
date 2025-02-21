@@ -40,30 +40,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserAccess"
-  /personal-details/{crn}:
-    get:
-      tags:
-      - Personal Details
-      summary: "Personal Details containing address, personal contacts and documents "
-      operationId: getPersonalDetails
-      parameters:
-      - name: crn
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PersonalDetails"
+  /personal-details/{crn}/contact:
     post:
       tags:
       - Personal Details
       summary: Update personal details
-      operationId: updatePersonalDetails
+      operationId: updatePersonalContactDetails
       parameters:
       - name: crn
         in: path
@@ -74,7 +56,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PersonalContactEditRequest"
+              $ref: "#/components/schemas/PersonContactEditRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetails"
+  /personal-details/{crn}/address:
+    post:
+      tags:
+      - Personal Details
+      summary: Update personal details
+      operationId: updatePersonalAddressDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PersonAddressEditRequest"
         required: true
       responses:
         "200":
@@ -587,6 +594,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonRiskFlag"
+  /personal-details/{crn}:
+    get:
+      tags:
+      - Personal Details
+      summary: "Personal Details containing address, personal contacts and documents "
+      operationId: getPersonalDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetails"
   /personal-details/{crn}/summary:
     get:
       tags:
@@ -625,6 +651,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProvisionOverview"
+  /personal-details/{crn}/provisions/{provisionId}/note/{noteId}:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Provisions
+      operationId: getPersonProvisionsSingleNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: provisionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProvisionOverviewSummary"
   /personal-details/{crn}/personal-contact/{id}:
     get:
       tags:
@@ -799,6 +856,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CircumstanceOverview"
+  /personal-details/{crn}/circumstances/{circumstanceId}/note/{noteId}:
+    get:
+      tags:
+      - Personal Details
+      summary: Person Circumstances
+      operationId: getPersonCircumstancesSingleNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: circumstanceId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CircumstanceOverviewSummary"
   /personal-details/{crn}/addresses:
     get:
       tags:
@@ -1020,7 +1108,7 @@ components:
             $ref: "#/components/schemas/CaseAccess"
       required:
       - access
-    PersonalContactEditRequest:
+    PersonContactEditRequest:
       type: object
       properties:
         phoneNumber:
@@ -1035,48 +1123,6 @@ components:
           type: string
           maxLength: 255
           minLength: 0
-        buildingName:
-          type: string
-          maxLength: 35
-          minLength: 0
-        buildingNumber:
-          type: string
-          maxLength: 35
-          minLength: 0
-        streetName:
-          type: string
-          maxLength: 35
-          minLength: 0
-        district:
-          type: string
-          maxLength: 35
-          minLength: 0
-        town:
-          type: string
-          maxLength: 35
-          minLength: 0
-        county:
-          type: string
-          maxLength: 35
-          minLength: 0
-        postcode:
-          type: string
-          maxLength: 35
-          minLength: 0
-        addressTypeCode:
-          type: string
-        verified:
-          type: boolean
-        noFixedAddress:
-          type: boolean
-        startDate:
-          type: string
-          format: date
-        endDate:
-          type: string
-          format: date
-        notes:
-          type: string
     Address:
       type: object
       properties:
@@ -1445,6 +1491,51 @@ components:
           format: date
       required:
       - provisions
+    PersonAddressEditRequest:
+      type: object
+      properties:
+        buildingName:
+          type: string
+          maxLength: 35
+          minLength: 0
+        buildingNumber:
+          type: string
+          maxLength: 35
+          minLength: 0
+        streetName:
+          type: string
+          maxLength: 35
+          minLength: 0
+        district:
+          type: string
+          maxLength: 35
+          minLength: 0
+        town:
+          type: string
+          maxLength: 35
+          minLength: 0
+        county:
+          type: string
+          maxLength: 35
+          minLength: 0
+        postcode:
+          type: string
+          maxLength: 35
+          minLength: 0
+        addressTypeCode:
+          type: string
+        verified:
+          type: boolean
+        noFixedAddress:
+          type: boolean
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        notes:
+          type: string
     UserSearchFilter:
       type: object
       properties:
@@ -2424,10 +2515,17 @@ components:
     Provision:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         description:
           type: string
-        notes:
-          type: string
+        provisionNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        provisionNote:
+          $ref: "#/components/schemas/NoteDetail"
         startDate:
           type: string
           format: date
@@ -2438,6 +2536,7 @@ components:
           $ref: "#/components/schemas/Name"
       required:
       - description
+      - id
       - lastUpdated
       - lastUpdatedBy
       - startDate
@@ -2453,6 +2552,15 @@ components:
       required:
       - personSummary
       - provisions
+    ProvisionOverviewSummary:
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        provision:
+          $ref: "#/components/schemas/Provision"
+      required:
+      - personSummary
     PersonalDetailsSummary:
       type: object
       properties:
@@ -2530,12 +2638,19 @@ components:
     Circumstance:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         type:
           type: string
         subType:
           type: string
-        notes:
-          type: string
+        circumstanceNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        circumstanceNote:
+          $ref: "#/components/schemas/NoteDetail"
         verified:
           type: boolean
         startDate:
@@ -2547,6 +2662,7 @@ components:
         lastUpdatedBy:
           $ref: "#/components/schemas/Name"
       required:
+      - id
       - lastUpdated
       - lastUpdatedBy
       - startDate
@@ -2563,6 +2679,15 @@ components:
             $ref: "#/components/schemas/Circumstance"
       required:
       - circumstances
+      - personSummary
+    CircumstanceOverviewSummary:
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        circumstance:
+          $ref: "#/components/schemas/Circumstance"
+      required:
       - personSummary
     AddressOverview:
       type: object

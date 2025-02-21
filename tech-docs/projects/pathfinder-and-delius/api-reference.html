@@ -104,6 +104,9 @@
         <a href="./api-reference.html#court-appearances"><span>/court-appearances</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#users-username-details"><span>/users/{username}/details</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-areas"><span>/probation-areas</span></a>
       </li>
       <li>
@@ -312,6 +315,69 @@
 </td>
 <td>
 <a href='#schema-allcourtappearancescontainer'>AllCourtAppearancesContainer</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="users-username-details">/users/{username}/details</h2>
+
+<h3 id="users-username-details-get">get</h3>
+
+
+
+
+<h4 id="users-username-details-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="users-username-details-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "username": "string",
+  "forename": "string",
+  "surname": "string",
+  "email": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-userdetails'>UserDetails</a>
 </td>
 </tr>
 
@@ -888,6 +954,58 @@
 <td>description</td>
 <td>string</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-userdetails">UserDetails</h3>
+
+
+<table class='schema-userdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   
