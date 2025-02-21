@@ -11,7 +11,6 @@ object EventGenerator {
     val NEP_2 = generate(NULL_EVENT_PROCESSING, "3", createdDateTime = ZonedDateTime.now().minusDays(1))
     val NEP_3 = generate(NULL_EVENT_PROCESSING, "4", createdDateTime = ZonedDateTime.now().minusDays(1))
 
-
     fun generate(
         person: Person = PersonGenerator.DEFAULT,
         eventNumber: String = "1",
