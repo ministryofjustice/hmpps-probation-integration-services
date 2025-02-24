@@ -81,7 +81,7 @@ dependencyResolutionManagement {
             library("aws-sts", "software.amazon.awssdk:sts:2.30.26")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.0")
             library("azure-identity", "com.azure:azure-identity:1.15.3")
-            library("flipt", "io.flipt:flipt-java:1.1.1")
+            library("flipt", "io.flipt:flipt-java:1.1.2")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.29.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
@@ -92,7 +92,7 @@ dependencyResolutionManagement {
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.1"
             )
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.2.0")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.2")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
             library("wiremock", "org.wiremock:wiremock-standalone:3.12.0")
 
             bundle(
