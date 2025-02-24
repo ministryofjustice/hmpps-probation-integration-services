@@ -63,7 +63,7 @@ object PersonGenerator {
         OVERVIEW,
         eventNumber = "954321",
         inBreach = true,
-        active = false,
+        active = true,
         notes = "inactive",
         additionalOffences = emptyList()
     )
@@ -126,7 +126,7 @@ object PersonGenerator {
 
     val REF_DATA_MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
     val INACTIVE_ORDER_2 = generateDisposal(INACTIVE_EVENT_2, LocalDate.now().minusDays(7), REF_DATA_MONTHS, length = 7)
-    val INACTIVE_ORDER_3 = generateDisposal(INACTIVE_EVENT_3, LocalDate.now().minusDays(7))
+    val INACTIVE_ORDER_3 = generateDisposal(INACTIVE_EVENT_3, LocalDate.now().minusDays(7), active = false)
 
     val ADD_OFF_1 = generateOffence("Burglary", "Burglary", "ADD1")
     val ADDITIONAL_OFFENCE_1 = generateAdditionalOffence(

@@ -27,11 +27,11 @@ class ComplianceService(
 
         val summary = personRepository.getSummary(crn)
         val events = eventRepository.findByPersonId(summary.id)
-        val currentSentences = events.filter { it.active }
+        val currentSentences = events.filter { !it.isInactiveEvent() }
         val allActiveSentenceActivity =
             activityService.getPersonSentenceActivity(summary.id, currentSentences.map { it.id })
         val allBreaches = nsiRepository.getAllBreaches(summary.id)
-        val previousOrders = events.filter { !it.active && it.disposal != null }
+        val previousOrders = events.filter { it.isInactiveEvent() }
 
         fun breachesForSentence(eventId: Long) = allBreaches.filter { (it.eventId == eventId) }
         fun activeBreachCountForSentence(eventId: Long) =

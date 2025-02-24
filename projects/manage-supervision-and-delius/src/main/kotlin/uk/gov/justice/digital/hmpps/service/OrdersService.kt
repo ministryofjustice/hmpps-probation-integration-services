@@ -18,7 +18,9 @@ class OrdersService(
 
     fun getPreviousEvents(crn: String): PreviousOrderHistory {
         val person = personRepository.getPerson(crn)
-        val events = eventRepository.findSentencesByPersonId(person.id).filter { it.active.not() }
+        val events = eventRepository.findSentencesByPersonId(person.id).filter {
+            it.isInactiveEvent()
+        }
 
         return PreviousOrderHistory(name = person.toName(), events.map { it.toPreviousOrder() })
     }
@@ -26,7 +28,9 @@ class OrdersService(
     fun getPreviousEvent(crn: String, eventNumber: String): PreviousOrderInformation {
         val person = personRepository.getPerson(crn)
         val event =
-            eventRepository.findEventByPersonIdAndEventNumber(person.id, eventNumber).takeIf { it?.active == false }
+            eventRepository.findEventByPersonIdAndEventNumber(person.id, eventNumber).takeIf {
+                it?.active == false || it?.disposal?.active == false
+            }
 
         return PreviousOrderInformation(person.toName(), event?.setTitle(), sentenceService.getInactiveEvent(event))
     }

@@ -32,9 +32,7 @@ class SentenceService(
 ) {
     fun getEvents(crn: String, eventNumber: String?): SentenceOverview {
         val person = personRepository.getPerson(crn)
-        val activeEvents = eventRepository.findSentencesByPersonId(person.id).filter {
-            it.active
-        }
+        val activeEvents = getActiveSentences(person.id)
 
         return SentenceOverview(
             personSummary = person.toSummary(),
@@ -50,9 +48,7 @@ class SentenceService(
 
     fun getActiveSentences(crn: String): MinimalSentenceOverview {
         val person = personRepository.getPerson(crn)
-        val activeEvents = eventRepository.findSentencesByPersonId(person.id).filter {
-            it.active
-        }
+        val activeEvents = getActiveSentences(person.id)
 
         return MinimalSentenceOverview(
             personSummary = person.toSummary(),
@@ -62,7 +58,8 @@ class SentenceService(
 
     fun getProbationHistory(crn: String): History {
         val person = personRepository.getPerson(crn)
-        val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.active }
+        val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id)
+            .partition { !it.isInactiveEvent() }
 
         return History(
             personSummary = person.toSummary(),
@@ -74,6 +71,10 @@ class SentenceService(
                 offenderManagerRepository.countOffenderManagersByPersonAndActiveIsFalse(person)
             )
         )
+    }
+
+    fun getActiveSentences(id: Long) = eventRepository.findSentencesByPersonId(id).filter {
+        !it.isInactiveEvent()
     }
 
     fun getInactiveEvent(event: Event?) = event?.toInactiveSentence()
