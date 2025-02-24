@@ -1,0 +1,42 @@
+name: Test
+# Temporarily in place to test running workflows from the https://github.com/ministryofjustice/hmpps-delius-operational-automation repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment
+        default: prod
+        required: true
+        type: choice
+        options:
+          - test
+          - preprod
+          - prod
+      action:
+        description: Enable or disable read-only mode?
+        default: enable
+        required: true
+        type: choice
+        options:
+          - enable
+          - disable
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log inputs
+        run: |
+          echo "$environment"
+          echo "$action"
+        env:
+          environment: ${{ inputs.environment }}
+          action: ${{ inputs.action }}
+
+      - name: Check we can still authenticate using the GitHub app
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
