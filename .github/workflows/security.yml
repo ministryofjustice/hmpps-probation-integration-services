@@ -156,6 +156,27 @@ jobs:
       - name: Package jars
         run: find . -name '*.jar' | zip -r package.zip -@
 
+      - name: Select an API key
+        run: |
+          echo "Randomly picking 1 of 5 api keys, to help avoid veracode API rate limits."
+          X=$(( RANDOM % 5 ))
+          VERACODE_API_ID_X="VERACODE_API_ID_${X}"
+          VERACODE_API_KEY_X="VERACODE_API_KEY_${X}"
+          echo VERACODE_API_ID="${!VERACODE_API_ID_X}" >> $GITHUB_ENV
+          echo VERACODE_API_KEY="${!VERACODE_API_KEY_X}" >> $GITHUB_ENV
+          echo "Using VERACODE_API_ID_${X} from pool (${VERACODE_API_ID:0:5}...)"
+        env:
+          VERACODE_API_ID_0: ${{ secrets.HMPPS_VERACODE_API_ID_0 }}
+          VERACODE_API_ID_1: ${{ secrets.HMPPS_VERACODE_API_ID_1 }}
+          VERACODE_API_ID_2: ${{ secrets.HMPPS_VERACODE_API_ID_2 }}
+          VERACODE_API_ID_3: ${{ secrets.HMPPS_VERACODE_API_ID_3 }}
+          VERACODE_API_ID_4: ${{ secrets.HMPPS_VERACODE_API_ID_4 }}
+          VERACODE_API_KEY_0: ${{ secrets.HMPPS_VERACODE_API_KEY_0 }}
+          VERACODE_API_KEY_1: ${{ secrets.HMPPS_VERACODE_API_KEY_1 }}
+          VERACODE_API_KEY_2: ${{ secrets.HMPPS_VERACODE_API_KEY_2 }}
+          VERACODE_API_KEY_3: ${{ secrets.HMPPS_VERACODE_API_KEY_3 }}
+          VERACODE_API_KEY_4: ${{ secrets.HMPPS_VERACODE_API_KEY_4 }}
+
       - name: Upload to Veracode
         uses: veracode/veracode-uploadandscan-action@0.2.7
         with:
@@ -163,5 +184,5 @@ jobs:
           createprofile: false
           deleteincompletescan: 2 # force delete any incomplete scans
           filepath: package.zip
-          vid: ${{ secrets.CYBERSECURITY_VERACODE_API_ID }}
-          vkey: ${{ secrets.CYBERSECURITY_VERACODE_API_KEY }}
+          vid: ${{ env.VERACODE_API_ID }}
+          vkey: ${{ env.VERACODE_API_KEY }}
