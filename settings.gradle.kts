@@ -92,7 +92,7 @@ dependencyResolutionManagement {
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.1"
             )
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:8.2.0")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.2")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
             library("wiremock", "org.wiremock:wiremock-standalone:3.12.0")
 
             bundle(
