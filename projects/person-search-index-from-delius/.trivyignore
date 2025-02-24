@@ -1,3 +1,4 @@
-# Reason: No parsing of untrusted JSON
-# Package: net.minidev:json-smart:2.4.8
-CVE-2023-1370 exp:2024-08-01
+# SslHandler doesn't correctly validate packets which can lead to native crash when using native SSLEngine
+# Reason: Not exposing an SSL endpoint or making requests to untrusted endpoints
+# Package: io.netty:netty-handler:4.1.115.Final
+CVE-2025-24970 exp:2025-08-01
