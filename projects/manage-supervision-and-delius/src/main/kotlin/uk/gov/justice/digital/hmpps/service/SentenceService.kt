@@ -58,7 +58,7 @@ class SentenceService(
 
     fun getProbationHistory(crn: String): History {
         val person = personRepository.getPerson(crn)
-        val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { it.isActiveEvent() }
+        val (activeEvents, inactiveEvents) = eventRepository.findSentencesByPersonId(person.id).partition { !it.isInactiveEvent() }
 
         return History(
             personSummary = person.toSummary(),
@@ -73,7 +73,7 @@ class SentenceService(
     }
 
     fun getActiveSentences(id: Long) = eventRepository.findSentencesByPersonId(id).filter {
-        it.isActiveEvent()
+        !it.isInactiveEvent()
     }
 
     fun getInactiveEvent(event: Event?) = event?.toInactiveSentence()

@@ -27,7 +27,7 @@ class ComplianceService(
 
         val summary = personRepository.getSummary(crn)
         val events = eventRepository.findByPersonId(summary.id)
-        val currentSentences = events.filter { it.isActiveEvent() }
+        val currentSentences = events.filter { !it.isInactiveEvent() }
         val allActiveSentenceActivity =
             activityService.getPersonSentenceActivity(summary.id, currentSentences.map { it.id })
         val allBreaches = nsiRepository.getAllBreaches(summary.id)
