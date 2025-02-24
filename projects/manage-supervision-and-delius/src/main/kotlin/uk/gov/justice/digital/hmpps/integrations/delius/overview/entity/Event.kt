@@ -69,7 +69,6 @@ class Event(
 
         return false
     }
-
 }
 
 interface EventRepository : JpaRepository<Event, Long> {
