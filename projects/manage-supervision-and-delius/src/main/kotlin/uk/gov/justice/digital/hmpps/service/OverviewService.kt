@@ -41,10 +41,10 @@ class OverviewService(
         val absentWithoutEvidence = previousAppointments.filter { it.attended == false && it.outcome == null }.size
         val schedule = Schedule(contactRepository.firstAppointment(person.id)?.toNextAppointment())
         val events = eventRepository.findByPersonId(person.id)
-        val activeEvents = events.filter { it.active }
+        val activeEvents = events.filter { it.isActiveEvent() }
         val sentences = activeEvents.map { it.toSentence() }
         val allBreaches = nsiRepository.getAllBreaches(person.id)
-        val previousOrders = events.filter { !it.active && it.disposal != null }
+        val previousOrders = events.filter { it.isInactiveEvent() }
         val previousOrdersBreached = allBreaches.filter { it -> it.eventId in previousOrders.map { it.id } }.size
         val compliance = toSentenceCompliance(previousAppointments.map { it.toActivity() }, allBreaches)
         val registrations = registrationRepository.findByPersonId(person.id)

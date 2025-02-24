@@ -19,15 +19,7 @@ class OrdersService(
     fun getPreviousEvents(crn: String): PreviousOrderHistory {
         val person = personRepository.getPerson(crn)
         val events = eventRepository.findSentencesByPersonId(person.id).filter {
-            if (it.disposal != null && it.disposal.active.not()) {
-                return@filter true
-            }
-
-            if (it.active.not()) {
-                return@filter true
-            }
-
-            false
+            it.isInactiveEvent()
         }
 
         return PreviousOrderHistory(name = person.toName(), events.map { it.toPreviousOrder() })

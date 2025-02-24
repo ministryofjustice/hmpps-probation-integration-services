@@ -59,7 +59,20 @@ class Event(
 
     @Column(name = "created_datetime")
     val dateCreated: ZonedDateTime,
-)
+) {
+    fun isActiveEvent() = active && (disposal?.active ?: true)
+
+    fun isInactiveEvent(): Boolean {
+        if (disposal != null && disposal.active.not())
+            return true
+
+        if (active.not())
+            return true
+
+        return false
+    }
+
+}
 
 interface EventRepository : JpaRepository<Event, Long> {
 
