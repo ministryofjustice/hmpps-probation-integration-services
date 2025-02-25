@@ -288,6 +288,21 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `an assessment that is not found is logged and ignored`() {
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn("Y999999")
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummaryFailureReport"),
+            check {
+                assertThat(it["reason"], Matchers.equalTo("No assessment in OASys"))
+            },
+            anyMap()
+        )
+    }
+
+    @Test
     fun `event number is inferred for prison assessments`() {
         val message =
             notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(PersonGenerator.PRISON_ASSESSMENT.crn)

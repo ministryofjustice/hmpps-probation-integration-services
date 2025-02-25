@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.JdkClientHttpRequestFactory
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClient.Builder
 import org.springframework.web.client.support.RestClientAdapter
@@ -31,4 +32,10 @@ fun withTimeouts(connection: Duration, read: Duration) =
 inline fun <reified T> createClient(client: RestClient): T {
     return HttpServiceProxyFactory.builderFor(RestClientAdapter.create(client)).build()
         .createClient(T::class.java)
+}
+
+fun <T> nullIfNotFound(fn: () -> T): T? = try {
+    fn()
+} catch (e: HttpClientErrorException.NotFound) {
+    null
 }

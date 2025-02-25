@@ -59,6 +59,18 @@ internal class ProbationMatchingIntegrationTest {
     }
 
     @Test
+    fun `missing booking is ignored`() {
+        val event = prepEvent("prisoner-status-changed-no-booking", wireMockServer.port())
+
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        verify(telemetryService).trackEvent(
+            "MatchResultIgnored",
+            mapOf("reason" to "No active booking", "dryRun" to "false")
+        )
+    }
+
+    @Test
     @Order(1)
     fun `prisoner received updates identifiers`() {
         withMatchResponse("probation-search-single-result.json")

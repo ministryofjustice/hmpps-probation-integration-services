@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.client
 
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.GetExchange
 import java.time.LocalDate
 
@@ -10,9 +9,7 @@ interface PrisonApiClient {
     fun getPrisoners(@PathVariable nomsNumber: String): List<Prisoner>
 
     @GetExchange(value = "/api/bookings/offenderNo/{nomsNumber}")
-    fun getBooking(
-        @PathVariable nomsNumber: String
-    ): Booking
+    fun getBooking(@PathVariable nomsNumber: String): Booking
 
     @GetExchange(value = "/api/offender-sentences/booking/{bookingId}/sentenceTerms")
     fun getSentenceTerms(@PathVariable bookingId: Long): List<SentenceSummary>

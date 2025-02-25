@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.client.*
+import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.entity.getByCrn
 import uk.gov.justice.digital.hmpps.messaging.Notifier
@@ -58,7 +59,7 @@ class ProbationMatchingService(
 
     private fun findMatchingProbationRecord(nomsNumber: String): MatchResult {
         // Get prisoner details
-        val booking = prisonApiClient.getBooking(nomsNumber).takeIf { it.activeFlag }
+        val booking = nullIfNotFound { prisonApiClient.getBooking(nomsNumber) }?.takeIf { it.activeFlag }
             ?: return Ignored("No active booking")
         val sentenceDate = prisonApiClient.getSentenceTerms(booking.bookingId).latestPrimarySentenceStartDate()
             ?: return Ignored("No sentence start date")
