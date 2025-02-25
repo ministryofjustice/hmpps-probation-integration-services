@@ -12,7 +12,7 @@ data class CommonPlatformHearing(
 data class Hearing(
     val id: String,
     val courtCentre: CourtCentre,
-    val type: HearingType,
+    val type: HearingType?,
     val jurisdictionType: String,
     val hearingDays: List<HearingDay>,
     val prosecutionCases: List<ProsecutionCase>

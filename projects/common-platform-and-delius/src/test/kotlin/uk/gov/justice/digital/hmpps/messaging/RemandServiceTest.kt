@@ -11,7 +11,6 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.data.generatorimport.HearingGenerator
 import uk.gov.justice.digital.hmpps.dto.InsertEventResult
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
