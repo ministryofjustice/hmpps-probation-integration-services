@@ -5,6 +5,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
@@ -32,7 +33,7 @@ class Handler(
             if (notification.message.eventType == AssessmentSummaryProduced) {
                 telemetryService.notificationReceived(notification)
                 notification.message.detailUrl
-                    ?.let { ordsClient.getAssessmentSummary(URI.create(it)).orIgnore { "No assessment in OASys" } }
+                    ?.let { nullIfNotFound { ordsClient.getAssessmentSummary(URI.create(it)) }.orIgnore { "No assessment in OASys" } }
                     ?.let { assessmentSubmitted.assessmentSubmitted(it.crn, it.assessments.first()) }
             }
         } catch (ime: IgnorableMessageException) {
