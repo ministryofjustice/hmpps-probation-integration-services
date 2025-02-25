@@ -9,7 +9,7 @@ import java.time.LocalDate
 
 interface OrdsClient {
     @GetExchange
-    fun getAssessmentSummary(uri: URI): AssessmentSummaries
+    fun getAssessmentSummary(uri: URI): AssessmentSummaries?
 
     @GetExchange(url = "/ass/sectionroshsumm/ALLOW/{assessmentPk}")
     fun getRoshSummary(@PathVariable("assessmentPk") assessmentPk: Long): RoshSummary?

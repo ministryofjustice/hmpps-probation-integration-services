@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 
 @Entity
 @Table(name = "offender")
@@ -95,5 +95,4 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun updateIaps(personId: Long, iapsFlagValue: Long = 1)
 }
 
-fun PersonRepository.getByCrn(crn: String) =
-    findByCrn(crn) ?: throw IgnorableMessageException("Person with crn of $crn not found")
+fun PersonRepository.getByCrn(crn: String) = findByCrn(crn).orIgnore { "Person with crn of $crn not found" }

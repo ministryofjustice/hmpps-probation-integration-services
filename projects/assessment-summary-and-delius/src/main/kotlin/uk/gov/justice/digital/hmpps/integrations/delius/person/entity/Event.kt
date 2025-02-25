@@ -6,7 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 
 @Immutable
 @Entity
@@ -51,5 +51,4 @@ interface EventRepository : JpaRepository<Event, Long> {
 }
 
 fun EventRepository.getByNumber(personId: Long, number: String) =
-    findByPersonIdAndNumber(personId, number)
-        ?: throw IgnorableMessageException("Event with number of $number not found")
+    findByPersonIdAndNumber(personId, number).orIgnore { "Event with number of $number not found" }
