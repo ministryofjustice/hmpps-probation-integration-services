@@ -74,6 +74,7 @@ jobs:
             kubectl get deployments -o jsonpath='{.items[*].metadata.name}' | xargs -n1 \
             | grep -v domain-events-and-delius \
             | grep -v offender-events-and-delius \
+            | grep -v opensearch-proxy \
             | jq --raw-input . | jq --slurp --compact-output .
           )
           echo "projects=$json" | tee -a "$GITHUB_OUTPUT"
