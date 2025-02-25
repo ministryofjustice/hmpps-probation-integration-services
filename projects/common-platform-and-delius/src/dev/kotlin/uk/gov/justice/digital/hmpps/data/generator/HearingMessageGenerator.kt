@@ -1,15 +1,9 @@
-package uk.gov.justice.digital.hmpps.data.generatorimport
+package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.messaging.*
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
-
-object CommonPlatformHearingGenerator {
-    fun generate(hearing: Hearing = HearingGenerator.generate()): CommonPlatformHearing {
-        return CommonPlatformHearing(hearing = hearing)
-    }
-}
 
 object HearingGenerator {
     val DEFAULT = generate()

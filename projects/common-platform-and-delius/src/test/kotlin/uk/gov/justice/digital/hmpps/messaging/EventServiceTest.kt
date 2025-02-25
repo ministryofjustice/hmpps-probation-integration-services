@@ -13,9 +13,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.data.generatorimport.HearingGenerator
-import uk.gov.justice.digital.hmpps.data.generatorimport.HearingOffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generatorimport.ProsecutionCaseIdentifierGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.ZonedDateTime
 

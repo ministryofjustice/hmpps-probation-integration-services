@@ -8,6 +8,6 @@ interface NotificationHandler<T : Any> {
     fun handle(notification: Notification<T>)
 
     fun handle(message: String) {
-        handle(converter.fromMessage(message))
+        converter.fromMessage(message)?.let { handle(it) }
     }
 }

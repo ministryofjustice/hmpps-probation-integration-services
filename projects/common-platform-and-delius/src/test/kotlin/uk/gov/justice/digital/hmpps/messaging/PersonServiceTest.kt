@@ -15,8 +15,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.data.generatorimport.CourtCentreGenerator
-import uk.gov.justice.digital.hmpps.data.generatorimport.DefendantGenerator
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository

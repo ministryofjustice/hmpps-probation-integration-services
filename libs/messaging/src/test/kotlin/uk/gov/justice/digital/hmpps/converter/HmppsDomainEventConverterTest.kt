@@ -46,7 +46,7 @@ class HmppsDomainEventConverterTest {
                 }
             """.trimIndent()
 
-        val event: HmppsDomainEvent = converter.fromMessage(message).message
+        val event: HmppsDomainEvent = converter.fromMessage(message)!!.message
         assertThat(event.eventType, equalTo("message.event.type"))
         assertThat(event.version, equalTo(1))
         assertThat(event.description, equalTo("A description for the event"))
@@ -58,7 +58,7 @@ class HmppsDomainEventConverterTest {
         assertThat(event.personReference.findCrn(), equalTo("X123456"))
         assertThat(event.additionalInformation["specialId"], equalTo("6aafe304-861f-4479-8380-fec5f90f6d17"))
 
-        val attributes: MessageAttributes = converter.fromMessage(message).attributes
+        val attributes: MessageAttributes = converter.fromMessage(message)!!.attributes
         assertThat(attributes["eventType"]!!.value, equalTo("attribute.event.type"))
     }
 
