@@ -15,4 +15,6 @@ object MessageGenerator {
         ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-no-remand")
     val COMMON_PLATFORM_EVENT_NULL_FIELDS =
         ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-null-fields")
+    val COMMON_PLATFORM_EVENT_FUTURE_HEARING_DATES =
+        ResourceLoader.message<CommonPlatformHearing>("common-platform-hearing-future-hearing-dates")
 }
