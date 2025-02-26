@@ -13,9 +13,9 @@ data class ApplicationSubmitted(
     val applicationId: String,
     val applicationUrl: String,
     val submittedAt: ZonedDateTime,
-    val cas2v2ApplicationOrigin: String?,
+    val applicationOrigin: String,
 ) {
-    fun applicationOrigin() = ApplicationOrigin.from(cas2v2ApplicationOrigin).description
+    fun applicationOrigin() = ApplicationOrigin.from(applicationOrigin).description
 }
 
 data class ApplicationStatusUpdated(
@@ -23,19 +23,18 @@ data class ApplicationStatusUpdated(
     val applicationUrl: String,
     val newStatus: ApplicationStatus,
     val updatedAt: ZonedDateTime,
-    val cas2v2ApplicationOrigin: String?,
+    val applicationOrigin: String,
 ) {
-    fun applicationOrigin(): String = ApplicationOrigin.from(cas2v2ApplicationOrigin).description
+    fun applicationOrigin(): String = ApplicationOrigin.from(applicationOrigin).description
 }
 
 enum class ApplicationOrigin(val description: String) {
     PrisonBail("Prison Bail"),
     CourtBail("Court Bail"),
-    HomeDetentionCurfew("Home Detention Curfew"),
-    Null("Null");
+    HomeDetentionCurfew("Home Detention Curfew");
 
     companion object {
-        fun from(value: String?): ApplicationOrigin =
-            ApplicationOrigin.entries.firstOrNull { it.name.lowercase() == value?.lowercase() } ?: Null
+        fun from(value: String): ApplicationOrigin =
+            ApplicationOrigin.entries.first { it.name.lowercase() == value.lowercase() }
     }
 }

@@ -21,6 +21,6 @@
         }
       ]
     },
-    "cas2v2ApplicationOrigin": "prisonBail"
+    "applicationOrigin": "prisonBail"
   }
 }
