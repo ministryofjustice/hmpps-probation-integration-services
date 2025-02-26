@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 import java.time.Period
+import java.time.ZonedDateTime
 
 @Component
 @Channel("common-platform-and-delius-queue")
@@ -48,6 +49,16 @@ class Handler(
         if (defendants.isEmpty()) {
             return
         }
+
+        // Log sitting/hearing dates on incoming messages and set a flag if at least one date is in the future
+        telemetryService.trackEvent(
+            "HearingDatesDebug", mapOf(
+                "hearingId" to notification.message.hearing.id,
+                "hearingDates" to notification.message.hearing.hearingDays.joinToString(", ") { it.sittingDay.toString() },
+                "futureHearingDate" to notification.message.hearing.hearingDays.maxBy { it.sittingDay }
+                    .sittingDay.isAfter(ZonedDateTime.now()).toString()
+            )
+        )
 
         defendants.forEach { defendant ->
 

@@ -116,6 +116,24 @@ internal class HandlerTest {
         assertThat(result.id(), equalTo(notification.id.toString()))
     }
 
+    @Test
+    fun `Messages with future hearing dates are flagged correctly in app insights`() {
+        probationSearchMatchFound()
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_FUTURE_HEARING_DATES)
+        handler.handle(notification)
+
+        verify(telemetryService).notificationReceived(notification)
+        verify(telemetryService).trackEvent(
+            "HearingDatesDebug",
+            mapOf(
+                "hearingId" to notification.message.hearing.id,
+                "hearingDates" to "2024-01-01T12:00Z[Europe/London], 2024-03-19T12:00Z[Europe/London], 2030-12-31T12:00Z[Europe/London]",
+                "futureHearingDate" to "true"
+            ),
+            mapOf()
+        )
+    }
+
     private fun featureFlagIsEnabled(flag: Boolean) {
         whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(flag)
     }
