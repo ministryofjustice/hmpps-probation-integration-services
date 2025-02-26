@@ -89,6 +89,36 @@ internal class LicenceConditionApplierTest {
     }
 
     @Test
+    fun `when CRN does not exist it is logged to telemetry`() {
+        val crn = "Z999999"
+        val activatedLicence = ActivatedLicence(
+            crn,
+            LocalDate.now(),
+            Conditions(ApConditions(listOf(), listOf(), listOf()))
+        )
+        val occurredAt = ZonedDateTime.now()
+        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(null)
+
+        val ex = licenceConditionApplier.applyLicenceConditions(
+            crn,
+            activatedLicence,
+            occurredAt
+        )
+        assertThat(
+            ex.first(), equalTo(
+                ActionResult.Ignored(
+                    "CRN not found",
+                    mapOf(
+                        "crn" to crn,
+                        "startDate" to activatedLicence.startDate.toString(),
+                        "occurredAt" to occurredAt.toString()
+                    )
+                )
+            )
+        )
+    }
+
+    @Test
     fun `when SED date is in the past, no custodial sentences are found and logged to telemetry`() {
         val crn = "K918361"
         val person = PersonGenerator.generatePerson(crn)
