@@ -24,12 +24,7 @@ class CvlHandler(
             when (val eventType =
                 (notification.eventType ?: notification.message.eventType).let { DomainEventType.of(it) }) {
                 is DomainEventType.LicenceActivated -> licenceActivatedHandler.licenceActivated(notification.message)
-                else -> listOf(
-                    ActionResult.Ignored(
-                        "UnexpectedEventType",
-                        mapOf("eventType" to eventType.name)
-                    )
-                )
+                else -> listOf(ActionResult.Ignored("UnexpectedEventType", mapOf("eventType" to eventType.name)))
             }
 
         val failure = results.firstOrNull { it is ActionResult.Failure } as ActionResult.Failure?

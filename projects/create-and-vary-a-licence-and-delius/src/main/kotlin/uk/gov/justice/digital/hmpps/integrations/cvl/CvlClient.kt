@@ -8,7 +8,7 @@ import java.time.LocalDate
 
 interface CvlClient {
     @GetExchange
-    fun getActivatedLicence(uri: URI): ActivatedLicence?
+    fun getActivatedLicence(uri: URI): ActivatedLicence
 }
 
 data class ActivatedLicence(
