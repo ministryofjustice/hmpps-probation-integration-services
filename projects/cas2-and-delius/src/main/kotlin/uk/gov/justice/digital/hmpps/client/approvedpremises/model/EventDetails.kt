@@ -13,7 +13,7 @@ data class ApplicationSubmitted(
     val applicationId: String,
     val applicationUrl: String,
     val submittedAt: ZonedDateTime,
-    val applicationOrigin: String?,
+    val applicationOrigin: String,
 ) {
     fun applicationOrigin() = ApplicationOrigin.from(applicationOrigin).description
 }
@@ -23,7 +23,7 @@ data class ApplicationStatusUpdated(
     val applicationUrl: String,
     val newStatus: ApplicationStatus,
     val updatedAt: ZonedDateTime,
-    val applicationOrigin: String?,
+    val applicationOrigin: String,
 ) {
     fun applicationOrigin(): String = ApplicationOrigin.from(applicationOrigin).description
 }
@@ -34,7 +34,7 @@ enum class ApplicationOrigin(val description: String) {
     HomeDetentionCurfew("Home Detention Curfew");
 
     companion object {
-        fun from(value: String?): ApplicationOrigin =
-            ApplicationOrigin.entries.first { it.name.lowercase() == value?.lowercase() }
+        fun from(value: String): ApplicationOrigin =
+            ApplicationOrigin.entries.first { it.name.lowercase() == value.lowercase() }
     }
 }
