@@ -2,11 +2,11 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
@@ -31,8 +31,12 @@ internal class HandlerTest {
     @Mock
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
-    @InjectMocks
-    lateinit var handler: Handler
+    private lateinit var handler: Handler
+
+    @BeforeEach
+    fun setup() {
+        handler = Handler(telemetryService, approvedPremisesService, converter, true)
+    }
 
     @Test
     fun `throws when no detail url is provided`() {

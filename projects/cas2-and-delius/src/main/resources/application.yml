@@ -51,8 +51,6 @@ wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
 
-event.exception.throw-not-found: true
-
 integrations:
   example:
     url: http://localhost:${wiremock.port}/example

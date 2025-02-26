@@ -4,7 +4,10 @@ import com.asyncapi.kotlinasyncapi.annotation.Schema
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -19,7 +22,8 @@ import java.net.URI
 class Handler(
     private val telemetryService: TelemetryService,
     private val approvedPremisesService: ApprovedPremisesService,
-    override val converter: NotificationConverter<HmppsDomainEvent>
+    override val converter: NotificationConverter<HmppsDomainEvent>,
+    @Value("\${event.exception.throw-not-found:true}") private val throwNotFound: Boolean,
 ) : NotificationHandler<HmppsDomainEvent> {
 
     @Publish(
@@ -87,6 +91,12 @@ class Handler(
 
                 else -> throw IgnorableMessageException("Unexpected Event Type", mapOf("eventType" to event.eventType))
             }
+        } catch (ex: HttpStatusCodeException) {
+            if (ex.statusCode != HttpStatus.NOT_FOUND || throwNotFound) throw ex
+            telemetryService.trackEvent(
+                "ApprovedPremisesFailureReport",
+                event.telemetryProperties() + ("reason" to "Domain event details not found")
+            )
         } catch (ime: IgnorableMessageException) {
             telemetryService.trackEvent(
                 "ApprovedPremisesFailureReport",
