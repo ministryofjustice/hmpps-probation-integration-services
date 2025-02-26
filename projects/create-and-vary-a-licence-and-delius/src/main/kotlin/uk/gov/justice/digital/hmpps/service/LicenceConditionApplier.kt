@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.cvl.AdditionalLicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.cvl.telemetryProperties
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.BESPOKE_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory.Companion.STANDARD_CATEGORY_CODE
@@ -44,16 +43,17 @@ class LicenceConditionApplier(
         activatedLicence: ActivatedLicence,
         occurredAt: ZonedDateTime
     ): List<ActionResult> {
-        val com = personManagerRepository.getByCrn(crn)
+        val properties = mutableMapOf(
+            "crn" to crn,
+            "startDate" to activatedLicence.startDate.toString(),
+            "occurredAt" to occurredAt.toString()
+        )
+        val com = personManagerRepository.findByPersonCrn(crn)
+            ?: return listOf(ActionResult.Ignored("CRN not found", properties))
         val sentences = custodyRepository.findCustodialSentences(crn).filter { custody ->
             custody.keyDates.none { it.type.code == ReferenceData.SENTENCE_EXPIRY_CODE && it.date < LocalDate.now() }
         }
-        val properties = mapOf(
-            "crn" to crn,
-            "startDate" to activatedLicence.startDate.toString(),
-            "occurredAt" to occurredAt.toString(),
-            "sentenceCount" to sentences.size.toString()
-        )
+        properties += mapOf("sentenceCount" to sentences.size.toString())
         optimisationTables.rebuild(com.person.id)
 
         return if (sentences.isEmpty()) {

@@ -6,7 +6,6 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -55,5 +54,3 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByPersonCrnIn(crn: List<String>): List<PersonManager>
 }
 
-fun PersonManagerRepository.getByCrn(crn: String) =
-    findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
