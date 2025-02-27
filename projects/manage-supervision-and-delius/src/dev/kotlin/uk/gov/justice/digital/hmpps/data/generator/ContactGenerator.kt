@@ -202,7 +202,14 @@ object ContactGenerator {
         systemGenerated: Boolean = false,
         contactOutcomeFlag: Boolean = false,
     ) =
-        ContactType(IdGenerator.getAndIncrement(), code, attendance, description, systemGenerated = systemGenerated, contactOutcomeFlag = contactOutcomeFlag )
+        ContactType(
+            IdGenerator.getAndIncrement(),
+            code,
+            attendance,
+            description,
+            systemGenerated = systemGenerated,
+            contactOutcomeFlag = contactOutcomeFlag
+        )
 
     private fun generateContactCategory(contactType: ContactType, contactCategory: ReferenceData) =
         ContactCategory(id = ContactCategoryId(contactType.id, category = contactCategory))
