@@ -114,6 +114,13 @@ class Contact(
     fun endDateTime(): ZonedDateTime? =
         if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null
 
+    fun canHaveOutcomeRecorded():Boolean? {
+        return when (type.contactOutcomeFlag) {
+            true -> outcome != null
+            else -> null
+        }
+    }
+
     fun isInitial(): Boolean = setOf(
         ContactTypeCode.INITIAL_APPOINTMENT_IN_OFFICE.value,
         ContactTypeCode.INITIAL_APPOINTMENT_ON_DOORSTEP.value,
@@ -168,6 +175,10 @@ class ContactType(
     @Column(name = "national_standards_contact")
     @Convert(converter = YesNoConverter::class)
     val nationalStandardsContact: Boolean = false,
+
+    @Column(name = "contact_outcome_flag")
+    @Convert(converter = YesNoConverter::class)
+    val contactOutcomeFlag: Boolean = false,
 )
 
 @Immutable

@@ -62,7 +62,7 @@ object ContactGenerator {
     val BREACH_CONTACT_TYPE = generateContactType("BRE02", false, "Breach Contact Type")
     val BREACH_ENFORCEMENT_ACTION = generateEnforcementAction("BRE02", "Breach Enforcement Action", BREACH_CONTACT_TYPE)
 
-    val APPT_CT_1 = generateContactType("C089", true, "Alcohol Key Worker Session (NS)")
+    val APPT_CT_1 = generateContactType("C089", true, "Alcohol Key Worker Session (NS)", contactOutcomeFlag = true)
     val OTHER_CT = generateContactType("XXXX", false, "Non attendance contact type", systemGenerated = true)
     val APPT_CT_2 = generateContactType("CODI", true, "Initial Appointment on Doorstep (NS)")
     val APPT_CT_3 = generateContactType("CODC", true, "Planned Doorstep Contact (NS)")
@@ -199,9 +199,10 @@ object ContactGenerator {
         code: String,
         attendance: Boolean,
         description: String,
-        systemGenerated: Boolean = false
+        systemGenerated: Boolean = false,
+        contactOutcomeFlag: Boolean = false,
     ) =
-        ContactType(IdGenerator.getAndIncrement(), code, attendance, description, systemGenerated = systemGenerated)
+        ContactType(IdGenerator.getAndIncrement(), code, attendance, description, systemGenerated = systemGenerated, contactOutcomeFlag = contactOutcomeFlag )
 
     private fun generateContactCategory(contactType: ContactType, contactCategory: ReferenceData) =
         ContactCategory(id = ContactCategoryId(contactType.id, category = contactCategory))

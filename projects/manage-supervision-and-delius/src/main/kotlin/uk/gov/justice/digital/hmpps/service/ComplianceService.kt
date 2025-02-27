@@ -110,7 +110,7 @@ fun toSentenceActivityCounts(activities: List<Activity>) = ActivityCount(
     compliedAppointmentsCount = activities.count { it.isPastAppointment && it.didTheyComply == true },
     lettersCount = activities.count { it.isPastAppointment && it.action != null },
     nationalStandardAppointmentsCount = activities.count { it.isPastAppointment && it.isNationalStandard },
-    outcomeNotRecordedCount = activities.count { it.isPastAppointment && !it.hasOutcome },
+    outcomeNotRecordedCount = activities.count { it.isPastAppointment && it.hasOutcome == false },
     rescheduledByPersonOnProbationCount = activities.count { it.rescheduled && it.rescheduledPop },
     rescheduledByStaffCount = activities.count { it.rescheduled && it.rescheduledStaff },
     rescheduledCount = activities.count { it.rescheduled },

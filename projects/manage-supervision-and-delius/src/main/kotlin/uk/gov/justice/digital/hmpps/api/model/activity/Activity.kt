@@ -15,7 +15,7 @@ data class Activity(
     val rarToolKit: String?,
     val notes: String?,
     val isSensitive: Boolean?,
-    val hasOutcome: Boolean,
+    val hasOutcome: Boolean?,
     val wasAbsent: Boolean?,
     val officerName: Name?,
     val isInitial: Boolean,

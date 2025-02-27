@@ -72,7 +72,7 @@ fun Contact.toActivity() = Activity(
     documents = documents.map { it.toDocument() },
     startDateTime = startDateTime(),
     endDateTime = endDateTime(),
-    hasOutcome = outcome != null,
+    hasOutcome = canHaveOutcomeRecorded(),
     isInitial = isInitial(),
     lastUpdated = lastUpdated,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
