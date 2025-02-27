@@ -39,7 +39,7 @@ class Cas2Service(
             crn = event.crn,
             type = ContactType.REFERRAL_UPDATED,
             date = details.eventDetails.updatedAt,
-            description = "CAS2 ${details.eventDetails.applicationOrigin()} Referral Updated - ${details.eventDetails.newStatus.label}",
+            description = "CAS2 ${details.eventDetails.applicationOrigin()}".trim() + " Referral Updated - ${details.eventDetails.newStatus.label}",
             notes = """
                 |Application status was updated to: ${details.eventDetails.newStatus.label}
                 |
