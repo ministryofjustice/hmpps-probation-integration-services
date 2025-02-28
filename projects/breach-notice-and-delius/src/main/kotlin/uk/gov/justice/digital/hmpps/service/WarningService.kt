@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.integrations.delius.Document.Companion.breachNoticeUrn
 import uk.gov.justice.digital.hmpps.model.EnforceableContact
 import uk.gov.justice.digital.hmpps.model.WarningDetails
-import uk.gov.justice.digital.hmpps.model.WarningTypes
+import uk.gov.justice.digital.hmpps.model.WarningTypesResponse
 import java.time.LocalDateTime
 import java.util.*
 
@@ -19,22 +19,27 @@ class WarningService(
     private val disposalRepository: DisposalRepository,
     private val contactRepository: ContactRepository,
 ) {
-    fun getWarningTypes(): WarningTypes = WarningTypes(
-        rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_NOTICE_TYPE).codedDescriptions()
-    )
+    fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
+        val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
+            ?.let { disposalRepository.getByEventId(it) }
+            ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
+        return WarningTypesResponse(
+            warningTypes = rdRepository
+                .findByDatasetCodeAndSelectableTrue(Dataset.BREACH_NOTICE_TYPE).codedDescriptions(),
+            sentenceTypes = rdRepository
+                .findByDatasetCodeAndSelectableTrue(Dataset.BREACH_SENTENCE_TYPE).sentenceTypes(),
+            defaultSentenceTypeCode = disposal.type.defaultSentenceTypeCode()
+        )
+    }
 
     fun getWarningDetails(crn: String, breachNoticeId: UUID): WarningDetails {
         val breachReasons = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON)
-        val sentenceTypes = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_SENTENCE_TYPE)
         val eventId = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
             ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
-        val disposal = disposalRepository.getByEventId(eventId)
         val enforceableContacts = contactRepository.findByEventIdAndOutcomeEnforceableTrue(eventId)
         return WarningDetails(
-            breachReasons.codedDescriptions(),
-            sentenceTypes.sentenceTypes(),
-            disposal.type.defaultSentenceTypeCode(),
-            enforceableContacts.map(Contact::toEnforceableContact),
+            breachReasons = breachReasons.codedDescriptions(),
+            enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
         )
     }
 }
