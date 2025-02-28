@@ -1826,7 +1826,6 @@ components:
           type: string
       required:
       - documents
-      - hasOutcome
       - id
       - isAppointment
       - isCommunication

@@ -92,7 +92,21 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>pathfinder-and-delius</span></a>
+    <a href="./index.html"><span>Pathfinder and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Business need</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map"><span>Context Map</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>API Access Control</span></a>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -132,9 +146,53 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="pathfinder-and-delius">pathfinder-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="pathfinder-and-delius">Pathfinder and Delius</h1>
+<p>The pathfinder integration service provides APIs for the client to retrieve the required data.</p>
+<p>APIs are available to enable read-only access to the following data:</p>
 
+<ul>
+<li>Convictions</li>
+<li>Court appearances</li>
+<li>Details related to a person on probation</li>
+<li>Probation area</li>
+</ul>
+<p>The API also supports the following tasks:</p>
+
+<ul>
+<li>Management of roles</li>
+</ul>
+<h1 id="business-need">Business need</h1>
+<p>This integration service is used to gather the required Delius data via the APIs.</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>This service provides read-only access to data stored in Delius for a <strong>Person on Probation</strong>, their <strong>Convictions</strong> and <strong>Court appearances</strong>.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="././img/pathfinder-context-map.svg" rel="noopener noreferrer"><img src="images/img/pathfinder-context-map.svg" alt="" /></a></p>
+<h1 id="api-access-control">API Access Control</h1>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/convictions/{value}</td>
+<td>PROBATION_API__PATHFINDER__CASE_DETAIL</td>
+</tr><tr>
+<td>/court-appearances</td>
+<td>PROBATION_API__PATHFINDER__CASE_DETAIL</td>
+</tr><tr>
+<td>/detail/{value}</td>
+<td>PROBATION_API__PATHFINDER__CASE_DETAIL</td>
+</tr><tr>
+<td>/probation-areas</td>
+<td>PROBATION_API__PATHFINDER__CASE_DETAIL</td>
+</tr><tr>
+<td>/users/{username}/roles/{roleName}</td>
+<td>PROBATION_API__PATHFINDER__USER_ROLES__RW</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
