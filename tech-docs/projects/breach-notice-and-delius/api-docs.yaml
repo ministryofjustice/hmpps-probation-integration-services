@@ -14,23 +14,35 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /warning-types:
+  /warning-types/{crn}/{breachNoticeId}:
     get:
       tags:
       - warning-controller
-      operationId: getWaringTypes
+      operationId: getWarningTypes
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: breachNoticeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WarningTypes"
+                $ref: "#/components/schemas/WarningTypesResponse"
   /warning-details/{crn}/{breachNoticeId}:
     get:
       tags:
       - warning-controller
-      operationId: getWaringTypes_1
+      operationId: getWarningDetails
       parameters:
       - name: crn
         in: path
@@ -138,15 +150,36 @@ components:
       required:
       - code
       - description
-    WarningTypes:
+    SentenceType:
       type: object
       properties:
-        content:
+        code:
+          type: string
+        description:
+          type: string
+        conditionBeingEnforced:
+          type: string
+      required:
+      - code
+      - conditionBeingEnforced
+      - description
+    WarningTypesResponse:
+      type: object
+      properties:
+        warningTypes:
           type: array
           items:
             $ref: "#/components/schemas/CodedDescription"
+        sentenceTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/SentenceType"
+        defaultSentenceTypeCode:
+          type: string
       required:
-      - content
+      - defaultSentenceTypeCode
+      - sentenceTypes
+      - warningTypes
     EnforceableContact:
       type: object
       properties:
@@ -184,19 +217,6 @@ components:
       required:
       - id
       - type
-    SentenceType:
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-        conditionBeingEnforced:
-          type: string
-      required:
-      - code
-      - conditionBeingEnforced
-      - description
     WarningDetails:
       type: object
       properties:
@@ -204,21 +224,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CodedDescription"
-        sentenceTypes:
-          type: array
-          items:
-            $ref: "#/components/schemas/SentenceType"
-        defaultSentenceTypeCode:
-          type: string
         enforceableContacts:
           type: array
           items:
             $ref: "#/components/schemas/EnforceableContact"
       required:
       - breachReasons
-      - defaultSentenceTypeCode
       - enforceableContacts
-      - sentenceTypes
     CaseAccess:
       type: object
       properties:

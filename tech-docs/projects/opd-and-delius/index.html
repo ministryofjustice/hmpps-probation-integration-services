@@ -92,7 +92,34 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>opd-and-delius</span></a>
+    <a href="./index.html"><span>OPD and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Business need</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map"><span>Context Map</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Workflows</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#opd-workflow"><span>OPD workflow</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Interfaces</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#message-formats"><span>Message formats</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
@@ -106,8 +133,43 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="opd-and-delius">opd-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="opd-and-delius">OPD and Delius</h1>
+<p>This service listens to domain events when a new Offender Personality Disorder (OPD) assessment has been produced in OAsys.</p>
+<p>A new assessment will contain one of the following results:</p>
+
+<ul>
+<li>Screened in</li>
+<li>Screened in - with override</li>
+<li>Screened out</li>
+</ul>
+<p>Notes from screened in OPD assessments are stored. Screened out OPD assessments are ignored.</p>
+<h1 id="business-need">Business need</h1>
+<p>This will provide a quick overview of the person on probation and their needs in Delius to reduce the need for users to navigate around multiple systems.</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>When a domain event is received from the OPD assessment service, if the OPD assessment result is screened in, the notes in the OPD assessment are appended to the existing notes in an NSI record in Delius. If an NSI record does not exist for the OPD assessment, a new one is created.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="././img/opd-delius-context-map.svg" rel="noopener noreferrer"><img src="img/opd-delius-context-map.svg" alt="" /></a></p>
+<h1 id="workflows">Workflows</h1>
+<h2 id="opd-workflow">OPD workflow</h2>
+<p>The OPD assessment notes are appended to the NSI OPD assessment record for screened in OPD assessments.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Attribute Event Type</th>
+<th>Message Event Type</th>
+</tr><tr>
+<td>OPD assessment submitted</td>
+<td>risk-assessment.scores.determined</td>
+<td>opd.produced</td>
+</tr>
+        </table>
+      </div><p><a href="././img/opd-workflow.svg" rel="noopener noreferrer"><img src="img/opd-workflow.svg" alt="" /></a></p>
+<h1 id="interfaces">Interfaces</h1>
+<h2 id="message-formats">Message formats</h2>
+<p>The service responds to HMPPS Domain Event messages via the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/opd-and-delius-queue.tf">OPD and Delius Queue</a>.</p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/opd-and-delius-queue.tf">SQS queue policy</a></p>
 
             
           </main>
