@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - LaoIntegrationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>LaoIntegrationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/uk.gov.justice.digital.hmpps.html">uk.gov.justice.digital.hmpps</a> &gt; LaoIntegrationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">6</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.189s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Method name</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">[1] user=uk.gov.justice.digital.hmpps.user.AuditUser@386ef11d, person=uk.gov.justice.digital.hmpps.integrations.delius.Person@29cb366d, access=CaseAccess(crn=E123456, userExcluded=true, userRestricted=false, exclusionMessage=There is an exclusion on this person, restrictionMessage=null)</td>
+<td class="success">LAO results are appropriately returned(AuditUser, Person, CaseAccess)[1]</td>
+<td class="success">0.078s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] user=uk.gov.justice.digital.hmpps.user.AuditUser@386ef11d, person=uk.gov.justice.digital.hmpps.integrations.delius.Person@f605e21, access=CaseAccess(crn=R123456, userExcluded=false, userRestricted=true, exclusionMessage=null, restrictionMessage=There is a restriction on this person)</td>
+<td class="success">LAO results are appropriately returned(AuditUser, Person, CaseAccess)[2]</td>
+<td class="success">0.023s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] user=uk.gov.justice.digital.hmpps.user.AuditUser@386ef11d, person=uk.gov.justice.digital.hmpps.integrations.delius.Person@18b7588f, access=CaseAccess(crn=B123456, userExcluded=true, userRestricted=true, exclusionMessage=You are excluded from viewing this case, restrictionMessage=You are restricted from viewing this case)</td>
+<td class="success">LAO results are appropriately returned(AuditUser, Person, CaseAccess)[3]</td>
+<td class="success">0.022s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] user=uk.gov.justice.digital.hmpps.user.AuditUser@1f1f14f2, person=uk.gov.justice.digital.hmpps.integrations.delius.Person@29cb366d, access=CaseAccess(crn=E123456, userExcluded=false, userRestricted=false, exclusionMessage=null, restrictionMessage=null)</td>
+<td class="success">LAO results are appropriately returned(AuditUser, Person, CaseAccess)[4]</td>
+<td class="success">0.017s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] user=uk.gov.justice.digital.hmpps.user.AuditUser@1f1f14f2, person=uk.gov.justice.digital.hmpps.integrations.delius.Person@f605e21, access=CaseAccess(crn=R123456, userExcluded=false, userRestricted=false, exclusionMessage=null, restrictionMessage=null)</td>
+<td class="success">LAO results are appropriately returned(AuditUser, Person, CaseAccess)[5]</td>
+<td class="success">0.031s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[6] user=uk.gov.justice.digital.hmpps.user.AuditUser@1f1f14f2, person=uk.gov.justice.digital.hmpps.integrations.delius.Person@18b7588f, access=CaseAccess(crn=B123456, userExcluded=false, userRestricted=false, exclusionMessage=null, restrictionMessage=null)</td>
+<td class="success">LAO results are appropriately returned(AuditUser, Person, CaseAccess)[6]</td>
+<td class="success">0.018s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2025-02-28T11:45:13.927Z  INFO 2357 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [uk.gov.justice.digital.hmpps.LaoIntegrationTest]: LaoIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-02-28T11:45:13.930Z  INFO 2357 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration uk.gov.justice.digital.hmpps.App for test class uk.gov.justice.digital.hmpps.LaoIntegrationTest
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.13</a> at Feb 28, 2025, 11:45:18 AM</p>
+</div>
+</div>
+</body>
+</html>
