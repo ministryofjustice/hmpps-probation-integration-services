@@ -1,0 +1,52 @@
+# OPD Workflow: OPD assessment submitted (screened-in result)
+
+direction: right
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+# What triggers the workflow?
+assessment-submitted: OPD assessment {
+     style.font-size: 24
+
+     explanation: |md
+     ## Assessment Submitted
+     - An OPD assessment\
+       is submitted
+     |
+
+     assessment_submitted: Assessment submitted
+}
+
+domain_event: "opd-and-delius\n.risk-assessment.scores.determined" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_find_create_nsi: Find or create NSI
+    d_contact: Create Contact
+    d_append_notes: Append assessment notes
+
+    d_find_create_nsi -> d_contact -> d_append_notes
+
+    explanation: |md
+    ## OPD assessment (screened in)
+    - Filter out OPD assessments\
+      with a screened out result
+    - Find existing NSI
+    - Create a new NSI if\
+      one does not exist
+    - Create a new contact\
+      if a new NSI was created
+    - Append OPD Assessment notes
+    |
+
+}
+
+assessment-submitted -> domain_event -> delius
