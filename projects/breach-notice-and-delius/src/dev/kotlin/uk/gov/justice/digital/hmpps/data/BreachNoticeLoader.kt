@@ -28,6 +28,7 @@ class BreachNoticeLoader(
         warningData()
         appointmentData()
         entityManager.persist(DocumentGenerator.DEFAULT_BREACH_NOTICE)
+        entityManager.persist(DocumentGenerator.UNSENTENCED_BREACH_NOTICE)
         lao()
     }
 
@@ -60,6 +61,7 @@ class BreachNoticeLoader(
             EventGenerator.DEFAULT_EVENT,
             EventGenerator.DEFAULT_DISPOSAL_TYPE,
             EventGenerator.DEFAULT_DISPOSAL,
+            EventGenerator.UNSENTENCED_EVENT,
             EventGenerator.DEFAULT_RQMNT_CATEGORY,
             EventGenerator.DS_REQUIREMENT_SUB_CATEOGORY,
             EventGenerator.DEFAULT_RQMNT_SUB_CATEGORY,

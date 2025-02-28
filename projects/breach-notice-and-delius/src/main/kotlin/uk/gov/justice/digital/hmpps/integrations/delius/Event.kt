@@ -117,5 +117,5 @@ class RequirementMainCategory(
 ) : CodeAndDescription
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
-    fun getByEventId(eventId: Long): Disposal
+    fun getByEventId(eventId: Long): Disposal?
 }

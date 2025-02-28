@@ -21,7 +21,7 @@ class WarningService(
 ) {
     fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
         val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
-            ?.let { disposalRepository.getByEventId(it) }
+            ?.let { requireNotNull(disposalRepository.getByEventId(it)) { "Event with id $it is not sentenced" } }
             ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
         return WarningTypesResponse(
             warningTypes = rdRepository
