@@ -35,8 +35,7 @@ class DeliusService(
 ) {
     @Transactional
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
-        val existing = caseNote.urn?.let { caseNoteRepository.findByExternalReference(it) }
-            ?: caseNoteRepository.findByNomisId(caseNote.header.legacyId)
+        val existing = caseNoteRepository.findByExternalReference(caseNote.urn)
 
         (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
             ?.let(caseNoteRepository::save)

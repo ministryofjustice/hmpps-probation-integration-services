@@ -72,7 +72,7 @@ class DeliusServiceTest {
 
     @Test
     fun `successfully merges with existing case note`() {
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(caseNote)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(caseNote)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -89,7 +89,7 @@ class DeliusServiceTest {
 
     @Test
     fun `duplicate or late messages result in no-op`() {
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(caseNote)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(caseNote)
 
         deliusService.mergeCaseNote(
             deliusCaseNote.copy(
@@ -105,7 +105,7 @@ class DeliusServiceTest {
     @Test
     fun `successfully add new case note with link to event`() {
         val offender = OffenderGenerator.DEFAULT
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(null)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
             Optional.of(
                 caseNoteNomisType
@@ -140,7 +140,7 @@ class DeliusServiceTest {
     fun `successfully add new case note with link to nsi`() {
         val offender = OffenderGenerator.DEFAULT
         val nsiId = Random().nextLong()
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(null)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
             Optional.of(
                 caseNoteNomisType
@@ -175,7 +175,7 @@ class DeliusServiceTest {
     fun `add new case note offender not found`() {
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId))
             .thenReturn(OffenderGenerator.DEFAULT)
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(null)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup()))
             .thenReturn(Optional.of(caseNoteNomisType))
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(null)
@@ -188,7 +188,7 @@ class DeliusServiceTest {
     fun `add new case note case note type not found`() {
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId))
             .thenReturn(OffenderGenerator.DEFAULT)
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(null)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.empty())
         whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(null)
 
@@ -200,7 +200,7 @@ class DeliusServiceTest {
     @Test
     fun `successfully add new case note with default type when not found`() {
         val offender = OffenderGenerator.DEFAULT
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(null)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.empty())
         whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(
@@ -233,7 +233,7 @@ class DeliusServiceTest {
 
     @Test
     fun `successfully merges shorter case notes by padding`() {
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(caseNote)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(caseNote)
 
         val newContent = "Shorter case note text"
         deliusService.mergeCaseNote(
@@ -305,7 +305,7 @@ class DeliusServiceTest {
 
     @Test
     fun `does not update description for existing case note`() {
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(caseNote)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(caseNote)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -326,7 +326,7 @@ class DeliusServiceTest {
         relatedIds: CaseNoteRelatedIds = CaseNoteRelatedIds()
     ) {
         val offender = OffenderGenerator.DEFAULT
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.legacyId)).thenReturn(null)
+        whenever(caseNoteRepository.findByExternalReference(deliusCaseNote.urn)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.ofNullable(type))
         whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId))

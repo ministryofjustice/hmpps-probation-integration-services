@@ -20,7 +20,7 @@ class PrisonCaseNoteTest {
     @Test
     fun `get staff name test`() {
         val caseNote = PrisonCaseNote(
-            "1",
+            UUID.randomUUID(),
             1L,
             "1",
             "type",
@@ -40,7 +40,7 @@ class PrisonCaseNoteTest {
     fun `occurred at date has time component generated when alert type`() {
         val now = ZonedDateTime.now().withZoneSameLocal(EuropeLondon)
         val caseNote = PrisonCaseNote(
-            UUID.randomUUID().toString(),
+            UUID.randomUUID(),
             1234,
             "A1234BC",
             "ALERT",

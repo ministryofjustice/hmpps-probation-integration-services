@@ -1,0 +1,21 @@
+{
+  "alertUuid": "01954cfe-9f5a-7ea3-837b-a1770b389c5b",
+  "prisonNumber": "AA0001A",
+  "alertCode": {
+    "alertTypeCode": "AT",
+    "alertTypeDescription": "Description of AT",
+    "code": "AST",
+    "description": "Description of AST"
+  },
+  "description": "User entered some text about the alert",
+  "activeFrom": "2025-02-27",
+  "activeTo": "2025-02-28",
+  "isActive": false,
+  "createdAt": "2025-02-28T14:38:30.22417",
+  "createdBy": "J5M1TH",
+  "createdByDisplayName": "John Smith",
+  "lastModifiedAt": "2025-02-28T15:28:02.13653",
+  "lastModifiedBy": "J4NE5M1TH",
+  "lastModifiedByDisplayName": "Jane Smith",
+  "prisonCodeWhenCreated": "LEI"
+}

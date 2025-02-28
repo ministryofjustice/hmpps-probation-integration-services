@@ -54,8 +54,8 @@ class PersonCaseNote(
         }
     }
 
-    private fun PrisonCaseNote.properties() = mapOf(
-        "caseNoteId" to id,
+    private fun PrisonCaseNote.properties(): Map<String, String> = mapOf(
+        "caseNoteId" to id.toString(),
         "type" to type,
         "subType" to subType,
         "eventId" to eventId.toString(),

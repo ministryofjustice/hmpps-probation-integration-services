@@ -9,14 +9,33 @@ import java.time.ZonedDateTime
 import java.util.*
 
 data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody) {
-    val urn = header.uuid?.let { "$URN_PREFIX${it}" }
+    val urn = when (header.type) {
+        CaseNoteHeader.Type.CaseNote -> header.getCaseNoteUrn()
+        CaseNoteHeader.Type.ActiveAlert -> header.getAlertUrn(true)
+        CaseNoteHeader.Type.InactiveAlert -> header.getAlertUrn(false)
+    }
 
     companion object {
-        const val URN_PREFIX = "urn:uk:gov:hmpps:prison-case-note:"
+        const val CASE_NOTE_URN_PREFIX: String = "urn:uk:gov:hmpps:prison-case-note:"
+        const val ALERT_URN_PREFIX: String = "urn:hmpps:prisoner-alerts:"
+
+        fun CaseNoteHeader.getAlertUrn(active: Boolean): String {
+            val urnActive = if (active) "active" else "inactive"
+            return "${ALERT_URN_PREFIX}${urnActive}:${uuid}"
+        }
+
+        fun CaseNoteHeader.getCaseNoteUrn(): String {
+            return "${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${uuid}"
+        }
     }
 }
 
-data class CaseNoteHeader(val nomisId: String, val legacyId: Long, val uuid: UUID?)
+data class CaseNoteHeader(val nomisId: String, val legacyId: Long?, val uuid: UUID, val type: Type) {
+    enum class Type {
+        ActiveAlert, InactiveAlert, CaseNote
+    }
+}
+
 data class CaseNoteBody(
     @NotBlank
     val type: String,

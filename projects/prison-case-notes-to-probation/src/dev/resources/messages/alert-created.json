@@ -1,0 +1,8 @@
+{
+  "Type" : "Notification",
+  "MessageId" : "18a5bc34-ee67-5107-b772-dc0f22c1da7b",
+  "Message" : "{\"eventType\":\"person.alert.created\",\"additionalInformation\":{\"alertUuid\":\"01954cfe-9f5a-7ea3-837b-a1770b389c5b\",\"alertCode\":\"OVI\",\"source\":\"DPS\"},\"version\":1,\"description\":\"An alert has been updated in the alerts service\",\"occurredAt\":\"2025-02-28T14:38:30.224174387Z\",\"detailUrl\":\"http://localhost:{wiremock.port}/alerts/01954cfe-9f5a-7ea3-837b-a1770b389c5b\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"AA0001A\"}]}}",
+  "MessageAttributes" : {
+    "eventType" : {"Type":"String","Value":"person.alert.created"}
+  }
+}

@@ -6,7 +6,6 @@ object CaseNoteTypesOfInterest {
         "TRANSFER" to setOf("FROMTOL"),
         "GEN" to setOf("OSE"),
         "RESET" to setOf("BCST"),
-        "ALERT" to setOf(),
         "OMIC" to setOf(),
         "OMIC_OPD" to setOf(),
         "KA" to setOf()

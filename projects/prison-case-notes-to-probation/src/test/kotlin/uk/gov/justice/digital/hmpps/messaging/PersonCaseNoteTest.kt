@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.prepNotification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 import java.time.ZonedDateTime
+import java.util.UUID
 
 @ExtendWith(MockitoExtension::class)
 internal class PersonCaseNoteTest {
@@ -57,7 +58,7 @@ internal class PersonCaseNoteTest {
     @Test
     fun `get case note from NOMIS has blank text`() {
         val prisonCaseNote = PrisonCaseNote(
-            "1",
+            UUID.randomUUID(),
             1L,
             "1",
             "type",
@@ -77,7 +78,7 @@ internal class PersonCaseNoteTest {
     @Test
     fun `when prisoner being transferred noop`() {
         val prisonCaseNote = PrisonCaseNote(
-            "1",
+            UUID.randomUUID(),
             1L,
             "1",
             "type",
@@ -104,7 +105,7 @@ internal class PersonCaseNoteTest {
     )
     fun `when ocg alert text has been sent`(text: String) {
         val prisonCaseNote = PrisonCaseNote(
-            "1",
+            UUID.randomUUID(),
             1L,
             "1",
             "type",
@@ -127,7 +128,7 @@ internal class PersonCaseNoteTest {
     @Test
     fun `offender not found sends alert to telemetry without throwing exception`() {
         val prisonCaseNote = PrisonCaseNote(
-            "1",
+            UUID.randomUUID(),
             1L,
             "1",
             "type",
@@ -150,7 +151,7 @@ internal class PersonCaseNoteTest {
     @Test
     fun `non offender not found exceptions are thrown`() {
         val prisonCaseNote = PrisonCaseNote(
-            "1",
+            UUID.randomUUID(),
             1L,
             "1",
             "type",

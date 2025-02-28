@@ -15,7 +15,7 @@ const val UNKNOWN_LOCATION = "UNK"
 
 data class PrisonCaseNote(
     @JsonAlias("caseNoteId")
-    val id: String,
+    val id: UUID,
     val eventId: Long,
     val offenderIdentifier: String,
     val type: String,
@@ -61,7 +61,7 @@ fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
     }
 
     return DeliusCaseNote(
-        header = CaseNoteHeader(offenderIdentifier, eventId, id.asUuidOrNull()),
+        header = CaseNoteHeader(offenderIdentifier, eventId, id, CaseNoteHeader.Type.CaseNote),
         body = CaseNoteBody(
             type = type,
             subType = subType,
@@ -72,10 +72,4 @@ fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
             establishmentCode = locationId
         )
     )
-}
-
-fun String.asUuidOrNull(): UUID? = try {
-    UUID.fromString(this)
-} catch (e: Exception) {
-    null
 }
