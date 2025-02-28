@@ -78,7 +78,8 @@ class CaseNotesIntegrationTest {
             prepNotification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS, wireMockserver.port())
         )
 
-        val saved = caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")
+        val saved =
+            caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")
 
         assertThat(
             saved?.notes,
@@ -111,7 +112,8 @@ class CaseNotesIntegrationTest {
         )
 
         verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
-        val saved = caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")
+        val saved =
+            caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")
         assertNotNull(saved)
 
         assertThat(
@@ -166,7 +168,8 @@ class CaseNotesIntegrationTest {
         )
 
         verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
-        val saved = caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")
+        val saved =
+            caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")
         assertNotNull(saved)
 
         assertThat(

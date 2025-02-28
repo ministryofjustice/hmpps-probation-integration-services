@@ -59,7 +59,10 @@ class PrisonerAlert(
                 type = "ALERT",
                 subType = if (isActive) "ACTIVE" else "INACTIVE",
                 content = description ?: "",
-                contactTimeStamp = ZonedDateTime.of(of(if (isActive) activeFrom else activeTo, createdAt.toLocalTime()), EuropeLondon),
+                contactTimeStamp = ZonedDateTime.of(
+                    of(if (isActive) activeFrom else activeTo, createdAt.toLocalTime()),
+                    EuropeLondon
+                ),
                 systemTimestamp = lastModifiedAt ?: createdAt,
                 staffName = staffName(),
                 establishmentCode = checkNotNull(prisonCodeWhenCreated) {
