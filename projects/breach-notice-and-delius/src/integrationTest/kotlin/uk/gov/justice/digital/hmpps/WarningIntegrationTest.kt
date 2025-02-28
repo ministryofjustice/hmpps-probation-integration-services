@@ -3,8 +3,11 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.UNSENTENCED_BREACH_NOTICE_ID
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNSENTENCED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.DEFAULT_ENFORCEABLE_CONTACT
@@ -35,6 +38,15 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
                 defaultSentenceTypeCode = "PSS",
             )
         )
+    }
+
+    @Test
+    fun `returns bad request error for unsentenced event`() {
+        val person = PersonGenerator.DEFAULT_PERSON
+        mockMvc
+            .perform(get("/warning-types/${person.crn}/${UNSENTENCED_BREACH_NOTICE_ID}").withToken())
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.message").value("Event with id ${UNSENTENCED_EVENT.id} is not sentenced"))
     }
 
     @Test

@@ -11,6 +11,7 @@ object EventGenerator {
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("123")
     val DEFAULT_EVENT = generateEvent()
     val DEFAULT_DISPOSAL = generateDisposal(DEFAULT_EVENT, DEFAULT_DISPOSAL_TYPE)
+    val UNSENTENCED_EVENT = generateEvent()
 
     val DEFAULT_RQMNT_CATEGORY = generateRequirementMainCategory("DRMC")
     val DS_REQUIREMENT_SUB_CATEOGORY = generateDataset(Dataset.REQUIREMENT_SUB_CATEGORY)
