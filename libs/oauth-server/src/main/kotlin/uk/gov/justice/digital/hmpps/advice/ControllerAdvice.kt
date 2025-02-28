@@ -42,4 +42,9 @@ class ControllerAdvice {
     fun handleAccessDenied(e: AccessDeniedException) = ResponseEntity
         .status(FORBIDDEN)
         .body(ErrorResponse(status = FORBIDDEN.value(), message = e.message))
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgument(e: IllegalArgumentException) = ResponseEntity
+        .status(BAD_REQUEST)
+        .body(ErrorResponse(status = BAD_REQUEST.value(), message = e.message))
 }
