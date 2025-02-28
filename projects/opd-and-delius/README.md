@@ -1,4 +1,5 @@
 # OPD and Delius
+
 This service listens to domain events when a new Offender Personality Disorder (OPD) assessment has been produced in OAsys.
 
 A new assessment will contain one of the following results:
@@ -19,7 +20,7 @@ When a domain event is received from the OPD assessment service, if the OPD asse
 
 ## Context Map
 
-![](./img/opd-delius-context-map.svg)
+![](./tech-docs/source/img/opd-delius-context-map.svg)
 
 
 # Workflows
@@ -31,7 +32,7 @@ The OPD assessment notes are appended to the NSI OPD assessment record for scree
 | ------------------------- | --------------------------------- | ------------------ |
 | OPD assessment submitted  | risk-assessment.scores.determined | opd.produced       |
 
-![](./img/opd-workflow.svg)
+![](./tech-docs/source/img/opd-workflow.svg)
 
 
 # Interfaces
