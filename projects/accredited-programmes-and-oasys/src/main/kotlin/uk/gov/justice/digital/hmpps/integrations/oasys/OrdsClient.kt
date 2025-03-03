@@ -17,6 +17,12 @@ interface OrdsClient {
 
     @GetExchange("/ass/riskscrass/ALLOW/{id}")
     fun getAssessmentPredictors(@PathVariable id: Long): OasysRiskPredictors
+
+    @GetExchange("/ass/pnildc/pris/{nomsId}:{communityFlag}/ALLOW")
+    fun getPni(
+        @PathVariable nomsId: String,
+        @PathVariable communityFlag: String
+    ): PniResult
 }
 
 fun OrdsClient.getRiskPredictors(assessmentId: Long): RiskPrediction =

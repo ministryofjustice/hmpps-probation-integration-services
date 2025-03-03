@@ -13,11 +13,13 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.controller.*
+import uk.gov.justice.digital.hmpps.integrations.oasys.Level
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.integrations.oasys.PniCalculation.Type as PniType
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -108,5 +110,45 @@ internal class IntegrationTest {
                 )
             )
         )
+    }
+
+    @Test
+    fun `get pni success`() {
+        val res = mockMvc
+            .perform(get("/assessments/pni/A8746PN?community=false").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PniCalculation>()
+
+        assertThat(
+            res,
+            equalTo(
+                PniCalculation(
+                    LevelScore(Level.L, 0),
+                    LevelScore(Level.M, 1),
+                    LevelScore(Level.M, 1),
+                    LevelScore(Level.H, 2),
+                    Level.L,
+                    Level.M,
+                    4,
+                    PniType.A,
+                    SaraRiskLevel(1, 2),
+                    listOf(),
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `get pni no calculation`() {
+        mockMvc
+            .perform(get("/assessments/pni/A8747PN?community=true").withToken())
+            .andExpect(status().isNoContent)
+    }
+
+    @Test
+    fun `get pni returns 404 if oasys returns 404`() {
+        mockMvc
+            .perform(get("/assessments/pni/A1741PN?community=false").withToken())
+            .andExpect(status().isNotFound)
     }
 }
