@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
+import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader.Type.*
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.*
 import uk.gov.justice.digital.hmpps.security.ServiceContext
@@ -35,7 +36,13 @@ class DeliusService(
 ) {
     @Transactional
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
-        val existing = caseNoteRepository.findByExternalReference(caseNote.urn)
+        val existing = when (caseNote.header.type) {
+            CaseNote -> caseNoteRepository.findByExternalReference(caseNote.urn)
+                ?: caseNote.header.legacyId?.let { caseNoteRepository.findByNomisId(it) }
+
+            ActiveAlert, InactiveAlert -> caseNoteRepository.findByExternalReference(caseNote.urn)
+        }
+
 
         (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
             ?.let(caseNoteRepository::save)
