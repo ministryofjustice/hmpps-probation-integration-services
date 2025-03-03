@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.*
 import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteTypesOfInterest.forSearchRequest
@@ -18,16 +19,24 @@ class PrisonIdentifierAdded(
     @Value("\${integrations.prisoner-alerts.base_url}")
     private val alertsBaseUrl: String,
     private val alertsApi: PrisonerAlertClient,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    private val featureFlags: FeatureFlags
 ) {
     fun handle(event: HmppsDomainEvent) {
+        val useAlertsApi = featureFlags.enabled("alert-case-notes-from-alerts-api")
+
         val nomsId = checkNotNull(event.personReference.findNomsNumber()) {
             "NomsNumber not found for ${event.eventType}"
         }
         val uri = URI.create("$caseNotesBaseUrl/search/case-notes/$nomsId")
-        val caseNotes = caseNotesApi.searchCaseNotes(uri, SearchCaseNotes(forSearchRequest())).content
+        val caseNotes = caseNotesApi.searchCaseNotes(uri, SearchCaseNotes(forSearchRequest(useAlertsApi))).content
             .filter { cn -> PrisonCaseNoteFilters.filters.none { it.predicate.invoke(cn) } }
-        val alerts = alertsApi.getActiveAlerts(URI.create("$alertsBaseUrl/prisoners/$nomsId/alerts")).content
+
+        val alerts = if (useAlertsApi) {
+            alertsApi.getActiveAlerts(URI.create("$alertsBaseUrl/prisoners/$nomsId/alerts")).content
+        } else {
+            emptyList()
+        }
 
         val cnExceptions = caseNotes.mapNotNull { pcn ->
             try {

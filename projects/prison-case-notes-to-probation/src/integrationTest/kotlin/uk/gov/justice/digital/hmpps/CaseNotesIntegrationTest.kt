@@ -193,7 +193,7 @@ class CaseNotesIntegrationTest {
 
     @Order(5)
     @Test
-    fun `migrate case notes succesfully when noms number added`() {
+    fun `migrate case notes successfully when noms number added`() {
         val offender = requireNotNull(offenderRepository.findByNomsIdAndSoftDeletedIsFalse("A4578BX"))
         val originals = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
         assert(originals.isEmpty())

@@ -6,6 +6,7 @@ import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.Alert
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonerAlertClient
@@ -19,8 +20,11 @@ class PrisonerAlert(
     private val alertsClient: PrisonerAlertClient,
     private val deliusService: DeliusService,
     private val telemetryService: TelemetryService,
+    private val featureFlags: FeatureFlags,
 ) {
     fun handle(event: HmppsDomainEvent) {
+        if (!featureFlags.enabled("alert-case-notes-from-alerts-api")) return
+
         val alert: Alert = try {
             alertsClient.getAlert(URI.create(event.detailUrl!!))
         } catch (ex: HttpStatusCodeException) {
