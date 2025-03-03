@@ -40,6 +40,20 @@
         "status": 200,
         "bodyFileName": "get-inactive-alert.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/prisoners/A4578BX/alerts"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "alerts-for-new-identifier.json"
+      }
     }
   ]
 }

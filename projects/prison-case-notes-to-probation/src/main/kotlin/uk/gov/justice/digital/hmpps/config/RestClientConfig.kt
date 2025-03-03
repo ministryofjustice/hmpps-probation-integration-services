@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestClient
 import uk.gov.justice.digital.hmpps.config.security.createClient
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
-import uk.gov.justice.digital.hmpps.integrations.prison.PrisonerAlertsClient
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonerAlertClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
@@ -14,5 +14,5 @@ class RestClientConfig(private val oauth2Client: RestClient) {
     fun prisonCaseNotesClient() = createClient<PrisonCaseNotesClient>(oauth2Client)
 
     @Bean
-    fun prisonerAlertsClient() = createClient<PrisonerAlertsClient>(oauth2Client)
+    fun prisonerAlertsClient() = createClient<PrisonerAlertClient>(oauth2Client)
 }

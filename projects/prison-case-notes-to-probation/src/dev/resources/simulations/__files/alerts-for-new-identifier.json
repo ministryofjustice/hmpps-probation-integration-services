@@ -1,0 +1,21 @@
+{
+  "content": [
+    {
+      "alertUuid": "3fb4db4e-e83b-4183-9df5-009ad67f8f9e",
+      "prisonNumber": "A4578BX",
+      "alertCode": {
+        "alertTypeCode": "AT",
+        "alertTypeDescription": "Description of AT",
+        "code": "AST",
+        "description": "Description of AST"
+      },
+      "description": "User entered some text about the alert",
+      "activeFrom": "2025-02-27",
+      "isActive": true,
+      "createdAt": "2025-02-28T14:38:30.22417",
+      "createdBy": "J5M1TH",
+      "createdByDisplayName": "John Smith",
+      "prisonCodeWhenCreated": "LEI"
+    }
+  ]
+}

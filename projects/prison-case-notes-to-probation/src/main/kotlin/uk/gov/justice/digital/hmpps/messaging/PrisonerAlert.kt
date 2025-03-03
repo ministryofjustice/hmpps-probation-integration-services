@@ -3,26 +3,20 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader.Type.ActiveAlert
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader.Type.InactiveAlert
-import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.Alert
-import uk.gov.justice.digital.hmpps.integrations.prison.PrisonerAlertsClient
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonerAlertClient
+import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
-import java.time.LocalDateTime.of
-import java.time.ZonedDateTime
 
 @Service
 class PrisonerAlert(
-    private val alertsClient: PrisonerAlertsClient,
+    private val alertsClient: PrisonerAlertClient,
     private val deliusService: DeliusService,
     private val telemetryService: TelemetryService,
 ) {
@@ -52,31 +46,12 @@ class PrisonerAlert(
         }
     }
 
-    fun Alert.toDeliusCaseNote(): DeliusCaseNote {
-        return DeliusCaseNote(
-            header = CaseNoteHeader(prisonNumber, null, alertUuid, if (isActive) ActiveAlert else InactiveAlert),
-            body = CaseNoteBody(
-                type = "ALERT",
-                subType = if (isActive) "ACTIVE" else "INACTIVE",
-                content = description ?: "",
-                contactTimeStamp = ZonedDateTime.of(
-                    of(if (isActive) activeFrom else activeTo, createdAt.toLocalTime()),
-                    EuropeLondon
-                ),
-                systemTimestamp = lastModifiedAt ?: createdAt,
-                staffName = staffName(),
-                establishmentCode = checkNotNull(prisonCodeWhenCreated) {
-                    "Unable to verify establishment for alert"
-                }
-            )
-        )
-    }
-
-    private fun Alert.properties(): Map<String, String> = mapOf(
+    private fun Alert.properties(): Map<String, String> = listOfNotNull(
         "alertUuid" to alertUuid.toString(),
         "type" to alertCode.alertTypeCode,
         "subType" to alertCode.code,
         "created" to DeliusDateTimeFormatter.format(createdAt),
-        "occurrence" to DeliusDateTimeFormatter.format(activeFrom),
-    )
+        "activeFrom" to DeliusDateFormatter.format(activeFrom),
+        activeTo?.let { "activeTo" to DeliusDateFormatter.format(it) },
+    ).toMap()
 }

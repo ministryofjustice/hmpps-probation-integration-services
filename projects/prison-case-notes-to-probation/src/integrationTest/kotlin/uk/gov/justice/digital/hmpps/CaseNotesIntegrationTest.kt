@@ -208,13 +208,14 @@ class CaseNotesIntegrationTest {
                 mapOf(
                     "nomsId" to "A4578BX",
                     "cause" to "probation-case.prison-identifier.added",
-                    "total" to "4",
+                    "caseNotes" to "4",
+                    "alerts" to "1"
                 )
             ),
             anyMap()
         )
         val saved = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
-        assertThat(saved.size, equalTo(4))
+        assertThat(saved.size, equalTo(5))
     }
 
     @Order(6)
