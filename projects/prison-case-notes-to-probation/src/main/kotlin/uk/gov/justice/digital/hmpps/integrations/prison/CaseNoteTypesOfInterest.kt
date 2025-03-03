@@ -13,7 +13,8 @@ object CaseNoteTypesOfInterest {
     )
 
     fun forSearchRequest(useAlertsApi: Boolean): Set<TypeSubTypeRequest> =
-        typeSubTypeMap.filter { !useAlertsApi || it.key != "ALERT" }.map { TypeSubTypeRequest(it.key, it.value) }.toSet()
+        typeSubTypeMap.filter { !useAlertsApi || it.key != "ALERT" }.map { TypeSubTypeRequest(it.key, it.value) }
+            .toSet()
 
     fun verifyOfInterest(type: String, subType: String): Boolean {
         val subTypes = typeSubTypeMap[type] ?: return false
