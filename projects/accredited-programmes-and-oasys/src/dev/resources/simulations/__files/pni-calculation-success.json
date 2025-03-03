@@ -1,0 +1,32 @@
+{
+  "source": "OASys",
+  "inputs": {
+    "crnSource": "pris",
+    "crn": "P467261",
+    "additionalParameter": "N",
+    "laoPrivilege": "ALLOW"
+  },
+  "probNumber": "P467261",
+  "prisNumber": "A8746PN",
+  "limitedAccessOffender": false,
+  "pniCalc": [
+    {
+      "offenderPk": 869584726,
+      "riskLevel": "L",
+      "missingFields": null,
+      "sexDomainLevel": "L",
+      "sexDomainScore": 0,
+      "thinkingDomainLevel": "M",
+      "thinkingDomainScore": 1,
+      "relationshipDomainLevel": "M",
+      "relationshipDomainScore": 1,
+      "selfManagementDomainLevel": "H",
+      "selfManagementDomainScore": 2,
+      "totalDomainScore": 4,
+      "overallNeedLevel": "M",
+      "pniCalculation": "A",
+      "saraRiskLevelToPartner": 1,
+      "saraRiskLevelToOther": 2
+    }
+  ]
+}
