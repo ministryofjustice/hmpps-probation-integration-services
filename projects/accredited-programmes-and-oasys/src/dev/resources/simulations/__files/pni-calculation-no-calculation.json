@@ -1,0 +1,13 @@
+{
+  "source": "OASys",
+  "inputs": {
+    "crnSource": "pris",
+    "crn": "P467262",
+    "additionalParameter": "Y",
+    "laoPrivilege": "ALLOW"
+  },
+  "probNumber": "P467262",
+  "prisNumber": "A8747PN",
+  "limitedAccessOffender": false,
+  "pniCalc": null
+}
