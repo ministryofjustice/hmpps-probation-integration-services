@@ -64,6 +64,8 @@ integrations:
     client-id: prison-case-notes-to-probation
     client-secret: prison-case-notes-to-probation
     base_url: "http://localhost:${wiremock.port}"
+  prisoner-alerts:
+    base_url: "http://localhost:${wiremock.port}"
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
