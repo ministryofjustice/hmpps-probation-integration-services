@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_TEAM
@@ -40,6 +41,9 @@ internal class UserServiceTest {
 
     @Mock
     lateinit var userAccessService: UserAccessService
+
+    @Mock
+    lateinit var ldapTemplate: LdapTemplate
 
     @InjectMocks
     lateinit var service: UserService

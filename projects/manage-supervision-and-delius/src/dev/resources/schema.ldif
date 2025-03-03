@@ -11,3 +11,15 @@ sn: Parker
 givenname: Peter
 mail: peter.parker@moj.gov.uk
 telephoneNumber: 07321165373
+
+dn: cn=MAABT001,cn=peter-parker,ou=Users,dc=moj,dc=com
+objectclass: NDRoleAssociation
+objectclass: alias
+cn: MAABT001
+aliasedObjectName: cn=MAABT001,cn=NDRoleAssociation,ou=Users,dc=moj,dc=com
+
+dn: cn=APBT001,cn=peter-parker,ou=Users,dc=moj,dc=com
+objectclass: NDRoleAssociation
+objectclass: alias
+cn: APBT001
+aliasedObjectName: cn=APBT001,cn=NDRoleAssociation,ou=Users,dc=moj,dc=com
