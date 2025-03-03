@@ -1,0 +1,59 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/alerts/01954cfe-9f5a-7ea3-837b-a1770b389c5b"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-created-alert.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/alerts/424e52e8-1971-4622-8d2d-4b4466c771fd"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-updated-alert.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/alerts/62c811b1-f3f2-432f-abbd-ca06b9190d4d"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-inactive-alert.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/prisoners/A4578BX/alerts"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "alerts-for-new-identifier.json"
+      }
+    }
+  ]
+}

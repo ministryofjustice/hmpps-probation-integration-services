@@ -1,0 +1,8 @@
+{
+  "Type" : "Notification",
+  "MessageId" : "2ed0c68a-492f-5818-8da8-a6b185ba0ca2",
+  "Message" : "{\"eventType\":\"person.alert.inactive\",\"additionalInformation\":{\"alertUuid\":\"62c811b1-f3f2-432f-abbd-ca06b9190d4d\",\"alertCode\":\"OVI\",\"source\":\"DPS\"},\"version\":1,\"description\":\"An alert has been made inactive in the alerts service\",\"occurredAt\":\"2025-02-28T14:38:30.224174387Z\",\"detailUrl\":\"http://localhost:{wiremock.port}/alerts/62c811b1-f3f2-432f-abbd-ca06b9190d4d\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"AA0001A\"}]}}",
+  "MessageAttributes" : {
+    "eventType" : {"Type":"String","Value":"person.alert.updated"}
+  }
+}

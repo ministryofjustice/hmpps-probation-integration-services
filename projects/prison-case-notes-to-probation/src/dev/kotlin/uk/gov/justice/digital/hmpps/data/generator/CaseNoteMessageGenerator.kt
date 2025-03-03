@@ -15,3 +15,9 @@ object CaseNoteMessageGenerator {
     val NOMS_NUMBER_ADDED: Notification<HmppsDomainEvent> =
         ResourceLoader.notification<HmppsDomainEvent>("noms-number-added")
 }
+
+object AlertMessageGenerator {
+    val ALERT_CREATED = ResourceLoader.notification<HmppsDomainEvent>("alert-created")
+    val ALERT_UPDATED = ResourceLoader.notification<HmppsDomainEvent>("alert-updated")
+    val ALERT_INACTIVE = ResourceLoader.notification<HmppsDomainEvent>("alert-inactive")
+}
