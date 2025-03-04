@@ -26,29 +26,6 @@
       }
     },
     {
-      "append": {
-        "field": "textChunks",
-        "value": [
-          "{{{date}}} {{{startTime}}}",
-          "{{{typeDescription}}} {{{typeShortDescription}}}"
-        ]
-      }
-    },
-    {
-      "append": {
-        "field": "textChunks",
-        "value": ["{{{description}}}"],
-        "if": "ctx.description != null && ctx.description != \"\""
-      }
-    },
-    {
-      "append": {
-        "field": "textChunks",
-        "value": ["{{{outcomeDescription}}}"],
-        "if": "ctx.outcomeDescription != null && ctx.outcomeDescription != \"\""
-      }
-    },
-    {
       "text_embedding": {
         "model_id": "${model_id}",
         "field_map": {
