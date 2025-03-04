@@ -75,6 +75,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Timeline"
+  /assessments/pni/{nomsId}:
+    get:
+      tags:
+      - assessment-controller
+      operationId: getPniCalculation
+      parameters:
+      - name: nomsId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: community
+        in: query
+        required: true
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PniCalculation"
 components:
   schemas:
     JsonNode:
@@ -193,6 +216,83 @@ components:
             $ref: "#/components/schemas/AssessmentSummary"
       required:
       - timeline
+    LevelScore:
+      type: object
+      properties:
+        level:
+          type: string
+          enum:
+          - H
+          - M
+          - L
+        score:
+          type: integer
+          format: int32
+      required:
+      - level
+      - score
+    PniCalculation:
+      type: object
+      properties:
+        sexDomain:
+          $ref: "#/components/schemas/LevelScore"
+        thinkingDomain:
+          $ref: "#/components/schemas/LevelScore"
+        relationshipDomain:
+          $ref: "#/components/schemas/LevelScore"
+        selfManagementDomain:
+          $ref: "#/components/schemas/LevelScore"
+        riskLevel:
+          type: string
+          enum:
+          - H
+          - M
+          - L
+        needLevel:
+          type: string
+          enum:
+          - H
+          - M
+          - L
+        totalDomainScore:
+          type: integer
+          format: int32
+        pni:
+          type: string
+          enum:
+          - H
+          - M
+          - A
+          - O
+        saraRiskLevel:
+          $ref: "#/components/schemas/SaraRiskLevel"
+        missingFields:
+          type: array
+          items:
+            type: string
+      required:
+      - missingFields
+      - needLevel
+      - pni
+      - relationshipDomain
+      - riskLevel
+      - saraRiskLevel
+      - selfManagementDomain
+      - sexDomain
+      - thinkingDomain
+      - totalDomainScore
+    SaraRiskLevel:
+      type: object
+      properties:
+        toPartner:
+          type: integer
+          format: int32
+        toOther:
+          type: integer
+          format: int32
+      required:
+      - toOther
+      - toPartner
   securitySchemes:
     hmpps-auth-token:
       type: http

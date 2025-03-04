@@ -138,6 +138,9 @@
         <a href="./api-reference.html#appointment"><span>/appointment</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#user-username"><span>/user/{username}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#user-username-locations"><span>/user/{username}/locations</span></a>
       </li>
       <li>
@@ -1396,6 +1399,75 @@
 </td>
 <td>
 
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="user-username">/user/{username}</h2>
+
+<h3 id="user-username-get">get</h3>
+
+
+
+
+<h4 id="user-username-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "userId": "integer",
+  "username": "string",
+  "firstName": "string",
+  "surname": "string",
+  "email": "string",
+  "enabled": "boolean",
+  "roles": [
+    {
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-userdetails'>UserDetails</a>
 </td>
 </tr>
 
@@ -9091,6 +9163,88 @@
 <td>notes</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-userdetails">UserDetails</h3>
+
+
+<table class='schema-userdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>userId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>enabled</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>roles</td>
+<td>array</td>
+<td>true</td>
 <td></td>
 <td>
   

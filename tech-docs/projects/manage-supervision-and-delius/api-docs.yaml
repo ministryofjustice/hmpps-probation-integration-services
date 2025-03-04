@@ -230,6 +230,24 @@ paths:
       responses:
         "200":
           description: OK
+  /user/{username}:
+    get:
+      tags:
+      - User access
+      operationId: getUserRoles
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetails"
   /user/{username}/locations:
     get:
       tags:
@@ -1910,6 +1928,33 @@ components:
       - attended
       - code
       - id
+    UserDetails:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+        enabled:
+          type: boolean
+        roles:
+          type: array
+          items:
+            type: string
+      required:
+      - enabled
+      - firstName
+      - roles
+      - surname
+      - userId
+      - username
     LocationDetails:
       type: object
       properties:

@@ -107,6 +107,9 @@
         <a href="./api-reference.html#assessments-timeline-nomsid"><span>/assessments/timeline/{nomsId}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#assessments-pni-nomsid"><span>/assessments/pni/{nomsId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -357,6 +360,103 @@
 </td>
 <td>
 <a href='#schema-timeline'>Timeline</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="assessments-pni-nomsid">/assessments/pni/{nomsId}</h2>
+
+<h3 id="assessments-pni-nomsid-get">get</h3>
+
+
+
+
+<h4 id="assessments-pni-nomsid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>nomsId</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>community</td>
+<td>query</td>
+<td>boolean</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="assessments-pni-nomsid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "sexDomain": {
+    "level": "string",
+    "score": "integer"
+  },
+  "thinkingDomain": {
+    "level": "string",
+    "score": "integer"
+  },
+  "relationshipDomain": {
+    "level": "string",
+    "score": "integer"
+  },
+  "selfManagementDomain": {
+    "level": "string",
+    "score": "integer"
+  },
+  "riskLevel": "string",
+  "needLevel": "string",
+  "totalDomainScore": "integer",
+  "pni": "string",
+  "saraRiskLevel": {
+    "toPartner": "integer",
+    "toOther": "integer"
+  },
+  "missingFields": [
+    {
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-pnicalculation'>PniCalculation</a>
 </td>
 </tr>
 
@@ -687,6 +787,182 @@
 <td></td>
 <td>
   <a href='#schema-assessmentsummary'>AssessmentSummary</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-levelscore">LevelScore</h3>
+
+
+<table class='schema-levelscore'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>level</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>score</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pnicalculation">PniCalculation</h3>
+
+
+<table class='schema-pnicalculation'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>sexDomain</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-levelscore'>LevelScore</a>
+</td>
+</tr>
+
+<tr>
+<td>thinkingDomain</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-levelscore'>LevelScore</a>
+</td>
+</tr>
+
+<tr>
+<td>relationshipDomain</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-levelscore'>LevelScore</a>
+</td>
+</tr>
+
+<tr>
+<td>selfManagementDomain</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-levelscore'>LevelScore</a>
+</td>
+</tr>
+
+<tr>
+<td>riskLevel</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>needLevel</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalDomainScore</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pni</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>saraRiskLevel</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-sararisklevel'>SaraRiskLevel</a>
+</td>
+</tr>
+
+<tr>
+<td>missingFields</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sararisklevel">SaraRiskLevel</h3>
+
+
+<table class='schema-sararisklevel'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>toPartner</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>toOther</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
