@@ -75,7 +75,8 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         left join disposal upw_appointment_disposal on upw_appointment_disposal.disposal_id = upw_details.disposal_id
         left join contact on document.table_name = 'CONTACT' and document.primary_key_id = contact.contact_id
         left join nsi on document.table_name = 'NSI' and document.primary_key_id = nsi.nsi_id
-        where document.external_reference = :urn 
+        where lower(substr(document.external_reference, -36, 36)) = lower(substr(:urn, -36, 36))
+        -- where document.external_reference = :urn -- TODO re-enable exact filtering when Delius bug is fixed in SR31
         """,
         nativeQuery = true
     )
