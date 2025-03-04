@@ -1,6 +1,10 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.domain.Pageable
+import org.springframework.ldap.core.AttributesMapper
+import org.springframework.ldap.core.LdapTemplate
+import org.springframework.ldap.query.LdapQueryBuilder.query
+import org.springframework.ldap.query.SearchScope
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
@@ -8,7 +12,10 @@ import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.api.model.user.Staff
 import uk.gov.justice.digital.hmpps.api.model.user.Team
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
+import uk.gov.justice.digital.hmpps.ldap.findByUsername
 
 @Service
 class UserService(
@@ -16,8 +23,31 @@ class UserService(
     private val caseloadRepository: CaseloadRepository,
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
-    private val userAccessService: UserAccessService
+    private val userAccessService: UserAccessService,
+    private val ldapTemplate: LdapTemplate
 ) {
+    fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
+
+    private fun LdapUser.toUserDetails() = userRepository.findUserByUsername(username)?.let { toUserDetails(it.id) }
+        ?: throw NotFoundException("User entity", "username", username)
+
+    private fun LdapUser.toUserDetails(userId: Long) = UserDetails(
+        userId = userId,
+        username = username,
+        firstName = forename,
+        surname = surname,
+        email = email,
+        enabled = enabled,
+        roles = getUserRoles(dn)
+    )
+
+    private fun getUserRoles(name: javax.naming.Name): List<String> = ldapTemplate.search(
+        query()
+            .base(name)
+            .searchScope(SearchScope.ONELEVEL)
+            .filter("(|(objectclass=NDRole)(objectclass=NDRoleAssociation))"),
+        AttributesMapper { it["cn"].get().toString() }
+    )
 
     @Transactional
     fun getUserCaseload(username: String, pageable: Pageable): StaffCaseload {

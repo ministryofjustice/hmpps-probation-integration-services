@@ -10,11 +10,15 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.service.UserAccessService
+import uk.gov.justice.digital.hmpps.service.UserService
 
 @ExtendWith(MockitoExtension::class)
 internal class UserControllerTest {
     @Mock
     lateinit var userAccessService: UserAccessService
+
+    @Mock
+    lateinit var userService: UserService
 
     @InjectMocks
     lateinit var userAccessController: UserAccessController

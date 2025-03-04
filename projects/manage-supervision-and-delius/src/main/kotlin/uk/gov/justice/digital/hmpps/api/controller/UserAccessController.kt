@@ -5,11 +5,15 @@ import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.service.UserAccessService
+import uk.gov.justice.digital.hmpps.service.UserService
 
 @RestController
 @Tag(name = "User access")
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
-class UserAccessController(private val userAccessService: UserAccessService) {
+class UserAccessController(
+    private val userAccessService: UserAccessService,
+    private val userService: UserService
+) {
     @GetMapping("/user/{username}/access/{crn}")
     fun checkAccess(@PathVariable username: String, @PathVariable crn: String) =
         userAccessService.caseAccessFor(username, crn)
@@ -20,4 +24,7 @@ class UserAccessController(private val userAccessService: UserAccessService) {
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns")
         @RequestBody crns: List<String>
     ) = userAccessService.userAccessFor(username, crns)
+
+    @GetMapping("/user/{username}")
+    fun getUserRoles(@PathVariable username: String) = userService.getUserDetails(username)
 }

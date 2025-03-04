@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
+import uk.gov.justice.digital.hmpps.integrations.oasys.asIntegrationModel
 import uk.gov.justice.digital.hmpps.integrations.oasys.getRiskPredictors
 
 @RestController
@@ -25,6 +26,16 @@ class AssessmentController(private val ordsClient: OrdsClient) {
     @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
     @GetMapping("/{id}/risk-predictors")
     fun getRiskPredictors(@PathVariable id: Long): RiskPrediction = ordsClient.getRiskPredictors(id)
+
+    @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT')")
+    @GetMapping("/pni/{nomsId}")
+    fun getPniCalculation(
+        @PathVariable nomsId: String,
+        @RequestParam community: Boolean
+    ): ResponseEntity<PniCalculation> =
+        ordsClient.getPni(nomsId, if (community) "Y" else "N").asIntegrationModel()?.let {
+            ResponseEntity.ok(it)
+        } ?: ResponseEntity.noContent().build()
 
     @ExceptionHandler
     fun handleNotFound(e: HttpClientErrorException) = ResponseEntity
