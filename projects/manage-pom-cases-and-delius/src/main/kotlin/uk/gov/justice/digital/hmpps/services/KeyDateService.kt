@@ -43,27 +43,29 @@ class KeyDateService(
     private fun update(
         custodyId: Long,
         typeCode: KeyDate.TypeCode,
-        keyDate: KeyDate?,
-        date: LocalDate?,
+        existing: KeyDate?,
+        new: LocalDate?,
         dryRun: Boolean = false
-    ): KeyDateMergeResult {
-        date?.let {
-            return when (dryRun) {
-                false -> {
-                    keyDateRepository.save(keyDate?.apply { this.date = date } ?: keyDate(custodyId, typeCode, it))
-                    if (keyDate == null) KeyDateMergeResult.KeyDateCreated else KeyDateMergeResult.KeyDateUpdated
-                }
-
-                else -> if (keyDate == null) KeyDateMergeResult.DryRunKeyDateCreated else KeyDateMergeResult.DryRunKeyDateUpdated
-            }
+    ): KeyDateMergeResult = if (dryRun) dryRunUpdate(existing, new) else {
+        if (new != null) {
+            keyDateRepository.save(existing?.apply { this.date = new } ?: keyDate(custodyId, typeCode, new))
+            if (existing == null) KeyDateMergeResult.KeyDateCreated else KeyDateMergeResult.KeyDateUpdated
+        } else {
+            if (existing == null) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunKeyDateDeleted
         }
-        return if (!dryRun) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunNoKeyDateChange
+    }
+
+    private fun dryRunUpdate(existing: KeyDate?, new: LocalDate?): KeyDateMergeResult = if (new != null) {
+        if (existing == null) KeyDateMergeResult.DryRunKeyDateCreated else KeyDateMergeResult.DryRunKeyDateUpdated
+    } else {
+        if (existing == null) KeyDateMergeResult.DryRunNoKeyDateChange else KeyDateMergeResult.DryRunKeyDateDeleted
     }
 
     private fun keyDate(custodyId: Long, typeCode: KeyDate.TypeCode, date: LocalDate): KeyDate =
         KeyDate(custodyId, referenceDataRepository.keyDateType(typeCode.value), date)
 }
 
-enum class KeyDateMergeResult {
-    NoKeyDateChange, KeyDateUpdated, KeyDateCreated, DryRunNoKeyDateChange, DryRunKeyDateUpdated, DryRunKeyDateCreated
+enum class KeyDateMergeResult() {
+    NoKeyDateChange, KeyDateDeleted, KeyDateUpdated, KeyDateCreated,
+    DryRunNoKeyDateChange, DryRunKeyDateDeleted, DryRunKeyDateUpdated, DryRunKeyDateCreated
 }
