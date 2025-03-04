@@ -32,10 +32,7 @@ class AssessmentController(private val ordsClient: OrdsClient) {
     fun getPniCalculation(
         @PathVariable nomsId: String,
         @RequestParam community: Boolean
-    ): ResponseEntity<PniCalculation> =
-        ordsClient.getPni(nomsId, if (community) "Y" else "N").asIntegrationModel()?.let {
-            ResponseEntity.ok(it)
-        } ?: ResponseEntity.noContent().build()
+    ): PniResponse = ordsClient.getPni(nomsId, if (community) "Y" else "N").asIntegrationModel()
 
     @ExceptionHandler
     fun handleNotFound(e: HttpClientErrorException) = ResponseEntity

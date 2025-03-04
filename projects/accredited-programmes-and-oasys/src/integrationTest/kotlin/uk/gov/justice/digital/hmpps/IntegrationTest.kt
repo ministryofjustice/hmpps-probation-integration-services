@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.controller.*
 import uk.gov.justice.digital.hmpps.integrations.oasys.Level
+import uk.gov.justice.digital.hmpps.integrations.oasys.ScoredAnswer
+import uk.gov.justice.digital.hmpps.integrations.oasys.ScoredAnswer.YesNo
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -117,10 +119,10 @@ internal class IntegrationTest {
         val res = mockMvc
             .perform(get("/assessments/pni/A8746PN?community=false").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsJson<PniCalculation>()
+            .andReturn().response.contentAsJson<PniResponse>()
 
         assertThat(
-            res,
+            res.pniCalculation,
             equalTo(
                 PniCalculation(
                     LevelScore(Level.L, 0),
@@ -136,13 +138,48 @@ internal class IntegrationTest {
                 )
             )
         )
+
+        assertThat(
+            res.assessment,
+            equalTo(
+                PniAssessment(
+                    ldc = Ldc.from(0, 2),
+                    ldcMessage = null,
+                    ogrs3Risk = ScoreLevel.LOW,
+                    ovpRisk = ScoreLevel.MEDIUM,
+                    rsrOsp = RsrOsp(
+                        ScoreLevel.NOT_APPLICABLE,
+                        ScoreLevel.NOT_APPLICABLE,
+                        0.56,
+                        40
+                    ),
+                    questions = Questions(
+                        YesNo.NO,
+                        YesNo.NO,
+                        ScoredAnswer.Problem.MISSING,
+                        ScoredAnswer.Problem.MISSING,
+                        ScoredAnswer.Problem.MISSING,
+                        ScoredAnswer.Problem.SOME,
+                        ScoredAnswer.Problem.MISSING,
+                        ScoredAnswer.Problem.SOME,
+                        ScoredAnswer.Problem.SIGNIFICANT,
+                        ScoredAnswer.Problem.NONE,
+                        ScoredAnswer.Problem.SOME,
+                        ScoredAnswer.Problem.SIGNIFICANT,
+                        ScoredAnswer.Problem.SOME,
+                        ScoredAnswer.Problem.SIGNIFICANT,
+                        ScoredAnswer.Problem.SIGNIFICANT,
+                    )
+                )
+            )
+        )
     }
 
     @Test
     fun `get pni no calculation`() {
         mockMvc
             .perform(get("/assessments/pni/A8747PN?community=true").withToken())
-            .andExpect(status().isNoContent)
+            .andExpect(status().isOk)
     }
 
     @Test

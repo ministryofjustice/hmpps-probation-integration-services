@@ -28,5 +28,46 @@
       "saraRiskLevelToPartner": 1,
       "saraRiskLevelToOther": 2
     }
+  ],
+  "assessments": [
+    {
+      "assessmentPk": 3875025120,
+      "assessmentType": "LAYER3",
+      "dateCompleted": "2025-03-03T10:17:13",
+      "assessorSignedDate": "2025-03-03T16:16:17",
+      "initiationDate": "2025-02-28T15:37:31",
+      "assessmentStatus": "COMPLETE",
+      "superStatus": "COMPLETE",
+      "everCommittedSexualOffence": "No",
+      "difficultiesCoping": "2-Significant problems",
+      "problemSolvingSkills": "2-Significant problems",
+      "temperControl": "1-Some problems",
+      "impulsivity": "2-Significant problems",
+      "aggressiveControllingBehavour": "1-Some problems",
+      "easilyInfluenced": "0-No problems",
+      "prevCloseRelationships": "2-Significant problems",
+      "relCloseFamily": "1-Some problems",
+      "hostileOrientation": null,
+      "proCriminalAttitudes": "1-Some problems",
+      "emotionalCongruence": null,
+      "offenceRelatedSexualInterests": null,
+      "sexualPreOccupation": null,
+      "openSexualOffendingQuestions": "No",
+      "ogpOvp": {
+        "ogrs3RiskRecon": "Low",
+        "ovpRisk": "Medium"
+      },
+      "ldcData": {
+        "ldc": 0,
+        "ldcMsg": null,
+        "ldcSubTotal": 2
+      },
+      "rsrOspData": {
+        "ospCdcScoreLevel": "Not Applicable",
+        "ospIiicScoreLevel": "Not Applicable",
+        "rsrPercentageScore": 0.56,
+        "offenderAge": 40
+      }
+    }
   ]
 }
