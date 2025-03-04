@@ -144,7 +144,7 @@ template:
             - approved premise => approved_premise
             - approved premises => approved_premises
             - assessment care in custody and teamwork => assessment_care_in_custody_and_teamwork
-            - assessment, care in custody and teamwork => assessment_care_in_custody_and_teamwork
+            - assessment\\, care in custody and teamwork => assessment_care_in_custody_and_teamwork
             - assistant chief officer => assistant_chief_officer
             - at large => at_large
             - attention deficit hyperactivity disorder => attention_deficit_hyperactivity_disorder
@@ -154,7 +154,7 @@ template:
             - bail accommodation support service => bail_accommodation_support_service
             - bail hostel => bail_hostel
             - black asian and minority ethnic => black_asian_and_minority_ethnic
-            - black, asian and minority ethnic => black_asian_and_minority_ethnic
+            - black\\, asian and minority ethnic => black_asian_and_minority_ethnic
             - basic custody screening => basic_custody_screening
             - basic custody screening tool => basic_custody_screening_tool
             - becoming new me sex offender treatment program => becoming_new_me_sex_offender_treatment_program
@@ -219,7 +219,7 @@ template:
             - domestic abuse protection order => domestic_abuse_protection_order
             - domestic abuse safety officer => domestic_abuse_safety_officer
             - domestic abuse stalking and harassment => domestic_abuse_stalking_and_harassment
-            - domestic abuse, stalking and harassment => domestic_abuse_stalking_and_harassment
+            - domestic abuse\\, stalking and harassment => domestic_abuse_stalking_and_harassment
             - domestic violence => domestic_violence
             - did program => did_program
             - drink-impaired driver program => drink-impaired_driver_program
@@ -239,7 +239,7 @@ template:
             - early release => early_release
             - early removal => early_removal
             - education training and employment => education_training_and_employment
-            - education, training and employment => education_training_and_employment
+            - education\\, training and employment => education_training_and_employment
             - education training employment => education_training_employment
             - electronic monitoring => electronic_monitoring
             - electronic monitoring services => electronic_monitoring_services
@@ -303,7 +303,7 @@ template:
             - internet sex offender treatment programme => internet_sex_offender_treatment_programme
             - ka ks => ka_ks
             - kent surrey and sussex probation service => kent_surrey_and_sussex_probation_service
-            - kent, surrey and sussex probation service => kent_surrey_and_sussex_probation_service
+            - kent\\, surrey and sussex probation service => kent_surrey_and_sussex_probation_service
             - key worker => key_worker
             - licence condition => licence_condition
             - living as new me sex offender treatment program => living_as_new_me_sex_offender_treatment_program
