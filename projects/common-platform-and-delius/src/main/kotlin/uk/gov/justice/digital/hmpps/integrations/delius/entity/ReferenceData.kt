@@ -29,7 +29,8 @@ class ReferenceData(
         MALE("MALE", "M"),
         FEMALE("FEMALE", "F"),
         OTHER("OTHER", "O"),
-        NOT_KNOWN("NOT KNOWN", "N")
+        NOT_KNOWN("NOT KNOWN", "N"),
+        NOT_SPECIFIED("NOT_SPECIFIED", "N")
     }
 
     enum class StandardRefDataCode(val code: String) {
