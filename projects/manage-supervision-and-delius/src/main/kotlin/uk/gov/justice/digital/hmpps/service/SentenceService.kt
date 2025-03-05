@@ -231,7 +231,7 @@ class SentenceService(
 }
 
 fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
-    return notes?.let {
+    return notes?.takeIf { it.isNotEmpty() }?.let {
         val splitParam = "---------------------------------------------------------" + System.lineSeparator()
         notes.split(splitParam).asReversed().mapIndexed { index, note ->
             val matchResult = Regex(
