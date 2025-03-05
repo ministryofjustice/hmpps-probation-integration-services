@@ -96,7 +96,7 @@ class OrderIntegrationTest {
                 ),
                 PreviousOrder(
                     INACTIVE_EVENT_1.eventNumber,
-                    "Default Sentence Type (25 Years)",
+                    "Default Sentence Type (2 Years)",
                     "Murder",
                     LocalDate.now().minusDays(8)
                 )
@@ -118,7 +118,7 @@ class OrderIntegrationTest {
 
         val expected = PreviousOrderInformation(
             Name("Forename", "Middle1", "Surname"),
-            "Default Sentence Type (25 Years)",
+            "Default Sentence Type (2 Years)",
             Sentence(
                 OffenceDetails(
                     INACTIVE_EVENT_1.eventNumber,

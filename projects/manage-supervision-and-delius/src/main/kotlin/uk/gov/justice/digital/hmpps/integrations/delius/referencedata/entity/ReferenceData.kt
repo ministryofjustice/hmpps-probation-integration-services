@@ -91,3 +91,9 @@ enum class AddressStatus(val code: String) {
     MAIN("M"),
     PREVIOUS("P");
 }
+
+enum class LengthUnit(val code: String) {
+    YEARS("Y"),
+    MONTHS("M");
+}
+
