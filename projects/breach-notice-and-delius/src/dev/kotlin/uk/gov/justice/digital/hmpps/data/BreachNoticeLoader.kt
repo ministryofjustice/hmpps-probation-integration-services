@@ -42,6 +42,7 @@ class BreachNoticeLoader(
             StaffGenerator.DEFAULT_SU,
             PersonGenerator.DEFAULT_PERSON,
             PersonGenerator.DEFAULT_ADDRESS,
+            PersonGenerator.END_DATED_ADDRESS,
             PersonGenerator.DEFAULT_PERSON_MANAGER,
         )
     }
