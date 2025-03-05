@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps
 
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -480,6 +480,26 @@ internal class PersonalDetailsIntegrationTest {
                 emailAddress = "X".repeat(255)
             )
         )
+    }
+
+    @Test
+    @Transactional
+    fun `when first main address with no notes - address is created`() {
+        val res = mockMvc
+            .perform(
+                post("/personal-details/X000004/address").withToken()
+                    .withJson(
+                        PersonAddressEditRequest(
+                            postcode = "NE3 NEW",
+                            startDate = LocalDate.now().minusDays(10),
+                            notes = "",
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonalDetails>()
+
+        assertThat(res.mainAddress?.postcode, equalTo("NE3 NEW"))
     }
 
     @Test
