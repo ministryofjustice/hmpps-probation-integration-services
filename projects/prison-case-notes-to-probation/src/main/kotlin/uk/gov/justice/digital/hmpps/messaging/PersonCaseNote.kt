@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.model.properties
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters.filters
@@ -43,8 +44,8 @@ class PersonCaseNote(
         }
 
         try {
-            deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
-            telemetryService.trackEvent("CaseNoteMerged", prisonCaseNote.properties())
+            val result = deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
+            telemetryService.trackEvent("CaseNoteMerged", prisonCaseNote.properties() + result.properties())
         } catch (e: Exception) {
             telemetryService.trackEvent(
                 "CaseNoteMergeFailed",

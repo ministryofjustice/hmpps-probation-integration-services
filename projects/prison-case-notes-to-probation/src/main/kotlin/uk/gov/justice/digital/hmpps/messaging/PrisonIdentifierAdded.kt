@@ -3,6 +3,9 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Failure
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Success
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.*
 import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteTypesOfInterest.forSearchRequest
@@ -38,33 +41,35 @@ class PrisonIdentifierAdded(
             emptyList()
         }
 
-        val cnExceptions = caseNotes.mapNotNull { pcn ->
+        val cnResults: List<MergeResult> = caseNotes.mapNotNull {
             try {
-                deliusService.mergeCaseNote(pcn.toDeliusCaseNote())
-                null
+                deliusService.mergeCaseNote(it.toDeliusCaseNote())
             } catch (e: Exception) {
-                e
+                Failure(e)
             }
         }
 
-        val alertExceptions = alerts.mapNotNull { alert ->
+        val alertResults: List<MergeResult> = alerts.mapNotNull {
             try {
-                deliusService.mergeCaseNote(alert.toDeliusCaseNote())
-                null
+                deliusService.mergeCaseNote(it.toDeliusCaseNote())
             } catch (e: Exception) {
-                e
+                Failure(e)
             }
         }
 
-        (cnExceptions + alertExceptions).firstOrNull()?.also { throw it }
+        val results = cnResults + alertResults
+        val success = results.firstOrNull { it is Success } as Success?
 
         telemetryService.trackEvent(
-            "CaseNotesMigrated", mapOf(
+            "CaseNotesMigrated", listOfNotNull(
                 "nomsId" to nomsId,
+                success?.crn?.let { "crn" to it },
                 "cause" to event.eventType,
-                "caseNotes" to caseNotes.size.toString(),
-                "alerts" to alerts.size.toString(),
-            )
+                "caseNotes" to cnResults.filterIsInstance<Success>().size.toString(),
+                "alerts" to alertResults.filterIsInstance<Success>().size.toString(),
+            ).toMap()
         )
+
+        results.filterIsInstance<Failure>().firstOrNull()?.let { throw it.exception }
     }
 }

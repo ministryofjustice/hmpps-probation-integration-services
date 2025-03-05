@@ -17,8 +17,9 @@ import java.time.ZonedDateTime
 @Table(name = "contact")
 data class CaseNote(
 
-    @Column(updatable = false)
-    val offenderId: Long,
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val offender: Offender,
 
     @Column(updatable = false)
     val eventId: Long?,
@@ -112,7 +113,7 @@ data class CaseNote(
     override fun hashCode(): Int = javaClass.hashCode()
 
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , offenderId = $offenderId , nomisId = $nomisId , type = $type , " +
+        return this::class.simpleName + "(id = $id , offenderId = ${offender.id} , nomisId = $nomisId , type = $type , " +
             "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDateTime , " +
             "lastModifiedUserId = $lastModifiedUserId , createdByUserId = $createdByUserId , " +
             "createdDateTime = $createdDateTime , version = $version )"

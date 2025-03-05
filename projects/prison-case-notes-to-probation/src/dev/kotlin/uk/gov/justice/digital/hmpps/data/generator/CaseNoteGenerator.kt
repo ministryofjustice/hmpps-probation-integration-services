@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Offender
 import java.time.ZonedDateTime
 import kotlin.random.Random
 
@@ -20,7 +21,7 @@ object CaseNoteGenerator {
 
     fun generate(
         nomisId: Long = Random.nextLong(),
-        offenderId: Long = OffenderGenerator.DEFAULT.id,
+        offender: Offender = OffenderGenerator.DEFAULT,
         eventId: Long? = EventGenerator.CUSTODIAL_EVENT.id,
         nsiId: Long? = NsiGenerator.EVENT_CASE_NOTE_NSI.id,
         type: CaseNoteType = CaseNoteTypeGenerator.DEFAULT,
@@ -34,7 +35,7 @@ object CaseNoteGenerator {
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now()
     ): CaseNote {
         return CaseNote(
-            offenderId,
+            offender,
             eventId,
             nsiId,
             nomisId,
