@@ -42,6 +42,9 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
     @Query("select s from StaffWithUser s join s.teams t where t.code = :teamCode and (s.endDate is null or s.endDate > current_date)")
     fun findActiveStaffInTeam(teamCode: String): List<StaffWithUser>
 
+    @Query("select s from StaffWithTeams s left join fetch s.teams t left join fetch t.district d left join fetch d.borough where s.code = :code")
+    fun findStaffWithTeamsByCode(code: String): StaffWithTeams?
+
     @Query(
         """
         select count(1) from offender_manager om 

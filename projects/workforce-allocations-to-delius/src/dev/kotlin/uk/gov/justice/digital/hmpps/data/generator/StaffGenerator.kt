@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRecord
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.*
 import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
 import uk.gov.justice.digital.hmpps.set
 import java.time.ZonedDateTime
@@ -47,6 +44,12 @@ object StaffGenerator {
         "Joe",
         "Bloggs",
         listOf(TeamGenerator.ALLOCATION_TEAM)
+    )
+
+    val STAFF_WITH_TEAM = StaffWithTeams(
+        id = IdGenerator.getAndIncrement(),
+        code = "SWT0001",
+        teams = listOf(TeamGenerator.TEAM_IN_LAU),
     )
 
     fun generateStaffWithUser(

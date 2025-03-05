@@ -1,15 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.provider
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
@@ -78,3 +69,23 @@ class StaffWithUser(
     val user: StaffUser? = null,
     teams: List<Team> = mutableListOf()
 ) : StaffRecord(id, code, forename, surname, middleName, endDate, grade, teams)
+
+@Immutable
+@Entity
+@Table(name = "staff")
+class StaffWithTeams(
+    @Id
+    @Column(name = "staff_id")
+    val id: Long,
+
+    @Column(name = "officer_code", columnDefinition = "char(7)")
+    val code: String,
+
+    @ManyToMany
+    @JoinTable(
+        name = "staff_team",
+        joinColumns = [JoinColumn(name = "staff_id")],
+        inverseJoinColumns = [JoinColumn(name = "team_id")]
+    )
+    val teams: List<TeamWithDistrict> = mutableListOf()
+)

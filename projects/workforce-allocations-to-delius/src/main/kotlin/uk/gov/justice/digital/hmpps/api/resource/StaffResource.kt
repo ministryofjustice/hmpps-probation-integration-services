@@ -3,20 +3,15 @@ package uk.gov.justice.digital.hmpps.api.resource
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.service.StaffService
 
 @Validated
 @RestController
 @RequestMapping("/staff")
+@PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
 class StaffResource(private val service: StaffService) {
 
-    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = """Personal and and summary caseload information for
             the identified probation officer""",
@@ -32,7 +27,6 @@ class StaffResource(private val service: StaffService) {
         @PathVariable code: String
     ) = service.getOfficerView(code)
 
-    @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
     @Operation(
         summary = """Personal information along with a list of active
             cases for the identified probation practitioner""",
@@ -49,4 +43,11 @@ class StaffResource(private val service: StaffService) {
         @PathVariable code: String,
         @RequestBody crns: List<String>
     ) = service.getActiveCases(code, crns)
+
+    @Operation(
+        summary = """Team, LAU, PDU and Provider hierarchy associated with a staff code""",
+        description = """A list of teams for a staff code, along with the LAU (Local Admin Unit), PDU (Probation Delivery Unit) and Provider for each."""
+    )
+    @GetMapping("{code}/teams")
+    fun teams(@PathVariable code: String) = service.getTeams(code)
 }
