@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.genera
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.integrations.delius.*
+import java.time.LocalDate
 
 object PersonGenerator {
 
@@ -13,6 +14,8 @@ object PersonGenerator {
     val DS_ADDRESS_TYPE = ReferenceDataGenerator.generateDataset(Dataset.ADDRESS_TYPE)
     val DEFAULT_ADDRESS_TYPE = generateReferenceData(DS_ADDRESS_TYPE, "ADT1")
     val DEFAULT_ADDRESS = generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_TYPE)
+    val END_DATED_ADDRESS =
+        generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_TYPE, endDate = LocalDate.now().minusDays(1))
 
     val EXCLUSION = generatePerson("E123456", exclusionMessage = "There is an exclusion on this person")
     val RESTRICTION = generatePerson("R123456", restrictionMessage = "There is a restriction on this person")
@@ -57,6 +60,7 @@ object PersonGenerator {
         district: String? = "District",
         county: String? = "County",
         postcode: String? = "PO57 0DE",
+        endDate: LocalDate? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = PersonAddress(
@@ -69,6 +73,7 @@ object PersonGenerator {
         district,
         county,
         postcode,
+        endDate,
         softDeleted,
         id
     )

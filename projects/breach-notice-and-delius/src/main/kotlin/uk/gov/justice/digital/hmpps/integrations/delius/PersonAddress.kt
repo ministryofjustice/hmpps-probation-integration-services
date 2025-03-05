@@ -4,11 +4,12 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "offender_address")
-@SQLRestriction("soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
 class PersonAddress(
 
     @ManyToOne
@@ -27,6 +28,7 @@ class PersonAddress(
     val district: String?,
     val county: String?,
     val postcode: String?,
+    val endDate: LocalDate?,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
