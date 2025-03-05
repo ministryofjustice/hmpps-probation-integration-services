@@ -53,12 +53,12 @@ fun PniResult.asIntegrationModel(): IntegrationModel {
             ldcMessage = it.ldcData.ldcMessage,
             ogrs3Risk = ScoreLevel.of(it.ogpOvp.ogrs3RiskRecon),
             ovpRisk = ScoreLevel.of(it.ogpOvp.ovpRisk),
-            rsrOsp = RsrOsp(
+            osp = Osp(
                 ScoreLevel.of(it.rsrOspData.ospCdcScoreLevel),
                 ScoreLevel.of(it.rsrOspData.ospIiicScoreLevel),
-                it.rsrOspData.rsrPercentageScore,
-                it.rsrOspData.offenderAge
             ),
+            it.rsrOspData.rsrPercentageScore,
+            it.rsrOspData.offenderAge,
             questions = Questions(
                 YesNo.of(it.everCommittedSexualOffence),
                 YesNo.of(it.openSexualOffendingQuestions),

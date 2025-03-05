@@ -7,7 +7,9 @@ data class PniAssessment(
     val ldcMessage: String?,
     val ogrs3Risk: ScoreLevel?,
     val ovpRisk: ScoreLevel?,
-    val rsrOsp: RsrOsp,
+    val osp: Osp,
+    val rsrPercentage: Double?,
+    val offenderAge: Int,
     val questions: Questions
 )
 
@@ -18,7 +20,7 @@ data class Ldc(val score: Int, val subTotal: Int) {
     }
 }
 
-data class RsrOsp(val ospCdc: ScoreLevel?, val ospIiic: ScoreLevel?, val rsrPercentage: Double?, val offenderAge: Int)
+data class Osp(val cdc: ScoreLevel?, val iiic: ScoreLevel?)
 
 data class Questions(
     val everCommittedSexualOffence: ScoredAnswer.YesNo,

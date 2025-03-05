@@ -147,12 +147,13 @@ internal class IntegrationTest {
                     ldcMessage = null,
                     ogrs3Risk = ScoreLevel.LOW,
                     ovpRisk = ScoreLevel.MEDIUM,
-                    rsrOsp = RsrOsp(
+
+                    osp = Osp(
                         ScoreLevel.NOT_APPLICABLE,
                         ScoreLevel.NOT_APPLICABLE,
-                        0.56,
-                        40
                     ),
+                    0.56,
+                    40,
                     questions = Questions(
                         YesNo.NO,
                         YesNo.NO,
