@@ -22,7 +22,7 @@ import java.time.ZonedDateTime
 class PersonManager(
     @Id
     @Column(name = "offender_manager_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_manager_id_seq")
     val id: Long? = null,
 
     @Column(name = "allocation_date")
