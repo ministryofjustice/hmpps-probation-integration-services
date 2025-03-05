@@ -11,7 +11,7 @@
     {
       "normalization-processor": {
         "normalization": {
-          "technique": "min_max"
+          "technique": "l2"
         },
         "combination": {
           "technique": "arithmetic_mean",
