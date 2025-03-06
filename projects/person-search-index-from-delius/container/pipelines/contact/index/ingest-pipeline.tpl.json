@@ -26,6 +26,32 @@
       }
     },
     {
+      "foreach": {
+        "description": "Pad each text chunk using the reserved '[PAD]' token",
+        "field": "textChunks",
+        "processor": {
+          "gsub": {
+            "field": "_ingest._value",
+            "pattern": "$",
+            "replacement": " [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD] [PAD]"
+          }
+        }
+      }
+    },
+    {
+      "foreach": {
+        "description": "Trim each text chunk to ensure there are still at most 128 tokens per chunk",
+        "field": "textChunks",
+        "processor": {
+          "gsub": {
+            "field": "_ingest._value",
+            "pattern": "^((?:\\S+\\s+){127}\\S+).*",
+            "replacement": "$1"
+          }
+        }
+      }
+    },
+    {
       "text_embedding": {
         "model_id": "${model_id}",
         "field_map": {
