@@ -7,8 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -37,5 +37,37 @@ class TeamsIntegrationTest {
         mockMvc.perform(get("/teams").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.teams.keys()").isEmpty)
+    }
+
+    @Test
+    fun `get teams for staff`() {
+        mockMvc.perform(get("/staff/${StaffGenerator.STAFF_WITH_TEAM.code}/teams").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "teams": [
+                        {
+                          "code": "N03AAA",
+                          "description": "Description for N03AAA",
+                          "localAdminUnit": {
+                            "code": "LAU1",
+                            "description": "Some LAU",
+                            "probationDeliveryUnit": {
+                              "code": "PDU1",
+                              "description": "Some PDU",
+                              "provider": {
+                                "code": "N02",
+                                "description": "NPS North East"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                    """.trimIndent()
+                )
+            )
     }
 }
