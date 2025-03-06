@@ -195,7 +195,7 @@ class CaseNotesIntegrationTest {
     @Test
     fun `migrate case notes successfully when noms number added`() {
         val offender = requireNotNull(offenderRepository.findByNomsIdAndSoftDeletedIsFalse("A4578BX"))
-        val originals = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
+        val originals = caseNoteRepository.findAll().filter { it.offender.id == offender.id }
         assert(originals.isEmpty())
 
         channelManager.getChannel(queueName).publishAndWait(
@@ -207,6 +207,7 @@ class CaseNotesIntegrationTest {
             eq(
                 mapOf(
                     "nomsId" to "A4578BX",
+                    "crn" to "N123456",
                     "cause" to "probation-case.prison-identifier.added",
                     "caseNotes" to "4",
                     "alerts" to "1"
@@ -214,7 +215,7 @@ class CaseNotesIntegrationTest {
             ),
             anyMap()
         )
-        val saved = caseNoteRepository.findAll().filter { it.offenderId == offender.id }
+        val saved = caseNoteRepository.findAll().filter { it.offender.id == offender.id }
         assertThat(saved.size, equalTo(5))
     }
 

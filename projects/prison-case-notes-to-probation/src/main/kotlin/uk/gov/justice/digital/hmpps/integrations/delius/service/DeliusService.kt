@@ -17,6 +17,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader.Type.*
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Action.Created
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Action.Updated
+import uk.gov.justice.digital.hmpps.integrations.delius.model.MergeResult.Success
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.*
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.service.AssignmentService
@@ -35,7 +38,7 @@ class DeliusService(
     private val relatedService: CaseNoteRelatedService
 ) {
     @Transactional
-    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
+    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote): Success? {
         val existing = when (caseNote.header.type) {
             CaseNote -> caseNoteRepository.findByExternalReference(caseNote.urn)
                 ?: caseNote.header.legacyId?.let { caseNoteRepository.findByNomisId(it) }
@@ -43,8 +46,7 @@ class DeliusService(
             ActiveAlert, InactiveAlert -> caseNoteRepository.findByExternalReference(caseNote.urn)
         }
 
-
-        (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
+        return (if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote))
             ?.let(caseNoteRepository::save)
             ?.also {
                 auditCaseNoteMerge(
@@ -54,6 +56,7 @@ class DeliusService(
                     )
                 )
             }
+            ?.let { Success(it.offender.crn, it.offender.nomsId, if (existing == null) Created else Updated) }
     }
 
     private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {
@@ -100,7 +103,7 @@ class DeliusService(
         val assignment = assignmentService.findAssignment(body.establishmentCode, body.staffName)
 
         return CaseNote(
-            offenderId = offender.id,
+            offender = offender,
             eventId = relatedIds.eventId,
             nsiId = relatedIds.nsiId,
             type = caseNoteType,
