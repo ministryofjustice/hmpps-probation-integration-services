@@ -7,7 +7,7 @@ data class PniAssessment(
     val ldcMessage: String?,
     val ogrs3Risk: ScoreLevel?,
     val ovpRisk: ScoreLevel?,
-    val osp: Osp,
+    val osp: Osp?,
     val rsrPercentage: Double?,
     val offenderAge: Int,
     val questions: Questions
@@ -20,7 +20,12 @@ data class Ldc(val score: Int, val subTotal: Int) {
     }
 }
 
-data class Osp(val cdc: ScoreLevel?, val iiic: ScoreLevel?)
+data class Osp(val cdc: ScoreLevel?, val iiic: ScoreLevel?) {
+    companion object {
+        fun from(cdc: ScoreLevel?, iiic: ScoreLevel?): Osp? =
+            if (cdc == null && iiic == null) null else Osp(cdc, iiic)
+    }
+}
 
 data class Questions(
     val everCommittedSexualOffence: ScoredAnswer.YesNo,
