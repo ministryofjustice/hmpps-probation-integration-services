@@ -97,7 +97,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PniCalculation"
+                $ref: "#/components/schemas/PniResponse"
 components:
   schemas:
     JsonNode:
@@ -216,6 +216,18 @@ components:
             $ref: "#/components/schemas/AssessmentSummary"
       required:
       - timeline
+    Ldc:
+      type: object
+      properties:
+        score:
+          type: integer
+          format: int32
+        subTotal:
+          type: integer
+          format: int32
+      required:
+      - score
+      - subTotal
     LevelScore:
       type: object
       properties:
@@ -231,6 +243,62 @@ components:
       required:
       - level
       - score
+    Osp:
+      type: object
+      properties:
+        cdc:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+        iiic:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+    PniAssessment:
+      type: object
+      properties:
+        ldc:
+          $ref: "#/components/schemas/Ldc"
+        ldcMessage:
+          type: string
+        ogrs3Risk:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+        ovpRisk:
+          type: string
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - VERY_HIGH
+          - NOT_APPLICABLE
+        osp:
+          $ref: "#/components/schemas/Osp"
+        rsrPercentage:
+          type: number
+          format: double
+        offenderAge:
+          type: integer
+          format: int32
+        questions:
+          $ref: "#/components/schemas/Questions"
+      required:
+      - offenderAge
+      - osp
+      - questions
     PniCalculation:
       type: object
       properties:
@@ -281,6 +349,134 @@ components:
       - sexDomain
       - thinkingDomain
       - totalDomainScore
+    PniResponse:
+      type: object
+      properties:
+        pniCalculation:
+          $ref: "#/components/schemas/PniCalculation"
+        assessment:
+          $ref: "#/components/schemas/PniAssessment"
+    Questions:
+      type: object
+      properties:
+        everCommittedSexualOffence:
+          type: string
+          enum:
+          - "YES"
+          - "NO"
+          - Unknown
+        openSexualOffendingQuestions:
+          type: string
+          enum:
+          - "YES"
+          - "NO"
+          - Unknown
+        sexualPreOccupation:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        offenceRelatedSexualInterests:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        emotionalCongruence:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        proCriminalAttitudes:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        hostileOrientation:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        relCloseFamily:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        prevCloseRelationships:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        easilyInfluenced:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        aggressiveControllingBehaviour:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        impulsivity:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        temperControl:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        problemSolvingSkills:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+        difficultiesCoping:
+          type: string
+          enum:
+          - NONE
+          - SOME
+          - SIGNIFICANT
+          - MISSING
+      required:
+      - aggressiveControllingBehaviour
+      - difficultiesCoping
+      - easilyInfluenced
+      - emotionalCongruence
+      - everCommittedSexualOffence
+      - hostileOrientation
+      - impulsivity
+      - offenceRelatedSexualInterests
+      - prevCloseRelationships
+      - proCriminalAttitudes
+      - problemSolvingSkills
+      - relCloseFamily
+      - sexualPreOccupation
+      - temperControl
     SaraRiskLevel:
       type: object
       properties:

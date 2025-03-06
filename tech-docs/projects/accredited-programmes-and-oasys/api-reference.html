@@ -424,39 +424,73 @@
 
 
 <pre><code>{
-  "sexDomain": {
-    "level": "string",
-    "score": "integer"
+  "pniCalculation": {
+    "sexDomain": {
+      "level": "string",
+      "score": "integer"
+    },
+    "thinkingDomain": {
+      "level": "string",
+      "score": "integer"
+    },
+    "relationshipDomain": {
+      "level": "string",
+      "score": "integer"
+    },
+    "selfManagementDomain": {
+      "level": "string",
+      "score": "integer"
+    },
+    "riskLevel": "string",
+    "needLevel": "string",
+    "totalDomainScore": "integer",
+    "pni": "string",
+    "saraRiskLevel": {
+      "toPartner": "integer",
+      "toOther": "integer"
+    },
+    "missingFields": [
+      {
+      }
+    ]
   },
-  "thinkingDomain": {
-    "level": "string",
-    "score": "integer"
-  },
-  "relationshipDomain": {
-    "level": "string",
-    "score": "integer"
-  },
-  "selfManagementDomain": {
-    "level": "string",
-    "score": "integer"
-  },
-  "riskLevel": "string",
-  "needLevel": "string",
-  "totalDomainScore": "integer",
-  "pni": "string",
-  "saraRiskLevel": {
-    "toPartner": "integer",
-    "toOther": "integer"
-  },
-  "missingFields": [
-    {
+  "assessment": {
+    "ldc": {
+      "score": "integer",
+      "subTotal": "integer"
+    },
+    "ldcMessage": "string",
+    "ogrs3Risk": "string",
+    "ovpRisk": "string",
+    "osp": {
+      "cdc": "string",
+      "iiic": "string"
+    },
+    "rsrPercentage": "number",
+    "offenderAge": "integer",
+    "questions": {
+      "everCommittedSexualOffence": "string",
+      "openSexualOffendingQuestions": "string",
+      "sexualPreOccupation": "string",
+      "offenceRelatedSexualInterests": "string",
+      "emotionalCongruence": "string",
+      "proCriminalAttitudes": "string",
+      "hostileOrientation": "string",
+      "relCloseFamily": "string",
+      "prevCloseRelationships": "string",
+      "easilyInfluenced": "string",
+      "aggressiveControllingBehaviour": "string",
+      "impulsivity": "string",
+      "temperControl": "string",
+      "problemSolvingSkills": "string",
+      "difficultiesCoping": "string"
     }
-  ]
+  }
 }</code></pre>
 
 </td>
 <td>
-<a href='#schema-pnicalculation'>PniCalculation</a>
+<a href='#schema-pniresponse'>PniResponse</a>
 </td>
 </tr>
 
@@ -793,6 +827,38 @@
 </tbody>
 </table>
 
+<h3 id="schema-ldc">Ldc</h3>
+
+
+<table class='schema-ldc'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>score</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subTotal</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-levelscore">LevelScore</h3>
 
 
@@ -819,6 +885,130 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-osp">Osp</h3>
+
+
+<table class='schema-osp'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>cdc</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>iiic</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pniassessment">PniAssessment</h3>
+
+
+<table class='schema-pniassessment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>ldc</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-ldc'>Ldc</a>
+</td>
+</tr>
+
+<tr>
+<td>ldcMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ogrs3Risk</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ovpRisk</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>osp</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-osp'>Osp</a>
+</td>
+</tr>
+
+<tr>
+<td>rsrPercentage</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderAge</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>questions</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-questions'>Questions</a>
 </td>
 </tr>
 
@@ -927,6 +1117,200 @@
 <tr>
 <td>missingFields</td>
 <td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pniresponse">PniResponse</h3>
+
+
+<table class='schema-pniresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>pniCalculation</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-pnicalculation'>PniCalculation</a>
+</td>
+</tr>
+
+<tr>
+<td>assessment</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-pniassessment'>PniAssessment</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-questions">Questions</h3>
+
+
+<table class='schema-questions'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>everCommittedSexualOffence</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>openSexualOffendingQuestions</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sexualPreOccupation</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenceRelatedSexualInterests</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>emotionalCongruence</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>proCriminalAttitudes</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>hostileOrientation</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>relCloseFamily</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>prevCloseRelationships</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>easilyInfluenced</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>aggressiveControllingBehaviour</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>impulsivity</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>temperControl</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>problemSolvingSkills</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>difficultiesCoping</td>
+<td>string</td>
 <td>true</td>
 <td></td>
 <td>
