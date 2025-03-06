@@ -143,6 +143,7 @@ internal class IntegrationTest {
             res.assessment,
             equalTo(
                 PniAssessment(
+                    id = 3875025120,
                     ldc = Ldc.from(0, 2),
                     ldcMessage = null,
                     ogrs3Risk = ScoreLevel.LOW,

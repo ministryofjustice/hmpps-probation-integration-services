@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.controller
 import uk.gov.justice.digital.hmpps.integrations.oasys.ScoredAnswer
 
 data class PniAssessment(
+    val id: Long,
     val ldc: Ldc?,
     val ldcMessage: String?,
     val ogrs3Risk: ScoreLevel?,

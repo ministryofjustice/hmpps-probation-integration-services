@@ -49,6 +49,7 @@ fun PniResult.asIntegrationModel(): IntegrationModel {
     }
     val assessment = assessments?.firstOrNull()?.let {
         uk.gov.justice.digital.hmpps.controller.PniAssessment(
+            id = it.id,
             ldc = Ldc.from(it.ldcData.ldc, it.ldcData.ldcSubTotal),
             ldcMessage = it.ldcData.ldcMessage,
             ogrs3Risk = ScoreLevel.of(it.ogpOvp.ogrs3RiskRecon),

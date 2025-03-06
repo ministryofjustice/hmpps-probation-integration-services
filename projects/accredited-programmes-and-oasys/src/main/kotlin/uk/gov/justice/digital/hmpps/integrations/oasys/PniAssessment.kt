@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.integrations.oasys
 import com.fasterxml.jackson.annotation.JsonAlias
 
 data class PniAssessment(
+    @JsonAlias("assessmentPk")
+    val id: Long,
     val everCommittedSexualOffence: String?,
     val openSexualOffendingQuestions: String?,
     val sexualPreOccupation: String?,
