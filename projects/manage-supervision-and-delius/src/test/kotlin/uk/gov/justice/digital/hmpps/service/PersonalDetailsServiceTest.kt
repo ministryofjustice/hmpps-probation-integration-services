@@ -166,11 +166,21 @@ internal class PersonalDetailsServiceTest {
             PersonDetailsGenerator.PERSON_ADDRESS_1,
             PersonDetailsGenerator.PERSON_ADDRESS_2,
             PersonDetailsGenerator.PREVIOUS_ADDRESS,
+            PersonDetailsGenerator.PREVIOUS_ADDRESS_1,
+            PersonDetailsGenerator.PREVIOUS_ADDRESS_2,
+            PersonDetailsGenerator.PREVIOUS_ADDRESS_3,
+            PersonDetailsGenerator.PREVIOUS_ADDRESS_4
         )
 
         val expectedResponse = AddressOverview(
             personSummary = personSummary.toPersonSummary(),
-            previousAddresses = listOfNotNull(PersonDetailsGenerator.PREVIOUS_ADDRESS.toAddress()),
+            previousAddresses = listOfNotNull(
+                PersonDetailsGenerator.PREVIOUS_ADDRESS_4.toAddress(),
+                PersonDetailsGenerator.PREVIOUS_ADDRESS_3.toAddress(),
+                PersonDetailsGenerator.PREVIOUS_ADDRESS.toAddress(),
+                PersonDetailsGenerator.PREVIOUS_ADDRESS_1.toAddress(),
+                PersonDetailsGenerator.PREVIOUS_ADDRESS_2.toAddress()
+            ),
             mainAddress = PersonDetailsGenerator.PERSON_ADDRESS_1.toAddress(),
             otherAddresses = listOfNotNull(PersonDetailsGenerator.PERSON_ADDRESS_2.toAddress())
         )

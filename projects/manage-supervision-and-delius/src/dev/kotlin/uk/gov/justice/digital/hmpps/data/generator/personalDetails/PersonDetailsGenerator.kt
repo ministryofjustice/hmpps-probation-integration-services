@@ -240,6 +240,62 @@ object PersonDetailsGenerator {
         """.trimIndent()
     )
 
+    val PREVIOUS_ADDRESS_1 = generatePersonAddress(
+        "41",
+        "Test Avenue",
+        "Test town",
+        "Test County",
+        "NE4 END",
+        PERSONAL_DETAILS.id,
+        PERSON_PREVIOUS_ADDRESS_STATUS,
+        PERSON_ADDRESS_TYPE_2,
+        startDate = LocalDate.now().minusDays(12),
+        endDate = LocalDate.now().minusDays(11),
+        notes = ""
+    )
+
+    val PREVIOUS_ADDRESS_2 = generatePersonAddress(
+        "42",
+        "Test Avenue",
+        "Test town",
+        "Test County",
+        "NE4 END",
+        PERSONAL_DETAILS.id,
+        PERSON_PREVIOUS_ADDRESS_STATUS,
+        PERSON_ADDRESS_TYPE_2,
+        startDate = LocalDate.now().minusDays(13),
+        endDate = LocalDate.now().minusDays(12),
+        notes = ""
+    )
+
+    val PREVIOUS_ADDRESS_3 = generatePersonAddress(
+        "45",
+        "Test Avenue",
+        "Test town",
+        "Test County",
+        "NE4 END",
+        PERSONAL_DETAILS.id,
+        PERSON_PREVIOUS_ADDRESS_STATUS,
+        PERSON_ADDRESS_TYPE_2,
+        startDate = LocalDate.now().minusDays(9),
+        endDate = LocalDate.now().minusDays(8),
+        notes = ""
+    )
+
+    val PREVIOUS_ADDRESS_4 = generatePersonAddress(
+        "46",
+        "Test Avenue",
+        "Test town",
+        "Test County",
+        "NE4 END",
+        PERSONAL_DETAILS.id,
+        PERSON_PREVIOUS_ADDRESS_STATUS,
+        PERSON_ADDRESS_TYPE_2,
+        startDate = LocalDate.now().minusDays(9),
+        endDate = LocalDate.now().minusDays(7),
+        notes = ""
+    )
+
     val NULL_ADDRESS = PersonAddress(
         PERSONAL_DETAILS.id,
         0L,
@@ -301,6 +357,7 @@ object PersonDetailsGenerator {
         personId: Long,
         status: ReferenceData,
         type: ReferenceData,
+        startDate: LocalDate = LocalDate.now().minusDays(10),
         endDate: LocalDate? = null,
         verified: Boolean? = null,
         notes: String? = null
@@ -317,7 +374,7 @@ object PersonDetailsGenerator {
         postcode = postcode,
         softDeleted = false,
         lastUpdated = LocalDate.now().minusDays(10),
-        startDate = LocalDate.now().minusDays(10),
+        startDate = startDate,
         endDate = endDate,
         status = status,
         type = type,

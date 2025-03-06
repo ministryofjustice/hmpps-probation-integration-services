@@ -300,6 +300,7 @@ class PersonalDetailsService(
                 .mapNotNull { it },
             previousAddresses = addresses.filter { it.endDate != null && it.status.code == AddressStatus.PREVIOUS.code }
                 .map(PersonAddress::toAddress).mapNotNull { it }
+                .sortedWith(compareByDescending<Address> { it.from }.thenByDescending { it.to })
         )
     }
 
