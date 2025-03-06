@@ -40,6 +40,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSON_ADDRESS_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PREVIOUS_ADDRESS
+import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PREVIOUS_ADDRESS_4
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_2
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -92,7 +93,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.mainAddress?.type, equalTo("Address type 1"))
         assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
         assertThat(res.otherAddressCount, equalTo(1))
-        assertThat(res.previousAddressCount, equalTo(1))
+        assertThat(res.previousAddressCount, equalTo(5))
         assertThat(res.contacts.size, equalTo(1))
         assertThat(res.contacts[0].contactId, equalTo(PERSONAL_CONTACT_1.id))
         assertThat(res.contacts[0].name, equalTo(Name("Sam", "Steven", "Smith")))
@@ -135,7 +136,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.contacts.size, equalTo(1))
         assertThat(res.mainAddress!!.addressNote, equalTo(formatNote(PERSON_ADDRESS_1.notes, truncateNote = false)[1]))
         assertThat(res.otherAddressCount, equalTo(1))
-        assertThat(res.previousAddressCount, equalTo(1))
+        assertThat(res.previousAddressCount, equalTo(5))
         assertThat(res.telephoneNumber, equalTo("0987657432"))
         assertThat(res.mobileNumber, equalTo("07986789351"))
         assertThat(res.email, equalTo("testemail"))
@@ -255,7 +256,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.mainAddress?.postcode, equalTo("NE2 56A"))
         assertThat(res.previousAddresses[0].postcode, equalTo("NE4 END"))
-        assertThat(res.previousAddresses[0].to, equalTo(PREVIOUS_ADDRESS.endDate))
+        assertThat(res.previousAddresses[0].to, equalTo(PREVIOUS_ADDRESS_4.endDate))
         assertThat(res.otherAddresses[0].status, equalTo("Another Address"))
     }
 
@@ -441,7 +442,7 @@ internal class PersonalDetailsIntegrationTest {
             .andReturn().response.contentAsJson<AddressOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.mainAddress, equalTo(null))
-        assertThat(res.previousAddresses.size, equalTo(2))
+        assertThat(res.previousAddresses.size, equalTo(6))
     }
 
     @ParameterizedTest
@@ -540,7 +541,7 @@ internal class PersonalDetailsIntegrationTest {
             .andReturn().response.contentAsJson<AddressOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.mainAddress?.postcode, equalTo("NE1 NEW"))
-        assertThat(res.previousAddresses.size, equalTo(2))
+        assertThat(res.previousAddresses.size, equalTo(6))
 
         val domainEvents = channelManager.getChannel(topicName).pollFor(2)
         val createAddressEvent =
@@ -624,7 +625,7 @@ internal class PersonalDetailsIntegrationTest {
             equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname))
         )
 
-        assertThat(res.previousAddresses.size, equalTo(1))
+        assertThat(res.previousAddresses.size, equalTo(5))
     }
 
     @Test
