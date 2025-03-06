@@ -138,6 +138,12 @@ class DataLoader(
         staffRepository.save(StaffGenerator.LAO_FULL_ACCESS)
         staffUserRepository.save(StaffGenerator.LAO_FULL_ACCESS_USER)
 
+        staffRepository.save(StaffGenerator.CAS2V2_DELIUS_CB)
+        staffUserRepository.save(StaffGenerator.CAS2V2_DELIUS_CB_USER)
+
+        staffRepository.save(StaffGenerator.CAS2V2_DELIUS_PB)
+        staffUserRepository.save(StaffGenerator.CAS2V2_DELIUS_PB_USER)
+
         staffRepository.save(StaffGenerator.LAO_RESTRICTED)
         staffUserRepository.save(StaffGenerator.LAO_RESTRICTED_USER)
 
