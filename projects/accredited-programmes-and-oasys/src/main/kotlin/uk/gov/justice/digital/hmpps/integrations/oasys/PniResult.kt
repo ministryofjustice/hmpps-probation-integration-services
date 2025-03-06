@@ -53,7 +53,7 @@ fun PniResult.asIntegrationModel(): IntegrationModel {
             ldcMessage = it.ldcData.ldcMessage,
             ogrs3Risk = ScoreLevel.of(it.ogpOvp.ogrs3RiskRecon),
             ovpRisk = ScoreLevel.of(it.ogpOvp.ovpRisk),
-            osp = Osp(
+            osp = Osp.from(
                 ScoreLevel.of(it.rsrOspData.ospCdcScoreLevel),
                 ScoreLevel.of(it.rsrOspData.ospIiicScoreLevel),
             ),
