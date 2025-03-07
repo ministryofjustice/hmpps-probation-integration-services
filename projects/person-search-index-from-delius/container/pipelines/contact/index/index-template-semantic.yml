@@ -591,7 +591,7 @@ template:
             - morning, 8_am, 9_am, 10_am, 11_am
             - abh, actual_bodily_harm
             - abs, absence, failed_to_attend, fta
-            - acceptable, acceptable_absence, aa
+            - aa, acceptable, acceptable_absence
             - accom, accommodation, housing, home, location, addr, address
             - acct, assessment_care_in_custody_and_teamwork
             - aco, assistant_chief_officer
@@ -604,8 +604,8 @@ template:
             - alc, alcohol, booze, drinking, drunk, drunkenness
             - annual, yearly, 12_monthly, 12monthly, per_annum
             - antidepressants, anti-depressants, anti_depressants
-            - antisocial, anti_social, anti-social, asbo
-            - appointment, office_visit, visit, attendance, appt
+            - asbo, antisocial, anti_social, anti-social
+            - appt, appointment, office_visit, visit, attendance
             - atr, alcohol_treatment_requirement
             - att, attend, attended, attendance
             - bame, black_asian_and_minority_ethnic
@@ -718,8 +718,7 @@ template:
             - iicsa, independent_inquiry_into child_sexual_abuse
             - ill, sick, unfit, unwell
             - intro, introduction
-            - iom, integrated_offender_management
-            - iom, intensive_supervision, restorative_justice, problem_solving_court
+            - iom, integrated_offender_management, intensive_supervision, restorative_justice, problem_solving_court
             - irc, immigration_removal_centre, immigration_detention
             - isotp, i-sotp, internet_sex_offender_treatment_programme, internet_sex_offender_treatment_program
             - isp, initial_sentence_plan, fsp, final_sentence_plan, sentence_plan
@@ -872,6 +871,229 @@ template:
             - delius => delius
             - ndelius => ndelius
             - nationaldelius => nationaldelius
+            - abh => abh
+            - abs => abs
+            - aa => aa
+            - accom => accom
+            - acct => acct
+            - aco => aco
+            - acr => acr
+            - adhd => adhd
+            - adj => adj
+            - alc => alc
+            - ap => ap
+            - asbo => asbo
+            - appt => appt
+            - atr => atr
+            - att => att
+            - bame => bame
+            - bbr => bbr
+            - bcs => bcs
+            - birth => birth
+            - ca => ca
+            - cafcass => cafcass
+            - care => care
+            - cas => cas
+            - cas1 => cas1
+            - cas2 => cas2
+            - cas3 => cas3
+            - cdvp => cdvp
+            - cert => cert
+            - cja => cja
+            - cin => cin
+            - cjs => cjs
+            - cmht => cmht
+            - co => co
+            - comm => comm
+            - comp => comp
+            - corre => corre
+            - cosa => cosa
+            - covaid => covaid
+            - cpo => cpo
+            - cpro => cpro
+            - cps => cps
+            - cro => cro
+            - crt => crt
+            - crs => crs
+            - cs => cs
+            - csc => csc
+            - cscs => cscs
+            - csogp => csogp
+            - csra => csra
+            - cyps => cyps
+            - da => da
+            - dapo => dapo
+            - dash => dash
+            - daso => daso
+            - dbs => dbs
+            - dc => dc
+            - dcr => dcr
+            - dhss => dhss
+            - died => died
+            - dip => dip
+            - disq => disq
+            - dob => dob
+            - docs => docs
+            - drg => drg
+            - dro => dro
+            - drr => drr
+            - dtr => dtr
+            - dv => dv
+            - dvu => dvu
+            - dwp => dwp
+            - ecl => ecl
+            - ecsl => ecsl
+            - edm => edm
+            - em => em
+            - emap => emap
+            - ems => ems
+            - erd => erd
+            - esol => esol
+            - ete => ete
+            - ex => ex
+            - excl => excl
+            - fta => fta
+            - ftc => ftc
+            - ftr => ftr
+            - gbh => gbh
+            - gf => gf
+            - gmp => gmp
+            - gp => gp
+            - harm => harm
+            - hdc => hdc
+            - hde => hde
+            - hmcts => hmcts
+            - hmp => hmp
+            - hmpps => hmpps
+            - hmps => hmps
+            - ho => ho
+            - hpt => hpt
+            - hv => hv
+            - hvra => hvra
+            - iaps => iaps
+            - idap => idap
+            - idts => idts
+            - idva => idva
+            - iep => iep
+            - ieps => ieps
+            - iicsa => iicsa
+            - ill => ill
+            - iom => iom
+            - irc => irc
+            - isotp => isotp
+            - isp => isp
+            - ispp => ispp
+            - is91 => is91
+            - ka_ks => ka_ks
+            - kssps => kssps
+            - kw => kw
+            - lau => lau
+            - ldu => ldu
+            - liap => liap
+            - lic => lic
+            - londonps => londonps
+            - lp => lp
+            - mappa => mappa
+            - mappp => mappp
+            - marac => marac
+            - mash => mash
+            - mc => mc
+            - mca => mca
+            - mdt => mdt
+            - mh => mh
+            - mhtr => mhtr
+            - min => min
+            - moj => moj
+            - mom => mom
+            - mosovo => mosovo
+            - msg => msg
+            - nacro => nacro
+            - nd => nd
+            - nepacs => nepacs
+            - nhs => nhs
+            - nino => nino
+            - nomis => nomis
+            - noms => noms
+            - npd => npd
+            - nsi => nsi
+            - oasys => oasys
+            - ocg => ocg
+            - ogrs => ogrs
+            - omic => omic
+            - omu => omu
+            - ooh => ooh
+            - opd => opd
+            - osp => osp
+            - pact => pact
+            - parom => parom
+            - pc => pc
+            - pcso => pcso
+            - ped => ped
+            - phe => phe
+            - pip => pip
+            - pnn => pnn
+            - pom => pom
+            - pops => pops
+            - ppcs => ppcs
+            - ppo => ppo
+            - pprc => pprc
+            - ppu => ppu
+            - ppud => ppud
+            - prq => prq
+            - psr => psr
+            - pss => pss
+            - ptph => ptph
+            - rar => rar
+            - rdr => rdr
+            - ric => ric
+            - rmp => rmp
+            - ror => ror
+            - rotl => rotl
+            - rotld => rotld
+            - rrr => rrr
+            - rsho => rsho
+            - rso => rso
+            - rsr => rsr
+            - saq => saq
+            - sar => sar
+            - sara => sara
+            - sarn => sarn
+            - sash => sash
+            - sasp => sasp
+            - sed => sed
+            - sex => sex
+            - sfo => sfo
+            - shpo => shpo
+            - somu => somu
+            - sor => sor
+            - sotp => sotp
+            - sp => sp
+            - spo => spo
+            - spoc => spoc
+            - ss => ss
+            - sso => sso
+            - stc => stc
+            - std => std
+            - tact => tact
+            - tc => tc
+            - td01 => td01
+            - tfr => tfr
+            - trf => trf
+            - tsp => tsp
+            - tused => tused
+            - ual => ual
+            - uc => uc
+            - upw => upw
+            - upw_om => upw_om
+            - upw_sro => upw_sro
+            - visor => visor
+            - vlo => vlo
+            - vlu => vlu
+            - wca => wca
+            - wfh => wfh
+            - wnbb => wnbb
+            - wso => wso
+            - yrs => yrs
         capture_numbers:
           type: pattern_capture
           preserve_original: true
