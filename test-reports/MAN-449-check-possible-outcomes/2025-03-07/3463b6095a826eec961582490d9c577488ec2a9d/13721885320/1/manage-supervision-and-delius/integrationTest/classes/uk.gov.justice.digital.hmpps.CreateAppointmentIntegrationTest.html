@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - CreateAppointmentIntegrationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>CreateAppointmentIntegrationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/uk.gov.justice.digital.hmpps.html">uk.gov.justice.digital.hmpps</a> &gt; CreateAppointmentIntegrationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">8</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.424s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Method name</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">appointment end date before start returns bad request()</td>
+<td class="success">appointment end date before start returns bad request()</td>
+<td class="success">0.023s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] createAppointment=CreateAppointment(user=User(username=peter-parker, locationId=180), type=PlannedOfficeVisitNS, start=2025-03-08T13:40:48.992298319Z[Etc/UTC], end=2025-03-08T14:40:48.992312445Z[Etc/UTC], interval=DAY, numberOfAppointments=1, eventId=39, uuid=a7342075-3897-4247-8f26-aa3a280ae75d, createOverlappingAppointment=false, requirementId=null, licenceConditionId=null, until=null)</td>
+<td class="success">create a new appointment(CreateAppointment)[1]</td>
+<td class="success">0.043s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] createAppointment=CreateAppointment(user=User(username=peter-parker, locationId=180), type=InitialAppointmentInOfficeNS, start=2025-03-08T13:40:48.992348553Z[Etc/UTC], end=2025-03-08T14:40:48.992351919Z[Etc/UTC], interval=DAY, numberOfAppointments=1, eventId=39, uuid=9591965d-17bf-4b62-9c45-2ecab8ecd32f, createOverlappingAppointment=false, requirementId=null, licenceConditionId=null, until=null)</td>
+<td class="success">create a new appointment(CreateAppointment)[2]</td>
+<td class="success">0.041s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] createAppointment=CreateAppointment(user=User(username=peter-parker, locationId=180), type=HomeVisitToCaseNS, start=2025-03-07T13:40:48.677973649Z[Etc/UTC], end=2025-03-07T14:40:48.678018763Z[Etc/UTC], interval=DAY, numberOfAppointments=3, eventId=39, uuid=ceafccd5-a7b9-401f-8999-7cb95fa53a84, createOverlappingAppointment=false, requirementId=null, licenceConditionId=null, until=null)</td>
+<td class="success">create multiple appointments(CreateAppointment)[1]</td>
+<td class="success">0.111s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] createAppointment=CreateAppointment(user=User(username=peter-parker, locationId=180), type=HomeVisitToCaseNS, start=2025-03-07T13:40:48.678164034Z[Etc/UTC], end=2025-03-07T14:40:48.678165857Z[Etc/UTC], interval=DAY, numberOfAppointments=1, eventId=39, uuid=7249f21d-362e-4051-809a-e8c0efaaf50c, createOverlappingAppointment=false, requirementId=null, licenceConditionId=null, until=2025-03-09T13:40:48.678170987Z[Etc/UTC])</td>
+<td class="success">create multiple appointments(CreateAppointment)[2]</td>
+<td class="success">0.109s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] createAppointment=CreateAppointment(user=User(username=peter-parker, locationId=180), type=HomeVisitToCaseNS, start=2025-03-07T13:40:48.678205912Z[Etc/UTC], end=2025-03-07T15:40:48.678207375Z[Etc/UTC], interval=WEEK, numberOfAppointments=1, eventId=39, uuid=9caa46d6-37c1-4541-8b99-7f029f2b0c6c, createOverlappingAppointment=false, requirementId=null, licenceConditionId=null, until=2025-03-21T13:40:48.678211983Z[Etc/UTC])</td>
+<td class="success">create multiple appointments(CreateAppointment)[3]</td>
+<td class="success">0.070s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">unauthorized status returned()</td>
+<td class="success">unauthorized status returned()</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">when offender does not exist returns a 404 response()</td>
+<td class="success">when offender does not exist returns a 404 response()</td>
+<td class="success">0.018s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2025-03-07T13:40:48.599Z  INFO 2367 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [uk.gov.justice.digital.hmpps.CreateAppointmentIntegrationTest]: CreateAppointmentIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-03-07T13:40:48.602Z  INFO 2367 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration uk.gov.justice.digital.hmpps.App for test class uk.gov.justice.digital.hmpps.CreateAppointmentIntegrationTest
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.13</a> at Mar 7, 2025, 1:40:57 PM</p>
+</div>
+</div>
+</body>
+</html>

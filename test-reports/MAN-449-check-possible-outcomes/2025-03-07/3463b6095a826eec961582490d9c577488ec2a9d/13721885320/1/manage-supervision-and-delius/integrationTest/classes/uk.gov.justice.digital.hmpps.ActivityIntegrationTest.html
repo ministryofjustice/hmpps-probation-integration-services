@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - ActivityIntegrationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>ActivityIntegrationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/uk.gov.justice.digital.hmpps.html">uk.gov.justice.digital.hmpps</a> &gt; ActivityIntegrationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">2</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">1.980s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+<li>
+<a href="#">Standard error</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">activity search calls probation offender activity search()</td>
+<td class="success">0.758s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">all person activity is returned()</td>
+<td class="success">1.222s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>13:39:25.279 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [uk.gov.justice.digital.hmpps.ActivityIntegrationTest]: ActivityIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+13:39:25.790 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration uk.gov.justice.digital.hmpps.App for test class uk.gov.justice.digital.hmpps.ActivityIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2025-03-07T13:39:31.695Z  INFO 2367 --- [    Test worker] u.g.j.d.h.wiremock.WireMockInitialiser   : WireMock server started on port 43845
+2025-03-07T13:39:31.711Z  INFO 2367 --- [    Test worker] u.g.j.d.hmpps.ActivityIntegrationTest    : Starting ActivityIntegrationTest using Java 21.0.6 with PID 2367 (started by runner in /home/runner/work/hmpps-probation-integration-services/hmpps-probation-integration-services/projects/manage-supervision-and-delius)
+2025-03-07T13:39:31.714Z DEBUG 2367 --- [    Test worker] u.g.j.d.hmpps.ActivityIntegrationTest    : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-03-07T13:39:31.715Z  INFO 2367 --- [    Test worker] u.g.j.d.hmpps.ActivityIntegrationTest    : The following 2 profiles are active: &quot;integration-test&quot;, &quot;oracle&quot;
+2025-03-07T13:39:36.022Z  INFO 2367 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-03-07T13:39:36.025Z  INFO 2367 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-07T13:39:36.245Z  INFO 2367 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 207 ms. Found 35 JPA repository interfaces.
+2025-03-07T13:39:36.260Z  INFO 2367 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-03-07T13:39:36.261Z  INFO 2367 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data LDAP repositories in DEFAULT mode.
+2025-03-07T13:39:36.284Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.284Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.AliasRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.285Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.285Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.DisabilityRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.286Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EventRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.286Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonCircumstanceRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.287Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.288Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ProvisionRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.288Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RegistrationRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.289Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.RequirementRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.291Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.292Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonAddressRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.293Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.PersonalContactRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.293Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.294Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlagRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.294Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AdditionalSentenceRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.294Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.296Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.AppointmentTypeRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.296Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcomeRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.297Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CourtAppearanceRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.297Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CustodyRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.298Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.EventSentenceRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.298Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.299Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManagerRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.299Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.PrisonManagerRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.299Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUserRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.300Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.UpwAppointmentRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.300Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.user.entity.CaseloadRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.301Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.user.entity.StaffRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.301Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.user.entity.TeamRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.302Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.integrations.delius.user.entity.UserRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.303Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.304Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.304Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.user.AuditUserRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.305Z  INFO 2367 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data LDAP - Could not safely identify store assignment for repository candidate interface uk.gov.justice.digital.hmpps.entity.UserAccessRepository; If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository
+2025-03-07T13:39:36.305Z  INFO 2367 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 41 ms. Found 0 LDAP repository interfaces.
+2025-03-07T13:39:37.870Z  INFO 2367 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2025-03-07T13:39:37.896Z  INFO 2367 --- [    Test worker] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-03-07T13:39:37.897Z  INFO 2367 --- [    Test worker] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-03-07T13:39:37.967Z  INFO 2367 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-03-07T13:39:37.969Z  INFO 2367 --- [    Test worker] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 6218 ms
+2025-03-07T13:39:38.457Z  INFO 2367 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-07T13:39:38.518Z  INFO 2367 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-03-07T13:39:38.563Z  INFO 2367 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-07T13:39:38.911Z  INFO 2367 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-07T13:39:38.966Z  INFO 2367 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-07T13:39:39.242Z  INFO 2367 --- [    Test worker] org.testcontainers.images.PullPolicy     : Image pull policy will be performed by: DefaultPullPolicy()
+2025-03-07T13:39:39.246Z  INFO 2367 --- [    Test worker] o.t.utility.ImageNameSubstitutor         : Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+2025-03-07T13:39:39.256Z  INFO 2367 --- [    Test worker] org.testcontainers.DockerClientFactory   : Testcontainers version: 1.20.5
+2025-03-07T13:39:39.892Z  INFO 2367 --- [    Test worker] o.t.d.DockerClientProviderStrategy       : Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+2025-03-07T13:39:39.895Z  INFO 2367 --- [    Test worker] org.testcontainers.DockerClientFactory   : Docker host IP address is localhost
+2025-03-07T13:39:39.914Z  INFO 2367 --- [    Test worker] org.testcontainers.DockerClientFactory   : Connected to docker: 
+  Server Version: 26.1.3
+  API Version: 1.45
+  Operating System: Ubuntu 24.04.2 LTS
+  Total Memory: 15990 MB
+2025-03-07T13:39:39.948Z  INFO 2367 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Pulling docker image: testcontainers/ryuk:0.11.0. Please be patient; this may take some time but only needs to be done once.
+2025-03-07T13:39:40.290Z  INFO 2367 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Starting to pull image
+2025-03-07T13:39:40.314Z  INFO 2367 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  0 downloaded,  0 extracted, (0 bytes/0 bytes)
+2025-03-07T13:39:40.471Z  INFO 2367 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  2 pending,  1 downloaded,  0 extracted, (878 KB/? MB)
+2025-03-07T13:39:40.491Z  INFO 2367 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  1 pending,  2 downloaded,  0 extracted, (878 KB/? MB)
+2025-03-07T13:39:40.544Z  INFO 2367 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  3 downloaded,  0 extracted, (906 KB/10 MB)
+2025-03-07T13:39:40.599Z  INFO 2367 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  3 downloaded,  1 extracted, (4 MB/10 MB)
+2025-03-07T13:39:40.733Z  INFO 2367 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  3 downloaded,  2 extracted, (4 MB/10 MB)
+2025-03-07T13:39:40.772Z  INFO 2367 --- [eam--1295187651] tc.testcontainers/ryuk:0.11.0            : Pulling image layers:  0 pending,  3 downloaded,  3 extracted, (10 MB/10 MB)
+2025-03-07T13:39:40.778Z  INFO 2367 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Image testcontainers/ryuk:0.11.0 pull took PT0.829882932S
+2025-03-07T13:39:40.812Z  INFO 2367 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Creating container for image: testcontainers/ryuk:0.11.0
+2025-03-07T13:39:40.927Z  INFO 2367 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Container testcontainers/ryuk:0.11.0 is starting: e5e24c8423d2a76f6afdee89f01e3492533f7d34446b6902d985ea886ef5868a
+2025-03-07T13:39:41.288Z  INFO 2367 --- [    Test worker] tc.testcontainers/ryuk:0.11.0            : Container testcontainers/ryuk:0.11.0 started in PT0.47621106S
+2025-03-07T13:39:41.293Z  INFO 2367 --- [    Test worker] o.t.utility.RyukResourceReaper           : Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+2025-03-07T13:39:41.294Z  INFO 2367 --- [    Test worker] org.testcontainers.DockerClientFactory   : Checking the system...
+2025-03-07T13:39:41.295Z  INFO 2367 --- [    Test worker] org.testcontainers.DockerClientFactory   : ✔︎ Docker server version should be at least 1.6.0
+2025-03-07T13:39:41.298Z  INFO 2367 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Pulling docker image: gvenzl/oracle-free:slim-faststart. Please be patient; this may take some time but only needs to be done once.
+2025-03-07T13:39:41.550Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Starting to pull image
+2025-03-07T13:39:41.551Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  0 downloaded,  0 extracted, (0 bytes/0 bytes)
+2025-03-07T13:39:42.128Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  8 pending,  1 downloaded,  0 extracted, (138 MB/? MB)
+2025-03-07T13:39:42.131Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  7 pending,  2 downloaded,  0 extracted, (154 MB/? MB)
+2025-03-07T13:39:42.758Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  6 pending,  3 downloaded,  0 extracted, (303 MB/? MB)
+2025-03-07T13:39:43.176Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  5 pending,  4 downloaded,  0 extracted, (424 MB/? MB)
+2025-03-07T13:39:44.309Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  5 pending,  4 downloaded,  1 extracted, (714 MB/? MB)
+2025-03-07T13:39:44.418Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  4 pending,  5 downloaded,  1 extracted, (756 MB/? MB)
+2025-03-07T13:39:44.620Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  3 pending,  6 downloaded,  1 extracted, (798 MB/? MB)
+2025-03-07T13:39:44.748Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  2 pending,  7 downloaded,  1 extracted, (838 MB/? MB)
+2025-03-07T13:39:45.089Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  1 pending,  8 downloaded,  1 extracted, (901 MB/? MB)
+2025-03-07T13:39:47.340Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  1 extracted, (1 GB/1 GB)
+2025-03-07T13:39:48.458Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  2 extracted, (1 GB/1 GB)
+2025-03-07T13:39:51.866Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  3 extracted, (1 GB/1 GB)
+2025-03-07T13:39:54.415Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  4 extracted, (1 GB/1 GB)
+2025-03-07T13:39:56.066Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  5 extracted, (1 GB/1 GB)
+2025-03-07T13:39:57.223Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  6 extracted, (1 GB/1 GB)
+2025-03-07T13:40:04.970Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  7 extracted, (1 GB/1 GB)
+2025-03-07T13:40:07.326Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  8 extracted, (1 GB/1 GB)
+2025-03-07T13:40:12.724Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pulling image layers:  0 pending,  9 downloaded,  9 extracted, (1 GB/1 GB)
+2025-03-07T13:40:12.731Z  INFO 2367 --- [ream-1299458033] tc.gvenzl/oracle-free:slim-faststart     : Pull complete. 9 layers, pulled in 31s (downloaded 1 GB at 35 MB/s)
+2025-03-07T13:40:12.731Z  INFO 2367 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Image gvenzl/oracle-free:slim-faststart pull took PT31.432836843S
+2025-03-07T13:40:12.735Z  INFO 2367 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Creating container for image: gvenzl/oracle-free:slim-faststart
+2025-03-07T13:40:12.751Z  INFO 2367 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container gvenzl/oracle-free:slim-faststart is starting: ad83391ce3bda2d39827d7df387340e2123621e2589e89c5de9a89eb847ec033
+2025-03-07T13:40:27.051Z  INFO 2367 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container gvenzl/oracle-free:slim-faststart started in PT14.316343019S
+2025-03-07T13:40:27.052Z  INFO 2367 --- [    Test worker] tc.gvenzl/oracle-free:slim-faststart     : Container is started (JDBC URL: jdbc:oracle:thin:@localhost:32769/freepdb1)
+2025-03-07T13:40:27.829Z  INFO 2367 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.testcontainers.jdbc.ConnectionWrapper@6ebebdce
+2025-03-07T13:40:27.832Z  INFO 2367 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-07T13:40:28.431Z  INFO 2367 --- [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 23.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-03-07T13:40:29.606Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000038: Composite-id class does not override equals(): uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataLinkedListId
+2025-03-07T13:40:29.607Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000039: Composite-id class does not override hashCode(): uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceDataLinkedListId
+2025-03-07T13:40:29.608Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000038: Composite-id class does not override equals(): uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcomeId
+2025-03-07T13:40:29.608Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000039: Composite-id class does not override hashCode(): uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcomeId
+2025-03-07T13:40:29.608Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000038: Composite-id class does not override equals(): uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.TeamOfficeLinkId
+2025-03-07T13:40:29.608Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000039: Composite-id class does not override hashCode(): uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.TeamOfficeLinkId
+2025-03-07T13:40:29.611Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000038: Composite-id class does not override equals(): uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactCategoryId
+2025-03-07T13:40:29.612Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000039: Composite-id class does not override hashCode(): uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactCategoryId
+2025-03-07T13:40:29.613Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000038: Composite-id class does not override equals(): uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffTeamLinkId
+2025-03-07T13:40:29.613Z  WARN 2367 --- [    Test worker] org.hibernate.mapping.RootClass          : HHH000039: Composite-id class does not override hashCode(): uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffTeamLinkId
+2025-03-07T13:40:31.770Z  INFO 2367 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-07T13:40:33.104Z  INFO 2367 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-07T13:40:34.379Z  INFO 2367 --- [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-03-07T13:40:40.395Z  INFO 2367 --- [    Test worker] o.s.l.c.support.AbstractContextSource    : Property 'userDn' not set - anonymous context will be used for read-only operations
+2025-03-07T13:40:42.547Z  WARN 2367 --- [    Test worker] a.c.CredentialsProviderAutoConfiguration : Skipping creating `StsCredentialsProvider`. `software.amazon.awssdk:sts` is on the classpath, but neither `spring.cloud.aws.credentials.sts` properties are configured nor `AWS_WEB_IDENTITY_TOKEN_FILE` or the javaproperty `aws.webIdentityTokenFile` is set
+2025-03-07T13:40:42.843Z  WARN 2367 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-07T13:40:43.365Z  INFO 2367 --- [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path ''
+2025-03-07T13:40:44.488Z  INFO 2367 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring TestDispatcherServlet ''
+2025-03-07T13:40:44.489Z  INFO 2367 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-03-07T13:40:44.490Z  INFO 2367 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2025-03-07T13:40:44.607Z  INFO 2367 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 38785 (http) with context path '/'
+2025-03-07T13:40:44.628Z  INFO 2367 --- [    Test worker] u.g.j.d.hmpps.ActivityIntegrationTest    : Started ActivityIntegrationTest in 77.418 seconds (process running for 82.839)
+</pre>
+</span>
+</div>
+<div class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/home/runner/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.15.11/a38b16385e867f59a641330f0362ebe742788ed8/byte-buddy-agent-1.15.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.13</a> at Mar 7, 2025, 1:40:57 PM</p>
+</div>
+</div>
+</body>
+</html>
