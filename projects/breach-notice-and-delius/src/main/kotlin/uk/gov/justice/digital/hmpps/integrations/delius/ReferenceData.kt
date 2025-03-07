@@ -70,7 +70,7 @@ class Dataset(
     val id: Long
 ) {
     companion object {
-        const val ADDRESS_TYPE = "ADDRESS TYPE"
+        const val ADDRESS_STATUS = "ADDRESS STATUS"
         const val BREACH_CONDITION_TYPE = "BREACH CONDITION TYPE"
         const val BREACH_NOTICE_TYPE = "BREACH NOTICE TYPE"
         const val BREACH_REASON = "BREACH REASON"

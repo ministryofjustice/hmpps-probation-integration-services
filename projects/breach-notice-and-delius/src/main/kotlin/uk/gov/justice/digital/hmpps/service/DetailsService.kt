@@ -36,7 +36,7 @@ fun Person.name() = Name(firstName, listOfNotNull(secondName, thirdName).joinToS
 
 fun PersonAddress.toAddress() = Address(
     id,
-    type?.description,
+    status?.description,
     buildingName,
     buildingNumber,
     streetName,
