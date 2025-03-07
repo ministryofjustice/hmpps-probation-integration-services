@@ -75,9 +75,7 @@ fun Alert.toDeliusCaseNote(): DeliusCaseNote {
             ),
             systemTimestamp = lastModifiedAt ?: createdAt,
             staffName = staffName(),
-            establishmentCode = checkNotNull(prisonCodeWhenCreated) {
-                "Unable to verify establishment for alert"
-            },
+            establishmentCode = prisonCodeWhenCreated ?: UNKNOWN_LOCATION,
             "Alert ${alertCode.alertTypeDescription} and ${alertCode.description} made ${if (isActive) "active" else "inactive"}."
         )
     )
