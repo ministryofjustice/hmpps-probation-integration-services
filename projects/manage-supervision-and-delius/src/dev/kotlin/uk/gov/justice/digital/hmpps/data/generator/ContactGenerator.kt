@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generateContactTypeOutcome
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_BOROUGH
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
@@ -68,6 +69,15 @@ object ContactGenerator {
     val APPT_CT_3 = generateContactType("CODC", true, "Planned Doorstep Contact (NS)")
 
     val ACCEPTABLE_ABSENCE = generateOutcome("OUT", "Acceptable", false, true)
+
+    val POSSIBLE_OUTCOME_1 =
+        generateContactTypeOutcome(OTHER_CT.id, ACCEPTABLE_ABSENCE.id, OTHER_CT, ACCEPTABLE_ABSENCE)
+    val POSSIBLE_OUTCOME_2 =
+        generateContactTypeOutcome(APPT_CT_2.id, ACCEPTABLE_ABSENCE.id, APPT_CT_2, ACCEPTABLE_ABSENCE)
+    val POSSIBLE_OUTCOME_3 =
+        generateContactTypeOutcome(APPT_CT_3.id, ACCEPTABLE_ABSENCE.id, APPT_CT_3, ACCEPTABLE_ABSENCE)
+    val POSSIBLE_OUTCOME_4 =
+        generateContactTypeOutcome(APPT_CT_1.id, ACCEPTABLE_ABSENCE.id, APPT_CT_1, ACCEPTABLE_ABSENCE)
 
     val PREVIOUS_APPT_CONTACT_ABSENT = generateContact(
         OVERVIEW,
@@ -193,7 +203,7 @@ object ContactGenerator {
     )
 
     fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
-        ContactOutcome(IdGenerator.getAndIncrement(), code, description, attendance, acceptable)
+        ContactOutcome(IdGenerator.getAndIncrement(), code, description, attendance, acceptable, true)
 
     private fun generateContactType(
         code: String,
