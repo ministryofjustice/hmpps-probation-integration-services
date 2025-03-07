@@ -229,6 +229,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamsResponse"
+  /staff/{code}/teams:
+    get:
+      tags:
+      - staff-resource
+      summary: "Team, LAU, PDU and Provider hierarchy associated with a staff code"
+      description: "A list of teams for a staff code, along with the LAU (Local Admin\
+        \ Unit), PDU (Probation Delivery Unit) and Provider for each."
+      operationId: teams
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffTeamsResponse"
   /staff/{code}/officer-view:
     get:
       tags:
@@ -983,6 +1004,64 @@ components:
               $ref: "#/components/schemas/StaffMember"
       required:
       - teams
+    LocalAdminUnit:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        probationDeliveryUnit:
+          $ref: "#/components/schemas/ProbationDeliveryUnit"
+      required:
+      - code
+      - description
+      - probationDeliveryUnit
+    ProbationDeliveryUnit:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        provider:
+          $ref: "#/components/schemas/Provider"
+      required:
+      - code
+      - description
+      - provider
+    Provider:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    StaffTeamsResponse:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamWithLocalAdminUnit"
+      required:
+      - teams
+    TeamWithLocalAdminUnit:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        localAdminUnit:
+          $ref: "#/components/schemas/LocalAdminUnit"
+      required:
+      - code
+      - description
+      - localAdminUnit
     OfficerView:
       type: object
       properties:

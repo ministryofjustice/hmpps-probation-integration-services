@@ -265,6 +265,9 @@ components:
     PniAssessment:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         ldc:
           $ref: "#/components/schemas/Ldc"
         ldcMessage:
@@ -296,8 +299,8 @@ components:
         questions:
           $ref: "#/components/schemas/Questions"
       required:
+      - id
       - offenderAge
-      - osp
       - questions
     PniCalculation:
       type: object

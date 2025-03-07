@@ -136,6 +136,9 @@
         <a href="./api-reference.html#teams"><span>/teams</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#staff-code-teams"><span>/staff/{code}/teams</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#staff-code-officer-view"><span>/staff/{code}/officer-view</span></a>
       </li>
       <li>
@@ -811,6 +814,88 @@
 </td>
 <td>
 <a href='#schema-teamsresponse'>TeamsResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff-code-teams">/staff/{code}/teams</h2>
+
+<h3 id="staff-code-teams-get">get</h3>
+
+  <p><em>Team, LAU, PDU and Provider hierarchy associated with a staff code</em></p>
+
+
+  <p>A list of teams for a staff code, along with the LAU (Local Admin Unit), PDU (Probation Delivery Unit) and Provider for each.</p>
+
+
+
+
+<h4 id="staff-code-teams-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-code-teams-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "teams": [
+    {
+      "code": "string",
+      "description": "string",
+      "localAdminUnit": {
+        "code": "string",
+        "description": "string",
+        "probationDeliveryUnit": {
+          "code": "string",
+          "description": "string",
+          "provider": {
+            "code": "string",
+            "description": "string"
+          }
+        }
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-staffteamsresponse'>StaffTeamsResponse</a>
 </td>
 </tr>
 
@@ -3343,6 +3428,186 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-localadminunit">LocalAdminUnit</h3>
+
+
+<table class='schema-localadminunit'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationDeliveryUnit</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationdeliveryunit'>ProbationDeliveryUnit</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationdeliveryunit">ProbationDeliveryUnit</h3>
+
+
+<table class='schema-probationdeliveryunit'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffteamsresponse">StaffTeamsResponse</h3>
+
+
+<table class='schema-staffteamsresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>teams</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-teamwithlocaladminunit'>TeamWithLocalAdminUnit</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-teamwithlocaladminunit">TeamWithLocalAdminUnit</h3>
+
+
+<table class='schema-teamwithlocaladminunit'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localAdminUnit</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-localadminunit'>LocalAdminUnit</a>
 </td>
 </tr>
 
