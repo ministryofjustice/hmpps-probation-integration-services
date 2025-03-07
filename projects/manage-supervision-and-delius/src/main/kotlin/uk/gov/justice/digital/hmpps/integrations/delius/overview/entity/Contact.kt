@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.io.Serializable
@@ -115,7 +116,8 @@ class Contact(
         if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null
 
     fun canHaveOutcomeRecorded(): Boolean? {
-        return when (type.contactOutcomeFlag) {
+        val hasPossibleOutcome = type.possibleOutcomes.any { it.outcome.selectable }
+        return when (hasPossibleOutcome) {
             true -> outcome != null
             else -> null
         }
@@ -168,6 +170,9 @@ class ContactType(
     @OneToMany(mappedBy = "id.contactTypeId")
     val categories: List<ContactCategory> = emptyList(),
 
+    @OneToMany(mappedBy = "id.contactTypeId")
+    val possibleOutcomes: List<ContactTypeOutcome> = emptyList(),
+
     @Column(name = "sgc_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val systemGenerated: Boolean = false,
@@ -218,7 +223,12 @@ class ContactOutcome(
     @Column(name = "outcome_compliant_acceptable")
     @Convert(converter = YesNoConverter::class)
     val outcomeCompliantAcceptable: Boolean? = null,
-)
+
+    @Column(nullable = false)
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean,
+
+    )
 
 @Immutable
 @Entity
