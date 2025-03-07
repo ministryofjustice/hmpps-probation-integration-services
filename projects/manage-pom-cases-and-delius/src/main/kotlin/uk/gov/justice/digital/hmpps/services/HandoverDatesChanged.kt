@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.services
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.Handover
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.ManagePomCasesClient
@@ -25,8 +26,9 @@ class HandoverDatesChanged(
         val personId = personRepository.findIdFromNomsId(handOver.nomsId)
             ?: throw IgnorableMessageException("PersonNotFound", handOver.properties())
 
-        val result = keyDateService.mergeHandoverDates(personId, handOver.date, handOver.startDate, dryRun)
-        telemetryService.trackEvent(result.name, handOver.properties())
+        val (result, existingDates) = keyDateService
+            .mergeHandoverDates(personId, handOver.date, handOver.startDate, dryRun)
+        telemetryService.trackEvent(result.name, handOver.properties() + existingDates.properties())
     } catch (ime: IgnorableMessageException) {
         telemetryService.trackEvent(
             ime.message,
@@ -41,4 +43,7 @@ class HandoverDatesChanged(
         "handoverDate" to date.toString(),
         "handoverStartDate" to startDate.toString()
     ).toMap()
+
+    private fun Map<String, KeyDate>.properties() =
+        mapKeys { "existing${it.key}" }.mapValues { it.value.date.toString() }
 }

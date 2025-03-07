@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -61,7 +61,7 @@ class KeyDateServiceTest {
         whenever(custodyRepository.findAllByDisposalEventPersonId(personId))
             .thenReturn(listOf(custody))
 
-        val res = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now(), dryRun)
+        val (res) = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now(), dryRun)
         assertThat(res, equalTo(keyDateMergeResult))
     }
 
@@ -78,13 +78,42 @@ class KeyDateServiceTest {
         val keyDateMergeResult =
             if (!dryRun) KeyDateMergeResult.KeyDateUpdated else KeyDateMergeResult.DryRunKeyDateUpdated
 
-        val res = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now(), dryRun)
+        val (res) = keyDateService.mergeHandoverDates(personId, LocalDate.now(), LocalDate.now(), dryRun)
         assertThat(res, equalTo(keyDateMergeResult))
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
-    fun `null handover dates`(dryRun: Boolean) {
+    @Test
+    fun `delete future handover dates`() {
+        val personId = 42L
+        val custody = givenCustodyRecord(personId)
+        val keyDates = givenKeyDates(custody, LocalDate.now().plusDays(7), LocalDate.now().plusDays(1))
+        whenever(custodyRepository.findAllByDisposalEventPersonId(personId))
+            .thenReturn(listOf(custody))
+        whenever(keyDateRepository.findHandoverDates(custody.id))
+            .thenReturn(keyDates)
+
+        val (res) = keyDateService.mergeHandoverDates(personId, null, null)
+        assertThat(res, equalTo(KeyDateMergeResult.KeyDateDeleted))
+        verify(keyDateRepository, times(2)).delete(any())
+    }
+
+    @Test
+    fun `don't change past handover dates`() {
+        val personId = 42L
+        val custody = givenCustodyRecord(personId)
+        val keyDates = givenKeyDates(custody, LocalDate.now().minusDays(7), LocalDate.now())
+        whenever(custodyRepository.findAllByDisposalEventPersonId(personId))
+            .thenReturn(listOf(custody))
+        whenever(keyDateRepository.findHandoverDates(custody.id))
+            .thenReturn(keyDates)
+
+        val (res) = keyDateService.mergeHandoverDates(personId, null, null)
+        assertThat(res, equalTo(KeyDateMergeResult.NoKeyDateChange))
+        verify(keyDateRepository, never()).delete(any())
+    }
+
+    @Test
+    fun `dry run delete handover dates`() {
         val personId = 42L
         val custody = givenCustodyRecord(personId)
         val keyDates = givenKeyDates(custody, LocalDate.now(), LocalDate.now())
@@ -92,11 +121,10 @@ class KeyDateServiceTest {
             .thenReturn(listOf(custody))
         whenever(keyDateRepository.findHandoverDates(custody.id))
             .thenReturn(keyDates)
-        val keyDateMergeResult =
-            if (!dryRun) KeyDateMergeResult.DryRunKeyDateDeleted else KeyDateMergeResult.DryRunKeyDateDeleted
 
-        val res = keyDateService.mergeHandoverDates(personId, null, null, dryRun)
-        assertThat(res, equalTo(keyDateMergeResult))
+        val (res) = keyDateService.mergeHandoverDates(personId, null, null, true)
+        assertThat(res, equalTo(KeyDateMergeResult.DryRunKeyDateDeleted))
+        verify(keyDateRepository, never()).delete(any())
     }
 
     @ParameterizedTest
@@ -109,7 +137,7 @@ class KeyDateServiceTest {
         val keyDateMergeResult =
             if (!dryRun) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunNoKeyDateChange
 
-        val res = keyDateService.mergeHandoverDates(personId, null, null, dryRun)
+        val (res) = keyDateService.mergeHandoverDates(personId, null, null, dryRun)
         assertThat(res, equalTo(keyDateMergeResult))
     }
 
