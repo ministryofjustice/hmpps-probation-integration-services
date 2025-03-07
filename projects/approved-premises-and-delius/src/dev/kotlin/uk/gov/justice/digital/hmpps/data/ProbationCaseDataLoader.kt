@@ -58,6 +58,7 @@ class ProbationCaseDataLoader(
         probationCaseRepository.save(ProbationCaseGenerator.CASE_COMPLEX)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_SIMPLE)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_X320741)
+        probationCaseRepository.save(ProbationCaseGenerator.CASE_X320742)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_X320811)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_LAO_EXCLUSION)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_LAO_RESTRICTED)
@@ -67,6 +68,7 @@ class ProbationCaseDataLoader(
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_COMPLEX).asPersonManager(),
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_SIMPLE).asPersonManager(),
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320741).asPersonManager(),
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320742).asPersonManager(),
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320811).asPersonManager(),
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_LAO_EXCLUSION).asPersonManager(),
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_LAO_RESTRICTED).asPersonManager()
@@ -124,6 +126,12 @@ class ProbationCaseDataLoader(
             eventId = 100004L,
             mainOffence = Pair(200004L, LocalDate.parse("2024-10-14")),
             additionalOffence = Pair(300004L, LocalDate.parse("2024-10-24"))
+        )
+        generateEventAndAddOffences(
+            ProbationCaseGenerator.CASE_X320742,
+            eventId = 100005L,
+            mainOffence = Pair(200002L, LocalDate.parse("2024-10-12")),
+            additionalOffence = Pair(300002L, LocalDate.parse("2024-10-22"))
         )
 
         personalCircumstanceTypeRepository.saveAll(PersonalCircumstanceGenerator.PC_TYPES)
