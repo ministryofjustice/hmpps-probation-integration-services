@@ -23,7 +23,7 @@ data class PrisonCaseNote(
     val creationDateTime: ZonedDateTime,
     val occurrenceDateTime: ZonedDateTime,
     val authorName: String,
-    val text: String?,
+    val text: String,
     val locationId: String = UNKNOWN_LOCATION,
     val amendments: List<CaseNoteAmendment>
 ) {
@@ -69,7 +69,8 @@ fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
             contactTimeStamp = occurredAt(),
             systemTimestamp = amendments.mapNotNull { it.creationDateTime }.maxOrNull() ?: creationDateTime,
             staffName = getStaffName(),
-            establishmentCode = locationId
+            establishmentCode = locationId,
+            alertDescription = if (type == "ALERT") text.lines().first() else ""
         )
     )
 }

@@ -50,7 +50,9 @@ data class CaseNoteBody(
     @Valid
     val staffName: StaffName,
     @NotBlank
-    val establishmentCode: String
+    val establishmentCode: String,
+
+    val alertDescription: String,
 ) {
     fun typeLookup() = "$type $subType"
 
@@ -61,7 +63,7 @@ data class CaseNoteBody(
 
     fun description(caseNoteType: CaseNoteType): String? {
         return when {
-            typeLookup().isAlertType() -> "NOMIS $content".truncatedDescription()
+            typeLookup().isAlertType() -> "NOMIS $alertDescription".truncatedDescription()
             isResettlementPassport() -> BcstPathway.from(content)?.let { "BCST case note for $it" }
             caseNoteType.code == CaseNoteType.DEFAULT_CODE -> "NOMIS Case Note - $type - $subType"
             else -> null
