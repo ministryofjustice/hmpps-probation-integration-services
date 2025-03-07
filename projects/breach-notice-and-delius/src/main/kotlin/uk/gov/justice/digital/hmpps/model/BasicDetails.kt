@@ -15,7 +15,7 @@ data class Name(
 
 data class Address(
     val id: Long,
-    val type: String?,
+    val status: String?,
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,

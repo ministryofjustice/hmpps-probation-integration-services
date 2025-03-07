@@ -11,11 +11,11 @@ object PersonGenerator {
     val DEFAULT_PERSON = generatePerson(crn = "A000001")
     val DEFAULT_PERSON_MANAGER = generatePersonManager(DEFAULT_PERSON)
 
-    val DS_ADDRESS_TYPE = ReferenceDataGenerator.generateDataset(Dataset.ADDRESS_TYPE)
-    val DEFAULT_ADDRESS_TYPE = generateReferenceData(DS_ADDRESS_TYPE, "ADT1")
-    val DEFAULT_ADDRESS = generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_TYPE)
+    val DS_ADDRESS_STATUS = ReferenceDataGenerator.generateDataset(Dataset.ADDRESS_STATUS)
+    val DEFAULT_ADDRESS_STATUS = generateReferenceData(DS_ADDRESS_STATUS, "ADS1")
+    val DEFAULT_ADDRESS = generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_STATUS)
     val END_DATED_ADDRESS =
-        generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_TYPE, endDate = LocalDate.now().minusDays(1))
+        generatePersonAddress(DEFAULT_PERSON, DEFAULT_ADDRESS_STATUS, endDate = LocalDate.now().minusDays(1))
 
     val EXCLUSION = generatePerson("E123456", exclusionMessage = "There is an exclusion on this person")
     val RESTRICTION = generatePerson("R123456", restrictionMessage = "There is a restriction on this person")
@@ -52,7 +52,7 @@ object PersonGenerator {
 
     private fun generatePersonAddress(
         person: Person,
-        type: ReferenceData?,
+        status: ReferenceData?,
         buildingName: String? = "Building Name",
         buildingNumber: String? = "Building Number",
         streetName: String? = "Street Name",
@@ -65,7 +65,7 @@ object PersonGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = PersonAddress(
         person,
-        type,
+        status,
         buildingName,
         buildingNumber,
         streetName,

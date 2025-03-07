@@ -34,8 +34,8 @@ class BreachNoticeLoader(
 
     private fun basicDetailsData() {
         entityManager.persistAll(
-            PersonGenerator.DS_ADDRESS_TYPE,
-            PersonGenerator.DEFAULT_ADDRESS_TYPE,
+            PersonGenerator.DS_ADDRESS_STATUS,
+            PersonGenerator.DEFAULT_ADDRESS_STATUS,
             TeamGenerator.DEFAULT_LOCATION,
             TeamGenerator.DEFAULT_TEAM,
             StaffGenerator.DEFAULT_STAFF,
