@@ -5,17 +5,20 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.model.BasicDetails
+import uk.gov.justice.digital.hmpps.model.DocumentCrn
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.service.toAddress
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.util.*
 
 internal class BasicDetailsIntegrationTest : BaseIntegrationTest() {
 
@@ -51,5 +54,23 @@ internal class BasicDetailsIntegrationTest : BaseIntegrationTest() {
                 listOf(TeamGenerator.DEFAULT_LOCATION.toAddress()),
             )
         )
+    }
+
+    @Test
+    fun `can retrieve crn from breach notice id successfully`() {
+        val person = PersonGenerator.DEFAULT_PERSON
+        val response = mockMvc
+            .perform(get("/case/$BREACH_NOTICE_ID").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<DocumentCrn>()
+
+        assertThat(response.crn).isEqualTo(person.crn)
+    }
+
+    @Test
+    fun `document not found returns 404 response`() {
+        mockMvc
+            .perform(get("/case/${UUID.randomUUID()}").withToken())
+            .andExpect(status().isNotFound)
     }
 }
