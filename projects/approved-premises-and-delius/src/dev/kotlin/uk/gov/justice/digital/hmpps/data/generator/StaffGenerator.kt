@@ -16,6 +16,12 @@ object StaffGenerator {
         name = "Jim Snow",
         probationArea = ProbationAreaGenerator.N58_SW
     )
+    val CAS2V2_CB = generate(
+        name = "Coutney Delius-Bail"
+    )
+    val CAS2V2_PB = generate(
+        name = "Nick Delius-Bail"
+    )
     val LAO_FULL_ACCESS = generate(
         name = "LAO Full Access"
     )
@@ -29,6 +35,8 @@ object StaffGenerator {
 
     val DEFAULT_STAFF_USER = generateStaffUser("john-smith", DEFAULT_STAFF)
     val JIM_SNOW_USER = generateStaffUser("JIMSNOWLDAP", JIM_SNOW)
+    val CAS2V2_CB_USER = generateStaffUser("CAS2V2_DELIUS_CB", CAS2V2_CB)
+    val CAS2V2_PB_USER = generateStaffUser("CAS2V2_DELIUS_PB", CAS2V2_PB)
     val LAO_FULL_ACCESS_USER = generateStaffUser("LAOFULLACCESS", LAO_FULL_ACCESS)
     val LAO_RESTRICTED_USER = generateStaffUser("LAORESTRICTED", LAO_RESTRICTED)
     val CRU_WOMENS_ESTATE_USER = generateStaffUser("CRUWOMENSESTATE", CRU_WOMENS_ESTATE)
