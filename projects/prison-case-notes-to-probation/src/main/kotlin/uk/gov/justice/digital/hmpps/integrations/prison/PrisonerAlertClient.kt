@@ -37,6 +37,7 @@ data class Alert(
     val lastModifiedAt: ZonedDateTime?,
     val lastModifiedBy: String?,
     val lastModifiedByDisplayName: String?,
+    val activeToLastSetAt: ZonedDateTime?,
     val prisonCodeWhenCreated: String?
 ) {
     fun staffName(): StaffName {
@@ -62,7 +63,14 @@ fun Alert.toDeliusCaseNote(): DeliusCaseNote {
             subType = if (isActive) "ACTIVE" else "INACTIVE",
             content = description ?: "",
             contactTimeStamp = ZonedDateTime.of(
-                of(if (isActive) activeFrom else activeTo, createdAt.toLocalTime()),
+                of(
+                    if (isActive) activeFrom else activeTo,
+                    listOfNotNull(
+                        activeToLastSetAt,
+                        lastModifiedAt,
+                        createdAt
+                    ).max().toLocalTime()
+                ),
                 EuropeLondon
             ),
             systemTimestamp = lastModifiedAt ?: createdAt,
