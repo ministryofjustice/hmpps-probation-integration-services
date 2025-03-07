@@ -65,11 +65,11 @@ data class CaseNoteBody(
     private fun extraNotes(): String = StringBuilder().apply {
         if (locationUnknown()) {
             append(System.lineSeparator())
-            append(alertDescription)
+            append("Establishment details were not available when this contact was created. Please refer to throughcare history for location details if required.")
         }
         if (alertDescription.isNotBlank()) {
             append(System.lineSeparator())
-            append("Establishment details were not available when this contact was created. Please refer to throughcare history for location details if required.")
+            append(alertDescription)
         }
     }.toString()
 
