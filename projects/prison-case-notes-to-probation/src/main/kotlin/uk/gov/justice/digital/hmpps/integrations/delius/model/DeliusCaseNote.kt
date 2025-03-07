@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
+import uk.gov.justice.digital.hmpps.integrations.prison.UNKNOWN_LOCATION
 import uk.gov.justice.digital.hmpps.model.StaffName
 import java.time.ZonedDateTime
 import java.util.*
@@ -57,9 +58,22 @@ data class CaseNoteBody(
     fun typeLookup() = "$type $subType"
 
     fun notes(length: Int = 0): String {
-        val notes = typeLookup() + System.lineSeparator() + content
+        val notes = typeLookup() + extraNotes() + System.lineSeparator() + content
         return notes.padEnd(length)
     }
+
+    private fun extraNotes(): String = StringBuilder().apply {
+        if (locationUnknown()) {
+            append(System.lineSeparator())
+            append(alertDescription)
+        }
+        if (alertDescription.isNotBlank()) {
+            append(System.lineSeparator())
+            append("Establishment details were not available when this contact was created. Please refer to throughcare history for location details if required.")
+        }
+    }.toString()
+
+    fun locationUnknown(): Boolean = establishmentCode == UNKNOWN_LOCATION
 
     fun description(caseNoteType: CaseNoteType): String? {
         return when {
