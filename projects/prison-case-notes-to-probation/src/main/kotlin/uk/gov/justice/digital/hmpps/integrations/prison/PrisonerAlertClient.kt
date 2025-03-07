@@ -69,7 +69,8 @@ fun Alert.toDeliusCaseNote(): DeliusCaseNote {
             staffName = staffName(),
             establishmentCode = checkNotNull(prisonCodeWhenCreated) {
                 "Unable to verify establishment for alert"
-            }
+            },
+            "Alert ${alertCode.alertTypeDescription} and ${alertCode.description} made ${if (isActive) "active" else "inactive"}."
         )
     )
 }

@@ -273,7 +273,8 @@ class DeliusServiceTest {
             body = deliusCaseNote.body.copy(
                 type = "ALERT",
                 subType = "ACTIVE",
-                content = "123"
+                content = "123",
+                alertDescription = "123"
             )
         )
         givenNewCaseNote()
@@ -289,7 +290,8 @@ class DeliusServiceTest {
             body = deliusCaseNote.body.copy(
                 type = "ALERT",
                 subType = "ACTIVE",
-                content = List(200) { "X" }.joinToString("")
+                content = List(200) { "X" }.joinToString(""),
+                alertDescription = List(200) { "X" }.joinToString("")
             )
         )
         givenNewCaseNote()

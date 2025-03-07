@@ -6,6 +6,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteTypesOfInterest
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -21,6 +22,7 @@ class Handler(
     private val prisonIdentifierAdded: PrisonIdentifierAdded,
     private val personCaseNote: PersonCaseNote,
     private val prisonerAlert: PrisonerAlert,
+    private val featureFlags: FeatureFlags,
     override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
 
@@ -44,16 +46,17 @@ class Handler(
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
+        val useAlertApi = featureFlags.enabled("alert-case-notes-from-alerts-api")
         when {
             notification.eventType == PRISON_IDENTIFIER_ADDED -> prisonIdentifierAdded.handle(notification.message)
-            notification.isCaseNoteOfInterest() -> personCaseNote.handle(notification.message)
-            notification.isAlert() -> prisonerAlert.handle(notification.message)
+            notification.isCaseNoteOfInterest(useAlertApi) -> personCaseNote.handle(notification.message)
+            notification.isAlert() && useAlertApi -> prisonerAlert.handle(notification.message)
         }
     }
 }
 
-private fun Notification<*>.isCaseNoteOfInterest(): Boolean =
-    (eventType == PERSON_CASE_NOTE_CREATED || eventType == PERSON_CASE_NOTE_UPDATED) && typeIsOfInterest()
+private fun Notification<*>.isCaseNoteOfInterest(ignoreAlerts: Boolean): Boolean =
+    (eventType == PERSON_CASE_NOTE_CREATED || eventType == PERSON_CASE_NOTE_UPDATED) && typeIsOfInterest(ignoreAlerts)
 
 private fun Notification<*>.isAlert(): Boolean =
     (eventType in setOf(PERSON_ALERT_CREATED, PERSON_ALERT_UPDATED, PERSON_ALERT_INACTIVE))
@@ -61,4 +64,5 @@ private fun Notification<*>.isAlert(): Boolean =
 val Notification<*>.type get() = attributes["type"]?.value
 val Notification<*>.subType get() = attributes["subType"]?.value
 
-private fun Notification<*>.typeIsOfInterest() = CaseNoteTypesOfInterest.verifyOfInterest(type!!, subType!!)
+private fun Notification<*>.typeIsOfInterest(ignoreAlerts: Boolean) =
+    CaseNoteTypesOfInterest.verifyOfInterest(type!!, subType!!, ignoreAlerts)
