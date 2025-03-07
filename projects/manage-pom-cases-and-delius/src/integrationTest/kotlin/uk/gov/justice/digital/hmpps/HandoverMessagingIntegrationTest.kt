@@ -62,7 +62,9 @@ internal class HandoverMessagingIntegrationTest {
             mapOf(
                 "nomsId" to "A2048BY",
                 "handoverDate" to "2023-05-09",
-                "handoverStartDate" to "2023-05-04"
+                "handoverStartDate" to "2023-05-04",
+                "existingPOM1" to "2023-05-04",
+                "existingPOM2" to "2023-05-09",
             )
         )
 

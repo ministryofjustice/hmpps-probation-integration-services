@@ -26,7 +26,7 @@ class KeyDateService(
         date: LocalDate?,
         startDate: LocalDate?,
         dryRun: Boolean = false
-    ): KeyDateMergeResult {
+    ): Pair<KeyDateMergeResult, Map<String, KeyDate>> {
         val custodyList = custodyRepository.findAllByDisposalEventPersonId(personId)
         val custody = when (custodyList.size) {
             0 -> throw IgnorableMessageException("NoActiveCustodialSentence")
@@ -37,7 +37,7 @@ class KeyDateService(
         val existing = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
         val hod = update(custody.id, HANDOVER_DATE, existing[HANDOVER_DATE.value], date, dryRun)
         val hsd = update(custody.id, HANDOVER_START_DATE, existing[HANDOVER_START_DATE.value], startDate, dryRun)
-        return listOf(hod, hsd).maxByOrNull { it.ordinal }!!
+        return listOf(hod, hsd).maxByOrNull { it.ordinal }!! to existing
     }
 
     private fun update(
@@ -51,7 +51,10 @@ class KeyDateService(
             keyDateRepository.save(existing?.apply { this.date = new } ?: keyDate(custodyId, typeCode, new))
             if (existing == null) KeyDateMergeResult.KeyDateCreated else KeyDateMergeResult.KeyDateUpdated
         } else {
-            if (existing == null) KeyDateMergeResult.NoKeyDateChange else KeyDateMergeResult.DryRunKeyDateDeleted
+            if (existing != null && existing.date > LocalDate.now()) {
+                keyDateRepository.delete(existing)
+                KeyDateMergeResult.KeyDateDeleted
+            } else KeyDateMergeResult.NoKeyDateChange
         }
     }
 
@@ -65,7 +68,7 @@ class KeyDateService(
         KeyDate(custodyId, referenceDataRepository.keyDateType(typeCode.value), date)
 }
 
-enum class KeyDateMergeResult() {
+enum class KeyDateMergeResult {
     NoKeyDateChange, KeyDateDeleted, KeyDateUpdated, KeyDateCreated,
     DryRunNoKeyDateChange, DryRunKeyDateDeleted, DryRunKeyDateUpdated, DryRunKeyDateCreated
 }
