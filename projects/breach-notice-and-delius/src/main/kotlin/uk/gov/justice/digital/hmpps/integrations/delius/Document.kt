@@ -14,6 +14,10 @@ import java.util.*
 @SQLRestriction("soft_deleted = 0")
 class Document(
 
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
+
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
 
@@ -81,4 +85,6 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         nativeQuery = true
     )
     fun findEventIdFromDocument(urn: String): Long?
+
+    fun findByExternalReference(urn: String): Document?
 }

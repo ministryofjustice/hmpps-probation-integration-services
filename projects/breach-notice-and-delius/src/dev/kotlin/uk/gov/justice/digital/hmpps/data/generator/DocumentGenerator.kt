@@ -20,6 +20,7 @@ object DocumentGenerator {
         alfrescoId: UUID = UUID.randomUUID(),
         id: Long = IdGenerator.getAndIncrement()
     ) = Document(
+        PersonGenerator.DEFAULT_PERSON,
         alfrescoId.toString(),
         primaryKeyId,
         tableName,
