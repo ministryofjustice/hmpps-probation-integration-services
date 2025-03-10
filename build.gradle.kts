@@ -13,7 +13,7 @@ plugins {
     kotlin("plugin.jpa") version "2.1.10" apply false
     id("org.springframework.boot") version "3.4.3" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
-    id("com.gorylenko.gradle-git-properties") version "2.4.2" apply false
+    id("com.gorylenko.gradle-git-properties") version "2.5.0" apply false
     id("com.google.cloud.tools.jib") apply false
     id("base")
     id("org.sonarqube")
