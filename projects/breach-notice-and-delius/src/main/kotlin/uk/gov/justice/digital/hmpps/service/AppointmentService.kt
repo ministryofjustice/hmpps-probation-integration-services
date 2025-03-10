@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import uk.gov.justice.digital.hmpps.integrations.ldap.LdapUserDetails
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
@@ -36,7 +37,7 @@ fun PersonManager.asResponsibleOfficer(): ResponsibleOfficer = ResponsibleOffice
 fun Contact.asAppointment() = Appointment(
     id,
     type.codedDescription(),
-    LocalDateTime.of(date, startTime.toLocalTime()),
+    LocalDateTime.of(date, startTime.withZoneSameInstant(EuropeLondon).toLocalTime()),
     description,
     location?.toAddress(),
     Officer(staff.code, staff.name()),
