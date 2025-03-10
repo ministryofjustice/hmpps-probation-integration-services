@@ -113,6 +113,9 @@
         <a href="./api-reference.html#docs-asyncapi"><span>/docs/asyncapi</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#case-breachnoticeid"><span>/case/{breachNoticeId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#basic-details-crn-username"><span>/basic-details/{crn}/{username}</span></a>
       </li>
       <li>
@@ -475,7 +478,7 @@
       "description": "string",
       "location": {
         "id": "integer",
-        "type": "string",
+        "status": "string",
         "buildingName": "string",
         "buildingNumber": "string",
         "streetName": "string",
@@ -538,6 +541,66 @@
 </td>
 <td>
 
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="case-breachnoticeid">/case/{breachNoticeId}</h2>
+
+<h3 id="case-breachnoticeid-get">get</h3>
+
+
+
+
+<h4 id="case-breachnoticeid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>breachNoticeId</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-breachnoticeid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-documentcrn'>DocumentCrn</a>
 </td>
 </tr>
 
@@ -611,7 +674,7 @@
   "addresses": [
     {
       "id": "integer",
-      "type": "string",
+      "status": "string",
       "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
@@ -624,7 +687,7 @@
   "replyAddresses": [
     {
       "id": "integer",
-      "type": "string",
+      "status": "string",
       "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
@@ -1004,7 +1067,7 @@
 </tr>
 
 <tr>
-<td>type</td>
+<td>status</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -1287,6 +1350,28 @@
 <td>telephoneNumber</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-documentcrn">DocumentCrn</h3>
+
+
+<table class='schema-documentcrn'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
   

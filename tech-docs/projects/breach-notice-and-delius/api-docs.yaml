@@ -115,6 +115,25 @@ paths:
             application/json:
               schema:
                 type: string
+  /case/{breachNoticeId}:
+    get:
+      tags:
+      - breach-notice-controller
+      operationId: findCrnForBreachNotice
+      parameters:
+      - name: breachNoticeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentCrn"
   /basic-details/{crn}/{username}:
     get:
       tags:
@@ -254,7 +273,7 @@ components:
         id:
           type: integer
           format: int64
-        type:
+        status:
           type: string
         buildingName:
           type: string
@@ -337,6 +356,13 @@ components:
           type: string
       required:
       - name
+    DocumentCrn:
+      type: object
+      properties:
+        crn:
+          type: string
+      required:
+      - crn
     BasicDetails:
       type: object
       properties:
