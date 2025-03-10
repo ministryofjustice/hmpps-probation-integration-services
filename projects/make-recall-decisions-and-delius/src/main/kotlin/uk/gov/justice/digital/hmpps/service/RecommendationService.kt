@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.ge
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaff
-import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.MakeRecallDecisionsClient.RecommendationDetails
+import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.RecommendationDetails
 import uk.gov.justice.digital.hmpps.messaging.ManagementDecision
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime

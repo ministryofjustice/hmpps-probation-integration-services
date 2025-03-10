@@ -1,15 +1,11 @@
 package uk.gov.justice.digital.hmpps.integrations.prison
 
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.service.annotation.GetExchange
 import org.springframework.web.service.annotation.PostExchange
 import java.net.URI
 import java.time.LocalDateTime
 
 interface PrisonCaseNotesClient {
-    @GetExchange
-    fun getCaseNote(baseUrl: URI): PrisonCaseNote
-
     @PostExchange
     fun searchCaseNotes(
         uri: URI,

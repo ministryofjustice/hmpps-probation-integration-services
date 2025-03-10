@@ -60,6 +60,7 @@ seed.database: true
 wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
+messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
 oauth2:
   client-id: refer-and-monitor-and-delius

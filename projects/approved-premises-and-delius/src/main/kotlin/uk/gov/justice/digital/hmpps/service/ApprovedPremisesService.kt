@@ -1,7 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.getApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
@@ -14,11 +15,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.messaging.crn
-import uk.gov.justice.digital.hmpps.messaging.url
 
 @Service
 class ApprovedPremisesService(
-    private val approvedPremisesApiClient: ApprovedPremisesApiClient,
+    private val detailService: DomainEventDetailService,
     private val approvedPremisesRepository: ApprovedPremisesRepository,
     private val staffRepository: StaffRepository,
     private val personRepository: PersonRepository,
@@ -29,7 +29,7 @@ class ApprovedPremisesService(
     private val notifier: Notifier,
 ) {
     fun applicationSubmitted(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
+        val details = detailService.getDetail<EventDetails<ApplicationSubmitted>>(event).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val dEvent = eventRepository.getEvent(person.id, details.eventNumber)
         contactService.createContact(
@@ -47,7 +47,7 @@ class ApprovedPremisesService(
     }
 
     fun applicationAssessed(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getApplicationAssessedDetails(event.url()).eventDetails
+        val details = detailService.getDetail<EventDetails<ApplicationAssessed>>(event).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val dEvent = eventRepository.getEvent(person.id, details.eventNumber)
         contactService.createContact(
@@ -65,7 +65,7 @@ class ApprovedPremisesService(
     }
 
     fun applicationWithdrawn(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getApplicationWithdrawnDetails(event.url()).eventDetails
+        val details = detailService.getDetail<EventDetails<ApplicationWithdrawn>>(event).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val dEvent = eventRepository.getEvent(person.id, details.eventNumber)
         contactService.createContact(
@@ -85,25 +85,25 @@ class ApprovedPremisesService(
     }
 
     fun bookingMade(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getBookingMadeDetails(event.url()).eventDetails
+        val details = detailService.getDetail<EventDetails<BookingMade>>(event).eventDetails
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         referralService.bookingMade(event.crn(), details, ap)
     }
 
     fun bookingChanged(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getBookingChangedDetails(event.url()).eventDetails
+        val details = detailService.getDetail<EventDetails<BookingChanged>>(event).eventDetails
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         referralService.bookingChanged(event.crn(), details, ap)
     }
 
     fun bookingCancelled(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getBookingCancelledDetails(event.url()).eventDetails
+        val details = detailService.getDetail<EventDetails<BookingCancelled>>(event).eventDetails
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         referralService.bookingCancelled(event.crn(), details, ap)
     }
 
     fun personNotArrived(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getPersonNotArrivedDetails(event.url())
+        val details = detailService.getDetail<EventDetails<PersonNotArrived>>(event)
         val ap = approvedPremisesRepository.getApprovedPremises(details.eventDetails.premises.legacyApCode)
         referralService.personNotArrived(
             personRepository.getByCrn(event.crn()),
@@ -114,7 +114,7 @@ class ApprovedPremisesService(
     }
 
     fun personArrived(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getPersonArrivedDetails(event.url()).eventDetails
+        val details = detailService.getDetail<EventDetails<PersonArrived>>(event).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         nsiService.personArrived(person, details, ap)?.let { (previousAddress, newAddress) ->
@@ -124,7 +124,7 @@ class ApprovedPremisesService(
     }
 
     fun personDeparted(event: HmppsDomainEvent) {
-        val details = approvedPremisesApiClient.getPersonDepartedDetails(event.url()).eventDetails
+        val details = detailService.getDetail<EventDetails<PersonDeparted>>(event).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         nsiService.personDeparted(person, details, ap)?.let { updatedAddress ->

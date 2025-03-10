@@ -63,6 +63,7 @@ seed.database: true
 wiremock.enabled: true
 
 messaging.consumer.queue: workforce-allocations-events
+messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
 integrations:
   workforce-allocations:

@@ -5,3 +5,4 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/oauth/token
+    MESSAGING_CONSUMER_DETAIL_URLS: https://approved-premises-api.hmpps.service.justice.gov.uk

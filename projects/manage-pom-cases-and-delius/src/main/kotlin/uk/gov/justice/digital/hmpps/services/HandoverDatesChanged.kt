@@ -1,30 +1,25 @@
 package uk.gov.justice.digital.hmpps.services
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.Handover
-import uk.gov.justice.digital.hmpps.integrations.managepomcases.ManagePomCasesClient
-import uk.gov.justice.digital.hmpps.messaging.HandoverMessage
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 @Service
 class HandoverDatesChanged(
-    private val pomCasesClient: ManagePomCasesClient,
+    private val detailService: DomainEventDetailService,
     private val personRepository: PersonRepository,
     private val keyDateService: KeyDateService,
     private val telemetryService: TelemetryService
 ) {
-    fun process(event: HandoverMessage, dryRun: Boolean = false) = try {
-        val handOver = event.detailUrl?.let { pomCasesClient.getDetails(URI.create(it)) }
-            ?: throw IgnorableMessageException(
-                "No handover data available",
-                mapOf("detailUrl" to event.detailUrl.orNotProvided())
-            )
-        val personId = personRepository.findIdFromNomsId(handOver.nomsId)
-            ?: throw IgnorableMessageException("PersonNotFound", handOver.properties())
+    fun process(personReference: PersonReference, detailUrl: String?, dryRun: Boolean = false) = try {
+        val handOver = detailService.getDetail<Handover>(detailUrl)
+        val personId = personRepository.findIdFromNomsId(handOver.nomsId).orIgnore { "PersonNotFound" }
 
         val (result, existingDates) = keyDateService
             .mergeHandoverDates(personId, handOver.date, handOver.startDate, dryRun)
@@ -32,7 +27,7 @@ class HandoverDatesChanged(
     } catch (ime: IgnorableMessageException) {
         telemetryService.trackEvent(
             ime.message,
-            mapOf("nomsId" to event.personReference.findNomsNumber().orNotProvided()) + ime.additionalProperties
+            mapOf("nomsId" to personReference.findNomsNumber().orNotProvided()) + ime.additionalProperties
         )
     }
 

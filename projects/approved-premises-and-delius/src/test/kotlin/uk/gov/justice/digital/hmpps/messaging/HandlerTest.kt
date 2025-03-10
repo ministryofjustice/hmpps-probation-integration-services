@@ -39,13 +39,6 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `throws when no detail url is provided`() {
-        val event = HmppsDomainEvent(eventType = "test", version = 1, occurredAt = ZonedDateTime.now())
-        val exception = assertThrows<IllegalArgumentException> { event.url() }
-        assertThat(exception.message, equalTo("Missing detail url"))
-    }
-
-    @Test
     fun `throws when no crn is provided`() {
         val event = HmppsDomainEvent(eventType = "test", version = 1, occurredAt = ZonedDateTime.now())
         val exception = assertThrows<IllegalArgumentException> { event.crn() }

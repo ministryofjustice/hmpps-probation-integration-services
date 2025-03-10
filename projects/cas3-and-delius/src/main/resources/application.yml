@@ -49,8 +49,9 @@ spring:
 seed.database: true
 wiremock.enabled: true
 
-messaging.consumer.queue: message-queue
 messaging.producer.topic: domain-events
+messaging.consumer.queue: message-queue
+messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
 integrations:
   cas3-api:

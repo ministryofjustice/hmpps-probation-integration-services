@@ -5,21 +5,21 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.*
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.AllocateEventService
 import uk.gov.justice.digital.hmpps.service.AllocatePersonService
 import uk.gov.justice.digital.hmpps.service.AllocateRequirementService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI.create
 
 @Component
 @Channel("workforce-allocations-to-delius-queue")
 class Handler(
-    private val allocationsClient: WorkforceAllocationsClient,
+    private val detailService: DomainEventDetailService,
     private val allocatePersonService: AllocatePersonService,
     private val allocateEventService: AllocateEventService,
     private val allocateRequirementService: AllocateRequirementService,
@@ -35,8 +35,7 @@ class Handler(
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         val allocationEvent = notification.message
-        val detailUrl = allocationEvent.detailUrl ?: return
-        val allocationDetail = allocationsClient.getAllocationDetail(create(detailUrl))
+        val allocationDetail: AllocationDetail = detailService.getDetail(allocationEvent)
         try {
             when (allocationDetail) {
                 is PersonAllocation -> allocatePersonService.createPersonAllocation(allocationDetail)
@@ -52,7 +51,7 @@ class Handler(
             }
             telemetryService.trackEvent(
                 allocationDetail::class.simpleName!!,
-                mapOf("crn" to allocationEvent.findCrn(), "detailUrl" to detailUrl)
+                mapOf("crn" to allocationEvent.findCrn(), "detailUrl" to allocationEvent.detailUrl!!)
             )
         } catch (ex: IgnorableMessageException) {
             telemetryService.trackEvent(

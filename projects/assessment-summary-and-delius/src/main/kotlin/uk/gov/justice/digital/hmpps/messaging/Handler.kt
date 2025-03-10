@@ -7,15 +7,15 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
-import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
+import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummaries
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 const val AssessmentSummaryProduced = "assessment.summary.produced"
 
@@ -23,7 +23,7 @@ const val AssessmentSummaryProduced = "assessment.summary.produced"
 @Channel("assessment-summary-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
-    private val ordsClient: OrdsClient,
+    private val detailService: DomainEventDetailService,
     private val assessmentSubmitted: AssessmentSubmitted,
     private val telemetryService: TelemetryService
 ) : NotificationHandler<HmppsDomainEvent> {
@@ -32,9 +32,9 @@ class Handler(
         try {
             if (notification.message.eventType == AssessmentSummaryProduced) {
                 telemetryService.notificationReceived(notification)
-                notification.message.detailUrl
-                    ?.let { nullIfNotFound { ordsClient.getAssessmentSummary(URI.create(it)) }.orIgnore { "No assessment in OASys" } }
-                    ?.let { assessmentSubmitted.assessmentSubmitted(it.crn, it.assessments.first()) }
+                val summary = nullIfNotFound { detailService.getDetail<AssessmentSummaries>(notification.message) }
+                    .orIgnore { "No assessment in OASys" }
+                assessmentSubmitted.assessmentSubmitted(summary.crn, summary.assessments.first())
             }
         } catch (ime: IgnorableMessageException) {
             telemetryService.trackEvent(
