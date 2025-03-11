@@ -94,6 +94,7 @@ subprojects {
         named<GenerateGitPropertiesTask>("generateGitProperties") { enabled = false }
         register<GenerateGitPropertiesTask>("gitInfo") {
             gitProperties.gitPropertiesResourceDir = projectDir
+            gitProperties.dotGitDirectory = rootDir.resolve(".git")
         }
         register<BuildInfo>("buildInfo") {
             destinationDir = projectDir
