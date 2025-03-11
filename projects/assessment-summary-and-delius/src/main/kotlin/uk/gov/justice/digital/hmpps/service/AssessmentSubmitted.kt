@@ -24,16 +24,16 @@ class AssessmentSubmitted(
     private val telemetryService: TelemetryService
 ) : AuditableService(auditedInteractionService) {
     fun assessmentSubmitted(crn: String, summary: AssessmentSummary) {
-        val telemetryParams = mapOf(
+        val telemetryParams = mutableMapOf(
             "crn" to crn,
             "dateCompleted" to summary.dateCompleted.toString(),
             "assessmentType" to summary.assessmentType,
             "assessmentStatus" to summary.assessmentStatus,
             "assessmentId" to summary.assessmentPk.toString(),
             "ROSH" to summary.riskFlags.mapNotNull(RiskOfSeriousHarmType::of).maxByOrNull { it.ordinal }.toString(),
-        ) + RiskType.entries.map {
-            it.name to it.riskLevel(summary)?.name.toString()
-        }
+        )
+
+        telemetryParams.putAll(RiskType.entries.map { it.name to it.riskLevel(summary)?.name.toString() })
 
         val person = personRepository.getByCrn(crn)
 
@@ -46,6 +46,13 @@ class AssessmentSubmitted(
         if (summary.assessmentStatus == "COMPLETE") audit(UPDATE_RISK_DATA) {
             it["CRN"] = person.crn
             val registrationEvents = riskService.recordRisk(person, summary)
+            registrationEvents.groupBy { it.eventType }.forEach {
+                telemetryParams.put(
+                    it.key,
+                    it.value.mapNotNull { it.additionalInformation["registerTypeCode"] }
+                        .joinToString(prefix = "[", postfix = "]")
+                )
+            }
             domainEventService.publishEvents(registrationEvents)
         }
 
