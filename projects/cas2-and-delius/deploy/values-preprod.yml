@@ -8,6 +8,7 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: preprod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-preprod.svc.cluster.local/auth/oauth/token
+    MESSAGING_CONSUMER_DETAIL_URLS: https://approved-premises-api-preprod.hmpps.service.justice.gov.uk
 
 generic-prometheus-alerts:
   businessHoursOnly: true

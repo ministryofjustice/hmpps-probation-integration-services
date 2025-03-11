@@ -8,9 +8,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integrations.randm.*
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -18,14 +20,13 @@ import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.Attended
 import uk.gov.justice.digital.hmpps.service.UpdateAppointmentOutcome
-import java.net.URI
 import java.time.ZonedDateTime
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class FeedbackSubmittedTest {
     @Mock
-    lateinit var ramClient: ReferAndMonitorClient
+    lateinit var detailService: DomainEventDetailService
 
     @Mock
     lateinit var appointmentService: AppointmentService
@@ -67,7 +68,8 @@ internal class FeedbackSubmittedTest {
     @Test
     fun `if appointment not found in supplier assessment, process fails`() {
         val supplierAssessment = SupplierAssessment(UUID.randomUUID(), listOf(), referralId)
-        whenever(ramClient.getSupplierAssessment(URI(domainEvent.detailUrl!!))).thenReturn(supplierAssessment)
+        whenever(detailService.getDetail<SupplierAssessment>(anyOrNull(), anyOrNull()))
+            .thenReturn(supplierAssessment)
 
         val result = feedbackSubmitted.initialAppointmentSubmitted(domainEvent)
         assertThat(result, instanceOf(EventProcessingResult.Failure::class.java))
@@ -89,14 +91,13 @@ internal class FeedbackSubmittedTest {
                     SessionFeedback(null, false)
                 )
             )
-        whenever(ramClient.getSupplierAssessment(URI(domainEvent.detailUrl!!)))
-            .thenReturn(
-                SupplierAssessment(
-                    UUID.randomUUID(),
-                    listOf(appointment),
-                    referralId
-                )
+        whenever(detailService.getDetail<SupplierAssessment>(anyOrNull(), anyOrNull())).thenReturn(
+            SupplierAssessment(
+                UUID.randomUUID(),
+                listOf(appointment),
+                referralId
             )
+        )
 
         val result = feedbackSubmitted.initialAppointmentSubmitted(domainEvent)
         assertThat(result, instanceOf(EventProcessingResult.Success::class.java))

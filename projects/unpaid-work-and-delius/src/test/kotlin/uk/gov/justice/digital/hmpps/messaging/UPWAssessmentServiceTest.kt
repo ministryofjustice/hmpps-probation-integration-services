@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.http.HttpHeaders
@@ -16,8 +17,8 @@ import org.springframework.http.ResponseEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonManager
@@ -29,7 +30,6 @@ import uk.gov.justice.digital.hmpps.integrations.document.DocumentService
 import uk.gov.justice.digital.hmpps.integrations.upwassessment.UPWAssessmentService
 import uk.gov.justice.digital.hmpps.prepEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 @ExtendWith(MockitoExtension::class)
 internal class UPWAssessmentServiceTest {
@@ -56,7 +56,7 @@ internal class UPWAssessmentServiceTest {
     private lateinit var documentService: DocumentService
 
     @Mock
-    private lateinit var arnClient: ArnClient
+    private lateinit var detailService: DomainEventDetailService
 
     @Mock
     private lateinit var staff: Staff
@@ -103,7 +103,7 @@ internal class UPWAssessmentServiceTest {
         whenever(eventRepository.existsById(EventGenerator.DEFAULT.id)).thenReturn(true)
         val notification = prepEvent("upw-assessment-complete", 1234)
 
-        whenever(arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))).thenReturn(
+        whenever(detailService.getDetailResponse<Any>(anyOrNull(), anyOrNull())).thenReturn(
             ResponseEntity.status(HttpStatus.OK)
                 .headers { it[HttpHeaders.CONTENT_DISPOSITION] = listOf("filename=upw-assessment.pdf") }
                 .body(

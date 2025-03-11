@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.ApprovedPremisesService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 @Component
 @Channel("approved-premises-and-delius-queue")
@@ -113,4 +112,3 @@ fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
 ).toMap()
 
 fun HmppsDomainEvent.crn(): String = personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN")
-fun HmppsDomainEvent.url(): URI = URI.create(detailUrl ?: throw IllegalArgumentException("Missing detail url"))

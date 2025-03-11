@@ -10,6 +10,7 @@ generic-service:
     SENTRY_ENVIRONMENT: dev
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-dev.svc.cluster.local/auth/oauth/token
+    MESSAGING_CONSUMER_DETAIL_URLS: https://approved-premises-api-dev.hmpps.service.justice.gov.uk
     EVENT_EXCEPTION_THROWNOTFOUND: false
 
 generic-prometheus-alerts:
