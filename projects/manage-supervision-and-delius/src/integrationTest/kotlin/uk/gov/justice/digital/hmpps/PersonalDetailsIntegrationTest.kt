@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.http.HttpHeaders
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
@@ -36,6 +35,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
+import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
@@ -74,8 +74,10 @@ internal class PersonalDetailsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @MockitoBean
-    lateinit var jdbcTemplate: JdbcTemplate
+    private var jdbcTemplate: JdbcTemplate = Mockito.mock(JdbcTemplate::class.java)
+
+    @Autowired
+    lateinit var deliusUserAspect: DeliusUserAspect
 
     @Value("\${messaging.producer.topic}")
     lateinit var topicName: String
@@ -103,6 +105,8 @@ internal class PersonalDetailsIntegrationTest {
             .expiration(Date(System.currentTimeMillis() + Duration.ofHours(1L).toMillis()))
             .signWith(keyPair.private, Jwts.SIG.RS256)
             .compact()
+
+        deliusUserAspect.set("jdbcTemplate",jdbcTemplate)
         Mockito.reset(jdbcTemplate);// reset mock
     }
 
@@ -546,9 +550,9 @@ internal class PersonalDetailsIntegrationTest {
         val setCallSql = updateSqlCaptor.value
         val clearCallSql = sqlCaptor.allValues[0]
         val ps = psCaptor.value
-        assertThat(setCallSql, equalTo("call PKG_VPD_CTX.SET_CLIENT_IDENTIFIER(:userName)"))
+        assertThat(setCallSql, equalTo("call pkg_vpd_ctx.set_client_identifier(:userName)"))
         assertThat(ps.getValue("userName"), equalTo("DeliusUser"))
-        assertThat(clearCallSql, equalTo("call PKG_VPD_CTX.CLEAR_CLIENT_IDENTIFIER()"))
+        assertThat(clearCallSql, equalTo("call pkg_vpd_ctx.clear_client_identifier()"))
         assertThat(res.mainAddress?.postcode, equalTo("NE3 NEW"))
     }
 
