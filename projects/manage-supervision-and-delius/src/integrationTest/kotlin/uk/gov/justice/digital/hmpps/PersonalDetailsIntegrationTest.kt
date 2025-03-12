@@ -106,7 +106,7 @@ internal class PersonalDetailsIntegrationTest {
             .signWith(keyPair.private, Jwts.SIG.RS256)
             .compact()
 
-        deliusUserAspect.set("jdbcTemplate",jdbcTemplate)
+        deliusUserAspect.set("jdbcTemplate", jdbcTemplate)
         Mockito.reset(jdbcTemplate);// reset mock
     }
 
