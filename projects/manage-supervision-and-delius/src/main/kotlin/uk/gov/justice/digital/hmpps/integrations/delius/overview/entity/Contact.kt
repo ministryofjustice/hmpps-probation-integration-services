@@ -338,7 +338,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         o.surname AS surname,
                         o.date_of_birth_date AS dob,
                         c.contact_id AS id,
-                        cl.crn AS crn, 
+                        o.crn AS crn, 
                         c.contact_date AS contact_date, 
                         c.contact_start_time AS contact_start_time,
                         c.contact_end_time AS contact_end_time,
