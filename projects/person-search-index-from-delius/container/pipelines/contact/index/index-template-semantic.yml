@@ -616,9 +616,9 @@ template:
             - cafcass, children_and_family_court_advisory_and_support_service
             - calm_programme, calm_program, controlling_anger_and_learning_to_manage_it_programme, controlling_anger_and_learning_to_manage_it_program
             - care, care_needs, social_services, care_experienced, care_home, a_home
-            - cas1, cas_1, approved_premises, approved_premise, hostel
-            - cas2, cas_2, bass, bail_accommodation, bail_accommodation_support_service, bail_hostel
-            - cas3, cas_3, transitional_housing, temporary_accommodation, short-term_accommodation, short_term_accommodation
+            - cas1, cas_1, cas-1, approved_premises, approved_premise, hostel
+            - cas2, cas_2, cas-2, bass, bail_accommodation, bail_accommodation_support_service, bail_hostel
+            - cas3, cas_3, cas-3, transitional_housing, temporary_accommodation, short-term_accommodation, short_term_accommodation
             - cdvp, community_domestic_violence_programme, community_domestic_violence_program
             - cert, certificate, certification, award, qualification
             - child, children, kid, kids
@@ -857,8 +857,11 @@ template:
           generate_number_parts: false
           protected_words:
             - cas1
+            - cas-1
             - cas2
+            - cas-2
             - cas3
+            - cas-3
             - is91
             - parom1
             - sds40
