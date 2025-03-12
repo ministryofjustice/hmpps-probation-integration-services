@@ -8,14 +8,22 @@ import org.springframework.ldap.query.SearchScope
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.api.model.user.Staff
 import uk.gov.justice.digital.hmpps.api.model.user.Team
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class UserService(
@@ -24,6 +32,7 @@ class UserService(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val userAccessService: UserAccessService,
+    private val contactRepository: ContactRepository,
     private val ldapTemplate: LdapTemplate
 ) {
     fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
@@ -97,6 +106,40 @@ class UserService(
         )
     }
 
+    fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
+        val user = userRepository.getUser(username)
+
+        val contacts = contactRepository.findUpComingAppointmentsByUser(
+            user.staff!!.id,
+            LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+            ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+            pageable
+        )
+
+        return UserDiary(
+            pageable.pageSize,
+            pageable.pageNumber,
+            contacts.totalElements.toInt(),
+            contacts.totalPages,
+            contacts.content.map {
+                UserAppointment(
+                    Name(it.forename, listOfNotNull(it.secondName, it.thirdName).joinToString(" "), it.surname),
+                    it.id,
+                    it.crn,
+                    it.dob,
+                    it.sentenceDescription,
+                    it.totalSentences,
+                    it.contactDescription,
+                    ZonedDateTime.of(LocalDateTime.of(it.contactDate, it.contactStartTime), EuropeLondon),
+                    if (it.contactEndTime != null) ZonedDateTime.of(
+                        LocalDateTime.of(it.contactDate, it.contactEndTime),
+                        EuropeLondon
+                    ) else null
+                )
+            }
+        )
+    }
+
     @Transactional
     fun getTeamCaseload(teamCode: String, pageable: Pageable): TeamCaseload {
         val team = teamRepository.getTeam(teamCode)
@@ -167,3 +210,4 @@ fun Caseload.toTeamCase() = TeamCase(
 )
 
 fun CaseAccess?.isLao() = this != null && (this.userExcluded || this.userRestricted)
+

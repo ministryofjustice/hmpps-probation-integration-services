@@ -5,6 +5,8 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -12,10 +14,12 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcome
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.LatestSentence
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.io.Serializable
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -96,6 +100,10 @@ class Contact(
 
     @Column(name = "last_updated_datetime")
     val lastUpdated: ZonedDateTime,
+
+    @ManyToOne
+    @JoinColumn(name = "offender_id", insertable = false, updatable = false)
+    val latestSentence: LatestSentence? = null,
 
     @ManyToOne
     @JoinColumn(name = "last_updated_user_id")
@@ -321,6 +329,74 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         dateNow: String,
         timeNow: String
     ): List<Contact>
+
+    @Query(
+        """
+                SELECT  o.first_name AS forename,
+                        o.second_name AS second_name,
+                        o.third_name AS third_name,
+                        o.surname AS surname,
+                        o.date_of_birth_date AS dob,
+                        c.contact_id AS id,
+                        cl.crn AS crn, 
+                        c.contact_date AS contact_date, 
+                        c.contact_start_time AS contact_start_time,
+                        c.contact_end_time AS contact_end_time,
+                        total_sentences,
+                        rct.description AS contactDescription,
+                        NVL(rdt.DESCRIPTION, latest_sentence_description)  AS sentenceDescription
+                FROM contact c JOIN r_contact_type rct ON rct.contact_type_id=c.contact_type_id 
+                JOIN offender o ON o.offender_id = c.offender_id
+                JOIN staff s ON s.staff_id = c.staff_id 
+                JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM') 
+                LEFT JOIN r_contact_outcome_type rcot ON rcot.contact_outcome_type_id=c.contact_outcome_type_id 
+                LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
+                LEFT JOIN disposal d ON e.event_id = d.event_id 
+                LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id 
+                LEFT JOIN ( 
+                        SELECT sub.* 
+                        FROM
+                          (SELECT e.*,
+                            rdt.description AS latest_sentence_description,
+                            COUNT(e.event_id) over (PARTITION BY e.offender_id) AS total_sentences,
+                            ROW_NUMBER() over (PARTITION BY e.offender_id ORDER BY CAST(e.event_number AS NUMBER) DESC) AS row_num 
+                            FROM event e 
+                            JOIN disposal d ON d.event_id = e.event_id
+                            JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                            WHERE e.soft_deleted = 0 
+                            AND e.active_flag = 1
+                            ) sub
+                        WHERE sub.row_num = 1
+                 ) ls ON ls.offender_id =c.offender_id 
+                 WHERE (c.soft_deleted = 0) 
+                 AND s.staff_id = :staffId
+                 AND rct.attendance_contact = 'Y' 
+                 AND (to_char(c.contact_date,'YYYY-MM-DD')> :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD')= :dateNow
+                 AND to_char(c.contact_start_time,'HH24:MI')> :timeNow)) 
+        """, nativeQuery = true
+    )
+    fun findUpComingAppointmentsByUser(
+        staffId: Long,
+        dateNow: String,
+        timeNow: String,
+        pageable: Pageable
+    ): Page<Appointment>
+}
+
+interface Appointment {
+    val forename: String
+    val secondName: String?
+    val thirdName: String?
+    val surname: String
+    val dob: LocalDate
+    val id: Long
+    val crn: String
+    val contactDate: LocalDate
+    val contactStartTime: LocalTime
+    val contactEndTime: LocalTime?
+    val totalSentences: Int
+    val contactDescription: String
+    val sentenceDescription: String
 }
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =

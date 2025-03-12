@@ -218,6 +218,8 @@ data class Caseload(
     @JoinColumn(name = "offender_id")
     val person: CaseloadPerson,
 
+    val crn: String,
+
     @ManyToOne
     @JoinColumn(name = "staff_employee_id")
     val staff: Staff,
