@@ -349,7 +349,6 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                 JOIN offender o ON o.offender_id = c.offender_id
                 JOIN staff s ON s.staff_id = c.staff_id 
                 JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM') 
-                LEFT JOIN r_contact_outcome_type rcot ON rcot.contact_outcome_type_id=c.contact_outcome_type_id 
                 LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
                 LEFT JOIN disposal d ON e.event_id = d.event_id 
                 LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id 
