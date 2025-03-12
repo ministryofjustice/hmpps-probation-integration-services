@@ -35,7 +35,8 @@ class Handler(
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         val allocationEvent = notification.message
-        val allocationDetail: AllocationDetail = detailService.getDetail(allocationEvent)
+        val allocationDetail: AllocationDetail =
+            allocationEvent.detailUrl?.let { detailService.getDetail(allocationEvent) } ?: return
         try {
             when (allocationDetail) {
                 is PersonAllocation -> allocatePersonService.createPersonAllocation(allocationDetail)
