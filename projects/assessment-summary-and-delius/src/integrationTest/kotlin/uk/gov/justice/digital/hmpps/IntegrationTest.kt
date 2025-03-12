@@ -459,7 +459,8 @@ internal class IntegrationTest {
         val riskToAdult = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.KNOWN_ADULT.code)
         assertThat(riskToAdult, hasSize(0))
         assertThat(domainEvents.ofType(RiskType.KNOWN_ADULT), hasSize(1))
-        assertThat(entityManager.find(RegistrationReview::class.java, riskToAdultReviewId), nullValue())
+        val rtaReview = entityManager.find(RegistrationReview::class.java, riskToAdultReviewId)
+        assertThat(rtaReview.completed, equalTo(true))
 
         // Changed level - remove existing and add new
         val riskToPublic = registrationRepository.findByPersonIdAndTypeCode(person.id, RiskType.PUBLIC.code).single()
