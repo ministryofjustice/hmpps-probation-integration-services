@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.retry.retry
 import java.net.URI
 
 @Service
@@ -28,11 +30,15 @@ class DomainEventDetailService(
         getDetail(validate(detailUrl), object : ParameterizedTypeReference<T>() {})
 
     fun <T> getDetail(uri: URI, type: ParameterizedTypeReference<T>): T =
-        requireNotNull(restClient).get().uri(uri).retrieve().body<T>(type)!!
+        retry(3, listOf(HttpStatusCodeException::class)) {
+            requireNotNull(restClient).get().uri(uri).retrieve().body<T>(type)!!
+        }
 
     final inline fun <reified T> getDetailResponse(event: HmppsDomainEvent): ResponseEntity<T> =
         getDetailResponse(validate(event.detailUrl), object : ParameterizedTypeReference<T>() {})
 
     fun <T> getDetailResponse(uri: URI, type: ParameterizedTypeReference<T>): ResponseEntity<T> =
-        requireNotNull(restClient).get().uri(uri).retrieve().toEntity<T>(type)
+        retry(3, listOf(HttpStatusCodeException::class)) {
+            requireNotNull(restClient).get().uri(uri).retrieve().toEntity<T>(type)
+        }
 }
