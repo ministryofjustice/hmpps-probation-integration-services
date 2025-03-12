@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.OfficeLocation
-import uk.gov.justice.digital.hmpps.integrations.delius.Team
-import java.time.LocalDate
 
-object TeamGenerator {
+object OfficeLocationGenerator {
     val DEFAULT_LOCATION = generateLocation(
         description = "Default Office",
         buildingNumber = "21",
@@ -12,20 +10,6 @@ object TeamGenerator {
         district = "Nr Fire",
         town = "Hearth",
         postcode = "H34 7TH"
-    )
-    val DEFAULT_TEAM = generateTeam("D37TEM", addresses = setOf(DEFAULT_LOCATION))
-
-    fun generateTeam(
-        code: String,
-        description: String = "Description of $code",
-        addresses: Set<OfficeLocation> = setOf(),
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Team(
-        code,
-        description,
-        addresses,
-        null,
-        id
     )
 
     fun generateLocation(
@@ -48,6 +32,7 @@ object TeamGenerator {
         county,
         postcode,
         null,
+        ProviderGenerator.DEFAULT_PROVIDER,
         id
     )
 }

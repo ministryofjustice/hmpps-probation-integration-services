@@ -36,8 +36,8 @@ class BreachNoticeLoader(
         entityManager.persistAll(
             PersonGenerator.DS_ADDRESS_STATUS,
             PersonGenerator.DEFAULT_ADDRESS_STATUS,
-            TeamGenerator.DEFAULT_LOCATION,
-            TeamGenerator.DEFAULT_TEAM,
+            ProviderGenerator.DEFAULT_PROVIDER,
+            OfficeLocationGenerator.DEFAULT_LOCATION,
             StaffGenerator.DEFAULT_STAFF,
             StaffGenerator.DEFAULT_SU,
             PersonGenerator.DEFAULT_PERSON,

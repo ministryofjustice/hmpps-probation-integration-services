@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateReferenceData
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.DEFAULT_STAFF
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.integrations.delius.*
 import java.time.LocalDate
 
@@ -80,10 +79,9 @@ object PersonGenerator {
 
     fun generatePersonManager(
         person: Person,
-        team: Team = DEFAULT_TEAM,
         staff: Staff = DEFAULT_STAFF,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PersonManager(person, team, staff, active, softDeleted, id)
+    ) = PersonManager(person, staff, active, softDeleted, id)
 }

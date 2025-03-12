@@ -7,9 +7,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.model.BasicDetails
 import uk.gov.justice.digital.hmpps.model.DocumentCrn
@@ -51,9 +51,16 @@ internal class BasicDetailsIntegrationTest : BaseIntegrationTest() {
                     person.surname
                 ),
                 listOf(PersonGenerator.DEFAULT_ADDRESS.toAddress()),
-                listOf(TeamGenerator.DEFAULT_LOCATION.toAddress()),
+                listOf(OfficeLocationGenerator.DEFAULT_LOCATION.toAddress()),
             )
         )
+    }
+
+    @Test
+    fun `no home area returns 400 response`() {
+        mockMvc
+            .perform(get("/basic-details/${PersonGenerator.DEFAULT_PERSON.crn}/NoHomeArea").withToken())
+            .andExpect(status().isBadRequest)
     }
 
     @Test

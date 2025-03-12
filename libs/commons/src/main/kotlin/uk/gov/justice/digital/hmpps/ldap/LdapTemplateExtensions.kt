@@ -44,6 +44,20 @@ fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanA
 }
 
 @WithSpan
+fun LdapTemplate.findPreferenceByUsername(@SpanAttribute username: String, @SpanAttribute attribute: String) = try {
+    search(
+        query()
+            .base(LdapNameBuilder.newInstance().add("cn", username).add("cn", "UserPreferences").build())
+            .attributes(attribute)
+            .searchScope(SearchScope.OBJECT)
+            .where("objectclass").`is`("UserPreferences"),
+        AttributesMapper { it[attribute]?.get()?.toString() }
+    ).singleOrNull()
+} catch (_: NameNotFoundException) {
+    throw NotFoundException("User preferences", "username", username)
+}
+
+@WithSpan
 fun LdapTemplate.getRoles(@SpanAttribute username: String) = try {
     search(
         query()
