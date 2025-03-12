@@ -570,6 +570,7 @@ object PersonGenerator {
         Caseload(
             id = IdGenerator.getAndIncrement(),
             person = caseLoadPerson,
+            crn = caseLoadPerson.crn,
             staff = staff,
             team = team,
             roleCode = "OM"
