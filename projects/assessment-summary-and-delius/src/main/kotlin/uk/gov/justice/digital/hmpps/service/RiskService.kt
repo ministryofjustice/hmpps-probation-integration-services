@@ -15,6 +15,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.reg
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.service.TelemetryAggregator.Companion.DEREGISTERED
+import uk.gov.justice.digital.hmpps.service.TelemetryAggregator.Companion.REGISTERED
+import uk.gov.justice.digital.hmpps.service.TelemetryAggregator.Companion.REVIEW_COMPLETED
 import java.time.LocalDate
 
 @Service
@@ -25,10 +28,18 @@ class RiskService(
     private val contactService: ContactService,
     private val ordsClient: OrdsClient
 ) {
-    fun recordRisk(person: Person, summary: AssessmentSummary) =
-        recordRiskOfSeriousHarm(person, summary) + recordOtherRisks(person, summary)
+    fun recordRisk(person: Person, summary: AssessmentSummary, telemetryRecording: (String, String) -> Unit) =
+        recordRiskOfSeriousHarm(person, summary, telemetryRecording) + recordOtherRisks(
+            person,
+            summary,
+            telemetryRecording
+        )
 
-    private fun recordRiskOfSeriousHarm(person: Person, summary: AssessmentSummary): List<HmppsDomainEvent> {
+    private fun recordRiskOfSeriousHarm(
+        person: Person,
+        summary: AssessmentSummary,
+        addToTelemetry: (String, String) -> Unit
+    ): List<HmppsDomainEvent> {
         val roshType = summary.riskFlags.mapNotNull(RiskOfSeriousHarmType::of).maxByOrNull { it.ordinal }
             ?: return emptyList()
 
@@ -40,12 +51,18 @@ class RiskService(
 
         val deRegEvents = registrationsToRemove.map {
             val contact = contactService.createContact(ContactDetail(DEREGISTRATION, notes = it.notes()), person)
-            it.deregister(contact)
+            val reviewCompleted = it.deregister(contact)
+            if (reviewCompleted) {
+                addToTelemetry(REVIEW_COMPLETED, it.type.code)
+            }
+            addToTelemetry(DEREGISTERED, it.type.code)
             it.deRegEvent(person.crn)
         }
+
         val regEvent = if (matchingRegistrations.isEmpty()) {
             val type = registerTypeRepository.getByCode(roshType.code)
             val registration = registrations.addRegistration(person, type)
+            addToTelemetry(REGISTERED, type.code)
             registration
                 .withReview(registration.reviewContact(person))
                 .regEvent(person.crn)
@@ -56,14 +73,20 @@ class RiskService(
         return listOfNotNull(regEvent) + deRegEvents
     }
 
-    private fun recordOtherRisks(person: Person, summary: AssessmentSummary): List<HmppsDomainEvent> =
+    private fun recordOtherRisks(
+        person: Person,
+        summary: AssessmentSummary,
+        addToTelemetry: (String, String) -> Unit
+    ): List<HmppsDomainEvent> =
         RiskType.entries.flatMap { riskType ->
             val riskLevel = riskType.riskLevel(summary) ?: return@flatMap emptyList()
             val registrations =
                 registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code).toMutableList()
 
             // Deregister existing registrations if OASys identified the level as low risk
-            if (riskLevel == RiskLevel.L) return@flatMap registrations.map { person.removeRegistration(it) }
+            if (riskLevel == RiskLevel.L) return@flatMap registrations.map {
+                person.removeRegistration(it, addToTelemetry = addToTelemetry)
+            }
 
             // Add the level to any existing registrations with no level
             val level = referenceDataRepository.registerLevel(riskLevel.code)
@@ -71,7 +94,9 @@ class RiskService(
 
             // Remove any existing registrations with a different level
             val (matchingRegistrations, registrationsToRemove) = registrations.partition { it.level!!.code == riskLevel.code }
-            val events = registrationsToRemove.map { person.removeRegistration(it) }.toMutableList()
+            val events = registrationsToRemove.map {
+                person.removeRegistration(it, addToTelemetry = addToTelemetry)
+            }.toMutableList()
 
             // Get RoSH answers from OASys
             val type = registerTypeRepository.getByCode(riskType.code)
@@ -91,6 +116,7 @@ class RiskService(
                 val contactNotes = "$assessmentNote\n\nSee Register for more details"
                 events += registrations.addRegistration(person, type, level, roshNotes, contactNotes)
                     .regEvent(person.crn)
+                addToTelemetry(REGISTERED, type.code)
 
                 // Registrations in the type's duplicate group should also be removed
                 registerTypeRepository.findOtherTypesInGroup(riskType.code)
@@ -98,7 +124,7 @@ class RiskService(
                     .forEach {
                         val duplicateGroupNotes =
                             "De-registered when a ${type.description} registration was added on ${summary.dateCompleted.toDeliusDate()}."
-                        events += person.removeRegistration(it, notes = duplicateGroupNotes)
+                        events += person.removeRegistration(it, duplicateGroupNotes, addToTelemetry)
                     }
             }
 
@@ -106,6 +132,7 @@ class RiskService(
             registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code).singleOrNull()?.let {
                 it.nextReviewDate = it.type.reviewPeriod?.let { LocalDate.now().plusMonths(it) }
                 it.reviews.filter { !it.completed }.forEach { review ->
+                    addToTelemetry(REVIEW_COMPLETED, type.code)
                     review.completed = true
                     review.date = LocalDate.now()
                     review.reviewDue = it.nextReviewDate
@@ -154,10 +181,15 @@ class RiskService(
 
     private fun Person.removeRegistration(
         registration: Registration,
-        notes: String = registration.type.notes()
+        notes: String = registration.type.notes(),
+        addToTelemetry: (String, String) -> Unit
     ): HmppsDomainEvent {
         val contact = contactService.createContact(ContactDetail(DEREGISTRATION, notes = notes), this)
-        registration.deregister(contact)
+        val reviewCompleted = registration.deregister(contact)
+        addToTelemetry(DEREGISTERED, registration.type.code)
+        if (reviewCompleted) {
+            addToTelemetry(REVIEW_COMPLETED, registration.type.code)
+        }
         return registration.deRegEvent(crn)
     }
 

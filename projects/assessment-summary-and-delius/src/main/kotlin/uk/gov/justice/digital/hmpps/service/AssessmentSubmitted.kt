@@ -45,14 +45,11 @@ class AssessmentSubmitted(
 
         if (summary.assessmentStatus == "COMPLETE") audit(UPDATE_RISK_DATA) {
             it["CRN"] = person.crn
-            val registrationEvents = riskService.recordRisk(person, summary)
-            registrationEvents.groupBy { it.eventType }.forEach {
-                telemetryParams.put(
-                    it.key,
-                    it.value.mapNotNull { it.additionalInformation["registerTypeCode"] }
-                        .joinToString(prefix = "[", postfix = "]")
-                )
-            }
+
+            val ta = TelemetryAggregator()
+            val registrationEvents = riskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
+            telemetryParams.putAll(ta.params())
+
             domainEventService.publishEvents(registrationEvents)
         }
 
@@ -61,5 +58,24 @@ class AssessmentSubmitted(
         }
 
         telemetryService.trackEvent("AssessmentSummarySuccess", telemetryParams)
+    }
+}
+
+class TelemetryAggregator() {
+    private val data = mutableMapOf<String, MutableList<String>>()
+
+    fun add(key: String, value: String) {
+        if (!data.containsKey(key)) {
+            data[key] = mutableListOf()
+        }
+        data[key]?.apply { add(value) }
+    }
+
+    fun params() = data.map { it.key to it.value.sorted().joinToString(",", "[", "]") }.toMap()
+
+    companion object {
+        const val REGISTERED = "Registered"
+        const val DEREGISTERED = "Deregistered"
+        const val REVIEW_COMPLETED = "ReviewCompleted"
     }
 }

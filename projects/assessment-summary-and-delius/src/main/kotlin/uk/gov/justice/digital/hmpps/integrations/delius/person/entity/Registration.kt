@@ -82,12 +82,20 @@ class Registration(
         return this
     }
 
-    fun deregister(contact: Contact) {
+    fun deregister(contact: Contact): Boolean {
         deregistration = DeRegistration(LocalDate.now(), this, personId, contact, contact.teamId, contact.staffId)
         deregistered = true
         nextReviewDate = null
-        reviews.removeIf { !it.completed && it.lastUpdatedDatetime == it.createdDatetime }
-        reviews.lastOrNull()?.reviewDue = null
+        reviews.removeIf { !it.completed && it.notes.isNullOrBlank() && it.lastUpdatedDatetime == it.createdDatetime }
+        return reviews.lastOrNull()?.let {
+            it.reviewDue = null
+            if (it.completed) {
+                false
+            } else {
+                it.completed = true
+                true
+            }
+        } == true
     }
 }
 
