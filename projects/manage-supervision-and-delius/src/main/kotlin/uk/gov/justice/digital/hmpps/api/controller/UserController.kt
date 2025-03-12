@@ -35,8 +35,8 @@ class UserController(
     private fun sort(sortString: String, ascending: Boolean): Sort {
         val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC
         return when (sortString) {
-            "default" -> Sort.by(direction,"contact_date", "contact_start_time")
-            else -> Sort.by(direction,"contact_date", "contact_start_time ")
+            "default" -> Sort.by(direction, "contact_date", "contact_start_time")
+            else -> Sort.by(direction, "contact_date", "contact_start_time ")
         }
     }
 }

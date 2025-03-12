@@ -109,10 +109,12 @@ class UserService(
     fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
         val user = userRepository.getUser(username)
 
-        val contacts = contactRepository.findUpComingAppointmentsByUser(user.staff!!.id,
+        val contacts = contactRepository.findUpComingAppointmentsByUser(
+            user.staff!!.id,
             LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
             ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
-            pageable)
+            pageable
+        )
 
         return UserDiary(
             pageable.pageSize,
@@ -129,12 +131,14 @@ class UserService(
                     it.totalSentences,
                     it.contactDescription,
                     ZonedDateTime.of(LocalDateTime.of(it.contactDate, it.contactStartTime), EuropeLondon),
-                    if (it.contactEndTime != null) ZonedDateTime.of(LocalDateTime.of(it.contactDate, it.contactEndTime), EuropeLondon) else null
+                    if (it.contactEndTime != null) ZonedDateTime.of(
+                        LocalDateTime.of(it.contactDate, it.contactEndTime),
+                        EuropeLondon
+                    ) else null
                 )
             }
         )
     }
-
 
     @Transactional
     fun getTeamCaseload(teamCode: String, pageable: Pageable): TeamCaseload {
