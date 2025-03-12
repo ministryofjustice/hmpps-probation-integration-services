@@ -4,15 +4,14 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManager
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.document.DocumentService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 @Service
 class UPWAssessmentService(
@@ -20,7 +19,7 @@ class UPWAssessmentService(
     private val documentService: DocumentService,
     private val personWithManagerRepository: PersonWithManagerRepository,
     private val eventRepository: EventRepository,
-    private val arnClient: ArnClient
+    private val domainEventDetailService: DomainEventDetailService,
 ) {
     fun HmppsDomainEvent.episodeId() = additionalInformation["episodeId"] as String
 
@@ -37,7 +36,7 @@ class UPWAssessmentService(
     private fun uploadDocument(notification: Notification<HmppsDomainEvent>, person: PersonWithManager, eventId: Long) {
         // get the episode id from the message then get the document content from the UPW/ARN Service
         val episodeId = notification.message.episodeId()
-        val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
+        val response = domainEventDetailService.getDetailResponse<ByteArray>(notification.message)
         val reg = Regex("[^A-Za-z0-9-. ]")
         val filename = "${person.forename}-${person.surname}-${person.crn}-UPW.pdf".replace(reg, "")
         val fileData = response.body
@@ -47,7 +46,7 @@ class UPWAssessmentService(
         try {
             documentService.createDeliusDocument(
                 notification.message,
-                fileData!!,
+                fileData,
                 filename,
                 episodeId,
                 person,

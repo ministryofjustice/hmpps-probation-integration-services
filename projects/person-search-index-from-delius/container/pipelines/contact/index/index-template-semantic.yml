@@ -855,6 +855,14 @@ template:
           type: word_delimiter_graph
           preserve_original: true
           generate_number_parts: false
+          protected_words:
+            - cas1
+            - cas2
+            - cas3
+            - is91
+            - parom1
+            - sds40
+            - td01
         remove_single_chars:
           type: length
           min: 2

@@ -1,15 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.cvl
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import org.hibernate.sql.Restriction
-import org.springframework.web.service.annotation.GetExchange
-import java.net.URI
 import java.time.LocalDate
-
-interface CvlClient {
-    @GetExchange
-    fun getActivatedLicence(uri: URI): ActivatedLicence
-}
 
 data class ActivatedLicence(
     val crn: String,

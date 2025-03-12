@@ -8,10 +8,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.MakeRecallDecisionsClient
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -19,7 +20,6 @@ import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.service.RecommendationService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
@@ -33,7 +33,7 @@ internal class HandlerTest {
     lateinit var recommendationService: RecommendationService
 
     @Mock
-    lateinit var makeRecallDecisionsClient: MakeRecallDecisionsClient
+    lateinit var detailService: DomainEventDetailService
 
     @InjectMocks
     lateinit var handler: Handler
@@ -66,30 +66,12 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `decision message without detail url throws exception`() {
-        val message = MessageGenerator.DECISION_NOT_TO_RECALL.copy(detailUrl = null)
-        val notification = Notification(message, MessageAttributes(message.eventType))
-
-        val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
-        assertThat(exception.message, equalTo("No detail url provided"))
-    }
-
-    @Test
-    fun `decision message with blank detail url throws exception`() {
-        val message = MessageGenerator.DECISION_NOT_TO_RECALL.copy(detailUrl = "")
-        val notification = Notification(message, MessageAttributes(message.eventType))
-
-        val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
-        assertThat(exception.message, equalTo("No detail url provided"))
-    }
-
-    @Test
     fun `calls detail url`() {
         val message = MessageGenerator.DECISION_TO_RECALL
         val notification = Notification(message, MessageAttributes(message.eventType))
 
         handler.handle(notification)
 
-        verify(makeRecallDecisionsClient).getDetails(URI(message.detailUrl!!))
+        verify(detailService).getDetail<Any>(anyOrNull(), anyOrNull())
     }
 }

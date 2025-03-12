@@ -1,7 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
+import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferralSession
 import uk.gov.justice.digital.hmpps.integrations.randm.SupplierAssessment
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -10,11 +11,10 @@ import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.Attended
 import uk.gov.justice.digital.hmpps.service.Outcome
 import uk.gov.justice.digital.hmpps.service.UpdateAppointmentOutcome
-import java.net.URI
 
 @Component
 class FeedbackSubmitted(
-    private val ramClient: ReferAndMonitorClient,
+    private val detailService: DomainEventDetailService,
     private val appointmentService: AppointmentService
 ) : DomainEventHandler {
     override val handledEvents = mapOf(
@@ -23,7 +23,7 @@ class FeedbackSubmitted(
     )
 
     fun initialAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult = handle(event) {
-        val appointment = ramClient.getSupplierAssessment(URI(event.detailUrl!!))?.appointmentOutcome(
+        val appointment = nullIfNotFound { detailService.getDetail<SupplierAssessment>(event) }?.appointmentOutcome(
             event.personReference.findCrn()!!,
             event.referralReference(),
             event.contractType(),
@@ -35,7 +35,7 @@ class FeedbackSubmitted(
     }
 
     fun sessionAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult = handle(event) {
-        val appointment = ramClient.getSession(URI(event.detailUrl!!))?.appointmentOutcome(
+        val appointment = nullIfNotFound { detailService.getDetail<ReferralSession>(event) }?.appointmentOutcome(
             event.personReference.findCrn()!!,
             event.referralId(),
             event.referralReference(),

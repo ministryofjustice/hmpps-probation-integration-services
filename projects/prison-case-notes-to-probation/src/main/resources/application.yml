@@ -58,6 +58,7 @@ seed.database: true
 wiremock.enabled: true
 
 messaging.consumer.queue: events
+messaging.consumer.detail.urls: http://localhost:${wiremock.port},http://localhost:${wiremock.port}
 
 integrations:
   prison-case-notes:

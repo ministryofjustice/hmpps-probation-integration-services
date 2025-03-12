@@ -2,24 +2,26 @@ package uk.gov.justice.digital.hmpps.service
 
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.client.approvedpremises.EventDetailsClient
+import uk.gov.justice.digital.hmpps.client.approvedpremises.model.ApplicationStatusUpdated
+import uk.gov.justice.digital.hmpps.client.approvedpremises.model.ApplicationSubmitted
+import uk.gov.justice.digital.hmpps.client.approvedpremises.model.EventDetails
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.HmppsDomainEventExtensions.crn
 import uk.gov.justice.digital.hmpps.messaging.HmppsDomainEventExtensions.telemetryProperties
-import uk.gov.justice.digital.hmpps.messaging.HmppsDomainEventExtensions.url
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Service
 @Transactional
 class Cas2Service(
-    private val eventDetailsClient: EventDetailsClient,
+    private val detailService: DomainEventDetailService,
     private val contactService: ContactService,
     private val telemetryService: TelemetryService,
 ) {
 
     fun applicationSubmitted(event: HmppsDomainEvent) {
-        val details = eventDetailsClient.getApplicationSubmittedDetails(event.url)
+        val details = detailService.getDetail<EventDetails<ApplicationSubmitted>>(event)
         val success = contactService.createContact(
             crn = event.crn,
             type = ContactType.REFERRAL_SUBMITTED,
@@ -32,7 +34,7 @@ class Cas2Service(
     }
 
     fun applicationStatusUpdated(event: HmppsDomainEvent) {
-        val details = eventDetailsClient.getApplicationStatusUpdatedDetails(event.url)
+        val details = detailService.getDetail<EventDetails<ApplicationStatusUpdated>>(event)
         val statusDetailsList = details.eventDetails.newStatus.statusDetails
             ?.joinToString("${System.lineSeparator()}|* ", "${System.lineSeparator()}|* ") { it.label } ?: ""
         val success = contactService.createContact(

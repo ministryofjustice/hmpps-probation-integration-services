@@ -5,8 +5,9 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.MakeRecallDecisionsClient
+import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.RecommendationDetails
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.RecommendationService
@@ -19,7 +20,7 @@ import java.net.URI
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val recommendationService: RecommendationService,
-    private val makeRecallDecisionsClient: MakeRecallDecisionsClient,
+    private val detailService: DomainEventDetailService,
     private val telemetryService: TelemetryService
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(
@@ -62,7 +63,7 @@ class Handler(
         telemetryService.trackEvent(ime.message, ime.additionalProperties)
     }
 
-    private fun Notification<HmppsDomainEvent>.details() = makeRecallDecisionsClient.getDetails(detailUrl())
+    private fun Notification<HmppsDomainEvent>.details(): RecommendationDetails = detailService.getDetail(this.message)
 }
 
 private fun Notification<HmppsDomainEvent>.detailUrl() =
