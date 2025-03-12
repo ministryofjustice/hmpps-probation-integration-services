@@ -87,7 +87,7 @@ class Registration(
         deregistered = true
         nextReviewDate = null
         reviews.removeIf { !it.completed && it.lastUpdatedDatetime == it.createdDatetime }
-        reviews.firstOrNull()?.reviewDue = null
+        reviews.lastOrNull()?.reviewDue = null
     }
 }
 
