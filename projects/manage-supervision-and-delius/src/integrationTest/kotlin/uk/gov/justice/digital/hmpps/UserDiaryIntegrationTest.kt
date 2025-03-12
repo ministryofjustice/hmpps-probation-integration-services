@@ -32,7 +32,7 @@ class UserDiaryIntegrationTest {
     fun `get upcoming appointments default sort ascending order`() {
         val user = USER
 
-        val response = mockMvc.perform(MockMvcRequestBuilders.get("/user/${user.username}/upcoming").withToken())
+        val response = mockMvc.perform(MockMvcRequestBuilders.get("/user/${user.username}/schedule/upcoming").withToken())
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn().response.contentAsJson<UserDiary>()
 
@@ -46,7 +46,7 @@ class UserDiaryIntegrationTest {
         val user = USER
 
         val response =
-            mockMvc.perform(MockMvcRequestBuilders.get("/user/${user.username}/upcoming?ascending=false").withToken())
+            mockMvc.perform(MockMvcRequestBuilders.get("/user/${user.username}/schedule/upcoming?ascending=false").withToken())
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andReturn().response.contentAsJson<UserDiary>()
 

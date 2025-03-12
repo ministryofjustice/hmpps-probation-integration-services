@@ -22,7 +22,7 @@ class UserController(
     @Operation(summary = "Display user locations")
     fun getUserOfficeLocations(@PathVariable username: String) = userLocationService.getUserOfficeLocations(username)
 
-    @GetMapping("/upcoming")
+    @GetMapping("/schedule/upcoming")
     @Operation(summary = "Gets caseloads for the user")
     fun getUserUpcomingAppointments(
         @PathVariable username: String,
