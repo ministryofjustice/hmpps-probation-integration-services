@@ -2,20 +2,20 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.DomainEventType.ReferralEnded
 import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Success
 import uk.gov.justice.digital.hmpps.messaging.ReferralWithdrawalNsiOutcome.*
 import uk.gov.justice.digital.hmpps.messaging.ReferralWithdrawalState.PRE_ICA_WITHDRAWAL
 import uk.gov.justice.digital.hmpps.service.NsiService
-import java.net.URI
 import java.time.ZonedDateTime
 
 @Component
 class ReferralEndSubmitted(
-    private val ramClient: ReferAndMonitorClient,
+    private val detailService: DomainEventDetailService,
     private val nsiService: NsiService
 ) : DomainEventHandler {
     override val handledEvents = mapOf(
@@ -23,7 +23,7 @@ class ReferralEndSubmitted(
     )
 
     fun referralEnded(event: HmppsDomainEvent): EventProcessingResult = handle(event) {
-        val sentReferral = ramClient.getReferral(URI(event.detailUrl!!))
+        val sentReferral = nullIfNotFound { detailService.getDetail<SentReferral>(event) }
             ?: throw NotFoundException("Unable to retrieve session: ${event.detailUrl}")
 
         val termination = NsiTermination(

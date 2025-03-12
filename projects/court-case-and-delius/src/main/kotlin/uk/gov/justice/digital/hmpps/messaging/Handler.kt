@@ -6,24 +6,22 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.web.client.HttpStatusCodeException
+import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.courtcase.CourtCaseClient
 import uk.gov.justice.digital.hmpps.integrations.courtcase.CourtCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusIntegrationService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 @Component
 @Channel("court-case-and-delius-queue")
 class Handler(
-    val courtCaseClient: CourtCaseClient,
+    val detailService: DomainEventDetailService,
     val deliusIntegrationService: DeliusIntegrationService,
     val telemetryService: TelemetryService,
     override val converter: NotificationConverter<HmppsDomainEvent>
@@ -39,31 +37,18 @@ class Handler(
         val event = notification.message
         val crn = event.personReference.findCrn()
 
-        val courtCaseNote = try {
-            courtCaseClient.getCourtCaseNote(URI.create(event.detailUrl!!))
-        } catch (ex: HttpStatusCodeException) {
-            when (ex.statusCode) {
-                HttpStatus.NOT_FOUND -> {
-                    telemetryService.trackEvent("CourtCaseNoteNotFound", mapOf("detailUrl" to event.detailUrl!!))
-                    return
-                }
+        val courtCaseNote = nullIfNotFound { detailService.getDetail<CourtCaseNote>(event) }
+            ?: return telemetryService.trackEvent("CourtCaseNoteNotFound", mapOf("detailUrl" to event.detailUrl!!))
 
-                else -> throw ex
-            }
-        }
-
-        log.debug(
-            "Found court case note in court case service for crn {}, now pushing to delius",
-            crn
-        )
+        log.debug("Found court case note in court case service for crn {}, now pushing to delius", crn)
 
         try {
-            deliusIntegrationService.mergeCourtCaseNote(crn!!, courtCaseNote!!, notification.message.occurredAt)
+            deliusIntegrationService.mergeCourtCaseNote(crn!!, courtCaseNote, notification.message.occurredAt)
             telemetryService.trackEvent("CourtCaseNoteMerged", courtCaseNote.properties())
         } catch (e: Exception) {
             telemetryService.trackEvent(
                 "CourtCaseNoteMergeFailed",
-                courtCaseNote!!.properties() + ("exception" to (e.message ?: ""))
+                courtCaseNote.properties() + ("exception" to (e.message ?: ""))
             )
             if (e !is NotFoundException) throw e
         }

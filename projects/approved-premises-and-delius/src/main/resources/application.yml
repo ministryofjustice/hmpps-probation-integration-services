@@ -61,12 +61,9 @@ spring:
 seed.database: true
 wiremock.enabled: true
 
-messaging.consumer.queue: message-queue
 messaging.producer.topic: domain-events
-
-integrations:
-  approved-premises-api:
-    url: http://localhost:${wiremock.port}/approved-premises-api
+messaging.consumer.queue: message-queue
+messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
 oauth2:
   client-id: $SERVICE_NAME

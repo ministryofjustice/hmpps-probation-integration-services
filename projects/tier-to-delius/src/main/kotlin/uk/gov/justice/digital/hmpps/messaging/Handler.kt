@@ -6,20 +6,19 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
-import uk.gov.justice.digital.hmpps.integrations.tier.TierClient
 import uk.gov.justice.digital.hmpps.integrations.tier.TierService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 
 @Component
 @Channel("tier-to-delius-queue")
 class Handler(
     private val telemetryService: TelemetryService,
-    private val tierClient: TierClient,
+    private val detailService: DomainEventDetailService,
     private val tierService: TierService,
     override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
@@ -29,7 +28,7 @@ class Handler(
         val crn = requireNotNull(notification.message.personReference.findCrn())
         val detailUrl = requireNotNull(notification.message.detailUrl)
         val tierCalculation = try {
-            tierClient.getTierCalculation(URI.create(detailUrl))
+            detailService.getDetail<TierCalculation>(notification.message)
         } catch (e: HttpClientErrorException.NotFound) {
             telemetryService.trackEvent("TierCalculationNotFound", mapOf("crn" to crn, "detailUrl" to detailUrl))
             return

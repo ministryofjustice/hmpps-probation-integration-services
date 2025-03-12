@@ -16,9 +16,6 @@ import java.util.*
 
 interface PrisonerAlertClient {
     @GetExchange
-    fun getAlert(baseUrl: URI): Alert
-
-    @GetExchange
     fun getActiveAlerts(uri: URI): Alerts
 }
 

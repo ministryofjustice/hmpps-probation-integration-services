@@ -60,6 +60,7 @@ wiremock.enabled: true
 
 messaging:
   consumer.queue: message-queue
+  consumer.detail.urls: http://localhost:${wiremock.port}
   producer.queue: message-queue
 
 mpc.handover.url: http://localhost:${wiremock.port}

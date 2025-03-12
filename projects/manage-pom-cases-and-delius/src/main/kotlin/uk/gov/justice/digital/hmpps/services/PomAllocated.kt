@@ -1,45 +1,33 @@
 package uk.gov.justice.digital.hmpps.services
 
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpStatusCodeException
+import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.managepomcases.ManagePomCasesClient
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.PomAllocation
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.PomDeallocated
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.PomNotAllocated
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.net.URI
 import java.time.ZonedDateTime
 
 @Service
 class PomAllocated(
-    private val pomCasesClient: ManagePomCasesClient,
+    private val detailService: DomainEventDetailService,
     private val personRepository: PersonRepository,
     private val prisonManagerService: PrisonManagerService,
     private val telemetryService: TelemetryService
 ) {
     fun process(event: HmppsDomainEvent) = try {
         val pomAllocation = try {
-            event.detailUrl?.let { pomCasesClient.getPomAllocation(URI.create(it)) }
-                ?: throw IgnorableMessageException(
-                    "No POM Allocation data available",
-                    mapOf("detailUrl" to event.detailUrl.orNotProvided())
-                )
-        } catch (e: HttpStatusCodeException) {
-            when (e.statusCode) {
-                HttpStatus.NOT_FOUND -> {
-                    val error = e.getResponseBodyAs(ErrorResponse::class.java)
-                    when (error?.message) {
-                        "Not allocated" -> PomDeallocated
-                        else -> PomNotAllocated
-                    }
-                }
-
-                else -> throw e
+            detailService.getDetail<PomAllocation>(event)
+        } catch (e: HttpClientErrorException.NotFound) {
+            val error = e.getResponseBodyAs(ErrorResponse::class.java)
+            when (error?.message) {
+                "Not allocated" -> PomDeallocated
+                else -> PomNotAllocated
             }
         }
 

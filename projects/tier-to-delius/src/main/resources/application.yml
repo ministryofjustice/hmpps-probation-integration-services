@@ -56,7 +56,7 @@ seed.database: true
 wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
-integrations.tier.url: http://localhost:${wiremock.port}/hmpps-tier
+messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
 oauth2:
   client-id: tier-to-delius

@@ -55,6 +55,7 @@ seed.database: true
 wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
+messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
 integrations:
   alfresco:

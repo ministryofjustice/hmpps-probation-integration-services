@@ -10,10 +10,12 @@ import org.mockito.Mock
 import org.mockito.Mockito.any
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.check
 import org.mockito.kotlin.whenever
 import org.springframework.boot.context.event.ApplicationStartedEvent
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
@@ -42,7 +44,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.messaging.crn
-import uk.gov.justice.digital.hmpps.messaging.url
 import uk.gov.justice.digital.hmpps.prepEvent
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.set
@@ -53,7 +54,7 @@ import java.time.ZonedDateTime
 @ExtendWith(MockitoExtension::class)
 internal class ApprovedPremisesServiceTest {
     @Mock
-    lateinit var approvedPremisesApiClient: ApprovedPremisesApiClient
+    lateinit var domainEventDetailService: DomainEventDetailService
 
     @Mock
     lateinit var approvedPremisesRepository: ApprovedPremisesRepository
@@ -189,7 +190,7 @@ internal class ApprovedPremisesServiceTest {
             eventRepository
         )
         approvedPremisesService = ApprovedPremisesService(
-            approvedPremisesApiClient,
+            domainEventDetailService,
             approvedPremisesRepository,
             staffRepository,
             personRepository,
@@ -469,9 +470,7 @@ internal class ApprovedPremisesServiceTest {
         submittedBy: SubmittedBy = SubmittedByGenerator.generate()
     ): EventDetails<ApplicationSubmitted> {
         val details = EventDetailsGenerator.applicationSubmitted(submittedBy = submittedBy)
-        whenever(approvedPremisesApiClient.getApplicationSubmittedDetails(applicationSubmittedEvent.url())).thenReturn(
-            details
-        )
+        whenever(domainEventDetailService.getDetail<Any>(anyOrNull(), anyOrNull())).thenReturn(details)
         return details
     }
 
@@ -479,9 +478,7 @@ internal class ApprovedPremisesServiceTest {
         assessedBy: AssessedBy = AssessedByGenerator.generate()
     ): EventDetails<ApplicationAssessed> {
         val details = EventDetailsGenerator.applicationAssessed(assessedBy = assessedBy)
-        whenever(approvedPremisesApiClient.getApplicationAssessedDetails(applicationAssessedEvent.url())).thenReturn(
-            details
-        )
+        whenever(domainEventDetailService.getDetail<Any>(anyOrNull(), anyOrNull())).thenReturn(details)
         return details
     }
 
@@ -489,7 +486,7 @@ internal class ApprovedPremisesServiceTest {
         bookedBy: BookedBy = BookedByGenerator.generate()
     ): EventDetails<BookingMade> {
         val details = EventDetailsGenerator.bookingMade(bookedBy = bookedBy)
-        whenever(approvedPremisesApiClient.getBookingMadeDetails(bookingMadeEvent.url())).thenReturn(details)
+        whenever(domainEventDetailService.getDetail<Any>(anyOrNull(), anyOrNull())).thenReturn(details)
         return details
     }
 
@@ -497,7 +494,7 @@ internal class ApprovedPremisesServiceTest {
         recordedBy: Staff = StaffGenerator.generate()
     ): EventDetails<PersonNotArrived> {
         val details = EventDetailsGenerator.personNotArrived(recordedBy = recordedBy)
-        whenever(approvedPremisesApiClient.getPersonNotArrivedDetails(personNotArrivedEvent.url())).thenReturn(details)
+        whenever(domainEventDetailService.getDetail<Any>(anyOrNull(), anyOrNull())).thenReturn(details)
         return details
     }
 
@@ -505,7 +502,7 @@ internal class ApprovedPremisesServiceTest {
         keyWorker: Staff = StaffGenerator.generate()
     ): EventDetails<PersonArrived> {
         val details = EventDetailsGenerator.personArrived(keyWorker = keyWorker)
-        whenever(approvedPremisesApiClient.getPersonArrivedDetails(personArrivedEvent.url())).thenReturn(details)
+        whenever(domainEventDetailService.getDetail<Any>(anyOrNull(), anyOrNull())).thenReturn(details)
         return details
     }
 

@@ -67,6 +67,7 @@ seed.database: true
 wiremock.enabled: true
 
 messaging.consumer.queue: events
+messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
 community-api.url: http://localhost:${wiremock.port}
 

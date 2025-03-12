@@ -5,3 +5,4 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     INTEGRATIONS_ORDS_URL: https://int.oasys.service.justice.gov.uk/eor/oasys
+    MESSAGING_CONSUMER_DETAIL_URLS: https://oasys.service.justice.gov.uk

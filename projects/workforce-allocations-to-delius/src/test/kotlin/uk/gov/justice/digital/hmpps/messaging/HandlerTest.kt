@@ -6,14 +6,11 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -27,7 +24,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 internal class HandlerTest {
 
     @Mock
-    internal lateinit var allocationsClient: WorkforceAllocationsClient
+    internal lateinit var detailService: DomainEventDetailService
 
     @Mock
     internal lateinit var allocatePersonService: AllocatePersonService
@@ -55,7 +52,7 @@ internal class HandlerTest {
         val allocationDetail = mock<AllocationDetail.EventAllocation>()
         whenever(allocationEvent.personReference).thenReturn(PersonReference(listOf(PersonIdentifier("CRN", crn))))
         whenever(allocationEvent.detailUrl).thenReturn("https://some-url")
-        whenever(allocationsClient.getAllocationDetail(any())).thenReturn(allocationDetail)
+        whenever(detailService.getDetail<Any>(anyOrNull(), anyOrNull())).thenReturn(allocationDetail)
         whenever(
             allocateEventService.createEventAllocation(
                 crn,

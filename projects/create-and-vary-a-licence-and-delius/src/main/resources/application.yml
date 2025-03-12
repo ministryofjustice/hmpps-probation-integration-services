@@ -75,6 +75,7 @@ spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
 
 messaging.consumer.queue: message-queue
+messaging.consumer.detail.urls: http://localhost:${wiremock.port}
 
 ---
 spring.config.activate.on-profile: oracle

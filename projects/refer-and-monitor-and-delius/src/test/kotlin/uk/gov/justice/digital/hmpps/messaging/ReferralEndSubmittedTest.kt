@@ -11,11 +11,8 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
+import org.mockito.kotlin.*
+import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
@@ -27,7 +24,7 @@ import java.util.*
 internal class ReferralEndSubmittedTest {
 
     @Mock
-    lateinit var ramClient: ReferAndMonitorClient
+    lateinit var detailService: DomainEventDetailService
 
     @Mock
     lateinit var nsiService: NsiService
@@ -79,7 +76,7 @@ internal class ReferralEndSubmittedTest {
             )
         )
         val referral = sentReferral.copy(endRequestedAt = null, concludedAt = null)
-        whenever(ramClient.getReferral(any())).thenReturn(referral)
+        whenever(detailService.getDetail<SentReferral>(anyOrNull(), anyOrNull())).thenReturn(referral)
 
         val res = referralEnd.referralEnded(event)
         assertThat(res, IsInstanceOf(EventProcessingResult.Failure::class.java))

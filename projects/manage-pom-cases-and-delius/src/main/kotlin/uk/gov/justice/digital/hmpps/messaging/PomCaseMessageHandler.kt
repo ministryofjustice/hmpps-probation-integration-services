@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
@@ -52,37 +51,26 @@ class PomCaseMessageHandler(
         try {
             when (val message = notification.message) {
                 is HmppsDomainEvent -> when (notification.eventType) {
-                    "offender-management.handover.changed", BULK_HANDOVER_DATE_UPDATE -> handoverDatesChanged.process(
-                        HandoverMessage(
-                            message.personReference,
-                            message.detailUrl
-                        ),
-                        message.dryRun
-                    )
+                    "offender-management.handover.changed", BULK_HANDOVER_DATE_UPDATE ->
+                        handoverDatesChanged.process(message.personReference, message.detailUrl, message.dryRun)
 
                     "offender-management.allocation.changed" -> pomAllocated.process(message)
+
                     else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
                 }
 
                 is ProbationOffenderEvent -> when (notification.eventType) {
-                    "SENTENCE_CHANGED",
-                        -> personRepository.findNomsSingleCustodial(message.crn)?.let {
+                    "SENTENCE_CHANGED" -> personRepository.findNomsSingleCustodial(message.crn)?.let {
                         try {
                             handoverDatesChanged.process(
-                                HandoverMessage(
-                                    PersonReference(listOf(PersonIdentifier("NOMS", it))),
-                                    "$mpcHandoverUrl/api/handovers/$it"
-                                )
+                                PersonReference(listOf(PersonIdentifier("NOMS", it))),
+                                "$mpcHandoverUrl/api/handovers/$it"
                             )
-                        } catch (e: HttpClientErrorException) {
-                            if (e.statusCode == HttpStatus.NOT_FOUND) {
-                                throw IgnorableMessageException(
-                                    "Handovers api returned not found for sentence changed event",
-                                    mapOf("detailUrl" to "$mpcHandoverUrl/api/handovers/$it")
-                                )
-                            } else {
-                                throw e
-                            }
+                        } catch (e: HttpClientErrorException.NotFound) {
+                            throw IgnorableMessageException(
+                                "Handovers api returned not found for sentence changed event",
+                                mapOf("detailUrl" to "$mpcHandoverUrl/api/handovers/$it")
+                            )
                         }
                     }
 
@@ -90,20 +78,12 @@ class PomCaseMessageHandler(
                 }
             }
         } catch (ime: IgnorableMessageException) {
-            telemetryService.trackEvent(
-                ime.message,
-                ime.additionalProperties
-            )
+            telemetryService.trackEvent(ime.message, ime.additionalProperties)
         }
     }
 
     val HmppsDomainEvent.dryRun get() = additionalInformation["dryRun"] == true
 }
-
-data class HandoverMessage(
-    val personReference: PersonReference,
-    val detailUrl: String?
-)
 
 @Message
 data class ProbationOffenderEvent(val crn: String)
