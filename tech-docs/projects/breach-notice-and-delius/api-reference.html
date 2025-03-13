@@ -479,6 +479,7 @@
       "location": {
         "id": "integer",
         "status": "string",
+        "officeDescription": "string",
         "buildingName": "string",
         "buildingNumber": "string",
         "streetName": "string",
@@ -688,6 +689,7 @@
     {
       "id": "integer",
       "status": "string",
+      "officeDescription": "string",
       "buildingName": "string",
       "buildingNumber": "string",
       "streetName": "string",
@@ -1047,6 +1049,350 @@
 </tbody>
 </table>
 
+<h3 id="schema-appointment">Appointment</h3>
+
+
+<table class='schema-appointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codeddescription'>CodedDescription</a>
+</td>
+</tr>
+
+<tr>
+<td>datetime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>location</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-officeaddress'>OfficeAddress</a>
+</td>
+</tr>
+
+<tr>
+<td>officer</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-officer'>Officer</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-nextappointmentdetails">NextAppointmentDetails</h3>
+
+
+<table class='schema-nextappointmentdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>responsibleOfficer</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-responsibleofficer'>ResponsibleOfficer</a>
+</td>
+</tr>
+
+<tr>
+<td>futureAppointments</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-appointment'>Appointment</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-officeaddress">OfficeAddress</h3>
+
+
+<table class='schema-officeaddress'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>officeDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>townCity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-officer">Officer</h3>
+
+
+<table class='schema-officer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-responsibleofficer">ResponsibleOfficer</h3>
+
+
+<table class='schema-responsibleofficer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-documentcrn">DocumentCrn</h3>
+
+
+<table class='schema-documentcrn'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-address">Address</h3>
 
 
@@ -1149,238 +1495,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-appointment">Appointment</h3>
-
-
-<table class='schema-appointment'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>type</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-codeddescription'>CodedDescription</a>
-</td>
-</tr>
-
-<tr>
-<td>datetime</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>location</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-address'>Address</a>
-</td>
-</tr>
-
-<tr>
-<td>officer</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-officer'>Officer</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-name">Name</h3>
-
-
-<table class='schema-name'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>forename</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>middleName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-nextappointmentdetails">NextAppointmentDetails</h3>
-
-
-<table class='schema-nextappointmentdetails'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>responsibleOfficer</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-responsibleofficer'>ResponsibleOfficer</a>
-</td>
-</tr>
-
-<tr>
-<td>futureAppointments</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-appointment'>Appointment</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-officer">Officer</h3>
-
-
-<table class='schema-officer'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-responsibleofficer">ResponsibleOfficer</h3>
-
-
-<table class='schema-responsibleofficer'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-documentcrn">DocumentCrn</h3>
-
-
-<table class='schema-documentcrn'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-basicdetails">BasicDetails</h3>
 
 
@@ -1426,7 +1540,7 @@
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-address'>Address</a>
+  <a href='#schema-officeaddress'>OfficeAddress</a>
 </td>
 </tr>
 
