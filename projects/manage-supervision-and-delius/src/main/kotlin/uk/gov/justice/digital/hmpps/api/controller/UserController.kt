@@ -23,7 +23,7 @@ class UserController(
     fun getUserOfficeLocations(@PathVariable username: String) = userLocationService.getUserOfficeLocations(username)
 
     @GetMapping("/schedule/upcoming")
-    @Operation(summary = "Gets caseloads for the user")
+    @Operation(summary = "Gets upcoming appointments for a user")
     fun getUserUpcomingAppointments(
         @PathVariable username: String,
         @RequestParam(required = false, defaultValue = "0") page: Int,
@@ -31,6 +31,16 @@ class UserController(
         @RequestParam(required = false, defaultValue = "default") sortBy: String,
         @RequestParam(required = false, defaultValue = "true") ascending: Boolean
     ) = userService.getUpcomingAppointments(username, PageRequest.of(page, size, sort(sortBy, ascending)))
+
+    @GetMapping("/schedule/no-outcome")
+    @Operation(summary = "Gets passed appointments without an outcome for a user")
+    fun getUserAppointmentsWithoutOutcomes(
+        @PathVariable username: String,
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "10") size: Int,
+        @RequestParam(required = false, defaultValue = "default") sortBy: String,
+        @RequestParam(required = false, defaultValue = "true") ascending: Boolean
+    ) = userService.getAppointmentsWithoutOutcomes(username, PageRequest.of(page, size, sort(sortBy, ascending)))
 
     private fun sort(sortString: String, ascending: Boolean): Sort {
         val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC

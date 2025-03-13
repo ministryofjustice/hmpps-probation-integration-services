@@ -50,6 +50,13 @@ object ContactGenerator {
         username = "JimBrown"
     )
 
+    val USER_2 = User(
+        id = IdGenerator.getAndIncrement(),
+        forename = "Tom",
+        surname = "Thorne",
+        username = "TomThorne"
+    )
+
     val LIMITED_ACCESS_USER = User(
         id = IdGenerator.getAndIncrement(),
         forename = "Limited",
