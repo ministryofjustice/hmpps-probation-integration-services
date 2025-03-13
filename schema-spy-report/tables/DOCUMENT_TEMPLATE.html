@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>DOCUMENT_TEMPLATE - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>DOCUMENT_TEMPLATE - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -118,13 +118,13 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="DOCUMENT_TEMPLATE_AREA.DOCUMENT_TEMPLATE_ID references DOCUMENT_TEMPLATE.DOCUMENT_TEMPLATE_ID via SYS_C0024433"><a href='DOCUMENT_TEMPLATE_AREA.html'>DOCUMENT_TEMPLATE_AREA</a><span class='relatedKey'>.DOCUMENT_TEMPLATE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024433</td>
+                                                <td title="DOCUMENT_TEMPLATE_AREA.DOCUMENT_TEMPLATE_ID references DOCUMENT_TEMPLATE.DOCUMENT_TEMPLATE_ID via SYS_C0021357"><a href='DOCUMENT_TEMPLATE_AREA.html'>DOCUMENT_TEMPLATE_AREA</a><span class='relatedKey'>.DOCUMENT_TEMPLATE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021357</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="OBJECT_TYPE_DOCUMENT_TEMPLATE.DOCUMENT_TEMPLATE_ID references DOCUMENT_TEMPLATE.DOCUMENT_TEMPLATE_ID via SYS_C0024375"><a href='OBJECT_TYPE_DOCUMENT_TEMPLATE.html'>OBJECT_TYPE_DOCUMENT_TEMPLATE</a><span class='relatedKey'>.DOCUMENT_TEMPLATE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024375</td>
+                                                <td title="OBJECT_TYPE_DOCUMENT_TEMPLATE.DOCUMENT_TEMPLATE_ID references DOCUMENT_TEMPLATE.DOCUMENT_TEMPLATE_ID via SYS_C0021071"><a href='OBJECT_TYPE_DOCUMENT_TEMPLATE.html'>OBJECT_TYPE_DOCUMENT_TEMPLATE</a><span class='relatedKey'>.DOCUMENT_TEMPLATE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021071</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -293,6 +293,28 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TEMPLATE_TYPE_ID">TEMPLATE_TYPE_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="DOCUMENT_TEMPLATE.TEMPLATE_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1405"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">R_1405</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -346,6 +368,12 @@
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>BUSINESS_INTERACTION_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF4DOCUMENT_TEMPLATE</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>TEMPLATE_TYPE_ID</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -401,10 +429,11 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="DOCUMENT_TEMPLATE.html" target="_top" title="DOCUMENT_TEMPLATE" alt="" coords="365,113,744,476">
-<area shape="rect" id="node2" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="5,380,321,527">
-<area shape="rect" id="node3" href="DOCUMENT_TEMPLATE_AREA.html" target="_top" title="DOCUMENT_TEMPLATE_AREA" alt="" coords="818,5,1127,181">
-<area shape="rect" id="node4" href="OBJECT_TYPE_DOCUMENT_TEMPLATE.html" target="_top" title="OBJECT_TYPE_DOCUMENT_TEMPLATE" alt="" coords="788,199,1157,375">
+<area shape="rect" id="node1" href="DOCUMENT_TEMPLATE.html" target="_top" title="DOCUMENT_TEMPLATE" alt="" coords="368,113,747,505">
+<area shape="rect" id="node2" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="7,312,323,459">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,476,324,740">
+<area shape="rect" id="node4" href="DOCUMENT_TEMPLATE_AREA.html" target="_top" title="DOCUMENT_TEMPLATE_AREA" alt="" coords="821,5,1130,181">
+<area shape="rect" id="node5" href="OBJECT_TYPE_DOCUMENT_TEMPLATE.html" target="_top" title="OBJECT_TYPE_DOCUMENT_TEMPLATE" alt="" coords="791,199,1160,375">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/DOCUMENT_TEMPLATE.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>CASE_ALLOCATION_LINK - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>CASE_ALLOCATION_LINK - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -143,6 +143,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="CASE_ALLOCATION_LINK.REFERRAL_ID references REFERRAL.REFERRAL_ID via R_1121"><a href='REFERRAL.html'>REFERRAL</a><span class='relatedKey'>.REFERRAL_ID</span></td>
+                                                <td class="constraint detail">R_1121</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -178,7 +183,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> CASE_ALLOCATION_LINK_PK</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> XPKCASE_ALLOCATION_LINK</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
                                     <td>CASE_ALLOCATION_ID + REFERRAL_ID</td>
@@ -217,8 +222,9 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="CASE_ALLOCATION_LINK.html" target="_top" title="CASE_ALLOCATION_LINK" alt="" coords="383,5,720,133">
-<area shape="rect" id="node2" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="5,8,339,683">
+<area shape="rect" id="node1" href="CASE_ALLOCATION_LINK.html" target="_top" title="CASE_ALLOCATION_LINK" alt="" coords="383,335,720,463">
+<area shape="rect" id="node2" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="5,5,339,680">
+<area shape="rect" id="node3" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="15,697,329,1343">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/CASE_ALLOCATION_LINK.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>HOST_AT_RELEASE - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>HOST_AT_RELEASE - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -161,8 +161,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="HOST_AT_RELEASE.PROBATION_AREA_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1181"><a href='PROBATION_AREA.html'>PROBATION_AREA</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
-                                                <td class="constraint detail">R_1181</td>
+                                                <td title="HOST_AT_RELEASE.PROBATION_AREA_ID&#39;s name implies that it&#39;s a child of PROBATION_AREA.PROBATION_AREA_ID, but it doesn&#39;t reference that column."><a href='PROBATION_AREA.html'>PROBATION_AREA</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -170,9 +170,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
-                                    <td>38</td>
+                                    <td>22</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -182,11 +182,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="HOST_AT_RELEASE.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
-                                                <td class="constraint detail">Implied Constraint</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -209,9 +204,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
-                                    <td>38</td>
+                                    <td>22</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -221,11 +216,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="HOST_AT_RELEASE.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
-                                                <td class="constraint detail">Implied Constraint</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -306,18 +296,16 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="HOST_AT_RELEASE.html" target="_top" title="HOST_AT_RELEASE" alt="" coords="375,188,724,463">
-<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="7,463,329,991">
-<area shape="rect" id="node3" href="RELEASE.html" target="_top" title="RELEASE" alt="" coords="5,5,331,445">
+<area shape="rect" id="node1" href="HOST_AT_RELEASE.html" target="_top" title="HOST_AT_RELEASE" alt="" coords="375,5,724,280">
+<area shape="rect" id="node2" href="RELEASE.html" target="_top" title="RELEASE" alt="" coords="5,37,331,477">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/HOST_AT_RELEASE.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="HOST_AT_RELEASE.html" target="_top" title="HOST_AT_RELEASE" alt="" coords="1133,601,1483,876">
-<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,421,353,744">
-<area shape="rect" id="node3" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="397,289,720,817">
-<area shape="rect" id="node4" href="RELEASE.html" target="_top" title="RELEASE" alt="" coords="764,5,1089,445">
+<area shape="rect" id="node1" href="HOST_AT_RELEASE.html" target="_top" title="HOST_AT_RELEASE" alt="" coords="741,168,1091,443">
+<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="5,375,328,903">
+<area shape="rect" id="node3" href="RELEASE.html" target="_top" title="RELEASE" alt="" coords="372,5,697,445">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/HOST_AT_RELEASE.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

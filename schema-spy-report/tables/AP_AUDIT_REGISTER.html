@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>AP_AUDIT_REGISTER - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>AP_AUDIT_REGISTER - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -139,8 +139,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="AP_AUDIT_REGISTER.APPROVED_PREMISES_ID references R_APPROVED_PREMISES.APPROVED_PREMISES_ID via SYS_C0024422"><a href='R_APPROVED_PREMISES.html'>R_APPROVED_PREMISES</a><span class='relatedKey'>.APPROVED_PREMISES_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024422</td>
+                                                <td title="AP_AUDIT_REGISTER.APPROVED_PREMISES_ID references R_APPROVED_PREMISES.APPROVED_PREMISES_ID via SYS_C0021293"><a href='R_APPROVED_PREMISES.html'>R_APPROVED_PREMISES</a><span class='relatedKey'>.APPROVED_PREMISES_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021293</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -195,8 +195,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="AP_AUDIT_REGISTER.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0024423"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024423</td>
+                                                <td title="AP_AUDIT_REGISTER.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0021294"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021294</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -299,7 +299,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -329,8 +329,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="AP_AUDIT_REGISTER.USER_ID references USER_.USER_ID via SYS_C0024425"><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024425</td>
+                                                <td title="AP_AUDIT_REGISTER.USER_ID references USER_.USER_ID via SYS_C0021296"><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021296</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -372,6 +372,30 @@
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>AP_AUDIT_REGISTER_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF1AP_AUDIT_REGISTER</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>APPROVED_PREMISES_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF3AP_AUDIT_REGISTER</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>PARTITION_AREA_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF6AP_AUDIT_REGISTER</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>TRAINING_SESSION_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF7AP_AUDIT_REGISTER</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>USER_ID</td>
                                 </tr>
                                 </tbody>
                             </table>

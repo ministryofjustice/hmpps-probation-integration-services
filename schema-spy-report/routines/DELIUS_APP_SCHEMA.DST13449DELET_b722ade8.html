@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.DST13449DELETEORPHANEDDOCUMENTS</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>P_START_ROWID</td>
+                                    <td>ROWID</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>P_END_ROWID</td>
+                                    <td>ROWID</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>P_UPDATE_DELIUS</td>
+                                    <td>PL/SQL BOOLEAN</td>
+                                    <td>IN</td>
+                                </tr>
+                                <tr>
+                                    <td>CRN_IN</td>
+                                    <td>VARCHAR2</td>
+                                    <td>IN</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PROCEDURE dst13449DeleteOrphanedDocuments (&#10;    p_start_rowid   IN ROWID DEFAULT NULL,&#10;    p_end_rowid     IN ROWID DEFAULT NULL,&#10;    p_update_delius IN BOOLEAN DEFAULT FALSE,&#10;    crn_in          IN VARCHAR2 DEFAULT NULL)&#10;IS&#10;    --&#10;    P_CRN                       VARCHAR2(30) :&#61; crn_in;&#10;    --&#10;    P_WAIT                      NUMBER  :&#61; -1;  -- Delay (in seconds) between each record&#10;    --&#10;    LC_alfresco_wallet          VARCHAR2(1024) :&#61; SPGCONFIG.get_alfresco_wallet;&#10;    LC_DATE_TIME                DATE :&#61; SYSDATE;&#10;    L_DISTINGUISHED_NAME        user_.distinguished_name%TYPE:&#61; &#39;[Data Maintenance]&#39;;&#10;    LC_USER_ID                  NUMBER;&#10;    --&#10;    LC_DELETE_MSG               VARCHAR2(100) :&#61; &#39;Document hard deleted&#39;;&#10;    l_update_delius             BOOLEAN :&#61; p_update_delius;&#10;    --&#10;    CURSOR cs (cp_start_rowid ROWID, cp_end_rowid ROWID) IS &#10;        SELECT Z.*,&#10;               --&#10;               /*CASE &#10;                    WHEN Z.table_name &#61; &#39;APPROVED_PREMISES_REFERRAL&#39; THEN &#39;APREFERRAL&#39;&#10;                    WHEN Z.table_name &#61; &#39;COURT_REPORT&#39; THEN &#39;COURTREPORT&#39;&#10;                    WHEN Z.table_name &#61; &#39;INSTITUTIONAL_REPORT&#39; THEN &#39;INSTITUTIONALREPORT&#39;&#10;                    WHEN Z.table_name &#61; &#39;PERSONAL_CIRCUMSTANCE&#39; THEN &#39;PERSONALCIRCUMSTANCE&#39;&#10;                    -- WHEN Z.table_name &#61; &#39;NSI&#39; THEN &#39;RATECARDINTERVENTION&#39;&#10;                    ELSE Z.table_name&#10;               END entity_type,*/&#10;               --&#10;               O.crn&#10;               --&#10;        FROM delius_app_scripts.z_dst13449_orphaned_documents Z&#10;        JOIN offender O ON O.offender_id &#61; Z.offender_id&#10;        WHERE (NVL(Z.processed,&#39;N&#39;) &lt;&gt; &#39;Y&#39; AND NVL(Z.nd_deleted,&#39;N&#39;) &lt;&gt; &#39;Y&#39;)&#10;        AND Z.rowid BETWEEN NVL(cp_start_rowid,Z.rowid) AND NVL(cp_end_rowid,Z.rowid)&#10;        AND O.crn &#61; NVL(P_CRN,O.crn)&#10;        ORDER BY Z.table_name&#10;        FOR UPDATE;&#10;    --&#10;    l_rec cs%ROWTYPE;&#10;    --&#10;    CURSOR csALFDocument(p_alf_doc_id VARCHAR2, p_doctype VARCHAR2, p_entity_id VARCHAR2) IS --, p_entity_type VARCHAR2) IS&#10;      SELECT *&#10;      FROM&#10;        TABLE(&#10;            DocMigrationSupport.documentContent(&#10;                p_alf_doc_id &#61;&gt; p_alf_doc_id,&#10;                p_wait       &#61;&gt; P_WAIT ) )&#10;      WHERE document_type &#61; p_doctype&#10;      AND entity_id &#61; p_entity_id; &#10;      --AND entity_type &#61; p_entity_type;&#10;    --&#10;    l_rec_alf_document      csALFDocument%ROWTYPE; &#10;    l_alf_document_found    BOOLEAN;&#10;    --&#10;    CURSOR csSoftDeletedALF(p_crn VARCHAR2, p_alf_doc_id VARCHAR2, p_doctype VARCHAR2, p_entity_id VARCHAR2) IS -- p_entity_type VARCHAR2) IS&#10;      SELECT *&#10;      FROM&#10;        TABLE(&#10;            DocMigrationSupport.softDeletedDocumentContent(&#10;                crn_in &#61;&gt; p_crn,&#10;                p_wait &#61;&gt; P_WAIT ))&#10;      WHERE id &#61; p_alf_doc_id&#10;      AND document_type &#61; p_doctype&#10;      AND entity_id &#61; p_entity_id;&#10;      --AND entity_type &#61; p_entity_type;&#10;    --&#10;    l_rec_alf_soft_deleted      csSoftDeletedALF%ROWTYPE; &#10;    l_alf_soft_deleted_found    BOOLEAN;&#10;    --&#10;    CURSOR csHardDeleteALF (p_alf_doc_id VARCHAR2) IS&#10;    SELECT *&#10;      FROM&#10;        TABLE(&#10;            dst13449support.hardDeleteDocumentContent(&#10;                p_alf_doc_id &#61;&gt; p_alf_doc_id,&#10;                p_wait       &#61;&gt; P_WAIT ) )&#10;      WHERE 1&#61;1;&#10;    --&#10;    l_rec_alf_hard_delete         csHardDeleteALF%ROWTYPE;&#10;    l_alf_hard_delete_found       BOOLEAN;&#10;    --&#10;    PROCEDURE do_init IS&#10;    BEGIN&#10;        --&#10;        DBMS_OUTPUT.enable(NULL);&#10;        --&#10;        LC_USER_ID :&#61; PKG_Lookups.GetUserID(L_DISTINGUISHED_NAME);&#10;        --&#10;        IF LC_USER_ID IS NULL&#10;        THEN&#10;          l_distinguished_name :&#61; &#39;DELIUS_SYSTEM_USER&#39;;&#10;          LC_USER_ID :&#61; PKG_Lookups.GetUserID(l_distinguished_name);&#10;        END IF;&#10;        --&#10;        IF LC_alfresco_wallet IS NOT NULL THEN&#10;            UTL_HTTP.set_wallet(path&#61;&gt;LC_alfresco_wallet);&#10;        ELSE&#10;            NULL;&#10;        END IF;&#10;        --&#10;    END do_init;&#10;    --&#10;    PROCEDURE do_find_alf_document(&#10;        p_alf_doc_id VARCHAR2,&#10;        p_doctype    VARCHAR2,&#10;        p_entity_id  VARCHAR2)&#10;        --p_entity_type VARCHAR2)&#10;    IS&#10;    --&#10;    BEGIN&#10;        --&#10;        OPEN csALFDocument(p_alf_doc_id, p_doctype, p_entity_id); --, p_entity_type);&#10;        FETCH csALFDocument INTO l_rec_alf_document;&#10;        l_alf_document_found :&#61; csALFDocument%FOUND;&#10;        CLOSE csALFDocument;&#10;        --&#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF csALFDocument%ISOPEN THEN&#10;            CLOSE csALFDocument;&#10;        END IF;&#10;        --&#10;        l_alf_document_found :&#61; FALSE;&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_find_alf_document;&#10;    --&#10;    PROCEDURE do_find_alf_soft_deleted (&#10;        p_crn VARCHAR2, &#10;        p_alf_doc_id VARCHAR2, &#10;        p_doctype VARCHAR2, &#10;        p_entity_id VARCHAR2)&#10;        --p_entity_type VARCHAR2)&#10;    IS&#10;    --&#10;    BEGIN&#10;        --&#10;        OPEN csSoftDeletedALF(p_crn, p_alf_doc_id, p_doctype, p_entity_id); -- p_entity_type);&#10;        FETCH csSoftDeletedALF INTO l_rec_alf_soft_deleted;&#10;        l_alf_soft_deleted_found :&#61; csSoftDeletedALF%FOUND;&#10;        CLOSE csSoftDeletedALF;&#10;        --&#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF csSoftDeletedALF%ISOPEN THEN&#10;            CLOSE csSoftDeletedALF;&#10;        END IF;&#10;        --&#10;        l_alf_soft_deleted_found :&#61; FALSE;&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_find_alf_soft_deleted;&#10;    --&#10;    PROCEDURE do_hard_delete_alf(p_alf_doc_id VARCHAR2)&#10;    IS&#10;    --&#10;    BEGIN&#10;        --&#10;        OPEN csHardDeleteALF(p_alf_doc_id);&#10;        FETCH csHardDeleteALF INTO l_rec_alf_hard_delete;&#10;        l_alf_hard_delete_found :&#61; csHardDeleteALF%FOUND;&#10;        CLOSE csHardDeleteALF;&#10;        --&#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF csHardDeleteALF%ISOPEN THEN&#10;            CLOSE csHardDeleteALF;&#10;        END IF;&#10;        --&#10;        l_alf_hard_delete_found :&#61; FALSE;&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_hard_delete_alf;&#10;    --&#10;    PROCEDURE do_document_delete&#10;    IS&#10;    BEGIN  &#10;        DELETE FROM subject_access_report_document WHERE document_id &#61; l_rec.document_id;&#10;        DELETE FROM document WHERE document_id &#61; l_rec.document_id; &#10;    END do_document_delete;&#10;    --&#10;    PROCEDURE do_proccess_orphaned_documents&#10;    IS&#10;    --&#10;    l_info              delius_app_scripts.z_dst13449_orphaned_documents.info%TYPE;&#10;    l_nd_deleted        delius_app_scripts.z_dst13449_orphaned_documents.nd_deleted%TYPE;&#10;    l_alf_hard_deleted  delius_app_scripts.z_dst13449_orphaned_documents.alf_hard_deleted%TYPE;&#10;    l_processed         delius_app_scripts.z_dst13449_orphaned_documents.processed%TYPE;&#10;    --&#10;    BEGIN&#10;        --   &#10;        OPEN cs (p_start_rowid, p_end_rowid);&#10;        LOOP&#10;            --&#10;            FETCH cs INTO l_rec;&#10;            EXIT WHEN cs%NOTFOUND;&#10;            --&#10;            do_find_alf_document(&#10;                l_rec.alfresco_document_id,&#10;                l_rec.document_type,&#10;                l_rec.primary_key_id);&#10;                -- l_rec.entity_type);&#10;            --&#10;            l_info              :&#61; NULL; &#10;            l_nd_deleted        :&#61; &#39;N&#39;;&#10;            l_alf_hard_deleted  :&#61; &#39;N&#39;;&#10;            --&#10;            IF NOT l_alf_document_found&#10;            THEN&#10;               -- Check the document is soft deleted&#10;                do_find_alf_soft_deleted (&#10;                    l_rec.crn, &#10;                    l_rec.alfresco_document_id,&#10;                    l_rec.document_type,&#10;                    l_rec.primary_key_id);&#10;                    --l_rec.entity_type);                   &#10;                --&#10;                IF l_alf_soft_deleted_found&#10;                THEN&#10;                    -- Reserved documents are not allowed to be hard deleted&#10;                    IF l_rec_alf_soft_deleted.reserved &#61; &#39;true&#39;&#10;                    THEN&#10;                        l_info :&#61; &#39;Document is soft deleted in Alfresco but reserved and cannot be hard deleted&#39;;&#10;                    ELSE&#10;                        -- Hard delete the document from Alfresco&#10;                        IF l_update_delius &#10;                        THEN&#10;                            --&#10;                            do_hard_delete_alf (l_rec.alfresco_document_id);&#10;                            -- &#10;                            IF l_alf_hard_delete_found&#10;                            THEN&#10;                                l_info              :&#61; l_rec_alf_hard_delete.message;&#10;                                l_alf_hard_deleted  :&#61; &#39;Y&#39;;&#10;                            END IF;&#10;                            --&#10;                        END IF;&#10;                        --    &#10;                    END IF;&#10;                    --&#10;                END IF;&#10;                --&#10;            ELSE&#10;                -- Again, reserved documents are not allowed to be hard deleted&#10;                IF l_rec_alf_document.reserved &#61; &#39;true&#39;&#10;                THEN&#10;                    l_info :&#61; &#39;Document is found in Alfresco but reserved and cannot be hard deleted&#39;;&#10;                ELSE                    &#10;                    -- Hard delete the document from Alfresco&#10;                    IF l_update_delius &#10;                    THEN&#10;                        --&#10;                        do_hard_delete_alf (l_rec.alfresco_document_id);&#10;                        -- &#10;                        IF l_alf_hard_delete_found&#10;                        THEN&#10;                            l_info              :&#61; l_rec_alf_hard_delete.message;&#10;                            l_alf_hard_deleted  :&#61; &#39;Y&#39;;&#10;                            --&#10;                        END IF;&#10;                        --&#10;                    END IF;&#10;                    --&#10;                END IF;&#10;                --&#10;            END IF;&#10;            --&#10;            -- Delete from NDelius regardless if corresponding document in Alfresco is found or not&#10;            --&#10;            IF l_update_delius &#10;                THEN&#10;                    do_document_delete;&#10;                    l_info          :&#61; LC_DELETE_MSG||&#39; &#39;||l_info;&#10;                    l_nd_deleted    :&#61; &#39;Y&#39;;&#10;                    l_processed     :&#61; &#39;Y&#39;;&#10;                ELSE&#10;                    l_info :&#61; &#39;Check Only: &#39;||LC_DELETE_MSG;&#10;            END IF;&#10;            --&#10;            UPDATE delius_app_scripts.z_dst13449_orphaned_documents&#10;            SET bu_date             &#61; LC_DATE_TIME,&#10;                alf_hard_deleted    &#61; l_alf_hard_deleted,&#10;                nd_deleted          &#61; l_nd_deleted,&#10;                processed           &#61; l_processed,&#10;                info                &#61; l_info&#10;            WHERE CURRENT OF cs;&#10;            --&#10;        END LOOP;&#10;        CLOSE cs; &#10;        -- &#10;    EXCEPTION WHEN OTHERS THEN&#10;        --&#10;        IF cs%ISOPEN THEN&#10;            CLOSE cs;&#10;        END IF;&#10;        --&#10;        DBMS_OUTPUT.put_line(&#39;crn: &#39;||l_rec.crn||&#39; Doc: &#39;||l_rec.alfresco_document_id);&#10;        --&#10;        RAISE;&#10;        --&#10;    END do_proccess_orphaned_documents;&#10;    --&#10;BEGIN&#10;    --&#10;    do_init;&#10;    --&#10;    do_proccess_orphaned_documents;&#10;    --&#10;END dst13449DeleteOrphanedDocuments;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

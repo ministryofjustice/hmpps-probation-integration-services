@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>LIC_CONDITION_TRANSFER - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>LIC_CONDITION_TRANSFER - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -131,6 +131,28 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION_TRANSFER.OFFENDER_ID references OFFENDER.OFFENDER_ID via R_902"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
+                                                <td class="constraint detail">R_902</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -322,6 +344,94 @@
                                             <tr>
                                                 <td title="LIC_CONDITION_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via R_866"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
                                                 <td class="constraint detail">R_866</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ORIGIN_PROVIDER_TEAM_ID">ORIGIN_PROVIDER_TEAM_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION_TRANSFER.ORIGIN_PROVIDER_TEAM_ID references PROVIDER_TEAM.PROVIDER_TEAM_ID via R_904"><a href='PROVIDER_TEAM.html'>PROVIDER_TEAM</a><span class='relatedKey'>.PROVIDER_TEAM_ID</span></td>
+                                                <td class="constraint detail">R_904</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ORIGIN_PROVIDER_EMPLOYEE_ID">ORIGIN_PROVIDER_EMPLOYEE_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION_TRANSFER.ORIGIN_PROVIDER_EMPLOYEE_ID references PROVIDER_EMPLOYEE.PROVIDER_EMPLOYEE_ID via R_905"><a href='PROVIDER_EMPLOYEE.html'>PROVIDER_EMPLOYEE</a><span class='relatedKey'>.PROVIDER_EMPLOYEE_ID</span></td>
+                                                <td class="constraint detail">R_905</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RECEIVING_PROVIDER_TEAM_ID">RECEIVING_PROVIDER_TEAM_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION_TRANSFER.RECEIVING_PROVIDER_TEAM_ID references PROVIDER_TEAM.PROVIDER_TEAM_ID via R_906"><a href='PROVIDER_TEAM.html'>PROVIDER_TEAM</a><span class='relatedKey'>.PROVIDER_TEAM_ID</span></td>
+                                                <td class="constraint detail">R_906</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RECEIVING_PROVIDER_EMPLOYEE_ID">RECEIVING_PROVIDER_EMPLOYEE_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION_TRANSFER.RECEIVING_PROVIDER_EMPLOYEE_ID references PROVIDER_EMPLOYEE.PROVIDER_EMPLOYEE_ID via R_907"><a href='PROVIDER_EMPLOYEE.html'>PROVIDER_EMPLOYEE</a><span class='relatedKey'>.PROVIDER_EMPLOYEE_ID</span></td>
+                                                <td class="constraint detail">R_907</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -541,23 +651,6 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title=''></td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
@@ -570,84 +663,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="ORIGIN_PROVIDER_TEAM_ID">ORIGIN_PROVIDER_TEAM_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ORIGIN_PROVIDER_EMPLOYEE_ID">ORIGIN_PROVIDER_EMPLOYEE_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="LIC_CONDITION_TRANSFER.ORIGIN_PROVIDER_EMPLOYEE_ID&#39;s name implies that it&#39;s a child of PROVIDER_EMPLOYEE.PROVIDER_EMPLOYEE_ID, but it doesn&#39;t reference that column."><a href='PROVIDER_EMPLOYEE.html'>PROVIDER_EMPLOYEE</a><span class='relatedKey'>.PROVIDER_EMPLOYEE_ID</span></td>
-                                                <td class="constraint detail">Implied Constraint</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="RECEIVING_PROVIDER_TEAM_ID">RECEIVING_PROVIDER_TEAM_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RECEIVING_PROVIDER_EMPLOYEE_ID">RECEIVING_PROVIDER_EMPLOYEE_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="LIC_CONDITION_TRANSFER.RECEIVING_PROVIDER_EMPLOYEE_ID&#39;s name implies that it&#39;s a child of PROVIDER_EMPLOYEE.PROVIDER_EMPLOYEE_ID, but it doesn&#39;t reference that column."><a href='PROVIDER_EMPLOYEE.html'>PROVIDER_EMPLOYEE</a><span class='relatedKey'>.PROVIDER_EMPLOYEE_ID</span></td>
-                                                <td class="constraint detail">Implied Constraint</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -892,6 +907,22 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>LIC_COND_TRANS_REC_STAFF_XOR</td>
+                                    <td> (&#10;(RECEIVING_STAFF_ID IS NOT NULL AND RECEIVING_PROVIDER_EMPLOYEE_ID IS NULL)&#10;OR&#10;(RECEIVING_STAFF_ID IS NULL AND RECEIVING_PROVIDER_EMPLOYEE_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>LIC_COND_TRANS_REC_TEAM_XOR</td>
+                                    <td> (&#10;(RECEIVING_TEAM_ID IS NOT NULL AND RECEIVING_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(RECEIVING_TEAM_ID IS NULL AND RECEIVING_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>LIC_COND_TRANS_ORGIN_TEAM_XOR</td>
+                                    <td> (&#10;(ORIGIN_TEAM_ID IS NOT NULL AND ORIGIN_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(ORIGIN_TEAM_ID IS NULL AND ORIGIN_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>LIC_COND_TRANS_ORGIN_STAFF_XOR</td>
+                                    <td> (&#10;(ORIGIN_STAFF_ID IS NOT NULL AND ORIGIN_PROVIDER_EMPLOYEE_ID IS NULL)&#10;OR&#10;(ORIGIN_STAFF_ID IS NULL AND ORIGIN_PROVIDER_EMPLOYEE_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE_1450363321</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
@@ -918,33 +949,38 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="368,130,657,746">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1159,324,1423">
-<area shape="rect" id="node3" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,276,277,423">
-<area shape="rect" id="node4" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1281,84,1573,818">
-<area shape="rect" id="node5" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="701,668,1223,1618">
-<area shape="rect" id="node6" href="STAFF.html" target="_top" title="STAFF" alt="" coords="385,1600,640,2040">
-<area shape="rect" id="node7" href="TEAM.html" target="_top" title="TEAM" alt="" coords="369,1159,657,1511">
-<area shape="rect" id="node8" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="385,907,640,1142">
-<area shape="rect" id="node9" href="MASTER_TRANSFER.html" target="_top" title="MASTER_TRANSFER" alt="" coords="385,2058,640,2351">
-<area shape="rect" id="node10" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1267,1520,1587,2371">
+<area shape="rect" id="node1" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="744,89,1033,705">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1404,324,1668">
+<area shape="rect" id="node3" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,407,700,1668">
+<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,136,277,283">
+<area shape="rect" id="node5" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1657,583,1949,1316">
+<area shape="rect" id="node6" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1077,1164,1599,2113">
+<area shape="rect" id="node7" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="761,1871,1016,2252">
+<area shape="rect" id="node8" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="761,1308,1016,1601">
+<area shape="rect" id="node9" href="STAFF.html" target="_top" title="STAFF" alt="" coords="761,2269,1016,2709">
+<area shape="rect" id="node10" href="TEAM.html" target="_top" title="TEAM" alt="" coords="745,723,1033,1075">
+<area shape="rect" id="node11" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="761,1619,1016,1853">
+<area shape="rect" id="node12" href="MASTER_TRANSFER.html" target="_top" title="MASTER_TRANSFER" alt="" coords="761,2799,1016,3092">
+<area shape="rect" id="node13" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1643,1333,1963,2184">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/LIC_CONDITION_TRANSFER.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1080,73,1369,689">
-<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="688,1627,1036,1950">
-<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="26,1018,345,1282">
-<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="750,614,974,761">
-<area shape="rect" id="node7" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="389,1451,644,1833">
-<area shape="rect" id="node8" href="STAFF.html" target="_top" title="STAFF" alt="" coords="389,886,644,1326">
-<area shape="rect" id="node5" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1992,1757,2284,2490">
-<area shape="rect" id="node6" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1413,773,1934,1722">
-<area shape="rect" id="node9" href="TEAM.html" target="_top" title="TEAM" alt="" coords="1080,1762,1368,2114">
-<area shape="rect" id="node10" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="1097,2167,1352,2402">
-<area shape="rect" id="node11" href="MASTER_TRANSFER.html" target="_top" title="MASTER_TRANSFER" alt="" coords="1097,1451,1352,1745">
-<area shape="rect" id="node12" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1978,27,2298,878">
+<area shape="rect" id="node1" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1456,925,1745,1541">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="688,2520,1036,2842">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="26,1210,345,1474">
+<area shape="rect" id="node4" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1080,136,1412,1397">
+<area shape="rect" id="node5" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="750,1466,974,1613">
+<area shape="rect" id="node8" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="389,2161,644,2542">
+<area shape="rect" id="node10" href="STAFF.html" target="_top" title="STAFF" alt="" coords="389,1632,644,2072">
+<area shape="rect" id="node6" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2368,2541,2660,3274">
+<area shape="rect" id="node7" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1789,1594,2310,2544">
+<area shape="rect" id="node9" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1473,2814,1728,3108">
+<area shape="rect" id="node11" href="TEAM.html" target="_top" title="TEAM" alt="" coords="1456,2409,1744,2761">
+<area shape="rect" id="node12" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="1118,2945,1373,3180">
+<area shape="rect" id="node13" href="MASTER_TRANSFER.html" target="_top" title="MASTER_TRANSFER" alt="" coords="1473,2098,1728,2392">
+<area shape="rect" id="node14" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2354,1069,2674,1920">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/LIC_CONDITION_TRANSFER.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.PKG_USER_SUPPORT</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY pkg_user_support AS&#10;--&#10;--&#10;--&#10;--&#10;&#10;--  Global Variables&#10;g_sysuser   CONSTANT user_.distinguished_name%TYPE :&#61; &#39;DELIUS_SYSTEM_USER&#39;;&#10;--&#10;g_label VARCHAR2(100);&#10;&#10;--&#10;-- PKG_COMMON wrappers&#10;--&#10;PROCEDURE message(p_msg VARCHAR2, p_trace_level NUMBER DEFAULT 0) IS&#10;BEGIN&#10;    PKG_Common.print_message(&#10;        p_msg         &#61;&gt; p_msg,&#10;        p_trace_level &#61;&gt; NVL(p_trace_level, PKG_Common.GC_TRACE_LEVEL),&#10;        p_label       &#61;&gt; g_label );&#10;END message;&#10;--&#10;FUNCTION empty2null(p_str VARCHAR2) RETURN VARCHAR2 IS&#10;BEGIN&#10;    RETURN PKG_Common.empty2null(p_str);&#10;END empty2null;&#10;--&#10;FUNCTION is_str_empty(p_str VARCHAR2, p_ignore_spaces_and_zeroes VARCHAR2 DEFAULT &#39;N&#39;) RETURN VARCHAR2 IS&#10;BEGIN&#10;    RETURN PKG_Common.is_str_empty( p_str, p_ignore_spaces_and_zeroes );&#10;END is_str_empty;&#10;--&#10;FUNCTION nvlstr(p_str1 VARCHAR2, p_str2 VARCHAR2) RETURN VARCHAR2 IS&#10;BEGIN&#10;    RETURN PKG_Common.NVLSTR(p_str1, p_str2);&#10;END nvlstr;&#10;--&#10;PROCEDURE raise_error(p_err_msg VARCHAR2, p_proc VARCHAR2, p_label VARCHAR2 DEFAULT NULL) IS&#10;BEGIN&#10;    PKG_Common.raise_error( p_err_msg, p_proc, p_label );&#10;END raise_error;&#10;--&#10;--&#10;-- MAIN part&#10;--&#10;PROCEDURE createdbuser (&#10;    p_operatoradname VARCHAR2,&#10;    p_distinguished_name VARCHAR2,&#10;    p_surname VARCHAR2,&#10;    p_forename VARCHAR2,&#10;    p_userareatricode CHAR,&#10;    p_private NUMBER,&#10;    p_return OUT CHAR,&#10;    debug_flag CHAR)&#10;IS&#10;  l_cnt                     NUMBER :&#61;0;&#10;  l_user_id                 NUMBER;&#10;  l_operator_id             NUMBER;&#10;  l_organisation_id     NUMBER;&#10;  l_probation_area_id       NUMBER;&#10;  l_sql                     VARCHAR2(1024);&#10;  l_message                 VARCHAR2(1024);&#10;  l_business_interaction_id     NUMBER;&#10;  l_audit_string            VARCHAR2(4000);&#10;BEGIN&#10;  dbms_output.enable(10000);&#10;  IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Start createdbuser&#39;); END IF;&#10;&#10;  /* Check to see if the operator is authorised to access National Delius */&#10;  l_sql :&#61; &#39;SELECT COUNT(*) FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_operatoradname||&#39;&#39;&#39;)&#39;;&#10;  EXECUTE IMMEDIATE l_sql INTO l_cnt;&#10;&#10;  IF l_cnt &#61; 1 THEN&#10;&#10;    /* Obtain the user_id and organisation_id for the operator for auditing purposes */&#10;    l_sql :&#61; &#39;SELECT USER_ID, ORGANISATION_ID FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_operatoradname||&#39;&#39;&#39;)&#39;;&#10;    EXECUTE IMMEDIATE l_sql INTO l_operator_id, l_organisation_id;&#10;&#10;    /* Check if the new user already exists */&#10;    l_sql :&#61; &#39;SELECT COUNT(*) FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_distinguished_name||&#39;&#39;&#39;)&#39;;&#10;        IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- SQL is &#61; &#39;||l_sql); END IF;&#10;    EXECUTE IMMEDIATE l_sql INTO l_cnt;&#10;&#10;    IF l_cnt &#61; 0 THEN&#10;&#10;        /* INSERT into USER_ */&#10;            IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Now inserting new user&#39;); END IF;&#10;            l_sql :&#61; &#39;INSERT INTO USER_(USER_ID, SURNAME, FORENAME, DISTINGUISHED_NAME, ROW_VERSION, PRIVATE, ORGANISATION_ID) VALUES (USER_ID_SEQ.NEXTVAL,&#39;&#39;&#39;||&#10;            p_surname||&#39;&#39;&#39;,&#39;&#39;&#39;||p_forename||&#39;&#39;&#39;,&#39;&#39;&#39;||p_distinguished_name||&#39;&#39;&#39;,0,&#39;&#39;&#39;||p_private||&#39;&#39;&#39;,&#39;&#39;&#39;||l_organisation_id||&#39;&#39;&#39;)&#39;;&#10;            IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Insert SQL is &#61; &#39;||l_sql); END IF;&#10;            EXECUTE IMMEDIATE (l_sql);&#10;&#10;        l_sql :&#61; &#39;SELECT USER_ID FROM USER_ WHERE DISTINGUISHED_NAME &#61; &#39;&#39;&#39;||p_distinguished_name||&#39;&#39;&#39;&#39;;&#10;        EXECUTE IMMEDIATE l_sql INTO l_user_id;&#10;&#10;            SELECT PROBATION_AREA_ID INTO l_probation_area_id FROM PROBATION_AREA WHERE CODE &#61; p_userareatricode;&#10;&#10;        /* INSERT into PROBATION_AREA_USER */&#10;            l_sql :&#61; &#39;INSERT INTO PROBATION_AREA_USER(USER_ID, PROBATION_AREA_ID, ROW_VERSION, LAST_UPDATED_USER_ID, CREATED_BY_USER_ID, CREATED_DATETIME, LAST_UPDATED_DATETIME) VALUES (&#39;||&#10;            l_user_id||&#39;,&#39;||l_probation_area_id||&#39;,&#39;||&#39;0,1,1,sysdate,sysdate)&#39;;&#10;            IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Insert SQL is &#61; &#39;||l_sql); END IF;&#10;            EXECUTE IMMEDIATE (l_sql);&#10;&#10;            /* Obtain business_interaction_id for auditing purposes */&#10;        SELECT BUSINESS_INTERACTION_ID INTO l_business_interaction_id FROM BUSINESS_INTERACTION&#10;            WHERE BUSINESS_INTERACTION_CODE &#61; &#39;HPBI008&#39;;&#10;&#10;        /* INSERT into AUDITED_INTERACTION */&#10;        l_audit_string :&#61; &#39;CREATE distinguished_name&#61;&#39;||p_distinguished_name;&#10;        l_sql :&#61;&#39;INSERT INTO AUDITED_INTERACTION (DATE_TIME, USER_ID, OUTCOME, INTERACTION_PARAMETERS, BUSINESS_INTERACTION_ID) VALUES (sysdate,&#39;||&#10;             l_operator_id||&#39;,&#39;&#39;P&#39;&#39;,&#39;&#39;&#39;||l_audit_string||&#39;&#39;&#39;,&#39;||l_business_interaction_id||&#39;)&#39;;&#10;            IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Insert SQL is &#61; &#39;||l_sql); END IF;&#10;            EXECUTE IMMEDIATE (l_sql);&#10;            COMMIT;&#10;            l_message :&#61; &#39;0000&#39;; /* Success: user inserted into National Delius */&#10;            p_return :&#61; l_message;&#10;            dbms_output.put_line(l_message);&#10;        ELSE&#10;        l_message :&#61; &#39;1000&#39;; /* Failed: the user you wish to create already exists in National Delius */&#10;        p_return :&#61; l_message;&#10;        dbms_output.put_line(l_message);&#10;        END IF;&#10;  ELSE&#10;        l_message :&#61; &#39;2000&#39;; /* Failed: the operator running this application does not exist in National Delius */&#10;        p_return :&#61; l_message;&#10;        dbms_output.put_line(l_message);&#10;  END IF;&#10;&#10;  IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- End createdbuser&#39;); END IF;&#10;  EXCEPTION&#10;      WHEN OTHERS&#10;      THEN&#10;        l_message :&#61; &#39;Error: &#39;||SQLERRM;&#10;        p_return :&#61; l_message;&#10;        dbms_output.put_line(l_message);&#10;        rollback;&#10;END createdbuser;&#10;&#10;PROCEDURE renamedbuser(&#10;    p_operatoradname VARCHAR2,&#10;    p_old_distinguished_name VARCHAR2,&#10;    p_new_distinguished_name VARCHAR2,&#10;    p_surname VARCHAR2,&#10;    p_forename VARCHAR2,&#10;    p_return OUT CHAR,&#10;    debug_flag CHAR )&#10;IS&#10;  l_cnt                     NUMBER :&#61; 0;&#10;  l_sql                     VARCHAR2(1024);&#10;  l_message                 VARCHAR2(1024);&#10;  l_operator_id             NUMBER;&#10;  l_business_interaction_id     NUMBER;&#10;  l_audit_string            VARCHAR2(4000);&#10;&#10;BEGIN&#10;  dbms_output.enable(10000);&#10;  IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Start renamedbuser&#39;); END IF;&#10;&#10;  /* Check to see if the operator is authorised to access National Delius */&#10;  l_sql :&#61; &#39;SELECT COUNT(*) FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_operatoradname||&#39;&#39;&#39;)&#39;;&#10;  EXECUTE IMMEDIATE l_sql INTO l_cnt;&#10;&#10;  IF l_cnt &#61; 1 THEN&#10;&#10;    /* Obtain the user_id for the operator for auditing purposes */&#10;    l_sql :&#61; &#39;SELECT USER_ID FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_operatoradname||&#39;&#39;&#39;)&#39;;&#10;    EXECUTE IMMEDIATE l_sql INTO l_operator_id;&#10;&#10;    /* Make sure the user to amend exists in National Delius */&#10;    l_sql :&#61; &#39;SELECT COUNT(*) FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_old_distinguished_name||&#39;&#39;&#39;)&#39;;&#10;    EXECUTE IMMEDIATE l_sql INTO l_cnt;&#10;&#10;    IF l_cnt &#61; 1 THEN&#10;&#10;            l_cnt :&#61; 0;&#10;&#10;        /* Check to ensure the new name doesn&#39;t already exist in National Delius */&#10;        l_sql :&#61; &#39;SELECT COUNT(*) FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_new_distinguished_name||&#39;&#39;&#39;)&#39;;&#10;        EXECUTE IMMEDIATE l_sql INTO l_cnt;&#10;&#10;            IF l_cnt &#61; 0 THEN&#10;&#10;            /* UPDATE USER_ */&#10;            IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Now renaming user&#39;); END IF;&#10;            l_sql :&#61; &#39;UPDATE USER_ SET DISTINGUISHED_NAME&#61;&#39;&#39;&#39;||p_new_distinguished_name||&#39;&#39;&#39;, SURNAME&#61;&#39;&#39;&#39;||&#10;                    p_surname||&#39;&#39;&#39;, FORENAME&#61;&#39;&#39;&#39;||p_forename||&#10;            &#39;&#39;&#39; WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_old_distinguished_name||&#39;&#39;&#39;)&#39;;&#10;            IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Update SQL is &#61; &#39;||l_sql); END IF;&#10;            EXECUTE IMMEDIATE (l_sql);&#10;&#10;                SELECT BUSINESS_INTERACTION_ID INTO l_business_interaction_id FROM BUSINESS_INTERACTION&#10;                WHERE BUSINESS_INTERACTION_CODE &#61; &#39;HPBI008&#39;;&#10;&#10;            /* INSERT into AUDITED_INTERACTION */&#10;            l_audit_string :&#61; &#39;RENAME from distinguished_name&#61;&#39;||p_old_distinguished_name||&#39; to &#39;||p_new_distinguished_name;&#10;            l_sql :&#61;&#39;INSERT INTO AUDITED_INTERACTION (DATE_TIME, USER_ID, OUTCOME, INTERACTION_PARAMETERS, BUSINESS_INTERACTION_ID) VALUES (sysdate,&#39;||&#10;             l_operator_id||&#39;,&#39;&#39;P&#39;&#39;,&#39;&#39;&#39;||l_audit_string||&#39;&#39;&#39;,&#39;||l_business_interaction_id||&#39;)&#39;;&#10;                IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Insert SQL is &#61; &#39;||l_sql); END IF;&#10;                EXECUTE IMMEDIATE (l_sql);&#10;&#10;            COMMIT;&#10;            l_message :&#61; &#39;0000&#39;; /* Success: user renamed in National Delius */&#10;            p_return :&#61; l_message;&#10;            dbms_output.put_line(l_message);&#10;            ELSE&#10;            l_message :&#61; &#39;3000&#39;; /* Failed: the user you wish to rename to already exists in National Delius */&#10;            p_return :&#61; l_message;&#10;            dbms_output.put_line(l_message);&#10;            END IF;&#10;        ELSE&#10;            l_message :&#61; &#39;4000&#39;; /* Failed: the user to amend does not exist or more than occurrence of this name exists in National Delius */&#10;            p_return :&#61; l_message;&#10;            dbms_output.put_line(l_message);&#10;        END IF;&#10;  ELSE&#10;        l_message :&#61; &#39;5000&#39;; /* Failed: the operator running this application does not exist in National Delius */&#10;        p_return :&#61; l_message;&#10;        dbms_output.put_line(l_message);&#10;  END IF;&#10;&#10;  IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- End renamedbuser&#39;); END IF;&#10;  EXCEPTION&#10;      WHEN OTHERS&#10;      THEN&#10;        l_message :&#61; &#39;Error: &#39;||SQLERRM;&#10;        p_return :&#61; l_message;&#10;        dbms_output.put_line(l_message);&#10;        rollback;&#10;END renamedbuser;&#10;&#10;PROCEDURE reactivateuser(&#10;    p_operatoradname VARCHAR2,&#10;    p_distinguished_name VARCHAR2,&#10;    p_surname VARCHAR2,&#10;    p_forename VARCHAR2,&#10;    p_return OUT CHAR,&#10;    debug_flag CHAR )&#10;IS&#10;  --&#10;  l_cnt                     NUMBER :&#61; 0;&#10;  l_sql                     VARCHAR2(1024);&#10;  l_message                 VARCHAR2(1024);&#10;  l_operator_id             NUMBER;&#10;  l_business_interaction_id     NUMBER;&#10;  l_audit_string            VARCHAR2(4000);&#10;  --&#10;BEGIN&#10;  dbms_output.enable(10000);&#10;  IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Start reactivateuser&#39;); END IF;&#10;&#10;  /* Check to see if the operator is authorised to access National Delius */&#10;  l_sql :&#61; &#39;SELECT COUNT(*) FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_operatoradname||&#39;&#39;&#39;)&#39;;&#10;  EXECUTE IMMEDIATE l_sql INTO l_cnt;&#10;&#10;  IF l_cnt &#61; 1 THEN&#10;&#10;    /* Obtain the user_id for the operator for auditing purposes */&#10;    l_sql :&#61; &#39;SELECT USER_ID FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_operatoradname||&#39;&#39;&#39;)&#39;;&#10;    EXECUTE IMMEDIATE l_sql INTO l_operator_id;&#10;&#10;    /* Make sure the user to amend exists in National Delius */&#10;    l_sql :&#61; &#39;SELECT COUNT(*) FROM USER_ WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_distinguished_name||&#39;&#39;&#39;)&#39;;&#10;    EXECUTE IMMEDIATE l_sql INTO l_cnt;&#10;&#10;    IF l_cnt &#61; 1 THEN&#10;&#10;            /* UPDATE USER_ */&#10;            IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Now renaming user&#39;); END IF;&#10;            l_sql :&#61; &#39;UPDATE USER_ SET END_DATE &#61; NULL, SURNAME&#61;&#39;&#39;&#39;||&#10;                    p_surname||&#39;&#39;&#39;, FORENAME&#61;&#39;&#39;&#39;||p_forename||&#10;            &#39;&#39;&#39; WHERE UPPER(DISTINGUISHED_NAME) &#61; UPPER(&#39;&#39;&#39;||p_distinguished_name||&#39;&#39;&#39;)&#39;;&#10;            IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Update SQL is &#61; &#39;||l_sql); END IF;&#10;            EXECUTE IMMEDIATE (l_sql);&#10;&#10;                SELECT BUSINESS_INTERACTION_ID INTO l_business_interaction_id FROM BUSINESS_INTERACTION&#10;                WHERE BUSINESS_INTERACTION_CODE &#61; &#39;HPBI008&#39;;&#10;&#10;            /* INSERT into AUDITED_INTERACTION */&#10;            l_audit_string :&#61; &#39;UPDATE distinguished_name&#61;&#39;||p_distinguished_name;&#10;            l_sql :&#61;&#39;INSERT INTO AUDITED_INTERACTION (DATE_TIME, USER_ID, OUTCOME, INTERACTION_PARAMETERS, BUSINESS_INTERACTION_ID) VALUES (sysdate,&#39;||&#10;             l_operator_id||&#39;,&#39;&#39;P&#39;&#39;,&#39;&#39;&#39;||l_audit_string||&#39;&#39;&#39;,&#39;||l_business_interaction_id||&#39;)&#39;;&#10;                IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- Insert SQL is &#61; &#39;||l_sql); END IF;&#10;                EXECUTE IMMEDIATE (l_sql);&#10;&#10;            COMMIT;&#10;            l_message :&#61; &#39;0000&#39;; /* Success: user reactivated in National Delius */&#10;            p_return :&#61; l_message;&#10;            dbms_output.put_line(l_message);&#10;        ELSE&#10;            l_message :&#61; &#39;6000&#39;; /* Failed: the user to amend does not exist or more than occurrence of this name exists in National Delius */&#10;            p_return :&#61; l_message;&#10;            dbms_output.put_line(l_message);&#10;        END IF;&#10;  ELSE&#10;        l_message :&#61; &#39;7000&#39;; /* Failed: the operator running this application does not exist in National Delius */&#10;        p_return :&#61; l_message;&#10;        dbms_output.put_line(l_message);&#10;  END IF;&#10;&#10;  IF debug_flag &#61; 1 THEN dbms_output.put_line(&#39;--- End renamedbuser&#39;); END IF;&#10;  EXCEPTION&#10;      WHEN OTHERS&#10;      THEN&#10;        l_message :&#61; &#39;Error: &#39;||SQLERRM;&#10;        p_return :&#61; l_message;&#10;        dbms_output.put_line(l_message);&#10;        rollback;&#10;END reactivateuser;&#10;--&#10;--&#10;FUNCTION getSPGInboundUserID(&#10;    spgusername_in IN VARCHAR2,&#10;    probationareaid_in IN NUMBER,&#10;    createifnotexist_in IN VARCHAR2 DEFAULT &#39;Y&#39; )&#10;RETURN NUMBER&#10;IS&#10;  PRAGMA AUTONOMOUS_TRANSACTION;&#10;  l_user_id         user_.user_id%TYPE;&#10;  l_code            probation_area.code%TYPE;&#10;  l_private         probation_area.private%TYPE;&#10;  l_organisation_id probation_area.organisation_id%TYPE;&#10;  --&#10;  l_surname             USER_.surname%TYPE;&#10;  l_forename            USER_.forename%TYPE;&#10;  l_distinguished_name  USER_.distinguished_name%TYPE;&#10;  --&#10;BEGIN&#10;    --&#10;    SELECT code, private, organisation_id INTO l_code, l_private, l_organisation_id&#10;    FROM probation_area&#10;    WHERE probation_area_id &#61; probationareaid_in;&#10;    --&#10;    l_surname :&#61; TRIM(REGEXP_SUBSTR(spgusername_in, &#39;[^,]+&#39;, 1, 1));&#10;    l_forename :&#61; TRIM(REGEXP_SUBSTR(spgusername_in, &#39;[^,]+&#39;, 1, 2));&#10;    l_distinguished_name :&#61; l_code || &#39;_&#39; || l_surname || &#39;_&#39; || l_forename;&#10;    --&#10;    UPDATE user_ SET row_version &#61; row_version&#10;    WHERE UPPER(distinguished_name) &#61; UPPER(l_distinguished_name)&#10;    RETURNING user_id INTO l_user_id;&#10;    --&#10;    IF SQL%ROWCOUNT &#61; 0 AND createifnotexist_in &#61; &#39;Y&#39; THEN&#10;      --&#10;      INSERT INTO user_&#10;        (user_id, surname, forename, row_version, distinguished_name, private, organisation_id)&#10;      VALUES&#10;        (user_id_seq.NEXTVAL, l_surname, l_forename, 0, UPPER(l_distinguished_name), l_private, l_organisation_id)&#10;      RETURNING user_id INTO l_user_id;&#10;      --&#10;      INSERT INTO probation_area_user&#10;        (user_id, probation_area_id, row_version, created_datetime, created_by_user_id, last_updated_datetime, last_updated_user_id)&#10;      VALUES&#10;        (l_user_id, probationareaid_in, 0, SYSDATE, PKG_LOOKUPS.GetUserID(g_sysuser), SYSDATE, PKG_LOOKUPS.GetUserID(g_sysuser));&#10;      --&#10;    END IF;&#10;    COMMIT;&#10;    --&#10;    RETURN l_user_id;&#10;    --&#10;END getSPGInboundUserID;&#10;--&#10;END pkg_user_support;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

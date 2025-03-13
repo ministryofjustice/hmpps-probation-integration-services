@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>R_APPROVED_PREMISES_TEAM - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>R_APPROVED_PREMISES_TEAM - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -121,11 +121,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="R_APPROVED_PREMISES_TEAM.APPROVED_PREMISES_ID references R_APPROVED_PREMISES.APPROVED_PREMISES_ID via R_1379"><a href='R_APPROVED_PREMISES.html'>R_APPROVED_PREMISES</a><span class='relatedKey'>.APPROVED_PREMISES_ID</span></td>
-                                                <td class="constraint detail">R_1379</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -143,11 +138,6 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="R_APPROVED_PREMISES_TEAM.TEAM_ID references TEAM.TEAM_ID via R_1378"><a href='TEAM.html'>TEAM</a><span class='relatedKey'>.TEAM_ID</span></td>
-                                                <td class="constraint detail">R_1378</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -203,19 +193,19 @@
                                     <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> XPKR_APPROVED_PREMISES_TEAM</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
-                                    <td>TEAM_ID + APPROVED_PREMISES_ID</td>
-                                </tr>
-                                <tr>
-                                    <td title='Indexed'>X2F1R_APPROVED_PREMISES_TEAM</td>
-                                    <td>Performance</td>
-                                    <td><span title='Ascending'>Asc</span></td>
-                                    <td>APPROVED_PREMISES_ID</td>
+                                    <td>APPROVED_PREMISES_ID + TEAM_ID</td>
                                 </tr>
                                 <tr>
                                     <td title='Indexed'>XIF1R_APPROVED_PREMISES_TEAM</td>
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>TEAM_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF2R_APPROVED_PREMISES_TEAM</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>APPROVED_PREMISES_ID</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -239,9 +229,7 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="R_APPROVED_PREMISES_TEAM.html" target="_top" title="R_APPROVED_PREMISES_TEAM" alt="" coords="356,188,736,345">
-<area shape="rect" id="node2" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="5,5,312,387">
-<area shape="rect" id="node3" href="TEAM.html" target="_top" title="TEAM" alt="" coords="15,404,303,756">
+<area shape="rect" id="node1" href="R_APPROVED_PREMISES_TEAM.html" target="_top" title="R_APPROVED_PREMISES_TEAM" alt="" coords="5,5,385,163">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/R_APPROVED_PREMISES_TEAM.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

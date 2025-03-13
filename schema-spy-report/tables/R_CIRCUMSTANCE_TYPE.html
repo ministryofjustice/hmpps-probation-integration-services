@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>R_CIRCUMSTANCE_TYPE - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>R_CIRCUMSTANCE_TYPE - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -118,8 +118,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="PERSONAL_CIRCUMSTANCE.CIRCUMSTANCE_TYPE_ID references R_CIRCUMSTANCE_TYPE.CIRCUMSTANCE_TYPE_ID via SYS_C0025057"><a href='PERSONAL_CIRCUMSTANCE.html'>PERSONAL_CIRCUMSTANCE</a><span class='relatedKey'>.CIRCUMSTANCE_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0025057</td>
+                                                <td title="PERSONAL_CIRCUMSTANCE.CIRCUMSTANCE_TYPE_ID references R_CIRCUMSTANCE_TYPE.CIRCUMSTANCE_TYPE_ID via SYS_C0021542"><a href='PERSONAL_CIRCUMSTANCE.html'>PERSONAL_CIRCUMSTANCE</a><span class='relatedKey'>.CIRCUMSTANCE_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021542</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
@@ -133,8 +133,8 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_CIRCUMSTANCE_TYPE_SUBTYPE.CIRCUMSTANCE_TYPE_ID references R_CIRCUMSTANCE_TYPE.CIRCUMSTANCE_TYPE_ID via SYS_C0024342"><a href='R_CIRCUMSTANCE_TYPE_SUBTYPE.html'>R_CIRCUMSTANCE_TYPE_SUBTYPE</a><span class='relatedKey'>.CIRCUMSTANCE_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024342</td>
+                                                <td title="R_CIRCUMSTANCE_TYPE_SUBTYPE.CIRCUMSTANCE_TYPE_ID references R_CIRCUMSTANCE_TYPE.CIRCUMSTANCE_TYPE_ID via SYS_C0021042"><a href='R_CIRCUMSTANCE_TYPE_SUBTYPE.html'>R_CIRCUMSTANCE_TYPE_SUBTYPE</a><span class='relatedKey'>.CIRCUMSTANCE_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021042</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -436,6 +436,10 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>YES_OR_NO_ONLY28</td>
+                                    <td>ACTIVE_DUPLICATES IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE_1534029671</td>
                                     <td>SPG_INTEREST IN (0, 1)</td>
                                 </tr>
@@ -446,10 +450,6 @@
                                 <tr>
                                     <td>YES_OR_NO8</td>
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY28</td>
-                                    <td>ACTIVE_DUPLICATES IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>

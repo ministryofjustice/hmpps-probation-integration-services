@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.PKG_MATERIALIZED_VIEWS</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY pkg_materialized_views&#10;AS&#10;&#10;/*&#10;    If we do not provide a materialized view name to create then&#10;    this procedure will automatically determine if any&#10;    materialized views are missing and create all of them.&#10;&#10;    If we supply a materialied view name then only that single&#10;    materialied view will be created.&#10;&#10;*/&#10;PROCEDURE create_mviews (p_mview_name IN VARCHAR2 DEFAULT NULL)&#10;AS&#10;&#10;  l_mview_name             user_mviews.mview_name%TYPE;&#10;  l_number_of_mviews       INTEGER:&#61;0;&#10;&#10;BEGIN&#10;&#10;  FOR r IN (SELECT a.table_name,&#10;                   b.pct_free&#10;            FROM user_tab_cols a&#10;            INNER JOIN user_tables b&#10;            ON a.table_name &#61; b.table_name&#10;            WHERE a.column_name &#61; &#39;ORGANISATIONS&#39;&#10;            AND (p_mview_name IS NULL&#10;                 OR b.table_name||&#39;_MV&#39; &#61; p_mview_name)&#10;            AND a.data_type &#61; &#39;T_ARR_ORGANISATIONS&#39;&#10;            AND b.table_name NOT LIKE &#39;%$%&#39;&#10;            AND b.table_name NOT LIKE &#39;Z%\_%&#39; ESCAPE &#39;\&#39;&#10;            AND b.table_name NOT LIKE &#39;DOCUMENT_STAGE%&#39;&#10;            AND b.table_name NOT IN (&#39;ASP_DISPOSAL_BACKUP&#39;))&#10;  LOOP&#10;&#10;    l_mview_name :&#61; r.table_name||&#39;_MV&#39;;&#10;&#10;    FOR s IN (SELECT &#39;SELECT &#39;||LISTAGG(column_name,&#39;,&#39;) WITHIN GROUP (ORDER BY internal_column_id)||&#10;                     &#39; FROM &#39;||a.table_name AS &quot;SELECT_COLS&quot;&#10;                FROM user_tab_cols a&#10;                WHERE table_name &#61; r.table_name&#10;                AND column_name &lt;&gt; &#39;ORGANISATIONS&#39;&#10;                AND hidden_column !&#61; &#39;YES&#39;&#10;                AND NOT EXISTS (SELECT mview_name&#10;                                FROM user_mviews b&#10;                                WHERE b.mview_name &#61; l_mview_name)&#10;                GROUP BY table_name&#10;                ORDER BY a.table_name)&#10;    LOOP&#10;&#10;      IF s.select_cols IS NOT NULL&#10;      THEN&#10;        l_number_of_mviews :&#61; l_number_of_mviews + 1;&#10;&#10;        EXECUTE IMMEDIATE &#39;CREATE MATERIALIZED VIEW &#39;||l_mview_name||&#10;                          &#39; PCTFREE &#39;||r.pct_free||&#39; TABLESPACE &#39;||gc_mview_tablespace||&#10;                          &#39; BUILD IMMEDIATE&#39;||&#10;                          &#39; REFRESH FORCE&#39;||&#10;                          &#39; ON DEMAND AS &#39;||&#10;                          s.select_cols;&#10;        DBMS_OUTPUT.put_line(&#39;Created materialized view: &#39;||l_mview_name);&#10;&#10;        EXECUTE IMMEDIATE &#39;GRANT SELECT ON &#39;||l_mview_name||&#39; TO delius_read_only_role&#39;;&#10;        DBMS_OUTPUT.put_line(&#39;Privileges granted on materialized view: &#39;||l_mview_name);&#10;&#10;        DBMS_STATS.gather_table_stats( ownname &#61;&gt; user, tabname &#61;&gt; l_mview_name);&#10;        DBMS_OUTPUT.put_line(&#39;Statistics gathered on materialized view: &#39;||l_mview_name);&#10;      END IF;&#10;&#10;    END LOOP;&#10;&#10;  END LOOP;&#10;&#10;  DBMS_OUTPUT.put_line(&#39;Number of materialized views created: &#39;||l_number_of_mviews);&#10;END create_mviews;&#10;&#10;PROCEDURE create_mview_logs&#10;AS&#10;&#10;  l_number_of_mview_logs       INTEGER:&#61;0;&#10;&#10;BEGIN&#10;&#10;  FOR l IN (SELECT table_name&#10;              FROM user_tab_cols b&#10;              WHERE b.column_name &#61; &#39;ORGANISATIONS&#39;&#10;              AND b.data_type &#61; &#39;T_ARR_ORGANISATIONS&#39;&#10;              AND b.table_name NOT LIKE &#39;%$%&#39;&#10;              AND b.table_name NOT LIKE &#39;Z%\_%&#39; ESCAPE &#39;\&#39;&#10;              AND b.table_name NOT LIKE &#39;DOCUMENT_STAGE%&#39;&#10;              AND b.table_name NOT IN (&#39;ASP_DISPOSAL_BACKUP&#39;)&#10;              AND NOT EXISTS (SELECT NULL&#10;                              FROM user_mview_logs a&#10;                              WHERE a.master &#61; b.table_name))&#10;&#10;  LOOP&#10;&#10;    l_number_of_mview_logs :&#61; l_number_of_mview_logs + 1;&#10;    EXECUTE IMMEDIATE &#39;CREATE MATERIALIZED VIEW LOG ON &#39;||l.table_name||&#10;                      &#39; TABLESPACE &#39;||gc_mview_tablespace||&#10;                      &#39; WITH PRIMARY KEY&#39;;&#10;&#10;&#10;  END LOOP;&#10;  DBMS_OUTPUT.put_line(&#39;Number of materialized view logs created: &#39;||l_number_of_mview_logs);&#10;&#10;END create_mview_logs;&#10;&#10;PROCEDURE add_mview_supplemental_logging&#10;AS&#10;  l_number_of_mviews       INTEGER:&#61;0;&#10;  l_number_of_tables       INTEGER:&#61;0;&#10;BEGIN&#10;&#10;  FOR d IN (SELECT a.table_name,&#10;            CASE&#10;            WHEN b.log_group_type &#61; &#39;PRIMARY KEY LOGGING&#39; THEN &#39;PRIMARY KEY&#39;&#10;            WHEN b.log_group_type &#61; &#39;ALL COLUMN LOGGING&#39; THEN &#39;ALL&#39;&#10;            END logging_columns&#10;            FROM user_tab_cols a&#10;            INNER JOIN user_log_groups b&#10;            ON a.table_name &#61; b.table_name&#10;            WHERE a.column_name &#61; &#39;ORGANISATIONS&#39;&#10;            AND a.data_type &#61; &#39;T_ARR_ORGANISATIONS&#39;&#10;            AND a.table_name NOT LIKE &#39;%$%&#39;&#10;            AND a.table_name NOT LIKE &#39;Z%\_%&#39; ESCAPE &#39;\&#39;&#10;            AND a.table_name NOT LIKE &#39;DOCUMENT_STAGE%&#39;&#10;            AND a.table_name NOT IN (&#39;ASP_DISPOSAL_BACKUP&#39;)&#10;            ORDER BY a.table_name,b.log_group_type)&#10;  LOOP&#10;    l_number_of_tables :&#61; l_number_of_tables + 1;&#10;    EXECUTE IMMEDIATE &#39;ALTER TABLE &#39;||d.table_name||&#39; DROP SUPPLEMENTAL LOG DATA (&#39;||d.logging_columns||&#39;) COLUMNS&#39;;&#10;  END LOOP;&#10;  DBMS_OUTPUT.put_line(&#39;Number of table supplemental logging dropped: &#39;||l_number_of_tables);&#10;&#10;  FOR t IN ( SELECT mview_name&#10;             FROM user_mviews a&#10;             WHERE NOT EXISTS (SELECT NULL&#10;                               FROM user_log_groups b&#10;                               WHERE b.table_name &#61; a.mview_name))&#10;  LOOP&#10;    l_number_of_mviews :&#61; l_number_of_mviews + 1;&#10;    /*&#10;       Analytics Platform have requested that supplemental logging is added for ALL columns&#10;       as this allows them easy access to columns even where the data has not changed.&#10;    */&#10;    EXECUTE IMMEDIATE &#39;ALTER TABLE &#39;||t.mview_name||&#39; ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS&#39;;&#10;  END LOOP;&#10;  DBMS_OUTPUT.put_line(&#39;Number of mview supplemental groups added: &#39;||l_number_of_mviews);&#10;&#10;END add_mview_supplemental_logging;&#10;&#10;PROCEDURE create_refresh_group&#10;AS&#10;&#10;  l_mview_list           VARCHAR2(4000);&#10;  l_refresh_group_exists INTEGER;&#10;&#10;BEGIN&#10;&#10;  SELECT LISTAGG(mview_name,&#39;,&#39;) WITHIN GROUP (ORDER BY mview_name)&#10;  INTO l_mview_list&#10;  FROM user_mviews a&#10;  WHERE EXISTS (SELECT NULL&#10;                FROM user_tab_columns b&#10;                WHERE b.column_name &#61; &#39;ORGANISATIONS&#39;&#10;                AND b.data_type &#61; &#39;T_ARR_ORGANISATIONS&#39;&#10;                AND b.table_name||&#39;_MV&#39; &#61; a.mview_name)&#10;  AND NOT EXISTS (SELECT NULL&#10;                  FROM user_refresh_children c&#10;                  WHERE a.mview_name &#61; c.name&#10;                  AND c.rname &#61; &#39;DAP_REFRESH&#39;);&#10;&#10;  SELECT COUNT(*)&#10;  INTO l_refresh_group_exists&#10;  FROM user_refresh&#10;  WHERE rname &#61; &#39;DAP_REFRESH&#39;;&#10;&#10;  IF l_refresh_group_exists &#61; 0&#10;  THEN&#10;&#10;    DBMS_REFRESH.make(&#10;      name                 &#61;&gt; &#39;DAP_REFRESH&#39;,&#10;      list                 &#61;&gt; &#39;&#39;,&#10;      next_date            &#61;&gt; SYSDATE,&#10;      interval             &#61;&gt; &#39;SYSDATE + 5/(60*24)&#39;,&#10;      implicit_destroy     &#61;&gt; FALSE,&#10;      lax                  &#61;&gt; FALSE,&#10;      job                  &#61;&gt; 0,&#10;      rollback_seg         &#61;&gt; NULL,&#10;      push_deferred_rpc    &#61;&gt; TRUE,&#10;      refresh_after_errors &#61;&gt; TRUE,&#10;      purge_option         &#61;&gt; NULL,&#10;      parallelism          &#61;&gt; NULL,&#10;      heap_size            &#61;&gt; NULL);&#10;&#10;    COMMIT;&#10;    DBMS_OUTPUT.put_line(&#39;Refresh group created.&#39;);&#10;&#10;  ELSE&#10;    DBMS_OUTPUT.put_line(&#39;Refresh group already created.&#39;);&#10;  END IF;&#10;&#10;  IF l_mview_list IS NOT NULL&#10;  THEN&#10;&#10;    DBMS_REFRESH.add(&#10;      name &#61;&gt; &#39;DAP_REFRESH&#39;,&#10;      list &#61;&gt; l_mview_list,&#10;      lax  &#61;&gt; TRUE);&#10;    COMMIT;&#10;&#10;    DBMS_OUTPUT.put_line(&#39;Materialized views added to refresh group.&#39;);&#10;&#10;  ELSE&#10;   DBMS_OUTPUT.put_line(&#39;No materialized views required to add to refresh group.&#39;);&#10;  END IF;&#10;&#10;&#10;END create_refresh_group;&#10;&#10;&#10;PROCEDURE create_materialized_views&#10;AS&#10;&#10;BEGIN&#10;&#10;  create_mview_logs;&#10;  create_mviews;&#10;  add_mview_supplemental_logging;&#10;  create_refresh_group;&#10;&#10;END create_materialized_views;&#10;&#10;/*&#10;&#10;  This procedure is intended to recreate an existing materialized&#10;  view where the underlying table columns have changed.&#10;&#10;  Supply the name of the materialized view to be recreated.&#10;&#10;*/&#10;PROCEDURE recreate_materialized_view (p_mview_name IN VARCHAR2)&#10;AS&#10;   TYPE t_grantees  IS TABLE OF user_tab_privs.grantee%TYPE;&#10;   l_grantees       t_grantees;&#10;   l_mview_name     user_mviews.mview_name%TYPE;&#10;BEGIN&#10;&#10;  BEGIN&#10;     SELECT mview_name&#10;     INTO   l_mview_name&#10;     FROM   user_mviews&#10;     WHERE  mview_name &#61; p_mview_name;&#10;  EXCEPTION&#10;    WHEN no_data_found&#10;    THEN&#10;       RAISE_APPLICATION_ERROR(-20330,&#39;Materialized view &#39;||p_mview_name||&#10;         &#39; cannot be recreated as it does not exist.&#39;);&#10;  END;&#10;&#10;  -- Only record SELECT privileges as those are the only type&#10;  -- we&#39;d expect to find for a materialized view&#10;  SELECT grantee&#10;  BULK COLLECT INTO l_grantees&#10;  FROM   user_tab_privs&#10;  WHERE  table_name &#61; l_mview_name&#10;  AND    privilege  &#61; &#39;SELECT&#39;;&#10;&#10;  -- Drop existing materialized view&#10;  EXECUTE IMMEDIATE &#39;DROP MATERIALIZED VIEW &#39;||l_mview_name;&#10;&#10;  -- MV Logs and Supplementary Logging will have already been enabled&#10;  -- if the MV exists so we simply need to recreate the MV itself&#10;  create_mviews(p_mview_name&#61;&gt;l_mview_name);&#10;&#10;  -- Add back into the refresh group&#10;  DBMS_REFRESH.add(name &#61;&gt; &#39;DAP_REFRESH&#39;,list &#61;&gt; l_mview_name);&#10;&#10;  -- Reinstate the grants on the materialized view&#10;  FOR i IN 1..l_grantees.COUNT LOOP&#10;     EXECUTE IMMEDIATE &#39;GRANT SELECT ON &#39;||l_mview_name||&#39; TO &#39;||l_grantees(i);&#10;  END LOOP;&#10;&#10;END recreate_materialized_view;&#10;&#10;&#10;END pkg_materialized_views;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

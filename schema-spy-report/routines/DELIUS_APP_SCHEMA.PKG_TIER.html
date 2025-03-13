@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.PKG_TIER</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY pkg_tier AS&#10;FUNCTION calculate_tier(p_offender_id IN INTEGER) RETURN INTEGER&#10;IS&#10;    l_message                      VARCHAR2(1024);&#10;    l_iom_nominal                  CHAR(1);&#10;    l_vulnerability_issue          CHAR(1);&#10;    l_safeguarding_issue           CHAR(1);&#10;    l_oasys_ogrs_score_2           INTEGER;&#10;    l_oasys_assessment_date        DATE;&#10;    l_oasys_last_updated_datetime  DATE;&#10;    l_ogrs_ogrs3_score_2           INTEGER;&#10;    l_ogrs_assessment_date         DATE;&#10;    l_ogrs_last_updated_datetime   DATE;&#10;    l_rsr_score                    NUMBER(5,2);&#10;    l_mappa_category               VARCHAR2(100);&#10;    l_mappa_level                  VARCHAR2(100);&#10;    l_rvrh_id                      INTEGER;&#10;    l_rhrh_id                      INTEGER;&#10;    l_rmrh_id                      INTEGER;&#10;    l_rlrh_id                      INTEGER;&#10;    l_current_tier_id              INTEGER;&#10;    l_tier_letter                  CHAR(1);&#10;    l_tier_number                  CHAR(1);    &#10;    l_calculated_tier_code         VARCHAR2(100);&#10;    l_selected_ogrs_score          INTEGER;&#10;    l_calculated_tier_id           INTEGER;&#10;    l_mappa_level_number           CHAR(1);&#10;    l_mappa_category_number        CHAR(1);&#10;    type rc                        is ref cursor;&#10;    l_cursor                       rc;&#10;    l_event_count                  INTEGER;&#10;    l_event_id                     INTEGER;&#10;    l_rqmnt_id                     INTEGER;&#10;    l_rqmnt_code                   VARCHAR2(20);&#10;    l_restrictive                  CHAR(1);&#10;    l_upw_flag                     INTEGER;&#10;    l_restrictive_flag             INTEGER;&#10;    l_not_upw_not_restrictive_flag INTEGER;&#10;&#10;&#10;BEGIN&#10;&#10;--dbms_output.put_line(&#39;----------------------------------------------------------&#39;);&#10;--dbms_output.put_line(&#39;Start calculate_tier&#39;);&#10;&#10;SELECT DISTINCT&#10;    /*01*/ o.IOM_NOMINAL,&#10;    /*02*/ o.VULNERABILITY_ISSUE,&#10;    /*03*/ o.SAFEGUARDING_ISSUE,&#10;    /*04*/ oaa.OGRS_SCORE_2,&#10;    /*05*/ oaa.ASSESSMENT_DATE,&#10;    /*06*/ oaa.LAST_UPDATED_DATETIME,&#10;    /*07*/ oga.OGRS3_SCORE_2,&#10;    /*08*/ oga.ASSESSMENT_DATE,&#10;    /*09*/ oga.LAST_UPDATED_DATETIME,&#10;    /*10*/ o.DYNAMIC_RSR_SCORE,&#10;    /*11*/ mapp.cat,&#10;    /*12*/ mapp.lv,&#10;    /*13*/ rvrh.REGISTRATION_ID,&#10;    /*14*/ rhrh.REGISTRATION_ID,&#10;    /*15*/ rmrh.REGISTRATION_ID,&#10;    /*16*/ rlrh.REGISTRATION_ID,&#10;    /*17*/ mgt.TIER_ID&#10;INTO&#10;    l_iom_nominal,&#10;    l_vulnerability_issue,&#10;    l_safeguarding_issue,&#10;    l_oasys_ogrs_score_2,&#10;    l_oasys_assessment_date,&#10;    l_oasys_last_updated_datetime,&#10;    l_ogrs_ogrs3_score_2,&#10;    l_ogrs_assessment_date,&#10;    l_ogrs_last_updated_datetime,&#10;    l_rsr_score,&#10;    l_mappa_category,&#10;    l_mappa_level,&#10;    l_rvrh_id,&#10;    l_rhrh_id,&#10;    l_rmrh_id,&#10;    l_rlrh_id,&#10;    l_current_tier_id&#10;FROM&#10;   OFFENDER o &#10;   LEFT OUTER JOIN &#10;    (select oaa.* from OASYS_ASSESSMENT oaa&#10;      where oaa.OFFENDER_ID &#61; p_offender_id and rownum &#61;1&#10;      order by oaa.ASSESSMENT_DATE desc, oaa.LAST_UPDATED_DATETIME desc) oaa ON oaa.OFFENDER_ID &#61; o.OFFENDER_ID&#10;    LEFT OUTER JOIN&#10;    (select oga.*, e.OFFENDER_ID from OGRS_ASSESSMENT oga, EVENT e&#10;      where oga.EVENT_ID &#61; e.EVENT_ID AND e.OFFENDER_ID &#61;p_offender_id and e.soft_deleted &#61; 0 and rownum &#61;1&#10;      order by oga.ASSESSMENT_DATE desc, oga.LAST_UPDATED_DATETIME desc) oga ON oga.OFFENDER_ID &#61; o.OFFENDER_ID&#10;    LEFT OUTER JOIN&#10;    (select rcat.CODE_VALUE as cat, rlevel.CODE_VALUE as lv, r.OFFENDER_ID from REGISTRATION r&#10;     LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST rcat ON rcat.STANDARD_REFERENCE_LIST_ID &#61; r.REGISTER_CATEGORY_ID&#10;     LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST rlevel ON rlevel.STANDARD_REFERENCE_LIST_ID &#61; r.REGISTER_LEVEL_ID,&#10;     R_REGISTER_TYPE rt &#10;     WHERE r.OFFENDER_ID &#61;p_offender_id AND r.REGISTER_TYPE_ID &#61; rt.REGISTER_TYPE_ID&#10;     and rownum &#61;1&#10;     AND r.DEREGISTERED &#61;0 AND rt.CODE&#61;&#39;MAPP&#39;) mapp ON mapp.OFFENDER_ID &#61; o.OFFENDER_ID&#10;    LEFT OUTER JOIN &#10;    (select r.REGISTRATION_ID, r.OFFENDER_ID from REGISTRATION r, R_REGISTER_TYPE rt &#10;     WHERE r.OFFENDER_ID &#61;p_offender_id AND r.REGISTER_TYPE_ID &#61; rt.REGISTER_TYPE_ID&#10;     and rownum &#61;1&#10;     AND r.DEREGISTERED &#61;0 AND rt.CODE&#61;&#39;RVHR&#39;) rvrh ON rvrh.OFFENDER_ID &#61; o.OFFENDER_ID&#10;     LEFT OUTER JOIN &#10;    (select r.REGISTRATION_ID, r.OFFENDER_ID from REGISTRATION r, R_REGISTER_TYPE rt &#10;     WHERE r.OFFENDER_ID &#61;p_offender_id AND r.REGISTER_TYPE_ID &#61; rt.REGISTER_TYPE_ID&#10;     and rownum &#61;1&#10;     AND r.DEREGISTERED &#61;0 AND rt.CODE&#61;&#39;RHRH&#39;) rhrh ON rhrh.OFFENDER_ID &#61; o.OFFENDER_ID&#10;     LEFT OUTER JOIN &#10;    (select r.REGISTRATION_ID, r.OFFENDER_ID from REGISTRATION r, R_REGISTER_TYPE rt &#10;     WHERE r.OFFENDER_ID &#61;p_offender_id AND r.REGISTER_TYPE_ID &#61; rt.REGISTER_TYPE_ID&#10;     and rownum &#61;1&#10;     AND r.DEREGISTERED &#61;0 AND rt.CODE&#61;&#39;RMRH&#39;) rmrh ON rmrh.OFFENDER_ID &#61; o.OFFENDER_ID&#10;     LEFT OUTER JOIN &#10;    (select r.REGISTRATION_ID, r.OFFENDER_ID from REGISTRATION r, R_REGISTER_TYPE rt &#10;     WHERE r.OFFENDER_ID &#61;p_offender_id AND r.REGISTER_TYPE_ID &#61; rt.REGISTER_TYPE_ID&#10;     and rownum &#61;1&#10;     AND r.DEREGISTERED &#61;0 AND rt.CODE&#61;&#39;RLRH&#39;) rlrh ON rlrh.OFFENDER_ID &#61; o.OFFENDER_ID&#10;    LEFT OUTER JOIN &#10;    (select mgt.* from MANAGEMENT_TIER mgt &#10;    where mgt.OFFENDER_ID &#61;p_offender_id AND mgt.soft_deleted &#61;0&#10;    and rownum &#61;1&#10;    order by mgt.DATE_CHANGED desc) mgt ON mgt.OFFENDER_ID &#61; o.OFFENDER_ID&#10;&#10;   WHERE&#10;   o.OFFENDER_ID &#61; p_offender_id;&#10;&#10;--dbms_output.put_line(&#39;Mappa Level &#61; &#39;||l_mappa_level);&#10;&#10;   IF    (l_oasys_assessment_date &#61; l_ogrs_assessment_date)&#10;   THEN&#10;         IF (l_oasys_last_updated_datetime &gt;&#61; l_ogrs_last_updated_datetime)&#10;         THEN&#10;             l_selected_ogrs_score :&#61; l_oasys_ogrs_score_2;&#10;         ELSE&#10;             l_selected_ogrs_score :&#61; l_ogrs_ogrs3_score_2;&#10;         END IF;&#10;   ELSIF (l_oasys_assessment_date &gt;&#61; l_ogrs_assessment_date)&#10;   THEN&#10;          l_selected_ogrs_score :&#61; l_oasys_ogrs_score_2;   &#10;   ELSE&#10;          l_selected_ogrs_score :&#61; l_ogrs_ogrs3_score_2;&#10;   END IF;&#10;&#10;   SELECT SUBSTR(l_mappa_level,2,1)    INTO l_mappa_level_number FROM DUAL;&#10;   SELECT SUBSTR(l_mappa_category,2,1) INTO l_mappa_category_number FROM DUAL;&#10;&#10;--&#10;-- Determine letter element&#10;--&#10;   IF /* MAIN CHECK FOR LETTER */&#10;         (l_mappa_level_number &#61; &#39;2&#39; OR l_mappa_level_number &#61; &#39;3&#39;)&#10;   THEN&#10;           l_tier_letter       :&#61; &#39;A&#39;;&#10;   ELSIF l_rsr_score &gt;&#61; 6.9 OR &#10;          (l_rsr_score IS NULL AND l_selected_ogrs_score &gt;&#61; 90) OR &#10;          (l_rvrh_id IS NOT NULL OR l_rhrh_id IS NOT NULL) &#10;   THEN&#10;           l_tier_letter       :&#61; &#39;B&#39;;&#10;   ELSIF (l_rsr_score &gt;&#61;3 AND l_rsr_score &lt;&#61; 6.89) OR&#10;          (l_rsr_score IS NULL AND l_selected_ogrs_score &gt;&#61;75 AND l_selected_ogrs_score &lt;&#61;89) OR&#10;          (l_rmrh_id IS NOT NULL)&#10;   THEN&#10;           l_tier_letter       :&#61; &#39;C&#39;;&#10;   ELSE&#10;          /* COUNT SP EVENTS */&#10;          SELECT NVL(COUNT(*),0) INTO l_event_count FROM event e, disposal d, r_disposal_type dt &#10;          WHERE e.offender_id &#61; p_offender_id&#10;          AND   e.soft_deleted &#61; 0&#10;          AND   d.event_id &#61; e.event_id&#10;          AND   d.termination_date IS NULL&#10;          AND   d.soft_deleted &#61; 0&#10;          AND   dt.disposal_type_id &#61; d.disposal_type_id&#10;          AND   dt.sentence_type &#61; &#39;SP&#39;&#10;          AND NOT EXISTS (SELECT 1 FROM event e2, disposal d2, r_disposal_type dt2&#10;                          WHERE e2.offender_id &#61; p_offender_id&#10;                          AND   e2.soft_deleted &#61; 0&#10;                          AND   d2.event_id &#61; e2.event_id&#10;                          AND   d2.termination_date IS NULL&#10;                          AND   d2.soft_deleted &#61; 0&#10;                          AND   dt2.disposal_type_id &#61; d2.disposal_type_id&#10;                          AND   dt2.sentence_type !&#61; &#39;SP&#39;); &#10;&#10;          /*------------------------------------------------------------------------------*/&#10;          IF l_event_count &#61; 1&#10;          THEN&#10;             SELECT e.event_id INTO l_event_id FROM event e, disposal d, r_disposal_type dt &#10;             WHERE e.offender_id &#61; p_offender_id&#10;             AND   e.soft_deleted &#61; 0&#10;             AND   d.event_id &#61; e.event_id&#10;             AND   d.termination_date IS NULL&#10;             AND   d.soft_deleted &#61; 0&#10;             AND   dt.disposal_type_id &#61; d.disposal_type_id&#10;             AND   dt.sentence_type &#61; &#39;SP&#39;&#10;             AND NOT EXISTS (SELECT 1 FROM event e2, disposal d2, r_disposal_type dt2&#10;                             WHERE e2.offender_id &#61; p_offender_id&#10;                             AND   e2.soft_deleted &#61; 0&#10;                             AND   d2.event_id &#61; e2.event_id&#10;                             AND   d2.termination_date IS NULL&#10;                             AND   d2.soft_deleted &#61; 0&#10;                             AND   dt2.disposal_type_id &#61; d2.disposal_type_id&#10;                             AND   dt2.sentence_type !&#61; &#39;SP&#39;); &#10;&#10;             l_upw_flag                     :&#61; 0;&#10;             l_restrictive_flag             :&#61; 0;&#10;             l_not_upw_not_restrictive_flag :&#61; 0;&#10;&#10;&#10;             /* CURSOR TO PROCESS ALL REQUIRMENTS FOR EVENT */&#10;             OPEN l_cursor FOR &#10;               SELECT rqmnt_id, rm.code, rm.restrictive&#10;               FROM rqmnt r, disposal d, r_rqmnt_type_main_category rm&#10;               WHERE d.event_id &#61; l_event_id&#10;               AND   r.disposal_id &#61; d.disposal_id&#10;               AND   r.termination_date IS NULL&#10;               AND   r.soft_deleted &#61; 0&#10;               AND   rm.rqmnt_type_main_category_id &#61; r.rqmnt_type_main_category_id;&#10;             LOOP&#10;                FETCH l_cursor INTO l_rqmnt_id, l_rqmnt_code, l_restrictive;&#10;             EXIT&#10;             WHEN l_cursor%notfound;&#10;             BEGIN&#10;-- dbms_output.put_line(&#39;** Enter rqmnt loop - code &#61; &#39;||l_rqmnt_code);&#10;&#10;                IF SUBSTR(l_rqmnt_code, 1,1) &#61; &#39;W&#39; THEN l_upw_flag :&#61; 1; END IF;&#10;&#10;                IF l_restrictive &#61; &#39;Y&#39; THEN l_restrictive_flag :&#61; 1; END IF;&#10;&#10;                IF SUBSTR(l_rqmnt_code, 1,1) !&#61; &#39;W&#39; AND l_restrictive !&#61; &#39;Y&#39; &#10;                THEN l_not_upw_not_restrictive_flag :&#61; 1; END IF;&#10;&#10;             END;&#10;             END LOOP;&#10;&#10;             IF (l_not_upw_not_restrictive_flag &#61; 1)                   THEN l_tier_letter       :&#61; &#39;D&#39;;&#10;             ELSIF (l_upw_flag &#61; 1 AND l_restrictive_flag &#61; 1)         THEN l_tier_letter       :&#61; &#39;E&#39;;&#10;             ELSIF (l_restrictive_flag &#61; 1)                            THEN l_tier_letter       :&#61; &#39;G&#39;;&#10;             ELSIF (l_upw_flag &#61; 1)                                    THEN l_tier_letter       :&#61; &#39;F&#39;;&#10;             ELSE                                                           l_tier_letter       :&#61; &#39;D&#39;;&#10;             END IF;&#10;&#10;          ELSE /* event_count !&#61; 1 */&#10;               l_tier_letter       :&#61; &#39;D&#39;;&#10;          END IF;&#10;&#10;   END IF; /* MAIN CHECK FOR LETTER */&#10;&#10;--&#10;-- Determine number element&#10;--&#10;&#10;   IF (l_tier_letter &#61; &#39;A&#39; OR l_tier_letter &#61; &#39;E&#39; OR l_tier_letter &#61; &#39;F&#39; OR l_tier_letter &#61; &#39;G&#39;)&#10;   THEN l_tier_number :&#61; NULL;&#10;   ELSIF (l_tier_letter &#61; &#39;B&#39; OR l_tier_letter &#61; &#39;C&#39; OR l_tier_letter &#61; &#39;D&#39;)&#10;   THEN&#10;      IF   (l_iom_nominal         &#61; &#39;Y&#39; OR l_safeguarding_issue        &#61; &#39;Y&#39; OR &#10;            l_vulnerability_issue &#61; &#39;Y&#39; OR l_mappa_category_number     &#61; &#39;1&#39;)&#10;      THEN &#10;           l_tier_number :&#61; 1;&#10;      ELSE &#10;           l_tier_number :&#61; 2;&#10;      END IF;&#10;   ELSE&#10;      l_tier_number :&#61; NULL;&#10;   END IF;&#10;&#10;   l_calculated_tier_code :&#61; l_tier_letter||l_tier_number;&#10;--dbms_output.put_line(&#39;Calculated Tier for offender &#39;||p_offender_id||&#39; is &#61; &#39;||l_calculated_tier_code);&#10;&#10;   BEGIN&#10;   SELECT standard_reference_list_id INTO l_calculated_tier_id&#10;   FROM r_standard_reference_list&#10;   WHERE reference_data_master_id &#61; (SELECT reference_data_master_id FROM r_reference_data_master&#10;                                  WHERE code_set_name &#61; &#39;TIER&#39;)&#10;   AND code_value &#61; l_calculated_tier_code;&#10;   EXCEPTION WHEN NO_DATA_FOUND&#10;      THEN&#10;        l_message :&#61; &#39;**Error: &#39;||SQLERRM;&#10;        dbms_output.put_line(l_message);&#10;        dbms_output.put_line(&#39;** Error: Unable to retrieve tier_id for this code&#39;);&#10;        dbms_output.put_line(&#39;----------------------------------------------------------&#39;);&#10;        return -1;&#10;   END;&#10;&#10;--dbms_output.put_line(&#39;Calculated Tier for offender &#39;||p_offender_id||&#39; is &#61; &#39;||l_calculated_tier_id);&#10;&#10;--dbms_output.put_line(&#39;End calculate_tier - successful&#39;);&#10;--dbms_output.put_line(&#39;----------------------------------------------------------&#39;);&#10;&#10;RETURN l_calculated_tier_id;   &#10;&#10;      EXCEPTION&#10;      WHEN OTHERS&#10;      THEN&#10;        l_message :&#61; &#39;Error: &#39;||SQLERRM;&#10;        dbms_output.put_line(l_message);&#10;        dbms_output.put_line(&#39;----------------------------------------------------------(300)&#39;);&#10;        return -1;&#10;&#10;END calculate_tier;&#10;END pkg_tier;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

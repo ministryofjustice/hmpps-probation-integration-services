@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>REFERRAL - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>REFERRAL - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -118,8 +118,13 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="ASSESSMENT.REFERRAL_ID references REFERRAL.REFERRAL_ID via SYS_C0024955"><a href='ASSESSMENT.html'>ASSESSMENT</a><span class='relatedKey'>.REFERRAL_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024955</td>
+                                                <td title="ASSESSMENT.REFERRAL_ID references REFERRAL.REFERRAL_ID via SYS_C0021670"><a href='ASSESSMENT.html'>ASSESSMENT</a><span class='relatedKey'>.REFERRAL_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021670</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="CASE_ALLOCATION_LINK.REFERRAL_ID references REFERRAL.REFERRAL_ID via R_1121"><a href='CASE_ALLOCATION_LINK.html'>CASE_ALLOCATION_LINK</a><span class='relatedKey'>.REFERRAL_ID</span></td>
+                                                <td class="constraint detail">R_1121</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -212,8 +217,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.EVENT_ID references EVENT.EVENT_ID via SYS_C0024580"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024580</td>
+                                                <td title="REFERRAL.EVENT_ID references EVENT.EVENT_ID via SYS_C0021466"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021466</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -234,8 +239,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.REF_TO_TEAM_ID references TEAM.TEAM_ID via SYS_C0024574"><a href='TEAM.html'>TEAM</a><span class='relatedKey'>.TEAM_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024574</td>
+                                                <td title="REFERRAL.REF_TO_TEAM_ID references TEAM.TEAM_ID via SYS_C0021470"><a href='TEAM.html'>TEAM</a><span class='relatedKey'>.TEAM_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021470</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -256,8 +261,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.REF_TO_STAFF_ID references STAFF.STAFF_ID via SYS_C0024584"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024584</td>
+                                                <td title="REFERRAL.REF_TO_STAFF_ID references STAFF.STAFF_ID via SYS_C0021460"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021460</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -278,8 +283,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0024585"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024585</td>
+                                                <td title="REFERRAL.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0021471"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021471</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -300,8 +305,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.REF_TO_PROVIDER_EMPLOYEE_ID references PROVIDER_EMPLOYEE.PROVIDER_EMPLOYEE_ID via SYS_C0024576"><a href='PROVIDER_EMPLOYEE.html'>PROVIDER_EMPLOYEE</a><span class='relatedKey'>.PROVIDER_EMPLOYEE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024576</td>
+                                                <td title="REFERRAL.REF_TO_PROVIDER_EMPLOYEE_ID references PROVIDER_EMPLOYEE.PROVIDER_EMPLOYEE_ID via SYS_C0021461"><a href='PROVIDER_EMPLOYEE.html'>PROVIDER_EMPLOYEE</a><span class='relatedKey'>.PROVIDER_EMPLOYEE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021461</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -356,8 +361,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.TREATMENT_AIM_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0024577"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024577</td>
+                                                <td title="REFERRAL.TREATMENT_AIM_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021462"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021462</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -378,8 +383,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.REF_TO_PROVIDER_TEAM_ID references PROVIDER_TEAM.PROVIDER_TEAM_ID via SYS_C0024575"><a href='PROVIDER_TEAM.html'>PROVIDER_TEAM</a><span class='relatedKey'>.PROVIDER_TEAM_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024575</td>
+                                                <td title="REFERRAL.REF_TO_PROVIDER_TEAM_ID references PROVIDER_TEAM.PROVIDER_TEAM_ID via SYS_C0021463"><a href='PROVIDER_TEAM.html'>PROVIDER_TEAM</a><span class='relatedKey'>.PROVIDER_TEAM_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021463</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -400,8 +405,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.REFERRAL_TYPE_ID references R_REFERRAL_TYPE.REFERRAL_TYPE_ID via SYS_C0024578"><a href='R_REFERRAL_TYPE.html'>R_REFERRAL_TYPE</a><span class='relatedKey'>.REFERRAL_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024578</td>
+                                                <td title="REFERRAL.REFERRAL_TYPE_ID references R_REFERRAL_TYPE.REFERRAL_TYPE_ID via SYS_C0021464"><a href='R_REFERRAL_TYPE.html'>R_REFERRAL_TYPE</a><span class='relatedKey'>.REFERRAL_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021464</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -422,8 +427,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.REFERRAL_SOURCE_ID references R_REFERRAL_SOURCE.REFERRAL_SOURCE_ID via SYS_C0024579"><a href='R_REFERRAL_SOURCE.html'>R_REFERRAL_SOURCE</a><span class='relatedKey'>.REFERRAL_SOURCE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024579</td>
+                                                <td title="REFERRAL.REFERRAL_SOURCE_ID references R_REFERRAL_SOURCE.REFERRAL_SOURCE_ID via SYS_C0021465"><a href='R_REFERRAL_SOURCE.html'>R_REFERRAL_SOURCE</a><span class='relatedKey'>.REFERRAL_SOURCE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021465</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -522,8 +527,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.GENERIC_REFERRAL_OUTCOME_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0024581"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024581</td>
+                                                <td title="REFERRAL.GENERIC_REFERRAL_OUTCOME_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021467"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021467</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -561,8 +566,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REFERRAL.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0024583"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024583</td>
+                                                <td title="REFERRAL.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0021469"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021469</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -812,16 +817,16 @@
                                     <td> (&#10;(REF_TO_PROVIDER_EMPLOYEE_ID IS NOT NULL  AND REF_TO_STAFF_ID IS NULL)&#10;OR&#10;(REF_TO_PROVIDER_EMPLOYEE_ID IS NULL  AND REF_TO_STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>REFERRAL_TEAM_XOR_PROVIDER_TEA</td>
-                                    <td> (&#10;(REF_TO_TEAM_ID IS NOT NULL AND REF_TO_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(REF_TO_TEAM_ID IS NULL AND REF_TO_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE33</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY_1079849424</td>
                                     <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>REFERRAL_TEAM_XOR_PROVIDER_TEA</td>
+                                    <td> (&#10;(REF_TO_TEAM_ID IS NOT NULL AND REF_TO_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(REF_TO_TEAM_ID IS NULL AND REF_TO_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY27</td>
@@ -850,40 +855,42 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="1672,1742,1991,2358">
-<area shape="rect" id="node2" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="755,2214,1072,2449">
-<area shape="rect" id="node3" href="R_CONTACT_OUTCOME_TYPE.html" target="_top" title="R_CONTACT_OUTCOME_TYPE" alt="" coords="744,2502,1083,2708">
-<area shape="rect" id="node4" href="EVENT.html" target="_top" title="EVENT" alt="" coords="769,926,1058,1425">
-<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,925,700,2128">
-<area shape="rect" id="node6" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,633,277,780">
-<area shape="rect" id="node7" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="786,492,1041,873">
-<area shape="rect" id="node8" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="786,1832,1041,2125">
-<area shape="rect" id="node9" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1127,1082,1628,1944">
-<area shape="rect" id="node10" href="STAFF.html" target="_top" title="STAFF" alt="" coords="407,2426,661,2866">
-<area shape="rect" id="node11" href="TEAM.html" target="_top" title="TEAM" alt="" coords="769,86,1057,438">
-<area shape="rect" id="node12" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1585,324,1849">
-<area shape="rect" id="node13" href="R_REFERRAL_SOURCE.html" target="_top" title="R_REFERRAL_SOURCE" alt="" coords="407,2145,661,2409">
-<area shape="rect" id="node14" href="R_REFERRAL_TYPE.html" target="_top" title="R_REFERRAL_TYPE" alt="" coords="786,1478,1041,1742">
+<area shape="rect" id="node1" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="1672,1157,1991,1773">
+<area shape="rect" id="node2" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="755,2185,1072,2420">
+<area shape="rect" id="node3" href="R_CONTACT_OUTCOME_TYPE.html" target="_top" title="R_CONTACT_OUTCOME_TYPE" alt="" coords="744,2437,1083,2642">
+<area shape="rect" id="node4" href="EVENT.html" target="_top" title="EVENT" alt="" coords="769,1561,1058,2060">
+<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,1426,700,2688">
+<area shape="rect" id="node6" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,886,277,1033">
+<area shape="rect" id="node7" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="786,498,1041,880">
+<area shape="rect" id="node8" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="786,933,1041,1226">
+<area shape="rect" id="node9" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1127,601,1628,1462">
+<area shape="rect" id="node10" href="STAFF.html" target="_top" title="STAFF" alt="" coords="407,933,661,1373">
+<area shape="rect" id="node11" href="TEAM.html" target="_top" title="TEAM" alt="" coords="769,57,1057,409">
+<area shape="rect" id="node13" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,2042,324,2306">
+<area shape="rect" id="node14" href="R_REFERRAL_SOURCE.html" target="_top" title="R_REFERRAL_SOURCE" alt="" coords="407,2705,661,2969">
+<area shape="rect" id="node15" href="R_REFERRAL_TYPE.html" target="_top" title="R_REFERRAL_TYPE" alt="" coords="786,1244,1041,1508">
+<area shape="rect" id="node12" href="CASE_ALLOCATION_LINK.html" target="_top" title="CASE_ALLOCATION_LINK" alt="" coords="1695,574,1968,697">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/REFERRAL.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2377,957,2696,1573">
-<area shape="rect" id="node2" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="1080,1133,1398,1368">
-<area shape="rect" id="node3" href="R_CONTACT_OUTCOME_TYPE.html" target="_top" title="R_CONTACT_OUTCOME_TYPE" alt="" coords="1449,1181,1788,1386">
-<area shape="rect" id="node4" href="USER_.html" target="_top" title="USER_" alt="" coords="681,1040,1029,1362">
-<area shape="rect" id="node5" href="EVENT.html" target="_top" title="EVENT" alt="" coords="1474,1512,1763,2010">
-<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1073,1901,1405,3104">
-<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="743,1808,967,1954">
-<area shape="rect" id="node8" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="382,981,637,1362">
-<area shape="rect" id="node9" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1491,834,1746,1128">
-<area shape="rect" id="node10" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1832,174,2333,1036">
-<area shape="rect" id="node11" href="STAFF.html" target="_top" title="STAFF" alt="" coords="382,524,637,964">
-<area shape="rect" id="node12" href="TEAM.html" target="_top" title="TEAM" alt="" coords="1474,465,1762,817">
-<area shape="rect" id="node13" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="20,2376,338,2640">
-<area shape="rect" id="node14" href="R_REFERRAL_SOURCE.html" target="_top" title="R_REFERRAL_SOURCE" alt="" coords="1112,318,1366,582">
-<area shape="rect" id="node15" href="R_REFERRAL_TYPE.html" target="_top" title="R_REFERRAL_TYPE" alt="" coords="1112,600,1366,864">
+<area shape="rect" id="node1" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2384,797,2702,1413">
+<area shape="rect" id="node2" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="1087,2495,1404,2729">
+<area shape="rect" id="node3" href="R_CONTACT_OUTCOME_TYPE.html" target="_top" title="R_CONTACT_OUTCOME_TYPE" alt="" coords="1456,2684,1794,2889">
+<area shape="rect" id="node4" href="USER_.html" target="_top" title="USER_" alt="" coords="688,1981,1036,2304">
+<area shape="rect" id="node5" href="EVENT.html" target="_top" title="EVENT" alt="" coords="1480,1380,1770,1879">
+<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1080,5,1412,1267">
+<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="750,1356,974,1503">
+<area shape="rect" id="node8" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="389,1923,644,2304">
+<area shape="rect" id="node9" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1498,2076,1752,2369">
+<area shape="rect" id="node10" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1838,1633,2340,2495">
+<area shape="rect" id="node11" href="STAFF.html" target="_top" title="STAFF" alt="" coords="389,1465,644,1905">
+<area shape="rect" id="node12" href="TEAM.html" target="_top" title="TEAM" alt="" coords="1481,975,1769,1327">
+<area shape="rect" id="node14" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="26,1023,345,1287">
+<area shape="rect" id="node15" href="R_REFERRAL_SOURCE.html" target="_top" title="R_REFERRAL_SOURCE" alt="" coords="1118,1788,1373,2052">
+<area shape="rect" id="node16" href="R_REFERRAL_TYPE.html" target="_top" title="R_REFERRAL_TYPE" alt="" coords="1118,2141,1373,2405">
+<area shape="rect" id="node13" href="CASE_ALLOCATION_LINK.html" target="_top" title="CASE_ALLOCATION_LINK" alt="" coords="2406,1607,2680,1729">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/REFERRAL.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

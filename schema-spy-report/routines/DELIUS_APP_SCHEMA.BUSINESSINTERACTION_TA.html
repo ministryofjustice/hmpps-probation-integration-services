@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TSTNDA.DELIUS_APP_SCHEMA</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>DELIUS_APP_SCHEMA.BUSINESSINTERACTION_TA</h1><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Parameters</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Mode</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-code-o"></i>
+                            <h3 id="RoutineDefinition" class="box-title">Definition</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">PACKAGE BODY businessinteraction_ta&#10;AS&#10;  PROCEDURE fill_rowid( p_rec IN OUT NOCOPY businessinteraction_rec ) IS&#10;  BEGIN&#10;    IF p_rec.the_rowid IS NULL THEN&#10;      SELECT ROWID INTO p_rec.the_rowid&#10;      FROM business_interaction&#10;      WHERE business_interaction_code &#61; p_rec.business_interaction_code;&#10;    END IF;&#10;  END fill_rowid;&#10;  --&#10;  PROCEDURE fill_rowid( p_tab IN OUT NOCOPY businessinteraction_tab )&#10;  IS&#10;  BEGIN&#10;    FOR v_ct IN 1 .. p_tab.COUNT&#10;    LOOP&#10;      fill_rowid(p_rec &#61;&gt; p_tab(v_ct));&#10;    END LOOP;&#10;  END fill_rowid;&#10;  --&#10;  PROCEDURE ins( p_tab IN OUT NOCOPY businessinteraction_tab ) AS&#10;  BEGIN&#10;    -- add sequence&#10;    FOR v_ct IN 1 .. p_tab.COUNT&#10;    LOOP&#10;      p_tab(v_ct).business_interaction_id :&#61; business_interaction_id_seq.NEXTVAL;&#10;      p_tab(v_ct).row_version :&#61; 0;&#10;    END LOOP;&#10;    -- insert in bulk&#10;    FORALL v_ct IN 1..p_tab.COUNT&#10;      INSERT INTO business_interaction (&#10;            business_interaction_id&#10;          , business_interaction_code&#10;          , description&#10;          , enabled_date&#10;          , audit_interaction_parameter&#10;          , row_version&#10;        ) VALUES (&#10;          p_tab(v_ct).business_interaction_id&#10;        , p_tab(v_ct).business_interaction_code&#10;        , p_tab(v_ct).description&#10;        , p_tab(v_ct).enabled_date&#10;        , p_tab(v_ct).audit_interaction_parameter&#10;        , p_tab(v_ct).row_version&#10;      );&#10;  END ins;&#10;  --&#10;  PROCEDURE upd( p_tab IN OUT NOCOPY businessinteraction_tab ) IS&#10;  BEGIN&#10;    fill_rowid( p_tab &#61;&gt; p_tab);&#10;    -- update in bulk&#10;    FORALL v_ct IN 1..p_tab.COUNT&#10;      UPDATE business_interaction SET&#10;          business_interaction_id      &#61; p_tab(v_ct).business_interaction_id&#10;        , business_interaction_code    &#61; p_tab(v_ct).business_interaction_code&#10;        , description                  &#61; p_tab(v_ct).description&#10;        , enabled_date                 &#61; p_tab(v_ct).enabled_date&#10;        , audit_interaction_parameter  &#61; p_tab(v_ct).audit_interaction_parameter&#10;        , row_version                  &#61; p_tab(v_ct).row_version&#10;      WHERE  ROWID &#61; p_tab(v_ct).the_rowid ;&#10;  END upd;&#10;  --&#10;  PROCEDURE del( p_tab IN OUT NOCOPY businessinteraction_tab ) AS&#10;  BEGIN&#10;    fill_rowid(p_tab &#61;&gt; p_tab);&#10;    -- delete in bulk&#10;    FORALL v_ct IN 1..p_tab.COUNT&#10;      DELETE business_interaction&#10;      WHERE ROWID &#61; p_tab(v_ct).the_rowid;&#10;  END del;&#10;  --&#10;  PROCEDURE slct( p_rec IN OUT NOCOPY businessinteraction_rec ) IS&#10;  BEGIN&#10;    fill_rowid(p_rec);&#10;    SELECT&#10;          business_interaction_id&#10;        , business_interaction_code&#10;        , description&#10;        , enabled_date&#10;        , audit_interaction_parameter&#10;        , row_version&#10;    INTO&#10;          p_rec. business_interaction_id&#10;        , p_rec. business_interaction_code&#10;        , p_rec. description&#10;        , p_rec. enabled_date&#10;        , p_rec. audit_interaction_parameter&#10;        , p_rec. row_version&#10;    FROM business_interaction&#10;    WHERE ROWID &#61; p_rec.the_rowid;&#10;  END slct;&#10;  --&#10;  FUNCTION exist_rec( p_code IN business_interaction.business_interaction_code%TYPE ) RETURN BOOLEAN IS&#10;    v_ret PLS_INTEGER :&#61; 0;&#10;  BEGIN&#10;    SELECT count(1) INTO v_ret&#10;    FROM business_interaction&#10;    WHERE ( UPPER(business_interaction_code   ) LIKE UPPER( p_code ));&#10;    RETURN (v_ret &gt; 0);&#10;  END exist_rec;&#10;  --&#10;  PROCEDURE qry( p_cur IN OUT businessinteraction_cur, p_rec IN businessinteraction_rec ) AS&#10;  BEGIN&#10;    OPEN p_cur FOR&#10;    SELECT ROWID&#10;        , business_interaction_id&#10;        , business_interaction_code&#10;        , description&#10;        , enabled_date&#10;        , audit_interaction_parameter&#10;        , row_version&#10;    FROM business_interaction&#10;    WHERE&#10;            ( p_rec.business_interaction_id IS NULL OR business_interaction_id &#61; ( p_rec.business_interaction_id ))&#10;        AND ( p_rec.business_interaction_code IS NULL OR UPPER(business_interaction_code ) LIKE UPPER( p_rec.business_interaction_code ))&#10;        AND ( p_rec.description IS NULL OR UPPER(description ) LIKE UPPER( p_rec.description ))&#10;        AND ( p_rec.enabled_date IS NULL OR TRUNC(enabled_date ) &#61; TRUNC( p_rec.enabled_date ))&#10;        AND ( p_rec.audit_interaction_parameter IS NULL OR TRUNC(audit_interaction_parameter ) &#61; TRUNC( p_rec.audit_interaction_parameter ))&#10;        AND ( p_rec.row_version IS NULL OR row_version &#61; ( p_rec.row_version ))&#10;    ORDER BY&#10;          business_interaction_id&#10;        , business_interaction_code&#10;        , description&#10;        , enabled_date&#10;        , audit_interaction_parameter&#10;        , row_version                 ;&#10;  END qry;&#10;  --&#10;  PROCEDURE qry (&#10;     p_cur IN OUT businessinteraction_cur&#10;        , p_business_interaction_id     businessinteraction_row.business_interaction_id%TYPE DEFAULT NULL&#10;        , p_business_interaction_code   businessinteraction_row.business_interaction_code%TYPE DEFAULT NULL&#10;        , p_description                 businessinteraction_row.description%TYPE DEFAULT NULL&#10;        , p_enabled_date                businessinteraction_row.enabled_date%TYPE DEFAULT NULL&#10;        , p_audit_interaction_parameter businessinteraction_row.audit_interaction_parameter%TYPE DEFAULT NULL&#10;        , p_row_version                 businessinteraction_row.row_version%TYPE DEFAULT NULL&#10;  ) IS&#10;  BEGIN&#10;    OPEN p_cur FOR&#10;    SELECT ROWID&#10;        , business_interaction_id&#10;        , business_interaction_code&#10;        , description&#10;        , enabled_date&#10;        , audit_interaction_parameter&#10;        , row_version&#10;    FROM business_interaction&#10;    WHERE&#10;            ( p_business_interaction_id IS NULL OR business_interaction_id &#61; ( p_business_interaction_id ))&#10;        AND ( p_business_interaction_code IS NULL OR UPPER(business_interaction_code   ) LIKE UPPER( p_business_interaction_code ))&#10;        AND ( p_description IS NULL OR UPPER(description ) LIKE UPPER( p_description ))&#10;        AND ( p_enabled_date IS NULL OR TRUNC(enabled_date ) &#61; TRUNC( p_enabled_date ))&#10;        AND ( p_audit_interaction_parameter IS NULL OR TRUNC(audit_interaction_parameter ) &#61; TRUNC( p_audit_interaction_parameter ))&#10;        AND ( p_row_version IS NULL OR row_version &#61; ( p_row_version ))&#10;    ORDER BY&#10;          business_interaction_id&#10;        , business_interaction_code&#10;        , description&#10;        , enabled_date&#10;        , audit_interaction_parameter&#10;        , row_version;&#10;  END qry;&#10;  --&#10;END businessinteraction_ta;</textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="routine.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

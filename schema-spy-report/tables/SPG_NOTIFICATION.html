@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>SPG_NOTIFICATION - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>SPG_NOTIFICATION - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -128,8 +128,8 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="SPG_ERROR.SPG_NOTIFICATION_ID&#39;s name implies that it&#39;s a child of SPG_NOTIFICATION.SPG_NOTIFICATION_ID, but it doesn&#39;t reference that column."><a href='SPG_ERROR.html'>SPG_ERROR</a><span class='relatedKey'>.SPG_NOTIFICATION_ID</span></td>
-                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td title="SPG_ERROR.SPG_NOTIFICATION_ID references SPG_NOTIFICATION.SPG_NOTIFICATION_ID via R_1127"><a href='SPG_ERROR.html'>SPG_ERROR</a><span class='relatedKey'>.SPG_NOTIFICATION_ID</span></td>
+                                                <td class="constraint detail">R_1127</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
@@ -140,6 +140,26 @@
                                             <tr>
                                                 <td title="SPG_NOTIFICATION.REGENERATED_NOTIFICATION_ID references SPG_NOTIFICATION.SPG_NOTIFICATION_ID via R_1231"><a href='SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.REGENERATED_NOTIFICATION_ID</span></td>
                                                 <td class="constraint detail">R_1231</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="TMP_SCRIPT_SPA.SPG_NOTIFICATION_ID&#39;s name implies that it&#39;s a child of SPG_NOTIFICATION.SPG_NOTIFICATION_ID, but it doesn&#39;t reference that column."><a href='TMP_SCRIPT_SPA.html'>TMP_SCRIPT_SPA</a><span class='relatedKey'>.SPG_NOTIFICATION_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="TMP_SCRIPT_SPY.SPG_NOTIFICATION_ID&#39;s name implies that it&#39;s a child of SPG_NOTIFICATION.SPG_NOTIFICATION_ID, but it doesn&#39;t reference that column."><a href='TMP_SCRIPT_SPY.html'>TMP_SCRIPT_SPY</a><span class='relatedKey'>.SPG_NOTIFICATION_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="TMP_SCRIPT_SPZ.SPG_NOTIFICATION_ID&#39;s name implies that it&#39;s a child of SPG_NOTIFICATION.SPG_NOTIFICATION_ID, but it doesn&#39;t reference that column."><a href='TMP_SCRIPT_SPZ.html'>TMP_SCRIPT_SPZ</a><span class='relatedKey'>.SPG_NOTIFICATION_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="TMP_SCRIPT_XXX.SPG_NOTIFICATION_ID&#39;s name implies that it&#39;s a child of SPG_NOTIFICATION.SPG_NOTIFICATION_ID, but it doesn&#39;t reference that column."><a href='TMP_SCRIPT_XXX.html'>TMP_SCRIPT_XXX</a><span class='relatedKey'>.SPG_NOTIFICATION_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -234,7 +254,7 @@
                                     <td>38</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
-                                    <td>0 </td>
+                                    <td>0</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -285,7 +305,7 @@
                                     <td>38</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
-                                    <td>0 </td>
+                                    <td>0</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -426,9 +446,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="RECEIVER_CONTROL_REFERENCE">RECEIVER_CONTROL_REFERENCE</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
+                                    <td><span id="SPG_VERSION">SPG_VERSION</span></td>
+                                    <td>RAW</td>
+                                    <td>32</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -443,9 +463,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="SPG_VERSION">SPG_VERSION</span></td>
-                                    <td>RAW</td>
-                                    <td>32</td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="RECEIVER_CONTROL_REFERENCE">RECEIVER_CONTROL_REFERENCE</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -465,7 +485,7 @@
                                     <td>1</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
-                                    <td>&#39;O&#39; </td>
+                                    <td>&#39;O&#39;</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -543,7 +563,7 @@
                                     <td>38</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
-                                    <td>0 </td>
+                                    <td>0</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -633,7 +653,7 @@
                                     <td>38</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>0  </td>
+                                    <td>0</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -809,20 +829,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1224137979</td>
-                                    <td>ERROR_FLAG IN (0, 1)</td>
+                                    <td>TRUE_OR_FALSE_1632058710</td>
+                                    <td>export_to_file_flag IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>MESSAGE_DIRECTION_1934366784</td>
-                                    <td>MESSAGE_DIRECTION IN (&#39;I&#39;, &#39;O&#39;)</td>
+                                    <td>message_direction IN (&#39;I&#39;, &#39;O&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>PROCESSED_FLAG_1079194201</td>
-                                    <td>PROCESSED_FLAG IN (0, 1, 2, 3, 4, 5)</td>
+                                    <td>processed_flag IN (0, 1, 2, 3, 4, 5)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1632058710</td>
-                                    <td>EXPORT_TO_FILE_FLAG IN (0, 1)</td>
+                                    <td>TRUE_OR_FALSE_1224137979</td>
+                                    <td>error_flag IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -847,30 +867,35 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="CONTACT_ALERT_CLEAR.html" target="_top" title="CONTACT_ALERT_CLEAR" alt="" coords="1592,5,1859,328">
-<area shape="rect" id="node2" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,100,700,1303">
-<area shape="rect" id="node3" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="1111,496,1529,1416">
-<area shape="rect" id="node6" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,760,324,1024">
-<area shape="rect" id="node4" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="758,1297,1053,1503">
-<area shape="rect" id="node5" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="376,1356,692,1503">
-<area shape="rect" id="node8" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="744,752,1067,1280">
-<area shape="rect" id="node7" href="OFFENDER_CRC_EXPORT.html" target="_top" title="OFFENDER_CRC_EXPORT" alt="" coords="1591,345,1860,609">
-<area shape="rect" id="node9" href="SPG_ERROR_CLEAR_REQUEST.html" target="_top" title="SPG_ERROR_CLEAR_REQUEST" alt="" coords="1573,627,1877,832">
+<area shape="rect" id="node1" href="CONTACT_ALERT_CLEAR.html" target="_top" title="CONTACT_ALERT_CLEAR" alt="" coords="1225,285,1492,608">
+<area shape="rect" id="node2" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,5,700,1267">
+<area shape="rect" id="node3" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="744,1241,1163,2161">
+<area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1003,324,1267">
+<area shape="rect" id="node6" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="373,1448,695,1976">
+<area shape="rect" id="node9" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="376,1284,692,1431">
+<area shape="rect" id="node10" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="387,2065,681,2271">
+<area shape="rect" id="node5" href="OFFENDER_CRC_EXPORT.html" target="_top" title="OFFENDER_CRC_EXPORT" alt="" coords="1224,971,1493,1235">
+<area shape="rect" id="node7" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1231,2140,1486,2463">
+<area shape="rect" id="node8" href="SPG_ERROR_CLEAR_REQUEST.html" target="_top" title="SPG_ERROR_CLEAR_REQUEST" alt="" coords="1207,1252,1511,1457">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/SPG_NOTIFICATION.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="CONTACT_ALERT_CLEAR.html" target="_top" title="CONTACT_ALERT_CLEAR" alt="" coords="1592,5,1859,328">
-<area shape="rect" id="node2" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,35,700,1237">
-<area shape="rect" id="node3" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="1111,504,1529,1424">
-<area shape="rect" id="node6" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1003,324,1267">
-<area shape="rect" id="node4" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="758,1232,1053,1437">
-<area shape="rect" id="node5" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="376,1291,692,1437">
-<area shape="rect" id="node8" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="744,651,1067,1179">
-<area shape="rect" id="node7" href="OFFENDER_CRC_EXPORT.html" target="_top" title="OFFENDER_CRC_EXPORT" alt="" coords="1591,345,1860,609">
-<area shape="rect" id="node9" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1598,1379,1853,1701">
-<area shape="rect" id="node10" href="SPG_ERROR_CLEAR_REQUEST.html" target="_top" title="SPG_ERROR_CLEAR_REQUEST" alt="" coords="1573,627,1877,832">
+<area shape="rect" id="node1" href="CONTACT_ALERT_CLEAR.html" target="_top" title="CONTACT_ALERT_CLEAR" alt="" coords="1225,389,1492,712">
+<area shape="rect" id="node2" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,247,700,1508">
+<area shape="rect" id="node3" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="744,1177,1163,2097">
+<area shape="rect" id="node6" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,892,324,1156">
+<area shape="rect" id="node4" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="387,2179,681,2384">
+<area shape="rect" id="node5" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="7,1876,323,2023">
+<area shape="rect" id="node8" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="373,1561,695,2089">
+<area shape="rect" id="node7" href="OFFENDER_CRC_EXPORT.html" target="_top" title="OFFENDER_CRC_EXPORT" alt="" coords="1224,741,1493,1005">
+<area shape="rect" id="node9" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1231,5,1486,328">
+<area shape="rect" id="node10" href="SPG_ERROR_CLEAR_REQUEST.html" target="_top" title="SPG_ERROR_CLEAR_REQUEST" alt="" coords="1207,1292,1511,1497">
+<area shape="rect" id="node11" href="TMP_SCRIPT_SPA.html" target="_top" title="TMP_SCRIPT_SPA" alt="" coords="1246,1515,1471,1632">
+<area shape="rect" id="node12" href="TMP_SCRIPT_SPY.html" target="_top" title="TMP_SCRIPT_SPY" alt="" coords="1246,1649,1471,1767">
+<area shape="rect" id="node13" href="TMP_SCRIPT_SPZ.html" target="_top" title="TMP_SCRIPT_SPZ" alt="" coords="1246,1023,1471,1140">
+<area shape="rect" id="node14" href="TMP_SCRIPT_XXX.html" target="_top" title="TMP_SCRIPT_XXX" alt="" coords="1246,1157,1471,1275">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/SPG_NOTIFICATION.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>DRUG_USAGE - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>DRUG_USAGE - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -139,8 +139,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="DRUG_USAGE.DRUG_TEST_PROFILE_ID references DRUG_TEST_PROFILE.DRUG_TEST_PROFILE_ID via SYS_C0024502"><a href='DRUG_TEST_PROFILE.html'>DRUG_TEST_PROFILE</a><span class='relatedKey'>.DRUG_TEST_PROFILE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024502</td>
+                                                <td title="DRUG_USAGE.DRUG_TEST_PROFILE_ID references DRUG_TEST_PROFILE.DRUG_TEST_PROFILE_ID via SYS_C0021399"><a href='DRUG_TEST_PROFILE.html'>DRUG_TEST_PROFILE</a><span class='relatedKey'>.DRUG_TEST_PROFILE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021399</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -263,8 +263,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="DRUG_USAGE.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0024504"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024504</td>
+                                                <td title="DRUG_USAGE.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0021401"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021401</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -302,8 +302,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="DRUG_USAGE.DRUG_TYPE_ID references R_DRUG_TYPE.DRUG_TYPE_ID via SYS_C0024503"><a href='R_DRUG_TYPE.html'>R_DRUG_TYPE</a><span class='relatedKey'>.DRUG_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024503</td>
+                                                <td title="DRUG_USAGE.DRUG_TYPE_ID references R_DRUG_TYPE.DRUG_TYPE_ID via SYS_C0021400"><a href='R_DRUG_TYPE.html'>R_DRUG_TYPE</a><span class='relatedKey'>.DRUG_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021400</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -422,20 +422,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_OR_UNKNOWN7</td>
-                                    <td>INJECTED IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY26</td>
-                                    <td>USAGE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>GREATER_THAN_03</td>
+                                    <td>AGE_FIRST_USED &gt; 0</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE32</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>GREATER_THAN_03</td>
-                                    <td>AGE_FIRST_USED &gt; 0</td>
+                                    <td>YES_OR_NO_OR_UNKNOWN7</td>
+                                    <td>INJECTED IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY26</td>
+                                    <td>USAGE IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>

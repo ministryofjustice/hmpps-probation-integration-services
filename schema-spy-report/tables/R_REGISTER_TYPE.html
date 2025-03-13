@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>R_REGISTER_TYPE - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>R_REGISTER_TYPE - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -138,8 +138,8 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REGISTRATION.REGISTER_TYPE_ID references R_REGISTER_TYPE.REGISTER_TYPE_ID via SYS_C0024592"><a href='REGISTRATION.html'>REGISTRATION</a><span class='relatedKey'>.REGISTER_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024592</td>
+                                                <td title="REGISTRATION.REGISTER_TYPE_ID references R_REGISTER_TYPE.REGISTER_TYPE_ID via SYS_C0021521"><a href='REGISTRATION.html'>REGISTRATION</a><span class='relatedKey'>.REGISTER_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021521</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
@@ -148,8 +148,8 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="TRIGGER_OFFENCE.REGISTER_TYPE_ID references R_REGISTER_TYPE.REGISTER_TYPE_ID via SYS_C0024134"><a href='TRIGGER_OFFENCE.html'>TRIGGER_OFFENCE</a><span class='relatedKey'>.REGISTER_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024134</td>
+                                                <td title="TRIGGER_OFFENCE.REGISTER_TYPE_ID references R_REGISTER_TYPE.REGISTER_TYPE_ID via SYS_C0021412"><a href='TRIGGER_OFFENCE.html'>TRIGGER_OFFENCE</a><span class='relatedKey'>.REGISTER_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021412</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -378,8 +378,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="R_REGISTER_TYPE.REGISTER_TYPE_FLAG_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0024573"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024573</td>
+                                                <td title="R_REGISTER_TYPE.REGISTER_TYPE_FLAG_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021752"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021752</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -901,8 +901,12 @@
                                     <td>SPG_INTEREST IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY33</td>
-                                    <td>ALERT_MESSAGE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>TRUE_OR_FALSE_185612578</td>
+                                    <td>SPG_OVERRIDE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_343040392</td>
+                                    <td>CHILD_CONCERNS IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO15</td>
@@ -913,16 +917,12 @@
                                     <td>NOTIFICATIONS IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
+                                    <td>YES_OR_NO_ONLY33</td>
+                                    <td>ALERT_MESSAGE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
                                     <td>YES_OR_NO_421</td>
                                     <td>DPA_EXCLUDE IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_343040392</td>
-                                    <td>CHILD_CONCERNS IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_185612578</td>
-                                    <td>SPG_OVERRIDE IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>

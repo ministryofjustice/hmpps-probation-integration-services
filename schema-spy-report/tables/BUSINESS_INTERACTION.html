@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>BUSINESS_INTERACTION - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>BUSINESS_INTERACTION - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -128,8 +128,13 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="DATA_SCRIPT_MESSAGE.BUSINESS_INTERACTION_ID references BUSINESS_INTERACTION.BUSINESS_INTERACTION_ID via R_1249"><a href='DATA_SCRIPT_MESSAGE.html'>DATA_SCRIPT_MESSAGE</a><span class='relatedKey'>.BUSINESS_INTERACTION_ID</span></td>
-                                                <td class="constraint detail">R_1249</td>
+                                                <td title="DATA_SCRIPT_MESSAGE.BUSINESS_INTERACTION_ID&#39;s name implies that it&#39;s a child of BUSINESS_INTERACTION.BUSINESS_INTERACTION_ID, but it doesn&#39;t reference that column."><a href='DATA_SCRIPT_MESSAGE.html'>DATA_SCRIPT_MESSAGE</a><span class='relatedKey'>.BUSINESS_INTERACTION_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="DJR_B.BUSINESS_INTERACTION_ID&#39;s name implies that it&#39;s a child of BUSINESS_INTERACTION.BUSINESS_INTERACTION_ID, but it doesn&#39;t reference that column."><a href='DJR_B.html'>DJR_B</a><span class='relatedKey'>.BUSINESS_INTERACTION_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
@@ -305,23 +310,23 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="472,264,767,469">
-<area shape="rect" id="node2" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="5,268,428,513">
-<area shape="rect" id="node3" href="DOCUMENT_TEMPLATE.html" target="_top" title="DOCUMENT_TEMPLATE" alt="" coords="487,5,751,211">
-<area shape="rect" id="node4" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="811,7,1119,535">
-<area shape="rect" id="node5" href="SPG_VERSION_ENTRY.html" target="_top" title="SPG_VERSION_ENTRY" alt="" coords="487,487,751,780">
+<area shape="rect" id="node1" href="DOCUMENT_TEMPLATE.html" target="_top" title="DOCUMENT_TEMPLATE" alt="" coords="494,5,758,240">
+<area shape="rect" id="node2" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="5,284,428,529">
+<area shape="rect" id="node3" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="472,257,780,785">
+<area shape="rect" id="node4" href="SPG_VERSION_ENTRY.html" target="_top" title="SPG_VERSION_ENTRY" alt="" coords="494,803,758,1096">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/BUSINESS_INTERACTION.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
 <area shape="rect" id="node1" href="AUDITED_INTERACTION.html" target="_top" title="AUDITED_INTERACTION" alt="" coords="472,5,795,152">
-<area shape="rect" id="node2" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="5,432,428,677">
+<area shape="rect" id="node2" href="BUSINESS_INTERACTION.html" target="_top" title="BUSINESS_INTERACTION" alt="" coords="5,513,428,759">
 <area shape="rect" id="node3" href="BUSINESS_INT_XML_MAP.html" target="_top" title="BUSINESS_INT_XML_MAP" alt="" coords="493,169,773,375">
 <area shape="rect" id="node4" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="486,428,781,633">
-<area shape="rect" id="node5" href="DOCUMENT_TEMPLATE.html" target="_top" title="DOCUMENT_TEMPLATE" alt="" coords="501,651,765,856">
-<area shape="rect" id="node6" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="839,171,1147,699">
-<area shape="rect" id="node7" href="SPG_VERSION_ENTRY.html" target="_top" title="SPG_VERSION_ENTRY" alt="" coords="501,873,765,1167">
+<area shape="rect" id="node5" href="DJR_B.html" target="_top" title="DJR_B" alt="" coords="475,651,791,768">
+<area shape="rect" id="node6" href="DOCUMENT_TEMPLATE.html" target="_top" title="DOCUMENT_TEMPLATE" alt="" coords="501,785,765,1020">
+<area shape="rect" id="node7" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="839,171,1147,699">
+<area shape="rect" id="node8" href="SPG_VERSION_ENTRY.html" target="_top" title="SPG_VERSION_ENTRY" alt="" coords="501,1037,765,1331">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/BUSINESS_INTERACTION.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

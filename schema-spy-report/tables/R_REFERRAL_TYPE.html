@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>R_REFERRAL_TYPE - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>R_REFERRAL_TYPE - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -118,18 +118,18 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="R_ASSMNT_TYPE_REFERRAL_TYPE.REFERRAL_TYPE_ID references R_REFERRAL_TYPE.REFERRAL_TYPE_ID via SYS_C0024486"><a href='R_ASSMNT_TYPE_REFERRAL_TYPE.html'>R_ASSMNT_TYPE_REFERRAL_TYPE</a><span class='relatedKey'>.REFERRAL_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024486</td>
+                                                <td title="R_ASSMNT_TYPE_REFERRAL_TYPE.REFERRAL_TYPE_ID references R_REFERRAL_TYPE.REFERRAL_TYPE_ID via SYS_C0021040"><a href='R_ASSMNT_TYPE_REFERRAL_TYPE.html'>R_ASSMNT_TYPE_REFERRAL_TYPE</a><span class='relatedKey'>.REFERRAL_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021040</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_GEN_REF_OUTCOME_REF_TYPE.REFERRAL_TYPE_ID references R_REFERRAL_TYPE.REFERRAL_TYPE_ID via SYS_C0024330"><a href='R_GEN_REF_OUTCOME_REF_TYPE.html'>R_GEN_REF_OUTCOME_REF_TYPE</a><span class='relatedKey'>.REFERRAL_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024330</td>
+                                                <td title="R_GEN_REF_OUTCOME_REF_TYPE.REFERRAL_TYPE_ID references R_REFERRAL_TYPE.REFERRAL_TYPE_ID via SYS_C0021353"><a href='R_GEN_REF_OUTCOME_REF_TYPE.html'>R_GEN_REF_OUTCOME_REF_TYPE</a><span class='relatedKey'>.REFERRAL_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021353</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REFERRAL.REFERRAL_TYPE_ID references R_REFERRAL_TYPE.REFERRAL_TYPE_ID via SYS_C0024578"><a href='REFERRAL.html'>REFERRAL</a><span class='relatedKey'>.REFERRAL_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024578</td>
+                                                <td title="REFERRAL.REFERRAL_TYPE_ID references R_REFERRAL_TYPE.REFERRAL_TYPE_ID via SYS_C0021464"><a href='REFERRAL.html'>REFERRAL</a><span class='relatedKey'>.REFERRAL_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021464</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -261,8 +261,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="R_REFERRAL_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024105"><a href='R_CONTACT_TYPE.html'>R_CONTACT_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024105</td>
+                                                <td title="R_REFERRAL_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021010"><a href='R_CONTACT_TYPE.html'>R_CONTACT_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0021010</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -431,12 +431,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO24</td>
-                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_101070880</td>
                                     <td>SPG_OVERRIDE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO24</td>
+                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>

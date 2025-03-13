@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>PSS_RQMNT_MANAGER - DMDNDA.DELIUS_APP_SCHEMA</title>
+        <title>PSS_RQMNT_MANAGER - TSTNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
+                            <a href="../index.html" class="navbar-brand"><b>TSTNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -467,7 +467,7 @@
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ALLOCATION_REASON_ID">ALLOCATION_REASON_ID</span></td>
                                     <td>NUMBER</td>
-                                    <td>38</td>
+                                    <td>22</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -489,7 +489,7 @@
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PROBATION_AREA_ID">PROBATION_AREA_ID</span></td>
                                     <td>NUMBER</td>
-                                    <td>38</td>
+                                    <td>22</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -628,19 +628,19 @@
                                 <tbody>
                                 <tr>
                                     <td>ACTIVE_FLAG_END_DAT_1299265494</td>
-                                    <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
+                                    <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL) &#10;OR &#10;(ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
                                 </tr>
                                 <tr>
-                                    <td>MANAGEMENT_VALID_DA_1173549581</td>
-                                    <td> (&#10;(ALLOCATION_DATE &lt;&#61; NVL(END_DATE, ALLOCATION_DATE))&#10;) </td>
+                                    <td>TRUE_OR_FALSE_200484710</td>
+                                    <td>ACTIVE_FLAG IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_428933</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_200484710</td>
-                                    <td>ACTIVE_FLAG IN (0, 1)</td>
+                                    <td>MANAGEMENT_VALID_DA_1173549581</td>
+                                    <td> (&#10;(ALLOCATION_DATE &lt;&#61; NVL(END_DATE, ALLOCATION_DATE))&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
