@@ -837,3 +837,13 @@ template:
       rowVersion:
         type: double
         index: false
+      nationalStandard:
+        type: keyword
+      systemGenerated:
+        type: keyword
+      startDateTime:
+        type: date
+      endDateTime:
+        type: date
+      requiresOutcome:
+        type: keyword

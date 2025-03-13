@@ -8,12 +8,19 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.http.HttpHeaders
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
@@ -28,6 +35,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
+import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
@@ -66,6 +74,13 @@ internal class PersonalDetailsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
+    private var jdbcTemplate: JdbcTemplate = Mockito.mock(JdbcTemplate::class.java)
+    private var namedParameterJdbcTemplate: NamedParameterJdbcTemplate =
+        Mockito.mock(NamedParameterJdbcTemplate::class.java)
+
+    @Autowired
+    lateinit var deliusUserAspect: DeliusUserAspect
+
     @Value("\${messaging.producer.topic}")
     lateinit var topicName: String
 
@@ -92,6 +107,11 @@ internal class PersonalDetailsIntegrationTest {
             .expiration(Date(System.currentTimeMillis() + Duration.ofHours(1L).toMillis()))
             .signWith(keyPair.private, Jwts.SIG.RS256)
             .compact()
+
+        deliusUserAspect.set("jdbcTemplate", jdbcTemplate)
+        deliusUserAspect.set("namedParameterJdbcTemplate", namedParameterJdbcTemplate)
+        Mockito.reset(jdbcTemplate);
+        Mockito.reset(namedParameterJdbcTemplate)
     }
 
     @Test
@@ -524,6 +544,20 @@ internal class PersonalDetailsIntegrationTest {
             )
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonalDetails>()
+
+        val updateSqlCaptor = ArgumentCaptor.forClass(String::class.java)
+        val sqlCaptor = ArgumentCaptor.forClass(String::class.java)
+        val psCaptor = ArgumentCaptor.forClass(MapSqlParameterSource::class.java)
+
+        verify(namedParameterJdbcTemplate, times(1)).update(updateSqlCaptor.capture(), psCaptor.capture())
+        verify(jdbcTemplate, times(1)).execute(sqlCaptor.capture())
+
+        val setCallSql = updateSqlCaptor.value
+        val clearCallSql = sqlCaptor.value
+        val ps = psCaptor.value
+        assertThat(setCallSql, equalTo("call pkg_vpd_ctx.set_client_identifier(:dbName)"))
+        assertThat(ps.getValue("dbName"), equalTo("DeliusUser"))
+        assertThat(clearCallSql, equalTo("call pkg_vpd_ctx.clear_client_identifier()"))
         assertThat(res.mainAddress?.postcode, equalTo("NE3 NEW"))
     }
 
