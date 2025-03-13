@@ -4,10 +4,10 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.service.DetailsService
 import uk.gov.justice.digital.hmpps.model.BasicDetails
 import uk.gov.justice.digital.hmpps.model.DocumentCrn
-import java.util.UUID
+import uk.gov.justice.digital.hmpps.service.DetailsService
+import java.util.*
 
 @RestController
 class BreachNoticeController(private val details: DetailsService) {

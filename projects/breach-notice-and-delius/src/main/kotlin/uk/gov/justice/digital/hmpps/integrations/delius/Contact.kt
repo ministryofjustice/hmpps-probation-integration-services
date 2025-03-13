@@ -39,10 +39,6 @@ class Contact(
     val requirement: Requirement?,
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    val team: Team,
-
-    @ManyToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff,
 

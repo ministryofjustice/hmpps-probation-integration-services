@@ -2,8 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import kotlin.jvm.Transient
 
 @Immutable
@@ -22,14 +20,6 @@ class Staff(
 
     @OneToOne(mappedBy = "staff")
     val user: StaffUser?,
-
-    @ManyToMany
-    @JoinTable(
-        name = "staff_team",
-        joinColumns = [JoinColumn(name = "staff_id")],
-        inverseJoinColumns = [JoinColumn(name = "team_id")]
-    )
-    val teams: Set<Team>,
 
     @Id
     @Column(name = "staff_id")
@@ -54,17 +44,4 @@ class StaffUser(
 ) {
     @Transient
     var telephone: String? = null
-}
-
-interface StaffUserRepository : JpaRepository<StaffUser, Long> {
-    @Query(
-        """
-        select su from StaffUser su
-        left join fetch su.staff s
-        left join fetch s.teams t 
-        left join fetch t.addresses 
-        where upper(su.username) = upper(:username)
-    """
-    )
-    fun findByUsername(username: String): StaffUser?
 }

@@ -1,39 +1,44 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.*
-import uk.gov.justice.digital.hmpps.model.Address
-import uk.gov.justice.digital.hmpps.model.BasicDetails
-import uk.gov.justice.digital.hmpps.model.DocumentCrn
-import uk.gov.justice.digital.hmpps.model.Name
+import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
+import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
+import uk.gov.justice.digital.hmpps.model.*
 import java.util.*
 
 @Service
 @Transactional(readOnly = true)
 class DetailsService(
     private val personRepository: PersonRepository,
-    private val staffUserRepository: StaffUserRepository,
+    private val officeLocationRepository: OfficeLocationRepository,
     private val documentRepository: DocumentRepository,
+    private val ldapTemplate: LdapTemplate,
 ) {
-    fun basicDetails(crn: String, username: String): BasicDetails =
-        staffUserRepository.findByUsername(username)?.staff?.let {
-            personRepository.getByCrn(crn).basicDetails(it)
-        } ?: throw IllegalArgumentException("No staff found for $username")
+    fun basicDetails(crn: String, username: String): BasicDetails {
+        val homeArea = ldapTemplate.findAttributeByUsername(username, "userHomeArea")
+            ?: throw IllegalArgumentException("No home area found for $username")
+        val defaultReplyAddress = ldapTemplate.findPreferenceByUsername(username, "replyAddress")?.toLongOrNull()
+        val officeLocations = officeLocationRepository.findAllByProviderCode(homeArea)
+        val person = personRepository.getByCrn(crn)
+        return BasicDetails(
+            title = person.title?.description,
+            name = person.name(),
+            addresses = person.addresses.map(PersonAddress::toAddress),
+            replyAddresses = officeLocations.map {
+                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
+            },
+        )
+    }
 
     fun crnFor(breachNoticeId: UUID): DocumentCrn =
         documentRepository.findByExternalReference(Document.breachNoticeUrn(breachNoticeId))
             ?.let { DocumentCrn(it.person.crn) }
             ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
 }
-
-fun Person.basicDetails(staff: Staff) = BasicDetails(
-    title?.description,
-    name(),
-    addresses.map(PersonAddress::toAddress),
-    staff.replyAddresses(),
-)
 
 fun Person.name() = Name(firstName, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
 
@@ -49,8 +54,9 @@ fun PersonAddress.toAddress() = Address(
     postcode,
 )
 
-fun OfficeLocation.toAddress() = Address(
+fun OfficeLocation.toAddress() = OfficeAddress(
     id,
+    null,
     description,
     buildingName,
     buildingNumber,
@@ -60,5 +66,3 @@ fun OfficeLocation.toAddress() = Address(
     county,
     postcode,
 )
-
-fun Staff.replyAddresses() = teams.flatMap { team -> team.addresses.map { it.toAddress() } }

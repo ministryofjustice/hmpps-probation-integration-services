@@ -19,10 +19,6 @@ class PersonManager(
     val person: Person,
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    val team: Team,
-
-    @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
 

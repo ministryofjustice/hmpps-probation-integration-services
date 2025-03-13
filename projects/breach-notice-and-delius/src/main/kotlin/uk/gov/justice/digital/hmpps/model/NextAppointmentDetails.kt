@@ -9,7 +9,7 @@ data class Appointment(
     val type: CodedDescription,
     val datetime: LocalDateTime,
     val description: String?,
-    val location: Address?,
+    val location: OfficeAddress?,
     val officer: Officer
 )
 

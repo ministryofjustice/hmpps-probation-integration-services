@@ -4,8 +4,7 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.*
-import uk.gov.justice.digital.hmpps.integrations.ldap.LdapUserDetails
-import uk.gov.justice.digital.hmpps.ldap.findByUsername
+import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDateTime
 
@@ -18,9 +17,7 @@ class AppointmentService(
     fun getNextAppointmentDetails(crn: String): NextAppointmentDetails {
         val manager = personManagerRepository.getCurrentManagerFor(crn)
         manager.staff.user?.apply {
-            ldapTemplate.findByUsername<LdapUserDetails>(username)?.let {
-                telephone = it.telephone
-            }
+            ldapTemplate.findAttributeByUsername(username, "telephoneNumber")?.let { telephone = it }
         }
 
         val futureAppointments = contactRepository.findFutureAppointments(crn)
