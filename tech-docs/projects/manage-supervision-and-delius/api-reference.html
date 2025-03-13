@@ -141,6 +141,9 @@
         <a href="./api-reference.html#user-username"><span>/user/{username}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#user-username-schedule-upcoming"><span>/user/{username}/schedule/upcoming</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#user-username-locations"><span>/user/{username}/locations</span></a>
       </li>
       <li>
@@ -1468,6 +1471,128 @@
 </td>
 <td>
 <a href='#schema-userdetails'>UserDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="user-username-schedule-upcoming">/user/{username}/schedule/upcoming</h2>
+
+<h3 id="user-username-schedule-upcoming-get">get</h3>
+
+  <p><em>Gets caseloads for the user</em></p>
+
+
+
+
+<h4 id="user-username-schedule-upcoming-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>sortBy</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>ascending</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-schedule-upcoming-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "size": "integer",
+  "page": "integer",
+  "totalResults": "integer",
+  "totalPages": "integer",
+  "appointments": [
+    {
+      "caseName": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "id": "integer",
+      "crn": "string",
+      "dob": "string",
+      "latestSentence": "string",
+      "numberOfAdditionalSentences": "integer",
+      "type": "string",
+      "startDateTime": "string",
+      "endDateTime": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-userdiary'>UserDiary</a>
 </td>
 </tr>
 
@@ -9248,6 +9373,170 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-userappointment">UserAppointment</h3>
+
+
+<table class='schema-userappointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>caseName</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dob</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestSentence</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>numberOfAdditionalSentences</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDateTime</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDateTime</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-userdiary">UserDiary</h3>
+
+
+<table class='schema-userdiary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>size</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalResults</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalPages</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>appointments</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-userappointment'>UserAppointment</a>
 </td>
 </tr>
 
