@@ -75,7 +75,8 @@ internal class PersonalDetailsIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     private var jdbcTemplate: JdbcTemplate = Mockito.mock(JdbcTemplate::class.java)
-    private var namedParameterJdbcTemplate: NamedParameterJdbcTemplate = Mockito.mock(NamedParameterJdbcTemplate::class.java)
+    private var namedParameterJdbcTemplate: NamedParameterJdbcTemplate =
+        Mockito.mock(NamedParameterJdbcTemplate::class.java)
 
     @Autowired
     lateinit var deliusUserAspect: DeliusUserAspect
