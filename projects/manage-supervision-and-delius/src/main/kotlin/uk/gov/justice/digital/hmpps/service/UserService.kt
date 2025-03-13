@@ -122,14 +122,13 @@ class UserService(
 
             return populateUserDiary(pageable, contacts)
         } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
-
     }
 
     fun getAppointmentsWithoutOutcomes(username: String, pageable: Pageable): UserDiary {
         val user = userRepository.findUserByUsername(username)
 
         return user?.staff?.let {
-            val contacts = contactRepository.findAppointmentsWithoutOutcomesByUser (
+            val contacts = contactRepository.findAppointmentsWithoutOutcomesByUser(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
                 ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
@@ -211,9 +210,10 @@ fun Caseload.toTeamCase() = TeamCase(
 
 fun CaseAccess?.isLao() = this != null && (this.userExcluded || this.userRestricted)
 
-fun populateUserDiary(pageable: Pageable,
+fun populateUserDiary(
+    pageable: Pageable,
     contacts: Page<AppointmentEntity>
-) = UserDiary (
+) = UserDiary(
     pageable.pageSize,
     pageable.pageNumber,
     contacts.totalElements.toInt(),
@@ -225,7 +225,7 @@ fun populateUserDiary(pageable: Pageable,
             it.crn,
             it.dob,
             it.sentenceDescription,
-            if (it.totalSentences > 0) (it.totalSentences -1) else it.totalSentences,
+            if (it.totalSentences > 0) (it.totalSentences - 1) else it.totalSentences,
             it.contactDescription,
             ZonedDateTime.of(LocalDateTime.of(it.contactDate, it.contactStartTime), EuropeLondon),
             if (it.contactEndTime != null) ZonedDateTime.of(
