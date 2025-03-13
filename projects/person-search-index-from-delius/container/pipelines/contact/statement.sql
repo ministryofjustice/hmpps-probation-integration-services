@@ -19,7 +19,7 @@ from (with page as (select * from contact where :contact_id = 0
                      'notes' value contact.notes,
                      'attended' value decode(contact.attended, 'Y', 'attended', 'N', 'fta', null),
                      'complied' value decode(contact.complied, 'Y', 'complied', 'N', 'ftc', null),
-                     'startDateTime' value to_char(contact.contact_date, 'yyyy-mm-dd') || 'T' || to_char(contact.contact_start_time, 'hh24:mi:ss'),
+                     'startDateTime' value decode(contact.contact_start_time, null, to_char(contact.contact_date, 'yyyy-mm-dd'), to_char(contact.contact_date, 'yyyy-mm-dd') || 'T' || to_char(contact.contact_start_time, 'hh24:mi:ss')),
                      'endDateTime' value  decode(contact.contact_end_time, null, null, to_char(contact.contact_date, 'yyyy-mm-dd') || 'T' || to_char(contact.contact_end_time, 'hh24:mi:ss')),
                      'requiresOutcome' value case when exists (select cto.contact_outcome_type_id
                                                                 from r_contact_type_outcome cto
