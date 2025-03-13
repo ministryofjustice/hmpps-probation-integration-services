@@ -29,6 +29,7 @@ dependencies {
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.jsonwebtoken:jjwt:0.12.6")
     testImplementation(libs.bundles.mockito)
 }
 

@@ -1,18 +1,29 @@
 package uk.gov.justice.digital.hmpps
 
+import io.jsonwebtoken.Jwts
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.http.HttpHeaders
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -24,6 +35,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
+import uk.gov.justice.digital.hmpps.aspect.DeliusUserAspect
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
@@ -50,13 +62,22 @@ import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.time.Duration
 import java.time.LocalDate
+import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class PersonalDetailsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
+
+    private var jdbcTemplate: JdbcTemplate = Mockito.mock(JdbcTemplate::class.java)
+
+    @Autowired
+    lateinit var deliusUserAspect: DeliusUserAspect
 
     @Value("\${messaging.producer.topic}")
     lateinit var topicName: String
@@ -69,6 +90,25 @@ internal class PersonalDetailsIntegrationTest {
 
     @Autowired
     lateinit var channelManager: HmppsChannelManager
+
+    lateinit var deliusToken: String
+
+    @BeforeEach
+    fun setUp() {
+        val keyPair: KeyPair = KeyPairGenerator.getInstance("RSA").apply { this.initialize(2048) }.generateKeyPair()
+        deliusToken = Jwts.builder()
+            .id(UUID.randomUUID().toString())
+            .subject("probation-integration-dev")
+            .claim("user_name", "DeliusUser")
+            .claim("sub", "probation-integration-dev")
+            .claim("authorities", listOf("ROLE_PROBATION_INTEGRATION_ADMIN"))
+            .expiration(Date(System.currentTimeMillis() + Duration.ofHours(1L).toMillis()))
+            .signWith(keyPair.private, Jwts.SIG.RS256)
+            .compact()
+
+        deliusUserAspect.set("jdbcTemplate", jdbcTemplate)
+        Mockito.reset(jdbcTemplate);// reset mock
+    }
 
     @Test
     fun `personal details are returned`() {
@@ -485,10 +525,11 @@ internal class PersonalDetailsIntegrationTest {
 
     @Test
     @Transactional
-    fun `when first main address with no notes - address is created`() {
+    fun `when first main address with no notes - address is created (with delius usertoken)`() {
+
         val res = mockMvc
             .perform(
-                post("/personal-details/X000004/address").withToken()
+                post("/personal-details/X000004/address").withDeliusUserToken(deliusToken)
                     .withJson(
                         PersonAddressEditRequest(
                             postcode = "NE3 NEW",
@@ -500,12 +541,24 @@ internal class PersonalDetailsIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonalDetails>()
 
+        val updateSqlCaptor = ArgumentCaptor.forClass(String::class.java)
+        val sqlCaptor = ArgumentCaptor.forClass(String::class.java)
+        val psCaptor = ArgumentCaptor.forClass(MapSqlParameterSource::class.java)
+
+        verify(jdbcTemplate, times(1)).update(updateSqlCaptor.capture(), psCaptor.capture())
+        verify(jdbcTemplate, times(1)).execute(sqlCaptor.capture())
+        val setCallSql = updateSqlCaptor.value
+        val clearCallSql = sqlCaptor.allValues[0]
+        val ps = psCaptor.value
+        assertThat(setCallSql, equalTo("call pkg_vpd_ctx.set_client_identifier(:userName)"))
+        assertThat(ps.getValue("userName"), equalTo("DeliusUser"))
+        assertThat(clearCallSql, equalTo("call pkg_vpd_ctx.clear_client_identifier()"))
         assertThat(res.mainAddress?.postcode, equalTo("NE3 NEW"))
     }
 
     @Test
     @Transactional
-    fun `when no main address new main address is created`() {
+    fun `when no main address new main address is created (no delius user token)`() {
         val person = PERSONAL_DETAILS
         mockMvc
             .perform(
@@ -558,6 +611,9 @@ internal class PersonalDetailsIntegrationTest {
 
         assertThat(insertAddressAuditRecords.size, equalTo(1))
         assertThat(updateAddressAuditRecords.size, equalTo(1))
+
+        //Verify no setting of users is called due to no delius username in token
+        verifyNoInteractions(jdbcTemplate)
     }
 
     @Test
@@ -580,7 +636,7 @@ internal class PersonalDetailsIntegrationTest {
         val person = PERSONAL_DETAILS
         val updateResponse = mockMvc
             .perform(
-                post("/personal-details/${person.crn}/address").withToken()
+                post("/personal-details/${person.crn}/address").withDeliusUserToken(deliusToken)
                     .withJson(request)
             )
             .andExpect(status().isOk)
@@ -702,3 +758,6 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.fields?.size, equalTo(3))
     }
 }
+
+fun MockHttpServletRequestBuilder.withDeliusUserToken(token: String) =
+    header(HttpHeaders.AUTHORIZATION, "Bearer $token")
