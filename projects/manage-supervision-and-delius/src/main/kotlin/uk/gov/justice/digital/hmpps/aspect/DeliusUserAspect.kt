@@ -30,7 +30,7 @@ class DeliusUserAspect(
         getDeliusUsername()?.let { deliusUserName ->
             namedParameterJdbcTemplate.update(
                 "call pkg_vpd_ctx.set_client_identifier(:dbName)",
-                MapSqlParameterSource().addValue(":dbName", deliusUserName)
+                MapSqlParameterSource().addValue("dbName", deliusUserName)
             )
         }
     }

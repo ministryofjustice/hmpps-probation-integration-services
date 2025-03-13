@@ -555,7 +555,7 @@ internal class PersonalDetailsIntegrationTest {
         val clearCallSql = sqlCaptor.value
         val ps = psCaptor.value
         assertThat(setCallSql, equalTo("call pkg_vpd_ctx.set_client_identifier(:dbName)"))
-        assertThat(ps.getValue("userName"), equalTo("DeliusUser"))
+        assertThat(ps.getValue("dbName"), equalTo("DeliusUser"))
         assertThat(clearCallSql, equalTo("call pkg_vpd_ctx.clear_client_identifier()"))
         assertThat(res.mainAddress?.postcode, equalTo("NE3 NEW"))
     }
