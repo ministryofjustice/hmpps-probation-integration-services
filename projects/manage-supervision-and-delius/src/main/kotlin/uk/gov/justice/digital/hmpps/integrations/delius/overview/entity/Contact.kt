@@ -371,8 +371,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                  WHERE (c.soft_deleted = 0) 
                  AND s.staff_id = :staffId
                  AND rct.attendance_contact = 'Y' 
-                 AND (to_char(c.contact_date,'YYYY-MM-DD')> :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD')= :dateNow
-                 AND to_char(c.contact_start_time,'HH24:MI')> :timeNow)) 
+                 AND (to_char(c.contact_date,'YYYY-MM-DD') > :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
+                 AND to_char(c.contact_start_time,'HH24:MI') > :timeNow)) 
         """, nativeQuery = true
     )
     fun findUpComingAppointmentsByUser(
@@ -423,8 +423,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                  WHERE (c.soft_deleted = 0) 
                  AND s.staff_id = :staffId
                  AND rct.attendance_contact = 'Y' 
-                 AND (to_char(c.contact_date,'YYYY-MM-DD')> :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD')= :dateNow
-                 AND to_char(c.contact_start_time,'HH24:MI')> :timeNow)) 
+                 AND c.contact_outcome_type_id IS NULL
+                 AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
+                 AND to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
         """, nativeQuery = true
     )
     fun findAppointmentsWithoutOutcomesByUser(
