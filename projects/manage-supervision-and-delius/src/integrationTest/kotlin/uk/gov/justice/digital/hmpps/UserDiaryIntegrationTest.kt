@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.FIRST_APPT_CONTACT
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.NEXT_APPT_CONTACT
@@ -30,6 +31,19 @@ class UserDiaryIntegrationTest {
         mockMvc
             .perform(MockMvcRequestBuilders.get("/user/peter-parker/locations"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+    }
+
+    @Test
+    fun `get user appointments`() {
+        val user = USER
+
+        val response =
+            mockMvc.perform(MockMvcRequestBuilders.get("/user/${user.username}/appointments").withToken())
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andReturn().response.contentAsJson<UserAppointments>()
+
+        assertEquals(2, response.appointments.size)
+        assertEquals(3, response.outcomes.size)
     }
 
     @ParameterizedTest

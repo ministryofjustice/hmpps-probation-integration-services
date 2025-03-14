@@ -339,6 +339,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         o.date_of_birth_date AS dob,
                         c.contact_id AS id,
                         o.crn AS crn, 
+                        ol.description, 
                         c.contact_date AS contact_date, 
                         c.contact_start_time AS contact_start_time,
                         c.contact_end_time AS contact_end_time,
@@ -350,6 +351,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                 JOIN offender o ON o.offender_id = c.offender_id
                 JOIN staff s ON s.staff_id = c.staff_id 
                 JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM') 
+                LEFT JOIN office_location ol ON ol.office_location_id = c.office_location_id 
                 LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
                 LEFT JOIN disposal d ON e.event_id = d.event_id 
                 LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id 
@@ -391,6 +393,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         o.date_of_birth_date AS dob,
                         c.contact_id AS id,
                         o.crn AS crn, 
+                        ol.description, 
                         c.contact_date AS contact_date, 
                         c.contact_start_time AS contact_start_time,
                         c.contact_end_time AS contact_end_time,
@@ -400,7 +403,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                 FROM contact c JOIN r_contact_type rct ON rct.contact_type_id=c.contact_type_id 
                 JOIN offender o ON o.offender_id = c.offender_id
                 JOIN staff s ON s.staff_id = c.staff_id 
-                JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM') 
+                JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM')
+                LEFT JOIN office_location ol ON ol.office_location_id = c.office_location_id 
                 LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
                 LEFT JOIN disposal d ON e.event_id = d.event_id 
                 LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id 
@@ -459,6 +463,7 @@ interface Appointment {
     val dob: LocalDate
     val id: Long
     val crn: String
+    val location: String?
     val contactDate: LocalDate
     val contactStartTime: LocalTime
     val contactEndTime: LocalTime?

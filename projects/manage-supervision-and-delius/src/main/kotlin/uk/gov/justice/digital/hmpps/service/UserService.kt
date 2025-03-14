@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
@@ -109,9 +110,9 @@ class UserService(
     }
 
     fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
-        val user = userRepository.findUserByUsername(username)
+        val user =  getUser(username)
 
-        return user?.staff?.let {
+        return user.staff?.let {
 
             val contacts = contactRepository.findUpComingAppointmentsByUser(
                 user.staff.id,
@@ -125,9 +126,9 @@ class UserService(
     }
 
     fun getAppointmentsWithoutOutcomes(username: String, pageable: Pageable): UserDiary {
-        val user = userRepository.findUserByUsername(username)
+        val user = getUser(username)
 
-        return user?.staff?.let {
+        return user.staff?.let {
             val contacts = contactRepository.findAppointmentsWithoutOutcomesByUser(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
@@ -138,6 +139,23 @@ class UserService(
             populateUserDiary(pageable, contacts)
         } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
     }
+
+    fun getAppointmentsForUser(username: String, pageable: Pageable): UserAppointments {
+        val user = getUser(username)
+
+        return user.staff?.let {
+            val upcomingAppointments = getUpcomingAppointments(username, pageable)
+            val appointmentsWithoutOutcomes = getAppointmentsWithoutOutcomes(username, pageable)
+
+            UserAppointments(
+                Name(user.forename, surname = user.surname),
+                appointments = upcomingAppointments.appointments,
+                outcomes = appointmentsWithoutOutcomes.appointments
+            )
+        } ?: UserAppointments(Name(user.forename, surname = user.surname))
+    }
+
+    fun getUser(username: String) = userRepository.findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
 
     @Transactional
     fun getTeamCaseload(teamCode: String, pageable: Pageable): TeamCaseload {
@@ -231,8 +249,8 @@ fun populateUserDiary(
             if (it.contactEndTime != null) ZonedDateTime.of(
                 LocalDateTime.of(it.contactDate, it.contactEndTime),
                 EuropeLondon
-            ) else null
+            ) else null,
+            it.location
         )
     }
 )
-

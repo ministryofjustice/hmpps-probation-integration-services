@@ -12,6 +12,12 @@ data class UserDiary(
     val appointments: List<UserAppointment>
 )
 
+data class UserAppointments (
+    val staff: Name,
+    val appointments: List<UserAppointment> = listOf(),
+    val outcomes: List<UserAppointment> = listOf()
+)
+
 data class UserAppointment(
     val caseName: Name,
     val id: Long,
@@ -21,6 +27,7 @@ data class UserAppointment(
     val numberOfAdditionalSentences: Int,
     val type: String,
     val startDateTime: ZonedDateTime,
-    val endDateTime: ZonedDateTime? = null
+    val endDateTime: ZonedDateTime? = null,
+    val location: String? = null
 )
 

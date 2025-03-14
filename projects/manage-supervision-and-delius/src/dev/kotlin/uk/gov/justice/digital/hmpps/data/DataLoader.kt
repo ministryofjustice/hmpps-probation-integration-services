@@ -51,6 +51,8 @@ class DataLoader(
 
         entityManager.persist(ContactGenerator.USER_1)
 
+        entityManager.persist(ContactGenerator.USER_2)
+
         entityManager.persist(ContactGenerator.LIMITED_ACCESS_USER)
 
         entityManager.persistAll(
