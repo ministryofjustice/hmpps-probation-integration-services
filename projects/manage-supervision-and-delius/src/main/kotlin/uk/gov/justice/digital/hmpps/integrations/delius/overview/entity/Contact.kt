@@ -65,6 +65,9 @@ class Contact(
     @Convert(converter = YesNoConverter::class)
     val complied: Boolean? = null,
 
+    @Column(name ="contact_outcome_type_id", insertable = false, updatable = false)
+    val contactOutcomeTypeId: Long? = null,
+
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
     val outcome: ContactOutcome? = null,
