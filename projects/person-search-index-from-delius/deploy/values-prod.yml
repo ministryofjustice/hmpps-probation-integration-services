@@ -4,7 +4,7 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: prod
-    SAGEMAKER_ENDPOINT_NAME: hmpps-probation-search-prod-sagemaker-endpoint
+    SAGEMAKER_ENDPOINT_NAME: hmpps-probation-search-prod
 
   namespace_secrets:
     common:
