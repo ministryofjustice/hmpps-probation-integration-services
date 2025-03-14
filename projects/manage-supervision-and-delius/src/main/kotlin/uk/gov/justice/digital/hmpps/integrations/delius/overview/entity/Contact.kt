@@ -345,7 +345,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         total_sentences,
                         rct.description AS contactDescription,
                         NVL(rdt.DESCRIPTION, latest_sentence_description)  AS sentenceDescription
-                FROM contact c JOIN r_contact_type rct ON rct.contact_type_id=c.contact_type_id 
+                FROM contact c 
+                JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id 
                 JOIN offender o ON o.offender_id = c.offender_id
                 JOIN staff s ON s.staff_id = c.staff_id 
                 JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM') 
@@ -370,8 +371,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                  WHERE (c.soft_deleted = 0) 
                  AND s.staff_id = :staffId
                  AND rct.attendance_contact = 'Y' 
-                 AND (to_char(c.contact_date,'YYYY-MM-DD')> :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD')= :dateNow
-                 AND to_char(c.contact_start_time,'HH24:MI')> :timeNow)) 
+                 AND (to_char(c.contact_date,'YYYY-MM-DD') > :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow 
+                 AND to_char(c.contact_start_time,'HH24:MI') > :timeNow)) 
         """, nativeQuery = true
     )
     fun findUpComingAppointmentsByUser(
@@ -425,7 +426,22 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                  AND c.contact_outcome_type_id IS NULL
                  AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
                  AND to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
-        """, nativeQuery = true
+        """,
+        nativeQuery = true,
+        countQuery = """
+                        SELECT  count(*)
+                FROM contact c JOIN r_contact_type rct ON rct.contact_type_id=c.contact_type_id 
+                JOIN offender o ON o.offender_id = c.offender_id
+                JOIN staff s ON s.staff_id = c.staff_id 
+                JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM') 
+                 WHERE (c.soft_deleted = 0) 
+                 AND s.staff_id = :staffId
+                 AND rct.attendance_contact = 'Y' 
+                 AND rct.contact_outcome_flag = 'Y'
+                 AND c.contact_outcome_type_id IS NULL
+                 AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
+                 AND to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
+        """
     )
     fun findAppointmentsWithoutOutcomesByUser(
         staffId: Long,
