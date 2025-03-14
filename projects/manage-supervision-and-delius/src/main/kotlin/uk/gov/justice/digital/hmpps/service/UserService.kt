@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.api.model.user.Staff
@@ -107,37 +109,34 @@ class UserService(
     }
 
     fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
-        val user = userRepository.getUser(username)
+        val user = userRepository.findUserByUsername(username)
 
-        val contacts = contactRepository.findUpComingAppointmentsByUser(
-            user.staff!!.id,
-            LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
-            ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
-            pageable
-        )
+        return user?.staff?.let {
 
-        return UserDiary(
-            pageable.pageSize,
-            pageable.pageNumber,
-            contacts.totalElements.toInt(),
-            contacts.totalPages,
-            contacts.content.map {
-                UserAppointment(
-                    Name(it.forename, listOfNotNull(it.secondName, it.thirdName).joinToString(" "), it.surname),
-                    it.id,
-                    it.crn,
-                    it.dob,
-                    it.sentenceDescription,
-                    it.totalSentences,
-                    it.contactDescription,
-                    ZonedDateTime.of(LocalDateTime.of(it.contactDate, it.contactStartTime), EuropeLondon),
-                    if (it.contactEndTime != null) ZonedDateTime.of(
-                        LocalDateTime.of(it.contactDate, it.contactEndTime),
-                        EuropeLondon
-                    ) else null
-                )
-            }
-        )
+            val contacts = contactRepository.findUpComingAppointmentsByUser(
+                user.staff.id,
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+                pageable
+            )
+
+            return populateUserDiary(pageable, contacts)
+        } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
+    }
+
+    fun getAppointmentsWithoutOutcomes(username: String, pageable: Pageable): UserDiary {
+        val user = userRepository.findUserByUsername(username)
+
+        return user?.staff?.let {
+            val contacts = contactRepository.findAppointmentsWithoutOutcomesByUser(
+                user.staff.id,
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+                pageable
+            )
+
+            populateUserDiary(pageable, contacts)
+        } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
     }
 
     @Transactional
@@ -210,4 +209,30 @@ fun Caseload.toTeamCase() = TeamCase(
 )
 
 fun CaseAccess?.isLao() = this != null && (this.userExcluded || this.userRestricted)
+
+fun populateUserDiary(
+    pageable: Pageable,
+    contacts: Page<AppointmentEntity>
+) = UserDiary(
+    pageable.pageSize,
+    pageable.pageNumber,
+    contacts.totalElements.toInt(),
+    contacts.totalPages,
+    contacts.content.map {
+        UserAppointment(
+            Name(it.forename, listOfNotNull(it.secondName, it.thirdName).joinToString(" "), it.surname),
+            it.id,
+            it.crn,
+            it.dob,
+            it.sentenceDescription,
+            if (it.totalSentences > 0) (it.totalSentences - 1) else it.totalSentences,
+            it.contactDescription,
+            ZonedDateTime.of(LocalDateTime.of(it.contactDate, it.contactStartTime), EuropeLondon),
+            if (it.contactEndTime != null) ZonedDateTime.of(
+                LocalDateTime.of(it.contactDate, it.contactEndTime),
+                EuropeLondon
+            ) else null
+        )
+    }
+)
 
