@@ -9,7 +9,7 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: dev
-    SAGEMAKER_ENDPOINT_NAME: hmpps-probation-search-dev-sagemaker-endpoint
+    SAGEMAKER_ENDPOINT_NAME: hmpps-probation-search-dev
 
 generic-prometheus-alerts:
   businessHoursOnly: true
