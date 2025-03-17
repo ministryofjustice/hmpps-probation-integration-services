@@ -21,6 +21,9 @@ data class Person(
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsId: String?,
 
+    val exclusionMessage: String?,
+    val restrictionMessage: String?,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
