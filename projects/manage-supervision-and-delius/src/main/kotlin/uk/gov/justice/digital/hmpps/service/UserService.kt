@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.UserDiaryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
@@ -36,6 +37,7 @@ class UserService(
     private val teamRepository: TeamRepository,
     private val userAccessService: UserAccessService,
     private val contactRepository: ContactRepository,
+    private val userDiaryRepository: UserDiaryRepository,
     private val ldapTemplate: LdapTemplate
 ) {
     fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
@@ -113,7 +115,7 @@ class UserService(
         val user = getUser(username)
 
         return user.staff?.let {
-            val contacts = contactRepository.findAppointmentsForTodayByUser(
+            val contacts = userDiaryRepository.findAppointmentsForTodayByUser(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
                 ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
