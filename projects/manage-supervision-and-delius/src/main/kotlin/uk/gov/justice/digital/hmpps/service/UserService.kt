@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
@@ -19,6 +20,7 @@ import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.UserDiaryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
@@ -35,6 +37,7 @@ class UserService(
     private val teamRepository: TeamRepository,
     private val userAccessService: UserAccessService,
     private val contactRepository: ContactRepository,
+    private val userDiaryRepository: UserDiaryRepository,
     private val ldapTemplate: LdapTemplate
 ) {
     fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
@@ -108,10 +111,25 @@ class UserService(
         )
     }
 
-    fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
-        val user = userRepository.findUserByUsername(username)
+    fun getUserAppointmentsForToday(username: String, numberOfRecords: Int): List<UserAppointment> {
+        val user = getUser(username)
 
-        return user?.staff?.let {
+        return user.staff?.let {
+            val contacts = userDiaryRepository.findAppointmentsForTodayByUser(
+                user.staff.id,
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+                numberOfRecords
+            )
+
+            contacts.map { it.toUserAppointment() }
+        } ?: emptyList()
+    }
+
+    fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
+        val user = getUser(username)
+
+        return user.staff?.let {
 
             val contacts = contactRepository.findUpComingAppointmentsByUser(
                 user.staff.id,
@@ -125,9 +143,9 @@ class UserService(
     }
 
     fun getAppointmentsWithoutOutcomes(username: String, pageable: Pageable): UserDiary {
-        val user = userRepository.findUserByUsername(username)
+        val user = getUser(username)
 
-        return user?.staff?.let {
+        return user.staff?.let {
             val contacts = contactRepository.findAppointmentsWithoutOutcomesByUser(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
@@ -138,6 +156,24 @@ class UserService(
             populateUserDiary(pageable, contacts)
         } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
     }
+
+    fun getAppointmentsForUser(username: String, pageable: Pageable): UserAppointments {
+        val user = getUser(username)
+
+        return user.staff?.let {
+            val appointmentsForToday = getUserAppointmentsForToday(username, pageable.pageSize)
+            val appointmentsWithoutOutcomes = getAppointmentsWithoutOutcomes(username, pageable)
+
+            UserAppointments(
+                Name(user.forename, surname = user.surname),
+                appointments = appointmentsForToday,
+                outcomes = appointmentsWithoutOutcomes.appointments
+            )
+        } ?: UserAppointments(Name(user.forename, surname = user.surname))
+    }
+
+    fun getUser(username: String) =
+        userRepository.findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
 
     @Transactional
     fun getTeamCaseload(teamCode: String, pageable: Pageable): TeamCaseload {
@@ -219,20 +255,22 @@ fun populateUserDiary(
     contacts.totalElements.toInt(),
     contacts.totalPages,
     contacts.content.map {
-        UserAppointment(
-            Name(it.forename, listOfNotNull(it.secondName, it.thirdName).joinToString(" "), it.surname),
-            it.id,
-            it.crn,
-            it.dob,
-            it.sentenceDescription,
-            if (it.totalSentences > 0) (it.totalSentences - 1) else it.totalSentences,
-            it.contactDescription,
-            ZonedDateTime.of(LocalDateTime.of(it.contactDate, it.contactStartTime), EuropeLondon),
-            if (it.contactEndTime != null) ZonedDateTime.of(
-                LocalDateTime.of(it.contactDate, it.contactEndTime),
-                EuropeLondon
-            ) else null
-        )
+        it.toUserAppointment()
     }
 )
 
+private fun AppointmentEntity.toUserAppointment() = UserAppointment(
+    Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname),
+    id,
+    crn,
+    dob,
+    sentenceDescription,
+    if (totalSentences > 0) (totalSentences - 1) else totalSentences,
+    contactDescription,
+    ZonedDateTime.of(LocalDateTime.of(contactDate, contactStartTime), EuropeLondon),
+    if (contactEndTime != null) ZonedDateTime.of(
+        LocalDateTime.of(contactDate, contactEndTime),
+        EuropeLondon
+    ) else null,
+    location
+)
