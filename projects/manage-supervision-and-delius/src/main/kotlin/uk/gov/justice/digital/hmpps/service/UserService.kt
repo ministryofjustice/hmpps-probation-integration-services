@@ -255,21 +255,7 @@ fun populateUserDiary(
     contacts.totalElements.toInt(),
     contacts.totalPages,
     contacts.content.map {
-        UserAppointment(
-            Name(it.forename, listOfNotNull(it.secondName, it.thirdName).joinToString(" "), it.surname),
-            it.id,
-            it.crn,
-            it.dob,
-            it.sentenceDescription,
-            if (it.totalSentences > 0) (it.totalSentences - 1) else it.totalSentences,
-            it.contactDescription,
-            ZonedDateTime.of(LocalDateTime.of(it.contactDate, it.contactStartTime), EuropeLondon),
-            if (it.contactEndTime != null) ZonedDateTime.of(
-                LocalDateTime.of(it.contactDate, it.contactEndTime),
-                EuropeLondon
-            ) else null,
-            it.location
-        )
+        it.toUserAppointment()
     }
 )
 
