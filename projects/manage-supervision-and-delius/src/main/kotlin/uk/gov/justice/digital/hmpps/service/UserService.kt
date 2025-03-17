@@ -109,6 +109,20 @@ class UserService(
         )
     }
 
+    fun getUserAppointmentsForToday(username: String, numberOfRecords: Int): List<UserAppointment> {
+        val user =  getUser(username)
+
+        return user.staff?.let {
+            val contacts = contactRepository.findAppointmentsForTodayByUser(
+                user.staff.id,
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+                numberOfRecords)
+
+            contacts.map { it.toUserAppointment() }
+        } ?: emptyList()
+    }
+
     fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
         val user =  getUser(username)
 
@@ -144,12 +158,12 @@ class UserService(
         val user = getUser(username)
 
         return user.staff?.let {
-            val upcomingAppointments = getUpcomingAppointments(username, pageable)
+            val appointmentsForToday = getUserAppointmentsForToday(username, pageable.pageSize)
             val appointmentsWithoutOutcomes = getAppointmentsWithoutOutcomes(username, pageable)
 
             UserAppointments(
                 Name(user.forename, surname = user.surname),
-                appointments = upcomingAppointments.appointments,
+                appointments = appointmentsForToday,
                 outcomes = appointmentsWithoutOutcomes.appointments
             )
         } ?: UserAppointments(Name(user.forename, surname = user.surname))
@@ -253,4 +267,20 @@ fun populateUserDiary(
             it.location
         )
     }
+)
+
+private fun AppointmentEntity.toUserAppointment() = UserAppointment(
+    Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname),
+    id,
+    crn,
+    dob,
+    sentenceDescription,
+    if (totalSentences > 0) (totalSentences - 1) else totalSentences,
+    contactDescription,
+    ZonedDateTime.of(LocalDateTime.of(contactDate, contactStartTime), EuropeLondon),
+    if (contactEndTime != null) ZonedDateTime.of(
+        LocalDateTime.of(contactDate, contactEndTime),
+        EuropeLondon
+    ) else null,
+    location
 )

@@ -332,6 +332,64 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
+                SELECT  ROWNUM,
+                        o.first_name AS forename,
+                        o.second_name AS second_name,
+                        o.third_name AS third_name,
+                        o.surname AS surname,
+                        o.date_of_birth_date AS dob,
+                        c.contact_id AS id,
+                        o.crn AS crn, 
+                        ol.description AS location, 
+                        c.contact_date AS contact_date, 
+                        c.contact_start_time AS contact_start_time,
+                        c.contact_end_time AS contact_end_time,
+                        total_sentences,
+                        rct.description AS contactDescription,
+                        NVL(rdt.description, latest_sentence_description)  AS sentenceDescription
+                FROM contact c 
+                JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id 
+                JOIN offender o ON o.offender_id = c.offender_id
+                JOIN staff s ON s.staff_id = c.staff_id 
+                JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM') 
+                LEFT JOIN office_location ol ON ol.office_location_id = c.office_location_id 
+                LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
+                LEFT JOIN disposal d ON e.event_id = d.event_id 
+                LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id 
+                LEFT JOIN ( 
+                        SELECT sub.* 
+                        FROM
+                          (SELECT e.*,
+                            rdt.description AS latest_sentence_description,
+                            COUNT(e.event_id) over (PARTITION BY e.offender_id) AS total_sentences,
+                            ROW_NUMBER() over (PARTITION BY e.offender_id ORDER BY CAST(e.event_number AS NUMBER) DESC) AS row_num 
+                            FROM event e 
+                            JOIN disposal d ON d.event_id = e.event_id
+                            JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                            WHERE e.soft_deleted = 0 
+                            AND e.active_flag = 1
+                            ) sub
+                        WHERE sub.row_num = 1
+                 ) ls ON ls.offender_id =c.offender_id 
+                 WHERE (c.soft_deleted = 0) 
+                 AND s.staff_id = :staffId
+                 AND rct.attendance_contact = 'Y' 
+                AND (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow 
+                    AND to_char(c.contact_start_time,'HH24:MI') > :timeNow)
+                AND rownum <= :numberOfRecords
+                ORDER BY c.contact_date, c.contact_start_time, ROWNUM
+        """,
+        nativeQuery = true
+    )
+    fun findAppointmentsForTodayByUser(
+        staffId: Long,
+        dateNow: String,
+        timeNow: String,
+        numberOfRecords: Int
+    ): List<Appointment>
+
+    @Query(
+        """
                 SELECT  o.first_name AS forename,
                         o.second_name AS second_name,
                         o.third_name AS third_name,
