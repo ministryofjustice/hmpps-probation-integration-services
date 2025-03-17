@@ -252,8 +252,53 @@ paths:
     get:
       tags:
       - User
-      summary: Gets caseloads for the user
+      summary: Gets upcoming appointments for a user
       operationId: getUserUpcomingAppointments
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sortBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: default
+      - name: ascending
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDiary"
+  /user/{username}/schedule/no-outcome:
+    get:
+      tags:
+      - User
+      summary: Gets passed appointments without an outcome for a user
+      operationId: getUserAppointmentsWithoutOutcomes
       parameters:
       - name: username
         in: path
