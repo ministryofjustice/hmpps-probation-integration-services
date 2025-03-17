@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -26,10 +27,11 @@ class UserDiaryIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Test
-    fun `unauthorized status returned`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["upcoming", "no-outcome"])
+    fun `unauthorized status returned`(uri: String) {
         mockMvc
-            .perform(MockMvcRequestBuilders.get("/user/peter-parker/locations"))
+            .perform(MockMvcRequestBuilders.get("/user/peter-parker//${uri}/schedule/"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
 
@@ -61,15 +63,25 @@ class UserDiaryIntegrationTest {
         assertEquals(expected, response)
     }
 
-    @Test
-    fun `get upcoming appointments default sort ascending order`() {
+    @ParameterizedTest
+    @CsvSource(
+        "upcoming, 2",
+        "upcoming?size=1, 1",
+        "upcoming?sortBy=date, 2",
+        "upcoming?sortBy=name, 2",
+        "upcoming?sortBy=dob, 2",
+        "upcoming?sortBy=appointment, 2",
+        "upcoming?sortBy=sentence, 2"
+    )
+    fun `get upcoming appointments default sort ascending order`(uri: String, resultSize: Int) {
         val user = USER
 
         val response =
-            mockMvc.perform(MockMvcRequestBuilders.get("/user/${user.username}/schedule/upcoming").withToken())
+            mockMvc.perform(MockMvcRequestBuilders.get("/user/${user.username}/schedule/${uri}").withToken())
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andReturn().response.contentAsJson<UserDiary>()
 
+        assertEquals(resultSize, response.appointments.size)
         assertEquals(2, response.totalResults)
         assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
         assertEquals(FIRST_APPT_CONTACT.id, response.appointments[0].id)
@@ -90,6 +102,7 @@ class UserDiaryIntegrationTest {
         assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
         assertEquals(NEXT_APPT_CONTACT.id, response.appointments[0].id)
         assertEquals(1, response.appointments[0].numberOfAdditionalSentences)
+        assertEquals("Bracknell Office", response.appointments[0].location)
     }
 
     @Test
@@ -105,5 +118,6 @@ class UserDiaryIntegrationTest {
         assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
         assertEquals(REQUIREMENT_CONTACT_1.id, response.appointments[0].id)
         assertEquals(1, response.appointments[0].numberOfAdditionalSentences)
+        assertEquals("Bracknell Office", response.appointments[0].location)
     }
 }

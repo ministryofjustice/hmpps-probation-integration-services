@@ -38,22 +38,25 @@ class UserController(
         @PathVariable username: String,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "10") size: Int,
-        @RequestParam(required = false, defaultValue = "default") sortBy: String,
+        @RequestParam(required = false, defaultValue = "date") sortBy: String,
         @RequestParam(required = false, defaultValue = "true") ascending: Boolean
     ) = userService.getAppointmentsWithoutOutcomes(username, PageRequest.of(page, size, sort(sortBy, ascending)))
 
     @GetMapping("/appointments")
     @Operation(summary = "Gets passed appointments without an outcome for a user")
     fun getUserAppointments(
-        @PathVariable username: String,
-        @RequestParam(required = false, defaultValue = "10") size: Int
-    ) = userService.getAppointmentsForUser(username, PageRequest.of(0, 5, sort("default", true)))
+        @PathVariable username: String
+    ) = userService.getAppointmentsForUser(username, PageRequest.of(0, 5, sort("date", true)))
 
     private fun sort(sortString: String, ascending: Boolean): Sort {
         val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC
         return when (sortString) {
-            "default" -> Sort.by(direction, "contact_date", "contact_start_time")
-            else -> Sort.by(direction, "contact_date", "contact_start_time ")
+            "date" -> Sort.by(direction, "contact_date", "contact_start_time")
+            "name" -> Sort.by(direction, "surname")
+            "dob" -> Sort.by(direction, "o.date_of_birth_date")
+            "appointment" -> Sort.by(direction, "contactDescription")
+            "sentence" -> Sort.by(direction, "sentenceDescription")
+            else -> Sort.by(direction, "contact_date", "contact_start_time")
         }
     }
 }
