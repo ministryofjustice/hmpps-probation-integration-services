@@ -12,7 +12,7 @@ data class UserDiary(
     val appointments: List<UserAppointment>
 )
 
-data class UserAppointments (
+data class UserAppointments(
     val staff: Name,
     val appointments: List<UserAppointment> = listOf(),
     val outcomes: List<UserAppointment> = listOf()

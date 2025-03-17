@@ -110,21 +110,22 @@ class UserService(
     }
 
     fun getUserAppointmentsForToday(username: String, numberOfRecords: Int): List<UserAppointment> {
-        val user =  getUser(username)
+        val user = getUser(username)
 
         return user.staff?.let {
             val contacts = contactRepository.findAppointmentsForTodayByUser(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
                 ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
-                numberOfRecords)
+                numberOfRecords
+            )
 
             contacts.map { it.toUserAppointment() }
         } ?: emptyList()
     }
 
     fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
-        val user =  getUser(username)
+        val user = getUser(username)
 
         return user.staff?.let {
 
@@ -169,7 +170,8 @@ class UserService(
         } ?: UserAppointments(Name(user.forename, surname = user.surname))
     }
 
-    fun getUser(username: String) = userRepository.findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
+    fun getUser(username: String) =
+        userRepository.findUserByUsername(username) ?: throw NotFoundException("User", "username", username)
 
     @Transactional
     fun getTeamCaseload(teamCode: String, pageable: Pageable): TeamCaseload {
