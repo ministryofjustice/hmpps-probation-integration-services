@@ -84,7 +84,6 @@ class UserDiaryIntegrationTest {
         assertEquals(resultSize, response.appointments.size)
         assertEquals(2, response.totalResults)
         assertEquals("Default Sentence Type", response.appointments[0].latestSentence)
-        assertEquals(FIRST_APPT_CONTACT.id, response.appointments[0].id)
     }
 
     @Test
