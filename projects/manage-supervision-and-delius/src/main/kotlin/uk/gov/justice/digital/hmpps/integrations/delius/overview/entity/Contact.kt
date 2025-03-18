@@ -191,7 +191,7 @@ class ContactType(
 
     @Column(name = "contact_outcome_flag")
     @Convert(converter = YesNoConverter::class)
-    val contactOutcomeFlag: Boolean = false,
+    val contactOutcomeFlag: Boolean? = false,
 )
 
 @Immutable
