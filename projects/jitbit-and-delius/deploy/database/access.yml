@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /jitbit-and-delius/db-username
+    password_key: /jitbit-and-delius/db-password
+
+  audit:
+    username: JitbitAndDelius
+    forename: Jitbit
+    surname: Service
