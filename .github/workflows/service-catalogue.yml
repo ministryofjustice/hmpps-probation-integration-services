@@ -32,6 +32,7 @@ on:
           - '["hdc-licences-and-delius"]'
           - '["hmpps-auth-and-delius"]'
           - '["ims-and-delius"]'
+          - '["jitbit-and-delius"]'
           - '["justice-email-and-delius"]'
           - '["make-recall-decisions-and-delius"]'
           - '["manage-offences-and-delius"]'
@@ -59,7 +60,6 @@ on:
           - '["tier-to-delius"]'
           - '["unpaid-work-and-delius"]'
           - '["workforce-allocations-to-delius"]'
-          - '["jitbit-and-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
