@@ -19,6 +19,53 @@ tags:
 - name: Case Details
   description: Requires PROBATION_API__HMPPS_API__CASE_DETAIL
 paths:
+  /probation-cases/access:
+    get:
+      tags:
+      - lao-access-controller
+      operationId: caseAccess
+      parameters:
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrnRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAccess"
+    post:
+      tags:
+      - lao-access-controller
+      operationId: caseAccess_1
+      parameters:
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrnRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAccess"
   /reference-data:
     get:
       tags:
@@ -92,6 +139,43 @@ paths:
                 $ref: "#/components/schemas/SupervisionResponse"
 components:
   schemas:
+    CrnRequest:
+      type: object
+      properties:
+        crns:
+          type: array
+          items:
+            type: string
+          maxItems: 500
+          minItems: 1
+      required:
+      - crns
+    CaseAccess:
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
+    UserAccess:
+      type: object
+      properties:
+        access:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseAccess"
+      required:
+      - access
     ProbationReferenceData:
       type: object
       properties:

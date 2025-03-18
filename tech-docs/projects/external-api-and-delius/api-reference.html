@@ -106,6 +106,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#probation-cases-access"><span>/probation-cases/access</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#reference-data"><span>/reference-data</span></a>
       </li>
       <li>
@@ -147,6 +150,138 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="probation-cases-access">/probation-cases/access</h2>
+
+<h3 id="probation-cases-access-get">get</h3>
+
+
+
+
+<h4 id="probation-cases-access-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-cases-access-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="probation-cases-access-post">post</h3>
+
+
+
+
+<h4 id="probation-cases-access-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-cases-access-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -487,6 +622,112 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-crnrequest">CrnRequest</h3>
+
+
+<table class='schema-crnrequest'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crns</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-caseaccess">CaseAccess</h3>
+
+
+<table class='schema-caseaccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userExcluded</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userRestricted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-useraccess">UserAccess</h3>
+
+
+<table class='schema-useraccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>access</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-caseaccess'>CaseAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-probationreferencedata">ProbationReferenceData</h3>
 
 

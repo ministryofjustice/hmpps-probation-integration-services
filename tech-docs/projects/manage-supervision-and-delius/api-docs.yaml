@@ -324,7 +324,7 @@ paths:
         required: false
         schema:
           type: string
-          default: default
+          default: date
       - name: ascending
         in: query
         required: false
@@ -357,6 +357,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserOfficeLocation"
+  /user/{username}/appointments:
+    get:
+      tags:
+      - User
+      summary: Gets passed appointments without an outcome for a user
+      operationId: getUserAppointments
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAppointments"
   /user/{username}/access/{crn}:
     get:
       tags:
@@ -2071,6 +2090,8 @@ components:
         endDateTime:
           type: string
           format: date-time
+        location:
+          type: string
       required:
       - caseName
       - crn
@@ -2131,6 +2152,23 @@ components:
       required:
       - locations
       - name
+    UserAppointments:
+      type: object
+      properties:
+        staff:
+          $ref: "#/components/schemas/Name"
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserAppointment"
+        outcomes:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserAppointment"
+      required:
+      - appointments
+      - outcomes
+      - staff
     MinimalLicenceCondition:
       type: object
       properties:
