@@ -240,7 +240,7 @@ class CaseNotesIntegrationTest {
     @Test
     fun `create an active alert`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.CREATED_ALERT
-        val urn = "urn:hmpps:prisoner-alerts:active:${nomisCaseNote.alertUuid}"
+        val urn = "urn:uk:gov:hmpps:prisoner-alert:active:${nomisCaseNote.alertUuid}"
         val original = caseNoteRepository.findByExternalReference(urn)
         assertNull(original)
 
@@ -265,8 +265,8 @@ class CaseNotesIntegrationTest {
     @Test
     fun `updated to deactivate alert`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.UPDATED_ALERT
-        val activeUrn = "urn:hmpps:prisoner-alerts:active:${nomisCaseNote.alertUuid}"
-        val inactiveUrn = "urn:hmpps:prisoner-alerts:inactive:${nomisCaseNote.alertUuid}"
+        val activeUrn = "urn:uk:gov:hmpps:prisoner-alert:active:${nomisCaseNote.alertUuid}"
+        val inactiveUrn = "urn:uk:gov:hmpps:prisoner-alert:inactive:${nomisCaseNote.alertUuid}"
         val active = caseNoteRepository.findByExternalReference(activeUrn)
         val inactive = caseNoteRepository.findByExternalReference(inactiveUrn)
         assertNotNull(active)
@@ -294,7 +294,7 @@ class CaseNotesIntegrationTest {
     @Test
     fun `alert made inactive`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.INACTIVE_ALERT
-        val inactiveUrn = "urn:hmpps:prisoner-alerts:inactive:${nomisCaseNote.alertUuid}"
+        val inactiveUrn = "urn:uk:gov:hmpps:prisoner-alert:inactive:${nomisCaseNote.alertUuid}"
         val inactive = caseNoteRepository.findByExternalReference(inactiveUrn)
 
         assertNull(inactive)

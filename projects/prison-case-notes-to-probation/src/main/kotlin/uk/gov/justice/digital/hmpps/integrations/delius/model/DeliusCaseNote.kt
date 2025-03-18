@@ -18,7 +18,7 @@ data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody) {
 
     companion object {
         const val CASE_NOTE_URN_PREFIX: String = "urn:uk:gov:hmpps:prison-case-note:"
-        const val ALERT_URN_PREFIX: String = "urn:hmpps:prisoner-alerts:"
+        const val ALERT_URN_PREFIX: String = "urn:uk:gov:hmpps:prisoner-alert:"
 
         fun CaseNoteHeader.getAlertUrn(active: Boolean): String {
             val urnActive = if (active) "active" else "inactive"
