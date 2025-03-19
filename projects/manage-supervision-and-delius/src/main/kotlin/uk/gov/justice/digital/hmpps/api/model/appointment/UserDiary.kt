@@ -14,7 +14,9 @@ data class UserDiary(
 
 data class UserAppointments(
     val staff: Name,
+    val totalAppointments: Int,
     val appointments: List<UserAppointment> = listOf(),
+    val totalOutcomes: Int,
     val outcomes: List<UserAppointment> = listOf()
 )
 

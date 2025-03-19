@@ -111,7 +111,7 @@ class UserService(
         )
     }
 
-    fun getUserAppointmentsForToday(username: String, numberOfRecords: Int): List<UserAppointment> {
+    fun getUserAppointmentsForToday(username: String, pageable: Pageable): UserDiary {
         val user = getUser(username)
 
         return user.staff?.let {
@@ -119,11 +119,11 @@ class UserService(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
                 ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
-                numberOfRecords
+                pageable
             )
 
-            contacts.map { it.toUserAppointment() }
-        } ?: emptyList()
+            populateUserDiary(pageable, contacts)
+        } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
     }
 
     fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
@@ -161,15 +161,17 @@ class UserService(
         val user = getUser(username)
 
         return user.staff?.let {
-            val appointmentsForToday = getUserAppointmentsForToday(username, pageable.pageSize)
+            val appointmentsForToday = getUserAppointmentsForToday(username, pageable)
             val appointmentsWithoutOutcomes = getAppointmentsWithoutOutcomes(username, pageable)
 
             UserAppointments(
                 Name(user.forename, surname = user.surname),
-                appointments = appointmentsForToday,
+                totalAppointments = appointmentsForToday.totalResults,
+                appointments = appointmentsForToday.appointments,
+                totalOutcomes = appointmentsWithoutOutcomes.totalResults,
                 outcomes = appointmentsWithoutOutcomes.appointments
             )
-        } ?: UserAppointments(Name(user.forename, surname = user.surname))
+        } ?: UserAppointments(Name(user.forename, surname = user.surname), totalAppointments = 0, totalOutcomes = 0)
     }
 
     fun getUser(username: String) =
