@@ -81,6 +81,7 @@ fun Contact.toActivity() = Activity(
     notes = notes,
     location = location?.toOfficeAddress(),
     officerName = staff?.forename?.let { Name(forename = it, surname = staff.surname) },
+    isRarRelated = requirement?.mainCategory?.code == "F",
     rarCategory = requirement?.mainCategory?.description,
     rarToolKit = requirement?.mainCategory?.description,
     countsTowardsRAR = rarActivity,

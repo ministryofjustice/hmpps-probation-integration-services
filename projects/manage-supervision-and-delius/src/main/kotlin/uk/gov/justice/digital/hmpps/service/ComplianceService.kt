@@ -28,6 +28,7 @@ class ComplianceService(
         val summary = personRepository.getSummary(crn)
         val events = eventRepository.findByPersonId(summary.id)
         val currentSentences = events.filter { !it.isInactiveEvent() }
+
         val allActiveSentenceActivity =
             activityService.getPersonSentenceActivity(summary.id, currentSentences.map { it.id })
         val allBreaches = nsiRepository.getAllBreaches(summary.id)
@@ -38,11 +39,12 @@ class ComplianceService(
             allBreaches.firstOrNull { it.eventId == eventId && it.active }
 
         fun sentenceActivity(eventNumber: String) = allActiveSentenceActivity.filter { it.eventNumber == eventNumber }
-        fun requirementActivity(eventNumber: String, rarCategory: String?) =
-            allActiveSentenceActivity.filter { it.eventNumber == eventNumber && it.rarCategory == rarCategory }
 
         fun getRarCategoryFromSentence(eventNumber: String) =
-            allActiveSentenceActivity.firstOrNull { it.eventNumber == eventNumber && it.rarCategory != null }?.rarCategory
+            allActiveSentenceActivity.firstOrNull { it.eventNumber == eventNumber && it.isRarRelated }?.rarCategory
+
+        fun rarActivity(eventNumber: String) =
+            allActiveSentenceActivity.filter { it.eventNumber == eventNumber && it.isRarRelated }
 
         fun Event.toSentenceCompliance() = mainOffence?.offence?.let { offence ->
             SentenceCompliance(
@@ -64,10 +66,9 @@ class ComplianceService(
                         status = it.nsiStatus?.description
                     )
                 },
-                activity = toSentenceActivityCounts(
-                    requirementActivity(
-                        eventNumber,
-                        getRarCategoryFromSentence(eventNumber)
+                activity = toRarActivityCounts(
+                    rarActivity(
+                        eventNumber
                     )
                 ),
                 compliance = toSentenceCompliance(sentenceActivity(eventNumber), breachesForSentence(id))
@@ -103,14 +104,14 @@ class ComplianceService(
         )
 }
 
-fun toSentenceActivityCounts(activities: List<Activity>) = ActivityCount(
+fun toRarActivityCounts(activities: List<Activity>) = ActivityCount(
     waitingForEvidenceCount = activities.count { it.isPastAppointment && it.absentWaitingEvidence == true },
     absentCount = activities.count { it.isPastAppointment && it.wasAbsent == true },
     attendedButDidNotComplyCount = activities.count { it.isPastAppointment && it.wasAbsent == false && it.didTheyComply == false },
-    compliedAppointmentsCount = activities.count { it.isPastAppointment && it.didTheyComply == true },
+    compliedAppointmentsCount = activities.count { it.isInPast && it.didTheyComply == true },
     lettersCount = activities.count { it.isPastAppointment && it.action != null },
     nationalStandardAppointmentsCount = activities.count { it.isPastAppointment && it.isNationalStandard },
-    outcomeNotRecordedCount = activities.count { it.isPastAppointment && it.hasOutcome == false },
+    outcomeNotRecordedCount = activities.count { it.isInPast && it.hasOutcome == false },
     rescheduledByPersonOnProbationCount = activities.count { it.rescheduled && it.rescheduledPop },
     rescheduledByStaffCount = activities.count { it.rescheduled && it.rescheduledStaff },
     rescheduledCount = activities.count { it.rescheduled },

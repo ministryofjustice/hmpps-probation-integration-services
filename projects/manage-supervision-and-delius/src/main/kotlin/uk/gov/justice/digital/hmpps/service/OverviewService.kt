@@ -59,7 +59,7 @@ class OverviewService(
             schedule = schedule,
             previousOrders = PreviousOrders(previousOrdersBreached, previousOrders.size),
             sentences = sentences.mapNotNull { it },
-            activity = toSentenceActivityCounts(previousAppointments.map { it.toActivity() }),
+            activity = toRarActivityCounts(previousAppointments.map { it.toActivity() }),
             compliance = compliance,
             registrations = registrations.map { it.type.description },
             mappa = mappa?.toMappa()
