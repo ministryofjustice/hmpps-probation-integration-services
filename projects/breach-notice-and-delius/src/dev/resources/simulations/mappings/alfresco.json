@@ -1,0 +1,40 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "urlPattern": "/alfresco/uploadandrelease/.+"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "urlPattern": "/alfresco/lock/.+"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "urlPattern": "/alfresco/release/.+"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "DELETE",
+        "urlPattern": "/alfresco/deletehard/.+"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}
