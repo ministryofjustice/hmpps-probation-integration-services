@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /case/{crn}:
     get:
       tags:
       - api-controller
-      operationId: handle
+      operationId: getCaseDetails
       parameters:
-      - name: inputId
+      - name: crn
         in: path
         required: true
         schema:
@@ -28,7 +28,58 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseDetails"
 components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        streetName:
+          type: string
+        townCity:
+          type: string
+        district:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        noFixedAbode:
+          type: boolean
+      required:
+      - noFixedAbode
+    CaseDetails:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        mainAddress:
+          $ref: "#/components/schemas/Address"
+      required:
+      - dateOfBirth
+      - name
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
   securitySchemes:
     hmpps-auth-token:
       type: http
