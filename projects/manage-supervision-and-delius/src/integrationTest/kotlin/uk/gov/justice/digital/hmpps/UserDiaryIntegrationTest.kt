@@ -52,7 +52,8 @@ class UserDiaryIntegrationTest {
     fun `get user appointments where user has no staff record`() {
         val user = USER_2
 
-        val expected = UserAppointments(Name(USER_2.forename, surname = USER_2.surname), totalAppointments = 0, totalOutcomes = 0)
+        val expected =
+            UserAppointments(Name(USER_2.forename, surname = USER_2.surname), totalAppointments = 0, totalOutcomes = 0)
         val response =
             mockMvc.perform(MockMvcRequestBuilders.get("/user/${user.username}/appointments").withToken())
                 .andExpect(MockMvcResultMatchers.status().isOk)
