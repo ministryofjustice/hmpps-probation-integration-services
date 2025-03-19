@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -20,6 +21,9 @@ internal class BaseIntegrationTest {
 
     @Autowired
     internal lateinit var mockMvc: MockMvc
+
+    @Autowired
+    internal lateinit var wireMockServer: WireMockServer
 
     @MockitoBean
     internal lateinit var telemetryService: TelemetryService

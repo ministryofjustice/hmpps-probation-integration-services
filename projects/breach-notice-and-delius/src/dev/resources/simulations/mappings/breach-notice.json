@@ -1,0 +1,39 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/breach-notice/pdf/.+"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "test.pdf",
+        "headers": {
+          "Content-Type": "application/octet-stream"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/breach-notice/pdf/404"
+      },
+      "response": {
+        "status": 404
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/breach-notice/pdf/invalid"
+      },
+      "response": {
+        "status": 200,
+        "body": "INVALID",
+        "headers": {
+          "Content-Type": "application/octet-stream"
+        }
+      }
+    }
+  ]
+}

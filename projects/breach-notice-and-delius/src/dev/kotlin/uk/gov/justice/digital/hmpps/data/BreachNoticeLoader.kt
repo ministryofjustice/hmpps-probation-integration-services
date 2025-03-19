@@ -7,19 +7,27 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import java.time.ZonedDateTime
 
 @Component
 @ConditionalOnProperty("seed.database")
 class BreachNoticeLoader(
     private val auditUserRepository: AuditUserRepository,
+    private val businessInteractionRepository: BusinessInteractionRepository,
     private val entityManager: EntityManager,
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
     fun saveAuditUser() {
         auditUserRepository.save(UserGenerator.AUDIT_USER)
+        BusinessInteractionCode.entries
+            .map { BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()) }
+            .forEach { businessInteractionRepository.save(it) }
     }
 
     @Transactional
@@ -29,6 +37,7 @@ class BreachNoticeLoader(
         appointmentData()
         entityManager.persist(DocumentGenerator.DEFAULT_BREACH_NOTICE)
         entityManager.persist(DocumentGenerator.UNSENTENCED_BREACH_NOTICE)
+        entityManager.persist(DocumentGenerator.DELETED_BREACH_NOTICE)
         lao()
     }
 

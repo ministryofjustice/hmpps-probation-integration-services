@@ -1,14 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.time.ZonedDateTime
 import java.util.*
 
-@Immutable
 @Entity
 @Table(name = "document")
 @SQLRestriction("soft_deleted = 0")
@@ -21,6 +20,9 @@ class Document(
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
 
+    @Column(name = "document_name")
+    var name: String,
+
     @Column
     val primaryKeyId: Long,
 
@@ -28,6 +30,19 @@ class Document(
     val tableName: String,
 
     val externalReference: String,
+
+    var lastSaved: ZonedDateTime? = null,
+
+    var lastUpdatedUserId: Long? = null,
+
+    @Column(columnDefinition = "char")
+    var workInProgress: String,
+
+    @Column(columnDefinition = "char")
+    var status: String,
+
+    @Version
+    var rowVersion: Long = 0,
 
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
@@ -79,8 +94,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         left join disposal upw_appointment_disposal on upw_appointment_disposal.disposal_id = upw_details.disposal_id
         left join contact on document.table_name = 'CONTACT' and document.primary_key_id = contact.contact_id
         left join nsi on document.table_name = 'NSI' and document.primary_key_id = nsi.nsi_id
-        where lower(substr(document.external_reference, -36, 36)) = lower(substr(:urn, -36, 36))
-        -- where document.external_reference = :urn -- TODO re-enable exact filtering when Delius bug is fixed in SR31
+        where document.external_reference = :urn
         """,
         nativeQuery = true
     )

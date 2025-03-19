@@ -1,0 +1,18 @@
+{
+  "eventType": "probation-case.breach-notice.deleted",
+  "version": 1,
+  "description": "Breach notice event",
+  "detailUrl": "http://localhost:{wiremock.port}/breach-notice/pdf/00000000-0000-0000-0000-000000000003",
+  "occurredAt": "2025-02-11T15:22:08.452612281+01:00",
+  "additionalInformation": {
+    "breachNoticeId": "00000000-0000-0000-0000-000000000003"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}
