@@ -94,5 +94,4 @@ interface UserDiaryRepository : JpaRepository<Contact, Long> {
         timeNow: String,
         pageable: Pageable
     ): Page<Appointment>
-
 }
