@@ -61,30 +61,11 @@ interface UserDiaryRepository : JpaRepository<Contact, Long> {
                 JOIN r_contact_type rct1 ON rct1.contact_type_id = c1.contact_type_id 
                 JOIN staff s1 ON s1.staff_id = c1.staff_id 
                 JOIN caseload cl1 ON s1.staff_id = cl1.staff_employee_id AND c1.offender_id = cl1.offender_id AND (cl1.role_code = 'OM') 
-                LEFT JOIN event e1 ON e1.event_id = c1.event_id AND (e1.soft_deleted = 0) 
-                LEFT JOIN disposal d1 ON e1.event_id = d1.event_id 
-                LEFT JOIN r_disposal_type rdt1 ON rdt1.disposal_type_id = d1.disposal_type_id 
-                LEFT JOIN office_location ol1 ON ol1.office_location_id = c1.office_location_id 
-                LEFT JOIN ( 
-                        SELECT sub1.* 
-                        FROM
-                          (SELECT e1.*,
-                            rdt1.description AS latest_sentence_description,
-                            COUNT(e1.event_id) over (PARTITION BY e1.offender_id) AS total_sentences,
-                            ROW_NUMBER() over (PARTITION BY e1.offender_id ORDER BY CAST(e1.event_number AS NUMBER) DESC) AS row_num 
-                            FROM event e1
-                            JOIN disposal d1 ON d1.event_id = e1.event_id
-                            JOIN r_disposal_type rdt1 ON rdt1.disposal_type_id = d1.disposal_type_id
-                            WHERE e1.soft_deleted = 0 
-                            AND e1.active_flag = 1
-                            ) sub1
-                        WHERE sub1.row_num = 1
-                 ) ls1 ON ls1.offender_id = c1.offender_id 
-                 WHERE (c1.soft_deleted = 0) 
-                 AND s1.staff_id = :staffId
-                 AND rct1.attendance_contact = 'Y' 
-                 AND (to_char(c1.contact_date,'YYYY-MM-DD') = :dateNow 
-                 AND to_char(c1.contact_start_time,'HH24:MI') > :timeNow)     
+                WHERE (c1.soft_deleted = 0) 
+                AND s1.staff_id = :staffId
+                AND rct1.attendance_contact = 'Y' 
+                AND (to_char(c1.contact_date,'YYYY-MM-DD') = :dateNow 
+                AND to_char(c1.contact_start_time,'HH24:MI') > :timeNow)     
         """,
         nativeQuery = true
     )
