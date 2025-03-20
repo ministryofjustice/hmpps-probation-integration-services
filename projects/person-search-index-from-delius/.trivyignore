@@ -1,4 +1,5 @@
-# SslHandler doesn't correctly validate packets which can lead to native crash when using native SSLEngine
-# Reason: Not exposing an SSL endpoint or making requests to untrusted endpoints
-# Package: io.netty:netty-handler:4.1.115.Final
-CVE-2025-24970 exp:2025-08-01
+# rack: rubygem-rack: Local File Inclusion in Rack::Static
+# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/4783
+# Reason: Not serving static files
+# Package: rack:3.1.10
+CVE-2025-27610 exp:2025-08-01
