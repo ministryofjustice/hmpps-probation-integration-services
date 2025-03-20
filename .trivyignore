@@ -1,5 +1,5 @@
-# Issue: RCE due to TOCTOU issue in JSP compilation
-#
-# Ignored because we don't use JSP compilation. Closes https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/4534
-CVE-2024-56337 exp:2025-10-01
-CVE-2024-50379 exp:2025-10-01
+# libexpat: expat: Improper Restriction of XML Entity Expansion Depth in libexpat
+# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/4812
+# Reason: Not processing any untrusted XML
+# Package: libexpat:2.6.4-r0
+CVE-2024-8176 exp:2025-08-01
