@@ -1916,6 +1916,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Document"
+        isRarRelated:
+          type: boolean
         rarCategory:
           type: string
         acceptableAbsence:
@@ -1938,6 +1940,8 @@ components:
           type: boolean
         isPhoneCallToPop:
           type: boolean
+        isInPast:
+          type: boolean
         isPastAppointment:
           type: boolean
         countsTowardsRAR:
@@ -1956,9 +1960,11 @@ components:
       - id
       - isAppointment
       - isCommunication
+      - isInPast
       - isInitial
       - isNationalStandard
       - isPastAppointment
+      - isRarRelated
       - lastUpdated
       - lastUpdatedBy
       - rescheduled
@@ -2157,10 +2163,16 @@ components:
       properties:
         staff:
           $ref: "#/components/schemas/Name"
+        totalAppointments:
+          type: integer
+          format: int32
         appointments:
           type: array
           items:
             $ref: "#/components/schemas/UserAppointment"
+        totalOutcomes:
+          type: integer
+          format: int32
         outcomes:
           type: array
           items:
@@ -2169,6 +2181,8 @@ components:
       - appointments
       - outcomes
       - staff
+      - totalAppointments
+      - totalOutcomes
     MinimalLicenceCondition:
       type: object
       properties:
