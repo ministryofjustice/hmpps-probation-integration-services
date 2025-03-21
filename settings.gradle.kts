@@ -74,6 +74,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.0.4")
+            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:3.3.0")
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.3.0")
             library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.31.1")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.3.0")
@@ -88,6 +89,8 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:5.2.1-RELEASE")
+            library("opensearch", "org.opensearch.client:opensearch-java:2.20.0")
+            library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:1.6.1")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.14.0"
@@ -101,6 +104,7 @@ dependencyResolutionManagement {
                 listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
             )
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
+            bundle("opensearch", listOf("opensearch", "opensearch-starter"))
             bundle("telemetry", listOf("azure-app-insights", "opentelemetry-annotations", "sentry"))
         }
     }

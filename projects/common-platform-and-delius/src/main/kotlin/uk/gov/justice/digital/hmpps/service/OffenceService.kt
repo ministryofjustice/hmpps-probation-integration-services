@@ -18,10 +18,8 @@ class OffenceService(
     val priorityMap: Map<String, Int> by lazy { readOffencePrioritiesFromS3() }
 
     fun getOffenceHomeOfficeCodeByCJACode(cjaCode: String): String =
-        detailedOffenceRepository.findByCode(cjaCode)?.homeOfficeCode?.replace(
-            "/",
-            ""
-        ) ?: throw IllegalArgumentException("No Home Office code found for CJA code $cjaCode")
+        detailedOffenceRepository.findByCode(cjaCode)?.homeOfficeCode?.replace("/", "")
+            ?: throw IllegalArgumentException("No Home Office code found for CJA code $cjaCode")
 
     private fun readOffencePrioritiesFromS3(): Map<String, Int> {
         val request = GetObjectRequest.builder()
@@ -29,18 +27,10 @@ class OffenceService(
             .key("offence_priority.csv")
             .build()
 
-        val mapper = CsvMapper()
-        val schema = CsvSchema.emptySchema().withHeader()
-        val reader = mapper.readerFor(OffencePriority::class.java)
-            .with(schema)
+        return CsvMapper().readerFor(OffencePriority::class.java)
+            .with(CsvSchema.emptySchema().withHeader())
             .readValues<OffencePriority>(s3Client.getObject(request))
-
-        val priorityMap = mutableMapOf<String, Int>()
-
-        reader.forEach { record ->
-            priorityMap[record.hoOffenceCode] = record.priority
-        }
-
-        return priorityMap
+            .asSequence()
+            .associateBy({ it.hoOffenceCode }, { it.priority })
     }
 }

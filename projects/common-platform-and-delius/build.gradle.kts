@@ -17,9 +17,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
-    implementation("org.opensearch.client:spring-data-opensearch-starter:1.6.1")
-    implementation("org.opensearch.client:opensearch-java:2.20.0")
-    implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:3.3.0")
+    implementation(libs.bundles.opensearch)
+    implementation(libs.aws.s3)
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
