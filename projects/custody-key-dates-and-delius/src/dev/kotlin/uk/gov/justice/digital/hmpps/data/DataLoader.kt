@@ -117,15 +117,20 @@ class DataLoader(
                 bookingRef
             )
         )
-        keyDateRepository.saveAll(
-            keyDateTypes.map { referenceData ->
-                if (referenceData.code == "LED") {
+        keyDateRepository.saveAll(keyDateTypes.flatMap { referenceData ->
+            when (referenceData.code) {
+                "LED" -> listOf(
                     KeyDate(custody, referenceData, LocalDate.parse("2025-09-11")).also { it.softDeleted = true }
-                } else {
-                    KeyDate(custody, referenceData, LocalDate.parse("2025-12-11")).also { it.softDeleted = false }
-                }
+                )
+
+                "SED" -> listOf(
+                    KeyDate(custody, referenceData, LocalDate.parse("2025-09-10")),
+                    KeyDate(custody, referenceData, LocalDate.parse("2025-09-11")).also { it.softDeleted = true }
+                )
+
+                else -> listOf(KeyDate(custody, referenceData, LocalDate.parse("2025-12-11")))
             }
-        )
+        })
         return custody
     }
 }

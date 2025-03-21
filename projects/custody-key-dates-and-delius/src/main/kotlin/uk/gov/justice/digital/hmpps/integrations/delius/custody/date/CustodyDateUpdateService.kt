@@ -86,7 +86,7 @@ class CustodyDateUpdateService(
         }
 
     private fun Custody.keyDate(code: String, date: LocalDate?): KeyDate? = date?.let {
-        val existing = keyDates.find(code)
+        val existing = keyDates.filter { it.type.code == code }.removeDuplicates()
         return if (existing != null) {
             existing.changeDate(date)
         } else {
@@ -95,7 +95,10 @@ class CustodyDateUpdateService(
         }
     }
 
-    private fun List<KeyDate>.find(code: String): KeyDate? = firstOrNull { it.type.code == code }
+    private fun List<KeyDate>.removeDuplicates(): KeyDate? {
+        if (size > 1) drop(1).forEach { keyDateRepository.delete(it) }
+        return firstOrNull()
+    }
 
     private fun Booking.telemetry(clientSource: String) = mapOf(
         "nomsNumber" to offenderNo,
