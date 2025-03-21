@@ -74,6 +74,7 @@ class CustodyDateUpdateService(
         custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
         custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
         custody.keyDate(POST_SENTENCE_SUPERVISION_END_DATE.code, sentenceDetail.postSentenceSupervisionEndDate),
+        custody.keyDate(POST_RECALL_RELEASE_DATE.code, sentenceDetail.postRecallReleaseDate),
         custody.keyDate(SUSPENSION_DATE_IF_RESET.code, suspensionDateIfReset(sentenceDetail, custody)),
     )
 
