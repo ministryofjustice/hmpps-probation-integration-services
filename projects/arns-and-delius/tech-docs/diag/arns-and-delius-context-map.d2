@@ -1,0 +1,27 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+Context-arns: ARNS Context {
+  entities: Entities {
+    grid-columns: 1
+    ua: User access
+    limitations: Limitations
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: ARNS\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 1
+    ua: UserAccess
+    pa: PersonAccess
+  }
+}
+
+Context-arns--context-delius.interface: Upstream\n\n\nDownstream
