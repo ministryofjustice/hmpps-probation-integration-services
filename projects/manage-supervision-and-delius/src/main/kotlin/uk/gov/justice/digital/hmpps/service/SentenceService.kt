@@ -260,6 +260,6 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
                     else -> null
                 }
             )
-        }
+        }.filter { it.note != "null" }
     } ?: listOf()
 }

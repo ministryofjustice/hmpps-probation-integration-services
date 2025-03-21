@@ -120,6 +120,9 @@ object PersonDetailsGenerator {
         LocalDate.now().minusDays(1),
         USER,
         notes = """
+            Comment added by John Brown on 30/10/2024 at 12:14
+            null
+            ---------------------------------------------------------
             Comment added by Harry Kane on 29/10/2024 at 14:39
             Circumstance Note 1
             ---------------------------------------------------------
