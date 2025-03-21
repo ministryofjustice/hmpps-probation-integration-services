@@ -94,7 +94,7 @@ class Handler(
                     offence.judicialResults?.any { it.label == "Remanded in custody" } == true
                 }
 
-                val mainOffence = findMainOffence(remandedOffences)?: return@forEach
+                val mainOffence = findMainOffence(remandedOffences) ?: return@forEach
 
                 val caseUrn =
                     notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }?.prosecutionCaseIdentifier?.caseURN

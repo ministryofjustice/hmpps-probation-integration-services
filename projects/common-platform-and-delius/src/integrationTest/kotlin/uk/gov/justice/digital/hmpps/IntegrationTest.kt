@@ -486,7 +486,6 @@ internal class IntegrationTest {
         verify(mainOffenceRepository).save(check<MainOffence> {
             assertThat(it.offence.code, Matchers.equalTo("00101"))
         })
-
     }
 
     private fun thenNoRecordsAreInserted() {
