@@ -1,0 +1,34 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+Context-dps: DPS Context {
+  entities: Entities {
+    grid-columns: 1
+    conviction: Conviction
+    document: Document
+    name: Name
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: DPS and\n Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    event: Event
+    disposal: Disposal
+    custody: Custody
+    institution: Institution
+    offence: Offence
+    ca: Court appearance
+    document: Document
+    pop: Person on Probation
+  }
+}
+
+Context-dps--context-delius.interface: Upstream\n\n\nDownstream
