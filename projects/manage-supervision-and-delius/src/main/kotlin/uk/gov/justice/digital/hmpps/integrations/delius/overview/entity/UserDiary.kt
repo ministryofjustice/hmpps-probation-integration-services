@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
@@ -48,10 +50,22 @@ interface UserDiaryRepository : JpaRepository<Contact, Long> {
                  WHERE (c1.soft_deleted = 0) 
                  AND s1.staff_id = :staffId
                  AND rct1.attendance_contact = 'Y' 
-                AND (to_char(c1.contact_date,'YYYY-MM-DD') = :dateNow 
+                 AND (to_char(c1.contact_date,'YYYY-MM-DD') = :dateNow 
                     AND to_char(c1.contact_start_time,'HH24:MI') > :timeNow)
-                AND rownum <= :numberOfRecords
-                ORDER BY c1.contact_date, c1.contact_start_time, ROWNUM
+                 ORDER BY c1.contact_date, c1.contact_start_time
+        """,
+        countQuery = """
+                SELECT  COUNT(*)
+                FROM contact c1 
+                JOIN offender o1 ON o1.offender_id = c1.offender_id
+                JOIN r_contact_type rct1 ON rct1.contact_type_id = c1.contact_type_id 
+                JOIN staff s1 ON s1.staff_id = c1.staff_id 
+                JOIN caseload cl1 ON s1.staff_id = cl1.staff_employee_id AND c1.offender_id = cl1.offender_id AND (cl1.role_code = 'OM') 
+                WHERE (c1.soft_deleted = 0) 
+                AND s1.staff_id = :staffId
+                AND rct1.attendance_contact = 'Y' 
+                AND (to_char(c1.contact_date,'YYYY-MM-DD') = :dateNow 
+                AND to_char(c1.contact_start_time,'HH24:MI') > :timeNow)     
         """,
         nativeQuery = true
     )
@@ -59,6 +73,6 @@ interface UserDiaryRepository : JpaRepository<Contact, Long> {
         staffId: Long,
         dateNow: String,
         timeNow: String,
-        numberOfRecords: Int
-    ): List<Appointment>
+        pageable: Pageable
+    ): Page<Appointment>
 }

@@ -35,6 +35,7 @@ class OverviewService(
         val personalCircumstances = personalCircumstanceRepository.findCurrentCircumstances(person.id)
         val disabilities = disabilityRepository.findByPersonId(person.id)
         val personalDetails = person.toPersonalDetails(personalCircumstances, disabilities, provisions)
+        val allContacts = contactRepository.findByPersonId(person.id)
         val previousAppointments = contactRepository.getPreviousAppointments(person.id)
         val previousAppointmentNoOutcome =
             previousAppointments.filter { it.attended != false && it.outcome == null }.size
@@ -59,7 +60,7 @@ class OverviewService(
             schedule = schedule,
             previousOrders = PreviousOrders(previousOrdersBreached, previousOrders.size),
             sentences = sentences.mapNotNull { it },
-            activity = toRarActivityCounts(previousAppointments.map { it.toActivity() }),
+            activity = toRarActivityCounts(allContacts.map { it.toActivity() }),
             compliance = compliance,
             registrations = registrations.map { it.type.description },
             mappa = mappa?.toMappa()
