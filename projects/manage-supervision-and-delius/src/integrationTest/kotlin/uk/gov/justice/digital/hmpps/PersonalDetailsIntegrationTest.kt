@@ -326,7 +326,7 @@ internal class PersonalDetailsIntegrationTest {
     }
 
     @Test
-    fun `circumstances are returned`() {
+    fun `circumstances are returned with correct notes`() {
         val person = PERSONAL_DETAILS
         val res = mockMvc
             .perform(get("/personal-details/${person.crn}/circumstances").withToken())
@@ -336,6 +336,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.circumstances[0], equalTo(PERSONAL_CIRC_1.toCircumstance()))
         assertThat(res.circumstances[1], equalTo(PERSONAL_CIRC_2.toCircumstance()))
         assertThat(res.circumstances[2], equalTo(PERSONAL_CIRC_PREV.toCircumstance()))
+        assertThat(res.circumstances[0].circumstanceNotes?.size, equalTo(2))
     }
 
     @Test
