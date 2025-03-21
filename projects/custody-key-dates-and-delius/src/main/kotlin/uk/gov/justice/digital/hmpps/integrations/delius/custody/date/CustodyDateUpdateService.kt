@@ -96,7 +96,10 @@ class CustodyDateUpdateService(
     }
 
     private fun List<KeyDate>.removeDuplicates(): KeyDate? {
-        if (size > 1) drop(1).forEach { keyDateRepository.delete(it) }
+        if (size > 1) {
+            drop(1).forEach { keyDateRepository.delete(it) }
+            keyDateRepository.flush() // Required to avoid unique key constraint, by ensuring delete happens before insert
+        }
         return firstOrNull()
     }
 

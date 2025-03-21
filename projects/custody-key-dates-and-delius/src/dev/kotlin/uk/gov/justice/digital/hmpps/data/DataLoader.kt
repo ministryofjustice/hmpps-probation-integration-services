@@ -124,8 +124,8 @@ class DataLoader(
                 )
 
                 "SED" -> listOf(
-                    KeyDate(custody, referenceData, LocalDate.parse("2025-09-10")),
-                    KeyDate(custody, referenceData, LocalDate.parse("2025-09-11")).also { it.softDeleted = true }
+                    KeyDate(custody, referenceData, LocalDate.parse("2025-09-11")),
+                    KeyDate(custody, referenceData, LocalDate.parse("2025-09-10")).also { it.softDeleted = true }
                 )
 
                 else -> listOf(KeyDate(custody, referenceData, LocalDate.parse("2025-12-11")))

@@ -97,7 +97,7 @@ class Custody(
     val disposal: Disposal? = null,
 
     @OneToMany(mappedBy = "custody")
-    val keyDates: List<KeyDate> = listOf(),
+    val keyDates: MutableList<KeyDate> = mutableListOf(),
 
     @Column(columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
