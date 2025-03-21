@@ -54,6 +54,8 @@ wiremock.enabled: true
 
 messaging.consumer.queue: message-queue
 
+s3.bucket.name: offence-priority-bucket
+
 integrations:
   probation-search.url: http://localhost:${wiremock.port}/probation-search
 

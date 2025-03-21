@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.RemandService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -27,7 +28,8 @@ class Handler(
     private val probationSearchClient: ProbationSearchClient,
     private val featureFlags: FeatureFlags,
     private val remandService: RemandService,
-    private val openSearchClient: OpenSearchClient
+    private val openSearchClient: OpenSearchClient,
+    private val offenceService: OffenceService
 ) : NotificationHandler<CommonPlatformHearing> {
 
     @Publish(messages = [Message(title = "COMMON_PLATFORM_HEARING", payload = Schema(CommonPlatformHearing::class))])
@@ -92,8 +94,7 @@ class Handler(
                     offence.judicialResults?.any { it.label == "Remanded in custody" } == true
                 }
 
-                // TODO: Currently using the first offence, We will need to identify the main offence
-                val mainOffence = remandedOffences.firstOrNull() ?: return@forEach
+                val mainOffence = findMainOffence(remandedOffences) ?: return@forEach
 
                 val caseUrn =
                     notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }?.prosecutionCaseIdentifier?.caseURN
@@ -139,5 +140,12 @@ class Handler(
             pncNumber = this.pncId,
             croNumber = this.croNumber
         )
+    }
+
+    private fun findMainOffence(remandedOffences: List<HearingOffence>): HearingOffence? {
+        return remandedOffences.minByOrNull {
+            val offenceCode = it.offenceCode?.let { code -> offenceService.getOffenceHomeOfficeCodeByCJACode(code) }
+            offenceService.priorityMap[offenceCode] ?: Int.MAX_VALUE
+        }
     }
 }

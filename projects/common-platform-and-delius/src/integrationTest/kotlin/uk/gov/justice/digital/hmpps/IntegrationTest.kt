@@ -19,6 +19,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
+import software.amazon.awssdk.core.ResponseInputStream
+import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.s3.model.GetObjectRequest
+import software.amazon.awssdk.services.s3.model.GetObjectResponse
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
@@ -32,9 +36,11 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.CommonPlatformHearing
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.EventService
+import uk.gov.justice.digital.hmpps.service.OffenceService
 import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.io.ByteArrayInputStream
 import java.time.LocalDate
 import java.util.function.Function
 
@@ -104,6 +110,12 @@ internal class IntegrationTest {
 
     @MockitoBean
     lateinit var openSearchClient: OpenSearchClient
+
+    @MockitoSpyBean
+    lateinit var offenceService: OffenceService
+
+    @MockitoBean
+    lateinit var s3Client: S3Client
 
     @BeforeEach
     fun setup() {
@@ -449,6 +461,31 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
         verify(personRepository).save(any())
         assertEquals(personRepository.count(), 0)
+    }
+
+    @Test
+    fun `Main offence is the offence with the lowest priority when message contains multiple offences`() {
+        val mockCsv = """
+            ho_offence_code,offence_desc,priority,offence_type,max_custodial_sentence
+            00100,Test offence 1,60,Type,30
+            00101,Test offence 2,20,Type,240
+            00102,Test offence 3,30,Type,100
+        """.trimIndent()
+        val inputStream = ByteArrayInputStream(mockCsv.toByteArray())
+        val responseStream = ResponseInputStream(GetObjectResponse.builder().build(), inputStream)
+        val request = GetObjectRequest.builder()
+            .bucket("offence-priority-bucket")
+            .key("offence_priority.csv")
+            .build()
+
+        whenever(s3Client.getObject(request)).thenReturn(responseStream)
+
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_OFFENCES)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(mainOffenceRepository).save(check<MainOffence> {
+            assertThat(it.offence.code, Matchers.equalTo("00101"))
+        })
     }
 
     private fun thenNoRecordsAreInserted() {
