@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - CustodyDateUpdateServiceTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>CustodyDateUpdateServiceTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/uk.gov.justice.digital.hmpps.integrations.delius.custody.date.html">uk.gov.justice.digital.hmpps.integrations.delius.custody.date</a> &gt; CustodyDateUpdateServiceTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">17</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">3.731s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Method name</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">Multiple matching custody logged to telemetry()</td>
+<td class="success">Multiple matching custody logged to telemetry()</td>
+<td class="success">3.487s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">No matching custody logged to telemetry()</td>
+<td class="success">No matching custody logged to telemetry()</td>
+<td class="success">0.013s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[10] conditionalReleaseDate=2099-06-30, sentenceExpiryDate=2120-02-29, expected=2113-04-10</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[10]</td>
+<td class="success">0.005s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[1] conditionalReleaseDate=null, sentenceExpiryDate=2025-01-01, expected=null</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[1]</td>
+<td class="success">0.023s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[2] conditionalReleaseDate=2025-01-01, sentenceExpiryDate=null, expected=null</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[2]</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[3] conditionalReleaseDate=2025-01-02, sentenceExpiryDate=2025-01-01, expected=null</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[3]</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[4] conditionalReleaseDate=2025-01-01, sentenceExpiryDate=2025-01-01, expected=null</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[4]</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[5] conditionalReleaseDate=2025-01-01, sentenceExpiryDate=2025-01-02, expected=2025-01-01</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[5]</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[6] conditionalReleaseDate=2025-01-01, sentenceExpiryDate=2025-01-03, expected=2025-01-02</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[6]</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[7] conditionalReleaseDate=2025-01-01, sentenceExpiryDate=2025-01-04, expected=2025-01-03</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[7]</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[8] conditionalReleaseDate=2025-01-01, sentenceExpiryDate=2026-01-01, expected=2025-09-01</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[8]</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">[9] conditionalReleaseDate=2028-02-29, sentenceExpiryDate=2028-03-30, expected=2028-03-20</td>
+<td class="success">check two-thirds point(LocalDate, LocalDate, LocalDate)[9]</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">inactive bookings are not processed()</td>
+<td class="success">inactive bookings are not processed()</td>
+<td class="success">0.086s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">key date save and delete not called without appropriate key dates()</td>
+<td class="success">key date save and delete not called without appropriate key dates()</td>
+<td class="success">0.025s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">messages for people without a noms number are ignored()</td>
+<td class="success">messages for people without a noms number are ignored()</td>
+<td class="success">0.011s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">two-thirds point is null when event is not determinate()</td>
+<td class="success">two-thirds point is null when event is not determinate()</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">two-thirds point uses event first release date if present()</td>
+<td class="success">two-thirds point uses event first release date if present()</td>
+<td class="success">0.005s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.13</a> at Mar 21, 2025, 12:12:37 PM</p>
+</div>
+</div>
+</body>
+</html>
