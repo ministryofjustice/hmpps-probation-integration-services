@@ -114,8 +114,8 @@ internal class ScheduleIntegrationTest {
             .andReturn().response.contentAsJson<PersonAppointment>()
 
         val expectedNotes = listOf(
-            NoteDetail(0, "Tom Brady", LocalDate.of(2024,10, 29), "was on holiday", false),
-            NoteDetail(1, "Harry Kane", LocalDate.of(2024,10, 29), LONG_NOTE.substring(0,1500), true)
+            NoteDetail(0, "Tom Brady", LocalDate.of(2024, 10, 29), "was on holiday", false),
+            NoteDetail(1, "Harry Kane", LocalDate.of(2024, 10, 29), LONG_NOTE.substring(0, 1500), true)
         )
 
         assertThat(res.appointment.description, equalTo("previous appointment"))
@@ -133,7 +133,7 @@ internal class ScheduleIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonAppointment>()
 
-        val expectedNote = NoteDetail(1, "Harry Kane", LocalDate.of(2024,10, 29), LONG_NOTE)
+        val expectedNote = NoteDetail(1, "Harry Kane", LocalDate.of(2024, 10, 29), LONG_NOTE)
 
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
