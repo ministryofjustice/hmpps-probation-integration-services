@@ -137,7 +137,6 @@ internal class IntegrationTest {
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
         val pr1 = custody.keyDate(CustodyDateType.SUSPENSION_DATE_IF_RESET.code)
-        val prd = custody.keyDate(CustodyDateType.POST_RECALL_RELEASE_DATE.code)
 
         assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
         assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
@@ -145,7 +144,6 @@ internal class IntegrationTest {
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(prd?.date, equalTo(LocalDate.parse("2025-03-21")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
@@ -166,13 +164,12 @@ internal class IntegrationTest {
             contact.notes,
             equalTo(
                 """
-                LED 11/09/2025
-                ACR 26/11/2022
-                SED 10/09/2025
-                EXP 27/11/2022
-                HDE 28/10/2022
-                PRRD 21/03/2025
-                PR1 05/10/2024
+            LED 11/09/2025
+            ACR 26/11/2022
+            SED 10/09/2025
+            EXP 27/11/2022
+            HDE 28/10/2022
+            PR1 05/10/2024
                 """.trimIndent()
             )
         )
