@@ -122,4 +122,21 @@ internal class ScheduleIntegrationTest {
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
         assertThat(res.appointment.activityNotes, equalTo(expectedNotes))
     }
+
+    @Test
+    fun `individual appointment with outcome with single note is returned`() {
+
+        val person = OVERVIEW
+        val id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id
+        val res = mockMvc
+            .perform(get("/schedule/${person.crn}/appointment/${id}/note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonAppointment>()
+
+        val expectedNote = NoteDetail(1, "Harry Kane", LocalDate.of(2024,10, 29), LONG_NOTE)
+
+        assertThat(res.appointment.description, equalTo("previous appointment"))
+        assertThat(res.appointment.outcome, equalTo("Acceptable"))
+        assertThat(res.appointment.activityNote, equalTo(expectedNote))
+    }
 }
