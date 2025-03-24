@@ -72,6 +72,7 @@ interface PersonCircumstanceRepository : JpaRepository<PersonalCircumstance, Lon
         """
         select pc from PersonalCircumstance pc 
         where pc.personId = :personId
+        order by pc.startDate desc, pc.endDate desc
     """
     )
     fun findAllCircumstances(personId: Long): List<PersonalCircumstance>

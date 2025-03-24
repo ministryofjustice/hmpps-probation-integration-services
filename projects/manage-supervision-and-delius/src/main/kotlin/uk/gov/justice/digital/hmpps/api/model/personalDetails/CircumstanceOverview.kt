@@ -7,7 +7,8 @@ import java.time.LocalDate
 
 data class CircumstanceOverview(
     val personSummary: PersonSummary,
-    val circumstances: List<Circumstance>
+    val circumstances: List<Circumstance>,
+    val previousCircumstances: List<Circumstance>
 )
 
 data class CircumstanceOverviewSummary(
@@ -23,6 +24,7 @@ data class Circumstance(
     val circumstanceNote: NoteDetail? = null,
     val verified: Boolean?,
     val startDate: LocalDate,
+    val endDate: LocalDate? = null,
     val lastUpdated: LocalDate,
     val lastUpdatedBy: Name
 )
