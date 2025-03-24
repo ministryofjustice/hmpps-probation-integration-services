@@ -316,10 +316,12 @@ class PersonalDetailsService(
     fun getPersonCircumstances(crn: String): CircumstanceOverview {
         val person = personRepository.getSummary(crn)
         val circumstances = personalCircumstanceRepository.findAllCircumstances(person.id)
+            .partition { it.endDate == null || it.endDate > LocalDate.now() }
 
         return CircumstanceOverview(
             personSummary = person.toPersonSummary(),
-            circumstances = circumstances.map { it.toCircumstance() }
+            circumstances = circumstances.first.map { it.toCircumstance() },
+            previousCircumstances = circumstances.second.map { it.toCircumstance() },
         )
     }
 
@@ -400,6 +402,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCir
         circumstanceNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
         verified = evidenced,
         startDate = startDate,
+        endDate = endDate,
         lastUpdated = lastUpdated,
         lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname)
     )

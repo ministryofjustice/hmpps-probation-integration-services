@@ -126,6 +126,7 @@ internal class PersonalDetailsControllerTest {
         val expectedResponse = CircumstanceOverview(
             personSummary = personSummary,
             circumstances = listOfNotNull(PersonDetailsGenerator.PERSONAL_CIRC_1.toCircumstance()),
+            previousCircumstances = listOfNotNull(PersonDetailsGenerator.PERSONAL_CIRC_2.toCircumstance())
         )
         whenever(personalDetailsService.getPersonCircumstances(crn)).thenReturn(expectedResponse)
         val res = controller.getPersonCircumstances(crn)
