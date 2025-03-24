@@ -12,12 +12,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.service.toActivity
 import uk.gov.justice.digital.hmpps.service.toDocument
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -110,7 +112,13 @@ internal class ScheduleIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonAppointment>()
 
+        val expectedNotes = listOf(
+            NoteDetail(0, "Tom Brady", LocalDate.of(2024,10, 29), "acceptable absence", false),
+            NoteDetail(1, "Harry Kane", LocalDate.of(2024,10, 29), "was on holiday", false)
+        )
+
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
+        assertThat(res.appointment.notes, equalTo(expectedNotes))
     }
 }

@@ -78,7 +78,7 @@ fun Contact.toActivity() = Activity(
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
     wasAbsent = outcome?.outcomeAttendance == false,
     nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
-    notes = notes,
+    notes = formatNote(notes, true),
     location = location?.toOfficeAddress(),
     officerName = staff?.forename?.let { Name(forename = it, surname = staff.surname) },
     isRarRelated = requirement?.mainCategory?.code == "F",
