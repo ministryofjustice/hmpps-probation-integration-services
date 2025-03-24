@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.schedule.PersonAppointment
 import uk.gov.justice.digital.hmpps.api.model.schedule.Schedule
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.service.toActivity
 import uk.gov.justice.digital.hmpps.service.toDocument
@@ -113,12 +114,12 @@ internal class ScheduleIntegrationTest {
             .andReturn().response.contentAsJson<PersonAppointment>()
 
         val expectedNotes = listOf(
-            NoteDetail(0, "Tom Brady", LocalDate.of(2024,10, 29), "acceptable absence", false),
-            NoteDetail(1, "Harry Kane", LocalDate.of(2024,10, 29), "was on holiday", false)
+            NoteDetail(0, "Tom Brady", LocalDate.of(2024,10, 29), "was on holiday", false),
+            NoteDetail(1, "Harry Kane", LocalDate.of(2024,10, 29), LONG_NOTE.substring(0,1500), true)
         )
 
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
-        assertThat(res.appointment.notes, equalTo(expectedNotes))
+        assertThat(res.appointment.activityNotes, equalTo(expectedNotes))
     }
 }

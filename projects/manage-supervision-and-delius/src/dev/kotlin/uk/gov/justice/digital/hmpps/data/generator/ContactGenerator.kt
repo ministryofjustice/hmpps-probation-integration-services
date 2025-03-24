@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generateContactTypeOutcome
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_BOROUGH
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROVIDER
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator.LONG_NOTE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
@@ -97,10 +98,10 @@ object ContactGenerator {
         outcome = ACCEPTABLE_ABSENCE,
         notes = """
             Comment added by Harry Kane on 29/10/2024 at 14:39
-            was on holiday
+            ${LONG_NOTE}
             ---------------------------------------------------------
             Comment added by Tom Brady on 29/10/2024 at 14:56
-            acceptable absence
+            was on holiday
         """.trimIndent()
 
     )

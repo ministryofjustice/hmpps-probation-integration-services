@@ -18,12 +18,12 @@ class ScheduleService(
 ) {
 
     @Transactional
-    fun getPersonAppointment(crn: String, contactId: Long): PersonAppointment {
+    fun getPersonAppointment(crn: String, contactId: Long, noteId: Int? = null): PersonAppointment {
         val summary = personRepository.getSummary(crn)
         val contact = contactRepository.getContact(summary.id, contactId)
         return PersonAppointment(
             personSummary = summary.toPersonSummary(),
-            appointment = contact.toActivity()
+            appointment = contact.toActivity(noteId)
         )
     }
 
@@ -59,7 +59,7 @@ fun OfficeLocation.toOfficeAddress() = OfficeAddress.from(
     telephoneNumber = telephoneNumber
 )
 
-fun Contact.toActivity() = Activity(
+fun Contact.toActivity(noteId: Int? = null) = Activity(
     id = id,
     type = type.description,
     isNationalStandard = type.nationalStandardsContact,
@@ -78,7 +78,8 @@ fun Contact.toActivity() = Activity(
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
     wasAbsent = outcome?.outcomeAttendance == false,
     nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
-    notes = formatNote(notes, true),
+    activityNotes = if (noteId == null) formatNote(notes, true) else null,
+    activityNote = if (noteId != null) formatNote(notes, false).elementAtOrNull(noteId) else null,
     location = location?.toOfficeAddress(),
     officerName = staff?.forename?.let { Name(forename = it, surname = staff.surname) },
     isRarRelated = requirement?.mainCategory?.code == "F",
