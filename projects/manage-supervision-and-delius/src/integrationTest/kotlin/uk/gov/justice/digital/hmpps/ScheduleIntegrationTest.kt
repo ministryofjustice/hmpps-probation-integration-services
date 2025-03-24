@@ -120,7 +120,7 @@ internal class ScheduleIntegrationTest {
 
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
-        assertThat(res.appointment.activityNotes, equalTo(expectedNotes))
+        assertThat(res.appointment.appointmentNotes, equalTo(expectedNotes))
     }
 
     @Test
@@ -137,6 +137,6 @@ internal class ScheduleIntegrationTest {
 
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
-        assertThat(res.appointment.activityNote, equalTo(expectedNote))
+        assertThat(res.appointment.appointmentNote, equalTo(expectedNote))
     }
 }
