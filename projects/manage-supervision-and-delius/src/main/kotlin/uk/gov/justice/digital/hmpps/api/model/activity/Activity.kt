@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model.activity
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.schedule.OfficeAddress
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.ZonedDateTime
 
 data class Activity(
@@ -13,7 +14,8 @@ data class Activity(
     val startDateTime: ZonedDateTime,
     val endDateTime: ZonedDateTime?,
     val rarToolKit: String?,
-    val notes: String?,
+    val appointmentNotes: List<NoteDetail>? = null,
+    val appointmentNote: NoteDetail? = null,
     val isSensitive: Boolean?,
     val hasOutcome: Boolean?,
     val wasAbsent: Boolean?,

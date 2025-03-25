@@ -27,4 +27,9 @@ class ScheduleController(private val scheduleService: ScheduleService) {
     @Operation(summary = "Gets individual appointment information’ ")
     fun getContact(@PathVariable crn: String, @PathVariable contactId: Long) =
         scheduleService.getPersonAppointment(crn, contactId)
+
+    @GetMapping("/appointment/{contactId}/note/{noteId}")
+    @Operation(summary = "Gets individual appointment information’ ")
+    fun getContactNote(@PathVariable crn: String, @PathVariable contactId: Long, @PathVariable noteId: Int) =
+        scheduleService.getPersonAppointment(crn, contactId, noteId)
 }
