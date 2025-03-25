@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -21,10 +22,10 @@ class LaoAccessController(private val uas: UserAccessService) {
             description = "OK",
             content = [
                 Content(
-                    schema = Schema(
-                        implementation = UserAccess::class,
-                        example = """{ "access": [ { "crn": "A123456", "userExcluded": false, "userRestricted": false } ] }"""
-                    )
+                    schema = Schema(implementation = UserAccess::class),
+                    examples = [
+                        ExampleObject("""{ "access": [ { "crn": "A123456", "userExcluded": false, "userRestricted": false } ] }""")
+                    ]
                 )
             ]
         ),
