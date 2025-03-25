@@ -33,6 +33,9 @@ class Person(
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
 
+    val exclusionMessage: String?,
+    val restrictionMessage: String?,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
