@@ -1,0 +1,11 @@
+services:
+  localstack:
+    image: localstack/localstack:4
+    environment:
+      - SERVICES=sns,sqs
+      - DEFAULT_REGION=eu-west-2
+      - AWS_DEFAULT_REGION=eu-west-2
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    ports:
+      - '4566:4566'

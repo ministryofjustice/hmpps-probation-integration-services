@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -97,6 +98,7 @@ abstract class NotificationChannel(
 }
 
 @Component
+@Profile("!localstack")
 @ConditionalOnProperty("messaging.consumer.queue")
 class HmppsNotificationQueue(
     @Value("\${messaging.consumer.queue}")
@@ -104,6 +106,7 @@ class HmppsNotificationQueue(
 ) : NotificationChannel(queueName)
 
 @Component
+@Profile("!localstack")
 @ConditionalOnProperty("messaging.producer.topic")
 class HmppsNotificationTopic(
     @Value("\${messaging.producer.topic}")
@@ -120,6 +123,7 @@ class HmppsChannelManager(
 }
 
 @Component
+@Profile("!localstack")
 @ConditionalOnProperty("messaging.consumer.queue")
 class HmppsNotificationListener(
     @Value("\${messaging.consumer.queue}")
@@ -145,6 +149,7 @@ class HmppsNotificationListener(
 }
 
 @Component
+@Profile("!localstack")
 @ConditionalOnProperty("messaging.producer.topic")
 class TopicPublisher(
     @Value("\${messaging.producer.topic}") private val topicName: String,
@@ -156,6 +161,7 @@ class TopicPublisher(
 }
 
 @Component
+@Profile("!localstack")
 @ConditionalOnProperty("messaging.producer.queue")
 class QueuePublisher(
     @Value("\${messaging.producer.queue}") private val queueName: String,
