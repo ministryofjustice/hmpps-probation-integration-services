@@ -20,7 +20,7 @@ dependencies {
     implementation(libs.bundles.opensearch)
     implementation(libs.aws.s3)
 
-    dev(project(":libs:dev-tools"))
+    implementation(project(":libs:dev-tools"))
     dev("com.h2database:h2")
     dev("org.testcontainers:oracle-free")
 
