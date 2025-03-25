@@ -201,10 +201,13 @@ components:
       properties:
         prisonCode:
           type: string
+          minLength: 1
         forename:
           type: string
+          minLength: 1
         surname:
           type: string
+          minLength: 1
       required:
       - forename
       - prisonCode
@@ -223,6 +226,7 @@ components:
           format: date-time
         notes:
           type: string
+          minLength: 1
         author:
           $ref: "#/components/schemas/Author"
       required:

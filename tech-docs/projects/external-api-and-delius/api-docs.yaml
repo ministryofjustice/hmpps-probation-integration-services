@@ -43,6 +43,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserAccess"
+              example:
+                access:
+                - crn: A123456
+                  userExcluded: false
+                  userRestricted: false
     post:
       tags:
       - lao-access-controller
@@ -66,6 +71,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserAccess"
+              example:
+                access:
+                - crn: A123456
+                  userExcluded: false
+                  userRestricted: false
   /reference-data:
     get:
       tags:

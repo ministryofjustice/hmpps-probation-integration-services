@@ -26,6 +26,7 @@ paths:
         required: true
         schema:
           type: string
+          minLength: 1
       requestBody:
         content:
           application/json:
@@ -129,6 +130,7 @@ components:
       properties:
         password:
           type: string
+          minLength: 1
       required:
       - password
     AuthenticationRequest:
@@ -136,8 +138,10 @@ components:
       properties:
         username:
           type: string
+          minLength: 1
         password:
           type: string
+          minLength: 1
       required:
       - password
       - username

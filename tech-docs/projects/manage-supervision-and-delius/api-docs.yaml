@@ -677,6 +677,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonAppointment"
+  /schedule/{crn}/appointment/{contactId}/note/{noteId}:
+    get:
+      tags:
+      - Schedule
+      summary: 'Gets individual appointment information’ '
+      operationId: getContactNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contactId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonAppointment"
   /risk-flags/{crn}:
     get:
       tags:
@@ -1878,8 +1909,12 @@ components:
           format: date-time
         rarToolKit:
           type: string
-        notes:
-          type: string
+        appointmentNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        appointmentNote:
+          $ref: "#/components/schemas/NoteDetail"
         isSensitive:
           type: boolean
         hasOutcome:
@@ -2902,6 +2937,9 @@ components:
         startDate:
           type: string
           format: date
+        endDate:
+          type: string
+          format: date
         lastUpdated:
           type: string
           format: date
@@ -2923,9 +2961,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Circumstance"
+        previousCircumstances:
+          type: array
+          items:
+            $ref: "#/components/schemas/Circumstance"
       required:
       - circumstances
       - personSummary
+      - previousCircumstances
     CircumstanceOverviewSummary:
       type: object
       properties:

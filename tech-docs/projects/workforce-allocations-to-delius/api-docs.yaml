@@ -815,6 +815,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AllocationDetailRequest"
+          minItems: 1
       required:
       - cases
     AllocationDetails:

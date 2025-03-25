@@ -92,7 +92,21 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>arns-and-delius</span></a>
+    <a href="./index.html"><span>ARNS and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Business need</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-probation-search-data"><span>Context Map - Probation Search data</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>API Access Control</span></a>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -114,9 +128,28 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="arns-and-delius">arns-and-delius</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="arns-and-delius">ARNS and Delius</h1>
+<p>This integration service provides an API to get the limitations (exclusions and restrictions) for a user.</p>
+<h1 id="business-need">Business need</h1>
+<p>Provides a background person on probation information to the client.</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>This depends on Delius for up-to-date information on the restrictions and exclusions applied to a user.</p>
+<h2 id="context-map-probation-search-data">Context Map - Probation Search data</h2>
+<p><a href="././img/arns-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/arns-and-delius-context-map.svg" alt="" /></a></p>
+<h1 id="api-access-control">API Access Control</h1>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/users</td>
+<td>PROBATION_API__ARNS__USER_ACCESS</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 

@@ -192,6 +192,9 @@
         <a href="./api-reference.html#schedule-crn-appointment-contactid"><span>/schedule/{crn}/appointment/{contactId}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#schedule-crn-appointment-contactid-note-noteid"><span>/schedule/{crn}/appointment/{contactId}/note/{noteId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#risk-flags-crn"><span>/risk-flags/{crn}</span></a>
       </li>
       <li>
@@ -1134,7 +1137,22 @@
       "startDateTime": "string",
       "endDateTime": "string",
       "rarToolKit": "string",
-      "notes": "string",
+      "appointmentNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "appointmentNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "isSensitive": "boolean",
       "hasOutcome": "boolean",
       "wasAbsent": "boolean",
@@ -1303,7 +1321,22 @@
       "startDateTime": "string",
       "endDateTime": "string",
       "rarToolKit": "string",
-      "notes": "string",
+      "appointmentNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "appointmentNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "isSensitive": "boolean",
       "hasOutcome": "boolean",
       "wasAbsent": "boolean",
@@ -3168,7 +3201,22 @@
       "startDateTime": "string",
       "endDateTime": "string",
       "rarToolKit": "string",
-      "notes": "string",
+      "appointmentNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "appointmentNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "isSensitive": "boolean",
       "hasOutcome": "boolean",
       "wasAbsent": "boolean",
@@ -3317,7 +3365,22 @@
       "startDateTime": "string",
       "endDateTime": "string",
       "rarToolKit": "string",
-      "notes": "string",
+      "appointmentNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "appointmentNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "isSensitive": "boolean",
       "hasOutcome": "boolean",
       "wasAbsent": "boolean",
@@ -3475,7 +3538,204 @@
     "startDateTime": "string",
     "endDateTime": "string",
     "rarToolKit": "string",
-    "notes": "string",
+    "appointmentNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "appointmentNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
+    "isSensitive": "boolean",
+    "hasOutcome": "boolean",
+    "wasAbsent": "boolean",
+    "officerName": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "isInitial": "boolean",
+    "isNationalStandard": "boolean",
+    "location": {
+      "officeName": "string",
+      "buildingName": "string",
+      "buildingNumber": "string",
+      "streetName": "string",
+      "district": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string",
+      "ldu": "string",
+      "telephoneNumber": "string"
+    },
+    "rescheduled": "boolean",
+    "rescheduledStaff": "boolean",
+    "rescheduledPop": "boolean",
+    "didTheyComply": "boolean",
+    "absentWaitingEvidence": "boolean",
+    "rearrangeOrCancelReason": "string",
+    "rescheduledBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "repeating": "boolean",
+    "nonComplianceReason": "string",
+    "documents": [
+      {
+        "id": "string",
+        "name": "string",
+        "lastUpdated": "string"
+      }
+    ],
+    "isRarRelated": "boolean",
+    "rarCategory": "string",
+    "acceptableAbsence": "boolean",
+    "acceptableAbsenceReason": "string",
+    "isAppointment": "boolean",
+    "isCommunication": "boolean",
+    "action": "string",
+    "isSystemContact": "boolean",
+    "isEmailOrTextFromPop": "boolean",
+    "isPhoneCallFromPop": "boolean",
+    "isEmailOrTextToPop": "boolean",
+    "isPhoneCallToPop": "boolean",
+    "isInPast": "boolean",
+    "isPastAppointment": "boolean",
+    "countsTowardsRAR": "boolean",
+    "lastUpdated": "string",
+    "lastUpdatedBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "description": "string",
+    "outcome": "string"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personappointment'>PersonAppointment</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="schedule-crn-appointment-contactid-note-noteid">/schedule/{crn}/appointment/{contactId}/note/{noteId}</h2>
+
+<h3 id="schedule-crn-appointment-contactid-note-noteid-get">get</h3>
+
+  <p><em>Gets individual appointment information’ </em></p>
+
+
+
+
+<h4 id="schedule-crn-appointment-contactid-note-noteid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>contactId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>noteId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="schedule-crn-appointment-contactid-note-noteid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "noms": "string",
+    "dateOfBirth": "string"
+  },
+  "appointment": {
+    "id": "integer",
+    "eventNumber": "string",
+    "type": "string",
+    "startDateTime": "string",
+    "endDateTime": "string",
+    "rarToolKit": "string",
+    "appointmentNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "appointmentNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
     "isSensitive": "boolean",
     "hasOutcome": "boolean",
     "wasAbsent": "boolean",
@@ -5248,6 +5508,39 @@
       },
       "verified": "boolean",
       "startDate": "string",
+      "endDate": "string",
+      "lastUpdated": "string",
+      "lastUpdatedBy": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      }
+    }
+  ],
+  "previousCircumstances": [
+    {
+      "id": "integer",
+      "type": "string",
+      "subType": "string",
+      "circumstanceNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "circumstanceNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
+      "verified": "boolean",
+      "startDate": "string",
+      "endDate": "string",
       "lastUpdated": "string",
       "lastUpdatedBy": {
         "forename": "string",
@@ -5371,6 +5664,7 @@
     },
     "verified": "boolean",
     "startDate": "string",
+    "endDate": "string",
     "lastUpdated": "string",
     "lastUpdatedBy": {
       "forename": "string",
@@ -6025,7 +6319,22 @@
         "startDateTime": "string",
         "endDateTime": "string",
         "rarToolKit": "string",
-        "notes": "string",
+        "appointmentNotes": [
+          {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          }
+        ],
+        "appointmentNote": {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        },
         "isSensitive": "boolean",
         "hasOutcome": "boolean",
         "wasAbsent": "boolean",
@@ -8945,12 +9254,22 @@
 </tr>
 
 <tr>
-<td>notes</td>
-<td>string</td>
+<td>appointmentNotes</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
-  
+  <a href='#schema-notedetail'>NoteDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>appointmentNote</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-notedetail'>NoteDetail</a>
 </td>
 </tr>
 
@@ -12188,6 +12507,16 @@
 </tr>
 
 <tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>lastUpdated</td>
 <td>string</td>
 <td>true</td>
@@ -12231,6 +12560,16 @@
 
 <tr>
 <td>circumstances</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-circumstance'>Circumstance</a>
+</td>
+</tr>
+
+<tr>
+<td>previousCircumstances</td>
 <td>array</td>
 <td>true</td>
 <td></td>
