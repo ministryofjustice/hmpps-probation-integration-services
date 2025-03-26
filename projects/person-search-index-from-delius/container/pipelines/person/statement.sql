@@ -27,7 +27,8 @@ SELECT json_object(
                                     FROM ADDITIONAL_IDENTIFIER prev
                                     JOIN R_STANDARD_REFERENCE_LIST ait ON ait.CODE_VALUE = 'MFCRN' AND
                                                                           ait.STANDARD_REFERENCE_LIST_ID = prev.IDENTIFIER_NAME_ID
-                                    WHERE prev.OFFENDER_ID = o.OFFENDER_ID),
+                                    WHERE prev.OFFENDER_ID = o.OFFENDER_ID
+                                    ORDER BY prev.CREATED_DATETIME DESC FETCH NEXT 1 ROWS ONLY),
                'immigrationNumber' VALUE o.IMMIGRATION_NUMBER,
                'mostRecentPrisonerNumber' VALUE o.MOST_RECENT_PRISONER_NUMBER ABSENT ON NULL),
                'firstName' VALUE o.FIRST_NAME,
