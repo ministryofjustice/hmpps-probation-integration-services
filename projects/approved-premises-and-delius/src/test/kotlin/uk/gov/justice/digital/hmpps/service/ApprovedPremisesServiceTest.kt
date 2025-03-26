@@ -598,7 +598,12 @@ internal class ApprovedPremisesServiceTest {
                     override val residence get() = null
                 })
         } else {
-            whenever(referralRepository.findByPersonIdAndExternalReference(person.id, EXT_REF_BOOKING_PREFIX + bookingId))
+            whenever(
+                referralRepository.findByPersonIdAndExternalReference(
+                    person.id,
+                    EXT_REF_BOOKING_PREFIX + bookingId
+                )
+            )
                 .thenReturn(ref)
         }
         return ref

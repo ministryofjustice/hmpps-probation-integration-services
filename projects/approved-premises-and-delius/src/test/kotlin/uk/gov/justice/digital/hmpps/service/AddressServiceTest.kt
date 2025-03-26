@@ -36,7 +36,8 @@ internal class AddressServiceTest {
         whenever(referenceDataRepository.findByCodeAndDatasetCode(PREV_ADDRESS_STATUS.code, ADDRESS_STATUS.code))
             .thenReturn(PREV_ADDRESS_STATUS)
 
-        val updatedAddress = addressService.endMainAddressOnDeparture(PersonGenerator.DEFAULT, LocalDate.of(2025, 3, 1))!!
+        val updatedAddress =
+            addressService.endMainAddressOnDeparture(PersonGenerator.DEFAULT, LocalDate.of(2025, 3, 1))!!
 
         assertThat(updatedAddress.endDate, equalTo(LocalDate.of(2025, 3, 1)))
         assertThat(updatedAddress.status.code, equalTo(PREV_ADDRESS_STATUS.code))
