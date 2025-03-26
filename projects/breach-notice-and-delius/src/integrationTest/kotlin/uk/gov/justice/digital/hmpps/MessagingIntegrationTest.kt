@@ -95,7 +95,7 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         val document = documentRepository.findById(DocumentGenerator.DEFAULT_BREACH_NOTICE.id).get()
         assertThat(document.name).isEqualTo("name.pdf")
         assertThat(document.status).isEqualTo("Y")
-        assertThat(document.workInProgress).isEqualTo("Y")
+        assertThat(document.workInProgress).isEqualTo("N")
         assertThat(document.lastSaved).isCloseTo(ZonedDateTime.now(), within(1, ChronoUnit.SECONDS))
 
         // And the file is uploaded to Alfresco

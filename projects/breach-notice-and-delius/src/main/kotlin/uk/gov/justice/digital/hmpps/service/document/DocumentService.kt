@@ -31,7 +31,7 @@ class DocumentService(
         val document = getDocument(event, it)
         document.name = document.name.replace(Regex("\\.doc$"), ".pdf")
         document.status = "Y"
-        document.workInProgress = "Y"
+        document.workInProgress = "N"
         document.lastSaved = ZonedDateTime.now()
         document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
         documentRepository.save(document)
