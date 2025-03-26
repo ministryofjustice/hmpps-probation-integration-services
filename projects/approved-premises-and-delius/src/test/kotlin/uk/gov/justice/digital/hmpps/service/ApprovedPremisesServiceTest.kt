@@ -313,7 +313,7 @@ internal class ApprovedPremisesServiceTest {
         givenAddressStatuses(listOf(ReferenceDataGenerator.MAIN_ADDRESS_STATUS))
         givenAddressTypes(listOf(ReferenceDataGenerator.AP_ADDRESS_TYPE))
         givenAuditUser()
-        givenReferral(person, details.eventDetails.bookingId)
+        givenReferral(person, details.eventDetails.bookingId, andResidence = true)
         whenever(personAddressRepository.save(any())).thenAnswer { it.arguments[0].apply { set("id", 0L) } }
 
         approvedPremisesService.personArrived(personArrivedEvent)
@@ -557,7 +557,7 @@ internal class ApprovedPremisesServiceTest {
         ServiceContext(user.username, auditUserService).onApplicationEvent(applicationStartedEvent)
     }
 
-    private fun givenReferral(person: Person, bookingId: String): Referral {
+    private fun givenReferral(person: Person, bookingId: String, andResidence: Boolean = false): Referral {
         val ref = Referral(
             person.id,
             564,
@@ -590,8 +590,17 @@ internal class ApprovedPremisesServiceTest {
             null,
             EXT_REF_BOOKING_PREFIX + bookingId,
         )
-        whenever(referralRepository.findByPersonIdAndExternalReference(person.id, EXT_REF_BOOKING_PREFIX + bookingId))
-            .thenReturn(ref)
+        if (andResidence) {
+            whenever(referralRepository.findReferralDetail(person.crn, EXT_REF_BOOKING_PREFIX + bookingId))
+                .thenReturn(object : ReferralAndResidence {
+                    override val referral get() = ref
+                    override val premises get() = ApprovedPremisesGenerator.DEFAULT
+                    override val residence get() = null
+                })
+        } else {
+            whenever(referralRepository.findByPersonIdAndExternalReference(person.id, EXT_REF_BOOKING_PREFIX + bookingId))
+                .thenReturn(ref)
+        }
         return ref
     }
 }
