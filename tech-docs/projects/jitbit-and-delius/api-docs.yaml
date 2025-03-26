@@ -31,55 +31,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CaseDetails"
+                type: object
+  /case/{crn}/access:
+    get:
+      tags:
+      - api-controller
+      operationId: caseAccess
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LimitedAccessDetail"
 components:
   schemas:
-    Address:
+    LimitedAccessDetail:
       type: object
       properties:
-        buildingName:
+        crn:
           type: string
-        addressNumber:
-          type: string
-        streetName:
-          type: string
-        townCity:
-          type: string
-        district:
-          type: string
-        county:
-          type: string
-        postcode:
-          type: string
-        noFixedAbode:
+        hasExclusion:
+          type: boolean
+        hasRestriction:
+          type: boolean
+        isLimitedAccess:
           type: boolean
       required:
-      - noFixedAbode
-    CaseDetails:
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        dateOfBirth:
-          type: string
-          format: date
-        mainAddress:
-          $ref: "#/components/schemas/Address"
-      required:
-      - dateOfBirth
-      - name
-    Name:
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
-          type: string
-      required:
-      - forename
-      - surname
+      - crn
+      - hasExclusion
+      - hasRestriction
+      - isLimitedAccess
   securitySchemes:
     hmpps-auth-token:
       type: http

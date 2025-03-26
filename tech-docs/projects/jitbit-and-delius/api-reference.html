@@ -101,6 +101,9 @@
         <a href="./api-reference.html#case-crn"><span>/case/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#case-crn-access"><span>/case/{crn}/access</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -179,27 +182,74 @@
 
 
 <pre><code>{
-  "name": {
-    "forename": "string",
-    "middleName": "string",
-    "surname": "string"
-  },
-  "dateOfBirth": "string",
-  "mainAddress": {
-    "buildingName": "string",
-    "addressNumber": "string",
-    "streetName": "string",
-    "townCity": "string",
-    "district": "string",
-    "county": "string",
-    "postcode": "string",
-    "noFixedAbode": "boolean"
-  }
 }</code></pre>
 
 </td>
 <td>
-<a href='#schema-casedetails'>CaseDetails</a>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="case-crn-access">/case/{crn}/access</h2>
+
+<h3 id="case-crn-access-get">get</h3>
+
+
+
+
+<h4 id="case-crn-access-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-crn-access-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "hasExclusion": "boolean",
+  "hasRestriction": "boolean",
+  "isLimitedAccess": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-limitedaccessdetail'>LimitedAccessDetail</a>
 </td>
 </tr>
 
@@ -211,19 +261,19 @@
 
 
 <h2 id="schemas">Schemas</h2>
-<h3 id="schema-address">Address</h3>
+<h3 id="schema-limitedaccessdetail">LimitedAccessDetail</h3>
 
 
-<table class='schema-address'>
+<table class='schema-limitedaccessdetail'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>buildingName</td>
+<td>crn</td>
 <td>string</td>
-<td>false</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -231,67 +281,7 @@
 </tr>
 
 <tr>
-<td>addressNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>streetName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>townCity</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>district</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>county</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>postcode</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>noFixedAbode</td>
+<td>hasExclusion</td>
 <td>boolean</td>
 <td>true</td>
 <td></td>
@@ -300,31 +290,9 @@
 </td>
 </tr>
 
-</tbody>
-</table>
-
-<h3 id="schema-casedetails">CaseDetails</h3>
-
-
-<table class='schema-casedetails'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
 <tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>dateOfBirth</td>
-<td>string</td>
+<td>hasRestriction</td>
+<td>boolean</td>
 <td>true</td>
 <td></td>
 <td>
@@ -333,50 +301,8 @@
 </tr>
 
 <tr>
-<td>mainAddress</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-address'>Address</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-name">Name</h3>
-
-
-<table class='schema-name'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>forename</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>middleName</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
+<td>isLimitedAccess</td>
+<td>boolean</td>
 <td>true</td>
 <td></td>
 <td>
