@@ -38,9 +38,8 @@ class ActivityService(
             probationSearchClient.contactSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)
         val ids = response.results.map { it.id }
 
-        val contacts = ids.mapNotNull { contactId ->
-            contactRepository.findByPersonIdAndIdIn(summary.id, ids).associateBy { it.id }[contactId]
-        }
+        val contactMap = contactRepository.findByPersonIdAndIdIn(summary.id, ids).associateBy { it.id }
+        val activities = ids.mapNotNull { contactId -> contactMap[contactId]?.toActivity() }
 
         return PersonActivitySearchResponse(
             size = response.size,
@@ -48,7 +47,7 @@ class ActivityService(
             totalResults = response.totalResults,
             totalPages = response.totalPages,
             personSummary = summary.toPersonSummary(),
-            activities = contacts.map { it.toActivity() }
+            activities = activities
         )
     }
 
