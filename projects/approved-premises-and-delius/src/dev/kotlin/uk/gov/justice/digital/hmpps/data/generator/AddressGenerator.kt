@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import java.time.LocalDate
 
 object AddressGenerator {
 
@@ -24,6 +25,11 @@ object AddressGenerator {
     )
 
     var INACTIVE_PERSON_ADDRESS_ID: Long? = null
+
+    var PERSON_AP_ADDRESS = generatePersonAddress(
+        type = ReferenceDataGenerator.AP_ADDRESS_TYPE,
+        startDate = LocalDate.of(2025, 1, 1),
+    )
 
     val Q001 = generateAddress(
         addressNumber = "1",
@@ -200,6 +206,7 @@ object AddressGenerator {
         county: String? = null,
         postcode: String? = null,
         telephoneNumber: String? = null,
+        startDate: LocalDate = LocalDate.now(),
     ) = PersonAddress(
         personId,
         type,
@@ -212,5 +219,6 @@ object AddressGenerator {
         county,
         postcode,
         telephoneNumber,
+        startDate = startDate
     )
 }
