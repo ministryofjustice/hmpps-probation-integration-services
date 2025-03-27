@@ -131,7 +131,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         JOIN rqmnt r on r.rqmnt_id = n.rqmnt_id 
         join r_rqmnt_type_main_category mc on r.rqmnt_type_main_category_id = mc.rqmnt_type_main_category_id
         where c.rar_activity = 'Y' and c.soft_deleted = 0
-        and (c.attended = 'Y')
+        and (c.attended  is null or c.attended = 'Y')
         and (c.complied is null or c.complied = 'Y')
         and mc.code = 'F' and r.active_flag = 1 and r.soft_deleted = 0
         and r.disposal_id = :disposalId
