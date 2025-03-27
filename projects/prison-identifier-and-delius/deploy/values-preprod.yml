@@ -21,3 +21,5 @@ bulk-update:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  sqsOldestAlertQueueNames:
+    - probation-integration-preprod-prison-identifier-and-delius-queue

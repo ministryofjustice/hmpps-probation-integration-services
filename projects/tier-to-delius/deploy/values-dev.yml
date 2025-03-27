@@ -17,3 +17,5 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  sqsOldestAlertQueueNames:
+    - probation-integration-dev-tier-to-delius-queue

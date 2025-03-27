@@ -6,3 +6,7 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: prod
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-$SERVICE_NAME-queue

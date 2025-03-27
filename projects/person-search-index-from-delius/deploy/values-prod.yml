@@ -16,3 +16,8 @@ reindexing:
   person_schedule: 0 3 * * 1-5
   contact_schedule: 0 7 * * 2
   sentry_environment: prod
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-person-search-index-from-delius-person-queue
+    - probation-integration-prod-person-search-index-from-delius-contact-queue

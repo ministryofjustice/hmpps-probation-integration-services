@@ -5,3 +5,7 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: http://hmpps-auth.hmpps-auth-prod.svc.cluster.local/auth/oauth/token
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-opd-and-delius-queue

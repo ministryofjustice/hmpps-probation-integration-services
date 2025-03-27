@@ -18,4 +18,8 @@ generic-service:
 initial-allocations-report:
   enabled: true
   schedule: "30 7 1 * *" # The first of the month at 7:30am
-  channel_id: C035YK9FFK4 # topic-pi-workforce-allocation
+  channel_id: C035YK9FFK4 # topic-pi-workforce-
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-workforce-allocations-to-delius-queue

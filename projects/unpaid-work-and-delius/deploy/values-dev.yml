@@ -17,6 +17,7 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
-
+  sqsOldestAlertQueueNames:
+    - probation-integration-dev-unpaid-work-and-delius-queue
 
 

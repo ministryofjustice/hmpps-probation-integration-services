@@ -16,3 +16,5 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  sqsOldestAlertQueueNames:
+    - probation-integration-dev-create-and-vary-a-licence-and-delius-queue

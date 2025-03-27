@@ -22,3 +22,5 @@ bulk-update:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  sqsOldestAlertQueueNames:
+    - probation-integration-dev-manage-pom-cases-and-delius-queue
