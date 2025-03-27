@@ -252,7 +252,14 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
                 userCreatedBy,
                 dateCreatedBy,
                 when (truncateNote) {
-                    true -> commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0]
+                    true -> {
+                        if (commentText.removeSuffix(System.lineSeparator()).chunked(1500).isNotEmpty()) {
+                            commentText.removeSuffix(System.lineSeparator()).chunked(1500)[0]
+                        } else {
+                            ""
+                        }
+                    }
+
                     else -> commentText
                 },
                 when (truncateNote) {
@@ -260,6 +267,6 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
                     else -> null
                 }
             )
-        }.filter { it.note != "null" }
+        }.filter { it.note != "null" && it.note.isNotEmpty() }
     } ?: listOf()
 }
