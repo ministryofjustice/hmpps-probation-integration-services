@@ -123,6 +123,7 @@ object ReferralGenerator {
         referral.id,
         approvedPremisesId,
         arrivalDateTime.truncatedTo(ChronoUnit.SECONDS),
+        departureDateTime?.toLocalDate(),
         arrivalNotes,
         keyWorkerStaffId
     ).apply {
