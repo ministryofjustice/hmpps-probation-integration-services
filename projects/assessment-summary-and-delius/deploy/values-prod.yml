@@ -6,3 +6,7 @@ generic-service:
     SENTRY_ENVIRONMENT: prod
     INTEGRATIONS_ORDS_URL: https://int.oasys.service.justice.gov.uk/eor/oasys
     MESSAGING_CONSUMER_DETAIL_URLS: https://oasys.service.justice.gov.uk
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-assessment-summary-and-delius-queue

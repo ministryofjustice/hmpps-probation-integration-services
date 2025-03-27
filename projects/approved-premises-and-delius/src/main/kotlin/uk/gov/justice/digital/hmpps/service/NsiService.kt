@@ -73,7 +73,7 @@ class NsiService(
                 probationAreaCode = ap.probationArea.code
             )
             referralService.personArrived(person, ap, details)
-            return addressService.updateMainAddress(person, details, ap)
+            return addressService.updateMainAddressOnArrival(person, details, ap)
         }
         return null
     }
@@ -110,7 +110,7 @@ class NsiService(
             probationAreaCode = ap.probationArea.code
         )
         referralService.personDeparted(person, details)
-        return addressService.endMainAddress(person, details.departedAt.toLocalDate())
+        return addressService.endMainAddressOnDeparture(person, details.departedAt.toLocalDate())
     }
 
     private fun findNsi(person: Person, type: NsiTypeCode, externalReference: String) =

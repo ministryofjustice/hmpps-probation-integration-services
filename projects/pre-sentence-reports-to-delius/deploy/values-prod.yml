@@ -11,3 +11,7 @@ generic-service:
     INTEGRATIONS_ALFRESCO_URL: https://alfresco.probation.service.justice.gov.uk/alfresco/service/noms-spg/
     INTEGRATIONS_PRE-SENTENCE-REPORTS_BASE-URL: https://pre-sentence-service.hmpps.service.justice.gov.uk
     INTEGRATIONS_NEW-TECH_BASE-URL: https://ndelius.probation.service.justice.gov.uk/newTech
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-pre-sentence-reports-to-delius-queue-queue

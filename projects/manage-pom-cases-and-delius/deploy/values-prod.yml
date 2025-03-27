@@ -14,3 +14,7 @@ bulk-update:
   enabled: false
   dry-run: true
   schedule: 0 7 * * 1
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-manage-pom-cases-and-delius-queue

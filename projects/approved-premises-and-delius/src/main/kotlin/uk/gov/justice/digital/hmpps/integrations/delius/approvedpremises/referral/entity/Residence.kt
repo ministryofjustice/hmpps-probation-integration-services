@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -24,9 +25,12 @@ class Residence(
     val referralId: Long,
 
     @Column(name = "approved_premises_id")
-    val approvedPremisesId: Long,
+    var approvedPremisesId: Long,
 
-    val arrivalDate: ZonedDateTime,
+    var arrivalDate: ZonedDateTime,
+
+    var expectedDepartureDate: LocalDate?,
+
     @Lob
     val arrivalNotes: String?,
 

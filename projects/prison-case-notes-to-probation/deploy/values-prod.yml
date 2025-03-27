@@ -8,3 +8,7 @@ generic-service:
     INTEGRATIONS_PRISON_CASE_NOTES_BASE_URL: https://offender-case-notes.service.justice.gov.uk
     INTEGRATIONS_PRISONER_ALERTS_BASE_URL: https://alerts-api.hmpps.service.justice.gov.uk
     MESSAGING_CONSUMER_DETAIL_URLS: https://offender-case-notes.service.justice.gov.uk,https://alerts-api.hmpps.service.justice.gov.uk
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-prison-case-notes-to-probation-queue

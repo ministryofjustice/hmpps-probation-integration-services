@@ -45,3 +45,5 @@ generic-service:
 
 generic-prometheus-alerts:
   alertSeverity: probation-integration-notifications
+  sqsAlertsOldestThreshold: 30
+

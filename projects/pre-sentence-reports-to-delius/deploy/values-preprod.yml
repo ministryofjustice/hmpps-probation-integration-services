@@ -17,3 +17,5 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  sqsOldestAlertQueueNames:
+    - probation-integration-preprod-pre-sentence-reports-to-delius-queue-queue

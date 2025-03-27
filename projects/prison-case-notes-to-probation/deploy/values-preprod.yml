@@ -14,3 +14,5 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  sqsOldestAlertQueueNames:
+    - probation-integration-preprod-prison-case-notes-to-probation-queue

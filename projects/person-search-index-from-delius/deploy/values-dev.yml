@@ -13,6 +13,9 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  sqsOldestAlertQueueNames:
+    - probation-integration-dev-person-search-index-from-delius-person-queue
+    - probation-integration-dev-person-search-index-from-delius-contact-queue
 
 reindexing:
   person_schedule: 0 9 * * 1-5
