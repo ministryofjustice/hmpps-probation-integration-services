@@ -337,6 +337,7 @@ internal class PersonalDetailsIntegrationTest {
         assertThat(res.circumstances[1], equalTo(PERSONAL_CIRC_2.toCircumstance()))
         assertThat(res.previousCircumstances[0], equalTo(PERSONAL_CIRC_PREV.toCircumstance()))
         assertThat(res.circumstances[0].circumstanceNotes?.size, equalTo(2))
+        assertThat(res.circumstances[1].circumstanceNotes?.size, equalTo(2))
     }
 
     @Test

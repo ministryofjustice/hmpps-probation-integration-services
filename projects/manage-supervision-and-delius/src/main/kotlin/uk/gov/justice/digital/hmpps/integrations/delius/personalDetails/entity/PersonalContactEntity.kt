@@ -38,10 +38,10 @@ class PersonalContactEntity(
     val relationship: String,
 
     @Column(name = "email_address")
-    val email: String,
+    val email: String? = null,
 
     @Column(name = "mobile_number")
-    val mobileNumber: String,
+    val mobileNumber: String? = null,
 
     @Column(name = "start_date")
     val startDate: LocalDate?,
@@ -58,7 +58,7 @@ class PersonalContactEntity(
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    val address: ContactAddress,
+    val address: ContactAddress? = null,
 
     @ManyToOne
     @JoinColumn(name = "last_updated_user_id")

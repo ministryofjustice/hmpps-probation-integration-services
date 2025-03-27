@@ -434,7 +434,7 @@ fun PersonalContactEntity.toContact(singleNote: Boolean = false, noteId: Int? = 
     personSummary = person.toSummary(),
     name = Name(forename, middleNames, surname),
     relationship = relationship,
-    address = address.toAddress(),
+    address = address?.toAddress(),
     contactNotes = if (!singleNote) formatNote(notes, true) else null,
     contactNote = if (singleNote) formatNote(notes, false).elementAtOrNull(noteId!!) else null,
     relationshipType = relationshipType.description,
