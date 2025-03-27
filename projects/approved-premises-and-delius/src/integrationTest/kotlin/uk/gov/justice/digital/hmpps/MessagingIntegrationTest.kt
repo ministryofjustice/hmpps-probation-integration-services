@@ -30,6 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
@@ -87,6 +88,9 @@ internal class MessagingIntegrationTest {
 
     @Autowired
     private lateinit var staffRepository: StaffRepository
+
+    @Autowired
+    private lateinit var nsiManagerRepository: NsiManagerRepository
 
     @BeforeEach
     fun clearTopic() {
@@ -368,7 +372,37 @@ internal class MessagingIntegrationTest {
         assertThat(residences.size, equalTo(1))
         val residence = residences.first()
         assertThat(residence.arrivalDate, isSameTimeAs(details.arrivedAt))
+        assertThat(residence.expectedDepartureDate, equalTo(details.expectedDepartureOn))
         assertThat(residence.keyWorkerStaffId, equalTo(keyWorker.id))
+    }
+
+    @Test
+    @Order(4)
+    fun `person arrived with existing residence does not create duplicate`() {
+        // Given a person-arrived event
+        val event = prepEvent("person-arrived", wireMockServer.port())
+        val arrival = ResourceLoader.file<EventDetails<PersonArrived>>("approved-premises-person-arrived")
+        val details = arrival.eventDetails
+        val externalReference = EXT_REF_BOOKING_PREFIX + details.bookingId
+
+        // And a person with an existing un-managed residence
+        val residenceBefore = residenceRepository.findAll().single { it.personId == PersonGenerator.DEFAULT.id }
+        residenceBefore.arrivalDate = residenceBefore.arrivalDate.plusDays(1)
+        residenceBefore.expectedDepartureDate = residenceBefore.expectedDepartureDate!!.plusDays(1)
+        val nsi = nsiRepository.findByPersonIdAndExternalReference(PersonGenerator.DEFAULT.id, externalReference)!!
+        nsiManagerRepository.findAll().filter { it.nsi.id == nsi.id }.also(nsiManagerRepository::deleteAll)
+        nsiRepository.delete(nsi)
+
+        // When the event is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        verify(telemetryService).trackEvent("PersonArrived", event.message.telemetryProperties())
+
+        // And the residence details are updated in-place
+        val residence = residenceRepository.findAll().single { it.personId == PersonGenerator.DEFAULT.id }
+        assertThat(residence.arrivalDate, isSameTimeAs(details.arrivedAt))
+        assertThat(residence.expectedDepartureDate, equalTo(details.expectedDepartureOn))
     }
 
     @Test
@@ -398,35 +432,32 @@ internal class MessagingIntegrationTest {
         nsiRepository.findByPersonIdAndExternalReference(
             departureContact.person.id,
             EXT_REF_BOOKING_PREFIX + details.bookingId
-        )
-            .let { nsi ->
-                assertNotNull(nsi)
-                assertNotNull(nsi!!.actualEndDate)
-                assertThat(nsi.actualEndDate, isSameTimeAs(details.departedAt))
-                assertThat(nsi.active, equalTo(false))
-                assertThat(nsi.outcome!!.code, equalTo("APRC"))
+        ).let { nsi ->
+            assertNotNull(nsi)
+            assertNotNull(nsi!!.actualEndDate)
+            assertThat(nsi.actualEndDate, isSameTimeAs(details.departedAt))
+            assertThat(nsi.active, equalTo(false))
+            assertThat(nsi.outcome!!.code, equalTo("APRC"))
 
-                val nsiTerminatedContact = contactRepository.findAll()
-                    .single { it.nsiId == nsi.id && it.type.code == ContactTypeCode.NSI_TERMINATED.code }
-                assertThat(nsiTerminatedContact.alert, equalTo(false))
-                assertThat(nsiTerminatedContact.notes, equalTo("NSI Terminated with Outcome: Description of APRC"))
-                assertThat(nsiTerminatedContact.eventId, equalTo(PersonGenerator.EVENT.id))
-                assertThat(nsiTerminatedContact.date, equalTo(LocalDate.of(2023, 1, 16)))
-
-            }
+            val nsiTerminatedContact = contactRepository.findAll()
+                .single { it.nsiId == nsi.id && it.type.code == ContactTypeCode.NSI_TERMINATED.code }
+            assertThat(nsiTerminatedContact.alert, equalTo(false))
+            assertThat(nsiTerminatedContact.notes, equalTo("NSI Terminated with Outcome: Description of APRC"))
+            assertThat(nsiTerminatedContact.eventId, equalTo(PersonGenerator.EVENT.id))
+            assertThat(nsiTerminatedContact.date, equalTo(LocalDate.of(2023, 1, 16)))
+        }
 
         nsiRepository.findByPersonIdAndExternalReference(
             departureContact.person.id,
             EXT_REF_REHABILITATIVE_ACTIVITY_PREFIX + details.bookingId
-        )
-            .let { nsi ->
-                assertNotNull(nsi)
-                assertNotNull(nsi!!.actualEndDate)
-                assertThat(nsi.actualEndDate, isSameTimeAs(details.departedAt))
-                assertThat(nsi.active, equalTo(false))
-                assertThat(nsi.outcome!!.code, equalTo("GRAS1"))
-                assertThat(nsi.status.code, equalTo("COMP"))
-            }
+        ).let { nsi ->
+            assertNotNull(nsi)
+            assertNotNull(nsi!!.actualEndDate)
+            assertThat(nsi.actualEndDate, isSameTimeAs(details.departedAt))
+            assertThat(nsi.active, equalTo(false))
+            assertThat(nsi.outcome!!.code, equalTo("GRAS1"))
+            assertThat(nsi.status.code, equalTo("COMP"))
+        }
 
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
         assertThat(addresses.size, equalTo(2))

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
@@ -85,7 +86,7 @@ class ReferralService(
 
     fun bookingChanged(crn: String, details: BookingChanged, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
-        val referral = getReferral(person, EXT_REF_BOOKING_PREFIX + details.bookingId)
+        val existing = getReferralAndResidence(person, EXT_REF_BOOKING_PREFIX + details.bookingId)
         contactService.createContact(
             ContactDetails(
                 date = details.changedAt,
@@ -94,24 +95,23 @@ class ReferralService(
                 description = "Booking changed for ${details.premises.name}",
                 notes = listOfNotNull(
                     "The expected arrival and/or departure dates for the booking have changed.",
-                    "Previous: ${DeliusDateFormatter.format(referral.expectedArrivalDate)} to ${
-                        DeliusDateFormatter.format(
-                            referral.expectedDepartureDate
-                        )
-                    }",
-                    "Current: ${DeliusDateFormatter.format(details.arrivalOn)} to ${DeliusDateFormatter.format(details.departureOn)}",
+                    "Previous: ${existing.referral.expectedArrivalDate.toDeliusDate()} to ${existing.referral.expectedDepartureDate.toDeliusDate()}",
+                    "Current: ${details.arrivalOn.toDeliusDate()} to ${details.departureOn.toDeliusDate()}",
                     "For more details, click here: ${details.applicationUrl}"
                 ).joinToString(System.lineSeparator() + System.lineSeparator())
             ),
             person = person,
-            eventId = referral.eventId,
+            eventId = existing.referral.eventId,
             staff = staffRepository.getByCode(details.changedBy.staffCode),
             probationAreaCode = ap.probationArea.code
         )
-        referral.apply {
+        existing.referral.apply {
             expectedArrivalDate = details.arrivalOn
             expectedDepartureDate = details.departureOn
             decisionId = referenceDataRepository.acceptedDeferredAdmission().id
+        }
+        existing.residence?.apply {
+            expectedDepartureDate = details.departureOn
         }
     }
 
@@ -179,10 +179,23 @@ class ReferralService(
     }
 
     fun personArrived(person: Person, ap: ApprovedPremises, details: PersonArrived) {
-        val referral = getReferral(person, EXT_REF_BOOKING_PREFIX + details.bookingId)
-        referral.admissionDate = details.arrivedAt.toLocalDate()
-        val kw = staffRepository.getByCode(details.recordedBy.staffCode)
-        residenceRepository.save(details.residence(person, ap, referral, kw))
+        val existing = getReferralAndResidence(person, EXT_REF_BOOKING_PREFIX + details.bookingId)
+        existing.referral.admissionDate = details.arrivedAt.toLocalDate()
+
+        val residence = existing.residence?.apply {
+            approvedPremisesId = ap.id
+            arrivalDate = details.arrivedAt
+            expectedDepartureDate = details.expectedDepartureOn
+        } ?: Residence(
+            personId = person.id,
+            referralId = existing.referral.id,
+            approvedPremisesId = ap.id,
+            arrivalDate = details.arrivedAt,
+            expectedDepartureDate = details.expectedDepartureOn,
+            arrivalNotes = "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
+            keyWorkerStaffId = staffRepository.getByCode(details.recordedBy.staffCode).id
+        )
+        residenceRepository.save(residence)
     }
 
     fun personDeparted(person: Person, details: PersonDeparted) {
@@ -220,6 +233,23 @@ class ReferralService(
         }
         return referral
     }
+
+    private fun getReferralAndResidence(
+        person: Person,
+        externalReference: String
+    ) = referralRepository.findReferralDetail(person.crn, externalReference)
+        ?.also {
+            if (it.referral.approvedPremisesId == null) {
+                throw IgnorableMessageException(
+                    "Approved Premises unlinked from Referral",
+                    mapOf("crn" to person.crn, "externalReference" to externalReference)
+                )
+            }
+        }
+        ?: throw IgnorableMessageException(
+            "Referral Not Found",
+            mapOf("crn" to person.crn, "externalReference" to externalReference)
+        )
 
     fun findReferral(person: Person, externalReference: String): Referral? =
         referralRepository.findByPersonIdAndExternalReference(person.id, externalReference)
@@ -310,16 +340,6 @@ class ReferralService(
             externalReference = EXT_REF_BOOKING_PREFIX + bookingId
         )
     }
-
-    private fun PersonArrived.residence(person: Person, ap: ApprovedPremises, referral: Referral, keyWorker: Staff) =
-        Residence(
-            person.id,
-            referral.id,
-            ap.id,
-            arrivedAt,
-            "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
-            keyWorker.id
-        )
 
     private fun ReferralWithAp.apReferral() = ApReferral(
         referral.referralDate,
