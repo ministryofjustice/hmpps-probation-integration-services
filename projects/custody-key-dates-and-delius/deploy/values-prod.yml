@@ -13,3 +13,7 @@ bulk-update:
   enabled: false
   dry-run: false
   schedule: 0 7 * * 1
+
+generic-prometheus-alerts:
+  sqsOldestAlertQueueNames:
+    - probation-integration-prod-custody-key-dates-and-delius-queue
