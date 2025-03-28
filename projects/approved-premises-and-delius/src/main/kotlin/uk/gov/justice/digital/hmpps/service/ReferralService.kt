@@ -178,7 +178,7 @@ class ReferralService(
         )
     }
 
-    fun personArrived(person: Person, ap: ApprovedPremises, details: PersonArrived) {
+    fun personArrived(person: Person, ap: ApprovedPremises, details: PersonArrived): Residence {
         val existing = getReferralAndResidence(person, EXT_REF_BOOKING_PREFIX + details.bookingId)
         existing.referral.admissionDate = details.arrivedAt.toLocalDate()
 
@@ -193,9 +193,8 @@ class ReferralService(
             arrivalDate = details.arrivedAt,
             expectedDepartureDate = details.expectedDepartureOn,
             arrivalNotes = "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
-            keyWorkerStaffId = staffRepository.getByCode(details.recordedBy.staffCode).id
         )
-        residenceRepository.save(residence)
+        return residenceRepository.save(residence)
     }
 
     fun personDeparted(person: Person, details: PersonDeparted) {

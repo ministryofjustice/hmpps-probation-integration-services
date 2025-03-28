@@ -53,6 +53,7 @@ class NsiService(
             val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
             val staff = staffRepository.getByCode(details.recordedBy.staffCode)
             val event = eventRepository.getEvent(person.id, details.eventNumber)
+            val residence = referralService.personArrived(person, ap, details)
             event.createNsi(APPROVED_PREMISES_RESIDENCE, IN_RESIDENCE, details, details.residencyRef(), staff, team)
             event.createNsi(REHABILITATIVE_ACTIVITY, ACTIVE, details, details.rehabilitativeActivityRef(), staff, team)
             contactService.createContact(
@@ -70,9 +71,9 @@ class NsiService(
                 eventId = event.id,
                 staff = staff,
                 team = team,
-                probationAreaCode = ap.probationArea.code
+                probationAreaCode = ap.probationArea.code,
+                residenceId = residence.id
             )
-            referralService.personArrived(person, ap, details)
             return addressService.updateMainAddressOnArrival(person, details, ap)
         }
         return null

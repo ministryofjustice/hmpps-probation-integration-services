@@ -52,6 +52,12 @@ class Contact(
     @Column(name = "nsi_id")
     val nsiId: Long? = null,
 
+    @Column
+    val primaryKeyId: Long? = null,
+
+    @Column
+    val tableName: String? = null,
+
     @Lob
     @Column
     val notes: String? = null,
