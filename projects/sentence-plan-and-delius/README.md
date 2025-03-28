@@ -3,7 +3,7 @@
 This integration service provides an API to get the details for the sentence plan for a person on probation.
 
 # Business need
-Provides a background person on probation information to the client.
+Provides background information for a person on probation to the client.
 
 
 # Data dependencies
