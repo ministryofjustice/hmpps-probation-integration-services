@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserDiary
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
 import uk.gov.justice.digital.hmpps.api.model.overview.Appointment
 import uk.gov.justice.digital.hmpps.api.model.user.*
 import uk.gov.justice.digital.hmpps.api.model.user.Staff
@@ -20,7 +19,6 @@ import uk.gov.justice.digital.hmpps.api.model.user.Team
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.UserDiaryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.*
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
@@ -28,6 +26,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Appointment as AppointmentEntity
 
 @Service
 class UserService(
@@ -37,7 +36,6 @@ class UserService(
     private val teamRepository: TeamRepository,
     private val userAccessService: UserAccessService,
     private val contactRepository: ContactRepository,
-    private val userDiaryRepository: UserDiaryRepository,
     private val ldapTemplate: LdapTemplate
 ) {
     fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
@@ -111,21 +109,6 @@ class UserService(
         )
     }
 
-    fun getUserAppointmentsForToday(username: String, pageable: Pageable): UserDiary {
-        val user = getUser(username)
-
-        return user.staff?.let {
-            val contacts = userDiaryRepository.findAppointmentsForTodayByUser(
-                user.staff.id,
-                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
-                ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
-                pageable
-            )
-
-            populateUserDiary(pageable, contacts)
-        } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
-    }
-
     fun getUpcomingAppointments(username: String, pageable: Pageable): UserDiary {
         val user = getUser(username)
 
@@ -161,7 +144,7 @@ class UserService(
         val user = getUser(username)
 
         return user.staff?.let {
-            val appointmentsForToday = getUserAppointmentsForToday(username, pageable)
+            val appointmentsForToday = getUpcomingAppointments(username, pageable)
             val appointmentsWithoutOutcomes = getAppointmentsWithoutOutcomes(username, pageable)
 
             UserAppointments(
