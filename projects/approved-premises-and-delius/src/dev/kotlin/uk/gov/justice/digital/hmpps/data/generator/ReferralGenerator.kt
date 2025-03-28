@@ -111,7 +111,6 @@ object ReferralGenerator {
         referral: Referral,
         approvedPremisesId: Long = ApprovedPremisesGenerator.DEFAULT.id,
         arrivalNotes: String? = null,
-        keyWorkerStaffId: Long? = StaffGenerator.DEFAULT_STAFF.id,
         arrivalDateTime: ZonedDateTime = ZonedDateTime.of(
             referral.expectedArrivalDate,
             LocalTime.now(EuropeLondon),
@@ -125,7 +124,6 @@ object ReferralGenerator {
         arrivalDateTime.truncatedTo(ChronoUnit.SECONDS),
         departureDateTime?.toLocalDate(),
         arrivalNotes,
-        keyWorkerStaffId
     ).apply {
         this.departureDate = departureDateTime?.truncatedTo(ChronoUnit.SECONDS)
     }

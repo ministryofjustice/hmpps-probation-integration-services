@@ -277,6 +277,7 @@ internal class MessagingIntegrationTest {
         )
         assertThat(alertContact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
         assertThat(alertContact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(alertContact.tableName, equalTo("APPROVED_PREMISES_RESIDENCE"))
 
         // And a residence NSI is created
         nsiRepository.findAll()
@@ -373,7 +374,7 @@ internal class MessagingIntegrationTest {
         val residence = residences.first()
         assertThat(residence.arrivalDate, isSameTimeAs(details.arrivedAt))
         assertThat(residence.expectedDepartureDate, equalTo(details.expectedDepartureOn))
-        assertThat(residence.keyWorkerStaffId, equalTo(keyWorker.id))
+        assertThat(alertContact.primaryKeyId, equalTo(residence.id))
     }
 
     @Test

@@ -38,7 +38,8 @@ class ContactService(
         probationAreaCode: String,
         team: Team? = null,
         eventId: Long? = null,
-        nsiId: Long? = null
+        nsiId: Long? = null,
+        residenceId: Long? = null,
     ): Contact {
         return contactRepository.findByPersonIdAndEventIdAndNsiIdAndTypeCodeAndStartTime(
             person.id,
@@ -65,6 +66,8 @@ class ContactService(
                         alert = details.createAlert,
                         eventId = eventId,
                         nsiId = nsiId,
+                        primaryKeyId = residenceId,
+                        tableName = residenceId?.let { "APPROVED_PREMISES_RESIDENCE" }
                     )
                 )
                 if (details.createAlert) {

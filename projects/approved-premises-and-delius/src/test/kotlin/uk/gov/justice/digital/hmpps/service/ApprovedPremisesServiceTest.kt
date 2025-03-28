@@ -315,6 +315,7 @@ internal class ApprovedPremisesServiceTest {
         givenAuditUser()
         givenReferral(person, details.eventDetails.bookingId, andResidence = true)
         whenever(personAddressRepository.save(any())).thenAnswer { it.arguments[0].apply { set("id", 0L) } }
+        whenever(residenceRepository.save(any())).thenAnswer { it.arguments[0].apply { set("id", 0L) } }
 
         approvedPremisesService.personArrived(personArrivedEvent)
 

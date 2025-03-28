@@ -259,7 +259,6 @@ internal class MessagingIntegrationInactiveTest {
         assertThat(residences.size, equalTo(1))
         val residence = residences.first()
         assertThat(residence.arrivalDate, equalTo(nsi.actualStartDate))
-        assertThat(residence.keyWorkerStaffId, equalTo(keyWorker.id))
     }
 
     @Test

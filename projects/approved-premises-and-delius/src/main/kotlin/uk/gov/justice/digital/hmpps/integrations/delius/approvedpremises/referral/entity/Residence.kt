@@ -33,8 +33,6 @@ class Residence(
 
     @Lob
     val arrivalNotes: String?,
-
-    val keyWorkerStaffId: Long?
 ) {
     var departureDate: ZonedDateTime? = null
     var departureReasonId: Long? = null
