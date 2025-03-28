@@ -1,0 +1,45 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+context-ar: Accredited programmes Context {
+  entities: Entities {
+    grid-columns: 3
+    assessment: PNI assessment
+    calculation: PNI calculation
+    ldc: LDC
+    ogrs: OGRS risk
+    ovp: OVP risk
+    osp: OSP
+    rsr: RSR percentage
+    prediction: Risk prediction
+    timeline: Timeline
+    summary: Assessment summary
+  }
+}
+
+context-oasys: OASys Context {
+
+  interface: Accredited programmes\n and OASys {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 4
+    timeline: Timeline
+    risk: OASys risk predictors
+    prediction: Risk prediction
+    pni: PNI result
+    ogp: OGP score
+    ovp: OVP score
+    ogr: OGR score
+    rsr: RSR score
+    osp: OSP score
+    ldc: LDC
+    assessment: PNI assessment
+    calculation: PNI calculation
+  }
+}
+
+context-ar--context-oasys.interface: Upstream\n\n\nDownstream
