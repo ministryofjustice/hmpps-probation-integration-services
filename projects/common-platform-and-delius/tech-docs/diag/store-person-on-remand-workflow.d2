@@ -1,0 +1,37 @@
+# Hearing Received Workflow: Hearing Received: Store person on remand
+
+direction: right
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+# Store person on remand
+store-por: Store person on remand {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_store_person: Save the person details
+    d_store_event: Create a new event
+    d_notify_case: Notify case created
+    d_notify_address: Notify address created
+
+    d_store_person -> d_store_event -> d_notify_case -> d_notify_address
+
+    explanation: |md
+    ## Record risk of serious harm 
+    - Store the details of\
+      the person and the\
+      person manager
+    - Store a new event
+    - Store the main offence
+    - Store the court\
+      appearance
+    - Create a new contact
+    - Store the order manager
+    - Update the person record\
+      with the remanded in\
+      custody status
+    |
+
+}
