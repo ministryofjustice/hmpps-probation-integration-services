@@ -1,0 +1,45 @@
+# Email Received Workflow: Email Mailbox Poll
+
+direction: right
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+# What triggers the workflow?
+mailbox: Mailbox {
+     style.font-size: 24
+
+     explanation: |md
+     ## Email Received
+     - Unread emails\
+       need to be\
+       processed
+     |
+
+     email_received: Email Received
+}
+
+# What happens next?
+notification: Notification {
+    style.font-size: 24
+    grid-columns: 2
+
+    d_poll: Get unread emails
+    d_notify: Send a notification
+    d_update: Mark emails as read
+
+    d_poll -> d_notify -> d_update
+
+    explanation: |md
+    ## Process emails
+    - Poll the mailbox\
+      For unread emails
+    - Send a notification\
+      for each unread email
+    - Mark the email as read
+    |
+
+}
+
+mailbox -> notification
