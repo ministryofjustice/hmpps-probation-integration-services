@@ -1,0 +1,30 @@
+
+style { ...@../../../../script/style.style }
+vars { ...@../../../../script/style.vars }
+** { ...@../../../../script/style.all-style }
+
+context-je: Justice Email Context {
+  entities: Entities {
+    grid-columns: 2
+    message: Email message
+    attributes: Message attributes
+  }
+}
+
+context-delius: Delius Context {
+
+  interface: Justice Email\n and Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 2
+    contact: Contact
+    event: Event
+    pop: Person on probation
+    pm: Person manager
+    staff: Staff
+  }
+}
+
+context-je--context-delius.interface: Upstream\n\n\nDownstream
