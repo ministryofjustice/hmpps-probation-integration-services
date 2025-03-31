@@ -22,6 +22,7 @@ object PersonGenerator {
     val ETR_IN_CUSTODY = generate(NotificationGenerator.PRISONER_ETR_IN_CUSTODY.nomsId())
     val ECSLIRC_IN_CUSTODY = generate(NotificationGenerator.PRISONER_ECSLIRC_IN_CUSTODY.nomsId())
     val ADMIN_MERGE = generate(NotificationGenerator.PRISONER_ADMIN_MERGE.nomsId())
+    val RELEASE_HDC = generate(NotificationGenerator.PRISONER_RELEASED_HDC.nomsId())
 
     fun generate(nomsNumber: String, id: Long = IdGenerator.getAndIncrement()) =
         Person(id, nomsNumber.reversed(), nomsNumber)

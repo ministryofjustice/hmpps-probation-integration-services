@@ -117,6 +117,7 @@ private fun PrisonerMovement.releaseType(): ReleaseTypeCode {
     }
     return when (reasonOverride ?: reason) {
         "ECSL" -> ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE
+        "HD", "HE", "HR", "HU" -> ReleaseTypeCode.HDC_ADULT_LICENCE
         else -> ReleaseTypeCode.ADULT_LICENCE
     }
 }

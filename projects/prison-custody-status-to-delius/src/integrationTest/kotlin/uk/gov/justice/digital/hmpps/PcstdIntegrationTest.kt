@@ -711,4 +711,42 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             )
         }
     }
+
+    @Test
+    fun `release a prisoner on hdc`() {
+        val notification = NotificationGenerator.PRISONER_RELEASED_HDC
+        withBooking(BookingGenerator.RELEASE_HDC, BookingGenerator.RELEASE_HDC.lastMovement(notification.message.occurredAt))
+        val nomsNumber = notification.nomsId()
+        assertTrue(getCustody(nomsNumber).isInCustody())
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertFalse(custody.isInCustody())
+
+        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.HDC_ADULT_LICENCE)
+
+        verifyCustodyHistory(
+            custody,
+            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, releaseOnLicence),
+            CustodyEventTester(
+                CustodyEventTypeCode.LOCATION_CHANGE,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]?.description
+            )
+        )
+
+        verifyContact(custody, ContactType.Code.RELEASE_FROM_CUSTODY)
+
+        verifyTelemetry("Released", "LocationUpdated", "StatusUpdated") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0023AA",
+                "previousInstitution" to "WSI",
+                "institution" to "OUT",
+                "reason" to "RELEASED",
+                "movementReason" to "HD",
+                "movementType" to "Released"
+            )
+        }
+    }
 }

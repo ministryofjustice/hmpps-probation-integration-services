@@ -1,0 +1,11 @@
+{
+  "Type": "Notification",
+  "Message": "{\"eventType\":\"prison-offender-events.prisoner.released\",\"additionalInformation\":{\"nomsNumber\":\"A0023AA\",\"reason\":\"RELEASED\",\"details\":\"Movement reason code HD\",\"nomisMovementReasonCode\":\"HD\",\"currentLocation\":\"OUTSIDE_PRISON\",\"prisonId\":\"WSI\",\"currentPrisonStatus\":\"NOT_UNDER_PRISON_CARE\"},\"version\":1,\"occurredAt\":\"2025-03-31T07:03:50.912169+01:00\",\"publishedAt\":\"2025-03-31T08:00:33.477735848+01:00\",\"description\":\"A prisoner has been released from prison\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A0023AA\"}]}}",
+  "Timestamp": "2025-03-31T07:00:33.487Z",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "prison-offender-events.prisoner.released"
+    }
+  }
+}
