@@ -92,7 +92,21 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>accredited-programmes-and-oasys</span></a>
+    <a href="./index.html"><span>Accredited programmes and OASys</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Business need</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-probation-search-data"><span>Context Map - Probation Search data</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>API Access Control</span></a>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -123,9 +137,28 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="accredited-programmes-and-oasys">accredited-programmes-and-oasys</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="accredited-programmes-and-oasys">Accredited programmes and OASys</h1>
+<p>This integration service provides an API to retrieve risk assessment information from OASys.</p>
+<h1 id="business-need">Business need</h1>
+<p>Provides a summary of the risk of a person on probation to the client.</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>This depends on OASys for up-to-date information on the risk of a person on probation.</p>
+<h2 id="context-map-probation-search-data">Context Map - Probation Search data</h2>
+<p><a href="././img/ap-and-oasys-context-map.svg" rel="noopener noreferrer"><img src="images/img/ap-and-oasys-context-map.svg" alt="" /></a></p>
+<h1 id="api-access-control">API Access Control</h1>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/assessments/*</td>
+<td>PROBATION_API__ACCREDITED_PROGRAMMES__ASSESSMENT</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
