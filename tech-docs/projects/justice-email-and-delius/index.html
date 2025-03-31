@@ -92,7 +92,34 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>justice-email-and-delius</span></a>
+    <a href="./index.html"><span>Justice Email and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-justice-email-data"><span>Context Map - Justice Email Data</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Workflows</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#polling-for-unread-emails"><span>Polling for unread emails</span></a>
+      </li>
+      <li>
+        <a href="./index.html#email-domain-event-received"><span>Email Domain Event Received</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>Interfaces</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#message-formats"><span>Message formats</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./asyncapi-reference.html"><span>AsyncAPI Reference</span></a>
@@ -106,8 +133,34 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="justice-email-and-delius">justice-email-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="justice-email-and-delius">Justice Email and Delius</h1>
+<p>This integration service automates the processing of emails into Delius contacts.</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>This service depends on Delius to create new contacts.</p>
+<h2 id="context-map-justice-email-data">Context Map - Justice Email Data</h2>
+<p><a href="././img/je-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/je-and-delius-context-map.svg" alt="" /></a></p>
+<h1 id="workflows">Workflows</h1>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Email received</td>
+<td>email.message.received</td>
+</tr>
+        </table>
+      </div><h2 id="polling-for-unread-emails">Polling for unread emails</h2>
+<p>Create a domain event for each unread email. Once an email has been processed it will be marked as read.</p>
+<p><a href="././img/email-poll-workflow.svg" rel="noopener noreferrer"><img src="img/email-poll-workflow.svg" alt="" /></a></p>
+<h2 id="email-domain-event-received">Email Domain Event Received</h2>
+<p>Validate the email, convert to markdown and store as a contact in Delius.</p>
+<p><a href="././img/email-received-workflow.svg" rel="noopener noreferrer"><img src="img/email-received-workflow.svg" alt="" /></a></p>
+<h1 id="interfaces">Interfaces</h1>
+<h2 id="message-formats">Message formats</h2>
+<p>The service responds to HMPPS Domain Event messages via the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/justice-email-and-delius-queue.tf">Justice Email and Delius Queue</a>.</p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/justice-email-and-delius-queue.tf">SQS queue policy</a></p>
 
             
           </main>
