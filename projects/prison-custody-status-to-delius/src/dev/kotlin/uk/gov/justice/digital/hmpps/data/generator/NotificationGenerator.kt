@@ -27,4 +27,5 @@ object NotificationGenerator {
     val PRISONER_ADMIN_MERGE = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-admin-merge")
     val PRISONER_RELEASED_HISTORIC =
         ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-hospital-historic")
+    val PRISONER_RELEASED_HDC = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-hdc")
 }

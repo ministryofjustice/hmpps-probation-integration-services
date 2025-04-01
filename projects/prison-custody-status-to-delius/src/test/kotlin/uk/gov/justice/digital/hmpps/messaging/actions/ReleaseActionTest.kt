@@ -14,10 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entity.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -51,6 +53,9 @@ internal class ReleaseActionTest {
 
     @Mock
     internal lateinit var eventService: EventService
+
+    @Mock
+    internal lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     internal lateinit var action: ReleaseAction
