@@ -61,7 +61,7 @@ internal class WarningIntegrationTest : BaseIntegrationTest() {
             WarningDetails(
                 breachReasons = WarningGenerator.BREACH_REASONS.filter { it.selectable }.codedDescriptions(),
                 enforceableContacts = listOf(DEFAULT_ENFORCEABLE_CONTACT.toEnforceableContact()),
-            )
+            ),
         )
         assertThat(response.enforceableContacts.firstOrNull()).isNotNull()
     }
