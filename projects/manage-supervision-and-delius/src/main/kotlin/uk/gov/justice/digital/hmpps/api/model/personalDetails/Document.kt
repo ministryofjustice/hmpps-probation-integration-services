@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
-import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class Document(
@@ -24,8 +24,8 @@ data class DocumentDetails(
     val name: String,
     val docLevel: String,
     val description: String,
-    val createdAt: Instant?,
-    val lastUpdatedAt: Instant?,
+    val createdAt: LocalDateTime? = null,
+    val lastUpdatedAt: LocalDateTime? = null,
     val author: String?,
     val eventId: Long?,
     val sensitive: Boolean? = false,

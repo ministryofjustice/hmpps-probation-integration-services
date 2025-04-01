@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
-import java.time.Instant
+import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class DocumentsServiceTest {
@@ -55,8 +55,8 @@ internal class DocumentsServiceTest {
                 name = "TestName",
                 docLevel = "Doc Level",
                 description = "TestDescription",
-                createdAt = Instant.now(),
-                lastUpdatedAt = Instant.now(),
+                createdAt = LocalDateTime.now(),
+                lastUpdatedAt = LocalDateTime.now(),
                 author = "TestUser",
                 eventId = 1L,
                 sensitive = true,

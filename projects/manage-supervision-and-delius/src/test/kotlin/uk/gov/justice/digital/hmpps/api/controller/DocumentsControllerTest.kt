@@ -16,8 +16,8 @@ import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentDetails
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonDocuments
 import uk.gov.justice.digital.hmpps.service.DocumentsService
-import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class DocumentsControllerTest {
@@ -53,8 +53,8 @@ internal class DocumentsControllerTest {
                     name = "TestName",
                     docLevel = "Doc Level",
                     description = "TestDescription",
-                    createdAt = Instant.now(),
-                    lastUpdatedAt = Instant.now(),
+                    createdAt = LocalDateTime.now(),
+                    lastUpdatedAt = LocalDateTime.now(),
                     author = "TestUser",
                     eventId = 1L,
                     sensitive = true,

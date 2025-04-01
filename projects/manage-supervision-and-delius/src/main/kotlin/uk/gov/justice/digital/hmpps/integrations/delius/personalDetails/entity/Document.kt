@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -237,8 +237,8 @@ data class DocumentEntity(
     val name: String,
     val docLevel: String,
     val description: String,
-    val createdAt: Instant?,
-    val lastUpdatedAt: Instant?,
+    val createdAt: LocalDateTime?,
+    val lastUpdatedAt: LocalDateTime?,
     val author: String?,
     val eventId: Long?,
     @Convert(converter = YesNoConverter::class)
