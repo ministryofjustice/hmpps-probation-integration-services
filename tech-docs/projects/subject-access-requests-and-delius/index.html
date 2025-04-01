@@ -92,7 +92,18 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>subject-access-requests-and-delius</span></a>
+    <a href="./index.html"><span>Subject Access Requests and Delius</span></a>
+  </li>
+  <li>
+    <a href="./index.html"><span>Data dependencies</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#context-map-probation-search-data"><span>Context Map - Probation Search data</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./index.html"><span>API Access Control</span></a>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -117,9 +128,29 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="subject-access-requests-and-delius">subject-access-requests-and-delius</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="subject-access-requests-and-delius">Subject Access Requests and Delius</h1>
+<p>This integration service provides an API to get person details from Delius for SAR.</p>
+<h1 id="data-dependencies">Data dependencies</h1>
+<p>This depends on Delius for up-to-date information.</p>
+<h2 id="context-map-probation-search-data">Context Map - Probation Search data</h2>
+<p><a href="././img/sar-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/sar-and-delius-context-map.svg" alt="" /></a></p>
+<h1 id="api-access-control">API Access Control</h1>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/probation-case/{crn}</td>
+<td>PROBATION_API__SUBJECT_ACCESS_REQUEST__DETAIL</td>
+</tr><tr>
+<td>/user</td>
+<td>PROBATION_API__SUBJECT_ACCESS_REQUEST__DETAIL</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
