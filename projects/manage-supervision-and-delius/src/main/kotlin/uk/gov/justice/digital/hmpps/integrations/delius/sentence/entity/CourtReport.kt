@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.*
+import java.time.LocalDate
 
 @Entity
 class CourtReport(
@@ -15,5 +13,8 @@ class CourtReport(
 
     @ManyToOne
     @JoinColumn(name = "court_appearance_id")
-    val courtAppearance: CourtAppearance
+    val courtAppearance: CourtAppearance,
+
+    @Column(name = "date_requested")
+    val dateRequested: LocalDate? = null,
 )
