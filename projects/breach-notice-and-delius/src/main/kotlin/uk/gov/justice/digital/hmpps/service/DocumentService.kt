@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -24,7 +23,6 @@ class DocumentService(
     private val documentRepository: DocumentRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient,
 ) : AuditableService(auditedInteractionService) {
-    @Transactional
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }
 
@@ -41,7 +39,6 @@ class DocumentService(
         alfrescoUploadClient.lock(document.alfrescoId)
     }
 
-    @Transactional
     fun deleteDocument(event: HmppsDomainEvent) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
         val document = getDocument(event, it)
         documentRepository.delete(document)
