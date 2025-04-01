@@ -33,6 +33,9 @@ class Nsi(
     @Column(name = "expected_start_date")
     val expectedStartDate: LocalDate?,
 
+    @Column(name = "referral_date")
+    val referralDate: LocalDate? = null,
+
     @ManyToOne
     @JoinColumn(name = "nsi_status_id")
     val nsiStatus: NsiStatus? = null,
@@ -47,6 +50,8 @@ class Nsi(
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
+
+    val nsiSubTypeId: Long? = null,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -76,6 +81,8 @@ class NsiStatus(
 class NsiType(
 
     val code: String,
+
+    val description: String? = null,
 
     @Id
     @Column(name = "nsi_type_id") val id: Long

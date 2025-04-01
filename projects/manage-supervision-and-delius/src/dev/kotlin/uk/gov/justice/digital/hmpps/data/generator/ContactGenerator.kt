@@ -142,7 +142,8 @@ object ContactGenerator {
         "contact.doc",
         "DOCUMENT",
         primaryKeyId = NEXT_APPT_CONTACT.id,
-        contact = NEXT_APPT_CONTACT
+        contact = NEXT_APPT_CONTACT,
+        sensitive = true
     )
     val CONTACT_DOCUMENT_2 = generateContactDocument(
         OVERVIEW.id,
@@ -159,7 +160,8 @@ object ContactGenerator {
         name: String,
         documentType: String,
         primaryKeyId: Long? = null,
-        contact: Contact?
+        contact: Contact?,
+        sensitive: Boolean = false
     ): ContactDocument {
         val doc = ContactDocument(contact)
         doc.id = IdGenerator.getAndIncrement()
@@ -169,6 +171,7 @@ object ContactGenerator {
         doc.personId = personId
         doc.primaryKeyId = primaryKeyId
         doc.type = documentType
+        doc.sensitive = sensitive
         return doc
     }
 
