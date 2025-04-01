@@ -715,7 +715,10 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `release a prisoner on hdc`() {
         val notification = NotificationGenerator.PRISONER_RELEASED_HDC
-        withBooking(BookingGenerator.RELEASE_HDC, BookingGenerator.RELEASE_HDC.lastMovement(notification.message.occurredAt))
+        withBooking(
+            BookingGenerator.RELEASE_HDC,
+            BookingGenerator.RELEASE_HDC.lastMovement(notification.message.occurredAt)
+        )
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
 
