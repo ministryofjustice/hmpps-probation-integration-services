@@ -90,6 +90,7 @@ class DataLoader(
         createAbsconded()
         createEtrInCustody()
         createEcslircInCustody()
+        createReleasablePerson(PersonGenerator.RELEASE_HDC)
     }
 
     private fun createReferenceData() {

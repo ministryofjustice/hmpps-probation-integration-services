@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.model.EnforceableContact
 import uk.gov.justice.digital.hmpps.model.WarningDetails
 import uk.gov.justice.digital.hmpps.model.WarningTypesResponse
 import java.time.LocalDateTime
+import java.time.ZoneId.systemDefault
 import java.util.*
 
 @Service
@@ -46,7 +47,7 @@ class WarningService(
 
 fun Contact.toEnforceableContact() = EnforceableContact(
     id,
-    LocalDateTime.of(date, startTime.toLocalTime()),
+    LocalDateTime.of(date, startTime.withZoneSameInstant(systemDefault()).toLocalTime()),
     description,
     type.codedDescription(),
     outcome!!.codedDescription(),

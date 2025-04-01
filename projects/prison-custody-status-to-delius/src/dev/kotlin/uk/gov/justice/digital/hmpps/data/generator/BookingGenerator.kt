@@ -31,6 +31,8 @@ object BookingGenerator {
     val ECSLIRC_CUSTODY = generateRelease(PersonGenerator.ECSLIRC_IN_CUSTODY.nomsNumber, "ECSLIRC")
     val ADMIN_MERGE = generateRelease(PersonGenerator.ADMIN_MERGE.nomsNumber, "MRG")
 
+    val RELEASE_HDC = generateRelease(PersonGenerator.RELEASE_HDC.nomsNumber, "HD")
+
     fun generateRelease(
         nomsId: String,
         movementReason: String,
