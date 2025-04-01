@@ -10,5 +10,5 @@ object UnpaidWorkApptGenerator {
     val UNPAID_WORK_DETAILS_1 = UpwDetails(IdGenerator.getAndIncrement(), ACTIVE_ORDER, 0)
 
     val APPT1 = UpwAppointment(IdGenerator.getAndIncrement(), 3, "Y", 0, LocalDate.now(), UNPAID_WORK_DETAILS_1)
-    val APPT2 = UpwAppointment(IdGenerator.getAndIncrement(), 4, "Y", 1, LocalDate.now(), UNPAID_WORK_DETAILS_1,)
+    val APPT2 = UpwAppointment(IdGenerator.getAndIncrement(), 4, "Y", 1, LocalDate.now(), UNPAID_WORK_DETAILS_1)
 }
