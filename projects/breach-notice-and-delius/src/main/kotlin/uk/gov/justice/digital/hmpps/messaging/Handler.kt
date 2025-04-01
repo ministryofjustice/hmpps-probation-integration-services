@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.service.document.DocumentService
+import uk.gov.justice.digital.hmpps.service.DocumentService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
