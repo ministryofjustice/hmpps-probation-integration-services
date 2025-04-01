@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.service.document
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
@@ -36,6 +36,7 @@ class DocumentService(
         document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
         documentRepository.save(document)
 
+        alfrescoUploadClient.release(document.alfrescoId)
         alfrescoUploadClient.update(document.alfrescoId, document.toMultipart(file))
         alfrescoUploadClient.lock(document.alfrescoId)
     }
