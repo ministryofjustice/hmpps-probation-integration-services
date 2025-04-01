@@ -36,6 +36,7 @@ metadata:
   name: initial-allocations-report
 spec:
   schedule: {{ index .Values "initial-allocations-report" "schedule" }}
+  timeZone: Europe/London
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1

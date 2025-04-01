@@ -4,6 +4,7 @@ metadata:
   name: person-reindex
 spec:
   schedule: {{ .Values.reindexing.person_schedule }}
+  timeZone: Europe/London
   concurrencyPolicy: Replace
   jobTemplate:
     spec:

@@ -19,6 +19,7 @@ items:
       name: contact-index-deletion
     spec:
       schedule: 0 5 1 * * # The first of the month at 5am UTC
+      timeZone: Europe/London
       concurrencyPolicy: Replace
       jobTemplate:
         spec:

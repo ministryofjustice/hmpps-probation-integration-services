@@ -4,6 +4,7 @@ metadata:
   name: dlq-redrive
 spec:
   schedule: {{ .Values.dlq_redrive.schedule }}
+  timeZone: Europe/London
   concurrencyPolicy: Replace
   jobTemplate:
     spec:

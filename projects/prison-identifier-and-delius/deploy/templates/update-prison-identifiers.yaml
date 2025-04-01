@@ -5,6 +5,7 @@ metadata:
   name: update-prison-identifiers
 spec:
   schedule: {{ index .Values "bulk-update" "schedule" }}
+  timeZone: Europe/London
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1

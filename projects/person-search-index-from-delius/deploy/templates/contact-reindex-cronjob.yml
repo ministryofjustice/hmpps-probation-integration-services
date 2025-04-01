@@ -4,6 +4,7 @@ metadata:
   name: contact-reindex
 spec:
   schedule: {{ .Values.reindexing.contact_schedule }}
+  timeZone: Europe/London
   concurrencyPolicy: Replace
   jobTemplate:
     spec:
