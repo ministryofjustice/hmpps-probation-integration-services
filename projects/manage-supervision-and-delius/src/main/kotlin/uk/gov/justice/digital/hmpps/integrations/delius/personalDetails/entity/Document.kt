@@ -113,7 +113,7 @@ abstract class Document {
                    then 'Event'       
                  when document.table_name = 'REGISTRATION'
                    then 'Register'         
-               end as level,    
+               end as doc_level,    
                case
                  when address_assessment.address_assessment_id is not null 
                       then 
@@ -227,6 +227,7 @@ data class DocumentEntity(
     val alfrescoId: String,
     val offenderId: Long,
     val name: String,
+    @Column(name = "doc_level")
     val level: String,
     val type: String,
     val createdAt: LocalDateTime?,
