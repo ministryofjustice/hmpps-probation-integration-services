@@ -21,7 +21,7 @@ jobs:
       templates:
         - 9405e109-1dcf-4df1-8788-5ec9b72db8a0
     wales:
-      schedule: '0 10 * * *' # 10am UTC every day
+      schedule: '0 10 * * 1-5' # 10am Monday to Friday
       templates:
         - 9405e109-1dcf-4df1-8788-5ec9b72db8a0 # English
         - c29e156e-45d6-478a-a110-71d4796cbc29 # Welsh
