@@ -27,7 +27,7 @@ class DocumentService(
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }
 
         val document = getDocument(event, it)
-        document.name = document.name.replace(Regex("\\.doc$"), ".pdf")
+        document.name = document.name.replace(Regex("\\.docx?$"), ".pdf")
         document.status = "Y"
         document.workInProgress = "N"
         document.lastSaved = ZonedDateTime.now()
