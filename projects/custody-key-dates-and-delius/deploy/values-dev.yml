@@ -4,7 +4,6 @@ generic-service:
 
   scheduledDowntime:
     enabled: true
-    shutdown: 0 21 * * 1-5 # 9PM UTC Monday-Friday
 
   env:
     SENTRY_ENVIRONMENT: dev

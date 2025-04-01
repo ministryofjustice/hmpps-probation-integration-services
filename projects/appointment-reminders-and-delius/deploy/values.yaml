@@ -28,7 +28,7 @@ jobs:
         code: N56
         name: East of England
       apiKeySecret: API_KEY
-      schedule: '0 10 * * *' # 10am UTC every day
+      schedule: '0 10 * * *' # 10am every day
       daysInAdvance: 2
 
     wales:
@@ -36,5 +36,5 @@ jobs:
         code: N03
         name: Wales
       apiKeySecret: API_KEY
-      schedule: '0 18 * * *' # 6pm UTC every day
+      schedule: '0 18 * * *' # 6pm every day
       daysInAdvance: 1

@@ -18,7 +18,7 @@ items:
     metadata:
       name: contact-index-deletion
     spec:
-      schedule: 0 5 1 * * # The first of the month at 5am UTC
+      schedule: 0 5 1 * * # The first of the month at 5am
       concurrencyPolicy: Replace
       jobTemplate:
         spec:
