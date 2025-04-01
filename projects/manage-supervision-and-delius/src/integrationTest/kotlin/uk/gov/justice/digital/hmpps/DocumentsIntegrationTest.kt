@@ -34,8 +34,9 @@ internal class DocumentsIntegrationTest {
         assertThat(res.documents[0].name, equalTo("event report"))
         assertThat(res.documents[1].name, equalTo("court report"))
         assertThat(res.documents[2].name, equalTo("contact2.doc"))
+        assertThat(res.documents[2].status, equalTo(null))
         assertThat(res.documents[3].name, equalTo("contact.doc"))
-        assertThat(res.documents[3].sensitive, equalTo(true))
+        assertThat(res.documents[3].status, equalTo("Sensitive"))
     }
 
     @Test

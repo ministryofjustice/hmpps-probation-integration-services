@@ -32,11 +32,10 @@ fun DocumentEntity.toDocumentDetails() = DocumentDetails(
     alfrescoId,
     offenderId,
     name,
-    docLevel,
-    description,
+    level,
+    type,
     createdAt,
     lastUpdatedAt,
     author,
-    eventId,
-    sensitive
+    status
 )

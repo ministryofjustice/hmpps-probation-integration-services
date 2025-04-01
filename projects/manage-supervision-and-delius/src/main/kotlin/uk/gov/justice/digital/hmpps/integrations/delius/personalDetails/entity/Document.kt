@@ -67,13 +67,16 @@ abstract class Document {
     """
         select document.offender_id as offender_id,
                document.alfresco_document_id as alfresco_id,
-               document.sensitive as sensitive,
                document.document_name as name,
-               document.document_type as type,
-               document.table_name as table_name,
                document.created_datetime as created_at,
                document.last_saved as last_updated_at,
-                 case
+               case
+                 when document.sensitive = 1
+                    then 'Sensitive'
+                 else
+                   null
+                 end as status,
+               case
                  when document.table_name = 'OFFENDER'
                    then 'Person'
                  when document.table_name = 'ADDRESSASSESSMENT'
@@ -163,18 +166,7 @@ abstract class Document {
                       then 'Address'         
                  else
                   'Person'
-               end as description,
-               coalesce(
-                       event.event_id,
-                       court_appearance.event_id,
-                       institutional_report_disposal.event_id,
-                       approved_premises_referral.event_id,
-                       case_allocation.event_id,
-                       referral.event_id,
-                       upw_appointment_disposal.event_id,
-                       contact.event_id,
-                       nsi.event_id
-               ) as event_id,
+               end as type,
                case
                  when created_by.user_id is not null then created_by.forename || ' ' || created_by.surname
                  when updated_by.user_id is not null then updated_by.forename || ' ' || updated_by.surname
@@ -235,14 +227,13 @@ data class DocumentEntity(
     val alfrescoId: String,
     val offenderId: Long,
     val name: String,
-    val docLevel: String,
-    val description: String,
+    @Column(name = "doc_level")
+    val level: String,
+    val type: String,
     val createdAt: LocalDateTime?,
     val lastUpdatedAt: LocalDateTime?,
     val author: String?,
-    val eventId: Long?,
-    @Convert(converter = NumericBooleanConverter::class)
-    val sensitive: Boolean? = false,
+    val status: String? = null,
 )
 
 interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {

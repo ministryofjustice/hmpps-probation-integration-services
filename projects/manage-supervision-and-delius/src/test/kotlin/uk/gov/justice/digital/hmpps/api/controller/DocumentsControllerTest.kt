@@ -51,13 +51,12 @@ internal class DocumentsControllerTest {
                     alfrescoId = "alfrescoId",
                     offenderId = 123456L,
                     name = "TestName",
-                    docLevel = "Doc Level",
-                    description = "TestDescription",
+                    level = "Doc Level",
+                    type = "TestDescription",
                     createdAt = LocalDateTime.now(),
                     lastUpdatedAt = LocalDateTime.now(),
                     author = "TestUser",
-                    eventId = 1L,
-                    sensitive = true,
+                    status = "Sensitive",
                 )
             ),
             sortedBy = "name.desc"

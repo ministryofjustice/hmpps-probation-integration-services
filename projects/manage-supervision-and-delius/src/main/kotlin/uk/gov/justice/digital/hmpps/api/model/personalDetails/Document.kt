@@ -22,12 +22,11 @@ data class DocumentDetails(
     val alfrescoId: String,
     val offenderId: Long,
     val name: String,
-    val docLevel: String,
-    val description: String,
+    val level: String,
+    val type: String,
     val createdAt: LocalDateTime? = null,
     val lastUpdatedAt: LocalDateTime? = null,
     val author: String?,
-    val eventId: Long?,
-    val sensitive: Boolean? = false,
+    val status: String? = null
 )
 
