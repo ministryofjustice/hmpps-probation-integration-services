@@ -54,8 +54,8 @@ abstract class Document {
     @Column(name = "last_updated_user_id")
     open var lastUpdatedUserId: Long = 0
 
-    @Column(name = "sensitive")
-    @Convert(converter = YesNoConverter::class)
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
     open var sensitive: Boolean = false
 
     @Column(columnDefinition = "number")
