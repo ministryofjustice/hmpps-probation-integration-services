@@ -241,7 +241,7 @@ data class DocumentEntity(
     val lastUpdatedAt: LocalDateTime?,
     val author: String?,
     val eventId: Long?,
-    @Convert(converter = YesNoConverter::class)
+    @Convert(converter = NumericBooleanConverter::class)
     val sensitive: Boolean? = false,
 )
 
