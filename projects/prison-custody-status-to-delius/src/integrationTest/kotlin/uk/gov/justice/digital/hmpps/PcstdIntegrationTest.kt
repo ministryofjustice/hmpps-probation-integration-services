@@ -5,6 +5,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.BookingGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
@@ -714,6 +715,8 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `release a prisoner on hdc`() {
+        whenever(featureFlags.enabled("hdc-release-type")).thenReturn(true)
+
         val notification = NotificationGenerator.PRISONER_RELEASED_HDC
         withBooking(
             BookingGenerator.RELEASE_HDC,

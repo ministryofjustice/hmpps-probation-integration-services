@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging.actions
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -30,7 +31,8 @@ class ReleaseAction(
     private val hostRepository: HostRepository,
     private val releaseRepository: ReleaseRepository,
     private val contactService: ContactService,
-    private val eventService: EventService
+    private val eventService: EventService,
+    private val featureFlags: FeatureFlags,
 ) : PrisonerMovementAction {
     override val name: String
         get() = "Release"
@@ -109,15 +111,15 @@ class ReleaseAction(
             )
         )
     }
-}
 
-private fun PrisonerMovement.releaseType(): ReleaseTypeCode {
-    if (type != PrisonerMovement.Type.RELEASED) {
-        throw IgnorableMessageException("UnsupportedReleaseType")
-    }
-    return when (reasonOverride ?: reason) {
-        "ECSL" -> ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE
-        "HD", "HE", "HR", "HU" -> ReleaseTypeCode.HDC_ADULT_LICENCE
-        else -> ReleaseTypeCode.ADULT_LICENCE
+    private fun PrisonerMovement.releaseType(): ReleaseTypeCode {
+        if (type != PrisonerMovement.Type.RELEASED) {
+            throw IgnorableMessageException("UnsupportedReleaseType")
+        }
+        return when (reasonOverride ?: reason) {
+            "ECSL" -> ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE
+            "HD", "HE", "HR", "HU" -> if (featureFlags.enabled("hdc-release-type")) ReleaseTypeCode.HDC_ADULT_LICENCE else ReleaseTypeCode.ADULT_LICENCE
+            else -> ReleaseTypeCode.ADULT_LICENCE
+        }
     }
 }
