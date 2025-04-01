@@ -44,7 +44,7 @@ generic-service:
       - unilink_staff
 
   scheduledDowntime:
-    shutdown: 0 21 * * 1-5 # 9PM UTC Monday-Friday
+    shutdown: 0 21 * * 1-5 # 9PM Monday-Friday
     timeZone: Europe/London
 
 generic-prometheus-alerts:
