@@ -5,6 +5,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -14,6 +15,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notif
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
+@Transactional
 @Channel("breach-notice-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
