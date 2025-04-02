@@ -818,6 +818,10 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>LIC_CONDITION</td>
+                                    <td> (&#10;(TERMINATION_DATE &gt;&#61; COMMENCEMENT_DATE) OR ( COMMENCEMENT_DATE IS NULL)&#10;) </td>
+                                </tr>
+                                <tr>
                                     <td>ACTIVE_FLAG_TERMINATION_DATE1</td>
                                     <td> (ACTIVE_FLAG &#61; 0 AND TERMINATION_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND TERMINATION_DATE IS NULL)&#10; </td>
                                 </tr>
@@ -826,16 +830,12 @@
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY6</td>
-                                    <td>ESTABLISHMENT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>LIC_CONDITION</td>
-                                    <td> (&#10;(TERMINATION_DATE &gt;&#61; COMMENCEMENT_DATE) OR ( COMMENCEMENT_DATE IS NULL)&#10;) </td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_368876692</td>
                                     <td>PENDING_TRANSFER IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY6</td>
+                                    <td>ESTABLISHMENT IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -862,13 +862,13 @@
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2751,1044,3100,2012">
 <area shape="rect" id="node2" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1103,5,1444,592">
-<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1707,324,1971">
-<area shape="rect" id="node4" href="R_LIC_COND_TYPE_MAIN_CAT.html" target="_top" title="R_LIC_COND_TYPE_MAIN_CAT" alt="" coords="1119,2284,1427,2548">
-<area shape="rect" id="node5" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1488,1560,1965,2509">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1984,324,2248">
+<area shape="rect" id="node4" href="R_LIC_COND_TYPE_MAIN_CAT.html" target="_top" title="R_LIC_COND_TYPE_MAIN_CAT" alt="" coords="1119,2313,1427,2577">
+<area shape="rect" id="node5" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1488,1589,1965,2539">
 <area shape="rect" id="node6" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2401,1272,2693,2005">
-<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="727,861,1059,2123">
+<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="727,861,1059,2152">
 <area shape="rect" id="node8" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="413,713,637,860">
-<area shape="rect" id="node10" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="368,1872,683,2195">
+<area shape="rect" id="node10" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="368,1629,683,1952">
 <area shape="rect" id="node11" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="2009,2104,2343,2837">
 <area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2015,645,2337,1907">
 <area shape="rect" id="node12" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2387,2023,2707,2873">
@@ -877,19 +877,19 @@
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="3143,1233,3492,2201">
+<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="3143,1246,3492,2214">
 <area shape="rect" id="node2" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1495,125,1836,712">
-<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,1917,716,2181">
-<area shape="rect" id="node4" href="R_LIC_COND_TYPE_MAIN_CAT.html" target="_top" title="R_LIC_COND_TYPE_MAIN_CAT" alt="" coords="763,2892,1071,3156">
-<area shape="rect" id="node5" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1880,1868,2357,2817">
-<area shape="rect" id="node6" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2793,134,3085,868">
-<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1119,894,1451,2156">
-<area shape="rect" id="node8" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="805,694,1029,841">
-<area shape="rect" id="node10" href="USER_.html" target="_top" title="USER_" alt="" coords="5,2505,353,2828">
-<area shape="rect" id="node11" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="760,2372,1075,2694">
-<area shape="rect" id="node12" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="2401,1000,2735,1733">
-<area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2407,1894,2729,3156">
-<area shape="rect" id="node13" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2779,970,3099,1821">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,1914,716,2178">
+<area shape="rect" id="node4" href="R_LIC_COND_TYPE_MAIN_CAT.html" target="_top" title="R_LIC_COND_TYPE_MAIN_CAT" alt="" coords="763,2905,1071,3169">
+<area shape="rect" id="node5" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1880,1884,2357,2833">
+<area shape="rect" id="node6" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2793,142,3085,876">
+<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1119,892,1451,2182">
+<area shape="rect" id="node8" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="805,692,1029,838">
+<area shape="rect" id="node10" href="USER_.html" target="_top" title="USER_" alt="" coords="5,2518,353,2841">
+<area shape="rect" id="node11" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="760,2385,1075,2708">
+<area shape="rect" id="node12" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="2401,1013,2735,1746">
+<area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2407,1908,2729,3169">
+<area shape="rect" id="node13" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2779,978,3099,1829">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/LIC_CONDITION.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

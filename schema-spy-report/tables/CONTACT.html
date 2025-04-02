@@ -1380,48 +1380,48 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>CONTACT_TABLE_69233217</td>
-                                    <td>TABLE_NAME IN (&#39;APPROVED_PREMISES_REFERRAL&#39;, &#39;APPROVED_PREMISES_RESIDENCE&#39;, &#39;COURT_REPORT&#39;,&#10;   &#39;INSTITUTIONAL_REPORT&#39;, &#39;REFERRAL&#39;, &#39;DRUGS_TEST&#39;, &#39;ASSESSMENT&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>STAFF_OR_TEAM1</td>
-                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_400</td>
-                                    <td>VISOR_EXPORTED IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>CONTACT_TYPE</td>
-                                    <td> (&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NOT NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NOT NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NOT NULL)&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL )&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>ENFORCEMENT_ONE_OR_N_470810165</td>
-                                    <td>ENFORCEMENT &#61; 1 OR ENFORCEMENT IS NULL</td>
+                                    <td>PROVIDER_EMPLOYEE_OR_STAFF</td>
+                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>TRUST_OR_PROVIDER1</td>
                                     <td> (&#10;TRUST_PROVIDER_TEAM_ID &#61; TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID &#61; PROVIDER_TEAM_ID&#10;) </td>
                                 </tr>
                                 <tr>
+                                    <td>TRUE_OR_FALSE18</td>
+                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>ENFORCEMENT_ONE_OR_N_470810165</td>
+                                    <td>ENFORCEMENT &#61; 1 OR ENFORCEMENT IS NULL</td>
+                                </tr>
+                                <tr>
                                     <td>OFFENDER_MANAGER_TEAM_XOR</td>
                                     <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>CONTACT_TYPE</td>
+                                    <td> (&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NOT NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NOT NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NOT NULL)&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL )&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_401</td>
                                     <td>ATTENDED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
+                                    <td>CONTACT_TABLE_69233217</td>
+                                    <td>TABLE_NAME IN (&#39;APPROVED_PREMISES_REFERRAL&#39;, &#39;APPROVED_PREMISES_RESIDENCE&#39;, &#39;COURT_REPORT&#39;,&#10;   &#39;INSTITUTIONAL_REPORT&#39;, &#39;REFERRAL&#39;, &#39;DRUGS_TEST&#39;, &#39;ASSESSMENT&#39;)</td>
+                                </tr>
+                                <tr>
                                     <td>GREATER_THAN_0</td>
                                     <td>HOURS_CREDITED &gt; 0</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_402</td>
-                                    <td>COMPLIED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>TRUE_OR_FALSE16</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>PROVIDER_EMPLOYEE_OR_STAFF</td>
-                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
+                                    <td>YES_OR_NO_400</td>
+                                    <td>VISOR_EXPORTED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_403</td>
@@ -1432,12 +1432,12 @@
                                     <td>RAR_ACTIVITY IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE16</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                    <td>STAFF_OR_TEAM1</td>
+                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE18</td>
-                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
+                                    <td>YES_OR_NO_402</td>
+                                    <td>COMPLIED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -1470,12 +1470,12 @@
 <area shape="rect" id="node5" href="R_CONTACT_OUTCOME_TYPE.html" target="_top" title="R_CONTACT_OUTCOME_TYPE" alt="" coords="1043,1688,1381,1893">
 <area shape="rect" id="node6" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1425,2720,1855,4344">
 <area shape="rect" id="node7" href="EVENT.html" target="_top" title="EVENT" alt="" coords="679,3588,969,4086">
-<area shape="rect" id="node8" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="273,3790,605,5052">
+<area shape="rect" id="node8" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="273,3761,605,5052">
 <area shape="rect" id="node9" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="5,2432,229,2578">
 <area shape="rect" id="node10" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="1085,978,1339,1360">
 <area shape="rect" id="node11" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1085,1377,1339,1670">
 <area shape="rect" id="node12" href="STAFF.html" target="_top" title="STAFF" alt="" coords="1085,413,1339,853">
-<area shape="rect" id="node14" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="649,4497,999,4761">
+<area shape="rect" id="node14" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="649,4496,999,4760">
 <area shape="rect" id="node15" href="R_EXPLANATION.html" target="_top" title="R_EXPLANATION" alt="" coords="1085,3764,1339,3998">
 <area shape="rect" id="node16" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="679,2285,969,2901">
 <area shape="rect" id="node17" href="NSI.html" target="_top" title="NSI" alt="" coords="1070,3052,1354,3638">
@@ -1501,20 +1501,20 @@
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
 <area shape="rect" id="node1" href="ALL_TEAM.html" target="_top" title="ALL_TEAM" alt="" coords="1521,1429,1781,1722">
 <area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="1102,700,1425,1228">
-<area shape="rect" id="node6" href="USER_.html" target="_top" title="USER_" alt="" coords="321,2065,669,2388">
+<area shape="rect" id="node6" href="USER_.html" target="_top" title="USER_" alt="" coords="321,2049,669,2372">
 <area shape="rect" id="node14" href="TEAM.html" target="_top" title="TEAM" alt="" coords="735,948,1023,1300">
 <area shape="rect" id="node3" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2359,2577,2677,3193">
 <area shape="rect" id="node4" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="1493,4058,1810,4293">
 <area shape="rect" id="node5" href="R_CONTACT_OUTCOME_TYPE.html" target="_top" title="R_CONTACT_OUTCOME_TYPE" alt="" coords="1482,448,1821,653">
 <area shape="rect" id="node7" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1865,2132,2294,3756">
 <area shape="rect" id="node8" href="EVENT.html" target="_top" title="EVENT" alt="" coords="1119,3333,1408,3832">
-<area shape="rect" id="node9" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="713,2537,1045,3798">
+<area shape="rect" id="node9" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="713,2514,1045,3805">
 <area shape="rect" id="node10" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="383,4738,607,4885">
 <area shape="rect" id="node11" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="22,216,277,597">
 <area shape="rect" id="node12" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1524,1776,1779,2069">
-<area shape="rect" id="node13" href="STAFF.html" target="_top" title="STAFF" alt="" coords="22,4280,277,4720">
+<area shape="rect" id="node13" href="STAFF.html" target="_top" title="STAFF" alt="" coords="22,4318,277,4758">
 <area shape="rect" id="node15" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="1089,4029,1438,4293">
-<area shape="rect" id="node16" href="R_EXPLANATION.html" target="_top" title="R_EXPLANATION" alt="" coords="751,2006,1006,2241">
+<area shape="rect" id="node16" href="R_EXPLANATION.html" target="_top" title="R_EXPLANATION" alt="" coords="751,1990,1006,2225">
 <area shape="rect" id="node17" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1119,1425,1408,2041">
 <area shape="rect" id="node18" href="NSI.html" target="_top" title="NSI" alt="" coords="1509,2797,1793,3384">
 <area shape="rect" id="node19" href="OFFICE_LOCATION.html" target="_top" title="OFFICE_LOCATION" alt="" coords="1524,670,1779,964">
@@ -1522,10 +1522,10 @@
 <area shape="rect" id="node21" href="PSS_RQMNT.html" target="_top" title="PSS_RQMNT" alt="" coords="1113,2944,1413,3208">
 <area shape="rect" id="node22" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="1089,2166,1438,2782">
 <area shape="rect" id="node23" href="OFFICER.html" target="_top" title="OFFICER" alt="" coords="1535,3581,1768,3933">
-<area shape="rect" id="node24" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="2378,1842,2658,2194">
+<area shape="rect" id="node24" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="2378,1880,2658,2232">
 <area shape="rect" id="node25" href="CONTACT_ALERT_CLEAR.html" target="_top" title="CONTACT_ALERT_CLEAR" alt="" coords="2385,4337,2651,4660">
 <area shape="rect" id="node26" href="CONTACT_UPLOAD_DOCUMENT.html" target="_top" title="CONTACT_UPLOAD_DOCUMENT" alt="" coords="2354,196,2682,401">
-<area shape="rect" id="node27" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="2745,1469,3000,1909">
+<area shape="rect" id="node27" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="2745,1488,3000,1928">
 <area shape="rect" id="node28" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="2390,3792,2646,4320">
 <area shape="rect" id="node29" href="ENFORCEMENT.html" target="_top" title="ENFORCEMENT" alt="" coords="2743,4033,3003,4356">
 <area shape="rect" id="node30" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="2378,496,2658,1376">

@@ -907,12 +907,16 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>LIC_COND_TRANS_ORGIN_TEAM_XOR</td>
-                                    <td> (&#10;(ORIGIN_TEAM_ID IS NOT NULL AND ORIGIN_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(ORIGIN_TEAM_ID IS NULL AND ORIGIN_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
                                     <td>LIC_COND_TRANS_ORGIN_STAFF_XOR</td>
                                     <td> (&#10;(ORIGIN_STAFF_ID IS NOT NULL AND ORIGIN_PROVIDER_EMPLOYEE_ID IS NULL)&#10;OR&#10;(ORIGIN_STAFF_ID IS NULL AND ORIGIN_PROVIDER_EMPLOYEE_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1450363321</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>LIC_COND_TRANS_ORGIN_TEAM_XOR</td>
+                                    <td> (&#10;(ORIGIN_TEAM_ID IS NOT NULL AND ORIGIN_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(ORIGIN_TEAM_ID IS NULL AND ORIGIN_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>LIC_COND_TRANS_REC_STAFF_XOR</td>
@@ -921,10 +925,6 @@
                                 <tr>
                                     <td>LIC_COND_TRANS_REC_TEAM_XOR</td>
                                     <td> (&#10;(RECEIVING_TEAM_ID IS NOT NULL AND RECEIVING_PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(RECEIVING_TEAM_ID IS NULL AND RECEIVING_PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_1450363321</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -951,7 +951,7 @@
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="744,89,1033,705">
 <area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1404,324,1668">
-<area shape="rect" id="node3" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,407,700,1668">
+<area shape="rect" id="node3" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,407,700,1697">
 <area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,136,277,283">
 <area shape="rect" id="node5" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1657,583,1949,1316">
 <area shape="rect" id="node6" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1077,1164,1599,2113">
@@ -967,20 +967,20 @@
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1456,925,1745,1541">
-<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="688,2520,1036,2842">
-<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="26,1210,345,1474">
-<area shape="rect" id="node4" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1080,136,1412,1397">
-<area shape="rect" id="node5" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="750,1466,974,1613">
-<area shape="rect" id="node8" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="389,2161,644,2542">
-<area shape="rect" id="node10" href="STAFF.html" target="_top" title="STAFF" alt="" coords="389,1632,644,2072">
-<area shape="rect" id="node6" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2368,2541,2660,3274">
-<area shape="rect" id="node7" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1789,1594,2310,2544">
-<area shape="rect" id="node9" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1473,2814,1728,3108">
-<area shape="rect" id="node11" href="TEAM.html" target="_top" title="TEAM" alt="" coords="1456,2409,1744,2761">
-<area shape="rect" id="node12" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="1118,2945,1373,3180">
-<area shape="rect" id="node13" href="MASTER_TRANSFER.html" target="_top" title="MASTER_TRANSFER" alt="" coords="1473,2098,1728,2392">
-<area shape="rect" id="node14" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2354,1069,2674,1920">
+<area shape="rect" id="node1" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1456,946,1745,1562">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="688,2541,1036,2864">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="26,1204,345,1468">
+<area shape="rect" id="node4" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1080,128,1412,1418">
+<area shape="rect" id="node5" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="750,1488,974,1634">
+<area shape="rect" id="node8" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="389,2182,644,2564">
+<area shape="rect" id="node10" href="STAFF.html" target="_top" title="STAFF" alt="" coords="389,1653,644,2093">
+<area shape="rect" id="node6" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2368,2562,2660,3296">
+<area shape="rect" id="node7" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1789,1616,2310,2565">
+<area shape="rect" id="node9" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1473,2836,1728,3129">
+<area shape="rect" id="node11" href="TEAM.html" target="_top" title="TEAM" alt="" coords="1456,2430,1744,2782">
+<area shape="rect" id="node12" href="R_TRANSFER_REASON.html" target="_top" title="R_TRANSFER_REASON" alt="" coords="1118,2966,1373,3201">
+<area shape="rect" id="node13" href="MASTER_TRANSFER.html" target="_top" title="MASTER_TRANSFER" alt="" coords="1473,2120,1728,2413">
+<area shape="rect" id="node14" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2354,1090,2674,1941">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/LIC_CONDITION_TRANSFER.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

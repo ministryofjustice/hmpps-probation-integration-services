@@ -743,16 +743,24 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>ACTIVE_FLAG_END_DATE4</td>
-                                    <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
+                                    <td>TRUE_OR_FALSE49</td>
+                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>OFFENDER_MANAGER_TEAM_XOR5</td>
+                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>OFFENDER_MANAGER_XOR</td>
                                     <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND ALLOCATION_STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND ALLOCATION_STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>OFFENDER_MANAGER_TEAM_XOR5</td>
-                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                    <td>STAFF_OR_TEAM21</td>
+                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; ALLOCATION_STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>ACTIVE_FLAG_END_DATE4</td>
+                                    <td> (ACTIVE_FLAG &#61; 0 AND END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND END_DATE IS NULL)&#10; </td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE47</td>
@@ -761,14 +769,6 @@
                                 <tr>
                                     <td>TRUST_OR_PROVIDER5</td>
                                     <td> (&#10;TRUST_PROVIDER_TEAM_ID &#61; TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID &#61; PROVIDER_TEAM_ID&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE49</td>
-                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>STAFF_OR_TEAM21</td>
-                                    <td> (&#10;STAFF_EMPLOYEE_ID &#61; ALLOCATION_STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID &#61; PROVIDER_EMPLOYEE_ID&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -793,44 +793,44 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="ALL_TEAM.html" target="_top" title="ALL_TEAM" alt="" coords="1083,2815,1343,3108">
-<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="376,2616,699,3144">
+<area shape="rect" id="node1" href="ALL_TEAM.html" target="_top" title="ALL_TEAM" alt="" coords="1083,2844,1343,3138">
+<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="376,2646,699,3174">
 <area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="9,1234,327,1498">
-<area shape="rect" id="node15" href="TEAM.html" target="_top" title="TEAM" alt="" coords="24,2968,312,3320">
-<area shape="rect" id="node3" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1822,1260,2171,2228">
-<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="371,207,703,1468">
-<area shape="rect" id="node6" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="1423,1646,1778,2390">
+<area shape="rect" id="node15" href="TEAM.html" target="_top" title="TEAM" alt="" coords="24,2998,312,3350">
+<area shape="rect" id="node3" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1822,1290,2171,2258">
+<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="371,207,703,1498">
+<area shape="rect" id="node6" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="1423,1675,1778,2419">
 <area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="56,59,280,206">
-<area shape="rect" id="node8" href="OFFICER.html" target="_top" title="OFFICER" alt="" coords="1096,2446,1329,2798">
-<area shape="rect" id="node11" href="STAFF.html" target="_top" title="STAFF" alt="" coords="747,1666,1002,2106">
-<area shape="rect" id="node12" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1046,1522,1379,2284">
-<area shape="rect" id="node13" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="747,2195,1002,2576">
-<area shape="rect" id="node14" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="747,2630,1002,2923">
-<area shape="rect" id="node9" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1867,2615,2127,3143">
-<area shape="rect" id="node10" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="1857,2246,2137,2598">
-<area shape="rect" id="node16" href="RESPONSIBLE_OFFICER.html" target="_top" title="RESPONSIBLE_OFFICER" alt="" coords="1841,567,2152,831">
+<area shape="rect" id="node8" href="OFFICER.html" target="_top" title="OFFICER" alt="" coords="1096,2475,1329,2827">
+<area shape="rect" id="node11" href="STAFF.html" target="_top" title="STAFF" alt="" coords="747,1695,1002,2135">
+<area shape="rect" id="node12" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1046,1551,1379,2314">
+<area shape="rect" id="node13" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="747,2224,1002,2606">
+<area shape="rect" id="node14" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="747,2659,1002,2952">
+<area shape="rect" id="node9" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1867,2644,2127,3172">
+<area shape="rect" id="node10" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="1857,2275,2137,2627">
+<area shape="rect" id="node16" href="RESPONSIBLE_OFFICER.html" target="_top" title="RESPONSIBLE_OFFICER" alt="" coords="1841,582,2152,846">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/OFFENDER_MANAGER.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="ALL_TEAM.html" target="_top" title="ALL_TEAM" alt="" coords="1788,2663,2048,2956">
-<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="1081,2280,1404,2808">
-<area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="714,1518,1033,1782">
-<area shape="rect" id="node11" href="USER_.html" target="_top" title="USER_" alt="" coords="322,2043,670,2366">
-<area shape="rect" id="node16" href="TEAM.html" target="_top" title="TEAM" alt="" coords="729,2208,1017,2560">
-<area shape="rect" id="node3" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2527,336,2877,1304">
-<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1077,462,1409,1723">
-<area shape="rect" id="node6" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="2129,1378,2483,2122">
-<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="761,370,985,516">
-<area shape="rect" id="node8" href="OFFICER.html" target="_top" title="OFFICER" alt="" coords="1801,1226,2035,1578">
-<area shape="rect" id="node12" href="STAFF.html" target="_top" title="STAFF" alt="" coords="23,1407,278,1847">
-<area shape="rect" id="node13" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1751,1667,2085,2430">
-<area shape="rect" id="node14" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="23,2666,278,3047">
-<area shape="rect" id="node15" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1453,2064,1707,2358">
-<area shape="rect" id="node9" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="2572,1691,2832,2219">
-<area shape="rect" id="node10" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="2562,1322,2842,1674">
-<area shape="rect" id="node17" href="RESPONSIBLE_OFFICER.html" target="_top" title="RESPONSIBLE_OFFICER" alt="" coords="2547,55,2857,319">
+<area shape="rect" id="node1" href="ALL_TEAM.html" target="_top" title="ALL_TEAM" alt="" coords="1788,2632,2048,2925">
+<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="1081,2249,1404,2777">
+<area shape="rect" id="node4" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="714,1457,1033,1721">
+<area shape="rect" id="node11" href="USER_.html" target="_top" title="USER_" alt="" coords="322,2012,670,2335">
+<area shape="rect" id="node16" href="TEAM.html" target="_top" title="TEAM" alt="" coords="729,2177,1017,2529">
+<area shape="rect" id="node3" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2527,292,2877,1260">
+<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1077,401,1409,1692">
+<area shape="rect" id="node6" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="2129,1345,2483,2089">
+<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="761,309,985,456">
+<area shape="rect" id="node8" href="OFFICER.html" target="_top" title="OFFICER" alt="" coords="1801,1195,2035,1547">
+<area shape="rect" id="node12" href="STAFF.html" target="_top" title="STAFF" alt="" coords="23,1347,278,1787">
+<area shape="rect" id="node13" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1751,1636,2085,2399">
+<area shape="rect" id="node14" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="23,2635,278,3016">
+<area shape="rect" id="node15" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1453,2033,1707,2327">
+<area shape="rect" id="node9" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="2572,1647,2832,2175">
+<area shape="rect" id="node10" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="2562,1277,2842,1629">
+<area shape="rect" id="node17" href="RESPONSIBLE_OFFICER.html" target="_top" title="RESPONSIBLE_OFFICER" alt="" coords="2547,5,2857,269">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/OFFENDER_MANAGER.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
