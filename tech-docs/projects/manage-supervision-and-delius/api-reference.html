@@ -246,6 +246,9 @@
         <a href="./api-reference.html#overview-crn"><span>/overview/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#documents-crn"><span>/documents/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#compliance-crn"><span>/compliance/{crn}</span></a>
       </li>
       <li>
@@ -6533,6 +6536,125 @@
 </td>
 <td>
 <a href='#schema-overview'>Overview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="documents-crn">/documents/{crn}</h2>
+
+<h3 id="documents-crn-get">get</h3>
+
+  <p><em>Gets all documents for a person</em></p>
+
+
+
+
+<h4 id="documents-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>query</td>
+<td>integer</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>sortBy</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="documents-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "noms": "string",
+    "dateOfBirth": "string"
+  },
+  "totalPages": "integer",
+  "totalElements": "integer",
+  "sortedBy": "string",
+  "documents": [
+    {
+      "alfrescoId": "string",
+      "offenderId": "integer",
+      "name": "string",
+      "level": "string",
+      "type": "string",
+      "createdAt": "string",
+      "lastUpdatedAt": "string",
+      "author": "string",
+      "status": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-persondocuments'>PersonDocuments</a>
 </td>
 </tr>
 
@@ -13049,6 +13171,170 @@
 <td></td>
 <td>
   <a href='#schema-order'>Order</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-documentdetails">DocumentDetails</h3>
+
+
+<table class='schema-documentdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>alfrescoId</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>level</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>createdAt</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdatedAt</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>author</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-persondocuments">PersonDocuments</h3>
+
+
+<table class='schema-persondocuments'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personSummary</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personsummary'>PersonSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>totalPages</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalElements</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sortedBy</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-documentdetails'>DocumentDetails</a>
 </td>
 </tr>
 

@@ -1115,6 +1115,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Overview"
+  /documents/{crn}:
+    get:
+      tags:
+      - Documents
+      summary: Gets all documents for a person
+      operationId: getPersonActivity_1
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      - name: sortBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: createdAt.desc
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonDocuments"
   /compliance/{crn}:
     get:
       tags:
@@ -3138,6 +3177,58 @@ components:
       - breaches
       - count
       - orders
+    DocumentDetails:
+      type: object
+      properties:
+        alfrescoId:
+          type: string
+        offenderId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        level:
+          type: string
+        type:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          type: string
+          format: date-time
+        author:
+          type: string
+        status:
+          type: string
+      required:
+      - alfrescoId
+      - level
+      - name
+      - offenderId
+      - type
+    PersonDocuments:
+      type: object
+      properties:
+        personSummary:
+          $ref: "#/components/schemas/PersonSummary"
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int32
+        sortedBy:
+          type: string
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentDetails"
+      required:
+      - documents
+      - personSummary
+      - totalElements
+      - totalPages
     Breach:
       type: object
       properties:
