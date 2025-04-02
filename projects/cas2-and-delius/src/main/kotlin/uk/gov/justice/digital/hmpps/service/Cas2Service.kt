@@ -30,7 +30,13 @@ class Cas2Service(
             urn = "urn:hmpps:cas2:application-submitted:${details.eventDetails.applicationId}",
             description = "CAS2 Referral Submitted: ${details.eventDetails.applicationOrigin()}"
         )
-        if (success) telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties)
+        if (success) telemetryService.trackEvent(
+            "ApplicationSubmitted",
+            event.telemetryProperties + mapOf(
+                "applicationId" to details.eventDetails.applicationId,
+                "applicationOrigin" to details.eventDetails.applicationOrigin()
+            ),
+        )
     }
 
     fun applicationStatusUpdated(event: HmppsDomainEvent) {
