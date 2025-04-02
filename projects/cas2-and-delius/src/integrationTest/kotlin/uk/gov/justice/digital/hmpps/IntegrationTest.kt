@@ -77,7 +77,9 @@ internal class IntegrationTest {
             "ApplicationSubmitted",
             mapOf(
                 "crn" to "A000001",
-                "detailUrl" to "http://localhost:${wireMockServer.port()}/approved-premises-api/events/cas2/application-submitted/1"
+                "detailUrl" to "http://localhost:${wireMockServer.port()}/approved-premises-api/events/cas2/application-submitted/1",
+                "applicationId" to "00000000-0000-0000-0000-000000000001",
+                "applicationOrigin" to "Home Detention Curfew"
             ),
             mapOf()
         )
