@@ -77,8 +77,10 @@ abstract class Document {
                    null
                  end as status,
                case
-                 when document.table_name = 'OFFENDER'
+                 when document.table_name = 'OFFENDER' and document.document_type = 'DOCUMENT'
                    then 'Person'
+                 when document.table_name = 'OFFENDER' and document.document_type = 'PREVIOUS_CONVICTION'
+                   then 'Pre Cons'  
                  when document.table_name = 'ADDRESSASSESSMENT'
                    then 'Address assessment'
                  when document.table_name = 'PERSONALCONTACT'
@@ -115,6 +117,10 @@ abstract class Document {
                    then 'Register'         
                end as doc_level,    
                case
+                 when document.table_name = 'OFFENDER' and document.document_type = 'PREVIOUS_CONVICTION'
+                   then 'Pre Cons'
+                 when document.table_name = 'EVENT' and document.document_type = 'CPS_PACK'
+                   then 'CPS Pack'    
                  when address_assessment.address_assessment_id is not null 
                       then 
                         case 
