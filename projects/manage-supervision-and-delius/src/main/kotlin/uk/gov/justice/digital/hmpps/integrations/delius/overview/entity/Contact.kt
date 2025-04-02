@@ -480,8 +480,7 @@ interface Appointment {
     val contactEndTime: LocalTime?
     val totalSentences: Int
     val contactDescription: String
-    val sentenceDescription: String?
-    val latestDescription: String
+    val sentenceDescription: String
 }
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =

@@ -249,7 +249,7 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
     id,
     crn,
     dob,
-    sentenceDescription ?: latestDescription,
+    sentenceDescription,
     if (totalSentences > 0) (totalSentences - 1) else totalSentences,
     contactDescription,
     ZonedDateTime.of(LocalDateTime.of(contactDate, contactStartTime), EuropeLondon),
