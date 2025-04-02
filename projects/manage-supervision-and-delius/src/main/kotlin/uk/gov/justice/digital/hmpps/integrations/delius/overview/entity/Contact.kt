@@ -415,19 +415,19 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                          FROM event e
                          JOIN disposal d on d.event_id = e.event_id
                          WHERE e.offender_id = o.offender_id
-                         AND e.ACTIVE_FLAG = 1 
+                         AND e.active_flag = 1 
                          AND e.soft_deleted = 0) as totalSentences,
                         rct.description AS contactDescription,
-                        nvl((SELECT rdt.description 
-                                    FROM DISPOSAL d 
-                                    JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
-                                    WHERE d.EVENT_ID = e.EVENT_ID),
+                        NVL((SELECT rdt.description 
+                             FROM disposal d 
+                             JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                             WHERE d.event_id = e.event_id),
                             (SELECT rdt.description
-                                    FROM DISPOSAL d
-                                    JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
-                                    WHERE d.offender_id = o.offender_id
-                                    ORDER BY e.CREATED_DATETIME DESC 
-                                    FETCH first 1 ROW ONLY)) AS sentenceDescription		                                                                           
+                             FROM disposal d
+                             JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                             WHERE d.offender_id = o.offender_id
+                             ORDER BY e.created_datetime DESC 
+                             FETCH FIRST 1 ROW ONLY)) AS sentenceDescription		                                                                           
                 FROM contact c JOIN r_contact_type rct ON rct.contact_type_id=c.contact_type_id 
                 JOIN offender o ON o.offender_id = c.offender_id
                 JOIN staff s ON s.staff_id = c.staff_id 
