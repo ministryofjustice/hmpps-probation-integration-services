@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.api.model.RecommendationModel.Institution
@@ -16,6 +18,13 @@ class CaseSummaryService(
     private val eventRepository: CaseSummaryEventRepository,
     private val contactRepository: CaseSummaryContactRepository
 ) {
+    fun findByName(forename: String, surname: String, pageRequest: Pageable) =
+        personRepository.findByForenameIgnoreCaseAndSurnameIgnoreCase(forename, surname, pageRequest)
+            .map { getPersonalDetailsOverview(it) }
+            .let { PagedModel(it) }
+
+    fun findByCrn(crn: String) = getPersonalDetailsOverview(personRepository.getPerson(crn))
+
     fun getPersonalDetailsOverview(person: Person) = PersonalDetailsOverview(
         name = person.name(),
         identifiers = person.identifiers(),
