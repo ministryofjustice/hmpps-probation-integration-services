@@ -88,6 +88,9 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: Event,
 
+    @Column(name = "offender_id")
+    val personId: Long,
+
     @Column(name = "disposal_date")
     val date: LocalDate,
 

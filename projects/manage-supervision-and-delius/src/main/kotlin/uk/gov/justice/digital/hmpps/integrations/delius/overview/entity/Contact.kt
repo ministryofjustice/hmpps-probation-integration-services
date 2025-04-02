@@ -418,18 +418,22 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                          AND e.ACTIVE_FLAG = 1 
                          AND e.soft_deleted = 0) as totalSentences,
                         rct.description AS contactDescription,
-                        (SELECT rdt.description 
-                             FROM DISPOSAL d 
-                             JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
-                             WHERE d.event_id = e.event_id
-                             ORDER BY e.CREATED_DATETIME DESC 
-                             FETCH NEXT 1 ROW only) AS sentenceDescription                        
+                        nvl((SELECT rdt.description 
+                                    FROM DISPOSAL d 
+                                    JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                                    WHERE d.EVENT_ID = e.EVENT_ID),
+                            (SELECT rdt.description
+                                    FROM DISPOSAL d
+                                    JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                                    WHERE d.offender_id = o.offender_id
+                                    ORDER BY e.CREATED_DATETIME DESC 
+                                    FETCH first 1 ROW ONLY)) AS sentenceDescription		                                                                           
                 FROM contact c JOIN r_contact_type rct ON rct.contact_type_id=c.contact_type_id 
                 JOIN offender o ON o.offender_id = c.offender_id
                 JOIN staff s ON s.staff_id = c.staff_id 
                 JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM')
                 LEFT JOIN office_location ol ON ol.office_location_id = c.office_location_id 
-                LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
+                LEFT JOIN event e ON e.event_id = c.event_id AND e.ACTIVE_FLAG = 1 AND e.soft_deleted = 0
                 WHERE (c.soft_deleted = 0) 
                 AND s.staff_id = :staffId
                 AND rct.attendance_contact = 'Y' 
@@ -476,7 +480,8 @@ interface Appointment {
     val contactEndTime: LocalTime?
     val totalSentences: Int
     val contactDescription: String
-    val sentenceDescription: String
+    val sentenceDescription: String?
+    val latestDescription: String
 }
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
