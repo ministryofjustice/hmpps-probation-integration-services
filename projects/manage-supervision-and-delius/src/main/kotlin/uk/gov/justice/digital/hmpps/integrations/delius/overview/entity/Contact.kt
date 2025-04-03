@@ -411,39 +411,36 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                         c.contact_date AS contact_date, 
                         c.contact_start_time AS contact_start_time,
                         c.contact_end_time AS contact_end_time,
-                        total_sentences,
+                        (SELECT count(e.offender_id)
+                         FROM event e
+                         JOIN disposal d on d.event_id = e.event_id
+                         WHERE e.offender_id = o.offender_id
+                         AND e.active_flag = 1 
+                         AND e.soft_deleted = 0) as totalSentences,
                         rct.description AS contactDescription,
-                        NVL(rdt.DESCRIPTION, latest_sentence_description)  AS sentenceDescription
+                        NVL((SELECT rdt.description 
+                             FROM disposal d 
+                             JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                             WHERE d.event_id = e.event_id),
+                            (SELECT rdt.description
+                             FROM disposal d
+                             JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
+                             WHERE d.offender_id = o.offender_id
+                             ORDER BY e.created_datetime DESC 
+                             FETCH FIRST 1 ROW ONLY)) AS sentenceDescription		                                                                           
                 FROM contact c JOIN r_contact_type rct ON rct.contact_type_id=c.contact_type_id 
                 JOIN offender o ON o.offender_id = c.offender_id
                 JOIN staff s ON s.staff_id = c.staff_id 
                 JOIN caseload cl ON s.staff_id = cl.staff_employee_id AND c.offender_id = cl.offender_id AND (cl.role_code = 'OM')
                 LEFT JOIN office_location ol ON ol.office_location_id = c.office_location_id 
-                LEFT JOIN event e ON e.event_id = c.event_id AND (e.soft_deleted = 0) 
-                LEFT JOIN disposal d ON e.event_id = d.event_id 
-                LEFT JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id 
-                LEFT JOIN ( 
-                        SELECT sub.* 
-                        FROM
-                          (SELECT e.*,
-                            rdt.description AS latest_sentence_description,
-                            COUNT(e.event_id) over (PARTITION BY e.offender_id) AS total_sentences,
-                            ROW_NUMBER() over (PARTITION BY e.offender_id ORDER BY CAST(e.event_number AS NUMBER) DESC) AS row_num 
-                            FROM event e 
-                            JOIN disposal d ON d.event_id = e.event_id
-                            JOIN r_disposal_type rdt ON rdt.disposal_type_id = d.disposal_type_id
-                            WHERE e.soft_deleted = 0 
-                            AND e.active_flag = 1
-                            ) sub
-                        WHERE sub.row_num = 1
-                 ) ls ON ls.offender_id =c.offender_id 
-                 WHERE (c.soft_deleted = 0) 
-                 AND s.staff_id = :staffId
-                 AND rct.attendance_contact = 'Y' 
-                 AND rct.contact_outcome_flag = 'Y'
-                 AND c.contact_outcome_type_id IS NULL
-                 AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
-                 AND to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
+                LEFT JOIN event e ON e.event_id = c.event_id AND e.ACTIVE_FLAG = 1 AND e.soft_deleted = 0
+                WHERE (c.soft_deleted = 0) 
+                AND s.staff_id = :staffId
+                AND rct.attendance_contact = 'Y' 
+                AND rct.contact_outcome_flag = 'Y'
+                AND c.contact_outcome_type_id IS NULL
+                AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow  OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow
+                AND to_char(c.contact_start_time,'HH24:MI') < :timeNow)) 
         """,
         nativeQuery = true,
         countQuery = """
