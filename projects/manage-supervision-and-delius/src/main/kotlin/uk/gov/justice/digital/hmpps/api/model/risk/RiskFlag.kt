@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model.risk
 
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import java.time.LocalDate
 
 data class RiskFlag(
@@ -9,7 +10,8 @@ data class RiskFlag(
     val level: RiskLevel,
     val levelCode: String?,
     val levelDescription: String?,
-    val notes: String?,
+    val riskNotes: List<NoteDetail>? = null,
+    val riskNote: NoteDetail? = null,
     val nextReviewDate: LocalDate?,
     val mostRecentReviewDate: LocalDate?,
     val createdDate: LocalDate,

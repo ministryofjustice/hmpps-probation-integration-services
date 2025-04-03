@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -13,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlag
 import uk.gov.justice.digital.hmpps.api.model.risk.PersonRiskFlags
 import uk.gov.justice.digital.hmpps.api.model.risk.RiskLevel
+import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEREGISTRATION_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAPPA_LEVEL
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
@@ -24,10 +27,12 @@ import uk.gov.justice.digital.hmpps.service.toRiskFlag
 import uk.gov.justice.digital.hmpps.service.toRiskFlagRemoval
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class RiskFlagIntegrationTest {
+
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -49,6 +54,8 @@ internal class RiskFlagIntegrationTest {
         assertThat(res.riskFlags[0].mostRecentReviewDate, equalTo(REGISTRATION_REVIEW_2.date))
         assertThat(res.riskFlags[0].levelCode, equalTo(null))
         assertThat(res.riskFlags[0].levelDescription, equalTo(null))
+        assertThat(res.riskFlags[0].riskNotes!![0].note, equalTo("Risk Notes 2"))
+        assertFalse(res.riskFlags[0].riskNotes!![0].hasNoteBeenTruncated!!)
         assertThat(res.riskFlags[1].level, equalTo(RiskLevel.LOW))
         assertThat(res.riskFlags[1].levelCode, equalTo(MAPPA_LEVEL.code))
         assertThat(res.riskFlags[1].levelDescription, equalTo(MAPPA_LEVEL.description))
@@ -63,6 +70,9 @@ internal class RiskFlagIntegrationTest {
                 )
             )
         )
+        assertThat(res.removedRiskFlags[0].removalHistory[0].riskRemovalNotes!!.size, equalTo(2))
+        assertThat(res.removedRiskFlags[0].removalHistory[0].riskRemovalNotes!![0].note, equalTo("Made a mistake"))
+        assertFalse(res.removedRiskFlags[0].removalHistory[0].riskRemovalNotes!![0].hasNoteBeenTruncated!!)
     }
 
     @Test
@@ -88,6 +98,40 @@ internal class RiskFlagIntegrationTest {
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.riskFlag.description, equalTo(REGISTRATION_2.type.description))
         assertThat(res.riskFlag.mostRecentReviewDate, equalTo(REGISTRATION_REVIEW_2.date))
+    }
+
+    @Test
+    fun `individual risk flag is returned with single note`() {
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(get("/risk-flags/${person.crn}/${REGISTRATION_2.id}/note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonRiskFlag>()
+        assertThat(res.personSummary.crn, equalTo(person.crn))
+        assertThat(res.riskFlag.description, equalTo(REGISTRATION_2.type.description))
+        assertThat(res.riskFlag.mostRecentReviewDate, equalTo(REGISTRATION_REVIEW_2.date))
+        assertThat(res.riskFlag.riskNote!!.note, equalTo("Risk Notes 1" + System.lineSeparator()))
+    }
+
+    @Test
+    fun `individual risk flag is returned with removal history note`() {
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(get("/risk-flags/${person.crn}/${REGISTRATION_3.id}/removal-history-note/1").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonRiskFlag>()
+        assertThat(res.personSummary.crn, equalTo(person.crn))
+        assertThat(res.riskFlag.description, equalTo(REGISTRATION_3.type.description))
+        assertNull(res.riskFlag.removalHistory[0].riskRemovalNotes)
+        assertThat(res.riskFlag.removalHistory[0].riskRemovalNote,
+            equalTo(
+                NoteDetail(
+                    1,
+                    "Alan Shearer",
+                    LocalDate.of(2024, 4, 23),
+                    "My note")
+            )
+        )
     }
 
     @Test

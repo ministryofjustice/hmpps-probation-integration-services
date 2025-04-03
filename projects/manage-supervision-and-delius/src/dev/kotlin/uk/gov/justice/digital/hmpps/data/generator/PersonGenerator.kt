@@ -185,8 +185,15 @@ object PersonGenerator {
     val REGISTER_TYPE_1 = generateRegisterType("CODE1", "Restraining Order", "White")
     val REGISTER_TYPE_2 = generateRegisterType("CODE2", "Domestic Abuse Perpetrator", "Red")
     val MAPPA_TYPE = generateRegisterType("MAPP", "Mappa", "Green")
+
+    val riskNotes =  """
+            Risk Notes 1
+            ---------------------------------------------------------
+            Risk Notes 2
+        """.trimIndent()
+
     val REGISTRATION_1 = generateRegistration(REGISTER_TYPE_1, null, OVERVIEW.id, "Notes")
-    val REGISTRATION_2 = generateRegistration(REGISTER_TYPE_2, null, OVERVIEW.id, "Notes")
+    val REGISTRATION_2 = generateRegistration(REGISTER_TYPE_2, null, OVERVIEW.id, riskNotes)
     val REGISTRATION_3 = generateRegistration(REGISTER_TYPE_2, null, OVERVIEW.id, "Notes", deRegistered = true)
 
     val MAPPA_REGISTRATION = generateRegistration(MAPPA_TYPE, MAPPA_CATEGORY, OVERVIEW.id, "Notes", level = MAPPA_LEVEL)
@@ -206,7 +213,15 @@ object PersonGenerator {
         LocalDate.now().minusDays(2), "Most recent Notes", ZonedDateTime.now().minusDays(1)
     )
 
-    val DEREGISTRATION_1 = generateDeRegistration(REGISTRATION_3, LocalDate.now().minusDays(1), "Made a mistake")
+    val deRegistrationRiskNotes =  """
+            Comment added by Alan Shearer on 23/04/2024 at 14:45
+            My note
+            ---------------------------------------------------------
+            Comment added by Harry Kane on 23/04/2024 at 14:47
+            Made a mistake
+        """.trimIndent()
+
+    val DEREGISTRATION_1 = generateDeRegistration(REGISTRATION_3, LocalDate.now().minusDays(1), deRegistrationRiskNotes)
 
     val PERSON_1 =
         generateCaseloadPerson(OVERVIEW.id, OVERVIEW.crn, OVERVIEW.forename, OVERVIEW.secondName, OVERVIEW.surname)
