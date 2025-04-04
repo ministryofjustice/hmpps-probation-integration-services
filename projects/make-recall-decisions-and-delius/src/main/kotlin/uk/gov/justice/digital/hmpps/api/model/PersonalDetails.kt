@@ -14,6 +14,7 @@ data class PersonalDetailsOverview(
     val primaryLanguage: String?
 ) {
     data class Identifiers(
+        val crn: String,
         val pncNumber: String?,
         val croNumber: String?,
         val nomsNumber: String?,
@@ -58,6 +59,7 @@ fun PersonManager.toManager() = PersonalDetails.Manager(
 )
 
 fun Person.identifiers() = PersonalDetailsOverview.Identifiers(
+    crn,
     pncNumber,
     croNumber,
     nomsNumber,

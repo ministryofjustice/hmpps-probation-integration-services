@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Staff
 
 data class Name(
     val forename: String,
-    val middleName: String?,
+    val middleName: String? = null,
     val surname: String
 )
 
