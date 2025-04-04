@@ -18,8 +18,8 @@ class CaseSummaryService(
     private val eventRepository: CaseSummaryEventRepository,
     private val contactRepository: CaseSummaryContactRepository
 ) {
-    fun findByName(forename: String, surname: String, pageRequest: Pageable) =
-        personRepository.findByForenameIgnoreCaseAndSurnameIgnoreCase(forename, surname, pageRequest)
+    fun findByName(name: Name, pageRequest: Pageable) =
+        personRepository.findByForenameIgnoreCaseAndSurnameIgnoreCase(name.forename, name.surname, pageRequest)
             .map { getPersonalDetailsOverview(it) }
             .let { PagedModel(it) }
 

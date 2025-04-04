@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.service.CaseSummaryService
 import java.time.LocalDate
 
@@ -20,12 +21,11 @@ import java.time.LocalDate
 @RequestMapping("/case-summary")
 @PreAuthorize("hasRole('PROBATION_API__CONSIDER_A_RECALL__CASE_DETAIL')")
 class CaseSummaryController(private val caseSummaryService: CaseSummaryService) {
-    @GetMapping
+    @PostMapping("/search")
     fun findCaseByName(
-        @RequestParam forename: String,
-        @RequestParam surname: String,
+        @RequestBody name: Name,
         @PageableDefault pageable: Pageable = PageRequest.of(0, 10),
-    ) = caseSummaryService.findByName(forename, surname, pageable)
+    ) = caseSummaryService.findByName(name, pageable)
 
     @GetMapping("/{crn}")
     fun findCaseByCrn(@PathVariable crn: String) = caseSummaryService.findByCrn(crn)

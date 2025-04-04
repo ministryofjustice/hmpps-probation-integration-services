@@ -8,10 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -23,7 +26,10 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `find by name`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary?forename=${person.forename.uppercase()}&surname=${person.surname.lowercase()}").withToken())
+        mockMvc.perform(
+            post("/case-summary/search").withToken()
+                .withJson(Name(forename = person.forename.uppercase(), surname = person.surname.lowercase()))
+        )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.page.totalElements", equalTo(1)))
             .andExpect(jsonPath("$.page.totalPages", equalTo(1)))
