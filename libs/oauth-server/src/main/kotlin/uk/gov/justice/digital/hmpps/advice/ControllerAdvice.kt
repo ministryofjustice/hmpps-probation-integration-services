@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.advice
 
+import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
@@ -35,6 +36,11 @@ class ControllerAdvice {
 
     @ExceptionHandler(InvalidRequestException::class)
     fun handleInvalidRequest(e: InvalidRequestException) = ResponseEntity
+        .status(BAD_REQUEST)
+        .body(ErrorResponse(status = BAD_REQUEST.value(), message = e.message))
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleInvalidRequest(e: ConstraintViolationException) = ResponseEntity
         .status(BAD_REQUEST)
         .body(ErrorResponse(status = BAD_REQUEST.value(), message = e.message))
 

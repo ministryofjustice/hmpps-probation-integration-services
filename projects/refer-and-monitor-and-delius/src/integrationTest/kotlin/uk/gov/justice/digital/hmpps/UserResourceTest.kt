@@ -1,17 +1,16 @@
 package uk.gov.justice.digital.hmpps
 
-import jakarta.servlet.ServletException
-import jakarta.validation.ConstraintViolationException
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
 import uk.gov.justice.digital.hmpps.api.model.ManagedCases
@@ -153,16 +152,14 @@ class UserResourceTest {
 
     @Test
     fun `validates that between 1 and 500 crns are provided`() {
-        val ex = assertThrows<ServletException> {
-            mockMvc
-                .perform(
-                    post("/users/${UserGenerator.AUDIT_USER.username.lowercase()}/access")
-                        .withToken()
-                        .withJson(listOf<String>())
-                )
-        }
-        assertThat(ex.cause, instanceOf(ConstraintViolationException::class.java))
-        assertThat(ex.cause!!.message, equalTo("userAccessCheck.crns: Please provide between 1 and 500 crns"))
+        mockMvc
+            .perform(
+                post("/users/${UserGenerator.AUDIT_USER.username.lowercase()}/access")
+                    .withToken()
+                    .withJson(listOf<String>())
+            )
+            .andExpect(status().isBadRequest)
+            .andExpect(content().json("""{"status":400,"message":"userAccessCheck.crns: Please provide between 1 and 500 crns"}"""))
     }
 
     @Test
