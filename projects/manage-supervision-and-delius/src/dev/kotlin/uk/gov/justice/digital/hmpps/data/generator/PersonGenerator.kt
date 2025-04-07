@@ -186,7 +186,7 @@ object PersonGenerator {
     val REGISTER_TYPE_2 = generateRegisterType("CODE2", "Domestic Abuse Perpetrator", "Red")
     val MAPPA_TYPE = generateRegisterType("MAPP", "Mappa", "Green")
 
-    val riskNotes =  """
+    val riskNotes = """
             Risk Notes 1
             ---------------------------------------------------------
             Risk Notes 2
@@ -213,7 +213,7 @@ object PersonGenerator {
         LocalDate.now().minusDays(2), "Most recent Notes", ZonedDateTime.now().minusDays(1)
     )
 
-    val deRegistrationRiskNotes =  """
+    val deRegistrationRiskNotes = """
             Comment added by Alan Shearer on 23/04/2024 at 14:45
             My note
             ---------------------------------------------------------

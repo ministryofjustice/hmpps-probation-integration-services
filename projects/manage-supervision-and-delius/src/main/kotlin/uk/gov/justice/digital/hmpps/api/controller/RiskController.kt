@@ -25,11 +25,19 @@ class RiskController(private val riskService: RiskService) {
 
     @GetMapping("/{riskFlagId}/note/{noteId}")
     @Operation(summary = "Gets an individual risk flag for an offender’ ")
-    fun getPersonRiskFlagSingleNote(@PathVariable crn: String, @PathVariable riskFlagId: Long, @PathVariable noteId: Int) =
+    fun getPersonRiskFlagSingleNote(
+        @PathVariable crn: String,
+        @PathVariable riskFlagId: Long,
+        @PathVariable noteId: Int
+    ) =
         riskService.getPersonRiskFlag(crn, riskFlagId, noteId = noteId)
 
     @GetMapping("/{riskFlagId}/removal-history-note/{removalHistoryNoteId}")
     @Operation(summary = "Gets an individual risk flag for an offender’ ")
-    fun getPersonRiskFlagRemovalHistorySingleNote(@PathVariable crn: String, @PathVariable riskFlagId: Long, @PathVariable removalHistoryNoteId: Int) =
+    fun getPersonRiskFlagRemovalHistorySingleNote(
+        @PathVariable crn: String,
+        @PathVariable riskFlagId: Long,
+        @PathVariable removalHistoryNoteId: Int
+    ) =
         riskService.getPersonRiskFlag(crn, riskFlagId, removalHistoryNoteId = removalHistoryNoteId)
 }
