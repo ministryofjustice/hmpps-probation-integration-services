@@ -39,6 +39,7 @@ class BreachNoticeLoader(
         entityManager.persist(DocumentGenerator.UNSENTENCED_BREACH_NOTICE)
         entityManager.persist(DocumentGenerator.DELETED_BREACH_NOTICE)
         lao()
+        pssData()
     }
 
     private fun basicDetailsData() {
@@ -77,6 +78,22 @@ class BreachNoticeLoader(
             EventGenerator.DEFAULT_RQMNT_SUB_CATEGORY,
             EventGenerator.DEFAULT_RQMNT,
             WarningGenerator.DEFAULT_ENFORCEABLE_CONTACT,
+        )
+    }
+
+    private fun pssData() {
+        entityManager.persistAll(
+            EventGenerator.DEFAULT_PSS_CATEGORY,
+            EventGenerator.DEFAULT_PSS_SUB_CATEGORY,
+            PersonGenerator.PSS_PERSON,
+            PersonGenerator.PSS_PERSON_MANAGER,
+            EventGenerator.PSS_EVENT,
+            EventGenerator.PSS_DISPOSAL,
+            EventGenerator.PSS_CUSTODY,
+            EventGenerator.PSS_REQUIREMENT,
+            AppointmentGenerator.PSS_APPOINTMENT,
+            WarningGenerator.PSS_ENFORCEABLE_CONTACT,
+            DocumentGenerator.PSS_BREACH_NOTICE
         )
     }
 

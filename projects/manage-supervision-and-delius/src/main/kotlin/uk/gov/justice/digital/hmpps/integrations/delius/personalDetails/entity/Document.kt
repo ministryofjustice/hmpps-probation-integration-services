@@ -43,16 +43,16 @@ abstract class Document {
     open var type: String = ""
 
     @Column(name = "created_datetime")
-    open var createdAt: ZonedDateTime = ZonedDateTime.now()
+    open var createdAt: ZonedDateTime? = ZonedDateTime.now()
 
     @Column(name = "last_saved")
     open var lastUpdated: ZonedDateTime = ZonedDateTime.now()
 
     @Column(name = "created_by_user_id")
-    open var createdByUserId: Long = 0
+    open var createdByUserId: Long? = 0
 
     @Column(name = "last_updated_user_id")
-    open var lastUpdatedUserId: Long = 0
+    open var lastUpdatedUserId: Long? = 0
 
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -94,9 +94,9 @@ abstract class Document {
                  when document.table_name = 'COURT_REPORT'
                    then 'Court report'
                  when document.table_name = 'INSTITUTIONAL_REPORT'
-                   then 'Court report'
+                   then 'Institutional report'
                  when document.table_name = 'APPROVED_PREMISES_REFERRAL'
-                   then 'Approved premises'
+                   then 'AP Referral'
                  when document.table_name = 'ASSESSMENT'
                    then 'Assessment'
                  when document.table_name = 'CASE_ALLOCATION'

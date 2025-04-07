@@ -24,6 +24,9 @@ object PersonGenerator {
         restrictionMessage = "You are restricted from viewing this case"
     )
 
+    val PSS_PERSON = generatePerson(crn = "P551234")
+    val PSS_PERSON_MANAGER = generatePersonManager(PSS_PERSON)
+
     fun generatePerson(
         crn: String,
         firstName: String = "First",

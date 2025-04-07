@@ -8,10 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -19,6 +22,47 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 internal class CaseSummaryIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
+
+    @Test
+    fun `find by name`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        mockMvc.perform(
+            post("/case-summary/search").withToken()
+                .withJson(Name(forename = person.forename.uppercase(), surname = person.surname.lowercase()))
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.page.totalElements", equalTo(1)))
+            .andExpect(jsonPath("$.page.totalPages", equalTo(1)))
+            .andExpect(jsonPath("$.page.size", equalTo(10)))
+            .andExpect(jsonPath("$.page.number", equalTo(0)))
+            .andExpect(jsonPath("$.content", hasSize<Int>(1)))
+            .andExpectPersonalDetailsToMatch(person, prefix = "$.content[0]")
+    }
+
+    @Test
+    fun `find by name accepts paging parameters`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        mockMvc.perform(
+            post("/case-summary/search").withToken()
+                .queryParam("page", "2")
+                .queryParam("size", "100")
+                .withJson(Name(forename = person.forename.uppercase(), surname = person.surname.lowercase()))
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.page.totalElements", equalTo(1)))
+            .andExpect(jsonPath("$.page.totalPages", equalTo(1)))
+            .andExpect(jsonPath("$.page.size", equalTo(100)))
+            .andExpect(jsonPath("$.page.number", equalTo(2)))
+            .andExpect(jsonPath("$.content", hasSize<Int>(0)))
+    }
+
+    @Test
+    fun `find by crn`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        mockMvc.perform(get("/case-summary/${person.crn}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectPersonalDetailsToMatch(person, prefix = "$")
+    }
 
     @Test
     fun `personal details are returned`() {
@@ -164,16 +208,19 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(jsonPath("$.activeCustodialConvictions[0].sentence.startDate", equalTo("2021-01-01")))
     }
 
-    private fun ResultActions.andExpectPersonalDetailsToMatch(person: Person) = this
-        .andExpect(jsonPath("$.personalDetails.name.forename", equalTo(person.forename)))
-        .andExpect(jsonPath("$.personalDetails.name.middleName", equalTo("${person.secondName} ${person.thirdName}")))
-        .andExpect(jsonPath("$.personalDetails.name.surname", equalTo(person.surname)))
-        .andExpect(jsonPath("$.personalDetails.gender", equalTo(person.gender.description)))
-        .andExpect(jsonPath("$.personalDetails.dateOfBirth", equalTo(person.dateOfBirth.toString())))
-        .andExpect(jsonPath("$.personalDetails.identifiers.nomsNumber", equalTo(person.nomsNumber)))
-        .andExpect(jsonPath("$.personalDetails.identifiers.croNumber", equalTo(person.croNumber)))
-        .andExpect(jsonPath("$.personalDetails.identifiers.pncNumber", equalTo(person.pncNumber)))
-        .andExpect(jsonPath("$.personalDetails.identifiers.bookingNumber", equalTo(person.mostRecentPrisonerNumber)))
-        .andExpect(jsonPath("$.personalDetails.ethnicity", equalTo(person.ethnicity!!.description)))
-        .andExpect(jsonPath("$.personalDetails.primaryLanguage", equalTo(person.primaryLanguage!!.description)))
+    private fun ResultActions.andExpectPersonalDetailsToMatch(
+        person: Person,
+        prefix: String = "$.personalDetails"
+    ) = this
+        .andExpect(jsonPath("$prefix.name.forename", equalTo(person.forename)))
+        .andExpect(jsonPath("$prefix.name.middleName", equalTo("${person.secondName} ${person.thirdName}")))
+        .andExpect(jsonPath("$prefix.name.surname", equalTo(person.surname)))
+        .andExpect(jsonPath("$prefix.gender", equalTo(person.gender.description)))
+        .andExpect(jsonPath("$prefix.dateOfBirth", equalTo(person.dateOfBirth.toString())))
+        .andExpect(jsonPath("$prefix.identifiers.nomsNumber", equalTo(person.nomsNumber)))
+        .andExpect(jsonPath("$prefix.identifiers.croNumber", equalTo(person.croNumber)))
+        .andExpect(jsonPath("$prefix.identifiers.pncNumber", equalTo(person.pncNumber)))
+        .andExpect(jsonPath("$prefix.identifiers.bookingNumber", equalTo(person.mostRecentPrisonerNumber)))
+        .andExpect(jsonPath("$prefix.ethnicity", equalTo(person.ethnicity!!.description)))
+        .andExpect(jsonPath("$prefix.primaryLanguage", equalTo(person.primaryLanguage!!.description)))
 }
