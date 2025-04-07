@@ -93,7 +93,6 @@ class Custody(
     val id: Long
 )
 
-
 @Immutable
 @Entity
 @Table(name = "rqmnt")
