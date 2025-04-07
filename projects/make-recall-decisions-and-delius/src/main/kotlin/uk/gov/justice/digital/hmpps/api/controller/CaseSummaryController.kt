@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.PastOrPresent
 import org.hibernate.validator.constraints.Length
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.security.access.prepost.PreAuthorize
@@ -24,7 +23,7 @@ class CaseSummaryController(private val caseSummaryService: CaseSummaryService) 
     @PostMapping("/search")
     fun findCaseByName(
         @RequestBody name: Name,
-        @PageableDefault pageable: Pageable = PageRequest.of(0, 10),
+        @PageableDefault pageable: Pageable,
     ) = caseSummaryService.findByName(name, pageable)
 
     @GetMapping("/{crn}")

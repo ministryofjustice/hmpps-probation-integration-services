@@ -40,6 +40,23 @@ internal class CaseSummaryIntegrationTest {
     }
 
     @Test
+    fun `find by name accepts paging parameters`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        mockMvc.perform(
+            post("/case-summary/search").withToken()
+                .queryParam("page", "2")
+                .queryParam("size", "100")
+                .withJson(Name(forename = person.forename.uppercase(), surname = person.surname.lowercase()))
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.page.totalElements", equalTo(1)))
+            .andExpect(jsonPath("$.page.totalPages", equalTo(1)))
+            .andExpect(jsonPath("$.page.size", equalTo(100)))
+            .andExpect(jsonPath("$.page.number", equalTo(2)))
+            .andExpect(jsonPath("$.content", hasSize<Int>(0)))
+    }
+
+    @Test
     fun `find by crn`() {
         val person = PersonGenerator.CASE_SUMMARY
         mockMvc.perform(get("/case-summary/${person.crn}").withToken())
