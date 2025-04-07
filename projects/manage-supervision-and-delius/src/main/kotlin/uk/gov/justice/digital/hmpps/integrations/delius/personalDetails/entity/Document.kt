@@ -43,16 +43,16 @@ abstract class Document {
     open var type: String = ""
 
     @Column(name = "created_datetime")
-    open var createdAt: ZonedDateTime = ZonedDateTime.now()
+    open var createdAt: ZonedDateTime? = ZonedDateTime.now()
 
     @Column(name = "last_saved")
     open var lastUpdated: ZonedDateTime = ZonedDateTime.now()
 
     @Column(name = "created_by_user_id")
-    open var createdByUserId: Long = 0
+    open var createdByUserId: Long? = 0
 
     @Column(name = "last_updated_user_id")
-    open var lastUpdatedUserId: Long = 0
+    open var lastUpdatedUserId: Long? = 0
 
     @Column(updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -77,22 +77,26 @@ abstract class Document {
                    null
                  end as status,
                case
-                 when document.table_name = 'OFFENDER'
+                 when document.table_name = 'OFFENDER' and document.document_type = 'DOCUMENT'
                    then 'Person'
+                 when document.table_name = 'OFFENDER' and document.document_type = 'PREVIOUS_CONVICTION'
+                   then 'Pre Cons'  
                  when document.table_name = 'ADDRESSASSESSMENT'
                    then 'Address assessment'
                  when document.table_name = 'PERSONALCONTACT'
                    then 'Personal contact'
                  when document.table_name = 'PERSONAL_CIRCUMSTANCE'
                    then 'Personal circumstance'
-                 when document.table_name = 'EVENT'
+                 when document.table_name = 'EVENT' and document.document_type = 'DOCUMENT'
                    then 'Event'
+                 when document.table_name = 'EVENT' and document.document_type = 'CPS_PACK'
+                   then 'CPS Pack'  
                  when document.table_name = 'COURT_REPORT'
                    then 'Court report'
                  when document.table_name = 'INSTITUTIONAL_REPORT'
-                   then 'Court report'
+                   then 'Institutional report'
                  when document.table_name = 'APPROVED_PREMISES_REFERRAL'
-                   then 'Approved premises'
+                   then 'AP Referral'
                  when document.table_name = 'ASSESSMENT'
                    then 'Assessment'
                  when document.table_name = 'CASE_ALLOCATION'
@@ -115,6 +119,10 @@ abstract class Document {
                    then 'Register'         
                end as doc_level,    
                case
+                 when document.table_name = 'OFFENDER' and document.document_type = 'PREVIOUS_CONVICTION'
+                   then 'Pre Cons'
+                 when document.table_name = 'EVENT' and document.document_type = 'CPS_PACK'
+                   then 'CPS Pack'    
                  when address_assessment.address_assessment_id is not null 
                       then 
                         case 

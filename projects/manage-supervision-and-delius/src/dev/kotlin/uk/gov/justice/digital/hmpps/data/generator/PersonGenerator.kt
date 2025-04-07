@@ -446,6 +446,7 @@ object PersonGenerator {
         terminationReason: ReferenceData? = null
     ) = Disposal(
         event,
+        event.personId,
         date,
         length,
         type,

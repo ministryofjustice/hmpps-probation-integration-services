@@ -3,7 +3,6 @@ generic-service:
     host: sentence-plan-and-oasys-dev.hmpps.service.justice.gov.uk
   scheduledDowntime:
     enabled: true
-    shutdown: 0 21 * * 1-5 # 9PM UTC Monday-Friday
 
   env:
     SENTRY_ENVIRONMENT: dev
