@@ -117,7 +117,7 @@ internal class RiskFlagIntegrationTest {
     fun `individual risk flag is returned with removal history note`() {
         val person = OVERVIEW
         val res = mockMvc
-            .perform(get("/risk-flags/${person.crn}/${REGISTRATION_3.id}/removal-history-note/1").withToken())
+            .perform(get("/risk-flags/${person.crn}/${REGISTRATION_3.id}/risk-removal-note/1").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonRiskFlag>()
         assertThat(res.personSummary.crn, equalTo(person.crn))

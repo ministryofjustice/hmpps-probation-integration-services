@@ -22,12 +22,12 @@ class RiskService(
 ) {
 
     @Transactional
-    fun getPersonRiskFlag(crn: String, riskFlagId: Long, noteId: Int? = null, removalHistoryNoteId: Int? = null): PersonRiskFlag {
+    fun getPersonRiskFlag(crn: String, riskFlagId: Long, noteId: Int? = null, riskRemovalNoteId: Int? = null): PersonRiskFlag {
         val summary = personRepository.getSummary(crn)
         val riskFlag = riskFlagRepository.getRiskFlag(summary.id, riskFlagId)
         return PersonRiskFlag(
             personSummary = summary.toPersonSummary(),
-            riskFlag = riskFlag.toRiskFlag(noteId, removalHistoryNoteId)
+            riskFlag = riskFlag.toRiskFlag(noteId, riskRemovalNoteId)
         )
     }
 
