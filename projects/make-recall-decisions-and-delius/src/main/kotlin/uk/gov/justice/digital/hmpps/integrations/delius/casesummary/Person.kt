@@ -4,6 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -69,6 +71,13 @@ class Person(
 interface CaseSummaryPersonRepository : JpaRepository<Person, Long> {
     @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage"])
     fun findByCrn(crn: String): Person?
+
+    @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage"])
+    fun findByForenameIgnoreCaseAndSurnameIgnoreCase(
+        forename: String,
+        surname: String,
+        pageable: Pageable
+    ): Page<Person>
 }
 
 fun CaseSummaryPersonRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
