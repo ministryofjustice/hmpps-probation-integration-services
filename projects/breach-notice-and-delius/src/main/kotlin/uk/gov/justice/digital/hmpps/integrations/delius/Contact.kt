@@ -39,6 +39,10 @@ class Contact(
     val requirement: Requirement?,
 
     @ManyToOne
+    @JoinColumn(name = "pss_rqmnt_id")
+    val pssRequirement: PssRequirement?,
+
+    @ManyToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff,
 

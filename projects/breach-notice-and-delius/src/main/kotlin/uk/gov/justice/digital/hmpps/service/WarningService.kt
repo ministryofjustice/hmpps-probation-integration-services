@@ -52,10 +52,16 @@ fun Contact.toEnforceableContact() = EnforceableContact(
     type.codedDescription(),
     outcome!!.codedDescription(),
     notes,
-    requirement?.toModel(),
+    requirement?.toModel() ?: pssRequirement?.toModel(),
 )
 
 fun Requirement.toModel() = uk.gov.justice.digital.hmpps.model.Requirement(
+    id,
+    checkNotNull(mainCategory?.codedDescription()),
+    subCategory?.codedDescription(),
+)
+
+fun PssRequirement.toModel() = uk.gov.justice.digital.hmpps.model.Requirement(
     id,
     checkNotNull(mainCategory?.codedDescription()),
     subCategory?.codedDescription(),

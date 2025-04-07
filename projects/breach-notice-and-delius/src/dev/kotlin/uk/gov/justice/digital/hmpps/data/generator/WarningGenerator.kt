@@ -2,8 +2,10 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.DateTimeGenerator.zonedDateTime
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_RQMNT
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PSS_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateContactOutcome
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateContactType
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateDataset
@@ -56,6 +58,15 @@ object WarningGenerator {
         notes = "Some notes about the enforceable contact",
     )
 
+    val PSS_ENFORCEABLE_CONTACT = generateEnforceableContact(
+        PSS_PERSON,
+        ENFORCEABLE_CONTACT_TYPE,
+        pssRequirement = PSS_REQUIREMENT,
+        outcome = ENFORCEABLE_CONTACT_OUTCOME,
+        description = "Enforceable Description",
+        notes = "Some notes about the enforceable contact",
+    )
+
     fun generateNoticeType(
         code: String,
         description: String = "Description of $code",
@@ -93,7 +104,8 @@ object WarningGenerator {
         person: Person,
         type: ContactType,
         dateTime: ZonedDateTime = zonedDateTime().minusDays(1),
-        requirement: Requirement,
+        requirement: Requirement? = null,
+        pssRequirement: PssRequirement? = null,
         staff: Staff = DEFAULT_STAFF,
         location: OfficeLocation? = DEFAULT_LOCATION,
         outcome: ContactOutcome?,
@@ -106,8 +118,9 @@ object WarningGenerator {
         type,
         dateTime.toLocalDate(),
         dateTime,
-        requirement.disposal.event,
+        requirement?.disposal?.event ?: pssRequirement?.custody?.disposal?.event,
         requirement,
+        pssRequirement,
         staff,
         location,
         outcome,
