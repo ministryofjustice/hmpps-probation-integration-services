@@ -123,13 +123,15 @@ internal class RiskFlagIntegrationTest {
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.riskFlag.description, equalTo(REGISTRATION_3.type.description))
         assertNull(res.riskFlag.removalHistory[0].riskRemovalNotes)
-        assertThat(res.riskFlag.removalHistory[0].riskRemovalNote,
+        assertThat(
+            res.riskFlag.removalHistory[0].riskRemovalNote,
             equalTo(
                 NoteDetail(
                     1,
                     "Alan Shearer",
                     LocalDate.of(2024, 4, 23),
-                    "My note")
+                    "My note"
+                )
             )
         )
     }
