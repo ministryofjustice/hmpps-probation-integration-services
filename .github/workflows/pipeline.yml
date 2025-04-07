@@ -85,7 +85,7 @@ jobs:
       deploy-to-prod: ${{ steps.intersect.outputs.prod }}
       report-url: ${{ steps.run.outputs.report-url }}
     steps:
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@v2
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}

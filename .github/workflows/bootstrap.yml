@@ -66,7 +66,7 @@ jobs:
     if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@v2
         id: app-token
         with:
           repositories: hmpps-probation-integration-services,hmpps-probation-integration-e2e-tests
@@ -254,7 +254,7 @@ jobs:
       - id: project_name
         run: echo "with_underscores_uppercase=$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
 
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@v2
         id: app-token
         with:
           repositories: cloud-platform-environments
@@ -350,7 +350,7 @@ jobs:
       - id: project_name
         run: echo "hash=$(echo -n '${{ inputs.project_name }}' | sha1sum | head -c 8)" | tee -a "$GITHUB_OUTPUT"
 
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@v2
         id: app-token
         with:
           repositories: cloud-platform-environments
