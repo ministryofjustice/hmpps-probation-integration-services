@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.document
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
@@ -24,10 +23,6 @@ class CourtAppearance(@Id val courtAppearanceId: Long, val eventId: Long)
 @Immutable
 @Entity
 class CourtReport(@Id val courtReportId: Long, val courtAppearanceId: Long)
-
-@Immutable
-@Entity
-class Custody(@Id val custodyId: Long, val disposalId: Long)
 
 @Immutable
 @Entity

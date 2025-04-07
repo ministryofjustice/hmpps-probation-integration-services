@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -75,6 +76,24 @@ class DisposalType(
     }
 }
 
+@Entity
+@Immutable
+@SQLRestriction("soft_deleted = 0")
+class Custody(
+    @OneToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "custody_id")
+    val id: Long
+)
+
+
 @Immutable
 @Entity
 @Table(name = "rqmnt")
@@ -113,6 +132,59 @@ class RequirementMainCategory(
     override val description: String,
     @Id
     @Column(name = "rqmnt_type_main_category_id")
+    val id: Long
+) : CodeAndDescription
+
+@Entity
+@Immutable
+@Table(name = "pss_rqmnt")
+@SQLRestriction("soft_deleted = 0")
+class PssRequirement(
+
+    @ManyToOne
+    @JoinColumn(name = "custody_id")
+    val custody: Custody,
+
+    @ManyToOne
+    @JoinColumn(name = "pss_rqmnt_type_main_cat_id")
+    val mainCategory: PssRequirementMainCategory?,
+
+    @ManyToOne
+    @JoinColumn(name = "pss_rqmnt_type_sub_cat_id")
+    val subCategory: PssRequirementSubCategory?,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val active: Boolean = true,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "pss_rqmnt_id")
+    val id: Long
+)
+
+@Immutable
+@Entity
+@Table(name = "r_pss_rqmnt_type_main_category")
+class PssRequirementMainCategory(
+    override val code: String,
+    override val description: String,
+    @Id
+    @Column(name = "pss_rqmnt_type_main_cat_id")
+    val id: Long
+) : CodeAndDescription
+
+@Immutable
+@Entity
+@Table(name = "r_pss_rqmnt_type_sub_category")
+class PssRequirementSubCategory(
+    override val code: String,
+    override val description: String,
+    @Id
+    @Column(name = "pss_rqmnt_type_sub_cat_id")
     val id: Long
 ) : CodeAndDescription
 

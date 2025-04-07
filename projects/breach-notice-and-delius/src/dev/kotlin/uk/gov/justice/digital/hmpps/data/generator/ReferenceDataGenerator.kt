@@ -41,4 +41,16 @@ object ReferenceDataGenerator {
         description: String = "Description of $code",
         id: Long = IdGenerator.getAndIncrement()
     ) = RequirementMainCategory(code, description, id)
+
+    fun generatePssRequirementMainCategory(
+        code: String,
+        description: String = "Description of $code",
+        id: Long = IdGenerator.getAndIncrement()
+    ) = PssRequirementMainCategory(code, description, id)
+
+    fun generatePssRequirementSubCategory(
+        code: String,
+        description: String = "Description of $code",
+        id: Long = IdGenerator.getAndIncrement()
+    ) = PssRequirementSubCategory(code, description, id)
 }
