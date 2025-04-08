@@ -19,9 +19,13 @@ import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.dto.InsertRemandResult
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.client.*
+import uk.gov.justice.digital.hmpps.integrations.delius.IDs
+import uk.gov.justice.digital.hmpps.integrations.delius.OffenderDetail
+import uk.gov.justice.digital.hmpps.integrations.delius.OffenderMatch
+import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchResponse
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.OffenceService
+import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.service.RemandService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -40,7 +44,7 @@ internal class HandlerTest {
     lateinit var converter: NotificationConverter<CommonPlatformHearing>
 
     @Mock
-    lateinit var probationSearchClient: ProbationSearchClient
+    lateinit var personService: PersonService
 
     @Mock
     lateinit var openSearchClient: OpenSearchClient
@@ -89,7 +93,7 @@ internal class HandlerTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
-        verify(probationSearchClient, never()).match(any())
+        verify(personService, never()).matchPerson(any())
         verify(remandService, never()).insertPersonOnRemand(any())
     }
 
@@ -180,7 +184,7 @@ internal class HandlerTest {
     }
 
     private fun probationSearchMatchNotFound() {
-        whenever(probationSearchClient.match(any())).thenReturn(
+        whenever(personService.matchPerson(any())).thenReturn(
             ProbationMatchResponse(
                 matches = emptyList(),
                 matchedBy = "NONE"
@@ -200,8 +204,8 @@ internal class HandlerTest {
                     )
                 )
             ),
-            matchedBy = "PNC"
+            matchedBy = "ALL"
         )
-        whenever(probationSearchClient.match(any())).thenReturn(fakeMatchResponse)
+        whenever(personService.matchPerson(any())).thenReturn(fakeMatchResponse)
     }
 }

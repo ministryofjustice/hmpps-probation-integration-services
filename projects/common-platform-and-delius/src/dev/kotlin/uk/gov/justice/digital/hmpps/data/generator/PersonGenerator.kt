@@ -11,17 +11,24 @@ object PersonGenerator {
 
     fun generate(
         crn: String,
+        forename: String = UUID.randomUUID().toString().substring(0, 15),
+        surname: String = UUID.randomUUID().toString().substring(0, 15),
+        dateOfBirth: LocalDate = LocalDate.now().minusYears(Random.nextInt(16, 76).toLong()),
+        pnc: String? = null,
+        cro: String? = null,
         id: Long? = IdGenerator.getAndIncrement()
     ) = Person(
         id = id,
         crn = crn,
-        forename = UUID.randomUUID().toString().substring(0, 15),
-        surname = UUID.randomUUID().toString().substring(0, 15),
-        dateOfBirth = LocalDate.now().minusYears(Random.nextInt(16, 76).toLong()),
+        forename = forename,
+        surname = surname,
+        dateOfBirth = dateOfBirth,
         gender = if (Random.nextBoolean()) ReferenceDataGenerator.GENDER_MALE else ReferenceDataGenerator.GENDER_FEMALE,
         surnameSoundex = "surnameSoundex",
         firstNameSoundex = "firstNameSoundex",
-        middleNameSoundex = null
+        middleNameSoundex = null,
+        pncNumber = pnc,
+        croNumber = cro,
     )
 }
 

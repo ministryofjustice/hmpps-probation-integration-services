@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.client.ProbationMatchRequest
-import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
+import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchRequest
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.OffenceService
+import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.service.RemandService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -25,7 +25,7 @@ import java.time.ZonedDateTime
 class Handler(
     override val converter: NotificationConverter<CommonPlatformHearing>,
     private val telemetryService: TelemetryService,
-    private val probationSearchClient: ProbationSearchClient,
+    private val personService: PersonService,
     private val featureFlags: FeatureFlags,
     private val remandService: RemandService,
     private val openSearchClient: OpenSearchClient,
@@ -45,7 +45,7 @@ class Handler(
             defendant.offences.any { offence ->
                 offence.judicialResults?.any { judicialResult ->
                     judicialResult.label == "Remanded in custody"
-                } ?: false
+                } == true
             }
         }
         if (defendants.isEmpty()) {
@@ -66,7 +66,7 @@ class Handler(
 
             val matchRequest = defendant.toProbationMatchRequest() ?: return@forEach
 
-            val matchedPersonResponse = probationSearchClient.match(matchRequest)
+            val matchedPersonResponse = personService.matchPerson(matchRequest)
 
             if (matchedPersonResponse.matches.isNotEmpty()) {
                 telemetryService.trackEvent(

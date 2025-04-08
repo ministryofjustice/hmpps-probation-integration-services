@@ -4,8 +4,12 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
-import uk.gov.justice.digital.hmpps.integrations.client.OsClient
-import uk.gov.justice.digital.hmpps.integrations.client.OsPlacesResponse
+import uk.gov.justice.digital.hmpps.integrations.client.*
+import uk.gov.justice.digital.hmpps.integrations.delius.IDs
+import uk.gov.justice.digital.hmpps.integrations.delius.OffenderDetail
+import uk.gov.justice.digital.hmpps.integrations.delius.OffenderMatch
+import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchRequest
+import uk.gov.justice.digital.hmpps.integrations.delius.ProbationMatchResponse
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
@@ -141,6 +145,11 @@ class PersonService(
         return personRepository.getNextCrn()
     }
 
+    fun matchPerson(matchRequest: ProbationMatchRequest): ProbationMatchResponse {
+        val results = personRepository.findAll(matchRequest.toSpecification()).map { it.offenderMatch() }
+        return ProbationMatchResponse(results, if (results.isEmpty()) "NONE" else "ALL_SUPPLIED")
+    }
+
     fun String.toDeliusGender() = ReferenceData.GenderCode.entries.find { it.commonPlatformValue == this }?.deliusValue
         ?: throw IllegalStateException("Gender not found: $this")
 
@@ -190,4 +199,21 @@ class PersonService(
             this.postcode?.trim()
         ).joinToString(", ")
     }
+
+    fun ProbationMatchRequest.toSpecification() = listOfNotNull(
+        matchesName(firstName, surname),
+        matchesDateOfBirth(dateOfBirth),
+        pncNumber?.let { matchesPnc(it) },
+        croNumber?.let { matchesCro(it) },
+    ).reduce { spec, current -> spec.and(current) }
+
+    fun Person.offenderMatch() = OffenderMatch(
+        OffenderDetail(
+            otherIds = IDs(crn = crn, pncNumber = pncNumber, croNumber = croNumber),
+            firstName = forename,
+            surname = surname,
+            dateOfBirth = dateOfBirth,
+            gender = gender.description
+        )
+    )
 }

@@ -1,14 +1,7 @@
-package uk.gov.justice.digital.hmpps.integrations.client
+package uk.gov.justice.digital.hmpps.integrations.delius
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.service.annotation.PostExchange
 import java.time.LocalDate
-
-interface ProbationSearchClient {
-    @PostExchange(url = "/match")
-    fun match(@RequestBody body: ProbationMatchRequest): ProbationMatchResponse
-}
 
 data class ProbationMatchRequest(
     val firstName: String,
