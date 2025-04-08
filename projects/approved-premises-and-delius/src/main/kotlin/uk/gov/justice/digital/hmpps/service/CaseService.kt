@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCase
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
@@ -19,12 +20,12 @@ class CaseService(
     private val offenceRepository: MainOffenceRepository,
     private val personalCircumstanceRepository: PersonalCircumstanceRepository
 ) {
-    fun getCaseSummaries(crns: List<String>): CaseSummaries =
-        CaseSummaries(probationCaseRepository.findByCrnIn(crns).map { it.summary() })
+    fun getCaseSummaries(ids: List<String>): CaseSummaries =
+        CaseSummaries(probationCaseRepository.findByCrnInOrNomsIdIn(ids).map { it.summary() })
 
-    fun getCaseDetail(crn: String): CaseDetail {
-        val person = probationCaseRepository.findByCrn(crn)
-            ?: throw uk.gov.justice.digital.hmpps.exception.NotFoundException("ProbationCase", "crn", crn)
+    fun getCaseDetail(id: String): CaseDetail {
+        val person = probationCaseRepository.findByCrnOrNomsId(id)
+            ?: throw NotFoundException("ProbationCase", "CRN or NOMIS id", id)
         val registrations = registrationRepository.findByPersonId(person.id)
         val offences = offenceRepository.findOffencesFor(person.id)
         val circumstances = personalCircumstanceRepository.findByPersonId(person.id)

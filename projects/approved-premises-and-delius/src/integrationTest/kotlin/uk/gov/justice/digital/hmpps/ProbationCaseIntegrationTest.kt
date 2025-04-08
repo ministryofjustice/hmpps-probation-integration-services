@@ -27,11 +27,36 @@ class ProbationCaseIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
+    fun `more than 500 ids is rejected`() {
+        mockMvc
+            .perform(post("/probation-cases/summaries").withToken().withJson(List(501) { "A000001" }))
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
     fun `case summaries are correctly returned`() {
         val complex = ProbationCaseGenerator.CASE_COMPLEX
         val simple = ProbationCaseGenerator.CASE_SIMPLE
         val summaries = mockMvc
             .perform(post("/probation-cases/summaries").withToken().withJson(listOf(complex.crn, simple.crn)))
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CaseSummaries>()
+
+        assertThat(summaries.cases.size, equalTo(2))
+        assertThat(summaries.cases.map { it.crn }.sorted(), equalTo(listOf(complex.crn, simple.crn).sorted()))
+        val complexCase = summaries.cases.first { it.crn == complex.crn }
+        assertThat(complexCase.name, equalTo(Name("James", "Brown", listOf("John", "Jack"))))
+        assertThat(complexCase.dateOfBirth, equalTo(LocalDate.of(1979, 3, 12)))
+        assertTrue(complexCase.currentExclusion)
+        assertTrue(complexCase.currentRestriction)
+    }
+
+    @Test
+    fun `case summaries are correctly returned by NOMIS id`() {
+        val complex = ProbationCaseGenerator.CASE_COMPLEX
+        val simple = ProbationCaseGenerator.CASE_SIMPLE
+        val summaries = mockMvc
+            .perform(post("/probation-cases/summaries").withToken().withJson(listOf(complex.nomsId, simple.nomsId)))
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<CaseSummaries>()
 

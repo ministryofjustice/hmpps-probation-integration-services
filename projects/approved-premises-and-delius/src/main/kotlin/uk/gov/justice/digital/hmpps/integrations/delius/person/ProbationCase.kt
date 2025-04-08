@@ -174,8 +174,8 @@ interface BoroughRepository : JpaRepository<Borough, Long>
 
 interface ProbationCaseRepository : JpaRepository<ProbationCase, Long> {
     @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team.ldu"])
-    fun findByCrnIn(crns: List<String>): List<ProbationCase>
+    fun findByCrnInOrNomsIdIn(crns: List<String>, nomsIds: List<String> = crns): List<ProbationCase>
 
     @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team.ldu"])
-    fun findByCrn(crn: String): ProbationCase?
+    fun findByCrnOrNomsId(crn: String, nomsId: String = crn): ProbationCase?
 }
