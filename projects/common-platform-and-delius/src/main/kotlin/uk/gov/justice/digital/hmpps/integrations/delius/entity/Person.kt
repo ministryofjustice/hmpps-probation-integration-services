@@ -145,5 +145,8 @@ fun matchesName(firstName: String, surname: String) = Specification<Person> { pe
 fun matchesDateOfBirth(dob: LocalDate) =
     Specification<Person> { person, _, cb -> cb.equal(person.get<LocalDate>(DOB), dob) }
 
-fun matchesPnc(pnc: String) = Specification<Person> { person, _, cb -> cb.equal(cb.lower(person[PNC]), pnc.lowercase()) }
-fun matchesCro(cro: String) = Specification<Person> { person, _, cb -> cb.equal(cb.lower(person[CRO]), cro.lowercase()) }
+fun matchesPnc(pnc: String) =
+    Specification<Person> { person, _, cb -> cb.equal(cb.lower(person[PNC]), pnc.lowercase()) }
+
+fun matchesCro(cro: String) =
+    Specification<Person> { person, _, cb -> cb.equal(cb.lower(person[CRO]), cro.lowercase()) }

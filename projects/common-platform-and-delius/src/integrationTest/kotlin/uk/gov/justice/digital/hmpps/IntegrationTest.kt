@@ -137,15 +137,17 @@ internal class IntegrationTest {
     @Order(2)
     @Test
     fun `When a probation search match is detected no insert is performed`() {
-        personRepository.save(generate(
-            crn = "F019742",
-            forename = "Example First Name",
-            surname = "Example Last Name",
-            dateOfBirth = LocalDate.of(2000, 1, 1),
-            pnc = "0000/0000000A",
-            cro = "000000/00A",
-            id = null
-        ))
+        personRepository.save(
+            generate(
+                crn = "F019742",
+                forename = "Example First Name",
+                surname = "Example Last Name",
+                dateOfBirth = LocalDate.of(2000, 1, 1),
+                pnc = "0000/0000000A",
+                cro = "000000/00A",
+                id = null
+            )
+        )
         Mockito.reset(personRepository)
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
