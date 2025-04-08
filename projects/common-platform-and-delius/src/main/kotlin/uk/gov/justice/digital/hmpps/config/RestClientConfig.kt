@@ -10,16 +10,11 @@ import org.springframework.web.util.UriComponentsBuilder
 import uk.gov.justice.digital.hmpps.config.security.RetryInterceptor
 import uk.gov.justice.digital.hmpps.config.security.createClient
 import uk.gov.justice.digital.hmpps.integrations.client.OsClient
-import uk.gov.justice.digital.hmpps.integrations.client.ProbationSearchClient
 import java.net.http.HttpClient
 import java.time.Duration
 
 @Configuration
-class RestClientConfig(private val oauth2Client: RestClient) {
-
-    @Bean
-    fun probationSearchClient(@Value("\${integrations.probation-search.url}") apiBaseUrl: String): ProbationSearchClient =
-        createClient(oauth2Client.mutate().baseUrl(apiBaseUrl).build())
+class RestClientConfig {
 
     @Bean
     fun osPlacesRestClient(

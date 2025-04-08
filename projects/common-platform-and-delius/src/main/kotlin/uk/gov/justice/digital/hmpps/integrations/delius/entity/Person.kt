@@ -7,9 +7,16 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.CRO
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.DOB
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.FORENAME
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.PNC
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person.Companion.SURNAME
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -110,12 +117,33 @@ class Person(
 
     @Column
     val partitionAreaId: Long = 0L
-)
+) {
+    companion object {
+        val FORENAME = Person::forename.name
+        val SURNAME = Person::surname.name
+        val DOB = Person::dateOfBirth.name
+        val PNC = Person::pncNumber.name
+        val CRO = Person::croNumber.name
+    }
+}
 
-interface PersonRepository : JpaRepository<Person, Long> {
-    @Query("SELECT SOUNDEX(:name) FROM DUAL", nativeQuery = true)
+interface PersonRepository : JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
+    @Query("select soundex(:name) from dual", nativeQuery = true)
     fun getSoundex(name: String): String
 
-    @Query(value = "SELECT offender_support_api.getNextCRN FROM DUAL", nativeQuery = true)
+    @Query(value = "select offender_support_api.getnextcrn from dual", nativeQuery = true)
     fun getNextCrn(): String
 }
+
+fun matchesName(firstName: String, surname: String) = Specification<Person> { person, _, cb ->
+    cb.and(
+        cb.equal(cb.lower(person[SURNAME]), surname.lowercase()),
+        cb.equal(cb.lower(person[FORENAME]), firstName.lowercase()),
+    )
+}
+
+fun matchesDateOfBirth(dob: LocalDate) =
+    Specification<Person> { person, _, cb -> cb.equal(person.get<LocalDate>(DOB), dob) }
+
+fun matchesPnc(pnc: String) = Specification<Person> { person, _, cb -> cb.equal(cb.lower(person[PNC]), pnc.lowercase()) }
+fun matchesCro(cro: String) = Specification<Person> { person, _, cb -> cb.equal(cb.lower(person[CRO]), cro.lowercase()) }

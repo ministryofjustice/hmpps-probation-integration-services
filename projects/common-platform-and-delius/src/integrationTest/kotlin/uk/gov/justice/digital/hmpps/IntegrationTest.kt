@@ -26,6 +26,8 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generate
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
@@ -41,6 +43,7 @@ import uk.gov.justice.digital.hmpps.service.PersonService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.io.ByteArrayInputStream
+import java.time.Duration
 import java.time.LocalDate
 import java.util.function.Function
 
@@ -131,17 +134,19 @@ internal class IntegrationTest {
         verify(openSearchClient).index(any<Function<IndexRequest.Builder<CommonPlatformHearing>, ObjectBuilder<IndexRequest<CommonPlatformHearing>>>>())
     }
 
+    @Order(2)
     @Test
     fun `When a probation search match is detected no insert is performed`() {
-        wireMockServer.stubFor(
-            post(urlPathEqualTo("/probation-search/match"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBodyFile("probation-search-single-result.json")
-                )
-        )
+        personRepository.save(generate(
+            crn = "F019742",
+            forename = "Example First Name",
+            surname = "Example Last Name",
+            dateOfBirth = LocalDate.of(2000, 1, 1),
+            pnc = "0000/0000000A",
+            cro = "000000/00A",
+            id = null
+        ))
+        Mockito.reset(personRepository)
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
