@@ -22,12 +22,17 @@ class RiskService(
 ) {
 
     @Transactional
-    fun getPersonRiskFlag(crn: String, riskFlagId: Long): PersonRiskFlag {
+    fun getPersonRiskFlag(
+        crn: String,
+        riskFlagId: Long,
+        noteId: Int? = null,
+        riskRemovalNoteId: Int? = null
+    ): PersonRiskFlag {
         val summary = personRepository.getSummary(crn)
         val riskFlag = riskFlagRepository.getRiskFlag(summary.id, riskFlagId)
         return PersonRiskFlag(
             personSummary = summary.toPersonSummary(),
-            riskFlag = riskFlag.toRiskFlag()
+            riskFlag = riskFlag.toRiskFlag(noteId, riskRemovalNoteId)
         )
     }
 
@@ -78,23 +83,32 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toMappa() = M
     lastUpdated = lastUpdated.toLocalDate()
 )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag() = RiskFlag(
+fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag(
+    noteId: Int? = null,
+    riskRemovalNoteId: Int? = null
+) = RiskFlag(
     id = id,
     description = type.description,
     level = RiskLevel.fromString(type.colour),
     levelCode = level?.code,
     levelDescription = level?.description,
-    notes = notes,
+    riskNotes = if (noteId == null) formatNote(notes, true) else null,
+    riskNote = if (noteId != null) formatNote(notes, false).elementAtOrNull(noteId) else null,
     createdDate = createdDate,
     createdBy = Name(forename = createdBy.forename, surname = createdBy.surname),
     nextReviewDate = nextReviewDate,
     mostRecentReviewDate = reviews.filter { it.completed == true }.maxByOrNull { it.date }?.date,
     removed = deRegistered,
-    removalHistory = deRegistrations.sortedByDescending { it.deRegistrationDate }.map { it.toRiskFlagRemoval() }
+    removalHistory = deRegistrations.sortedByDescending { it.deRegistrationDate }
+        .map { it.toRiskFlagRemoval(riskRemovalNoteId) }
 )
 
-fun DeRegistration.toRiskFlagRemoval() = RiskFlagRemoval(
-    notes = notes,
+fun DeRegistration.toRiskFlagRemoval(riskRemovalNoteId: Int? = null) = RiskFlagRemoval(
+    riskRemovalNotes = if (riskRemovalNoteId == null) formatNote(notes, true) else null,
+    riskRemovalNote = if (riskRemovalNoteId != null) formatNote(
+        notes,
+        false
+    ).elementAtOrNull(riskRemovalNoteId) else null,
     removedBy = Name(forename = staff.forename, surname = staff.surname),
     removalDate = deRegistrationDate
 )
