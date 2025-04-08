@@ -78,7 +78,7 @@ internal class RiskScoreServiceTest {
             crn = "A000001",
             eventNumber = 123,
             assessmentDate = ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
-            rsr = RiskAssessment(1.00, "A"),
+            rsr = RiskAssessment(1.00, "A", "STATIC"),
             ospIndecent = RiskAssessment(2.00, "B"),
             ospIndirectIndecent = RiskAssessment(3.00, "C"),
             ospContact = RiskAssessment(4.00, "D"),
@@ -99,6 +99,7 @@ internal class RiskScoreServiceTest {
             "p_osp_level_c_code" to "D",
             "p_osp_level_iic_code" to "C",
             "p_osp_level_dc_code" to "E",
+            "p_rsr_static_flag" to "STATIC",
         )
         verify(simpleJdbcCall).execute(
             check<MapSqlParameterSource> { params ->
@@ -110,7 +111,7 @@ internal class RiskScoreServiceTest {
     private fun givenTheDatabaseProcedureSucceeds(): MockedConstruction<SimpleJdbcCall> {
         whenever(simpleJdbcCall.withProcedureName("procUpdateCAS")).thenReturn(simpleJdbcCall)
         whenever(simpleJdbcCall.withoutProcedureColumnMetaDataAccess()).thenReturn(simpleJdbcCall)
-        whenever(simpleJdbcCall.declareParameters(*Array(11) { any() })).thenReturn(simpleJdbcCall)
+        whenever(simpleJdbcCall.declareParameters(*Array(12) { any() })).thenReturn(simpleJdbcCall)
         return mockConstructionWithAnswer(SimpleJdbcCall::class.java, { simpleJdbcCall })
     }
 

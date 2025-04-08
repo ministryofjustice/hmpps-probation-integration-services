@@ -13,4 +13,5 @@ alias pkg_triggersupport.procUpdateCAS as 'void stub(' ||
        'String p_osp_level_i_code, ' ||
        'String p_osp_level_c_code, ' ||
        'String p_osp_level_iic_code, ' ||
-       'String p_osp_level_dc_code) {}';
+       'String p_osp_level_dc_code, ' ||
+       'String p_rsr_static_flag) {}';

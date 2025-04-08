@@ -29,6 +29,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
             SqlParameter("p_osp_level_c_code", Types.VARCHAR),
             SqlParameter("p_osp_level_iic_code", Types.VARCHAR),
             SqlParameter("p_osp_level_dc_code", Types.VARCHAR),
+            SqlParameter("p_rsr_static_flag", Types.VARCHAR),
         )
 
     fun updateRsrAndOspScores(
@@ -55,6 +56,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
                     .addValue("p_osp_level_c_code", ospContact?.band)
                     .addValue("p_osp_level_iic_code", ospIndirectIndecent?.band)
                     .addValue("p_osp_level_dc_code", ospDirectContact?.band)
+                    .addValue("p_rsr_static_flag", rsr.staticOrDynamic)
             )
         } catch (e: UncategorizedSQLException) {
             e.sqlException?.takeIf { it.isValidationError }
