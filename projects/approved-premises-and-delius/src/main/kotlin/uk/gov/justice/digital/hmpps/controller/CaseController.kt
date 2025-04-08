@@ -2,13 +2,11 @@ package uk.gov.justice.digital.hmpps.controller
 
 import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.model.CaseDetail
 import uk.gov.justice.digital.hmpps.model.CaseSummaries
 import uk.gov.justice.digital.hmpps.service.CaseService
 
-@Validated
 @RestController
 @RequestMapping("probation-cases")
 @PreAuthorize("hasRole('PROBATION_API__APPROVED_PREMISES__CASE_DETAIL')")
