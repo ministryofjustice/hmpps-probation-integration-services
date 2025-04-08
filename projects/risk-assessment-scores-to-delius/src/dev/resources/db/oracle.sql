@@ -6,13 +6,13 @@ create or replace package pkg_triggersupport as
         p_rsr_score in float,
         p_rsr_band in varchar2,
         p_rsr_level_code in varchar2,
-        p_rsr_static_flag in varchar2,
         p_osp_score_i in float,
         p_osp_level_i_code in varchar2,
         p_osp_score_c in float,
         p_osp_level_c_code in varchar2,
         p_osp_level_iic_code in varchar2 default null,
-        p_osp_level_dc_code in varchar2 default null
+        p_osp_level_dc_code in varchar2 default null,
+        p_rsr_static_flag in varchar2
     );
 end pkg_triggersupport;
 grant execute on pkg_triggersupport to delius_app_schema;
@@ -24,13 +24,13 @@ create or replace package body pkg_triggersupport as
         p_rsr_assessor_date in timestamp,
         p_rsr_score in float,
         p_rsr_level_code in varchar2,
-        p_rsr_static_flag in varchar2,
         p_osp_score_i in float,
         p_osp_level_i_code in varchar2,
         p_osp_score_c in float,
         p_osp_level_c_code in varchar2,
         p_osp_level_iic_code in varchar2 default null,
-        p_osp_level_dc_code in varchar2 default null
+        p_osp_level_dc_code in varchar2 default null,
+        p_rsr_static_flag in varchar2
     ) is
     begin
         -- For testing:

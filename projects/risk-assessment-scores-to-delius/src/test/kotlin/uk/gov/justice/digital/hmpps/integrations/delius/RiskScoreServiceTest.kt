@@ -93,13 +93,13 @@ internal class RiskScoreServiceTest {
             "p_rsr_assessor_date" to ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
             "p_rsr_score" to 1.00,
             "p_rsr_level_code" to "A",
-            "p_rsr_static_flag" to "STATIC",
             "p_osp_score_i" to 2.00,
             "p_osp_score_c" to 4.00,
             "p_osp_level_i_code" to "B",
             "p_osp_level_c_code" to "D",
             "p_osp_level_iic_code" to "C",
             "p_osp_level_dc_code" to "E",
+            "p_rsr_static_flag" to "STATIC",
         )
         verify(simpleJdbcCall).execute(
             check<MapSqlParameterSource> { params ->

@@ -23,13 +23,13 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
             SqlParameter("p_rsr_assessor_date", Types.DATE),
             SqlParameter("p_rsr_score", Types.NUMERIC),
             SqlParameter("p_rsr_level_code", Types.VARCHAR),
-            SqlParameter("p_rsr_static_flag", Types.VARCHAR),
             SqlParameter("p_osp_score_i", Types.NUMERIC),
             SqlParameter("p_osp_score_c", Types.NUMERIC),
             SqlParameter("p_osp_level_i_code", Types.VARCHAR),
             SqlParameter("p_osp_level_c_code", Types.VARCHAR),
             SqlParameter("p_osp_level_iic_code", Types.VARCHAR),
             SqlParameter("p_osp_level_dc_code", Types.VARCHAR),
+            SqlParameter("p_rsr_static_flag", Types.VARCHAR),
         )
 
     fun updateRsrAndOspScores(
@@ -50,13 +50,13 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
                     .addValue("p_rsr_assessor_date", assessmentDate)
                     .addValue("p_rsr_score", rsr.score)
                     .addValue("p_rsr_level_code", rsr.band)
-                    .addValue("p_rsr_static_flag", rsr.staticOrDynamic)
                     .addValue("p_osp_score_i", ospIndecent?.score)
                     .addValue("p_osp_score_c", ospContact?.score)
                     .addValue("p_osp_level_i_code", ospIndecent?.band)
                     .addValue("p_osp_level_c_code", ospContact?.band)
                     .addValue("p_osp_level_iic_code", ospIndirectIndecent?.band)
                     .addValue("p_osp_level_dc_code", ospDirectContact?.band)
+                    .addValue("p_rsr_static_flag", rsr.staticOrDynamic)
             )
         } catch (e: UncategorizedSQLException) {
             e.sqlException?.takeIf { it.isValidationError }
