@@ -70,13 +70,14 @@ class Handler(
 fun HmppsDomainEvent.assessmentDate() =
     ZonedDateTimeDeserializer.deserialize(additionalInformation["AssessmentDate"] as String)
 
-data class RiskAssessment(val score: Double, val band: String)
+data class RiskAssessment(val score: Double, val band: String, val staticOrDynamic: String? = null)
 
 data class OgrsScore(val ogrs3Yr1: Int, val ogrs3Yr2: Int)
 
 fun HmppsDomainEvent.rsr() = RiskAssessment(
     additionalInformation["RSRScore"] as Double,
-    additionalInformation["RSRBand"] as String
+    additionalInformation["RSRBand"] as String,
+    additionalInformation["RSRStaticOrDynamic"] as String
 )
 
 fun HmppsDomainEvent.ospIndecent() = additionalInformation["OSPIndecentScore"]?.let {
@@ -118,6 +119,7 @@ fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "eventNumber" to (additionalInformation["EventNumber"]?.toString() ?: "Not Provided"),
     "rsrScore" to additionalInformation["RSRScore"].toString(),
     "rsrBand" to additionalInformation["RSRBand"].toString(),
+    "rsrStaticOrDynamic" to additionalInformation["RSRStaticOrDynamic"].toString(),
     "ospIndecentScore" to additionalInformation["OSPIndecentScore"].toString(),
     "ospIndecentBand" to additionalInformation["OSPIndecentBand"].toString(),
     "ospContactScore" to additionalInformation["OSPContactScore"].toString(),

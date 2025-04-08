@@ -8,6 +8,7 @@ alias pkg_triggersupport.procUpdateCAS as 'void stub(' ||
        'java.util.Date p_rsr_assessor_date, ' ||
        'Double p_rsr_score, ' ||
        'String p_rsr_level_code, ' ||
+       'String p_rsr_static_flag, ' ||
        'Double p_osp_score_i, ' ||
        'Double p_osp_score_c, ' ||
        'String p_osp_level_i_code, ' ||
