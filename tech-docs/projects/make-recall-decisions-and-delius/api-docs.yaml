@@ -14,6 +14,30 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /case-summary/search:
+    post:
+      tags:
+      - Case Summary
+      operationId: findCaseByName
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Name"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModelPersonalDetailsOverview"
   /user/{username}:
     get:
       tags:
@@ -133,6 +157,24 @@ paths:
             application/json:
               schema:
                 type: string
+  /case-summary/{crn}:
+    get:
+      tags:
+      - Case Summary
+      operationId: findCaseByCrn
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalDetailsOverview"
   /case-summary/{crn}/recommendation-model:
     get:
       tags:
@@ -333,6 +375,81 @@ components:
       required:
       - forename
       - surname
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    Identifiers:
+      type: object
+      properties:
+        crn:
+          type: string
+        pncNumber:
+          type: string
+        croNumber:
+          type: string
+        nomsNumber:
+          type: string
+        bookingNumber:
+          type: string
+      required:
+      - crn
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelPersonalDetailsOverview:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonalDetailsOverview"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    PersonalDetailsOverview:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        identifiers:
+          $ref: "#/components/schemas/Identifiers"
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        ethnicity:
+          type: string
+        primaryLanguage:
+          type: string
+      required:
+      - dateOfBirth
+      - gender
+      - identifiers
+      - name
     Provider:
       type: object
       properties:
@@ -459,17 +576,6 @@ components:
       required:
       - description
       - isCustodial
-    Identifiers:
-      type: object
-      properties:
-        pncNumber:
-          type: string
-        croNumber:
-          type: string
-        nomsNumber:
-          type: string
-        bookingNumber:
-          type: string
     Institution:
       type: object
       properties:
@@ -506,27 +612,6 @@ components:
       required:
       - code
       - description
-    PersonalDetailsOverview:
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        identifiers:
-          $ref: "#/components/schemas/Identifiers"
-        dateOfBirth:
-          type: string
-          format: date
-        gender:
-          type: string
-        ethnicity:
-          type: string
-        primaryLanguage:
-          type: string
-      required:
-      - dateOfBirth
-      - gender
-      - identifiers
-      - name
     RecommendationModel:
       type: object
       properties:

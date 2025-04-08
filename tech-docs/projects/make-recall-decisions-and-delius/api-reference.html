@@ -115,6 +115,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#case-summary-search"><span>/case-summary/search</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#user-username"><span>/user/{username}</span></a>
       </li>
       <li>
@@ -131,6 +134,9 @@
       </li>
       <li>
         <a href="./api-reference.html#docs-asyncapi"><span>/docs/asyncapi</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#case-summary-crn"><span>/case-summary/{crn}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#case-summary-crn-recommendation-model"><span>/case-summary/{crn}/recommendation-model</span></a>
@@ -186,6 +192,91 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="case-summary-search">/case-summary/search</h2>
+
+<h3 id="case-summary-search-post">post</h3>
+
+
+
+
+<h4 id="case-summary-search-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>pageable</td>
+<td>query</td>
+<td>object</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-summary-search-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "content": [
+    {
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "identifiers": {
+        "crn": "string",
+        "pncNumber": "string",
+        "croNumber": "string",
+        "nomsNumber": "string",
+        "bookingNumber": "string"
+      },
+      "dateOfBirth": "string",
+      "gender": "string",
+      "ethnicity": "string",
+      "primaryLanguage": "string"
+    }
+  ],
+  "page": {
+    "size": "integer",
+    "number": "integer",
+    "totalElements": "integer",
+    "totalPages": "integer"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-pagedmodelpersonaldetailsoverview'>PagedModelPersonalDetailsOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -555,6 +646,81 @@
 
 
 
+<h2 id="case-summary-crn">/case-summary/{crn}</h2>
+
+<h3 id="case-summary-crn-get">get</h3>
+
+
+
+
+<h4 id="case-summary-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-summary-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "identifiers": {
+    "crn": "string",
+    "pncNumber": "string",
+    "croNumber": "string",
+    "nomsNumber": "string",
+    "bookingNumber": "string"
+  },
+  "dateOfBirth": "string",
+  "gender": "string",
+  "ethnicity": "string",
+  "primaryLanguage": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personaldetailsoverview'>PersonalDetailsOverview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="case-summary-crn-recommendation-model">/case-summary/{crn}/recommendation-model</h2>
 
 <h3 id="case-summary-crn-recommendation-model-get">get</h3>
@@ -612,6 +778,7 @@
       "surname": "string"
     },
     "identifiers": {
+      "crn": "string",
       "pncNumber": "string",
       "croNumber": "string",
       "nomsNumber": "string",
@@ -768,6 +935,7 @@
       "surname": "string"
     },
     "identifiers": {
+      "crn": "string",
       "pncNumber": "string",
       "croNumber": "string",
       "nomsNumber": "string",
@@ -875,6 +1043,7 @@
       "surname": "string"
     },
     "identifiers": {
+      "crn": "string",
       "pncNumber": "string",
       "croNumber": "string",
       "nomsNumber": "string",
@@ -990,6 +1159,7 @@
       "surname": "string"
     },
     "identifiers": {
+      "crn": "string",
       "pncNumber": "string",
       "croNumber": "string",
       "nomsNumber": "string",
@@ -1085,6 +1255,7 @@
       "surname": "string"
     },
     "identifiers": {
+      "crn": "string",
       "pncNumber": "string",
       "croNumber": "string",
       "nomsNumber": "string",
@@ -1261,6 +1432,7 @@
       "surname": "string"
     },
     "identifiers": {
+      "crn": "string",
       "pncNumber": "string",
       "croNumber": "string",
       "nomsNumber": "string",
@@ -1421,6 +1593,266 @@
 <td>surname</td>
 <td>string</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pageable">Pageable</h3>
+
+
+<table class='schema-pageable'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>size</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sort</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-identifiers">Identifiers</h3>
+
+
+<table class='schema-identifiers'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>croNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>bookingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pagemetadata">PageMetadata</h3>
+
+
+<table class='schema-pagemetadata'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>size</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>number</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalElements</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalPages</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pagedmodelpersonaldetailsoverview">PagedModelPersonalDetailsOverview</h3>
+
+
+<table class='schema-pagedmodelpersonaldetailsoverview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>content</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-personaldetailsoverview'>PersonalDetailsOverview</a>
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-pagemetadata'>PageMetadata</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personaldetailsoverview">PersonalDetailsOverview</h3>
+
+
+<table class='schema-personaldetailsoverview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>identifiers</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-identifiers'>Identifiers</a>
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ethnicity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>primaryLanguage</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -1887,58 +2319,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-identifiers">Identifiers</h3>
-
-
-<table class='schema-identifiers'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>pncNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>croNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>nomsNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>bookingNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-institution">Institution</h3>
 
 
@@ -2046,78 +2426,6 @@
 <td>description</td>
 <td>string</td>
 <td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personaldetailsoverview">PersonalDetailsOverview</h3>
-
-
-<table class='schema-personaldetailsoverview'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>identifiers</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-identifiers'>Identifiers</a>
-</td>
-</tr>
-
-<tr>
-<td>dateOfBirth</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>gender</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>ethnicity</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>primaryLanguage</td>
-<td>string</td>
-<td>false</td>
 <td></td>
 <td>
   
