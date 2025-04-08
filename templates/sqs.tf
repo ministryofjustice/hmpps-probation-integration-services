@@ -25,6 +25,7 @@ module "SERVICE_NAME-queue" {
   is_production          = var.is_production
   namespace              = var.namespace
   team_name              = var.team_name
+  use_team_name          = true
 }
 
 resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
