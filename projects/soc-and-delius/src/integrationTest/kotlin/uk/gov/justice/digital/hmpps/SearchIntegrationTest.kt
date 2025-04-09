@@ -79,6 +79,23 @@ class SearchIntegrationTest {
             .andExpectJson(ProbationCases(listOf(JOHN_SMITH_1.asProbationCase())))
     }
 
+    @Test
+    fun `must provide at least one crn for crn lookup`() {
+        mockMvc
+            .perform(post("/search/probation-cases/crns").withToken().withJson(listOf<String>()))
+            .andExpect(status().is4xxClientError)
+    }
+
+    @Test
+    fun `can find all by crns`() {
+        mockMvc
+            .perform(
+                post("/search/probation-cases/crns").withToken().withJson(listOf(JOHN_SMITH_1.crn, JOHN_SMITH_2.crn))
+            )
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(ProbationCases(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase())))
+    }
+
     private fun DetailPerson.asProbationCase(): ProbationCase {
         val staff = DetailsGenerator.STAFF
         val team = DetailsGenerator.TEAM

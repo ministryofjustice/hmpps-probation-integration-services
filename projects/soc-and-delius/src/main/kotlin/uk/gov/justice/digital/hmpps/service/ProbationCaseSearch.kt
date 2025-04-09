@@ -10,6 +10,10 @@ import uk.gov.justice.digital.hmpps.model.Team
 class ProbationCaseSearch(val personRepository: DetailRepository) {
     fun find(request: SearchRequest): ProbationCases =
         ProbationCases(personRepository.findAll(request.asSpecification()).map { it.toProbationCase() })
+
+    fun crns(crns: Set<String>): ProbationCases =
+        ProbationCases(personRepository.findByCrnIn(crns).map { it.toProbationCase() })
+
 }
 
 private fun SearchRequest.asSpecification(): Specification<DetailPerson> = listOfNotNull(

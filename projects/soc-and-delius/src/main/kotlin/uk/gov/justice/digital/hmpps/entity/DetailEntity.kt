@@ -228,10 +228,9 @@ class PersonAlias(
 interface DetailRepository : JpaRepository<DetailPerson, Long>, JpaSpecificationExecutor<DetailPerson> {
     @EntityGraph(
         attributePaths = [
+            "nationality",
             "religion",
-            "personManager",
             "personManager.staff",
-            "personManager.team",
             "personManager.team.probationArea",
             "personManager.team.district"
         ]
@@ -240,15 +239,25 @@ interface DetailRepository : JpaRepository<DetailPerson, Long>, JpaSpecification
 
     @EntityGraph(
         attributePaths = [
+            "nationality",
             "religion",
-            "personManager",
             "personManager.staff",
-            "personManager.team",
             "personManager.team.probationArea",
             "personManager.team.district"
         ]
     )
     fun getByNomsNumber(nomsNumber: String): DetailPerson?
+
+    @EntityGraph(
+        attributePaths = [
+            "nationality",
+            "religion",
+            "personManager.staff",
+            "personManager.team.probationArea",
+            "personManager.team.district"
+        ]
+    )
+    fun findByCrnIn(crns: Set<String>): List<DetailPerson>
 }
 
 fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =
