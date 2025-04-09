@@ -201,6 +201,12 @@
         <a href="./api-reference.html#risk-flags-crn-riskflagid"><span>/risk-flags/{crn}/{riskFlagId}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#risk-flags-crn-riskflagid-risk-removal-note-riskremovalnoteid"><span>/risk-flags/{crn}/{riskFlagId}/risk-removal-note/{riskRemovalNoteId}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#risk-flags-crn-riskflagid-note-noteid"><span>/risk-flags/{crn}/{riskFlagId}/note/{noteId}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#personal-details-crn"><span>/personal-details/{crn}</span></a>
       </li>
       <li>
@@ -3898,7 +3904,22 @@
       "level": "string",
       "levelCode": "string",
       "levelDescription": "string",
-      "notes": "string",
+      "riskNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "riskNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "nextReviewDate": "string",
       "mostRecentReviewDate": "string",
       "createdDate": "string",
@@ -3910,7 +3931,22 @@
       "removed": "boolean",
       "removalHistory": [
         {
-          "notes": "string",
+          "riskRemovalNotes": [
+            {
+              "id": "integer",
+              "createdBy": "string",
+              "createdByDate": "string",
+              "note": "string",
+              "hasNoteBeenTruncated": "boolean"
+            }
+          ],
+          "riskRemovalNote": {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          },
           "removalDate": "string",
           "removedBy": {
             "forename": "string",
@@ -3928,7 +3964,22 @@
       "level": "string",
       "levelCode": "string",
       "levelDescription": "string",
-      "notes": "string",
+      "riskNotes": [
+        {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        }
+      ],
+      "riskNote": {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      },
       "nextReviewDate": "string",
       "mostRecentReviewDate": "string",
       "createdDate": "string",
@@ -3940,7 +3991,22 @@
       "removed": "boolean",
       "removalHistory": [
         {
-          "notes": "string",
+          "riskRemovalNotes": [
+            {
+              "id": "integer",
+              "createdBy": "string",
+              "createdByDate": "string",
+              "note": "string",
+              "hasNoteBeenTruncated": "boolean"
+            }
+          ],
+          "riskRemovalNote": {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          },
           "removalDate": "string",
           "removedBy": {
             "forename": "string",
@@ -4040,7 +4106,22 @@
     "level": "string",
     "levelCode": "string",
     "levelDescription": "string",
-    "notes": "string",
+    "riskNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "riskNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
     "nextReviewDate": "string",
     "mostRecentReviewDate": "string",
     "createdDate": "string",
@@ -4052,7 +4133,324 @@
     "removed": "boolean",
     "removalHistory": [
       {
-        "notes": "string",
+        "riskRemovalNotes": [
+          {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          }
+        ],
+        "riskRemovalNote": {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        },
+        "removalDate": "string",
+        "removedBy": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        }
+      }
+    ]
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personriskflag'>PersonRiskFlag</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="risk-flags-crn-riskflagid-risk-removal-note-riskremovalnoteid">/risk-flags/{crn}/{riskFlagId}/risk-removal-note/{riskRemovalNoteId}</h2>
+
+<h3 id="risk-flags-crn-riskflagid-risk-removal-note-riskremovalnoteid-get">get</h3>
+
+  <p><em>Gets an individual risk flag for an offender’ </em></p>
+
+
+
+
+<h4 id="risk-flags-crn-riskflagid-risk-removal-note-riskremovalnoteid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>riskFlagId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>riskRemovalNoteId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="risk-flags-crn-riskflagid-risk-removal-note-riskremovalnoteid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "noms": "string",
+    "dateOfBirth": "string"
+  },
+  "riskFlag": {
+    "id": "integer",
+    "description": "string",
+    "level": "string",
+    "levelCode": "string",
+    "levelDescription": "string",
+    "riskNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "riskNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
+    "nextReviewDate": "string",
+    "mostRecentReviewDate": "string",
+    "createdDate": "string",
+    "createdBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "removed": "boolean",
+    "removalHistory": [
+      {
+        "riskRemovalNotes": [
+          {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          }
+        ],
+        "riskRemovalNote": {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        },
+        "removalDate": "string",
+        "removedBy": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        }
+      }
+    ]
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personriskflag'>PersonRiskFlag</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="risk-flags-crn-riskflagid-note-noteid">/risk-flags/{crn}/{riskFlagId}/note/{noteId}</h2>
+
+<h3 id="risk-flags-crn-riskflagid-note-noteid-get">get</h3>
+
+  <p><em>Gets an individual risk flag for an offender’ </em></p>
+
+
+
+
+<h4 id="risk-flags-crn-riskflagid-note-noteid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>riskFlagId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>noteId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="risk-flags-crn-riskflagid-note-noteid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personSummary": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "crn": "string",
+    "offenderId": "integer",
+    "pnc": "string",
+    "noms": "string",
+    "dateOfBirth": "string"
+  },
+  "riskFlag": {
+    "id": "integer",
+    "description": "string",
+    "level": "string",
+    "levelCode": "string",
+    "levelDescription": "string",
+    "riskNotes": [
+      {
+        "id": "integer",
+        "createdBy": "string",
+        "createdByDate": "string",
+        "note": "string",
+        "hasNoteBeenTruncated": "boolean"
+      }
+    ],
+    "riskNote": {
+      "id": "integer",
+      "createdBy": "string",
+      "createdByDate": "string",
+      "note": "string",
+      "hasNoteBeenTruncated": "boolean"
+    },
+    "nextReviewDate": "string",
+    "mostRecentReviewDate": "string",
+    "createdDate": "string",
+    "createdBy": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "removed": "boolean",
+    "removalHistory": [
+      {
+        "riskRemovalNotes": [
+          {
+            "id": "integer",
+            "createdBy": "string",
+            "createdByDate": "string",
+            "note": "string",
+            "hasNoteBeenTruncated": "boolean"
+          }
+        ],
+        "riskRemovalNote": {
+          "id": "integer",
+          "createdBy": "string",
+          "createdByDate": "string",
+          "note": "string",
+          "hasNoteBeenTruncated": "boolean"
+        },
         "removalDate": "string",
         "removedBy": {
           "forename": "string",
@@ -12028,12 +12426,22 @@
 </tr>
 
 <tr>
-<td>notes</td>
-<td>string</td>
+<td>riskNotes</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
-  
+  <a href='#schema-notedetail'>NoteDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>riskNote</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-notedetail'>NoteDetail</a>
 </td>
 </tr>
 
@@ -12110,12 +12518,22 @@
 <tbody>
 
 <tr>
-<td>notes</td>
-<td>string</td>
+<td>riskRemovalNotes</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
-  
+  <a href='#schema-notedetail'>NoteDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>riskRemovalNote</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-notedetail'>NoteDetail</a>
 </td>
 </tr>
 

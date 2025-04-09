@@ -752,6 +752,68 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PersonRiskFlag"
+  /risk-flags/{crn}/{riskFlagId}/risk-removal-note/{riskRemovalNoteId}:
+    get:
+      tags:
+      - Risk Flags
+      summary: 'Gets an individual risk flag for an offender’ '
+      operationId: getPersonRiskFlagRemovalHistorySingleNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: riskFlagId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: riskRemovalNoteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonRiskFlag"
+  /risk-flags/{crn}/{riskFlagId}/note/{noteId}:
+    get:
+      tags:
+      - Risk Flags
+      summary: 'Gets an individual risk flag for an offender’ '
+      operationId: getPersonRiskFlagSingleNote
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: riskFlagId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: noteId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonRiskFlag"
   /personal-details/{crn}:
     get:
       tags:
@@ -2782,8 +2844,12 @@ components:
           type: string
         levelDescription:
           type: string
-        notes:
-          type: string
+        riskNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        riskNote:
+          $ref: "#/components/schemas/NoteDetail"
         nextReviewDate:
           type: string
           format: date
@@ -2812,8 +2878,12 @@ components:
     RiskFlagRemoval:
       type: object
       properties:
-        notes:
-          type: string
+        riskRemovalNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteDetail"
+        riskRemovalNote:
+          $ref: "#/components/schemas/NoteDetail"
         removalDate:
           type: string
           format: date

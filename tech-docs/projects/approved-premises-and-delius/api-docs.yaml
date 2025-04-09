@@ -174,13 +174,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StaffDetail"
-  /probation-cases/{crn}/details:
+  /probation-cases/{id}/details:
     get:
       tags:
       - case-controller
       operationId: getCaseDetail
       parameters:
-      - name: crn
+      - name: id
         in: path
         required: true
         schema:
