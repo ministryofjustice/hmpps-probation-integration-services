@@ -60,6 +60,7 @@ class Cas2Service(
         if (success) telemetryService.trackEvent(
             "ApplicationStatusUpdated", event.telemetryProperties + mapOf(
                 "applicationId" to details.eventDetails.applicationId,
+                "applicationOrigin" to details.eventDetails.applicationOrigin(),
                 "status" to details.eventDetails.newStatus.name
             )
         )
