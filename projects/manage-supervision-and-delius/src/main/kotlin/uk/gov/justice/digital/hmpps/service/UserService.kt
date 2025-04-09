@@ -160,9 +160,10 @@ class UserService(
     fun getAppointmentsForUser(username: String): UserAppointments {
         val user = getUser(username)
 
+        val pageRequest = PageRequest.of(0, 5)
         return user.staff?.let {
-            val appointmentsForToday = getUpcomingAppointments(username, PageRequest.of(0, 5,Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time")))
-            val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomes(username, PageRequest.of(0, 5,Sort.by(Sort.Direction.ASC, "c.contact_date", "c.contact_start_time")))
+            val appointmentsForToday = getUpcomingAppointments(username, pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time")))
+            val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomes(username, pageRequest.withSort(Sort.by(Sort.Direction.ASC, "c.contact_date", "c.contact_start_time")))
 
             UserAppointments(
                 Name(user.forename, surname = user.surname),
