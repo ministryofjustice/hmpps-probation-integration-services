@@ -46,7 +46,7 @@ class UserController(
     @Operation(summary = "Gets passed appointments without an outcome for a user")
     fun getUserAppointments(
         @PathVariable username: String
-    ) = userService.getAppointmentsForUser(username, PageRequest.of(0, 5, sort("date", true)))
+    ) = userService.getAppointmentsForUser(username)
 
     private fun sort(sortString: String, ascending: Boolean): Sort {
         val direction = if (ascending) Sort.Direction.ASC else Sort.Direction.DESC

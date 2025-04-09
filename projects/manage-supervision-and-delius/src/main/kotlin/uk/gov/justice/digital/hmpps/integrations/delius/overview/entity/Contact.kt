@@ -377,7 +377,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
                  AND to_char(c.contact_start_time,'HH24:MI') > :timeNow)) 
         """,
         countQuery = """
-                SELECT COUNT(*) 
+                SELECT COUNT(1) 
                 FROM contact c 
                 JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id 
                 JOIN offender o ON o.offender_id = c.offender_id
@@ -447,7 +447,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """,
         nativeQuery = true,
         countQuery = """
-            SELECT  count(*)
+            SELECT  count(1)
             FROM offender o
             JOIN contact c ON o.offender_id = c.offender_id
             JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id
@@ -468,6 +468,52 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         timeNow: String,
         pageable: Pageable
     ): Page<Appointment>
+
+
+    @Query("""
+        SELECT  o.first_name AS forename, 
+                o.second_name AS secondName, 
+                o.third_name AS thirdName, 
+                o.surname AS surname, 
+                o.date_of_birth_date AS dob,
+                c.contact_id AS id,
+                o.crn AS crn,
+                c.contact_date AS contact_date, 
+                c.contact_start_time AS contact_start_time, 
+                c.contact_end_time AS contact_end_time,                                 
+                rct.description AS contactDescription
+        FROM offender o
+        JOIN caseload cl ON o.offender_id = cl.offender_id AND (cl.role_code = 'OM')
+        JOIN contact c ON c.offender_id = o.offender_id AND c.staff_id = :staffId
+        JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id
+        WHERE cl.staff_employee_id = :staffId
+        AND rct.attendance_contact = 'Y'  
+        AND rct.contact_outcome_flag = 'Y'
+        AND c.contact_outcome_type_id IS NULL 
+        AND c.soft_deleted = 0
+        AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow
+        OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow AND to_char(c.contact_start_time,'HH24:MI') < :timeNow))    
+    """,
+        countQuery = """
+        SELECT COUNT(1)
+        FROM offender o
+        JOIN caseload cl ON o.offender_id = cl.offender_id AND (cl.role_code = 'OM')
+        JOIN CONTACT c ON c.offender_id = o.offender_id AND c.staff_id = :staffId
+        JOIN r_contact_type rct ON rct.contact_type_id = c.contact_type_id
+        WHERE cl.staff_employee_id = :staffId
+        AND rct.attendance_contact = 'Y'  
+        AND rct.contact_outcome_flag = 'Y'
+        AND c.contact_outcome_type_id IS NULL 
+        AND c.soft_deleted = 0
+        AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow
+        OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow AND to_char(c.contact_start_time,'HH24:MI') < :timeNow))              
+        """,
+        nativeQuery = true)
+    fun findSummaryOfAppointmentsWithoutOutcomesByUser(
+        staffId: Long,
+        dateNow: String,
+        timeNow: String,
+        pageable: Pageable): Page<Appointment>
 }
 
 interface Appointment {
@@ -482,9 +528,9 @@ interface Appointment {
     val contactDate: LocalDate
     val contactStartTime: LocalTime
     val contactEndTime: LocalTime?
-    val totalSentences: Int
+    val totalSentences: Int?
     val contactDescription: String
-    val sentenceDescription: String
+    val sentenceDescription: String?
 }
 
 fun ContactRepository.getContact(personId: Long, contactId: Long): Contact =
