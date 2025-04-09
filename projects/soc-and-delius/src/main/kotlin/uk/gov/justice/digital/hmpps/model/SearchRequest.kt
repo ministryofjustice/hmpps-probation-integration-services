@@ -20,7 +20,7 @@ data class SearchRequest(
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [SearchRequestValidator::class])
 annotation class ValidSearchRequest(
-    val message: String = "At least one decision field or at least one action must be provided",
+    val message: String = "At least one property must be provided to search on",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Any>> = [],
 )
