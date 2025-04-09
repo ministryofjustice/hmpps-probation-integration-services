@@ -162,8 +162,14 @@ class UserService(
 
         val pageRequest = PageRequest.of(0, 5)
         return user.staff?.let {
-            val appointmentsForToday = getUpcomingAppointments(username, pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time")))
-            val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomes(username, pageRequest.withSort(Sort.by(Sort.Direction.ASC, "c.contact_date", "c.contact_start_time")))
+            val appointmentsForToday = getUpcomingAppointments(
+                username,
+                pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
+            )
+            val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomes(
+                username,
+                pageRequest.withSort(Sort.by(Sort.Direction.ASC, "c.contact_date", "c.contact_start_time"))
+            )
 
             UserAppointments(
                 Name(user.forename, surname = user.surname),
@@ -268,7 +274,7 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
     crn,
     dob,
     sentenceDescription,
-    totalSentences?.let { if (it > 0) it -1 else it },
+    totalSentences?.let { if (it > 0) it - 1 else it },
     contactDescription,
     ZonedDateTime.of(LocalDateTime.of(contactDate, contactStartTime), EuropeLondon),
     if (contactEndTime != null) ZonedDateTime.of(

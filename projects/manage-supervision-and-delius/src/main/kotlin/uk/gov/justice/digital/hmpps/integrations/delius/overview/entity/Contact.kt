@@ -469,8 +469,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         pageable: Pageable
     ): Page<Appointment>
 
-
-    @Query("""
+    @Query(
+        """
         SELECT  o.first_name AS forename, 
                 o.second_name AS secondName, 
                 o.third_name AS thirdName, 
@@ -508,12 +508,14 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         AND (to_char(c.contact_date,'YYYY-MM-DD') < :dateNow
         OR (to_char(c.contact_date,'YYYY-MM-DD') = :dateNow AND to_char(c.contact_start_time,'HH24:MI') < :timeNow))              
         """,
-        nativeQuery = true)
+        nativeQuery = true
+    )
     fun findSummaryOfAppointmentsWithoutOutcomesByUser(
         staffId: Long,
         dateNow: String,
         timeNow: String,
-        pageable: Pageable): Page<Appointment>
+        pageable: Pageable
+    ): Page<Appointment>
 }
 
 interface Appointment {
