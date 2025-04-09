@@ -5,8 +5,16 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.CRN
+import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.DOB
+import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.FORENAME
+import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.NOMS
+import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.PNC
+import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.SURNAME
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
@@ -206,9 +214,18 @@ class PersonAlias(
     @Id
     @Column(name = "alias_id")
     val aliasID: Long,
-)
+) {
+    companion object {
+        val CRN = DetailPerson::crn.name
+        val FORENAME = DetailPerson::forename.name
+        val SURNAME = DetailPerson::surname.name
+        val DOB = DetailPerson::dateOfBirth.name
+        val NOMS = DetailPerson::nomsNumber.name
+        val PNC = DetailPerson::pncNumber.name
+    }
+}
 
-interface DetailRepository : JpaRepository<DetailPerson, Long> {
+interface DetailRepository : JpaRepository<DetailPerson, Long>, JpaSpecificationExecutor<DetailPerson> {
     @EntityGraph(
         attributePaths = [
             "religion",
@@ -239,3 +256,23 @@ fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =
 
 fun DetailRepository.findByCrn(crn: String): DetailPerson =
     getByCrn(crn) ?: throw NotFoundException("person", "crn", crn)
+
+fun matchesForename(forename: String) = Specification<DetailPerson> { person, _, cb ->
+    cb.equal(cb.lower(person[FORENAME]), forename.lowercase())
+}
+
+fun matchesSurname(surname: String) = Specification<DetailPerson> { person, _, cb ->
+    cb.equal(cb.lower(person[SURNAME]), surname.lowercase())
+}
+
+fun matchesDateOfBirth(dob: LocalDate) =
+    Specification<DetailPerson> { person, _, cb -> cb.equal(person.get<LocalDate>(DOB), dob) }
+
+fun matchesCrn(crn: String) =
+    Specification<DetailPerson> { person, _, cb -> cb.equal(person.get<String>(CRN), crn.uppercase()) }
+
+fun matchesNomsId(nomsId: String) =
+    Specification<DetailPerson> { person, _, cb -> cb.equal(person.get<String>(NOMS), nomsId.uppercase()) }
+
+fun matchesPnc(pnc: String) =
+    Specification<DetailPerson> { person, _, cb -> cb.equal(person.get<String>(PNC), pnc.uppercase()) }

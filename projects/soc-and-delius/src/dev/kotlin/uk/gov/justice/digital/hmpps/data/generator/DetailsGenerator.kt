@@ -95,4 +95,32 @@ object DetailsGenerator {
     val TEAM = Team(IdGenerator.getAndIncrement(), "TEAMCD", DEFAULT_PA, DISTRICT)
 
     val PERSON_MANAGER = PersonManager(IdGenerator.getAndIncrement(), PERSON, DEFAULT_PA, STAFF, TEAM)
+
+    fun generatePerson(
+        crn: String,
+        forename: String,
+        surname: String,
+        dob: LocalDate = LocalDate.now().minusYears(27),
+        nomsId: String? = null,
+        pnc: String? = null,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = DetailPerson(
+        id,
+        crn,
+        nomsId,
+        pnc,
+        null,
+        null,
+        listOf(),
+        listOf(),
+        dob,
+        surname,
+        forename,
+        null,
+        null,
+        false
+    )
+
+    fun generatePersonManager(person: DetailPerson, id: Long = IdGenerator.getAndIncrement()) =
+        PersonManager(id, person, DEFAULT_PA, STAFF, TEAM)
 }
