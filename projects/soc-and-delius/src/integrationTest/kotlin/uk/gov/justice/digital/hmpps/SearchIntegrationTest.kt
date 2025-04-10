@@ -46,7 +46,7 @@ class SearchIntegrationTest {
         mockMvc
             .perform(post("/search/probation-cases").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(ProbationCases(listOf(person.asProbationCase())))
+            .andExpectJson(listOf(person.asProbationCase()))
     }
 
     @Test
@@ -56,7 +56,7 @@ class SearchIntegrationTest {
         mockMvc
             .perform(post("/search/probation-cases").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(ProbationCases(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase())))
+            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
     }
 
     @Test
@@ -66,7 +66,7 @@ class SearchIntegrationTest {
         mockMvc
             .perform(post("/search/probation-cases").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(ProbationCases(listOf(JOHN_SMITH_2.asProbationCase())))
+            .andExpectJson(listOf(JOHN_SMITH_2.asProbationCase()))
     }
 
     @Test
@@ -76,7 +76,7 @@ class SearchIntegrationTest {
         mockMvc
             .perform(post("/search/probation-cases").withToken().withJson(request))
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(ProbationCases(listOf(JOHN_SMITH_1.asProbationCase())))
+            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase()))
     }
 
     @Test
@@ -93,31 +93,32 @@ class SearchIntegrationTest {
                 post("/search/probation-cases/crns").withToken().withJson(listOf(JOHN_SMITH_1.crn, JOHN_SMITH_2.crn))
             )
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(ProbationCases(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase())))
+            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
     }
 
-    private fun DetailPerson.asProbationCase(): ProbationCase {
+    private fun DetailPerson.asProbationCase(): OffenderDetail {
         val staff = DetailsGenerator.STAFF
         val team = DetailsGenerator.TEAM
         val probationArea = DetailsGenerator.DEFAULT_PA
-        return ProbationCase(
-            forename,
-            surname,
-            dateOfBirth,
-            crn,
-            nomsNumber,
-            pncNumber,
-            Manager(
-                name = Name(staff.forename, staff.middleName, staff.surname),
-                team = Team(
-                    code = team.code,
-                    localDeliveryUnit = Ldu(
-                        code = team.district.code,
-                        name = team.district.description
-                    )
-                ),
-                provider = Provider(probationArea.code, probationArea.description)
-            )
+        return OffenderDetail(
+            firstName = forename,
+            surname = surname,
+            dateOfBirth = dateOfBirth,
+            gender = gender.description,
+            otherIds = IDs(crn, nomsNumber, pncNumber),
+            offenderProfile = OffenderProfile(ethnicity?.description, nationality?.description, religion?.description),
+            offenderManagers = listOf(
+                OffenderManager(
+                    staff = StaffHuman(staff.code, staff.forename, staff.surname, staff.unallocated),
+                    team = SearchResponseTeam(
+                        team.code,
+                        team.description,
+                        KeyValue(team.district.code, team.district.description)
+                    ),
+                    probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
+                )
+            ),
+            offenderAliases = emptyList()
         )
     }
 }

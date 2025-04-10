@@ -37,12 +37,20 @@ class DetailPerson(
     val pncNumber: String? = null,
 
     @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData,
+
+    @ManyToOne
     @JoinColumn(name = "religion_id")
     val religion: ReferenceData?,
 
     @ManyToOne
     @JoinColumn(name = "nationality_id")
     val nationality: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "ethnicity_id")
+    val ethnicity: ReferenceData?,
 
     @OneToMany(mappedBy = "person")
     val personManager: List<PersonManager>,
@@ -110,6 +118,9 @@ class PersonManager(
 @Table(name = "staff")
 class DetailStaff(
 
+    @Column(name = "officer_code", columnDefinition = "char(7)")
+    val code: String,
+
     val forename: String,
     val surname: String,
 
@@ -119,7 +130,9 @@ class DetailStaff(
     @Id
     @Column(name = "staff_id")
     val id: Long
-)
+) {
+    val unallocated: Boolean = code.endsWith("U")
+}
 
 @Entity
 @Immutable
@@ -130,6 +143,8 @@ class Team(
 
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
+
+    val description: String,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)

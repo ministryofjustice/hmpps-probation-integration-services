@@ -4,15 +4,14 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.model.*
-import uk.gov.justice.digital.hmpps.model.Team
 
 @Service
 class ProbationCaseSearch(val personRepository: DetailRepository) {
-    fun find(request: SearchRequest): ProbationCases =
-        ProbationCases(personRepository.findAll(request.asSpecification()).map { it.toProbationCase() })
+    fun find(request: SearchRequest): List<OffenderDetail> =
+        personRepository.findAll(request.asSpecification()).map { it.toProbationCase(false) }
 
-    fun crns(crns: Set<String>): ProbationCases =
-        ProbationCases(personRepository.findByCrnIn(crns).map { it.toProbationCase() })
+    fun crns(crns: Set<String>): List<OffenderDetail> =
+        personRepository.findByCrnIn(crns).map { it.toProbationCase(true) }
 }
 
 private fun SearchRequest.asSpecification(): Specification<DetailPerson> = listOfNotNull(
@@ -25,24 +24,28 @@ private fun SearchRequest.asSpecification(): Specification<DetailPerson> = listO
 ).ifEmpty { throw IllegalArgumentException("At least one field must be provided") }
     .reduce { a, b -> a.and(b) }
 
-private fun DetailPerson.toProbationCase() = ProbationCase(
-    forename,
-    surname,
-    dateOfBirth,
-    crn,
-    nomsNumber,
-    pncNumber,
-    personManager.first().asManager()
+private fun DetailPerson.toProbationCase(includeAliases: Boolean) = OffenderDetail(
+    firstName = forename,
+    surname = surname,
+    dateOfBirth = dateOfBirth,
+    gender = gender.description,
+    otherIds = IDs(crn, nomsNumber, pncNumber),
+    offenderProfile = OffenderProfile(ethnicity?.description, nationality?.description, religion?.description),
+    offenderManagers = personManager.map { it.asOffenderManager() },
+    offenderAliases = if (includeAliases) offenderAliases.map { it.asProbationAlias() } else emptyList()
 )
 
-private fun PersonManager.asManager() = Manager(
-    name = Name(staff.forename, staff.middleName, staff.surname),
-    team = Team(
-        code = team.code,
-        localDeliveryUnit = Ldu(
-            code = team.district.code,
-            name = team.district.description
-        )
-    ),
-    provider = Provider(probationArea.code, probationArea.description)
+private fun PersonManager.asOffenderManager() = OffenderManager(
+    staff = StaffHuman(staff.code, staff.forename, staff.surname, staff.unallocated),
+    team = SearchResponseTeam(team.code, team.description, KeyValue(team.district.code, team.district.description)),
+    probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
+)
+
+private fun PersonAlias.asProbationAlias() = OffenderAlias(
+    id = aliasID,
+    dateOfBirth = dateOfBirth,
+    firstName = firstName,
+    middleNames = listOfNotNull(secondName, thirdName),
+    surname = surname,
+    gender = gender.description
 )
