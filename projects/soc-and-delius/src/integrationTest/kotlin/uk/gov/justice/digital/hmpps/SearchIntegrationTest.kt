@@ -120,14 +120,16 @@ class SearchIntegrationTest {
                     probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
                 )
             ),
-            offenderAliases = listOfNotNull(alias?.let { OffenderAlias(
-                id = it.aliasID,
-                dateOfBirth = it.dateOfBirth,
-                firstName = it.firstName,
-                middleNames = listOfNotNull(it.secondName, it.thirdName),
-                surname = it.surname,
-                gender = it.gender.description
-            ) })
+            offenderAliases = listOfNotNull(alias?.let {
+                OffenderAlias(
+                    id = it.aliasID,
+                    dateOfBirth = it.dateOfBirth,
+                    firstName = it.firstName,
+                    middleNames = listOfNotNull(it.secondName, it.thirdName),
+                    surname = it.surname,
+                    gender = it.gender.description
+                )
+            })
         )
     }
 }
