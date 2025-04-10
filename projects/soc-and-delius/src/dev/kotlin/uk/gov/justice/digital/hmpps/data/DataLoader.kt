@@ -89,6 +89,7 @@ class DataLoader(
             generatePersonManager(SearchGenerator.JOHN_DOE),
             SearchGenerator.JOHN_SMITH_1,
             generatePersonManager(SearchGenerator.JOHN_SMITH_1),
+            SearchGenerator.JOHN_SMITH_1_ALIAS,
             SearchGenerator.JOHN_SMITH_2,
             generatePersonManager(SearchGenerator.JOHN_SMITH_2),
         )

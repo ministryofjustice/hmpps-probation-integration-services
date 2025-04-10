@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator.MALE
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator.generatePerson
+import uk.gov.justice.digital.hmpps.entity.PersonAlias
+import java.time.LocalDate
 import java.time.LocalDate.now
 
 object SearchGenerator {
@@ -8,4 +11,16 @@ object SearchGenerator {
 
     val JOHN_SMITH_1 = generatePerson("S223456", "John", "Smith", nomsId = "S3478CH")
     val JOHN_SMITH_2 = generatePerson("S223457", "John", "Smith", nomsId = "S3479CH")
+
+    val JOHN_SMITH_1_ALIAS = PersonAlias(
+        JOHN_SMITH_1,
+        "Johnny",
+        null,
+        null,
+        "Smithson",
+        LocalDate.of(2000, 1, 1),
+        MALE,
+        false,
+        IdGenerator.getAndIncrement(),
+    )
 }

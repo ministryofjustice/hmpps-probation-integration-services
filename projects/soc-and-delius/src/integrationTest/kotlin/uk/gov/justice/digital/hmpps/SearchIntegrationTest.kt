@@ -11,8 +11,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator.JOHN_SMITH_1
+import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator.JOHN_SMITH_1_ALIAS
 import uk.gov.justice.digital.hmpps.data.generator.SearchGenerator.JOHN_SMITH_2
 import uk.gov.justice.digital.hmpps.entity.DetailPerson
+import uk.gov.justice.digital.hmpps.entity.PersonAlias
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
@@ -93,10 +95,10 @@ class SearchIntegrationTest {
                 post("/search/probation-cases/crns").withToken().withJson(listOf(JOHN_SMITH_1.crn, JOHN_SMITH_2.crn))
             )
             .andExpect(status().is2xxSuccessful)
-            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(), JOHN_SMITH_2.asProbationCase()))
+            .andExpectJson(listOf(JOHN_SMITH_1.asProbationCase(JOHN_SMITH_1_ALIAS), JOHN_SMITH_2.asProbationCase()))
     }
 
-    private fun DetailPerson.asProbationCase(): OffenderDetail {
+    private fun DetailPerson.asProbationCase(alias: PersonAlias? = null): OffenderDetail {
         val staff = DetailsGenerator.STAFF
         val team = DetailsGenerator.TEAM
         val probationArea = DetailsGenerator.DEFAULT_PA
@@ -118,7 +120,14 @@ class SearchIntegrationTest {
                     probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
                 )
             ),
-            offenderAliases = emptyList()
+            offenderAliases = listOfNotNull(alias?.let { OffenderAlias(
+                id = it.aliasID,
+                dateOfBirth = it.dateOfBirth,
+                firstName = it.firstName,
+                middleNames = listOfNotNull(it.secondName, it.thirdName),
+                surname = it.surname,
+                gender = it.gender.description
+            ) })
         )
     }
 }
