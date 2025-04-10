@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator.generatePersonManager
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -83,7 +84,14 @@ class DataLoader(
             KeyDateGenerator.CUSTODY,
             KeyDateGenerator.KEYDATE,
             KeyDateGenerator.CUSTODY_1,
-            KeyDateGenerator.KEYDATE_1
+            KeyDateGenerator.KEYDATE_1,
+            SearchGenerator.JOHN_DOE,
+            generatePersonManager(SearchGenerator.JOHN_DOE),
+            SearchGenerator.JOHN_SMITH_1,
+            generatePersonManager(SearchGenerator.JOHN_SMITH_1),
+            SearchGenerator.JOHN_SMITH_1_ALIAS,
+            SearchGenerator.JOHN_SMITH_2,
+            generatePersonManager(SearchGenerator.JOHN_SMITH_2),
         )
 
         em.createNativeQuery(
