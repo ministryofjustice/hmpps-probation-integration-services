@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.query.LdapQueryBuilder.query
@@ -140,12 +142,34 @@ class UserService(
         } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
     }
 
-    fun getAppointmentsForUser(username: String, pageable: Pageable): UserAppointments {
+    fun getSummaryOfAppointmentsWithoutOutcomes(username: String, pageable: Pageable): UserDiary {
         val user = getUser(username)
 
         return user.staff?.let {
-            val appointmentsForToday = getUpcomingAppointments(username, pageable)
-            val appointmentsWithoutOutcomes = getAppointmentsWithoutOutcomes(username, pageable)
+            val contacts = contactRepository.findSummaryOfAppointmentsWithoutOutcomesByUser(
+                user.staff.id,
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+                pageable
+            )
+
+            populateUserDiary(pageable, contacts)
+        } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
+    }
+
+    fun getAppointmentsForUser(username: String): UserAppointments {
+        val user = getUser(username)
+
+        val pageRequest = PageRequest.of(0, 5)
+        return user.staff?.let {
+            val appointmentsForToday = getUpcomingAppointments(
+                username,
+                pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
+            )
+            val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomes(
+                username,
+                pageRequest.withSort(Sort.by(Sort.Direction.ASC, "c.contact_date", "c.contact_start_time"))
+            )
 
             UserAppointments(
                 Name(user.forename, surname = user.surname),
@@ -250,7 +274,7 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
     crn,
     dob,
     sentenceDescription,
-    if (totalSentences > 0) (totalSentences - 1) else totalSentences,
+    totalSentences?.let { if (it > 0) it - 1 else it },
     contactDescription,
     ZonedDateTime.of(LocalDateTime.of(contactDate, contactStartTime), EuropeLondon),
     if (contactEndTime != null) ZonedDateTime.of(
