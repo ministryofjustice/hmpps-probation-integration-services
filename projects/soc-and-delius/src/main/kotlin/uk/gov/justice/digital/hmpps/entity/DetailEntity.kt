@@ -139,7 +139,7 @@ class DetailStaff(
     @Column(name = "staff_id")
     val id: Long
 ) {
-    val unallocated: Boolean = code.endsWith("U")
+    fun unallocated(): Boolean = code.endsWith("U")
 }
 
 @Entity

@@ -36,7 +36,7 @@ private fun DetailPerson.toProbationCase(includeAliases: Boolean) = OffenderDeta
 )
 
 private fun PersonManager.asOffenderManager() = OffenderManager(
-    staff = StaffHuman(staff.code, staff.forename, staff.surname, staff.unallocated),
+    staff = StaffHuman(staff.code, staff.forename, staff.surname, staff.unallocated()),
     team = SearchResponseTeam(team.code, team.description, KeyValue(team.district.code, team.district.description)),
     probationArea = ProbationArea(probationArea.code, probationArea.description, listOf()),
 )
