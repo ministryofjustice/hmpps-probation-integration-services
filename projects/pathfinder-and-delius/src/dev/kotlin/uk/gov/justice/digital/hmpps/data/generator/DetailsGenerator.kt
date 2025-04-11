@@ -32,8 +32,10 @@ object DetailsGenerator {
         "X012773",
         "1231235",
         "1111111111111",
+        MALE,
         RELIGION,
         NATIONALITY,
+        null,
         listOf(),
         listOf(),
         LocalDate.now().minusYears(18),
@@ -91,8 +93,39 @@ object DetailsGenerator {
 
     val DEFAULT_PA = DetailProbationArea(true, "London", "LDN", IdGenerator.getAndIncrement())
     val DISTRICT = DetailDistrict(true, "KK", "Kings Cross", IdGenerator.getAndIncrement())
-    val STAFF = DetailStaff("Simon", "Smith", "James", IdGenerator.getAndIncrement())
-    val TEAM = Team(IdGenerator.getAndIncrement(), "TEAMCD", DEFAULT_PA, DISTRICT)
+    val STAFF = DetailStaff("LNDMCDS", "Simon", "Smith", "James", IdGenerator.getAndIncrement())
+    val TEAM = Team(IdGenerator.getAndIncrement(), "LNDMCD", "Description of LNCMCD", DEFAULT_PA, DISTRICT)
 
     val PERSON_MANAGER = PersonManager(IdGenerator.getAndIncrement(), PERSON, DEFAULT_PA, STAFF, TEAM)
+
+    fun generatePerson(
+        crn: String,
+        forename: String,
+        surname: String,
+        dob: LocalDate = LocalDate.now().minusYears(27),
+        nomsId: String? = null,
+        pnc: String? = null,
+        gender: ReferenceData = listOf(MALE, FEMALE).random(),
+        id: Long = IdGenerator.getAndIncrement()
+    ) = DetailPerson(
+        id,
+        crn,
+        nomsId,
+        pnc,
+        gender,
+        RELIGION,
+        NATIONALITY,
+        null,
+        listOf(),
+        listOf(),
+        dob,
+        surname,
+        forename,
+        null,
+        null,
+        false
+    )
+
+    fun generatePersonManager(person: DetailPerson, id: Long = IdGenerator.getAndIncrement()) =
+        PersonManager(id, person, DEFAULT_PA, STAFF, TEAM)
 }
