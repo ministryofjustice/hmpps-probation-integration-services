@@ -9,12 +9,12 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
-import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.CRN
-import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.DOB
-import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.FORENAME
-import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.NOMS
-import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.PNC
-import uk.gov.justice.digital.hmpps.entity.PersonAlias.Companion.SURNAME
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.CRN
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.DOB
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.FORENAME
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.NOMS
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.PNC
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.SURNAME
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
@@ -80,8 +80,16 @@ class DetailPerson(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
-
-)
+) {
+    companion object {
+        val CRN = DetailPerson::crn.name
+        val FORENAME = DetailPerson::forename.name
+        val SURNAME = DetailPerson::surname.name
+        val DOB = DetailPerson::dateOfBirth.name
+        val NOMS = DetailPerson::nomsNumber.name
+        val PNC = DetailPerson::pncNumber.name
+    }
+}
 
 @Immutable
 @Entity
@@ -229,16 +237,7 @@ class PersonAlias(
     @Id
     @Column(name = "alias_id")
     val aliasID: Long,
-) {
-    companion object {
-        val CRN = DetailPerson::crn.name
-        val FORENAME = DetailPerson::forename.name
-        val SURNAME = DetailPerson::surname.name
-        val DOB = DetailPerson::dateOfBirth.name
-        val NOMS = DetailPerson::nomsNumber.name
-        val PNC = DetailPerson::pncNumber.name
-    }
-}
+)
 
 interface DetailRepository : JpaRepository<DetailPerson, Long>, JpaSpecificationExecutor<DetailPerson> {
     @EntityGraph(

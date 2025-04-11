@@ -5,8 +5,16 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.CRN
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.DOB
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.FORENAME
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.NOMS
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.PNC
+import uk.gov.justice.digital.hmpps.entity.DetailPerson.Companion.SURNAME
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
@@ -29,12 +37,20 @@ class DetailPerson(
     val pncNumber: String? = null,
 
     @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData,
+
+    @ManyToOne
     @JoinColumn(name = "religion_id")
     val religion: ReferenceData?,
 
     @ManyToOne
     @JoinColumn(name = "nationality_id")
     val nationality: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "ethnicity_id")
+    val ethnicity: ReferenceData?,
 
     @OneToMany(mappedBy = "person")
     val personManager: List<PersonManager>,
@@ -64,8 +80,16 @@ class DetailPerson(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false
-
-)
+) {
+    companion object {
+        val CRN = DetailPerson::crn.name
+        val FORENAME = DetailPerson::forename.name
+        val SURNAME = DetailPerson::surname.name
+        val DOB = DetailPerson::dateOfBirth.name
+        val NOMS = DetailPerson::nomsNumber.name
+        val PNC = DetailPerson::pncNumber.name
+    }
+}
 
 @Immutable
 @Entity
@@ -102,6 +126,9 @@ class PersonManager(
 @Table(name = "staff")
 class DetailStaff(
 
+    @Column(name = "officer_code", columnDefinition = "char(7)")
+    val code: String,
+
     val forename: String,
     val surname: String,
 
@@ -111,7 +138,9 @@ class DetailStaff(
     @Id
     @Column(name = "staff_id")
     val id: Long
-)
+) {
+    val unallocated: Boolean = code.endsWith("U")
+}
 
 @Entity
 @Immutable
@@ -122,6 +151,8 @@ class Team(
 
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
+
+    val description: String,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
@@ -208,13 +239,12 @@ class PersonAlias(
     val aliasID: Long,
 )
 
-interface DetailRepository : JpaRepository<DetailPerson, Long> {
+interface DetailRepository : JpaRepository<DetailPerson, Long>, JpaSpecificationExecutor<DetailPerson> {
     @EntityGraph(
         attributePaths = [
+            "nationality",
             "religion",
-            "personManager",
             "personManager.staff",
-            "personManager.team",
             "personManager.team.probationArea",
             "personManager.team.district"
         ]
@@ -223,15 +253,25 @@ interface DetailRepository : JpaRepository<DetailPerson, Long> {
 
     @EntityGraph(
         attributePaths = [
+            "nationality",
             "religion",
-            "personManager",
             "personManager.staff",
-            "personManager.team",
             "personManager.team.probationArea",
             "personManager.team.district"
         ]
     )
     fun getByNomsNumber(nomsNumber: String): DetailPerson?
+
+    @EntityGraph(
+        attributePaths = [
+            "nationality",
+            "religion",
+            "personManager.staff",
+            "personManager.team.probationArea",
+            "personManager.team.district"
+        ]
+    )
+    fun findByCrnIn(crns: Set<String>): List<DetailPerson>
 }
 
 fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =
@@ -239,3 +279,23 @@ fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =
 
 fun DetailRepository.findByCrn(crn: String): DetailPerson =
     getByCrn(crn) ?: throw NotFoundException("person", "crn", crn)
+
+fun matchesForename(forename: String) = Specification<DetailPerson> { person, _, cb ->
+    cb.equal(cb.lower(person[FORENAME]), forename.lowercase())
+}
+
+fun matchesSurname(surname: String) = Specification<DetailPerson> { person, _, cb ->
+    cb.equal(cb.lower(person[SURNAME]), surname.lowercase())
+}
+
+fun matchesDateOfBirth(dob: LocalDate) =
+    Specification<DetailPerson> { person, _, cb -> cb.equal(person.get<LocalDate>(DOB), dob) }
+
+fun matchesCrn(crn: String) =
+    Specification<DetailPerson> { person, _, cb -> cb.equal(person.get<String>(CRN), crn.uppercase()) }
+
+fun matchesNomsId(nomsId: String) =
+    Specification<DetailPerson> { person, _, cb -> cb.equal(person.get<String>(NOMS), nomsId.uppercase()) }
+
+fun matchesPnc(pnc: String) =
+    Specification<DetailPerson> { person, _, cb -> cb.equal(person.get<String>(PNC), pnc.uppercase()) }
