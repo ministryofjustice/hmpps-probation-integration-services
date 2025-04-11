@@ -111,7 +111,7 @@ class SearchIntegrationTest {
             offenderProfile = OffenderProfile(ethnicity?.description, nationality?.description, religion?.description),
             offenderManagers = listOf(
                 OffenderManager(
-                    staff = StaffHuman(staff.code, staff.forename, staff.surname, staff.unallocated),
+                    staff = StaffHuman(staff.code, staff.forename, staff.surname, staff.unallocated()),
                     team = SearchResponseTeam(
                         team.code,
                         team.description,
