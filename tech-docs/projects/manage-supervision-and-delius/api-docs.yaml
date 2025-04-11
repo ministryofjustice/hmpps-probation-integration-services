@@ -2239,8 +2239,6 @@ components:
       - crn
       - dob
       - id
-      - latestSentence
-      - numberOfAdditionalSentences
       - startDateTime
       - type
     UserDiary:
