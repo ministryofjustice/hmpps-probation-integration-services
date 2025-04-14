@@ -96,6 +96,29 @@ internal class PersonCaseNoteTest {
         verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
     }
 
+    @Test
+    fun `test prison noop`() {
+        val prisonCaseNote = PrisonCaseNote(
+            id = UUID.randomUUID(),
+            eventId = 1L,
+            offenderIdentifier = "1",
+            type = "type",
+            subType = "subType",
+            creationDateTime = ZonedDateTime.now(),
+            occurrenceDateTime = ZonedDateTime.now(),
+            locationId = "ZZG",
+            authorName = "bob",
+            text = "Testing please ignore",
+            amendments = listOf()
+        )
+        val message = prepNotification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
+        whenever(detailService.getDetail<Any>(anyOrNull(), anyOrNull())).thenReturn(prisonCaseNote)
+
+        handler.handle(message)
+        verify(deliusService, never()).mergeCaseNote(any())
+        verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
+    }
+
     @ParameterizedTest
     @ValueSource(
         strings = ["Alert Security. Do not share with offender and OCG Nominal - Do not share made active.",
