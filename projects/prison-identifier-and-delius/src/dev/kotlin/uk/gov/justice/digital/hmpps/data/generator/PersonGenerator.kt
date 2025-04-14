@@ -13,6 +13,28 @@ object PersonGenerator {
     val PERSON_WITH_DUPLICATE_NOMS = generate("A000006", "G5541UN")
     val PERSON_WITH_EXISTING_NOMS = generate("A000007", "A0007AA")
 
+    val PERSON_WITH_NOMS_DB = generate(
+        crn = "A000010",
+        noms = "A0010DB",
+        pncNumber = "24/0000001Y",
+        croNumber = "00001/24M",
+        dobString = "05/17/1961"
+    )
+
+    val PERSON_ALIAS_1 = generateAlias(
+        offenderId = PERSON_WITH_NOMS_DB.id,
+        forename = "terry",
+        surname = "brown",
+        dobString = "08/12/1962"
+    )
+
+    val PERSON_ALIAS_2 = generateAlias(
+        offenderId = PERSON_WITH_NOMS_DB.id,
+        forename = "arthur",
+        surname = "askew",
+        dobString = "04/13/1969"
+    )
+
     fun generate(
         crn: String,
         noms: String? = null,
@@ -22,8 +44,13 @@ object PersonGenerator {
         surname: String = "smith",
         softDeleted: Boolean = false,
         dobString: String = "12/12/2000",
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Person(
+        id: Long = IdGenerator.getAndIncrement(),
+        immigrationNumber: String? = null,
+        niNumber: String? = null,
+        mostRecentPrisonerNumber: String? = null,
+        croNumber: String? = null,
+
+        ) = Person(
         id,
         crn,
         LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy")),
@@ -31,13 +58,33 @@ object PersonGenerator {
         null,
         null,
         surname,
+        null,
+        null,
+        true,
         noms,
-        null,
-        null,
+        immigrationNumber,
+        niNumber,
+        mostRecentPrisonerNumber,
+        croNumber,
         pncNumber,
         gender,
         listOf(),
         softDeleted = softDeleted
+    )
+
+    fun generateAlias(
+        id: Long = IdGenerator.getAndIncrement(),
+        offenderId: Long,
+        forename: String,
+        surname: String,
+        dobString: String
+    ) = Alias(
+        id = id,
+        offenderId = offenderId,
+        forename = forename,
+        surname = surname,
+        dateOfBirth = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+        softDeleted = false,
     )
 
     fun generateEvent(person: Person, id: Long = IdGenerator.getAndIncrement()) =

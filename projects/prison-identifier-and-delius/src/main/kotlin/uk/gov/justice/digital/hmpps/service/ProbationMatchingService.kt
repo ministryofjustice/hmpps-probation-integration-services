@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.client.*
 import uk.gov.justice.digital.hmpps.config.security.nullIfNotFound
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.entity.getByCrn
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.model.MatchResult
 import uk.gov.justice.digital.hmpps.model.MatchResult.*
@@ -17,11 +18,14 @@ import java.time.LocalDate
 class ProbationMatchingService(
     private val prisonApiClient: PrisonApiClient,
     private val probationSearchClient: ProbationSearchClient,
+    private val databaseMatchingService: ProbationDatabaseMatchingService,
     private val personRepository: PersonRepository,
     private val matchWriter: MatchWriter,
     private val notifier: Notifier,
+    private val featureFlags: FeatureFlags,
     private val objectMapper: ObjectMapper,
 ) {
+
     fun matchAndUpdateIdentifiers(nomsNumber: String, dryRun: Boolean = false): MatchResult {
         val matchResult = findMatchingProbationRecord(nomsNumber)
         if (!dryRun && matchResult is Success) {
@@ -67,7 +71,19 @@ class ProbationMatchingService(
         val prisoner = prisonApiClient.getPrisoners(nomsNumber).single()
 
         // Get matching probation records
-        val matchResponse = probationSearchClient.match(ProbationMatchRequest(prisoner))
+
+        val useDbSearch = featureFlags.enabled("prison-identifiers-use-db-search")
+        val compareApiWithDbSearch = featureFlags.enabled("prison-identifiers-compare-with-db-search")
+
+        val matchResponse = if (useDbSearch) {
+            databaseMatchingService.match(ProbationMatchRequest(prisoner))
+        } else {
+            probationSearchClient.match(ProbationMatchRequest(prisoner))
+        }
+
+        if (compareApiWithDbSearch && !useDbSearch) {
+            databaseMatchingService.performCompare(ProbationMatchRequest(prisoner), matchResponse)
+        }
 
         // Compare sentence dates
         val matchingCustodies = matchResponse.matches.crns()
