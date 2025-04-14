@@ -203,16 +203,6 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
     ): List<Person>
 }
 
-/*
-ProbationMatchRequest(
-firstName=TERRY,
-surname=BEIER-HUEL,
- dateOfBirth=1973-04-29,
- nomsNumber=A1036EA,
- activeSentence=true,
- pncNumber=1973/636766X,
-  croNumber=null)
- */
 fun ProbationSearchRepository.fullSearch(request: ProbationMatchRequest): List<Person> = personFullMatchAllSupplied(
     pncNumber = request.pncNumber?.takeIf { it.isNotEmpty() }?.let { SearchHelpers.formatPncNumber(it) },
     nomsNumber = request.nomsNumber.takeIf { it.isNotEmpty() },
