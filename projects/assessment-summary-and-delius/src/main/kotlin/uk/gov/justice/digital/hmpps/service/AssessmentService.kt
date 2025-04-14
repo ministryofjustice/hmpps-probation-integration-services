@@ -127,7 +127,7 @@ fun Objective.plan(
         objectiveSequence,
         objectiveCodeDesc
     )
-    criminogenicNeeds.forEachIndexed { index, need -> sp.withNeed(index.deliusIndex(), need.criminogenicNeedDesc) }
+    criminogenicNeeds?.forEachIndexed { index, need -> sp.withNeed(index.deliusIndex(), need.criminogenicNeedDesc) }
     actions?.forEachIndexed { index, action ->
         if (action.actionDesc != null) {
             sp.withWorkSummary(index.deliusIndex(), action.actionDesc)
