@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
+import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedBy
@@ -46,10 +47,27 @@ class Person(
     @Column(name = "surname")
     val surname: String,
 
+    @Column(name = "previous_surname")
+    val previousSurname: String? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "title_id")
+    val title: ReferenceData? = null,
+
+    @Column(name = "current_disposal", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val currentDisposal: Boolean,
+
     @Column(columnDefinition = "char(7)")
     var nomsNumber: String? = null,
 
-    @Column
+    @Column(name = "immigration_number")
+    val immigrationNumber: String? = null,
+
+    @Column(name = "ni_number", columnDefinition = "char(9)")
+    val niNumber: String? = null,
+
+    @Column(name = "most_recent_prisoner_number")
     var mostRecentPrisonerNumber: String? = null,
 
     @Column
@@ -99,6 +117,31 @@ class Person(
     fun custodiesWithSentenceDateCloseTo(sentenceDate: LocalDate) =
         custodies().filter { sentenceDate.withinDays(it.disposal.startDate) }
 }
+
+@Immutable
+@Entity
+@Table(name = "alias")
+@SQLRestriction("soft_deleted = 0")
+class Alias(
+    @Id
+    @Column(name = "alias_id")
+    val id: Long,
+    @Column(name = "offender_id")
+    val offenderId: Long,
+    @Column(name = "first_name", length = 35)
+    val forename: String,
+    @Column(name = "second_name", length = 35)
+    val secondName: String? = null,
+    @Column(name = "third_name", length = 35)
+    val thirdName: String? = null,
+    @Column(name = "surname", length = 35)
+    val surname: String,
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false
+)
 
 interface PersonRepository : JpaRepository<Person, Long> {
     @Query(

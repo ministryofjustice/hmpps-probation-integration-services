@@ -17,12 +17,14 @@ object ReferenceDataGenerator {
 
     val CONTACT_TYPE = generateContactType("EDSS")
 
-    fun generateGender(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceData(id, code, GENDER_SET)
+    fun generateGender(code: String, id: Long = IdGenerator.getAndIncrement()) =
+        ReferenceData(id, code, "description", GENDER_SET)
+
     fun generateCustodyStatus(code: String, id: Long = IdGenerator.getAndIncrement()) =
-        ReferenceData(id, code, CUSTODY_STATUS_SET)
+        ReferenceData(id, code, "description", CUSTODY_STATUS_SET)
 
     fun generateIdentifierType(code: String, id: Long = IdGenerator.getAndIncrement()) =
-        ReferenceData(id, code, ADDITIONAL_IDENTIFIER_TYPE_SET)
+        ReferenceData(id, code, "description", ADDITIONAL_IDENTIFIER_TYPE_SET)
 
     fun generateReferenceDataSet(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(id, name)
 

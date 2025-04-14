@@ -16,6 +16,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/prison-api/api/prisoners/A0010DB"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prison-api-A0001AA-prisoner.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/prison-api/api/bookings/offenderNo/A0001AA"
       },
       "response": {
@@ -50,6 +63,19 @@
         },
         "status": 200,
         "bodyFileName": "prison-api-A0002AA-booking-inactive.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/prison-api/api/bookings/offenderNo/A0010DB"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "prison-api-A0010DB-booking.json"
       }
     }
   ]

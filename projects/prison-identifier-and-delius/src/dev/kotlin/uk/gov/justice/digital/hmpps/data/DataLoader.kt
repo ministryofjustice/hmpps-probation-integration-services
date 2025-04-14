@@ -56,6 +56,12 @@ class DataLoader(
         val personWithNomsInDeliusCustody = generateCustody(personWithNomsInDeliusDisposal)
         val personWithNomsInDeliusOrderManager = generateOrderManager(personWithNomsInDeliusEvent)
 
+        val personWithNomsInDeliusEventDb = generateEvent(PersonGenerator.PERSON_WITH_NOMS_DB)
+        val personWithNomsInDeliusDisposalDb =
+            generateDisposal(LocalDate.of(2022, 11, 11), personWithNomsInDeliusEventDb)
+        val personWithNomsInDeliusCustodyDb = generateCustody(personWithNomsInDeliusDisposalDb)
+        val personWithNomsInDeliusOrderManagerDb = generateOrderManager(personWithNomsInDeliusEventDb)
+
         em.saveAll(
             ReferenceDataGenerator.GENDER_SET,
             ReferenceDataGenerator.MALE,
@@ -72,6 +78,9 @@ class DataLoader(
             PersonGenerator.PERSON_WITH_NOMS_IN_DELIUS,
             PersonGenerator.PERSON_WITH_DUPLICATE_NOMS,
             PersonGenerator.PERSON_WITH_EXISTING_NOMS,
+            PersonGenerator.PERSON_WITH_NOMS_DB,
+            PersonGenerator.PERSON_ALIAS_1,
+            PersonGenerator.PERSON_ALIAS_2,
             personWithNomsEvent,
             personWithNomsDisposal,
             personWithNomsCustody,
@@ -92,6 +101,10 @@ class DataLoader(
             personWithNomsInDeliusDisposal,
             personWithNomsInDeliusCustody,
             personWithNomsInDeliusOrderManager,
+            personWithNomsInDeliusEventDb,
+            personWithNomsInDeliusDisposalDb,
+            personWithNomsInDeliusCustodyDb,
+            personWithNomsInDeliusOrderManagerDb,
         )
     }
 

@@ -4,9 +4,11 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.common.ContentTypes.APPLICATION_JSON
 import com.github.tomakehurst.wiremock.common.ContentTypes.CONTENT_TYPE
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -18,6 +20,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.entity.AdditionalIdentifierRepository
 import uk.gov.justice.digital.hmpps.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -45,6 +48,15 @@ internal class ProbationMatchingIntegrationTest {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService
+
+    @MockitoSpyBean
+    lateinit var featureFlags: FeatureFlags
+
+    @BeforeEach
+    fun setUp() {
+        whenever(featureFlags.enabled("prison-identifiers-use-db-search")).thenReturn(false)
+        whenever(featureFlags.enabled("prison-identifiers-compare-with-db-search")).thenReturn(false)
+    }
 
     @Test
     fun `inactive booking is ignored`() {
