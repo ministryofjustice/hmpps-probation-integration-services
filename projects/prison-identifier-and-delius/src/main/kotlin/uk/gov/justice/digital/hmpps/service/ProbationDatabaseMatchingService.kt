@@ -54,7 +54,7 @@ class ProbationDatabaseMatchingService(
         val dbMatchResponse = match(request)
         val dbCrns = dbMatchResponse.matches.map { it.offender.otherIds.crn }.toSet()
         val apiCrns = apiMatchResponse.matches.map { it.offender.otherIds.crn }.toSet()
-        if(dbCrns != apiCrns) {
+        if (dbCrns != apiCrns) {
             //Difference found
             telemetryService.trackEvent(
                 "MatchDifferenceFound",
