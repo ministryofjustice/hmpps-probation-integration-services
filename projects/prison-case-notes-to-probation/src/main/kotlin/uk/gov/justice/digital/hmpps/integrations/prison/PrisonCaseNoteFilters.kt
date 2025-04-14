@@ -9,7 +9,7 @@ object PrisonCaseNoteFilters {
             it.locationId == "TRN"
         },
         PrisonCaseNoteFilter("Institution used for test purposes") {
-            it.locationId == "ZZG"
+            it.locationId == "ZZGHI"
         },
         PrisonCaseNoteFilter("Filtered due to data sharing restrictions") {
             it.text.contains("Do not share with offender and OCG Nominal")

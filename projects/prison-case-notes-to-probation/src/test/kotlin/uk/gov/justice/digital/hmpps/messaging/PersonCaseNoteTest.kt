@@ -106,7 +106,7 @@ internal class PersonCaseNoteTest {
             subType = "subType",
             creationDateTime = ZonedDateTime.now(),
             occurrenceDateTime = ZonedDateTime.now(),
-            locationId = "ZZG",
+            locationId = "ZZGHI",
             authorName = "bob",
             text = "Testing please ignore",
             amendments = listOf()
