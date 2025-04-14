@@ -51,6 +51,49 @@ paths:
       responses:
         "200":
           description: OK
+  /search/probation-cases:
+    post:
+      tags:
+      - search-controller
+      operationId: searchProbationCases
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OffenderDetail"
+  /search/probation-cases/crns:
+    post:
+      tags:
+      - search-controller
+      operationId: searchProbationCases_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              uniqueItems: true
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OffenderDetail"
   /court-appearances:
     post:
       tags:
@@ -207,6 +250,160 @@ paths:
                 $ref: "#/components/schemas/ConvictionsContainer"
 components:
   schemas:
+    SearchRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        surname:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        pncNumber:
+          type: string
+        crn:
+          type: string
+        nomsNumber:
+          type: string
+    IDs:
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsNumber:
+          type: string
+        pncNumber:
+          type: string
+      required:
+      - crn
+    KeyValue:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    LocalDeliveryUnit:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    OffenderAlias:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        dateOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+        surname:
+          type: string
+        gender:
+          type: string
+      required:
+      - firstName
+      - gender
+      - id
+      - middleNames
+      - surname
+    OffenderDetail:
+      type: object
+      properties:
+        firstName:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+        surname:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        otherIds:
+          $ref: "#/components/schemas/IDs"
+        offenderProfile:
+          $ref: "#/components/schemas/OffenderProfile"
+        offenderAliases:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderAlias"
+        offenderManagers:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderManager"
+      required:
+      - otherIds
+    OffenderManager:
+      type: object
+      properties:
+        staff:
+          $ref: "#/components/schemas/StaffHuman"
+        team:
+          $ref: "#/components/schemas/SearchResponseTeam"
+        probationArea:
+          $ref: "#/components/schemas/ProbationArea"
+        active:
+          type: boolean
+    OffenderProfile:
+      type: object
+      properties:
+        ethnicity:
+          type: string
+        nationality:
+          type: string
+        religion:
+          type: string
+    ProbationArea:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        localDeliveryUnits:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalDeliveryUnit"
+      required:
+      - code
+      - description
+      - localDeliveryUnits
+    SearchResponseTeam:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        localDeliveryUnit:
+          $ref: "#/components/schemas/KeyValue"
+    StaffHuman:
+      type: object
+      properties:
+        code:
+          type: string
+        forenames:
+          type: string
+        surname:
+          type: string
+        unallocated:
+          type: boolean
     AllCourtAppearancesContainer:
       type: object
       properties:
@@ -271,31 +468,6 @@ components:
       - forename
       - surname
       - username
-    LocalDeliveryUnit:
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-      required:
-      - code
-      - description
-    ProbationArea:
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-        localDeliveryUnits:
-          type: array
-          items:
-            $ref: "#/components/schemas/LocalDeliveryUnit"
-      required:
-      - code
-      - description
-      - localDeliveryUnits
     ProbationAreaContainer:
       type: object
       properties:
@@ -412,31 +584,6 @@ components:
           type: string
       required:
       - forename
-      - surname
-    OffenderAlias:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        dateOfBirth:
-          type: string
-          format: date
-        firstName:
-          type: string
-        middleNames:
-          type: array
-          items:
-            type: string
-        surname:
-          type: string
-        gender:
-          type: string
-      required:
-      - firstName
-      - gender
-      - id
-      - middleNames
       - surname
     Profile:
       type: object
