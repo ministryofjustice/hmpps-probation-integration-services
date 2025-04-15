@@ -992,8 +992,7 @@ components:
       - date
       - length
       - type
-    StreamingResponseBody:
-      type: object
+    StreamingResponseBody: {}
     TeamsResponse:
       type: object
       properties:

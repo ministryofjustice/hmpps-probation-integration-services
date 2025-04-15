@@ -490,8 +490,7 @@ components:
       required:
       - userExcluded
       - userRestricted
-    StreamingResponseBody:
-      type: object
+    StreamingResponseBody: {}
     Address:
       type: object
       properties:

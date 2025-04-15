@@ -184,8 +184,7 @@ components:
       - crn
       - documents
       - name
-    StreamingResponseBody:
-      type: object
+    StreamingResponseBody: {}
   securitySchemes:
     hmpps-auth-token:
       type: http

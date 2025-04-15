@@ -30,8 +30,7 @@ paths:
           description: OK
           content:
             application/json:
-              schema:
-                type: object
+              schema: {}
   /case/{crn}/access:
     get:
       tags:

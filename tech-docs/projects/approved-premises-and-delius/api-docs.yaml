@@ -678,8 +678,7 @@ components:
           format: date-time
       required:
       - referral
-    StreamingResponseBody:
-      type: object
+    StreamingResponseBody: {}
     DocumentResponse:
       type: object
       properties:

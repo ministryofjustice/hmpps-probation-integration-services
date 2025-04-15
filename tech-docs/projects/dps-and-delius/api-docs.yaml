@@ -59,8 +59,7 @@ paths:
                 $ref: "#/components/schemas/ProbationDocumentsResponse"
 components:
   schemas:
-    StreamingResponseBody:
-      type: object
+    StreamingResponseBody: {}
     Conviction:
       type: object
       properties:

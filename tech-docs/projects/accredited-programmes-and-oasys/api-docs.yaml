@@ -100,8 +100,7 @@ paths:
                 $ref: "#/components/schemas/PniResponse"
 components:
   schemas:
-    JsonNode:
-      type: object
+    JsonNode: {}
     RiskPrediction:
       type: object
       properties:
