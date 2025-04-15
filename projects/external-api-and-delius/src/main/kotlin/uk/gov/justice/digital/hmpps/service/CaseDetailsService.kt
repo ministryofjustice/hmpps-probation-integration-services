@@ -14,11 +14,17 @@ import uk.gov.justice.digital.hmpps.model.Team
 @Service
 class CaseDetailsService(
     private val comRepository: PersonManagerRepository,
+    private val personAddressRepository: PersonAddressRepository,
     private val registrationRepository: RegistrationRepository,
     private val eventRepository: EventRepository,
     private val personRepository: PersonRepository,
     private val ldapTemplate: LdapTemplate
 ) {
+    fun getAddresses(crn: String): AddressWrapper {
+        val addresses = personAddressRepository.findAllByPersonCrn(crn)
+        return AddressWrapper(ContactDetailAddresses(addresses.map { it.asCaseAddress() }))
+    }
+
     fun getSupervisions(crn: String): SupervisionResponse = with(comRepository.getForCrn(crn)) {
         return SupervisionResponse(
             communityManager = toCommunityManagerResponse(),
@@ -117,3 +123,18 @@ class CaseDetailsService(
         )
     }
 }
+
+private fun PersonAddress.asCaseAddress() = CaseAddress(
+    noFixedAbode == true,
+    CodedValue(status.code, status.description),
+    buildingName,
+    addressNumber,
+    streetName,
+    town,
+    district,
+    county,
+    postcode,
+    startDate,
+    endDate,
+    notes,
+)

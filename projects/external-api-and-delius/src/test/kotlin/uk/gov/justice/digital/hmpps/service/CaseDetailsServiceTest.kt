@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
+import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationRepository
@@ -29,6 +30,9 @@ import java.time.ZonedDateTime
 internal class CaseDetailsServiceTest {
     @Mock
     lateinit var personManagerRepository: PersonManagerRepository
+
+    @Mock
+    lateinit var personAddressRepository: PersonAddressRepository
 
     @Mock
     lateinit var registrationRepository: RegistrationRepository

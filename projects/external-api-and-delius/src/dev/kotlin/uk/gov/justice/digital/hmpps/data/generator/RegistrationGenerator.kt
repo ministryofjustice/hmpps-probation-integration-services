@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.DATASET_TYPE_OTHER
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.Category
 import uk.gov.justice.digital.hmpps.model.Level
@@ -10,10 +11,6 @@ object RegistrationGenerator {
     val CHILD_PROTECTION_TYPE = generateType(RegisterType.CHILD_PROTECTION_CODE)
     val SERIOUS_FURTHER_OFFENCE_TYPE = generateType(RegisterType.SERIOUS_FURTHER_OFFENCE_CODE)
     val MAPPA_TYPE = generateType(RegisterType.MAPPA_CODE)
-    val DATASET_TYPE_GENDER = Dataset(IdGenerator.getAndIncrement(), "GENDER")
-    val DATASET_TYPE_OTHER = Dataset(IdGenerator.getAndIncrement(), "OTHER")
-    val REFDATA_MALE = generateReferenceData("M", description = "MALE", dataset = DATASET_TYPE_GENDER)
-    val REFDATA_FEMALE = generateReferenceData("F", description = "FEMALE", dataset = DATASET_TYPE_GENDER)
     val CATEGORIES = Category.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
     val LEVELS = Level.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
 
@@ -38,6 +35,5 @@ object RegistrationGenerator {
         description: String = "Description of $code",
         dataset: Dataset = DATASET_TYPE_OTHER,
         id: Long = IdGenerator.getAndIncrement(),
-
-        ) = ReferenceData(code, description, dataset, id)
+    ) = ReferenceData(code, description, dataset, id)
 }

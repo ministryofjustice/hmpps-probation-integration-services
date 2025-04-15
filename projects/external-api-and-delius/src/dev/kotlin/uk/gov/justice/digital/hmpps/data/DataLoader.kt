@@ -11,6 +11,13 @@ import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LaoGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.AI_PREVIOUS_CRN
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ADDRESS_STATUS
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_CONDITION
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_NATIONALITY
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_RELIGION
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.model.Category
@@ -35,12 +42,32 @@ class DataLoader(
     override fun onApplicationEvent(applicationReadyEvent: ApplicationReadyEvent) {
         transactionTemplate.execute {
             with(entityManager) {
+                persist(ReferenceDataGenerator.DATASET_TYPE_OTHER)
+                persist(ReferenceDataGenerator.DATASET_TYPE_GENDER)
+                persist(ReferenceDataGenerator.RD_MALE)
+                persist(ReferenceDataGenerator.RD_FEMALE)
+                persist(RegistrationGenerator.CHILD_CONCERNS_TYPE)
+                persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_CONCERNS_TYPE))
+                persist(RegistrationGenerator.CHILD_PROTECTION_TYPE)
+                persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_PROTECTION_TYPE))
+                persist(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE)
+                persist(RegistrationGenerator.generate(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE))
+                persist(RegistrationGenerator.MAPPA_TYPE)
+                RegistrationGenerator.CATEGORIES.values.forEach(::persist)
+                RegistrationGenerator.LEVELS.values.forEach(::persist)
+                persist(RD_RELIGION)
+                persist(RD_NATIONALITY)
+                persist(AI_PREVIOUS_CRN)
+                persist(RD_DISABILITY_TYPE)
+                persist(RD_DISABILITY_CONDITION)
+                persist(RD_ADDRESS_STATUS)
                 persist(DataGenerator.DEFAULT_PROVIDER)
                 persist(DataGenerator.DEFAULT_TEAM)
                 persist(DataGenerator.JOHN_SMITH)
                 persist(DataGenerator.JS_USER)
                 persist(DataGenerator.PERSON)
                 persist(DataGenerator.PERSON_MANAGER)
+                persist(PersonGenerator.generateAddress(PersonGenerator.DEFAULT))
                 persist(DataGenerator.OFFENCE)
                 persist(DataGenerator.COURT)
                 persist(DataGenerator.COURT_APPEARANCE_TYPE)
@@ -52,19 +79,6 @@ class DataLoader(
                 persist(DataGenerator.EVENT.mainOffence)
                 DataGenerator.EVENT.additionalOffences.forEach { persist(it) }
                 DataGenerator.EVENT.courtAppearances.forEach { persist(it) }
-                persist(RegistrationGenerator.CHILD_CONCERNS_TYPE)
-                persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_CONCERNS_TYPE))
-                persist(RegistrationGenerator.CHILD_PROTECTION_TYPE)
-                persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_PROTECTION_TYPE))
-                persist(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE)
-                persist(RegistrationGenerator.generate(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE))
-                persist(RegistrationGenerator.MAPPA_TYPE)
-                persist(RegistrationGenerator.DATASET_TYPE_OTHER)
-                persist(RegistrationGenerator.DATASET_TYPE_GENDER)
-                persist(RegistrationGenerator.REFDATA_MALE)
-                persist(RegistrationGenerator.REFDATA_FEMALE)
-                RegistrationGenerator.CATEGORIES.values.forEach(::persist)
-                RegistrationGenerator.LEVELS.values.forEach(::persist)
                 persist(
                     RegistrationGenerator.generate(
                         RegistrationGenerator.MAPPA_TYPE,

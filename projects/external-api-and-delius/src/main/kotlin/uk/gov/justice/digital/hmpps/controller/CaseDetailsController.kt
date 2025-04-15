@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.model.SupervisionResponse
 import uk.gov.justice.digital.hmpps.service.CaseDetailsService
 
 @RestController
@@ -20,4 +19,7 @@ class CaseDetailsController(
     @GetMapping(value = ["/supervisions"])
     @Operation(summary = "Get a list of supervisions (called “events” in Delius) for a probation case, by CRN")
     fun supervisions(@PathVariable("crn") crn: String) = caseDetailsService.getSupervisions(crn)
+
+    @GetMapping(value = ["/addresses"])
+    fun addresses(@PathVariable crn: String) = caseDetailsService.getAddresses(crn)
 }
