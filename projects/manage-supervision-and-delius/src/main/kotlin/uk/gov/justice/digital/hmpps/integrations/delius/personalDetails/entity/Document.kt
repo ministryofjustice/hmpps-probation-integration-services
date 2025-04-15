@@ -266,7 +266,8 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
         name: String?,
         createdDateFrom: LocalDateTime?,
         createdDateTo: LocalDateTime?,
-        pageable: Pageable): Page<DocumentEntity>
+        pageable: Pageable
+    ): Page<DocumentEntity>
 }
 
 @Entity(name = "Prison")
