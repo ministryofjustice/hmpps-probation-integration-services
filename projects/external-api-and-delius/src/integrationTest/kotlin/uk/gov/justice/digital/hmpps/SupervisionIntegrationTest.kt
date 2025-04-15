@@ -6,8 +6,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.REFDATA_FEMALE
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.REFDATA_MALE
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_FEMALE
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_MALE
 import uk.gov.justice.digital.hmpps.model.PersonIdentifier
 import uk.gov.justice.digital.hmpps.model.ProbationReferenceData
 import uk.gov.justice.digital.hmpps.model.RefData
@@ -146,8 +146,8 @@ internal class SupervisionIntegrationTest : BaseIntegrationTest() {
         Assertions.assertEquals(
             response.probationReferenceData["GENDER"],
             listOf(
-                RefData(REFDATA_FEMALE.code, REFDATA_FEMALE.description),
-                RefData(REFDATA_MALE.code, REFDATA_MALE.description)
+                RefData(RD_FEMALE.code, RD_FEMALE.description),
+                RefData(RD_MALE.code, RD_MALE.description)
             )
         )
         Assertions.assertEquals(

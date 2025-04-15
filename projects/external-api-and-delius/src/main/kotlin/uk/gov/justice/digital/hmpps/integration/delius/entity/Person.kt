@@ -1,13 +1,24 @@
 package uk.gov.justice.digital.hmpps.integration.delius.entity
 
 import jakarta.persistence.*
+import jakarta.persistence.criteria.JoinType
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.jpa.repository.EntityGraph
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.ADDITIONAL_IDENTIFIERS
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.ALIASES
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.CRN
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.DOB
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.FORENAME
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.NOMS
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.PNC
+import uk.gov.justice.digital.hmpps.integration.delius.entity.Person.Companion.SURNAME
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -18,11 +29,81 @@ data class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(name = "first_name", length = 35)
+    val forename: String,
+
+    @Column(name = "surname", length = 35)
+    val surname: String,
+
+    @Column(name = "second_name")
+    val secondName: String?,
+
+    @Column(name = "third_name")
+    val thirdName: String?,
+
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
+
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsId: String?,
 
+    @Column(name = "pnc_number", columnDefinition = "char(13)")
+    val pnc: String?,
+
+    @Column(name = "cro_number")
+    val cro: String?,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val currentExclusion: Boolean?,
     val exclusionMessage: String?,
+
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val currentRestriction: Boolean?,
     val restrictionMessage: String?,
+
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData,
+
+    @ManyToOne
+    @JoinColumn(name = "religion_id")
+    val religion: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "nationality_id")
+    val nationality: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "ethnicity_id")
+    val ethnicity: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "sexual_orientation_id")
+    val sexualOrientation: ReferenceData?,
+
+    @Column(name = "telephone_number")
+    val telephoneNumber: String?,
+
+    @Column(name = "mobile_number")
+    val mobileNumber: String?,
+
+    @Column(name = "e_mail_address")
+    val emailAddress: String?,
+
+    @OneToMany(mappedBy = "person")
+    val aliases: List<PersonAlias>,
+
+    @OneToMany(mappedBy = "person")
+    val additionalIdentifiers: List<AdditionalIdentifier>,
+
+    @OneToMany(mappedBy = "person")
+    val disabilities: List<Disability>,
+
+    @Column(name = "current_disposal", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val currentDisposal: Boolean,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -31,9 +112,20 @@ data class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
-)
+) {
+    companion object {
+        val CRN = Person::crn.name
+        val FORENAME = Person::forename.name
+        val SURNAME = Person::surname.name
+        val DOB = Person::dateOfBirth.name
+        val NOMS = Person::nomsId.name
+        val PNC = Person::pnc.name
+        val ALIASES = Person::aliases.name
+        val ADDITIONAL_IDENTIFIERS = Person::additionalIdentifiers.name
+    }
+}
 
-interface PersonRepository : JpaRepository<Person, Long> {
+interface PersonRepository : JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
     @Query("select p.crn from Person p where p.nomsId = :nomsId and p.softDeleted = false")
     fun findByNomsId(nomsId: String): String?
 
@@ -43,41 +135,41 @@ interface PersonRepository : JpaRepository<Person, Long> {
 fun PersonRepository.getCrn(nomsId: String) =
     findByNomsId(nomsId) ?: throw NotFoundException("Person", "nomsId", nomsId)
 
-@Immutable
-@Entity
-@SQLRestriction("active_flag = 1")
-@Table(name = "offender_manager")
-class PersonManager(
+fun matchesPerson(firstName: String?, surname: String?, dateOfBirth: LocalDate?) =
+    Specification<Person> { person, _, cb ->
+        val toMatch = listOfNotNull(
+            firstName?.lowercase()?.let { cb.equal(cb.lower(person[FORENAME]), it) },
+            surname?.lowercase()?.let { cb.equal(cb.lower(person[SURNAME]), it) },
+            dateOfBirth?.let { cb.equal(person.get<LocalDate>(PersonAlias.DOB), it) }
+        )
+        cb.and(*toMatch.toTypedArray())
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "offender_id")
-    val person: Person,
+fun matchesAlias(firstName: String?, surname: String?, dateOfBirth: LocalDate?) =
+    Specification<Person> { person, _, cb ->
+        val alias = person.join<Person, PersonAlias>(ALIASES, JoinType.LEFT)
+        val toMatch = listOfNotNull(
+            firstName?.lowercase()?.let { cb.equal(cb.lower(alias[PersonAlias.FORENAME]), it) },
+            surname?.lowercase()?.let { cb.equal(cb.lower(alias[PersonAlias.SURNAME]), it) },
+            dateOfBirth?.let { cb.equal(alias.get<LocalDate>(PersonAlias.DOB), it) }
+        )
+        cb.and(*toMatch.toTypedArray())
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "probation_area_id")
-    val provider: Provider,
-
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    val team: Team,
-
-    @ManyToOne
-    @JoinColumn(name = "allocation_staff_id")
-    val staff: Staff,
-
-    @Column(name = "active_flag", columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val active: Boolean,
-
-    @Id
-    @Column(name = "offender_manager_id")
-    val id: Long
-)
-
-interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
-    fun findByPersonCrn(crn: String): PersonManager?
+fun matchesCrnOrPrevious(crn: String) = Specification<Person> { person, _, cb ->
+    val ai = person.join<Person, AdditionalIdentifier>(ADDITIONAL_IDENTIFIERS, JoinType.LEFT)
+    val type = ai.join<AdditionalIdentifier, ReferenceData>(AdditionalIdentifier.TYPE, JoinType.LEFT)
+    cb.or(
+        cb.equal(person.get<String>(CRN), crn.uppercase()),
+        cb.and(
+            cb.equal(type.get<String>("code"), "MFCRN"),
+            cb.equal(ai.get<String>(AdditionalIdentifier.IDENTIFIER), crn.uppercase())
+        )
+    )
 }
 
-fun PersonManagerRepository.getForCrn(crn: String) =
-    findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+fun matchesNomsId(nomsId: String) =
+    Specification<Person> { person, _, cb -> cb.equal(person.get<String>(NOMS), nomsId.uppercase()) }
+
+fun matchesPnc(pnc: String) =
+    Specification<Person> { person, _, cb -> cb.equal(person.get<String>(PNC), pnc.uppercase()) }
