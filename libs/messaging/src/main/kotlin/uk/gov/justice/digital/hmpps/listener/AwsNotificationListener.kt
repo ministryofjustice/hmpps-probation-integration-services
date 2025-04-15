@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.extractTelemetryContext
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.withSpan
+import java.util.concurrent.CancellationException
 import java.util.concurrent.CompletionException
 
 @Component
@@ -77,6 +78,7 @@ class AwsNotificationListener(
     companion object {
         val RETRYABLE_EXCEPTIONS = listOf(
             RestClientException::class,
+            CancellationException::class,
             CannotAcquireLockException::class,
             ObjectOptimisticLockingFailureException::class,
             CannotCreateTransactionException::class,
