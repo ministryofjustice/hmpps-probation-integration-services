@@ -143,7 +143,8 @@ object ContactGenerator {
         "DOCUMENT",
         primaryKeyId = NEXT_APPT_CONTACT.id,
         contact = NEXT_APPT_CONTACT,
-        sensitive = true
+        sensitive = true,
+        workInProgress = true
     )
     val CONTACT_DOCUMENT_2 = generateContactDocument(
         OVERVIEW.id,
@@ -161,10 +162,12 @@ object ContactGenerator {
         documentType: String,
         primaryKeyId: Long? = null,
         contact: Contact?,
-        sensitive: Boolean = false
+        sensitive: Boolean = false,
+        workInProgress: Boolean? = null
     ): ContactDocument {
         val doc = ContactDocument(contact)
         doc.id = IdGenerator.getAndIncrement()
+        doc.createdAt = ZonedDateTime.now(EuropeLondon).minusDays(15)
         doc.lastUpdated = ZonedDateTime.now(EuropeLondon).minusDays(1)
         doc.alfrescoId = alfrescoId
         doc.name = name
@@ -172,6 +175,7 @@ object ContactGenerator {
         doc.primaryKeyId = primaryKeyId
         doc.type = documentType
         doc.sensitive = sensitive
+        doc.workInProgress = workInProgress
         return doc
     }
 

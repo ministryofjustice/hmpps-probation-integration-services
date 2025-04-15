@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentDetails
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonDocuments
 import uk.gov.justice.digital.hmpps.service.DocumentsService
 import java.time.LocalDate
@@ -29,6 +30,8 @@ internal class DocumentsControllerTest {
     lateinit var controller: DocumentsController
 
     private lateinit var personSummary: PersonSummary
+    private lateinit var expectedResponse: PersonDocuments
+    private lateinit var crn: String
 
     @BeforeEach
     fun setup() {
@@ -37,12 +40,8 @@ internal class DocumentsControllerTest {
             crn = "CRN", noms = "NOMS",
             dateOfBirth = LocalDate.now(), offenderId = 1L
         )
-    }
-
-    @Test
-    fun `calls get all documents`() {
-        val crn = "X000005"
-        val expectedResponse = PersonDocuments(
+        crn = "X000005"
+        expectedResponse = PersonDocuments(
             personSummary = personSummary,
             totalPages = 1,
             totalElements = 1,
@@ -57,10 +56,15 @@ internal class DocumentsControllerTest {
                     lastUpdatedAt = LocalDateTime.now(),
                     author = "TestUser",
                     status = "Sensitive",
+                    workInProgress = false
                 )
             ),
             sortedBy = "name.desc"
         )
+    }
+
+    @Test
+    fun `calls get all documents`() {
         whenever(
             documentsService.getDocuments(
                 crn,
@@ -68,7 +72,27 @@ internal class DocumentsControllerTest {
                 "name.desc"
             )
         ).thenReturn(expectedResponse)
-        val res = controller.getPersonActivity(crn, 1, 1, "name.desc")
+        val res = controller.getPersonDocuments(crn, 1, 1, "name.desc")
+        assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `calls search documents by name and file name`() {
+
+        val docSearch = DocumentSearch(
+            name = "contact",
+            dateFrom = LocalDateTime.now().minusDays(3),
+            dateTo = LocalDateTime.now().minusDays(1)
+        )
+        whenever(
+            documentsService.search(
+                docSearch,
+                crn,
+                PageRequest.of(1, 1, Sort.by(Sort.Direction.valueOf("DESC"), "name")),
+                "name.desc"
+            )
+        ).thenReturn(expectedResponse)
+        val res = controller.searchPersonDocuments(crn, docSearch, 1, 1, "name.desc")
         assertThat(res, equalTo(expectedResponse))
     }
 }

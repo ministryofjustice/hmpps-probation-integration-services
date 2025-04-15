@@ -18,6 +18,12 @@ data class PersonDocuments(
     val documents: List<DocumentDetails>
 )
 
+data class DocumentSearch(
+    val name: String,
+    val dateFrom: LocalDateTime,
+    val dateTo: LocalDateTime,
+)
+
 data class DocumentDetails(
     val alfrescoId: String,
     val offenderId: Long,
@@ -27,6 +33,7 @@ data class DocumentDetails(
     val createdAt: LocalDateTime? = null,
     val lastUpdatedAt: LocalDateTime? = null,
     val author: String?,
-    val status: String? = null
+    val status: String? = null,
+    val workInProgress: Boolean?
 )
 

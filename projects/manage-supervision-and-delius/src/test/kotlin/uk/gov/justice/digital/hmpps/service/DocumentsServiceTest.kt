@@ -12,6 +12,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
@@ -45,7 +46,7 @@ internal class DocumentsServiceTest {
     }
 
     @Test
-    fun `calls get person activity function`() {
+    fun `calls get person documents function`() {
         val offenderId = PERSONAL_DETAILS.id
         val crn = PERSONAL_DETAILS.crn
         val expectedDocuments = listOf(
@@ -70,6 +71,54 @@ internal class DocumentsServiceTest {
             .thenReturn(PageImpl(expectedDocuments))
 
         val res = service.getDocuments(
+            crn, PageRequest.of(
+                1, 1,
+                Sort.by(Sort.Direction.valueOf("DESC"), "name")
+            ), "name.desc"
+        )
+
+        assertThat(res.documents, equalTo(expectedDocuments.map { it.toDocumentDetails() }))
+    }
+
+    @Test
+    fun `calls search documents function`() {
+
+        val docSearch = DocumentSearch(
+            name = "contact",
+            dateFrom = LocalDateTime.now().minusDays(3),
+            dateTo = LocalDateTime.now().minusDays(1)
+        )
+        val offenderId = PERSONAL_DETAILS.id
+        val crn = PERSONAL_DETAILS.crn
+        val expectedDocuments = listOf(
+            DocumentEntity(
+                alfrescoId = "alfrescoId",
+                offenderId = 123456L,
+                name = "TestName",
+                level = "Doc Level",
+                type = "TestDescription",
+                createdAt = LocalDateTime.now(),
+                lastUpdatedAt = LocalDateTime.now(),
+                author = "TestUser",
+                status = "Sensitive",
+            )
+        )
+        whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
+
+        whenever(
+            documentsRepository
+                .search(
+                    offenderId, docSearch.name, docSearch.dateFrom, docSearch.dateTo,
+                    PageRequest.of(
+                        1, 1,
+                        Sort.by(Sort.Direction.valueOf("DESC"), "name")
+                    )
+                )
+        )
+            .thenReturn(PageImpl(expectedDocuments))
+
+        val res = service.search(
+            docSearch,
             crn, PageRequest.of(
                 1, 1,
                 Sort.by(Sort.Direction.valueOf("DESC"), "name")
