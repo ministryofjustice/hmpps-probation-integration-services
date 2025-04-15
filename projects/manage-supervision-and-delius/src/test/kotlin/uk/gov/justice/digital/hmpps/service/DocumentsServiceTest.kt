@@ -65,10 +65,11 @@ internal class DocumentsServiceTest {
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
 
         whenever(
-            documentsRepository
-                .findByOffenderId(offenderId, PageRequest.of(1, 1, Sort.by(Sort.Direction.valueOf("DESC"), "name")))
-        )
-            .thenReturn(PageImpl(expectedDocuments))
+            documentsRepository.findByOffenderId(
+                offenderId,
+                PageRequest.of(1, 1, Sort.by(Sort.Direction.valueOf("DESC"), "name"))
+            )
+        ).thenReturn(PageImpl(expectedDocuments))
 
         val res = service.getDocuments(
             crn, PageRequest.of(
