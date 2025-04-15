@@ -38,6 +38,7 @@ object CourtReportGenerator {
     ): CourtReportDocument {
         val doc = CourtReportDocument()
         doc.id = IdGenerator.getAndIncrement()
+        doc.createdAt = ZonedDateTime.now().minusDays(15)
         doc.lastUpdated = ZonedDateTime.now().minusDays(1)
         doc.alfrescoId = alfrescoId
         doc.name = name

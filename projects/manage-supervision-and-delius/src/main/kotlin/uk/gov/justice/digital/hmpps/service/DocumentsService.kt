@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentDetails
+import uk.gov.justice.digital.hmpps.api.model.personalDetails.DocumentSearch
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.PersonDocuments
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
@@ -23,7 +24,25 @@ class DocumentsService(
             totalElements = documents.totalElements.toInt(),
             totalPages = documents.totalPages,
             documents = documents.content.map { it.toDocumentDetails() },
-            sortedBy = sortedBy,
+            sortedBy = sortedBy
+        )
+    }
+
+    fun search(documentSearch: DocumentSearch, crn: String, pageable: Pageable, sortedBy: String): PersonDocuments {
+        val summary = personRepository.getSummary(crn)
+        val documents = documentsRepository.search(
+            summary.id,
+            documentSearch.name,
+            documentSearch.dateFrom,
+            documentSearch.dateTo,
+            pageable
+        )
+        return PersonDocuments(
+            personSummary = summary.toPersonSummary(),
+            totalElements = documents.totalElements.toInt(),
+            totalPages = documents.totalPages,
+            documents = documents.content.map { it.toDocumentDetails() },
+            sortedBy = sortedBy
         )
     }
 }
@@ -37,5 +56,6 @@ fun DocumentEntity.toDocumentDetails() = DocumentDetails(
     createdAt,
     lastUpdatedAt,
     author,
-    status
+    status,
+    workInProgress ?: false
 )

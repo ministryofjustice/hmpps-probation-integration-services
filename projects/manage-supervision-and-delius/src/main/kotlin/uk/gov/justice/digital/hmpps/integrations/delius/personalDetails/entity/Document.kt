@@ -58,6 +58,9 @@ abstract class Document {
     @Convert(converter = NumericBooleanConverter::class)
     open var sensitive: Boolean = false
 
+    @Convert(converter = YesNoConverter::class)
+    open var workInProgress: Boolean? = null
+
     @Column(columnDefinition = "number")
     open var softDeleted: Boolean = false
 }
@@ -70,6 +73,7 @@ abstract class Document {
                document.document_name as name,
                document.created_datetime as created_at,
                document.last_saved as last_updated_at,
+               document.work_in_progress as work_in_progress,
                case
                  when document.sensitive = 1
                     then 'Sensitive'
@@ -242,10 +246,28 @@ data class DocumentEntity(
     val lastUpdatedAt: LocalDateTime?,
     val author: String?,
     val status: String? = null,
+    @Convert(converter = YesNoConverter::class)
+    val workInProgress: Boolean? = false
 )
 
 interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
     fun findByOffenderId(offenderId: Long, pageable: Pageable): Page<DocumentEntity>
+
+    @Query(
+        """
+            select d from DocumentEntity d
+            where d.offenderId = :offenderId
+            and (:name is null or upper(d.name) like '%' || upper(:name) || '%' ESCAPE '\')
+            and (:createdDateFrom is null or :createdDateTo is null or d.createdAt between :createdDateFrom and :createdDateTo)
+        """
+    )
+    fun search(
+        offenderId: Long,
+        name: String?,
+        createdDateFrom: LocalDateTime?,
+        createdDateTo: LocalDateTime?,
+        pageable: Pageable
+    ): Page<DocumentEntity>
 }
 
 @Entity(name = "Prison")
