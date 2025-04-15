@@ -3,3 +3,9 @@
 # Reason: Not serving static files
 # Package: rack:3.1.10
 CVE-2025-27610 exp:2025-08-01
+
+# Nokogiri updates packaged libxslt to v1.1.43 to resolve multiple CVEs
+# https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/4833
+# Reason: Not processing untrusted XML or HTML files
+# Package: nokogiri:1.17.2
+GHSA-mrxw-mxhj-p664 exp:2025-08-01
