@@ -258,7 +258,7 @@ interface DocumentsRepository : JpaRepository<DocumentEntity, Long> {
             select d from DocumentEntity d
             where d.offenderId = :offenderId
             and (:name is null or upper(d.name) like '%' || upper(:name) || '%' ESCAPE '\')
-            and (:createdDateFrom is null or :createdDateTo is null or d.createdAt between :createdDateFrom and :createdDateTo)
+            and ((:createdDateFrom is null or :createdDateTo is null) or (d.createdAt >= :createdDateFrom and d.createdAt <= :createdDateTo))
         """
     )
     fun search(

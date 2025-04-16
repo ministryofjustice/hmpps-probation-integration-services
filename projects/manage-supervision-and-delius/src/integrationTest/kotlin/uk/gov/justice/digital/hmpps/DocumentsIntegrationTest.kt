@@ -104,4 +104,26 @@ internal class DocumentsIntegrationTest {
         assertThat(res.documents[3].workInProgress, equalTo(true))
         assertThat(res.documents[3].status, equalTo("Sensitive"))
     }
+
+    @Test
+    fun `find all documents using single day in to and from `() {
+
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search").withToken()
+                    .withJson(
+                        DocumentSearch(
+                            dateTo = LocalDateTime.now().minusDays(16),
+                            dateFrom = LocalDateTime.now().minusDays(16)
+                        )
+                    )
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+
+        assertThat(res.documents.size, equalTo(2))
+        assertThat(res.documents[0].name, equalTo("contact2.doc"))
+        assertThat(res.documents[1].name, equalTo("contact.doc"))
+    }
 }

@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.D
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
 import uk.gov.justice.digital.hmpps.utils.Summary
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 @ExtendWith(MockitoExtension::class)
 internal class DocumentsServiceTest {
@@ -109,7 +110,9 @@ internal class DocumentsServiceTest {
         whenever(
             documentsRepository
                 .search(
-                    offenderId, docSearch.name, docSearch.dateFrom, docSearch.dateTo,
+                    offenderId, docSearch.name,
+                    docSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
+                    docSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
                     PageRequest.of(
                         1, 1,
                         Sort.by(Sort.Direction.valueOf("DESC"), "name")
