@@ -32,8 +32,8 @@ data class RoshSummaryDetails(
                     lastUpdatedDate,
                     RoshSummary(
                         whoAtRisk,
-                        riskReductionLikelyTo,
-                        riskIncreaseLikelyTo,
+                        factorsLikelyToReduceRisk ?: riskReductionLikelyTo,
+                        factorsLikelyToIncreaseRisk ?: riskIncreaseLikelyTo,
                         riskGreatest,
                         natureOfRisk
                     )

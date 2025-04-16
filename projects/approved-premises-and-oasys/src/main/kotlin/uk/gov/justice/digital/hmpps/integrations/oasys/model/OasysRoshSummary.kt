@@ -20,6 +20,8 @@ data class OasysRoshSummaryAssessment(
     val whoAtRisk: String? = null,
     val riskReductionLikelyTo: String? = null,
     val riskIncreaseLikelyTo: String? = null,
+    val factorsLikelyToReduceRisk: String? = null,
+    val factorsLikelyToIncreaseRisk: String? = null,
     val riskGreatest: String? = null,
     val natureOfRisk: String? = null
 ) : OasysAssessment()
