@@ -1,7 +1,4 @@
 generic-service:
-  ingress:
-    host: manage-supervision-and-delius-preprod.hmpps.service.justice.gov.uk
-
   scheduledDowntime:
     enabled: true
 
