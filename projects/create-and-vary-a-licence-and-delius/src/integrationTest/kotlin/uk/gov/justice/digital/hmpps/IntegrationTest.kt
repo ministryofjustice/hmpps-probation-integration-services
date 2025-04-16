@@ -14,10 +14,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_CREATE_LC
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.asAddress
-import uk.gov.justice.digital.hmpps.service.*
+import uk.gov.justice.digital.hmpps.service.asManager
+import uk.gov.justice.digital.hmpps.service.asPDUHead
+import uk.gov.justice.digital.hmpps.service.asStaffName
+import uk.gov.justice.digital.hmpps.service.asTeam
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -29,20 +34,63 @@ internal class IntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
+    fun `returns case details`() {
+        val crn = DEFAULT_PERSON.crn
+
+        val response = mockMvc
+            .perform(get("/probation-case/$crn").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<ProbationCase>()
+
+        assertThat(response, equalTo(ProbationCase(DEFAULT_PERSON.crn, DEFAULT_PERSON.nomsNumber)))
+    }
+
+    @Test
+    fun `returns case details by NOMIS id`() {
+        val nomsNumber = DEFAULT_PERSON.nomsNumber
+
+        val response = mockMvc
+            .perform(get("/probation-case/$nomsNumber").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<ProbationCase>()
+
+        assertThat(response, equalTo(ProbationCase(DEFAULT_PERSON.crn, DEFAULT_PERSON.nomsNumber)))
+    }
+
+    @Test
+    fun `returns case list`() {
+        val crns = listOf(DEFAULT_PERSON.crn, PERSON_CREATE_LC.crn)
+
+        val response = mockMvc
+            .perform(post("/probation-case").withToken().withJson(crns))
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<List<ProbationCase>>()
+
+        assertThat(
+            response, equalTo(
+                listOf(
+                    ProbationCase(DEFAULT_PERSON.crn, DEFAULT_PERSON.nomsNumber),
+                    ProbationCase(PERSON_CREATE_LC.crn, null)
+                )
+            )
+        )
+    }
+
+    @Test
     fun `returns responsible officer details`() {
-        val crn = PersonGenerator.DEFAULT_PERSON.crn
+        val crn = DEFAULT_PERSON.crn
 
         val manager = mockMvc
             .perform(get("/probation-case/$crn/responsible-community-manager").withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<Manager>()
 
-
         assertThat(
-            manager,
-            equalTo(
+            manager, equalTo(
                 PersonGenerator.DEFAULT_CM.asManager().copy(
-                    username = "john-smith", email = "john.smith@moj.gov.uk"
+                    username = "john-smith",
+                    email = "john.smith@moj.gov.uk",
+                    telephoneNumber = "10101010101"
                 )
             )
         )
@@ -50,7 +98,7 @@ internal class IntegrationTest {
 
     @Test
     fun `returns responsible officer details for a list of CRNs`() {
-        val crn = PersonGenerator.DEFAULT_PERSON.crn
+        val crn = DEFAULT_PERSON.crn
         mockMvc
             .perform(post("/probation-case/responsible-community-manager").withToken().withJson(listOf(crn)))
             .andExpect(status().isOk)
@@ -74,7 +122,9 @@ internal class IntegrationTest {
             manager,
             equalTo(
                 PersonGenerator.CM_ENDED_TEAM_LOCATION.asManager().copy(
-                    username = "john-smith", email = "john.smith@moj.gov.uk",
+                    username = "john-smith",
+                    email = "john.smith@moj.gov.uk",
+                    telephoneNumber = "10101010101",
                     team = ProviderGenerator.TEAM_ENDED_OR_NULL_LOCATIONS.asTeam().copy(addresses = expectedAddresses)
                 )
             )

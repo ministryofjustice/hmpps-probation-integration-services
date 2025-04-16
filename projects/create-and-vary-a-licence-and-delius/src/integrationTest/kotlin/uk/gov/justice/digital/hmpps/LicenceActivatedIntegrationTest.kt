@@ -91,7 +91,7 @@ class LicenceActivatedIntegrationTest {
         val conditions = lcr.findByDisposalId(sentence.disposal.id)
         assertThat(conditions.size, equalTo(7))
 
-        val com = pmr.findByPersonCrn(person.crn)!!
+        val com = pmr.findByPersonCrnOrPersonNomsNumber(person.crn)!!
         conditions.forEach {
             val lcm = lcmr.findByLicenceConditionId(it.id)
             assertThat(lcm?.providerId, equalTo(com.provider.id))

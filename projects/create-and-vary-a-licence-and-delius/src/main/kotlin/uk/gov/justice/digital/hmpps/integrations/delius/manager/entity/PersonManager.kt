@@ -48,9 +48,9 @@ class PersonManager(
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
-    fun findByPersonCrn(crn: String): PersonManager?
+    fun findByPersonCrnOrPersonNomsNumber(crn: String, nomisId: String = crn): PersonManager?
 
-    @EntityGraph(attributePaths = ["person", "staff.user"])
-    fun findByPersonCrnIn(crn: List<String>): List<PersonManager>
+    @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
+    fun findByPersonCrnInOrPersonNomsNumberIn(crns: List<String>, nomisIds: List<String> = crns): List<PersonManager>
 }
 
