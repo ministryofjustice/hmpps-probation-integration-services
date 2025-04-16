@@ -28,8 +28,8 @@
       "laterCompleteAssessmentExists": false,
       "latestCompleteDate": "2022-11-09T14:05:13",
       "whoAtRisk": "Various people in the community are at risk",
-      "riskReductionLikelyTo": "Alcohol monitoring and counselling course to reduce.\r\nThis has worked in the past",
-      "riskIncreaseLikelyTo": "Drinking increases risk",
+      "factorsLikelyToReduceRisk": "Alcohol monitoring and counselling course to reduce.\r\nThis has worked in the past",
+      "factorsLikelyToIncreaseRisk": "Drinking increases risk",
       "riskGreatest": "Risk greatest around Christmas",
       "natureOfRisk": "Risks varying in nature",
       "lastUpdatedDate": "2022-11-17T15:02:17"
