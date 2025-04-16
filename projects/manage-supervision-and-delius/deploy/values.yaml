@@ -7,8 +7,9 @@ generic-service:
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-supervision-and-delius
 
+#  api calls are sent via service end point
   ingress:
-    tlsSecretName: manage-supervision-and-delius-cert
+    enabled: false
 
   namespace_secrets:
     common:
