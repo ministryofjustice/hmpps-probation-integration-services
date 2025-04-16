@@ -76,6 +76,26 @@ paths:
                 - crn: A123456
                   userExcluded: false
                   userRestricted: false
+  /search/probation-cases:
+    post:
+      tags:
+      - search-controller
+      operationId: searchProbationCases
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProbationCaseDetail"
   /reference-data:
     get:
       tags:
@@ -147,6 +167,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SupervisionResponse"
+  /case/{crn}/addresses:
+    get:
+      tags:
+      - Case Details
+      operationId: addresses
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressWrapper"
 components:
   schemas:
     CrnRequest:
@@ -186,6 +224,181 @@ components:
             $ref: "#/components/schemas/CaseAccess"
       required:
       - access
+    SearchRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        surname:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        pncNumber:
+          type: string
+        crn:
+          type: string
+        nomsNumber:
+          type: string
+        includeAliases:
+          type: boolean
+      required:
+      - includeAliases
+    CaseAlias:
+      type: object
+      properties:
+        firstName:
+          type: string
+        surname:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+      required:
+      - dateOfBirth
+      - firstName
+      - gender
+      - middleNames
+      - surname
+    CaseDisability:
+      type: object
+      properties:
+        disabilityType:
+          $ref: "#/components/schemas/CodedValue"
+        condition:
+          $ref: "#/components/schemas/CodedValue"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        notes:
+          type: string
+      required:
+      - disabilityType
+    CaseProfile:
+      type: object
+      properties:
+        ethnicity:
+          type: string
+        nationality:
+          type: string
+        religion:
+          type: string
+        sexualOrientation:
+          type: string
+        disabilities:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseDisability"
+      required:
+      - disabilities
+    CodedValue:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - code
+      - description
+    ContactDetails:
+      type: object
+      properties:
+        phoneNumbers:
+          type: array
+          items:
+            $ref: "#/components/schemas/PhoneNumber"
+        emailAddresses:
+          type: array
+          items:
+            type: string
+      required:
+      - emailAddresses
+      - phoneNumbers
+    OtherIds:
+      type: object
+      properties:
+        crn:
+          type: string
+        pncNumber:
+          type: string
+        nomsNumber:
+          type: string
+        croNumber:
+          type: string
+      required:
+      - crn
+    PhoneNumber:
+      type: object
+      properties:
+        number:
+          type: string
+        type:
+          type: string
+      required:
+      - number
+      - type
+    ProbationCaseDetail:
+      type: object
+      properties:
+        otherIds:
+          $ref: "#/components/schemas/OtherIds"
+        firstName:
+          type: string
+        surname:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+        offenderProfile:
+          $ref: "#/components/schemas/CaseProfile"
+        contactDetails:
+          $ref: "#/components/schemas/ContactDetails"
+        offenderAliases:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseAlias"
+        activeProbationManagedSentence:
+          type: boolean
+        currentRestriction:
+          type: boolean
+        restrictionMessage:
+          type: string
+        currentExclusion:
+          type: boolean
+        exclusionMessage:
+          type: string
+        age:
+          type: integer
+          format: int32
+      required:
+      - activeProbationManagedSentence
+      - age
+      - currentExclusion
+      - currentRestriction
+      - dateOfBirth
+      - firstName
+      - gender
+      - middleNames
+      - offenderAliases
+      - offenderProfile
+      - otherIds
+      - surname
     ProbationReferenceData:
       type: object
       properties:
@@ -480,6 +693,54 @@ components:
       - code
       - description
       - provider
+    AddressWrapper:
+      type: object
+      properties:
+        contactDetails:
+          $ref: "#/components/schemas/ContactDetailAddresses"
+      required:
+      - contactDetails
+    CaseAddress:
+      type: object
+      properties:
+        noFixedAbode:
+          type: boolean
+        type:
+          $ref: "#/components/schemas/CodedValue"
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        streetName:
+          type: string
+        town:
+          type: string
+        district:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        notes:
+          type: string
+      required:
+      - noFixedAbode
+      - type
+    ContactDetailAddresses:
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/CaseAddress"
+      required:
+      - addresses
   securitySchemes:
     hmpps-auth-token:
       type: http

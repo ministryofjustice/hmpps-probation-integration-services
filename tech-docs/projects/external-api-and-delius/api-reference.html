@@ -109,6 +109,9 @@
         <a href="./api-reference.html#probation-cases-access"><span>/probation-cases/access</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#search-probation-cases"><span>/search/probation-cases</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#reference-data"><span>/reference-data</span></a>
       </li>
       <li>
@@ -119,6 +122,9 @@
       </li>
       <li>
         <a href="./api-reference.html#case-crn-supervisions"><span>/case/{crn}/supervisions</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#case-crn-addresses"><span>/case/{crn}/addresses</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -273,6 +279,45 @@
 </td>
 <td>
 <a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="search-probation-cases">/search/probation-cases</h2>
+
+<h3 id="search-probation-cases-post">post</h3>
+
+
+
+
+
+
+
+<h4 id="search-probation-cases-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
 </td>
 </tr>
 
@@ -616,6 +661,86 @@
 
 
 
+<h2 id="case-crn-addresses">/case/{crn}/addresses</h2>
+
+<h3 id="case-crn-addresses-get">get</h3>
+
+
+
+
+<h4 id="case-crn-addresses-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-crn-addresses-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "contactDetails": {
+    "addresses": [
+      {
+        "noFixedAbode": "boolean",
+        "type": {
+          "code": "string",
+          "description": "string"
+        },
+        "buildingName": "string",
+        "addressNumber": "string",
+        "streetName": "string",
+        "town": "string",
+        "district": "string",
+        "county": "string",
+        "postcode": "string",
+        "from": "string",
+        "to": "string",
+        "notes": "string"
+      }
+    ]
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-addresswrapper'>AddressWrapper</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 
 <h2 id="schemas">Schemas</h2>
 <h3 id="schema-crnrequest">CrnRequest</h3>
@@ -718,6 +843,584 @@
 <td></td>
 <td>
   <a href='#schema-caseaccess'>CaseAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-searchrequest">SearchRequest</h3>
+
+
+<table class='schema-searchrequest'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>includeAliases</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-casealias">CaseAlias</h3>
+
+
+<table class='schema-casealias'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleNames</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-casedisability">CaseDisability</h3>
+
+
+<table class='schema-casedisability'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>disabilityType</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedvalue'>CodedValue</a>
+</td>
+</tr>
+
+<tr>
+<td>condition</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-codedvalue'>CodedValue</a>
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-caseprofile">CaseProfile</h3>
+
+
+<table class='schema-caseprofile'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>ethnicity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nationality</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>religion</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sexualOrientation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>disabilities</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-casedisability'>CaseDisability</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-codedvalue">CodedValue</h3>
+
+
+<table class='schema-codedvalue'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-contactdetails">ContactDetails</h3>
+
+
+<table class='schema-contactdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>phoneNumbers</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-phonenumber'>PhoneNumber</a>
+</td>
+</tr>
+
+<tr>
+<td>emailAddresses</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-otherids">OtherIds</h3>
+
+
+<table class='schema-otherids'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>croNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-phonenumber">PhoneNumber</h3>
+
+
+<table class='schema-phonenumber'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>number</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationcasedetail">ProbationCaseDetail</h3>
+
+
+<table class='schema-probationcasedetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>otherIds</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-otherids'>OtherIds</a>
+</td>
+</tr>
+
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleNames</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderProfile</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-caseprofile'>CaseProfile</a>
+</td>
+</tr>
+
+<tr>
+<td>contactDetails</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-contactdetails'>ContactDetails</a>
+</td>
+</tr>
+
+<tr>
+<td>offenderAliases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-casealias'>CaseAlias</a>
+</td>
+</tr>
+
+<tr>
+<td>activeProbationManagedSentence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentRestriction</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentExclusion</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>age</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
@@ -1634,6 +2337,182 @@
 <td></td>
 <td>
   <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-addresswrapper">AddressWrapper</h3>
+
+
+<table class='schema-addresswrapper'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>contactDetails</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-contactdetailaddresses'>ContactDetailAddresses</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-caseaddress">CaseAddress</h3>
+
+
+<table class='schema-caseaddress'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>noFixedAbode</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-codedvalue'>CodedValue</a>
+</td>
+</tr>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>addressNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>from</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>to</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-contactdetailaddresses">ContactDetailAddresses</h3>
+
+
+<table class='schema-contactdetailaddresses'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>addresses</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-caseaddress'>CaseAddress</a>
 </td>
 </tr>
 
