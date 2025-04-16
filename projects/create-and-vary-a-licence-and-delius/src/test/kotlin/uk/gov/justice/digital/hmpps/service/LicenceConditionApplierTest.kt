@@ -65,7 +65,7 @@ internal class LicenceConditionApplierTest {
             Conditions(ApConditions(listOf(), listOf(), listOf()))
         )
         val occurredAt = ZonedDateTime.now()
-        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
+        whenever(personManagerRepository.findByPersonCrnOrPersonNomsNumber(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
         whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(listOf())
 
         val ex = licenceConditionApplier.applyLicenceConditions(
@@ -97,7 +97,7 @@ internal class LicenceConditionApplierTest {
             Conditions(ApConditions(listOf(), listOf(), listOf()))
         )
         val occurredAt = ZonedDateTime.now()
-        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(null)
+        whenever(personManagerRepository.findByPersonCrnOrPersonNomsNumber(crn)).thenReturn(null)
 
         val ex = licenceConditionApplier.applyLicenceConditions(
             crn,
@@ -139,7 +139,7 @@ internal class LicenceConditionApplierTest {
         )
         sentence.set("keyDates", keyDates)
 
-        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
+        whenever(personManagerRepository.findByPersonCrnOrPersonNomsNumber(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
         whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(listOf(sentence))
 
         val ex = licenceConditionApplier.applyLicenceConditions(
@@ -173,7 +173,7 @@ internal class LicenceConditionApplierTest {
             Conditions(ApConditions(listOf(), listOf(), listOf()))
         )
         val occurredAt = ZonedDateTime.now()
-        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
+        whenever(personManagerRepository.findByPersonCrnOrPersonNomsNumber(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
 
         var sentence2: Custody? = null
         var sentence4: Custody? = null
@@ -259,7 +259,7 @@ internal class LicenceConditionApplierTest {
             Conditions(ApConditions(listOf(), listOf(), listOf()))
         )
         val occurredAt = ZonedDateTime.now()
-        whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
+        whenever(personManagerRepository.findByPersonCrnOrPersonNomsNumber(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
         whenever(custodyRepository.findCustodialSentences(crn)).thenReturn(
             listOf(
                 SentenceGenerator.generate(SentenceGenerator.generateEvent("1", person), endDate = LocalDate.now())

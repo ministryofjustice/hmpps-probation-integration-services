@@ -48,7 +48,7 @@ class LicenceConditionApplier(
             "startDate" to activatedLicence.startDate.toString(),
             "occurredAt" to occurredAt.toString()
         )
-        val com = personManagerRepository.findByPersonCrn(crn)
+        val com = personManagerRepository.findByPersonCrnOrPersonNomsNumber(crn)
             ?: return listOf(ActionResult.Ignored("CRN not found", properties))
         val sentences = custodyRepository.findCustodialSentences(crn).filter { custody ->
             custody.keyDates.none { it.type.code == ReferenceData.SENTENCE_EXPIRY_CODE && it.date < LocalDate.now() }

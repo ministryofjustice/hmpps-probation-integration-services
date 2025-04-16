@@ -35,7 +35,7 @@ internal class ResponsibleManagerServiceTest {
         val staff = StaffGenerator.generateStaff("NoLdap", "No", "User")
         val cm = PersonGenerator.generateManager(person, staff = staff)
 
-        whenever(personManagerRepository.findByPersonCrn(person.crn)).thenReturn(cm)
+        whenever(personManagerRepository.findByPersonCrnOrPersonNomsNumber(person.crn)).thenReturn(cm)
 
         val res = service.findCommunityManager(person.crn)
         assertThat(res, equalTo(cm.asManager()))

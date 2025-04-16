@@ -6,40 +6,45 @@ import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.OfficeAddress
-import uk.gov.justice.digital.hmpps.api.model.StaffEmail
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.*
-import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
+import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.LdapUser
+import uk.gov.justice.digital.hmpps.ldap.findByUsername
 
 @Service
 class ManagerService(
     private val ldapTemplate: LdapTemplate,
     private val personManagerRepository: PersonManagerRepository
 ) {
-    fun findCommunityManager(crn: String): Manager =
-        personManagerRepository.findByPersonCrn(crn)?.let { ro ->
-            ro.staff.user?.apply {
-                email = ldapTemplate.findEmailByUsername(username)
-            }
-            ro.asManager()
-        } ?: throw NotFoundException("CommunityManager", "crn", crn)
+    fun findCommunityManager(crnOrNomisId: String): Manager =
+        personManagerRepository.findByPersonCrnOrPersonNomsNumber(crnOrNomisId)?.withLdapDetails()?.asManager()
+            ?: throw NotFoundException("CommunityManager", "CRN or NOMIS id", crnOrNomisId)
 
-    fun findCommunityManagerEmails(crns: List<String>): List<StaffEmail> =
-        personManagerRepository.findByPersonCrnIn(crns).map {
-            StaffEmail(it.staff.code, it.staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) })
+    fun findCommunityManagers(crnsOrNomisIds: List<String>): List<Manager> =
+        personManagerRepository.findByPersonCrnInOrPersonNomsNumberIn(crnsOrNomisIds)
+            .map { it.withLdapDetails().asManager() }
+
+    private fun PersonManager.withLdapDetails() = apply {
+        staff.user?.apply {
+            val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
+            email = ldapUser?.email
+            telephoneNumber = ldapUser?.telephoneNumber
         }
+    }
 }
 
 fun PersonManager.asManager() = Manager(
     staff.id,
+    person.crn,
     staff.code,
     staff.name(),
     provider.asProvider(),
     team.asTeam(),
     staff.user?.username,
     staff.user?.email,
+    staff.user?.telephoneNumber,
     staff.isUnallocated()
 )
 

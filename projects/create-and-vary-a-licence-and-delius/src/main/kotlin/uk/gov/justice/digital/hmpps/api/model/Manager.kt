@@ -4,12 +4,14 @@ import java.time.LocalDate
 
 data class Manager(
     val id: Long,
+    val crn: String,
     val code: String,
     val name: Name,
     val provider: Provider,
     val team: Team,
     val username: String?,
     val email: String?,
+    val telephoneNumber: String?,
     val unallocated: Boolean
 )
 

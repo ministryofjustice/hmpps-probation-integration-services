@@ -23,8 +23,3 @@ data class StaffName(
     val code: String,
     val username: String?
 )
-
-data class StaffEmail(
-    val code: String,
-    val email: String?
-)
