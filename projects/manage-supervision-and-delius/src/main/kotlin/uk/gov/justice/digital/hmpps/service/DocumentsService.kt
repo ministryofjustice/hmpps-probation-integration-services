@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRe
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentsRepository
+import java.time.LocalTime
 
 @Service
 class DocumentsService(
@@ -33,8 +34,8 @@ class DocumentsService(
         val documents = documentsRepository.search(
             summary.id,
             documentSearch.name,
-            documentSearch.dateFrom,
-            documentSearch.dateTo,
+            documentSearch.dateFrom?.toLocalDate()?.atStartOfDay(),
+            documentSearch.dateTo?.toLocalDate()?.atTime(LocalTime.MAX),
             pageable
         )
         return PersonDocuments(
