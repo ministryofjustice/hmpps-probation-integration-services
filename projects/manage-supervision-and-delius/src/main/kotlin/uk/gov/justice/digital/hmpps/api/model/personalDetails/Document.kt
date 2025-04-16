@@ -19,9 +19,9 @@ data class PersonDocuments(
 )
 
 data class DocumentSearch(
-    val name: String,
-    val dateFrom: LocalDateTime,
-    val dateTo: LocalDateTime,
+    val name: String? = null,
+    val dateFrom: LocalDateTime? = null,
+    val dateTo: LocalDateTime? = null,
 )
 
 data class DocumentDetails(

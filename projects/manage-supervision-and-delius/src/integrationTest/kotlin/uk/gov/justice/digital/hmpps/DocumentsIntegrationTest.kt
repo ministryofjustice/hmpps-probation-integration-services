@@ -81,4 +81,27 @@ internal class DocumentsIntegrationTest {
         assertThat(res.documents[1].name, equalTo("contact2.doc"))
         assertThat(res.documents[2].name, equalTo("contact.doc"))
     }
+
+    @Test
+    fun `find all documents using no search params with default sort and page`() {
+
+        val person = OVERVIEW
+        val res = mockMvc
+            .perform(
+                post("/documents/${person.crn}/search").withToken()
+                    .withJson(DocumentSearch())
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<PersonDocuments>()
+
+        assertThat(res.documents.size, equalTo(4))
+        assertThat(res.documents[0].name, equalTo("event report"))
+        assertThat(res.documents[1].name, equalTo("court report"))
+        assertThat(res.documents[2].name, equalTo("contact2.doc"))
+        assertThat(res.documents[2].workInProgress, equalTo(false))
+        assertThat(res.documents[2].status, equalTo(null))
+        assertThat(res.documents[3].name, equalTo("contact.doc"))
+        assertThat(res.documents[3].workInProgress, equalTo(true))
+        assertThat(res.documents[3].status, equalTo("Sensitive"))
+    }
 }
