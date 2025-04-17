@@ -1851,10 +1851,6 @@ components:
         dateTo:
           type: string
           format: date-time
-      required:
-      - dateFrom
-      - dateTo
-      - name
     DocumentDetails:
       type: object
       properties:

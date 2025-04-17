@@ -118,6 +118,9 @@
         <a href="./api-reference.html#staff"><span>/staff</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-case"><span>/probation-case</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-case-responsible-community-manager"><span>/probation-case/responsible-community-manager</span></a>
       </li>
       <li>
@@ -142,7 +145,10 @@
         <a href="./api-reference.html#staff-bycode-code"><span>/staff/bycode/{code}</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#probation-case-crn-responsible-community-manager"><span>/probation-case/{crn}/responsible-community-manager</span></a>
+        <a href="./api-reference.html#probation-case-crnornomisid"><span>/probation-case/{crnOrNomisId}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-case-crnornomisid-responsible-community-manager"><span>/probation-case/{crnOrNomisId}/responsible-community-manager</span></a>
       </li>
       <li>
         <a href="./api-reference.html#docs-asyncapi"><span>/docs/asyncapi</span></a>
@@ -303,6 +309,45 @@
 
 
 <h4 id="staff-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case">/probation-case</h2>
+
+<h3 id="probation-case-post">post</h3>
+
+
+
+
+
+
+
+<h4 id="probation-case-post-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -942,14 +987,14 @@
 
 
 
-<h2 id="probation-case-crn-responsible-community-manager">/probation-case/{crn}/responsible-community-manager</h2>
+<h2 id="probation-case-crnornomisid">/probation-case/{crnOrNomisId}</h2>
 
-<h3 id="probation-case-crn-responsible-community-manager-get">get</h3>
-
-
+<h3 id="probation-case-crnornomisid-get">get</h3>
 
 
-<h4 id="probation-case-crn-responsible-community-manager-get-parameters">Parameters</h4>
+
+
+<h4 id="probation-case-crnornomisid-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -957,7 +1002,7 @@
 <tbody>
 
 <tr>
-<td>crn</td>
+<td>crnOrNomisId</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
@@ -972,7 +1017,68 @@
 
 
 
-<h4 id="probation-case-crn-responsible-community-manager-get-responses">Responses</h4>
+<h4 id="probation-case-crnornomisid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "nomisId": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-probationcase'>ProbationCase</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crnornomisid-responsible-community-manager">/probation-case/{crnOrNomisId}/responsible-community-manager</h2>
+
+<h3 id="probation-case-crnornomisid-responsible-community-manager-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crnornomisid-responsible-community-manager-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crnOrNomisId</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crnornomisid-responsible-community-manager-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -988,6 +1094,7 @@
 
 <pre><code>{
   "id": "integer",
+  "crn": "string",
   "code": "string",
   "name": {
     "forename": "string",
@@ -1036,6 +1143,7 @@
   },
   "username": "string",
   "email": "string",
+  "telephoneNumber": "string",
   "unallocated": "boolean"
 }</code></pre>
 
@@ -1186,17 +1294,17 @@
 </tbody>
 </table>
 
-<h3 id="schema-staffemail">StaffEmail</h3>
+<h3 id="schema-probationcase">ProbationCase</h3>
 
 
-<table class='schema-staffemail'>
+<table class='schema-probationcase'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>code</td>
+<td>crn</td>
 <td>string</td>
 <td>true</td>
 <td></td>
@@ -1206,7 +1314,7 @@
 </tr>
 
 <tr>
-<td>email</td>
+<td>nomisId</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -1292,17 +1400,37 @@
 </tbody>
 </table>
 
-<h3 id="schema-managedoffender">ManagedOffender</h3>
+<h3 id="schema-manager">Manager</h3>
 
 
-<table class='schema-managedoffender'>
+<table class='schema-manager'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
 <td>string</td>
 <td>true</td>
 <td></td>
@@ -1322,7 +1450,27 @@
 </tr>
 
 <tr>
-<td>allocationDate</td>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>username</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -1332,22 +1480,32 @@
 </tr>
 
 <tr>
-<td>staff</td>
-<td>object</td>
-<td>true</td>
+<td>email</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
-  <a href='#schema-staff'>Staff</a>
+  
 </td>
 </tr>
 
 <tr>
-<td>team</td>
-<td>object</td>
+<td>telephoneNumber</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-team'>Team</a>
+  
+</td>
+</tr>
+
+<tr>
+<td>unallocated</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
@@ -1518,108 +1676,6 @@
 </tbody>
 </table>
 
-<h3 id="schema-staff">Staff</h3>
-
-
-<table class='schema-staff'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>id</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>teams</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-team'>Team</a>
-</td>
-</tr>
-
-<tr>
-<td>provider</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-provider'>Provider</a>
-</td>
-</tr>
-
-<tr>
-<td>username</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>email</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>unallocated</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-team">Team</h3>
 
 
@@ -1722,14 +1778,24 @@
 </tbody>
 </table>
 
-<h3 id="schema-pduhead">PDUHead</h3>
+<h3 id="schema-managedoffender">ManagedOffender</h3>
 
 
-<table class='schema-pduhead'>
+<table class='schema-managedoffender'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>name</td>
@@ -1742,7 +1808,7 @@
 </tr>
 
 <tr>
-<td>email</td>
+<td>allocationDate</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -1751,13 +1817,33 @@
 </td>
 </tr>
 
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-staff'>Staff</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
 </tbody>
 </table>
 
-<h3 id="schema-manager">Manager</h3>
+<h3 id="schema-staff">Staff</h3>
 
 
-<table class='schema-manager'>
+<table class='schema-staff'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
@@ -1794,22 +1880,22 @@
 </tr>
 
 <tr>
+<td>teams</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
 <td>provider</td>
 <td>object</td>
 <td>true</td>
 <td></td>
 <td>
   <a href='#schema-provider'>Provider</a>
-</td>
-</tr>
-
-<tr>
-<td>team</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-team'>Team</a>
 </td>
 </tr>
 
@@ -1834,9 +1920,51 @@
 </tr>
 
 <tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>unallocated</td>
 <td>boolean</td>
 <td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pduhead">PDUHead</h3>
+
+
+<table class='schema-pduhead'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
   
