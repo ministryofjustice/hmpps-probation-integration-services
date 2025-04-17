@@ -1,0 +1,27 @@
+[
+  {
+    "firstName": "Forename",
+    "middleNames": [],
+    "surname": "Surname",
+    "dateOfBirth": "1999-01-01",
+    "gender": "MALE",
+    "otherIds": {
+      "crn": "P223456",
+      "nomsNumber": "S3477CH",
+      "pncNumber": "1999/9158411A"
+    },
+    "contactDetails": {
+      "phoneNumbers": [],
+      "emailAddresses": []
+    },
+    "offenderProfile": {
+      "religion": "RELIGION",
+      "nationality": "NATIONALITY",
+      "disabilities": []
+    },
+    "offenderAliases": [],
+    "currentRestriction": false,
+    "currentExclusion": false,
+    "activeProbationManagedSentence": true
+  }
+]

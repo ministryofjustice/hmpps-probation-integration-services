@@ -15,7 +15,17 @@ data class SearchRequest(
     val crn: String? = null,
     val nomsNumber: String? = null,
     val includeAliases: Boolean = false,
-)
+) {
+    fun fields() = listOfNotNull(
+        firstName?.let { ::firstName.name },
+        surname?.let { ::surname.name },
+        dateOfBirth?.let { ::dateOfBirth.name },
+        pncNumber?.let { ::pncNumber.name },
+        crn?.let { ::crn.name },
+        nomsNumber?.let { ::nomsNumber.name },
+        if (includeAliases) ::includeAliases.name else null
+    )
+}
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
