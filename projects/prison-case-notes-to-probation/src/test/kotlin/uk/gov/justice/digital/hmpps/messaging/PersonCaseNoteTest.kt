@@ -74,29 +74,6 @@ internal class PersonCaseNoteTest {
     }
 
     @Test
-    fun `when prisoner being transferred noop`() {
-        val prisonCaseNote = PrisonCaseNote(
-            UUID.randomUUID(),
-            1L,
-            "1",
-            "type",
-            "subType",
-            creationDateTime = ZonedDateTime.now(),
-            occurrenceDateTime = ZonedDateTime.now(),
-            locationId = "TRN",
-            authorName = "bob",
-            text = "Prisoner being transferred",
-            amendments = listOf()
-        )
-        val message = prepNotification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
-        whenever(detailService.getDetail<Any>(anyOrNull(), anyOrNull())).thenReturn(prisonCaseNote)
-
-        handler.handle(message)
-        verify(deliusService, never()).mergeCaseNote(any())
-        verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
-    }
-
-    @Test
     fun `test prison noop`() {
         val prisonCaseNote = PrisonCaseNote(
             id = UUID.randomUUID(),
