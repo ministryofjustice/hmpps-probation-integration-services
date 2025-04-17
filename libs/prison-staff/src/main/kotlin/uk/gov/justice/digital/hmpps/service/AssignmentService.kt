@@ -22,15 +22,16 @@ class AssignmentService(
     companion object {
         private val mutexMap = ConcurrentReferenceHashMap<Long, ReentrantLock>()
         private fun getMutex(key: Long) = mutexMap.compute(key) { _, v -> v ?: ReentrantLock() }!!
+
+        private val unknownEstablishments = setOf("TRN")
     }
 
     fun findAssignment(establishmentCode: String, staffName: StaffName): Triple<Long, Long, Long> {
         if (establishmentCode.length < 3) throw InvalidEstablishmentCodeException(establishmentCode)
+        val establishmentPrefix = establishmentCode.take(3).let { if (it in unknownEstablishments) "UNK" else it }
 
-        val pa = probationAreaRepository.findByInstitutionNomisCode(establishmentCode.substring(0, 3))
-            ?: throw NotFoundException(
-                "Probation Area not found for NOMIS institution: ${establishmentCode.substring(0, 3)}"
-            )
+        val pa = probationAreaRepository.findByInstitutionNomisCode(establishmentPrefix)
+            ?: throw NotFoundException("Probation Area not found for NOMIS institution: $establishmentPrefix")
         val team = teamRepository.findByCode("${pa.code}CSN")
             ?: throw NotFoundException("Team", "code", "${pa.code}CSN")
         val staff = getStaff(pa.id, pa.code, team.id, staffName)

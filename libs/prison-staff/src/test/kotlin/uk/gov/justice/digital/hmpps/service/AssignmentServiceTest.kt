@@ -76,6 +76,24 @@ class AssignmentServiceTest {
     }
 
     @Test
+    fun `establishments that are known to not be referenced in Delius are set to UNK`() {
+        val probationArea = ProbationAreaGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+        val staff = StaffGenerator.DEFAULT
+
+        whenever(probationAreaRepository.findByInstitutionNomisCode("UNK")).thenReturn(probationArea)
+        whenever(teamRepository.findByCode(team.code)).thenReturn(team)
+        whenever(staffService.findStaff(probationArea.id, staffName)).thenReturn(staff)
+
+        val res = assignmentService.findAssignment("TRN", staffName)
+
+        verify(staffService).findStaff(probationArea.id, staffName)
+        assertThat(res.first, equalTo(probationArea.id))
+        assertThat(res.second, equalTo(team.id))
+        assertThat(res.third, equalTo(staff.id))
+    }
+
+    @Test
     fun `find staff successfully`() {
         val probationArea = ProbationAreaGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
