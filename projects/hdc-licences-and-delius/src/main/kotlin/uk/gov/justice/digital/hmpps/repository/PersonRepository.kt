@@ -43,5 +43,5 @@ interface PersonRepository : JpaRepository<Person, Long> {
     )
     fun findManagedPrisonerIdentifiersByStaffCode(code: String): List<String>
 
-    fun findByNomsNumberInAndSoftDeletedIsFalse(nomsNumber: List<String>): List<Person>
+    fun findByNomsNumberInAndSoftDeletedIsFalse(nomsNumbers: List<String>): List<Person>
 }
