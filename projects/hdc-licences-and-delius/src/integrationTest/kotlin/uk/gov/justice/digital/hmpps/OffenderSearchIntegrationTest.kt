@@ -30,16 +30,30 @@ class OffenderSearchIntegrationTest {
 
     @Test
     fun `noms records are returned successfully`() {
-        val nomsList = listOf("AAA", "PERSON1")
+        val nomsList = listOf("PERSON2","PERSON3","PERSON1", "PERSON1")
 
-        val expected = listOf(OffenderDetail(
-            IDs(crn = "X000001", nomsNumber = "PERSON1"),
-            offenderManagers = listOf(OffenderManager(
-                StaffHuman("STAFF0U", forenames = "Test1 Forename2", surname = "Staff1", unallocated = true),
-                probationArea = ProbationArea(description = "Test"),
-                active = true
-            ))
-        ))
+        val expected = listOf(
+            OffenderDetail(
+                IDs(crn = "X000001", nomsNumber = "PERSON1"),
+                offenderManagers = listOf(
+                    OffenderManager(
+                        StaffHuman("STAFF0U", forenames = "Test1 Forename1", surname = "Staff1", unallocated = true),
+                        probationArea = ProbationArea(description = "Test"),
+                        active = true
+                    )
+                )
+            ),
+            OffenderDetail(
+                IDs(crn = "X000002", nomsNumber = "PERSON2"),
+                offenderManagers = listOf(
+                    OffenderManager(
+                        StaffHuman("STAFF02", forenames = "Test2 Forename2", surname = "Staff2", unallocated = false),
+                        probationArea = ProbationArea(description = "Test"),
+                        active = false
+                    )
+                )
+            )
+        )
         val response = mockMvc
             .perform(post("/nomsNumbers").withToken().withJson(nomsList))
             .andExpect(status().isOk)

@@ -24,7 +24,7 @@ class Person(
     val communityManagers: List<CommunityManagerEntity> = listOf(),
 
     @OneToMany(mappedBy = "person")
-    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
+    @SQLRestriction("soft_deleted = 0")
     val prisonManager: List<PrisonManager> = listOf(),
 
     @Column(columnDefinition = "number", nullable = false)

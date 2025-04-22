@@ -39,20 +39,26 @@ class DataLoader(
             Team(id = id(), code = "TEAM02", description = "Team 2", district = district, probationArea = probationArea)
         val staff =
             StaffEntity(id = id(), code = "STAFF01", forename = "Test", surname = "Staff", teams = listOf(team1, team2))
-        val prisonStaff =
-            StaffEntity(id = id(), code = "STAFF0U", forename = "Test1", forename2 = "Forename2", surname = "Staff1", teams = listOf(team1))
+        val prisonStaff1 =
+            StaffEntity(id = id(), code = "STAFF0U", forename = "Test1", forename2 = "Forename1", surname = "Staff1", teams = listOf(team1))
+        val prisonStaff2 =
+            StaffEntity(id = id(), code = "STAFF02", forename = "Test2", forename2 = "Forename2", surname = "Staff2", teams = listOf(team1))
         val user = User(id = id(), username = "test.user", staff = staff)
             .also { staff.set(StaffEntity::user, it) }
-        val person = Person(id = id(), crn = "X000001", nomsNumber = "PERSON1")
-        val previousManager =
-            CommunityManagerEntity(id = id(), person = person, staff = staff, team = team1, active = false)
+        val person1 = Person(id = id(), crn = "X000001", nomsNumber = "PERSON1")
+        val person2 = Person(id = id(), crn = "X000002", nomsNumber = "PERSON2")
+        val person3 = Person(id = id(), crn = "X000003", nomsNumber = "PERSON3", softDeleted = true)
+        val previousManager1 =
+            CommunityManagerEntity(id = id(), person = person1, staff = staff, team = team1, active = false)
         val currentManager =
-            CommunityManagerEntity(id = id(), person = person, staff = staff, team = team2, active = true)
+            CommunityManagerEntity(id = id(), person = person1, staff = staff, team = team2, active = true)
                 .also { staff.set(StaffEntity::communityManagers, setOf(it)) }
-                .also { person.set(Person::communityManagers, listOf(it)) }
-        val prisonManager = PrisonManager(id = id(), person = person, staff = prisonStaff, probationArea = probationArea)
+                .also { person1.set(Person::communityManagers, listOf(it)) }
+        val prisonManager1 = PrisonManager(id = id(), person = person1, staff = prisonStaff1, probationArea = probationArea)
+        val prisonManager2 = PrisonManager(id = id(), person = person2, staff = prisonStaff2, probationArea = probationArea, active = false)
+        val prisonManager3 = PrisonManager(id = id(), person = person3, staff = prisonStaff1, probationArea = probationArea)
 
-        listOf(probationArea, borough, district, team1, team2, staff, prisonStaff, user, person, previousManager, currentManager, prisonManager)
+        listOf(probationArea, borough, district, team1, team2, staff, prisonStaff1, prisonStaff2, user, person1, person2, person3, previousManager1, currentManager, prisonManager1, prisonManager2, prisonManager3)
             .forEach(entityManager::persist)
     }
 
