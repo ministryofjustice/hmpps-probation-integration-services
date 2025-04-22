@@ -13,6 +13,9 @@ class Person(
     @Column(name = "offender_id")
     val id: Long,
 
+    @Column(columnDefinition = "char(7)")
+    val crn: String,
+
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsNumber: String,
 
@@ -21,8 +24,8 @@ class Person(
     val communityManagers: List<CommunityManagerEntity> = listOf(),
 
     @OneToMany(mappedBy = "person")
-    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
-    val prisonManagers: List<PrisonManager> = listOf(),
+    @SQLRestriction("soft_deleted = 0")
+    val prisonManager: List<PrisonManager> = listOf(),
 
     @Column(columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)

@@ -23,6 +23,7 @@ spring:
 oauth2.roles:
   - PROBATION_API__HDC__STAFF
   - PROBATION_API__HDC__USER_ROLES__RW
+  - PROBATION_API__HDC__CASE_DETAIL
 
 springdoc.default-produces-media-type: application/json
 

@@ -42,4 +42,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
         nativeQuery = true
     )
     fun findManagedPrisonerIdentifiersByStaffCode(code: String): List<String>
+
+    fun findByNomsNumberInAndSoftDeletedIsFalse(nomsNumbers: List<String>): List<Person>
 }
