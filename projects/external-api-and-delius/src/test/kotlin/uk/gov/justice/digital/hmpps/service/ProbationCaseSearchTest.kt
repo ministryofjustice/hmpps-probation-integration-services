@@ -44,6 +44,10 @@ internal class ProbationCaseSearchTest {
         val result = probationCaseSearch.find(SearchRequest(firstName = "James"))
         assertThat(result.first().otherIds.crn).isEqualTo("D123456")
 
-        verify(telemetryService).trackEvent(eq("SearchMismatch"), eq(mapOf("searchFields" to "firstName", "resultsSize" to "1 / 1")), eq(emptyMap()))
+        verify(telemetryService).trackEvent(
+            eq("SearchMismatch"),
+            eq(mapOf("searchFields" to "firstName", "resultsSize" to "1 / 1")),
+            eq(emptyMap())
+        )
     }
 }
