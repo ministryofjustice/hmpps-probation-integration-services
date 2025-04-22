@@ -5,9 +5,6 @@ object PrisonCaseNoteFilters {
         PrisonCaseNoteFilter("case note text is empty") {
             it.text.isBlank()
         },
-        PrisonCaseNoteFilter("Prisoner being transferred") {
-            it.locationId == "TRN"
-        },
         PrisonCaseNoteFilter("Institution used for test purposes") {
             it.locationId == "ZZGHI"
         },
