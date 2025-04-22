@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -47,10 +48,12 @@ class PersonManager(
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
-    fun findByPersonCrnOrPersonNomsNumber(crn: String, nomisId: String = crn): PersonManager?
+    @Query("select pm from PersonManager pm where pm.person.crn = :crnOrNomisId or pm.person.nomsNumber = :crnOrNomisId")
+    @EntityGraph(attributePaths = ["person", "provider", "team.district.borough", "team.addresses", "staff.user"])
+    fun findByPersonCrnOrPersonNomsNumber(crnOrNomisId: String): PersonManager?
 
-    @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
-    fun findByPersonCrnInOrPersonNomsNumberIn(crns: List<String>, nomisIds: List<String> = crns): List<PersonManager>
+    @Query("select pm from PersonManager pm where pm.person.crn in :crnsOrNomisIds or pm.person.nomsNumber in :crnsOrNomisIds")
+    @EntityGraph(attributePaths = ["person", "provider", "team.district.borough", "team.addresses", "staff.user"])
+    fun findByPersonCrnInOrPersonNomsNumberIn(crnsOrNomisIds: List<String>): List<PersonManager>
 }
 
