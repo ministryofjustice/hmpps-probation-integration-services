@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class OffenderDetail(
     val otherIds: IDs,
-    val softDeleted: Boolean? = null,
     val offenderManagers: List<OffenderManager>? = null
 )
 
@@ -14,21 +13,19 @@ data class IDs(
     @Schema(example = "A123456", description = "Probation Case Reference Number")
     val crn: String,
     @Schema(example = "G5555TT", description = "Prison Offender Number")
-    val nomsNumber: String? = null
+    val nomsNumber: String
 )
 
 data class OffenderManager(
     val staff: StaffHuman? = null,
-    val softDeleted: Boolean? = null,
-    val probationArea: ProbationArea? = null,
-    val active: Boolean? = null,
+    val probationArea: ProbationArea
 )
 
 data class StaffHuman(
-    @Schema(description = "Staff code", example = "AN001A") val code: String? = null,
-    @Schema(description = "Given names", example = "Sheila Linda") val forenames: String? = null,
-    @Schema(description = "Family name", example = "Hancock") val surname: String? = null,
-    @Schema(description = "When true the not allocated", example = "false") val unallocated: Boolean? = null,
+    @Schema(description = "Staff code", example = "AN001A") val code: String,
+    @Schema(description = "Given names", example = "Sheila Linda") val forenames: String,
+    @Schema(description = "Family name", example = "Hancock") val surname: String,
+    @Schema(description = "When true the not allocated", example = "false") val unallocated: Boolean,
 )
 
 data class ProbationArea(

@@ -9,14 +9,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.entity.Borough
-import uk.gov.justice.digital.hmpps.entity.CommunityManagerEntity
-import uk.gov.justice.digital.hmpps.entity.District
-import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.ProbationArea
-import uk.gov.justice.digital.hmpps.entity.StaffEntity
-import uk.gov.justice.digital.hmpps.entity.Team
-import uk.gov.justice.digital.hmpps.entity.User
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.set
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -46,17 +39,20 @@ class DataLoader(
             Team(id = id(), code = "TEAM02", description = "Team 2", district = district, probationArea = probationArea)
         val staff =
             StaffEntity(id = id(), code = "STAFF01", forename = "Test", surname = "Staff", teams = listOf(team1, team2))
+        val prisonStaff =
+            StaffEntity(id = id(), code = "STAFF0U", forename = "Test1", forename2 = "Forename2", surname = "Staff1", teams = listOf(team1))
         val user = User(id = id(), username = "test.user", staff = staff)
             .also { staff.set(StaffEntity::user, it) }
-        val person = Person(id = id(), nomsNumber = "PERSON1")
+        val person = Person(id = id(), crn = "X000001", nomsNumber = "PERSON1")
         val previousManager =
             CommunityManagerEntity(id = id(), person = person, staff = staff, team = team1, active = false)
         val currentManager =
             CommunityManagerEntity(id = id(), person = person, staff = staff, team = team2, active = true)
                 .also { staff.set(StaffEntity::communityManagers, setOf(it)) }
                 .also { person.set(Person::communityManagers, listOf(it)) }
+        val prisonManager = PrisonManager(id = id(), person = person, staff = prisonStaff, probationArea = probationArea)
 
-        listOf(probationArea, borough, district, team1, team2, staff, user, person, previousManager, currentManager)
+        listOf(probationArea, borough, district, team1, team2, staff, prisonStaff, user, person, previousManager, currentManager, prisonManager)
             .forEach(entityManager::persist)
     }
 
