@@ -30,7 +30,7 @@ class OffenderSearchIntegrationTest {
 
     @Test
     fun `noms records are returned successfully`() {
-        val nomsList = listOf("PERSON2","PERSON3","PERSON1", "PERSON1")
+        val nomsList = listOf("PERSON2", "PERSON3", "PERSON1", "PERSON1")
 
         val expected = listOf(
             OffenderDetail(
@@ -61,5 +61,4 @@ class OffenderSearchIntegrationTest {
 
         assertEquals(expected, response)
     }
-
 }

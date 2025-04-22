@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 
 @Service
-class SearchService (private val personRepository: PersonRepository) {
+class SearchService(private val personRepository: PersonRepository) {
 
     fun findByListOfNoms(nomsList: List<String>): List<OffenderDetail> {
         return personRepository.findByNomsNumberInAndSoftDeletedIsFalse(nomsList).map { it.toOffenderDetail() }
@@ -20,10 +20,12 @@ class SearchService (private val personRepository: PersonRepository) {
     )
 
     fun PrisonManager.toOffenderManager() = OffenderManager(
-        StaffHuman(staff.code,
+        StaffHuman(
+            staff.code,
             listOfNotNull(
                 staff.forename,
-                staff.forename2).joinToString(" "),
+                staff.forename2
+            ).joinToString(" "),
             staff.surname,
             staff.code.endsWith("U")
         ),
