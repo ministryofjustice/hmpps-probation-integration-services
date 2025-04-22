@@ -18,7 +18,8 @@ data class IDs(
 
 data class OffenderManager(
     val staff: StaffHuman? = null,
-    val probationArea: ProbationArea
+    val probationArea: ProbationArea,
+    val active: Boolean
 )
 
 data class StaffHuman(

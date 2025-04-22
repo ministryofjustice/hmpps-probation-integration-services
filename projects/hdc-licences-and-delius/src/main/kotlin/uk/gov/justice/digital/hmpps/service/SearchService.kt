@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.repository.PersonRepository
 class SearchService (private val personRepository: PersonRepository) {
 
     fun findByListOfNoms(nomsList: List<String>): List<OffenderDetail> {
-        return personRepository.findByNomsNumberIn(nomsList).map { it.toOffenderDetail() }
+        return personRepository.findByNomsNumberInAndSoftDeletedIsFalse(nomsList).map { it.toOffenderDetail() }
     }
 
     fun Person.toOffenderDetail() = OffenderDetail(
@@ -27,7 +27,8 @@ class SearchService (private val personRepository: PersonRepository) {
             staff.surname,
             staff.code.endsWith("U")
         ),
-        ProbationArea(probationArea.description)
+        ProbationArea(probationArea.description),
+        active = active
     )
 }
 

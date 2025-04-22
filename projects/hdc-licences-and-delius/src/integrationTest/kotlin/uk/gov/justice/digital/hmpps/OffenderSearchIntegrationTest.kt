@@ -21,6 +21,14 @@ class OffenderSearchIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Test
+    fun `unauthorized status returned`() {
+        val nomsList = listOf("AAA", "BBB")
+        mockMvc
+            .perform(post("/nomsNumbers").withJson(nomsList))
+            .andExpect(status().isUnauthorized)
+    }
+
+    @Test
     fun `noms records are returned successfully`() {
         val nomsList = listOf("AAA", "PERSON1")
 
@@ -28,7 +36,8 @@ class OffenderSearchIntegrationTest {
             IDs(crn = "X000001", nomsNumber = "PERSON1"),
             offenderManagers = listOf(OffenderManager(
                 StaffHuman("STAFF0U", forenames = "Test1 Forename2", surname = "Staff1", unallocated = true),
-                probationArea = ProbationArea(description = "Test")
+                probationArea = ProbationArea(description = "Test"),
+                active = true
             ))
         ))
         val response = mockMvc
