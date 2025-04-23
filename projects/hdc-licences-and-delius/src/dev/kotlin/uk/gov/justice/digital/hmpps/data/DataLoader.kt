@@ -54,13 +54,33 @@ class DataLoader(
         val person2 = Person(id = id(), crn = "X000002", nomsNumber = "PERSON2")
         val person3 = Person(id = id(), crn = "X000003", nomsNumber = "PERSON3", softDeleted = true)
         val previousManager =
-            CommunityManagerEntity(id = id(), person = person1, staff = staff, team = team1,  probationArea = probationArea, active = false)
+            CommunityManagerEntity(
+                id = id(),
+                person = person1,
+                staff = staff,
+                team = team1,
+                probationArea = probationArea,
+                active = false
+            )
         val currentManager =
-            CommunityManagerEntity(id = id(), person = person1, staff = staff, team = team2,  probationArea = probationArea, active = true)
+            CommunityManagerEntity(
+                id = id(),
+                person = person1,
+                staff = staff,
+                team = team2,
+                probationArea = probationArea,
+                active = true
+            )
                 .also { staff.set(StaffEntity::communityManagers, setOf(it)) }
                 .also { person1.set(Person::communityManagers, listOf(it)) }
         val communityManager1 =
-            CommunityManagerEntity(id = id(), person = person2, staff = staff1, team = team1, probationArea = probationArea)
+            CommunityManagerEntity(
+                id = id(),
+                person = person2,
+                staff = staff1,
+                team = team1,
+                probationArea = probationArea
+            )
         val communityManager2 = CommunityManagerEntity(
             id = id(),
             person = person2,
@@ -70,7 +90,13 @@ class DataLoader(
             active = false
         )
         val communityManager3 =
-            CommunityManagerEntity(id = id(), person = person3, staff = staff1, team = team1, probationArea = probationArea)
+            CommunityManagerEntity(
+                id = id(),
+                person = person3,
+                staff = staff1,
+                team = team1,
+                probationArea = probationArea
+            )
 
         listOf(
             probationArea,
