@@ -37,7 +37,7 @@ class OffenderSearchIntegrationTest {
                 IDs(crn = "X000001", nomsNumber = "PERSON1"),
                 offenderManagers = listOf(
                     OffenderManager(
-                        StaffHuman("STAFF0U", forenames = "Test1 Forename1", surname = "Staff1", unallocated = true),
+                        StaffHuman("STAFF01", forenames = "Test", surname = "Staff", unallocated = false),
                         probationArea = ProbationArea(description = "Test"),
                         active = true
                     )
@@ -47,9 +47,9 @@ class OffenderSearchIntegrationTest {
                 IDs(crn = "X000002", nomsNumber = "PERSON2"),
                 offenderManagers = listOf(
                     OffenderManager(
-                        StaffHuman("STAFF02", forenames = "Test2 Forename2", surname = "Staff2", unallocated = false),
+                        StaffHuman("STAFF0U", forenames = "Test1 Forename1", surname = "Staff1", unallocated = true),
                         probationArea = ProbationArea(description = "Test"),
-                        active = false
+                        active = true
                     )
                 )
             )

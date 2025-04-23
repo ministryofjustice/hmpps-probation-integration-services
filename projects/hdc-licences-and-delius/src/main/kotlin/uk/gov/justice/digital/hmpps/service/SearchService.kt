@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.entity.CommunityManagerEntity
 import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 
@@ -15,11 +15,10 @@ class SearchService(private val personRepository: PersonRepository) {
 
     fun Person.toOffenderDetail() = OffenderDetail(
         IDs(crn, nomsNumber),
-        prisonManager.map { it.toOffenderManager() }
-
+        communityManagers.map { it.toOffenderManager() }
     )
 
-    fun PrisonManager.toOffenderManager() = OffenderManager(
+    fun CommunityManagerEntity.toOffenderManager() = OffenderManager(
         StaffHuman(
             staff.code,
             listOfNotNull(
