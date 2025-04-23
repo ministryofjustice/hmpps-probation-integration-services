@@ -57,6 +57,34 @@ paths:
       responses:
         "200":
           description: OK
+  /nomsNumbers:
+    post:
+      tags:
+      - offender-search
+      summary: Requires ROLE_PROBATION__SEARCH_PERSON role
+      description: Match prisoners by a list of prisoner noms numbers
+      operationId: findByNomsNumbers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OffenderDetail"
+        "401":
+          description: "Unauthorised, requires a valid Oauth2 token"
+        "403":
+          description: "Forbidden, requires an authorisation with role PROBATION_API__HDC__CASE_DETAIL"
   /users/{username}/details:
     get:
       tags:
@@ -235,6 +263,72 @@ paths:
                 $ref: "#/components/schemas/CommunityManager"
 components:
   schemas:
+    IDs:
+      type: object
+      properties:
+        crn:
+          type: string
+          description: Probation Case Reference Number
+          example: A123456
+        nomsNumber:
+          type: string
+          description: Prison Offender Number
+          example: G5555TT
+      required:
+      - crn
+      - nomsNumber
+    OffenderDetail:
+      type: object
+      properties:
+        otherIds:
+          $ref: "#/components/schemas/IDs"
+        offenderManagers:
+          type: array
+          items:
+            $ref: "#/components/schemas/OffenderManager"
+      required:
+      - otherIds
+    OffenderManager:
+      type: object
+      properties:
+        staff:
+          $ref: "#/components/schemas/StaffHuman"
+        probationArea:
+          $ref: "#/components/schemas/ProbationArea"
+        active:
+          type: boolean
+      required:
+      - active
+      - probationArea
+    ProbationArea:
+      type: object
+      properties:
+        description:
+          type: string
+    StaffHuman:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Staff code
+          example: AN001A
+        forenames:
+          type: string
+          description: Given names
+          example: Sheila Linda
+        surname:
+          type: string
+          description: Family name
+          example: Hancock
+        unallocated:
+          type: boolean
+          description: When true the not allocated
+          example: false
+      required:
+      - code
+      - forenames
+      - surname
+      - unallocated
     UserDetails:
       type: object
       properties:

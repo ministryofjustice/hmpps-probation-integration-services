@@ -115,6 +115,9 @@
         <a href="./api-reference.html#users-username-roles-role"><span>/users/{username}/roles/{role}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#nomsnumbers"><span>/nomsNumbers</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#users-username-details"><span>/users/{username}/details</span></a>
       </li>
       <li>
@@ -306,6 +309,76 @@
 <td>200</td>
 <td>
 <p>OK</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="nomsnumbers">/nomsNumbers</h2>
+
+<h3 id="nomsnumbers-post">post</h3>
+
+  <p><em>Requires ROLE_PROBATION__SEARCH_PERSON role</em></p>
+
+
+  <p>Match prisoners by a list of prisoner noms numbers</p>
+
+
+
+
+
+
+
+<h4 id="nomsnumbers-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>401</td>
+<td>
+<p>Unauthorised, requires a valid Oauth2 token</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>403</td>
+<td>
+<p>Forbidden, requires an authorisation with role PROBATION<em>API</em><em>HDC</em><em>CASE</em>DETAIL</p>
 
 
 
@@ -943,6 +1016,192 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-ids">IDs</h3>
+
+
+<table class='schema-ids'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td><p>Probation Case Reference Number</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsNumber</td>
+<td>string</td>
+<td>true</td>
+<td><p>Prison Offender Number</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offenderdetail">OffenderDetail</h3>
+
+
+<table class='schema-offenderdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>otherIds</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-ids'>IDs</a>
+</td>
+</tr>
+
+<tr>
+<td>offenderManagers</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-offendermanager'>OffenderManager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offendermanager">OffenderManager</h3>
+
+
+<table class='schema-offendermanager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffhuman'>StaffHuman</a>
+</td>
+</tr>
+
+<tr>
+<td>probationArea</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationarea'>ProbationArea</a>
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationarea">ProbationArea</h3>
+
+
+<table class='schema-probationarea'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffhuman">StaffHuman</h3>
+
+
+<table class='schema-staffhuman'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td><p>Staff code</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>forenames</td>
+<td>string</td>
+<td>true</td>
+<td><p>Given names</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td><p>Family name</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unallocated</td>
+<td>boolean</td>
+<td>true</td>
+<td><p>When true the not allocated</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-userdetails">UserDetails</h3>
 
 
