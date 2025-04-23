@@ -18,6 +18,12 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val nomsNumber: String?,
 
+    @Column(columnDefinition = "char(13)")
+    val pncNumber: String?,
+
+    @Column
+    val croNumber: String?,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

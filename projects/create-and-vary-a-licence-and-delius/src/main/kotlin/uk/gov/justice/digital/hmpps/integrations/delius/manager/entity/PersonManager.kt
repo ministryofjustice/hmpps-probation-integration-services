@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -33,6 +34,9 @@ class PersonManager(
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
+
+    @Column
+    val allocationDate: LocalDate,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
