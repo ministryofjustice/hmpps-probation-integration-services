@@ -114,6 +114,10 @@ subprojects {
 
     idea {
         module {
+            if (System.getenv("CI") == null) {
+                isDownloadJavadoc = true
+                isDownloadSources = true
+            }
             testSources.from(sourceSets["dev"].allSource.srcDirs)
             testResources.from(sourceSets["dev"].resources.srcDirs)
             testSources.from(sourceSets["integrationTest"].allSource.srcDirs)
