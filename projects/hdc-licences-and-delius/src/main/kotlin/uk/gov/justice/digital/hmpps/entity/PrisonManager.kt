@@ -20,10 +20,6 @@ class PrisonManager(
     @JoinColumn(name = "allocation_staff_id")
     val staff: StaffEntity,
 
-    @ManyToOne
-    @JoinColumn(name = "probation_area_id")
-    val probationArea: ProbationArea,
-
     @Column(columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
