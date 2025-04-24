@@ -24,6 +24,10 @@ class CommunityManagerEntity(
     @JoinColumn(name = "team_id")
     val team: Team,
 
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val probationArea: ProbationArea,
+
     @Column(columnDefinition = "number", nullable = false)
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

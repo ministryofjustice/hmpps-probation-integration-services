@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.util.*
 import kotlin.jvm.Transient
 
@@ -75,6 +76,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
 
     @EntityGraph(attributePaths = ["user", "teams"])
     override fun findById(id: Long): Optional<Staff>
+
+    @Query("select t.id from Staff s join s.teams t where s.id = :id")
+    fun findTeamIdsById(id: Long): List<Long>
 
     @EntityGraph(attributePaths = ["user"])
     fun findByUserUsernameInIgnoreCase(usernames: List<String>): List<Staff>

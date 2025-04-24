@@ -28,3 +28,4 @@ class PrisonManager(
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true
 )
+

@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
@@ -42,20 +45,19 @@ class StaffService(
         staffRepository.findByUserUsernameInIgnoreCase(usernames).map { it.asStaffName() }
 
     fun getManagedOffendersByStaffId(id: Long): List<ManagedOffender> =
-        caseloadRepository.findByStaffIdAndRoleCode(
-            id,
-            CaseloadRole.OFFENDER_MANAGER.value
-        ).map {
-            it.asManagedOffender()
-        }
+        caseloadRepository.findByStaffIdAndRoleCode(id, CaseloadRole.OFFENDER_MANAGER.value)
+            .map { it.asManagedOffender() }
 
     fun getManagedOffenders(staffCode: String): List<ManagedOffender> =
-        caseloadRepository.findByStaffCodeAndRoleCode(
-            staffCode,
-            CaseloadRole.OFFENDER_MANAGER.value
-        ).map {
-            it.asManagedOffender()
-        }
+        caseloadRepository.findByStaffCodeAndRoleCode(staffCode, CaseloadRole.OFFENDER_MANAGER.value)
+            .map { it.asManagedOffender() }
+
+    fun getTeamManagedOffendersByStaffId(id: Long, query: String?, page: Pageable): PagedModel<ManagedOffender> {
+        val teamIds = staffRepository.findTeamIdsById(id).ifEmpty { return PagedModel(Page.empty(page)) }
+        return caseloadRepository.findByTeamIdInAndRoleCode(teamIds, CaseloadRole.OFFENDER_MANAGER.value, query, page)
+            .map { it.asManagedOffender() }
+            .let { PagedModel(it) }
+    }
 
     private fun LdapTemplate.populateUserDetails(staff: uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff) =
         staff.apply {
