@@ -60,6 +60,10 @@ class Contact(
     @Column
     val notes: String?,
 
+    @Column(nullable = false, columnDefinition = "char")
+    @Convert(converter = YesNoConverter::class)
+    val documentLinked: Boolean,
+
     @Column(nullable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,

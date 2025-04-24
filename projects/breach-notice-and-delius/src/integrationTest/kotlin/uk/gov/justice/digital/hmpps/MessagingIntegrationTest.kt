@@ -10,8 +10,10 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.DEFAULT_BREACH_NOTICE
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.DELETED_BREACH_NOTICE
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import java.time.ZonedDateTime
@@ -19,6 +21,9 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 internal class MessagingIntegrationTest : BaseIntegrationTest() {
+    @Autowired
+    private lateinit var contactRepository: ContactRepository
+
     @Autowired
     private lateinit var documentRepository: DocumentRepository
 
@@ -97,7 +102,7 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         )
 
         // And the document is updated in the database
-        val document = documentRepository.findById(DocumentGenerator.DEFAULT_BREACH_NOTICE.id).get()
+        val document = documentRepository.findById(DEFAULT_BREACH_NOTICE.id).get()
         assertThat(document.name).isEqualTo("name.pdf")
         assertThat(document.status).isEqualTo("Y")
         assertThat(document.workInProgress).isEqualTo("N")
@@ -130,11 +135,12 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         )
 
         // And the document is deleted from the database
-        assertThat(documentRepository.findById(DocumentGenerator.DELETED_BREACH_NOTICE.id)).isEmpty
+        assertThat(documentRepository.findById(DELETED_BREACH_NOTICE.id)).isEmpty
+        assertThat(contactRepository.findById(DELETED_BREACH_NOTICE.primaryKeyId).get().documentLinked).isEqualTo(false)
 
         // And the file is deleted from Alfresco
-        wireMockServer.verify(putRequestedFor(urlEqualTo("/alfresco/release/${DocumentGenerator.DELETED_BREACH_NOTICE.alfrescoId}")).withAlfrescoHeaders())
-        wireMockServer.verify(deleteRequestedFor(urlEqualTo("/alfresco/deletehard/${DocumentGenerator.DELETED_BREACH_NOTICE.alfrescoId}")).withAlfrescoHeaders())
+        wireMockServer.verify(putRequestedFor(urlEqualTo("/alfresco/release/${DELETED_BREACH_NOTICE.alfrescoId}")).withAlfrescoHeaders())
+        wireMockServer.verify(deleteRequestedFor(urlEqualTo("/alfresco/deletehard/${DELETED_BREACH_NOTICE.alfrescoId}")).withAlfrescoHeaders())
     }
 
     private fun RequestPatternBuilder.withAlfrescoHeaders() = withHeader("Authorization", absent())

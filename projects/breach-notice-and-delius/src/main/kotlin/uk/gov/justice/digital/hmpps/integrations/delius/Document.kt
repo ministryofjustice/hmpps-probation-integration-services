@@ -101,4 +101,6 @@ interface DocumentRepository : JpaRepository<Document, Long> {
     fun findEventIdFromDocument(urn: String): Long?
 
     fun findByExternalReference(urn: String): Document?
+
+    fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
 }
