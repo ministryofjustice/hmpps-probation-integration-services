@@ -118,6 +118,9 @@
         <a href="./api-reference.html#staff"><span>/staff</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#staff-byid-id-caseload-team-managed-offenders"><span>/staff/byid/{id}/caseload/team-managed-offenders</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-case"><span>/probation-case</span></a>
       </li>
       <li>
@@ -328,6 +331,184 @@
 </td>
 <td>
 
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff-byid-id-caseload-team-managed-offenders">/staff/byid/{id}/caseload/team-managed-offenders</h2>
+
+<h3 id="staff-byid-id-caseload-team-managed-offenders-post">post</h3>
+
+
+
+
+<h4 id="staff-byid-id-caseload-team-managed-offenders-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>query</td>
+<td>object</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-byid-id-caseload-team-managed-offenders-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "content": [
+    {
+      "crn": "string",
+      "nomisId": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "allocationDate": "string",
+      "staff": {
+        "id": "integer",
+        "code": "string",
+        "name": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "teams": [
+          {
+            "code": "string",
+            "description": "string",
+            "telephone": "string",
+            "emailAddress": "string",
+            "addresses": [
+              {
+                "officeName": "string",
+                "buildingName": "string",
+                "buildingNumber": "string",
+                "streetName": "string",
+                "district": "string",
+                "town": "string",
+                "county": "string",
+                "postcode": "string",
+                "ldu": "string",
+                "telephoneNumber": "string",
+                "from": "string",
+                "to": "string"
+              }
+            ],
+            "district": {
+              "code": "string",
+              "description": "string",
+              "borough": {
+                "code": "string",
+                "description": "string"
+              }
+            },
+            "borough": {
+              "code": "string",
+              "description": "string"
+            },
+            "startDate": "string",
+            "endDate": "string"
+          }
+        ],
+        "provider": {
+          "code": "string",
+          "description": "string"
+        },
+        "username": "string",
+        "email": "string",
+        "telephoneNumber": "string",
+        "unallocated": "boolean"
+      },
+      "team": {
+        "code": "string",
+        "description": "string",
+        "telephone": "string",
+        "emailAddress": "string",
+        "addresses": [
+          {
+            "officeName": "string",
+            "buildingName": "string",
+            "buildingNumber": "string",
+            "streetName": "string",
+            "district": "string",
+            "town": "string",
+            "county": "string",
+            "postcode": "string",
+            "ldu": "string",
+            "telephoneNumber": "string",
+            "from": "string",
+            "to": "string"
+          }
+        ],
+        "district": {
+          "code": "string",
+          "description": "string",
+          "borough": {
+            "code": "string",
+            "description": "string"
+          }
+        },
+        "borough": {
+          "code": "string",
+          "description": "string"
+        },
+        "startDate": "string",
+        "endDate": "string"
+      }
+    }
+  ],
+  "page": {
+    "size": "integer",
+    "number": "integer",
+    "totalElements": "integer",
+    "totalPages": "integer"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-pagedmodelmanagedoffender'>PagedModelManagedOffender</a>
 </td>
 </tr>
 
@@ -1033,7 +1214,9 @@
 
 <pre><code>{
   "crn": "string",
-  "nomisId": "string"
+  "nomisId": "string",
+  "pncNumber": "string",
+  "croNumber": "string"
 }</code></pre>
 
 </td>
@@ -1093,8 +1276,13 @@
 
 
 <pre><code>{
+  "case": {
+    "crn": "string",
+    "nomisId": "string",
+    "pncNumber": "string",
+    "croNumber": "string"
+  },
   "id": "integer",
-  "crn": "string",
   "code": "string",
   "name": {
     "forename": "string",
@@ -1144,6 +1332,7 @@
   "username": "string",
   "email": "string",
   "telephoneNumber": "string",
+  "allocationDate": "string",
   "unallocated": "boolean"
 }</code></pre>
 
@@ -1294,19 +1483,41 @@
 </tbody>
 </table>
 
-<h3 id="schema-probationcase">ProbationCase</h3>
+<h3 id="schema-searchrequest">SearchRequest</h3>
 
 
-<table class='schema-probationcase'>
+<table class='schema-searchrequest'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>crn</td>
+<td>query</td>
 <td>string</td>
-<td>true</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pageable">Pageable</h3>
+
+
+<table class='schema-pageable'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -1314,8 +1525,18 @@
 </tr>
 
 <tr>
-<td>nomisId</td>
-<td>string</td>
+<td>size</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sort</td>
+<td>array</td>
 <td>false</td>
 <td></td>
 <td>
@@ -1400,24 +1621,14 @@
 </tbody>
 </table>
 
-<h3 id="schema-manager">Manager</h3>
+<h3 id="schema-managedoffender">ManagedOffender</h3>
 
 
-<table class='schema-manager'>
+<table class='schema-managedoffender'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
-
-<tr>
-<td>id</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
 
 <tr>
 <td>crn</td>
@@ -1430,9 +1641,9 @@
 </tr>
 
 <tr>
-<td>code</td>
+<td>nomisId</td>
 <td>string</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   
@@ -1450,62 +1661,32 @@
 </tr>
 
 <tr>
-<td>provider</td>
+<td>allocationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
 <td>object</td>
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-provider'>Provider</a>
+  <a href='#schema-staff'>Staff</a>
 </td>
 </tr>
 
 <tr>
 <td>team</td>
 <td>object</td>
-<td>true</td>
+<td>false</td>
 <td></td>
 <td>
   <a href='#schema-team'>Team</a>
-</td>
-</tr>
-
-<tr>
-<td>username</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>email</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>telephoneNumber</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>unallocated</td>
-<td>boolean</td>
-<td>true</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
@@ -1644,6 +1825,90 @@
 </tbody>
 </table>
 
+<h3 id="schema-pagemetadata">PageMetadata</h3>
+
+
+<table class='schema-pagemetadata'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>size</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>number</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalElements</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totalPages</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-pagedmodelmanagedoffender">PagedModelManagedOffender</h3>
+
+
+<table class='schema-pagedmodelmanagedoffender'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>content</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-managedoffender'>ManagedOffender</a>
+</td>
+</tr>
+
+<tr>
+<td>page</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-pagemetadata'>PageMetadata</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-provider">Provider</h3>
 
 
@@ -1666,6 +1931,108 @@
 <tr>
 <td>description</td>
 <td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staff">Staff</h3>
+
+
+<table class='schema-staff'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>teams</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unallocated</td>
+<td>boolean</td>
 <td>true</td>
 <td></td>
 <td>
@@ -1778,10 +2145,10 @@
 </tbody>
 </table>
 
-<h3 id="schema-managedoffender">ManagedOffender</h3>
+<h3 id="schema-probationcase">ProbationCase</h3>
 
 
-<table class='schema-managedoffender'>
+<table class='schema-probationcase'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
@@ -1798,17 +2165,7 @@
 </tr>
 
 <tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>allocationDate</td>
+<td>nomisId</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -1818,36 +2175,46 @@
 </tr>
 
 <tr>
-<td>staff</td>
-<td>object</td>
-<td>true</td>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
 <td></td>
 <td>
-  <a href='#schema-staff'>Staff</a>
+  
 </td>
 </tr>
 
 <tr>
-<td>team</td>
-<td>object</td>
+<td>croNumber</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-team'>Team</a>
+  
 </td>
 </tr>
 
 </tbody>
 </table>
 
-<h3 id="schema-staff">Staff</h3>
+<h3 id="schema-manager">Manager</h3>
 
 
-<table class='schema-staff'>
+<table class='schema-manager'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>case</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationcase'>ProbationCase</a>
+</td>
+</tr>
 
 <tr>
 <td>id</td>
@@ -1880,22 +2247,22 @@
 </tr>
 
 <tr>
-<td>teams</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-team'>Team</a>
-</td>
-</tr>
-
-<tr>
 <td>provider</td>
 <td>object</td>
 <td>true</td>
 <td></td>
 <td>
   <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
 </td>
 </tr>
 
@@ -1921,6 +2288,16 @@
 
 <tr>
 <td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>allocationDate</td>
 <td>string</td>
 <td>false</td>
 <td></td>
