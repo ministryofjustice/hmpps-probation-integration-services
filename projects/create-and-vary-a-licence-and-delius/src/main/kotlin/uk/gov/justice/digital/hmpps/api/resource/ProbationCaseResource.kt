@@ -17,12 +17,14 @@ class ProbationCaseResource(
 ) {
     @GetMapping("{crnOrNomisId}")
     fun findCase(@PathVariable crnOrNomisId: String): ProbationCase =
-        personRepository.findByCrnOrNomsNumber(crnOrNomisId)?.let { ProbationCase(it.crn, it.nomsNumber) }
+        personRepository.findByCrnOrNomsNumber(crnOrNomisId)
+            ?.let { ProbationCase(it.crn, it.nomsNumber, it.pncNumber, it.croNumber) }
             ?: throw NotFoundException("Probation case", "CRN or NOMIS id", crnOrNomisId)
 
     @PostMapping
     fun findCases(@RequestBody crnsOrNomisIds: List<String>): List<ProbationCase> =
-        personRepository.findByCrnInOrNomsNumberIn(crnsOrNomisIds).map { ProbationCase(it.crn, it.nomsNumber) }
+        personRepository.findByCrnInOrNomsNumberIn(crnsOrNomisIds)
+            .map { ProbationCase(it.crn, it.nomsNumber, it.pncNumber, it.croNumber) }
 
     @GetMapping("{crnOrNomisId}/responsible-community-manager")
     fun findCommunityManager(@PathVariable crnOrNomisId: String): Manager =

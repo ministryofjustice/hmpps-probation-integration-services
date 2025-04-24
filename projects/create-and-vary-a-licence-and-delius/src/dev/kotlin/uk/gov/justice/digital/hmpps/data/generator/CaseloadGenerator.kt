@@ -11,11 +11,11 @@ import uk.gov.justice.digital.hmpps.service.asTeam
 import java.time.LocalDate
 
 object CaseloadGenerator {
-
-    val STAFF1 = StaffGenerator.generateStaff("STCDE01", "Bob", "Smith")
-    val STAFF2 = StaffGenerator.generateStaff("STCDE02", "Joe", "Bloggs")
-
     val TEAM1 = ProviderGenerator.generateTeam("N02BDT")
+    val TEAM2 = ProviderGenerator.generateTeam("N03BDT")
+
+    val STAFF1 = StaffGenerator.generateStaff("STCDE01", "Bob", "Smith", teams = listOf(TEAM1, TEAM2, DEFAULT_TEAM))
+    val STAFF2 = StaffGenerator.generateStaff("STCDE02", "Joe", "Bloggs")
 
     val CASELOAD_ROLE_OM_1 = generateCaseload(
         staff = STAFF1,
@@ -87,6 +87,7 @@ object CaseloadGenerator {
     ) = Caseload(
         staff,
         team,
+        PersonGenerator.DEFAULT_PERSON,
         allocationDate,
         roleCode,
         crn,
@@ -94,6 +95,7 @@ object CaseloadGenerator {
         secondName,
         surname,
         startDate,
+        trustProviderFlag = false,
         id
     )
 
@@ -103,6 +105,7 @@ object CaseloadGenerator {
         team: Team
     ) = ManagedOffender(
         caseload.crn,
+        caseload.person.nomsNumber,
         Name(caseload.firstName, caseload.secondName, caseload.surname),
         caseload.allocationDate,
         staff.asStaff(),
