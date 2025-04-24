@@ -9,14 +9,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.entity.Borough
-import uk.gov.justice.digital.hmpps.entity.CommunityManagerEntity
-import uk.gov.justice.digital.hmpps.entity.District
-import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.ProbationArea
-import uk.gov.justice.digital.hmpps.entity.StaffEntity
-import uk.gov.justice.digital.hmpps.entity.Team
-import uk.gov.justice.digital.hmpps.entity.User
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.set
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -46,17 +39,83 @@ class DataLoader(
             Team(id = id(), code = "TEAM02", description = "Team 2", district = district, probationArea = probationArea)
         val staff =
             StaffEntity(id = id(), code = "STAFF01", forename = "Test", surname = "Staff", teams = listOf(team1, team2))
+        val staff1 =
+            StaffEntity(
+                id = id(),
+                code = "STAFF0U",
+                forename = "Test1",
+                forename2 = "Forename1",
+                surname = "Staff1",
+                teams = listOf(team1)
+            )
         val user = User(id = id(), username = "test.user", staff = staff)
             .also { staff.set(StaffEntity::user, it) }
-        val person = Person(id = id(), nomsNumber = "PERSON1")
+        val person1 = Person(id = id(), crn = "X000001", nomsNumber = "PERSON1")
+        val person2 = Person(id = id(), crn = "X000002", nomsNumber = "PERSON2")
+        val person3 = Person(id = id(), crn = "X000003", nomsNumber = "PERSON3", softDeleted = true)
         val previousManager =
-            CommunityManagerEntity(id = id(), person = person, staff = staff, team = team1, active = false)
+            CommunityManagerEntity(
+                id = id(),
+                person = person1,
+                staff = staff,
+                team = team1,
+                probationArea = probationArea,
+                active = false
+            )
         val currentManager =
-            CommunityManagerEntity(id = id(), person = person, staff = staff, team = team2, active = true)
+            CommunityManagerEntity(
+                id = id(),
+                person = person1,
+                staff = staff,
+                team = team2,
+                probationArea = probationArea,
+                active = true
+            )
                 .also { staff.set(StaffEntity::communityManagers, setOf(it)) }
-                .also { person.set(Person::communityManagers, listOf(it)) }
+                .also { person1.set(Person::communityManagers, listOf(it)) }
+        val communityManager1 =
+            CommunityManagerEntity(
+                id = id(),
+                person = person2,
+                staff = staff1,
+                team = team1,
+                probationArea = probationArea
+            )
+        val communityManager2 = CommunityManagerEntity(
+            id = id(),
+            person = person2,
+            team = team1,
+            staff = staff,
+            probationArea = probationArea,
+            active = false
+        )
+        val communityManager3 =
+            CommunityManagerEntity(
+                id = id(),
+                person = person3,
+                staff = staff1,
+                team = team1,
+                probationArea = probationArea
+            )
 
-        listOf(probationArea, borough, district, team1, team2, staff, user, person, previousManager, currentManager)
+        listOf(
+            probationArea,
+            borough,
+            district,
+            team1,
+            team2,
+            staff,
+            staff1,
+            user,
+            person1,
+            person2,
+            person3,
+            previousManager,
+            currentManager,
+            communityManager1,
+            communityManager2,
+            communityManager3
+        )
             .forEach(entityManager::persist)
     }
 

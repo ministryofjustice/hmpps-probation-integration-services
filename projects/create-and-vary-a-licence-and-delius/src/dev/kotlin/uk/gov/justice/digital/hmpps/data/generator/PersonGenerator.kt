@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import java.time.LocalDate
 
 object PersonGenerator {
     val DEFAULT_PERSON = generatePerson("T123456", "A1234AA")
@@ -17,11 +18,15 @@ object PersonGenerator {
     fun generatePerson(
         crn: String,
         nomsNumber: String? = null,
+        pncNumber: String? = null,
+        croNumber: String? = null,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Person(
         crn,
         nomsNumber,
+        pncNumber,
+        croNumber,
         softDeleted,
         id
     )
@@ -34,5 +39,5 @@ object PersonGenerator {
         softDeleted: Boolean = false,
         active: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PersonManager(person, provider, team, staff, softDeleted, active, id)
+    ) = PersonManager(person, provider, team, staff, LocalDate.of(2022, 1, 1), softDeleted, active, id)
 }

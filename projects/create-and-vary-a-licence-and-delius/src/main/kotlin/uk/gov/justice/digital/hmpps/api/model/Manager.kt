@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps.api.model
 import java.time.LocalDate
 
 data class Manager(
+    val case: ProbationCase,
     val id: Long,
-    val crn: String,
     val code: String,
     val name: Name,
     val provider: Provider,
@@ -12,6 +12,7 @@ data class Manager(
     val username: String?,
     val email: String?,
     val telephoneNumber: String?,
+    val allocationDate: LocalDate?,
     val unallocated: Boolean
 )
 
