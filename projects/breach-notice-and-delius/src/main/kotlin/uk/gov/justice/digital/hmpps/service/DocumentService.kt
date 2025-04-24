@@ -13,13 +13,16 @@ import uk.gov.justice.digital.hmpps.integrations.delius.Document
 import uk.gov.justice.digital.hmpps.integrations.delius.Document.Companion.breachNoticeUrn
 import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.security.ServiceContext
+import uk.gov.justice.digital.hmpps.messaging.breachNoticeId
+import uk.gov.justice.digital.hmpps.messaging.username
+import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.ZonedDateTime
 import java.util.*
 
 @Service
 class DocumentService(
     auditedInteractionService: AuditedInteractionService,
+    private val auditUserService: AuditUserService,
     private val documentRepository: DocumentRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient,
 ) : AuditableService(auditedInteractionService) {
@@ -31,7 +34,8 @@ class DocumentService(
         document.status = "Y"
         document.workInProgress = "N"
         document.lastSaved = ZonedDateTime.now()
-        document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
+        document.lastUpdatedUserId = auditUserService.findUser(event.username)?.id
+            ?: throw NotFoundException("User", "username", event.username)
         documentRepository.save(document)
 
         alfrescoUploadClient.release(document.alfrescoId)
@@ -47,7 +51,7 @@ class DocumentService(
     }
 
     private fun getDocument(event: HmppsDomainEvent, audit: AuditedInteraction.Parameters): Document {
-        val urn = breachNoticeUrn(UUID.fromString(event.additionalInformation["breachNoticeId"] as String))
+        val urn = breachNoticeUrn(UUID.fromString(event.breachNoticeId))
         return documentRepository.findByExternalReference(urn)?.also {
             audit["documentId"] = it.id
             audit["alfrescoDocumentId"] = it.alfrescoId

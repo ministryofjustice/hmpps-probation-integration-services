@@ -36,23 +36,21 @@ class Handler(
             "probation-case.breach-notice.created" -> {
                 val file = detailService.getDetail<ByteArray>(notification.message)
                 documentService.uploadDocument(notification.message, file)
-                telemetryService.trackEvent(
-                    "DocumentUploaded", mapOf(
-                        "crn" to notification.message.personReference.findCrn(),
-                        "breachNoticeId" to notification.message.additionalInformation["breachNoticeId"] as String?,
-                    )
-                )
+                telemetryService.trackEvent("DocumentUploaded", notification.message.telemetry())
             }
 
             "probation-case.breach-notice.deleted" -> {
                 documentService.deleteDocument(notification.message)
-                telemetryService.trackEvent(
-                    "DocumentDeleted", mapOf(
-                        "crn" to notification.message.personReference.findCrn(),
-                        "breachNoticeId" to notification.message.additionalInformation["breachNoticeId"] as String?,
-                    )
-                )
+                telemetryService.trackEvent("DocumentDeleted", notification.message.telemetry())
             }
         }
     }
 }
+
+val HmppsDomainEvent.breachNoticeId get() = requireNotNull(additionalInformation["breachNoticeId"] as String?)
+val HmppsDomainEvent.username get() = requireNotNull(additionalInformation["username"] as String?)
+fun HmppsDomainEvent.telemetry() = mapOf(
+    "crn" to personReference.findCrn(),
+    "breachNoticeId" to additionalInformation["breachNoticeId"] as String?,
+    "username" to additionalInformation["username"] as String?,
+)

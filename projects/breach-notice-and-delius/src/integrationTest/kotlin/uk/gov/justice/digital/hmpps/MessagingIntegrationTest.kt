@@ -11,6 +11,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import java.time.ZonedDateTime
@@ -87,7 +88,11 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(
             "DocumentUploaded",
-            mapOf("crn" to "A000001", "breachNoticeId" to "00000000-0000-0000-0000-000000000001"),
+            mapOf(
+                "crn" to "A000001",
+                "breachNoticeId" to "00000000-0000-0000-0000-000000000001",
+                "username" to "TestUser"
+            ),
             mapOf()
         )
 
@@ -97,6 +102,7 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         assertThat(document.status).isEqualTo("Y")
         assertThat(document.workInProgress).isEqualTo("N")
         assertThat(document.lastSaved).isCloseTo(ZonedDateTime.now(), within(1, ChronoUnit.SECONDS))
+        assertThat(document.lastUpdatedUserId).isEqualTo(UserGenerator.TEST_USER.id)
 
         // And the file is uploaded to Alfresco
         wireMockServer.verify(postRequestedFor(urlEqualTo("/alfresco/uploadandrelease/${document.alfrescoId}")).withAlfrescoHeaders())
@@ -115,7 +121,11 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(
             "DocumentDeleted",
-            mapOf("crn" to "A000001", "breachNoticeId" to "00000000-0000-0000-0000-000000000003"),
+            mapOf(
+                "crn" to "A000001",
+                "breachNoticeId" to "00000000-0000-0000-0000-000000000003",
+                "username" to "TestUser"
+            ),
             mapOf()
         )
 
