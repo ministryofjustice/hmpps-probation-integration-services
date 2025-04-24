@@ -80,6 +80,7 @@ object AppointmentGenerator {
         outcome,
         description,
         notes,
+        true,
         softDeleted,
         id
     )

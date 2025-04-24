@@ -126,6 +126,7 @@ object WarningGenerator {
         outcome,
         description,
         notes,
+        true,
         softDeleted,
         id
     )

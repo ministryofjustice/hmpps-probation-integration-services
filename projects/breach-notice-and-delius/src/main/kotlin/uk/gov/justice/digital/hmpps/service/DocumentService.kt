@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import jakarta.persistence.EntityManager
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
@@ -25,6 +26,7 @@ class DocumentService(
     private val auditUserService: AuditUserService,
     private val documentRepository: DocumentRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient,
+    private val entityManager: EntityManager,
 ) : AuditableService(auditedInteractionService) {
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }
@@ -46,6 +48,7 @@ class DocumentService(
     fun deleteDocument(event: HmppsDomainEvent) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
         val document = getDocument(event, it)
         documentRepository.delete(document)
+        updateParent(document)
         alfrescoUploadClient.release(document.alfrescoId)
         alfrescoUploadClient.delete(document.alfrescoId)
     }
@@ -59,6 +62,27 @@ class DocumentService(
             audit["tableName"] = it.tableName
             audit["externalReference"] = urn
         } ?: throw NotFoundException("Document", "externalReference", urn)
+    }
+
+    private fun updateParent(document: Document) {
+        val hasOtherDocuments = documentRepository
+            .existsByTableNameAndPrimaryKeyIdAndIdNot(document.tableName, document.primaryKeyId, document.id)
+
+        val query = when (document.tableName) {
+            "ADDRESSASSESSMENT" -> entityManager.createNativeQuery("update address_assessment set document_linked = :documentLinked where address_assessment_id = :primaryKeyId")
+            "ASSESSMENT" -> entityManager.createNativeQuery("update assessment set document_linked = :documentLinked where assessment_id = :primaryKeyId")
+            "CONTACT" -> entityManager.createNativeQuery("update contact set document_linked = :documentLinked where contact_id = :primaryKeyId")
+            "NSI" -> entityManager.createNativeQuery("update nsi set document_linked = :documentLinked where nsi_id = :primaryKeyId")
+            "REFERRAL" -> entityManager.createNativeQuery("update referral set document_linked = :documentLinked where referral_id = :primaryKeyId")
+            "REGISTRATION" -> entityManager.createNativeQuery("update registration set document_linked = :documentLinked where registration_id = :primaryKeyId")
+            "UPW_APPOINTMENT" -> entityManager.createNativeQuery("update upw_appointment set document_linked = :documentLinked where upw_appointment_id = :primaryKeyId")
+            else -> return
+        }
+
+        query
+            .setParameter("documentLinked", if (hasOtherDocuments) "Y" else "N")
+            .setParameter("primaryKeyId", document.primaryKeyId)
+            .executeUpdate()
     }
 
     private fun Document.toMultipart(file: ByteArray) = MultipartBodyBuilder().apply {
