@@ -108,6 +108,7 @@ class BreachNoticeLoader(
 
     private fun lao() {
         entityManager.persistAll(
+            UserGenerator.TEST_USER,
             UserGenerator.LIMITED_ACCESS_USER,
             UserGenerator.NON_LAO_USER,
             PersonGenerator.EXCLUSION,
