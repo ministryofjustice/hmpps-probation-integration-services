@@ -10,6 +10,7 @@ object RegistrationGenerator {
     val CHILD_CONCERNS_TYPE = generateType(RegisterType.CHILD_CONCERNS_CODE)
     val CHILD_PROTECTION_TYPE = generateType(RegisterType.CHILD_PROTECTION_CODE)
     val SERIOUS_FURTHER_OFFENCE_TYPE = generateType(RegisterType.SERIOUS_FURTHER_OFFENCE_CODE)
+    val WARRANT_SUMMONS_TYPE = generateType(RegisterType.WARRANT_SUMMONS_CODE)
     val MAPPA_TYPE = generateType(RegisterType.MAPPA_CODE)
     val CATEGORIES = Category.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
     val LEVELS = Level.entries.map { generateReferenceData(it.name) }.associateBy { it.code }

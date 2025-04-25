@@ -126,8 +126,5 @@ fun RegistrationRepository.findDynamicRiskRegistrations(personId: Long) = findBy
 )
 
 fun RegistrationRepository.findPersonStatusRegistrations(personId: Long) = findByPersonIdAndTypeCodeInOrderByDateDesc(
-    personId, listOf(
-        RegisterType.SERIOUS_FURTHER_OFFENCE_CODE,
-        RegisterType.WARRANT_SUMMONS_CODE,
-    )
+    personId, listOf(RegisterType.WARRANT_SUMMONS_CODE)
 )
