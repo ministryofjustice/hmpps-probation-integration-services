@@ -24,7 +24,7 @@ object PersonGenerator {
         nomsId: String? = null,
         forename: String = "Forename",
         surname: String = "Surname",
-        dateOfBirth: LocalDate = LocalDate.now().minusYears(28),
+        dateOfBirth: LocalDate = LocalDate.of(1997, 1, 1),
         pnc: String? = null,
         cro: String? = null,
         currentExclusion: Boolean = false,

@@ -7,7 +7,7 @@ data class ProbationCaseDetail(
     val otherIds: OtherIds,
     val firstName: String,
     val surname: String,
-    val dateOfBirth: LocalDate,
+    val dateOfBirth: LocalDate?,
     val gender: String,
     val middleNames: List<String> = listOf(),
     val offenderProfile: CaseProfile = CaseProfile(),
@@ -31,10 +31,10 @@ data class CaseProfile(
 )
 
 data class CaseAlias(
-    val firstName: String,
-    val surname: String,
-    var dateOfBirth: LocalDate,
-    val gender: String,
+    val firstName: String?,
+    val surname: String?,
+    var dateOfBirth: LocalDate?,
+    val gender: String?,
     val middleNames: List<String> = listOf(),
 )
 

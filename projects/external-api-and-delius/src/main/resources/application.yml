@@ -19,6 +19,16 @@ spring:
     base: ou=Users,dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
+  security.oauth2.client:
+    registration:
+      default:
+        provider: hmpps-auth
+        authorization-grant-type: client_credentials
+        client-id: ${oauth2.client-id}
+        client-secret: ${oauth2.client-secret}
+    provider:
+      hmpps-auth:
+        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
 oauth2.roles:
   - PROBATION_API__HMPPS_API__CASE_DETAIL
@@ -26,6 +36,10 @@ oauth2.roles:
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: ExternalApiAndDelius # Should match value in [deploy/database/access.yml].
+
+oauth2:
+  client-id: external-api-and-delius
+  client-secret: external-api-and-delius
 
 management:
   endpoints.web:
@@ -52,6 +66,8 @@ logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
   org.apache.activemq: WARN
+
+integrations.probation-search.url: http://localhost:${wiremock.port}
 
 ---
 spring.config.activate.on-profile: integration-test

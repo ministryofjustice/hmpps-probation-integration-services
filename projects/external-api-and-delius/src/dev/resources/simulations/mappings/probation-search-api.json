@@ -1,0 +1,132 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/search",
+        "bodyPatterns" : [ {
+          "equalToJson" : "{ \"firstName\": \"Robert\",\"surname\": \"Smith\",\"dateOfBirth\": \"1980-01-01\", \"includeAliases\": false }"
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "probation-search-robert-smith.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/search",
+        "bodyPatterns" : [ {
+          "equalToJson" : "{ \"surname\": \"Smith\", \"includeAliases\": false }"
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "probation-search-smith.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/search",
+        "bodyPatterns" : [ {
+          "equalToJson" : "{ \"surname\": \"Smith\",\"dateOfBirth\": \"1980-01-01\", \"includeAliases\": true }"
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "probation-search-smith-aliases.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/search",
+        "bodyPatterns" : [ {
+          "equalToJson" : "{ \"pncNumber\": \"1973/5052670T\", \"includeAliases\": false }"
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "probation-search-identifier-pnc.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/search",
+        "bodyPatterns" : [ {
+          "equalToJson" : "{ \"nomsNumber\": \"S3477CH\", \"includeAliases\": false }"
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "probation-search-identifier-noms.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/search",
+        "bodyPatterns" : [ {
+          "equalToJson" : "{ \"crn\": \"P223458\", \"includeAliases\": false }"
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "probation-search-identifier-crn.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/search",
+        "bodyPatterns" : [ {
+          "equalToJson" : "{ \"crn\": \"N223458\", \"includeAliases\": false }"
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "probation-search-identifier-crn.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPath": "/search",
+        "bodyPatterns" : [ {
+          "equalToJson" : "{ \"crn\": \"G123456\", \"includeAliases\": false }"
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "probation-search-full-mapping.json"
+      }
+    }
+  ]
+}

@@ -15,6 +15,9 @@ generic-service:
       SPRING_LDAP_URLS: LDAP_URL
       SPRING_LDAP_USERNAME: LDAP_USERNAME
       SPRING_LDAP_PASSWORD: LDAP_PASSWORD
+    external-api-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
     external-api-and-delius-database:
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD

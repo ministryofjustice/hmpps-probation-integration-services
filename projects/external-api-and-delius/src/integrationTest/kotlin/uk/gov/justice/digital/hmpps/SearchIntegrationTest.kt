@@ -2,6 +2,9 @@ package uk.gov.justice.digital.hmpps
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
@@ -118,15 +121,32 @@ internal class SearchIntegrationTest : BaseIntegrationTest() {
 
         assertThat(r3).hasSize(2)
         assertThat(r3.map { it.otherIds.crn }).containsExactlyInAnyOrder("P123456", "P123458")
+
+        verify(telemetryService, never()).trackEvent(any(), any(), any())
     }
 
     @Test
     fun `search by identifiers`() {
         val people = personRepository.saveAll(
             listOf(
-                PersonGenerator.generate("P223456", nomsId = "S3477CH", pnc = "1999/9158411A"),
-                PersonGenerator.generate("P223457", nomsId = "S3478CH", pnc = "1973/5052670T"),
-                PersonGenerator.generate("P223458", nomsId = "S3479CH", pnc = "1976/7812661D")
+                PersonGenerator.generate(
+                    "P223456",
+                    nomsId = "S3477CH",
+                    pnc = "1999/9158411A",
+                    dateOfBirth = LocalDate.of(1999, 1, 1)
+                ),
+                PersonGenerator.generate(
+                    "P223457",
+                    nomsId = "S3478CH",
+                    pnc = "1973/5052670T",
+                    dateOfBirth = LocalDate.of(1973, 1, 1)
+                ),
+                PersonGenerator.generate(
+                    "P223458",
+                    nomsId = "S3479CH",
+                    pnc = "1976/7812661D",
+                    dateOfBirth = LocalDate.of(1976, 1, 1)
+                )
             )
         )
 
@@ -173,6 +193,8 @@ internal class SearchIntegrationTest : BaseIntegrationTest() {
 
         assertThat(r4).hasSize(1)
         assertThat(r4.first().otherIds.nomsNumber).isEqualTo("S3479CH")
+
+        verify(telemetryService, never()).trackEvent(any(), any(), any())
     }
 
     @Test
@@ -250,5 +272,7 @@ internal class SearchIntegrationTest : BaseIntegrationTest() {
                 false
             )
         )
+
+        verify(telemetryService, never()).trackEvent(any(), any(), any())
     }
 }

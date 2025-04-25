@@ -1,0 +1,57 @@
+[
+  {
+    "firstName": "Bobby",
+    "middleNames": [ "James" ],
+    "surname": "Brown",
+    "dateOfBirth": "1998-02-23",
+    "gender": "MALE",
+    "otherIds": {
+      "crn": "G123456",
+      "nomsNumber": "G1234HJ",
+      "pncNumber": "1998/2031267B",
+      "previousCrn": "N223458"
+    },
+    "contactDetails": {
+      "phoneNumbers": [
+        {
+          "number": "0191 233 7563",
+          "type": "TELEPHONE"
+        },
+        {
+          "number": "07378851612",
+          "type": "MOBILE"
+        }
+      ],
+      "emailAddresses": [ "bobby@gmail.com" ]
+    },
+    "offenderProfile": {
+      "religion": "RELIGION",
+      "nationality": "NATIONALITY",
+      "disabilities": [
+        {
+          "disabilityType": {
+            "code": "DIST",
+            "description": "DISABILITY TYPE"
+          },
+          "condition": {
+            "code": "DISC",
+            "description": "DISABILITY CONDITION"
+          },
+          "startDate": "2010-10-13",
+          "notes": "Some notes about the disability"
+        }
+      ]
+    },
+    "offenderAliases": [
+      {
+        "firstName": "Jimmy",
+        "surname": "Jameson",
+        "dateOfBirth": "2000-10-13",
+        "gender": "FEMALE"
+      }
+    ],
+    "currentRestriction": false,
+    "currentExclusion": false,
+    "activeProbationManagedSentence": false
+  }
+]
