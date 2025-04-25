@@ -368,7 +368,7 @@ internal class DatabaseProbationMatchingIntegrationTest {
                     "apiMatches" to "A000020",
                     "dbMatches" to "A000010",
                     "dbMatchedBy" to "HMPPS_KEY",
-                    "apiMatchedBy" to "HMPPS_KEY"
+                    "apiMatchedBy" to "ALL_SUPPLIED"
                 )
             )
         )

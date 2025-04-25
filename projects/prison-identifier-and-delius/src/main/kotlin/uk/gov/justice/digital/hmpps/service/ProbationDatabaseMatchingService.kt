@@ -63,7 +63,7 @@ class ProbationDatabaseMatchingService(
                     "apiMatches" to apiCrns.joinToString(","),
                     "dbMatches" to dbCrns.joinToString(","),
                     "dbMatchedBy" to dbMatchResponse.matchedBy,
-                    "apiMatchedBy" to dbMatchResponse.matchedBy
+                    "apiMatchedBy" to apiMatchResponse.matchedBy
                 )
             )
         }
