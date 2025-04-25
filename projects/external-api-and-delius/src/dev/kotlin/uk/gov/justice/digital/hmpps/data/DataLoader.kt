@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.data
 
 import jakarta.annotation.PostConstruct
 import jakarta.persistence.EntityManager
-import jakarta.transaction.Transactional
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
@@ -51,7 +50,9 @@ class DataLoader(
                 persist(RegistrationGenerator.CHILD_PROTECTION_TYPE)
                 persist(RegistrationGenerator.generate(RegistrationGenerator.CHILD_PROTECTION_TYPE))
                 persist(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE)
+                persist(RegistrationGenerator.WARRANT_SUMMONS_TYPE)
                 persist(RegistrationGenerator.generate(RegistrationGenerator.SERIOUS_FURTHER_OFFENCE_TYPE))
+                persist(RegistrationGenerator.generate(RegistrationGenerator.WARRANT_SUMMONS_TYPE))
                 persist(RegistrationGenerator.MAPPA_TYPE)
                 RegistrationGenerator.CATEGORIES.values.forEach(::persist)
                 RegistrationGenerator.LEVELS.values.forEach(::persist)

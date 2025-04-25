@@ -115,7 +115,7 @@ internal class SupervisionIntegrationTest : BaseIntegrationTest() {
                             {"code": "RCCO", "description": "Description for RCCO", "startDate": "$start"},
                             {"code": "RCPR", "description": "Description for RCPR", "startDate": "$start"}
                         ],
-                        "personStatus": [{"code":"ASFO", "description": "Description for ASFO", "startDate": "$start"}]
+                        "personStatus": [{"code":"WRSM", "description": "Description for WRSM", "startDate": "$start"}]
                     }
                     """.trimIndent()
                 )
