@@ -32,6 +32,10 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                 (:surname is null or (:surname is not null and lower(trim(p.surname)) = lower(:surname)))
                 and 
                 (:dateOfBirth is null or (:dateOfBirth is not null and p.dateOfBirth = :dateOfBirth))
+                and exists (select 1 from OffenderManager om
+                            where om.personId = p.id
+                            and om.active = true
+                            and om.softDeleted = false)                
                 
         """
     )
@@ -68,6 +72,10 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                 (:surname is null or (:surname is not null and lower(trim(a.surname)) = lower(:surname)))
                 and 
                 (:dateOfBirth is null or (:dateOfBirth is not null and a.dateOfBirth = :dateOfBirth))
+                and exists (select 1 from OffenderManager om
+                            where om.personId = p.id
+                            and om.active = true
+                            and om.softDeleted = false)                
                 
         """
     )
@@ -86,6 +94,10 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             select distinct p 
             from Person p 
             where :nomsNumber is not null and lower(trim(p.nomsNumber)) = lower(trim(:nomsNumber))
+            and exists (select 1 from OffenderManager om
+                        where om.personId = p.id
+                        and om.active = true
+                        and om.softDeleted = false)
         """
     )
     fun findPersonByNomsNumber(nomsNumber: String?): List<Person>
@@ -95,12 +107,18 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             select distinct p 
             from Person p left join Alias a on a.offenderId = p.id
             where :croNumber is not null and lower(trim(p.croNumber)) = lower(trim(:croNumber))
-            and (:surname is null 
-                or lower(trim(p.surname)) = lower(trim(:surname)) 
-                or lower(trim(a.surname)) = lower(trim(:surname)))
-            and (:dateOfBirth is null 
-                or p.dateOfBirth = :dateOfBirth
-                or a.dateOfBirth = :dateOfBirth)   
+            and (
+                (:surname is not null 
+                    or lower(trim(p.surname)) = lower(trim(:surname)) 
+                    or lower(trim(a.surname)) = lower(trim(:surname)))
+                or (:dateOfBirth is not null 
+                    or p.dateOfBirth = :dateOfBirth
+                    or a.dateOfBirth = :dateOfBirth)   
+            )
+            and exists (select 1 from OffenderManager om
+                        where om.personId = p.id
+                        and om.active = true
+                        and om.softDeleted = false)
         """
     )
     fun findPersonByCroNumber(croNumber: String?, surname: String?, dateOfBirth: LocalDate?): List<Person>
@@ -116,12 +134,19 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                 lower(trim(substr(p.pncNumber,3))) = lower(trim(:pncNumber)) or
                 lower(trim(p.pncNumber)) = lower(trim(substr(:pncNumber,3)))
             )
-            and (:surname is null 
-                or lower(trim(p.surname)) = lower(trim(:surname)) 
-                or lower(trim(a.surname)) = lower(trim(:surname)))
-            and (:dateOfBirth is null 
-                or p.dateOfBirth = :dateOfBirth
-                or a.dateOfBirth = :dateOfBirth)   
+            and ((:surname is not null 
+                    or lower(trim(p.surname)) = lower(trim(:surname)) 
+                    or lower(trim(a.surname)) = lower(trim(:surname))
+                )
+                or (:dateOfBirth is not null 
+                    or p.dateOfBirth = :dateOfBirth
+                    or a.dateOfBirth = :dateOfBirth
+                )   
+            )
+            and exists (select 1 from OffenderManager om
+                        where om.personId = p.id
+                        and om.active = true
+                        and om.softDeleted = false)
         """
     )
     fun findPersonByPncNumber(pncNumber: String?, surname: String?, dateOfBirth: LocalDate?): List<Person>
@@ -150,6 +175,10 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                     (:dateOfBirth is null or (:dateOfBirth is not null and p.dateOfBirth = :dateOfBirth))
                 )
             )
+            and exists (select 1 from OffenderManager om
+                        where om.personId = p.id
+                        and om.active = true
+                        and om.softDeleted = false)
         """
     )
     fun findPersonByName(
@@ -171,6 +200,10 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                 and 
                 (:dateOfBirth is null or (:dateOfBirth is not null and p.dateOfBirth = :dateOfBirth))
             )
+            and exists (select 1 from OffenderManager om
+                        where om.personId = p.id
+                        and om.active = true
+                        and om.softDeleted = false)
         """
     )
     fun findPersonByPartialName(
@@ -193,6 +226,10 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                 and 
                 (p.dateOfBirth in (:dateOfBirths))
             )
+            and exists (select 1 from OffenderManager om
+                        where om.personId = p.id
+                        and om.active = true
+                        and om.softDeleted = false)
         """
     )
     fun findPersonByPartialNameLenientDob(
