@@ -108,12 +108,14 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
             from Person p left join Alias a on a.offenderId = p.id
             where :croNumber is not null and lower(trim(p.croNumber)) = lower(trim(:croNumber))
             and (
-                (:surname is not null 
-                    or lower(trim(p.surname)) = lower(trim(:surname)) 
-                    or lower(trim(a.surname)) = lower(trim(:surname)))
-                or (:dateOfBirth is not null 
-                    or p.dateOfBirth = :dateOfBirth
-                    or a.dateOfBirth = :dateOfBirth)   
+                (:surname is not null and (
+                    lower(trim(p.surname)) = lower(trim(:surname)) 
+                    or lower(trim(a.surname)) = lower(trim(:surname))
+                ))
+                or (:dateOfBirth is not null and ( 
+                    p.dateOfBirth = :dateOfBirth
+                    or a.dateOfBirth = :dateOfBirth)
+                )   
             )
             and exists (select 1 from OffenderManager om
                         where om.personId = p.id
@@ -134,13 +136,14 @@ interface ProbationSearchRepository : JpaRepository<Person, Long> {
                 lower(trim(substr(p.pncNumber,3))) = lower(trim(:pncNumber)) or
                 lower(trim(p.pncNumber)) = lower(trim(substr(:pncNumber,3)))
             )
-            and ((:surname is not null 
-                    or lower(trim(p.surname)) = lower(trim(:surname)) 
+            and (
+                (:surname is not null and (
+                    lower(trim(p.surname)) = lower(trim(:surname)) 
                     or lower(trim(a.surname)) = lower(trim(:surname))
-                )
-                or (:dateOfBirth is not null 
-                    or p.dateOfBirth = :dateOfBirth
-                    or a.dateOfBirth = :dateOfBirth
+                ))
+                or (:dateOfBirth is not null and ( 
+                    p.dateOfBirth = :dateOfBirth
+                    or a.dateOfBirth = :dateOfBirth)
                 )   
             )
             and exists (select 1 from OffenderManager om
