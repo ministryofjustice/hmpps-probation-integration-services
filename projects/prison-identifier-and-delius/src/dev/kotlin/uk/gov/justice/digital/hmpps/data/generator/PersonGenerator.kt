@@ -35,6 +35,8 @@ object PersonGenerator {
         dobString = "04/13/1969"
     )
 
+    val OFFENDER_MANAGER = generateOffenderManager(personId = PERSON_WITH_NOMS_DB.id)
+
     fun generate(
         crn: String,
         noms: String? = null,
@@ -98,5 +100,13 @@ object PersonGenerator {
 
     fun generateCustody(disposal: Disposal, id: Long = IdGenerator.getAndIncrement()) =
         Custody(id, null, status = ReferenceDataGenerator.CUSTODY_STATUS, disposal = disposal)
+
+    fun generateOffenderManager(
+        id: Long = IdGenerator.getAndIncrement(),
+        personId: Long,
+        softDeleted: Boolean = false,
+        active: Boolean = true
+    ) =
+        OffenderManager(id, personId, softDeleted, active)
 }
 

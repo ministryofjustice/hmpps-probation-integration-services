@@ -81,6 +81,7 @@ class DataLoader(
             PersonGenerator.PERSON_WITH_NOMS_DB,
             PersonGenerator.PERSON_ALIAS_1,
             PersonGenerator.PERSON_ALIAS_2,
+            PersonGenerator.OFFENDER_MANAGER,
             personWithNomsEvent,
             personWithNomsDisposal,
             personWithNomsCustody,

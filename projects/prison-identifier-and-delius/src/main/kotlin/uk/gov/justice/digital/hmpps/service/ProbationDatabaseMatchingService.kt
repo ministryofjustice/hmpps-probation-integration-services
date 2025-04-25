@@ -61,7 +61,9 @@ class ProbationDatabaseMatchingService(
                 mapOf(
                     "nomsNumber" to request.nomsNumber,
                     "apiMatches" to apiCrns.joinToString(","),
-                    "dbMatches" to dbCrns.joinToString(",")
+                    "dbMatches" to dbCrns.joinToString(","),
+                    "dbMatchedBy" to dbMatchResponse.matchedBy,
+                    "apiMatchedBy" to dbMatchResponse.matchedBy
                 )
             )
         }

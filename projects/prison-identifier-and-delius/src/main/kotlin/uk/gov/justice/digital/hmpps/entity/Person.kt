@@ -143,6 +143,25 @@ class Alias(
     val softDeleted: Boolean = false
 )
 
+@Entity
+@Immutable
+class OffenderManager(
+    @Id
+    @Column(name = "offender_manager_id")
+    val id: Long,
+
+    @Column(name = "offender_id")
+    val personId: Long,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val active: Boolean = true,
+)
+
 interface PersonRepository : JpaRepository<Person, Long> {
     @Query(
         """
