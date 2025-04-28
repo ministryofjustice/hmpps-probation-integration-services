@@ -261,11 +261,7 @@ components:
           items:
             type: string
       required:
-      - dateOfBirth
-      - firstName
-      - gender
       - middleNames
-      - surname
     CaseDisability:
       type: object
       properties:
@@ -391,7 +387,6 @@ components:
       - age
       - currentExclusion
       - currentRestriction
-      - dateOfBirth
       - firstName
       - gender
       - middleNames
