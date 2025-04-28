@@ -43,6 +43,7 @@ class OffenderDeltaService(
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
         fun sourceToEventType(): String? = when (sourceTable) {
             "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
+            "CONTACT" -> if ("DELETE" == action) "CONTACT_DELETED" else "CONTACT_CHANGED"
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
             "DISPOSAL" -> "SENTENCE_CHANGED"
             "EVENT" -> "CONVICTION_CHANGED"
