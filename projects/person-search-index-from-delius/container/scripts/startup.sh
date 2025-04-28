@@ -49,7 +49,11 @@ if grep -q 'contact' <<<"$PIPELINES_ENABLED"; then
   echo "Deployed semantic search model. model_id=${model_id}"
   envsubst < /pipelines/contact/index/ingest-pipeline.tpl.json > /pipelines/contact/index/ingest-pipeline.json
   envsubst < /pipelines/contact/index/search-pipeline.tpl.json > /pipelines/contact/index/search-pipeline.json
-  /scripts/setup-index.sh -i "contact-semantic-search" -p /pipelines/contact/index/ingest-pipeline.json -s /pipelines/contact/index/search-pipeline.json -t /pipelines/contact/index/index-template-semantic.json
+  /scripts/setup-index.sh -i "contact-semantic-search" \
+    -p /pipelines/contact/index/ingest-pipeline.json \
+    -s /pipelines/contact/index/search-pipeline.json \
+    -t /pipelines/contact/index/index-template-semantic.json \
+    -y /pipelines/contact/index/index-state-management-policy.json
 fi
 
 echo Starting Logstash...

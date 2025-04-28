@@ -14,7 +14,7 @@ function help {
 
 export SEARCH_URL="${SEARCH_INDEX_HOST}"
 
-while getopts h:i:p:s:t:u: FLAG; do
+while getopts h:i:p:s:t:u:y: FLAG; do
   case $FLAG in
   h) help ;;
   i) export INDEX_PREFIX="${OPTARG}" ;;
@@ -22,6 +22,7 @@ while getopts h:i:p:s:t:u: FLAG; do
   s) export SEARCH_PIPELINE_FILENAME="${OPTARG}" ;;
   t) export TEMPLATE_FILENAME="${OPTARG}" ;;
   u) export SEARCH_URL="$OPTARG" ;;
+  y) export POLICY_FILENAME="${OPTARG}" ;;
   \?) #unrecognized option - show help
     echo -e \\n"Option not allowed."
     help
@@ -60,4 +61,16 @@ function create_indices() {
   curl_json -XPUT "${SEARCH_URL}/${INDEX_PREFIX}-b" --data '{"aliases": {"'"${INDEX_PREFIX}-standby"'": {}}}' --no-fail
 }
 
-create_pipeline && create_template && create_indices
+function create_policy() {
+  if [ -n "${POLICY_FILENAME}" ]; then
+    if [ ! -f "${POLICY_FILENAME}" ]; then fail "${POLICY_FILENAME} does not exist."; fi
+    echo "Creating or updating ${INDEX_PREFIX} index state management policies ..."
+    if curl_json "${SEARCH_INDEX_HOST}/_plugins/_ism/policies/${INDEX_PREFIX}-policy"; then
+      echo "Fetching current version ..."
+      seq_no_primary_term=$(curl_json "${SEARCH_INDEX_HOST}/_plugins/_ism/policies/${INDEX_PREFIX}-policy" | jq -r '"?if_seq_no=" + (._seq_no|tostring) + "&if_primary_term=" + (._primary_term|tostring)')
+    fi
+    curl_json -XPUT "${SEARCH_INDEX_HOST}/_plugins/_ism/policies/${INDEX_PREFIX}-policy${seq_no_primary_term}" --data @"${POLICY_FILENAME}"
+  fi
+}
+
+create_pipeline && create_template && create_indices && create_policy
