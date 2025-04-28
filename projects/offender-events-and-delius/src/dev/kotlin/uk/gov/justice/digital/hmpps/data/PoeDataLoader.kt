@@ -7,6 +7,8 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.offender.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.offender.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderRepository
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -14,7 +16,8 @@ import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 @ConditionalOnProperty("seed.database")
 class PoeDataLoader(
     private val auditUserRepository: AuditUserRepository,
-    private val offenderRepository: OffenderRepository
+    private val offenderRepository: OffenderRepository,
+    private val contactRepository: ContactRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -24,5 +27,7 @@ class PoeDataLoader(
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         offenderRepository.save(OffenderGenerator.DEFAULT)
+        contactRepository.save(Contact(id = 101))
+        contactRepository.save(Contact(id = 102, softDeleted = true))
     }
 }

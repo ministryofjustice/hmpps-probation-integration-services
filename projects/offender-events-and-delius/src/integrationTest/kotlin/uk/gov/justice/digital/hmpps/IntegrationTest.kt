@@ -13,9 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.generator.OffenderDeltaGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDelta
-import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
+import uk.gov.justice.digital.hmpps.integrations.delius.offender.*
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -143,13 +141,19 @@ internal class IntegrationTest {
                 )
             ),
             Arguments.of(
-                OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 99),
+                OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 101),
                 listOf(
                     properties + ("eventType" to "CONTACT_CHANGED")
                 )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 99, action = "DELETE"),
+                listOf(
+                    properties + ("eventType" to "CONTACT_DELETED")
+                )
+            ),
+            Arguments.of(
+                OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 102, action = "DELETE"),
                 listOf(
                     properties + ("eventType" to "CONTACT_DELETED")
                 )
