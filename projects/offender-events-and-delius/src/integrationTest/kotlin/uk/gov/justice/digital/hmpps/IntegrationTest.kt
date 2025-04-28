@@ -141,6 +141,18 @@ internal class IntegrationTest {
                 listOf(
                     properties + ("eventType" to "OFFENDER_REGISTRATION_DELETED")
                 )
+            ),
+            Arguments.of(
+                OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 99),
+                listOf(
+                    properties + ("eventType" to "CONTACT_CHANGED")
+                )
+            ),
+            Arguments.of(
+                OffenderDeltaGenerator.generate(sourceTable = "CONTACT", sourceId = 99, action = "DELETE"),
+                listOf(
+                    properties + ("eventType" to "CONTACT_DELETED")
+                )
             )
         )
     }
