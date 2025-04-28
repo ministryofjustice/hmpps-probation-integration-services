@@ -17,6 +17,7 @@ class OffenderDeltaService(
     @Value("\${offender-events.batch-size:50}")
     private val batchSize: Int,
     private val repository: OffenderDeltaRepository,
+    private val contactRepository: ContactRepository,
     private val notificationPublisher: NotificationPublisher,
     private val telemetryService: TelemetryService
 ) {
@@ -43,7 +44,7 @@ class OffenderDeltaService(
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
         fun sourceToEventType(): String? = when (sourceTable) {
             "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
-            "CONTACT" -> if ("DELETE" == action) "CONTACT_DELETED" else "CONTACT_CHANGED"
+            "CONTACT" -> if (contactRepository.findById(sourceRecordId).isEmpty) "CONTACT_DELETED" else "CONTACT_CHANGED"
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
             "DISPOSAL" -> "SENTENCE_CHANGED"
             "EVENT" -> "CONVICTION_CHANGED"
