@@ -179,4 +179,36 @@ class UserIntegrationTest {
             )
         )
     }
+
+    @Test
+    fun `get teams for  username`() {
+        mockMvc.perform(get("/users/s001wt/teams").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(
+                content().json(
+                    """
+                    {
+                      "teams": [
+                        {
+                          "code": "N03AAA",
+                          "description": "Description for N03AAA",
+                          "localAdminUnit": {
+                            "code": "LAU1",
+                            "description": "Some LAU",
+                            "probationDeliveryUnit": {
+                              "code": "PDU1",
+                              "description": "Some PDU",
+                              "provider": {
+                                "code": "N02",
+                                "description": "NPS North East"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                    """.trimIndent()
+                )
+            )
+    }
 }

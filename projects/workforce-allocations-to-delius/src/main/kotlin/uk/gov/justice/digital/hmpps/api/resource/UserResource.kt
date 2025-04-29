@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import uk.gov.justice.digital.hmpps.service.StaffService
 import uk.gov.justice.digital.hmpps.service.UserAccessService
 import uk.gov.justice.digital.hmpps.service.UserService
 
@@ -14,6 +15,7 @@ import uk.gov.justice.digital.hmpps.service.UserService
 class UserResource(
     private val userAccessService: UserAccessService,
     private val userService: UserService,
+    private val staffService: StaffService,
 ) {
 
     @PreAuthorize("hasRole('PROBATION_API__WORKFORCE_ALLOCATIONS__CASE_DETAIL')")
@@ -52,4 +54,11 @@ class UserResource(
         @Size(min = 0, max = 500, message = "Please provide up to 500 staff codes to filter by")
         @RequestBody(required = false) staffCodes: List<String>? = null,
     ) = userService.getAllAccessLimitations(crn, staffCodes)
+
+    @Operation(
+        summary = """Team, LAU, PDU and Provider hierarchy associated with a staff username""",
+        description = """A list of teams for a staff username, along with the LAU (Local Admin Unit), PDU (Probation Delivery Unit) and Provider for each."""
+    )
+    @GetMapping("/users/{username}/teams")
+    fun userTeams(@PathVariable username: String) = staffService.getTeamsByUsername(username)
 }

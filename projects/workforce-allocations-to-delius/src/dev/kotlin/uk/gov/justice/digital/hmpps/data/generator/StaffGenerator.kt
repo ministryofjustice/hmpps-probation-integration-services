@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.*
 import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
+import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffWithTeamUser
 import uk.gov.justice.digital.hmpps.set
 import java.time.ZonedDateTime
 

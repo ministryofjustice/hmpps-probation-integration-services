@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeams
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 
 @Entity
@@ -23,4 +24,20 @@ class StaffUser(
     @OneToOne
     @JoinColumn(name = "staff_id")
     val staff: StaffWithUser? = null
+)
+
+@Entity
+@Immutable
+@Table(name = "user_")
+class StaffWithTeamUser(
+    @Column(name = "distinguished_name")
+    val username: String,
+
+    @OneToOne
+    @JoinColumn(name = "staff_id")
+    val staff: StaffWithTeams? = null,
+
+    @Id
+    @Column(name = "user_id")
+    val id: Long = 0,
 )
