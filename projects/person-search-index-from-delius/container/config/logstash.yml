@@ -3,3 +3,4 @@ config.reload.automatic: true
 config.support_escapes: true
 dead_letter_queue.enable: true
 pipeline.batch.size: ${PIPELINE_BATCH_SIZE:10}
+pipeline.workers: ${PIPELINE_WORKERS:1}
