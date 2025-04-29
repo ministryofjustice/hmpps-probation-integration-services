@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamWithDistrict
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.getWithUserByCode
 import java.time.LocalDate
 
@@ -47,23 +48,29 @@ class StaffService(
     }
 
     fun getTeams(code: String) = StaffTeamsResponse(
-        staffRepository.findStaffWithTeamsByCode(code)?.teams?.map { team ->
-            TeamWithLocalAdminUnit(
-                code = team.code,
-                description = team.description,
-                localAdminUnit = LocalAdminUnit(
-                    code = team.district.code,
-                    description = team.district.description,
-                    probationDeliveryUnit = ProbationDeliveryUnit(
-                        code = team.district.borough.code,
-                        description = team.district.borough.description,
-                        provider = Provider(
-                            code = team.district.borough.probationArea.code,
-                            description = team.district.borough.probationArea.description,
-                        )
-                    )
-                ),
+        staffRepository.findStaffWithTeamsByCode(code)?.teams?.map { it.withLau() }
+            ?: throw NotFoundException("Staff", "code", code)
+    )
+
+    fun getTeamsByUsername(username: String) = StaffTeamsResponse(
+        staffRepository.findStaffWithTeamsByUsername(username)?.teams?.map { it.withLau() }
+            ?: throw NotFoundException("Staff", "username", username)
+    )
+
+    private fun TeamWithDistrict.withLau() = TeamWithLocalAdminUnit(
+        code = code,
+        description = description,
+        localAdminUnit = LocalAdminUnit(
+            code = district.code,
+            description = district.description,
+            probationDeliveryUnit = ProbationDeliveryUnit(
+                code = district.borough.code,
+                description = district.borough.description,
+                provider = Provider(
+                    code = district.borough.probationArea.code,
+                    description = district.borough.probationArea.description,
+                )
             )
-        } ?: throw NotFoundException("Staff", "code", code)
+        ),
     )
 }

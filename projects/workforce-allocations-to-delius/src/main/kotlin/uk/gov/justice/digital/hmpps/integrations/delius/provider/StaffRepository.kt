@@ -47,6 +47,17 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
 
     @Query(
         """
+        select s from StaffWithTeams s 
+        left join fetch s.teams t 
+        left join fetch t.district d 
+        left join fetch d.borough 
+        where upper(s.user.username) = upper(:username)
+    """
+    )
+    fun findStaffWithTeamsByUsername(username: String): StaffWithTeams?
+
+    @Query(
+        """
         select count(1) from offender_manager om 
         join event e on e.offender_id = om.offender_id
         join disposal d on d.event_id = e.event_id

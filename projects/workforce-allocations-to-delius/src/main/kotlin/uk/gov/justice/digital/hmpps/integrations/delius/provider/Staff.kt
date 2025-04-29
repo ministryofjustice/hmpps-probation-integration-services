@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
+import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffWithTeamUser
 import java.time.ZonedDateTime
 
 @MappedSuperclass
@@ -80,6 +81,9 @@ class StaffWithTeams(
 
     @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
+
+    @OneToOne(mappedBy = "staff")
+    val user: StaffWithTeamUser? = null,
 
     @ManyToMany
     @JoinTable(
