@@ -4,9 +4,9 @@ generic-service:
   serviceAccountName: person-search-index-from-delius
   resources:
     limits:
-      memory: 2Gi
+      memory: 4Gi
     requests:
-      memory: 1Gi
+      memory: 2Gi
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
@@ -29,8 +29,10 @@ generic-service:
     CONTACT_INDEX_PREFIX: contact-search
     PERSON_INDEX_PREFIX: person-search
     PIPELINES_ENABLED: person-incremental,contact-incremental
+    PIPELINE_WORKERS: 10
+    PIPELINE_BATCH_SIZE: 1
     JDK_JAVA_OPTIONS: ''
-    LS_JAVA_OPTS: -Xms1536m -Xmx1536m # = 75% of pod memory limit (see above)
+    LS_JAVA_OPTS: -Xms3g -Xmx3g # = 75% of pod memory limit (see above)
 
   namespace_secrets:
     common:
