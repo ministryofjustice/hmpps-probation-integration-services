@@ -7,3 +7,5 @@
   path.config: /pipelines/contact/logstash-full-load.conf
 - pipeline.id: contact-incremental
   path.config: /pipelines/contact/logstash-incremental.conf
+- pipeline.id: contact-semantic
+  path.config: /pipelines/contact/logstash-semantic.conf

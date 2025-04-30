@@ -28,8 +28,8 @@ generic-service:
   env:
     CONTACT_INDEX_PREFIX: contact-search
     PERSON_INDEX_PREFIX: person-search
-    PIPELINES_ENABLED: person-incremental,contact-incremental
-    PIPELINE_WORKERS: 50
+    PIPELINES_ENABLED: person-incremental,contact-incremental,contact-semantic
+    PIPELINE_WORKERS: 10
     PIPELINE_BATCH_SIZE: 1
     JDK_JAVA_OPTIONS: ''
     LS_JAVA_OPTS: -Xms3g -Xmx3g # = 75% of pod memory limit (see above)
@@ -48,6 +48,8 @@ generic-service:
       SENTRY_DSN: SENTRY_DSN
     person-search-index-from-delius-person-queue:
       PERSON_SQS_QUEUE_NAME: QUEUE_NAME
+    person-search-index-from-delius-contact-keyword-queue:
+      CONTACT_KEYWORD_SQS_QUEUE_NAME: QUEUE_NAME
     person-search-index-from-delius-contact-queue:
       CONTACT_SQS_QUEUE_NAME: QUEUE_NAME
 
