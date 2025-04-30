@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.integration.probationsearch
 
-import uk.gov.justice.digital.hmpps.integration.delius.entity.Disability
 import uk.gov.justice.digital.hmpps.model.*
-import uk.gov.justice.digital.hmpps.service.asCaseDisability
 import java.time.LocalDate
 import java.time.Period
 
@@ -54,17 +52,24 @@ data class OffenderAlias(
 
 data class OffenderDisability(
     val disabilityType: CodedValue? = null,
-    val condition: CodedValue? = null,
+    val condition: Condition? = null,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
     val notes: String? = null,
 )
 
+data class Condition(
+    val code: String? = null,
+    val description: String? = null
+) {
+    fun asCodedValue() = if (code != null && description != null) CodedValue(code, description) else null
+}
+
 fun IDs.ids() = OtherIds(crn, pncNumber, nomsNumber, croNumber)
 fun OffenderDisability.asCaseDisability() = disabilityType?.let { type ->
     CaseDisability(
         CodedValue(type.code, type.description),
-        this.condition?.let { CodedValue(it.code, it.description) },
+        condition?.asCodedValue(),
         startDate,
         endDate,
         notes
