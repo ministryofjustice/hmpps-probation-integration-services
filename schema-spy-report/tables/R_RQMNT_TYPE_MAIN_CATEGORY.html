@@ -138,6 +138,11 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="R_RQMNT_EXTEND.RQMNT_TYPE_MAIN_CATEGORY_ID references R_RQMNT_TYPE_MAIN_CATEGORY.RQMNT_TYPE_MAIN_CATEGORY_ID via R_1419"><a href='R_RQMNT_EXTEND.html'>R_RQMNT_EXTEND</a><span class='relatedKey'>.RQMNT_TYPE_MAIN_CATEGORY_ID</span></td>
+                                                <td class="constraint detail">R_1419</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="R_RQMNT_NSI_TYPE.RQMNT_TYPE_MAIN_CATEGORY_ID references R_RQMNT_TYPE_MAIN_CATEGORY.RQMNT_TYPE_MAIN_CATEGORY_ID via R_1040"><a href='R_RQMNT_NSI_TYPE.html'>R_RQMNT_NSI_TYPE</a><span class='relatedKey'>.RQMNT_TYPE_MAIN_CATEGORY_ID</span></td>
                                                 <td class="constraint detail">R_1040</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
@@ -160,6 +165,16 @@
                                             <tr>
                                                 <td title="R_RQMNT_TYPE_TERMINATION.RQMNT_TYPE_MAIN_CATEGORY_ID references R_RQMNT_TYPE_MAIN_CATEGORY.RQMNT_TYPE_MAIN_CATEGORY_ID via SYS_C0021396"><a href='R_RQMNT_TYPE_TERMINATION.html'>R_RQMNT_TYPE_TERMINATION</a><span class='relatedKey'>.RQMNT_TYPE_MAIN_CATEGORY_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021396</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="R_UPW_TERMINATION.RQMNT_TYPE_MAIN_CATEGORY_ID references R_RQMNT_TYPE_MAIN_CATEGORY.RQMNT_TYPE_MAIN_CATEGORY_ID via R_1421"><a href='R_UPW_TERMINATION.html'>R_UPW_TERMINATION</a><span class='relatedKey'>.RQMNT_TYPE_MAIN_CATEGORY_ID</span></td>
+                                                <td class="constraint detail">R_1421</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="R_UPW_VIEW.RQMNT_TYPE_MAIN_CATEGORY_ID references R_RQMNT_TYPE_MAIN_CATEGORY.RQMNT_TYPE_MAIN_CATEGORY_ID via R_1417"><a href='R_UPW_VIEW.html'>R_UPW_VIEW</a><span class='relatedKey'>.RQMNT_TYPE_MAIN_CATEGORY_ID</span></td>
+                                                <td class="constraint detail">R_1417</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
@@ -675,32 +690,32 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_1222623488</td>
-                                    <td>RESTRICTIVE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_ONLY39</td>
+                                    <td>AUTO_START IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO25</td>
-                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_432</td>
-                                    <td>ALLOW_DUPLICATES IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_ONLY_137910355</td>
+                                    <td>LENGTH_2_FLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>TERM_COUNT_D_S_980137180</td>
                                     <td>TERM_COUNT IN (&#39;D&#39;,&#39;S&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY39</td>
-                                    <td>AUTO_START IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO25</td>
+                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_1222623488</td>
+                                    <td>RESTRICTIVE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_432</td>
+                                    <td>ALLOW_DUPLICATES IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY_191134824</td>
                                     <td>SUB_TYPE_CHANGE IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_137910355</td>
-                                    <td>LENGTH_2_FLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -725,36 +740,42 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1232,67,1581,1035">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1639,324,1903">
+<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1232,229,1581,1197">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,1732,324,1996">
 <area shape="rect" id="node3" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="839,5,1188,621">
-<area shape="rect" id="node4" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="368,961,795,1735">
-<area shape="rect" id="node5" href="DISPOSAL_TYPE_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_RQMNT_TYPE" alt="" coords="853,747,1173,981">
-<area shape="rect" id="node6" href="PROPOSED_RQMNT.html" target="_top" title="PROPOSED_RQMNT" alt="" coords="839,1356,1188,1737">
-<area shape="rect" id="node7" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="842,999,1185,1175">
-<area shape="rect" id="node8" href="R_RQMNT_NSI_TYPE.html" target="_top" title="R_RQMNT_NSI_TYPE" alt="" coords="853,1192,1173,1339">
-<area shape="rect" id="node9" href="R_RQMNT_REJECTION_REASON.html" target="_top" title="R_RQMNT_REJECTION_REASON" alt="" coords="853,1755,1173,1901">
-<area shape="rect" id="node10" href="R_RQMNT_TRANSFER_REASON.html" target="_top" title="R_RQMNT_TRANSFER_REASON" alt="" coords="853,1919,1173,2065">
-<area shape="rect" id="node11" href="R_RQMNT_TYPE.html" target="_top" title="R_RQMNT_TYPE" alt="" coords="853,2083,1173,2288">
-<area shape="rect" id="node12" href="R_RQMNT_TYPE_TERMINATION.html" target="_top" title="R_RQMNT_TYPE_TERMINATION" alt="" coords="851,2305,1176,2481">
+<area shape="rect" id="node4" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="368,1319,795,2092">
+<area shape="rect" id="node5" href="DISPOSAL_TYPE_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_RQMNT_TYPE" alt="" coords="853,1145,1173,1380">
+<area shape="rect" id="node6" href="PROPOSED_RQMNT.html" target="_top" title="PROPOSED_RQMNT" alt="" coords="839,675,1188,1056">
+<area shape="rect" id="node7" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="842,1397,1185,1573">
+<area shape="rect" id="node8" href="R_RQMNT_EXTEND.html" target="_top" title="R_RQMNT_EXTEND" alt="" coords="853,1755,1173,1931">
+<area shape="rect" id="node9" href="R_RQMNT_NSI_TYPE.html" target="_top" title="R_RQMNT_NSI_TYPE" alt="" coords="853,1591,1173,1737">
+<area shape="rect" id="node10" href="R_RQMNT_REJECTION_REASON.html" target="_top" title="R_RQMNT_REJECTION_REASON" alt="" coords="853,1948,1173,2095">
+<area shape="rect" id="node11" href="R_RQMNT_TRANSFER_REASON.html" target="_top" title="R_RQMNT_TRANSFER_REASON" alt="" coords="853,2112,1173,2259">
+<area shape="rect" id="node12" href="R_RQMNT_TYPE.html" target="_top" title="R_RQMNT_TYPE" alt="" coords="853,2276,1173,2481">
+<area shape="rect" id="node13" href="R_RQMNT_TYPE_TERMINATION.html" target="_top" title="R_RQMNT_TYPE_TERMINATION" alt="" coords="851,2499,1176,2675">
+<area shape="rect" id="node14" href="R_UPW_TERMINATION.html" target="_top" title="R_UPW_TERMINATION" alt="" coords="853,2692,1173,2868">
+<area shape="rect" id="node15" href="R_UPW_VIEW.html" target="_top" title="R_UPW_VIEW" alt="" coords="853,2885,1173,3061">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/R_RQMNT_TYPE_MAIN_CATEGORY.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
-<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1624,31,1973,999">
-<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,1048,716,1312">
+<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1624,616,1973,1584">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,1448,716,1712">
 <area shape="rect" id="node3" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="1231,5,1580,621">
-<area shape="rect" id="node4" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="760,1124,1187,1897">
-<area shape="rect" id="node6" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1465,353,1788">
-<area shape="rect" id="node5" href="DISPOSAL_TYPE_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_RQMNT_TYPE" alt="" coords="1245,2247,1565,2481">
-<area shape="rect" id="node7" href="PROPOSED_RQMNT.html" target="_top" title="PROPOSED_RQMNT" alt="" coords="1231,1848,1580,2229">
-<area shape="rect" id="node8" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="1234,1297,1577,1473">
-<area shape="rect" id="node9" href="R_RQMNT_NSI_TYPE.html" target="_top" title="R_RQMNT_NSI_TYPE" alt="" coords="1245,1491,1565,1637">
-<area shape="rect" id="node10" href="R_RQMNT_REJECTION_REASON.html" target="_top" title="R_RQMNT_REJECTION_REASON" alt="" coords="1245,711,1565,857">
-<area shape="rect" id="node11" href="R_RQMNT_TRANSFER_REASON.html" target="_top" title="R_RQMNT_TRANSFER_REASON" alt="" coords="1245,875,1565,1021">
-<area shape="rect" id="node12" href="R_RQMNT_TYPE.html" target="_top" title="R_RQMNT_TYPE" alt="" coords="1245,1039,1565,1244">
-<area shape="rect" id="node13" href="R_RQMNT_TYPE_TERMINATION.html" target="_top" title="R_RQMNT_TYPE_TERMINATION" alt="" coords="1243,1655,1568,1831">
+<area shape="rect" id="node4" href="R_RQMNT_TYPE_MAIN_CATEGORY.html" target="_top" title="R_RQMNT_TYPE_MAIN_CATEGORY" alt="" coords="760,1445,1187,2219">
+<area shape="rect" id="node6" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1787,353,2109">
+<area shape="rect" id="node5" href="DISPOSAL_TYPE_RQMNT_TYPE.html" target="_top" title="DISPOSAL_TYPE_RQMNT_TYPE" alt="" coords="1245,2827,1565,3061">
+<area shape="rect" id="node7" href="PROPOSED_RQMNT.html" target="_top" title="PROPOSED_RQMNT" alt="" coords="1231,2428,1580,2809">
+<area shape="rect" id="node8" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="1234,1648,1577,1824">
+<area shape="rect" id="node9" href="R_RQMNT_EXTEND.html" target="_top" title="R_RQMNT_EXTEND" alt="" coords="1245,675,1565,851">
+<area shape="rect" id="node10" href="R_RQMNT_NSI_TYPE.html" target="_top" title="R_RQMNT_NSI_TYPE" alt="" coords="1245,1841,1565,1988">
+<area shape="rect" id="node11" href="R_RQMNT_REJECTION_REASON.html" target="_top" title="R_RQMNT_REJECTION_REASON" alt="" coords="1245,868,1565,1015">
+<area shape="rect" id="node12" href="R_RQMNT_TRANSFER_REASON.html" target="_top" title="R_RQMNT_TRANSFER_REASON" alt="" coords="1245,1032,1565,1179">
+<area shape="rect" id="node13" href="R_RQMNT_TYPE.html" target="_top" title="R_RQMNT_TYPE" alt="" coords="1245,1196,1565,1401">
+<area shape="rect" id="node14" href="R_RQMNT_TYPE_TERMINATION.html" target="_top" title="R_RQMNT_TYPE_TERMINATION" alt="" coords="1243,1419,1568,1595">
+<area shape="rect" id="node15" href="R_UPW_TERMINATION.html" target="_top" title="R_UPW_TERMINATION" alt="" coords="1245,2005,1565,2181">
+<area shape="rect" id="node16" href="R_UPW_VIEW.html" target="_top" title="R_UPW_VIEW" alt="" coords="1245,2199,1565,2375">
 </map>
                                         <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/R_RQMNT_TYPE_MAIN_CATEGORY.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>

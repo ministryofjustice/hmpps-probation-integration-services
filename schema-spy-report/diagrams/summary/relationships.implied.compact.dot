@@ -291,7 +291,7 @@ digraph "compactImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="198" HEIGHT="16"><B>R_RQMNT_TYPE_MAIN_CATEGORY</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">10 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">13 &gt;</TD></TR>
     </TABLE>>
     URL="tables/R_RQMNT_TYPE_MAIN_CATEGORY.html"
     target="_top"
@@ -307,6 +307,17 @@ digraph "compactImpliedRelationshipsDiagram" {
     URL="tables/R_CIRCUMSTANCE_TYPE.html"
     target="_top"
     tooltip="R_CIRCUMSTANCE_TYPE"
+  ];
+  "R_UPW_TERMINATION" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="131" HEIGHT="16"><B>R_UPW_TERMINATION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/R_UPW_TERMINATION.html"
+    target="_top"
+    tooltip="R_UPW_TERMINATION"
   ];
   "DISTRICT" [
    label=<
@@ -489,7 +500,7 @@ digraph "compactImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="179" HEIGHT="16"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">315 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">318 &gt;</TD></TR>
     </TABLE>>
     URL="tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"
@@ -1177,6 +1188,17 @@ digraph "compactImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="DISPOSAL_TYPE_AD_SENT_TYPE"
   ];
+  "R_UPW_VIEW" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="76" HEIGHT="16"><B>R_UPW_VIEW</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/R_UPW_VIEW.html"
+    target="_top"
+    tooltip="R_UPW_VIEW"
+  ];
   "R_CONTACT_TYPE" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -1418,6 +1440,17 @@ digraph "compactImpliedRelationshipsDiagram" {
     URL="tables/OASYS_SENTENCE_PLAN.html"
     target="_top"
     tooltip="OASYS_SENTENCE_PLAN"
+  ];
+  "FTS_RESULT" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="69" HEIGHT="16"><B>FTS_RESULT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/FTS_RESULT.html"
+    target="_top"
+    tooltip="FTS_RESULT"
   ];
   "R_ASSESSMENT_OUTCOME" [
    label=<
@@ -2205,7 +2238,7 @@ digraph "compactImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="62" HEIGHT="16"><B>OFFENDER</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 18</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">98 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 18</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">99 &gt;</TD></TR>
     </TABLE>>
     URL="tables/OFFENDER.html"
     target="_top"
@@ -3355,6 +3388,17 @@ digraph "compactImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="OFFENDER_MERGE_DETAILS"
   ];
+  "R_RQMNT_EXTEND" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="110" HEIGHT="16"><B>R_RQMNT_EXTEND</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="tables/R_RQMNT_EXTEND.html"
+    target="_top"
+    tooltip="R_RQMNT_EXTEND"
+  ];
   "R_PROVISION_CATEGORY_TYPE" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -4079,6 +4123,7 @@ digraph "compactImpliedRelationshipsDiagram" {
   "EXTERNAL_PROVIDER":"ADDRESS_ID":w -> "ADDRESS":"ADDRESS_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "EXTERNAL_PROVIDER":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "EXTERNAL_PROVIDER":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "FTS_RESULT":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "GDPR_DESTRUCTION_LOG":"OFFENDER_MANAGER_AREA_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "GDPR_OFF_ELIGIBLE_DELETION":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=teeodot];
   "GDPR_OFF_ELIGIBLE_SEARCH":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=teeodot];
@@ -4760,6 +4805,8 @@ digraph "compactImpliedRelationshipsDiagram" {
   "R_REGISTER_TYPE_LEVEL":"REGISTER_TYPE_ID":w -> "R_REGISTER_TYPE":"REGISTER_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE_PROVIDER":"PROBATION_AREA_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE_PROVIDER":"REGISTER_TYPE_ID":w -> "R_REGISTER_TYPE":"REGISTER_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_RQMNT_EXTEND":"RQMNT_TYPE_MAIN_CATEGORY_ID":w -> "R_RQMNT_TYPE_MAIN_CATEGORY":"RQMNT_TYPE_MAIN_CATEGORY_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_RQMNT_EXTEND":"RQMNT_TYPE_SUB_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_RQMNT_NSI_TYPE":"NSI_TYPE_ID":w -> "R_NSI_TYPE":"NSI_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_RQMNT_NSI_TYPE":"RQMNT_TYPE_MAIN_CATEGORY_ID":w -> "R_RQMNT_TYPE_MAIN_CATEGORY":"RQMNT_TYPE_MAIN_CATEGORY_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_RQMNT_REJECTION_REASON":"REJECTION_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -4789,6 +4836,10 @@ digraph "compactImpliedRelationshipsDiagram" {
   "R_TIER_ALLOC_QUESTION_TIER":"TIER_ALLOCATION_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_TRANSFER_REASON":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "R_TRANSFER_REASON":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "R_UPW_TERMINATION":"RQMNT_TYPE_MAIN_CATEGORY_ID":w -> "R_RQMNT_TYPE_MAIN_CATEGORY":"RQMNT_TYPE_MAIN_CATEGORY_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_UPW_TERMINATION":"RQMNT_TYPE_SUB_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_UPW_VIEW":"RQMNT_TYPE_MAIN_CATEGORY_ID":w -> "R_RQMNT_TYPE_MAIN_CATEGORY":"RQMNT_TYPE_MAIN_CATEGORY_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_UPW_VIEW":"RQMNT_TYPE_SUB_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "RECALL":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "RECALL":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "RECALL":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
