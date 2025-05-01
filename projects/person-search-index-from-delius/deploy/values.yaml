@@ -29,7 +29,7 @@ generic-service:
     CONTACT_INDEX_PREFIX: contact-search
     PERSON_INDEX_PREFIX: person-search
     PIPELINES_ENABLED: person-incremental,contact-incremental
-    PIPELINE_WORKERS: 10
+    PIPELINE_WORKERS: 50
     PIPELINE_BATCH_SIZE: 1
     JDK_JAVA_OPTIONS: ''
     LS_JAVA_OPTS: -Xms3g -Xmx3g # = 75% of pod memory limit (see above)
