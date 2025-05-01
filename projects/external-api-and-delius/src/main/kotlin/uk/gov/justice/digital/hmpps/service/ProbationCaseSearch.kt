@@ -61,7 +61,9 @@ class ProbationCaseSearch(
                     "SearchMismatch",
                     mapOf(
                         "searchFields" to request.fields().joinToString(","),
-                        "resultsSize" to "${dbResult.size} / ${psResult.size}"
+                        "resultsSize" to "${dbResult.size} / ${psResult.size}",
+                        "searchResults" to psResult.joinToString(",") { it.otherIds.crn },
+                        "dbResults" to dbResult.joinToString(",") { it.otherIds.crn }
                     )
                 )
             }
