@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.service.ContactDetail
 import java.time.LocalDate
 
 @Entity
@@ -29,7 +30,7 @@ class Contact(
 
     val eventId: Long? = null,
 
-    val externalReference: String? = null,
+    externalReference: String? = null,
 
     @Column(name = "alert_active")
     @Convert(converter = YesNoConverter::class)
@@ -53,6 +54,13 @@ class Contact(
     var staffId: Long = 0
         private set
 
+    var externalReference: String? = externalReference
+        private set
+
+    @Column(name = "visor_contact")
+    @Convert(converter = YesNoConverter::class)
+    var copyToVisor: Boolean? = null
+
     fun withDateTeamAndStaff(date: LocalDate, teamId: Long, staffId: Long): Contact {
         this.date = date
         this.teamId = teamId
@@ -70,6 +78,18 @@ class Contact(
             |$notes
         """.trimMargin()
         return this
+    }
+
+    fun updateWithDetail(contactDetail: ContactDetail): Contact = apply {
+        val manager = checkNotNull(person.manager)
+        teamId = manager.teamId
+        staffId = manager.staffId
+        date = contactDetail.date
+        externalReference = contactDetail.externalReference
+    }
+
+    fun removeExternalReference() {
+        externalReference = null
     }
 }
 

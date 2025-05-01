@@ -8,11 +8,14 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.MAPPA_CAT_1
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.MAPPA_LVL_2
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType.*
 import uk.gov.justice.digital.hmpps.enum.RiskType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
@@ -57,15 +60,25 @@ class DataLoader(
             *ReferenceDataGenerator.DOMAIN_EVENT_TYPES.toTypedArray()
         )
         saveAll(ReferenceDataGenerator.DISPOSAL_TYPE)
+        saveAll(
+            ReferenceDataGenerator.CATEGORY_DATASET,
+            ReferenceDataGenerator.MAPPA_CAT_1,
+            ReferenceDataGenerator.MAPPA_LVL_2
+        )
 
         PersonGenerator.NO_ROSH.withEvent().withRiskOfSeriousHarm(M, L)
         PersonGenerator.LOW_ROSH
             .withEvent()
             .withRiskOfSeriousHarm(M, H)
-            .withAssessment("2")
+            .withAssessment(
+                "2",
+                OASYS_ASSESSMENT_LOCKED_INCOMPLETE,
+                externalReference = "urn:uk:gov:hmpps:oasys:assessment:2"
+            )
             .withAccreditedProgramRequirement()
+            .withVisorAndMappa()
         PersonGenerator.MEDIUM_ROSH.withEvent().withRiskOfSeriousHarm(M)
-        PersonGenerator.HIGH_ROSH.withEvent().withRiskOfSeriousHarm(L, H)
+        PersonGenerator.HIGH_ROSH.withEvent().withRiskOfSeriousHarm(L, H).withVisorAndMappa()
         PersonGenerator.VERY_HIGH_ROSH.withEvent().withRiskOfSeriousHarm(L, M, H)
         saveAll(PersonGenerator.PERSON_NO_EVENT)
         PersonGenerator.PERSON_SOFT_DELETED_EVENT.withEvent(softDeleted = true).withRiskOfSeriousHarm(L, M, H)
@@ -94,14 +107,18 @@ class DataLoader(
         return this
     }
 
-    private fun Person.withAssessment(oasysId: String): Person {
-        val contact =
-            entityManager.merge(
-                ContactGenerator.generateContact(
-                    this,
-                    ContactGenerator.TYPES[ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value]!!
-                )
+    private fun Person.withAssessment(
+        oasysId: String,
+        type: ContactType.Code,
+        externalReference: String? = null
+    ): Person {
+        val contact = entityManager.merge(
+            ContactGenerator.generateContact(
+                this,
+                ContactGenerator.TYPES[type.value]!!,
+                externalReference = externalReference
             )
+        )
         val assessment = AssessmentGenerator.generate(this, contact, LocalDate.parse("2013-06-07"), oasysId = oasysId)
         entityManager.merge(assessment)
         return this
@@ -125,7 +142,7 @@ class DataLoader(
             val level = ReferenceDataGenerator.LEVELS.singleOrNull { it.code == risk.second?.code }
             val contact = entityManager.merge(ContactGenerator.generateContact(this, type.registrationContactType!!))
             val registration =
-                RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), contact, type, level)
+                RegistrationGenerator.generate(this.id, LocalDate.parse("2023-06-14"), contact, type, level = level)
             val reviewContact = entityManager.merge(
                 ContactGenerator.generateContact(this, type.reviewContactType!!).withNotes("existing notes")
             )
@@ -137,6 +154,26 @@ class DataLoader(
     private fun Person.withAccreditedProgramRequirement(): Person {
         saveAll(PersonGenerator.generateRequirement(this))
         return this
+    }
+
+    private fun Person.withVisorAndMappa(): Person = apply {
+        val mappaType = RegistrationGenerator.TYPES[RegisterType.Code.MAPPA.value]!!
+        val visorType = RegistrationGenerator.TYPES[RegisterType.Code.VISOR.value]!!
+        val contactType = ContactGenerator.TYPES[ContactType.Code.REGISTRATION.value]!!
+        val c1 = entityManager.merge(ContactGenerator.generateContact(this, contactType))
+        val c2 = entityManager.merge(ContactGenerator.generateContact(this, contactType))
+        val mappa =
+            RegistrationGenerator.generate(
+                this.id,
+                LocalDate.parse("2025-04-01"),
+                c1,
+                mappaType,
+                category = MAPPA_CAT_1,
+                level = MAPPA_LVL_2
+            )
+        val visor =
+            RegistrationGenerator.generate(this.id, LocalDate.parse("2025-04-01"), c2, visorType)
+        saveAll(mappa, visor)
     }
 
     private fun saveAll(vararg entities: Any?) = entities.filterNotNull().forEach(entityManager::merge)

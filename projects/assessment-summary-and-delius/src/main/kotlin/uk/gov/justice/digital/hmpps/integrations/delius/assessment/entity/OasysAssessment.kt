@@ -35,7 +35,7 @@ class OasysAssessment(
 
     val eventNumber: String,
 
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE])
     @JoinColumn(name = "contact_id")
     @NotFound(action = NotFoundAction.IGNORE) // No foreign key on contact_id
     val contact: Contact,

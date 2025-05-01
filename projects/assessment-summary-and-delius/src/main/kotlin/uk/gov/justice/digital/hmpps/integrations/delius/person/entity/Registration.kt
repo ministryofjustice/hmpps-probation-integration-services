@@ -44,6 +44,10 @@ class Registration(
     val type: RegisterType,
 
     @ManyToOne
+    @JoinColumn(name = "register_category_id")
+    var category: ReferenceData? = null,
+
+    @ManyToOne
     @JoinColumn(name = "register_level_id")
     var level: ReferenceData? = null,
 
@@ -129,7 +133,12 @@ class RegisterType(
     @Id
     @Column(name = "register_type_id")
     val id: Long
-)
+) {
+    enum class Code(val value: String) {
+        MAPPA("MAPP"),
+        VISOR("AVIS"),
+    }
+}
 
 @Immutable
 @Entity
@@ -236,6 +245,25 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
 
     @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
     fun findByPersonIdAndTypeCodeIn(personId: Long, typeCodes: List<String>): List<Registration>
+
+    @Query(
+        """
+        select r1.type.code as type, count(r1) as number from Registration r1
+        where r1.personId = :personId and r1.type.code = 'AVIS'
+        group by r1.type.code
+        union all 
+        select r2.type.code as type, count(r2) as number from Registration r2
+        where r2.personId = :personId and r2.type.code = 'MAPP' 
+        and r2.category.code in ('M1', 'M2', 'M3', 'M4') and r2.level.code in ('M1', 'M2', 'M3')
+        group by r2.type.code
+    """
+    )
+    fun hasVisorAndMappa(personId: Long): List<RegisterTypeCount>
+}
+
+interface RegisterTypeCount {
+    val type: String
+    val number: Int
 }
 
 fun RegistrationRepository.findByPersonIdAndTypeCode(personId: Long, typeCode: String) =

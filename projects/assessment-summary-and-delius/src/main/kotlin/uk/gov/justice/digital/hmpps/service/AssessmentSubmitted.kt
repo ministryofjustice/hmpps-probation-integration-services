@@ -37,7 +37,7 @@ class AssessmentSubmitted(
 
         val person = personRepository.getByCrn(crn)
 
-        audit(SUBMIT_ASSESSMENT_SUMMARY) {
+        val contact = audit(SUBMIT_ASSESSMENT_SUMMARY) {
             it["CRN"] = person.crn
             it["OASysId"] = summary.assessmentPk
             assessmentService.recordAssessment(person, summary)
@@ -52,6 +52,8 @@ class AssessmentSubmitted(
 
             domainEventService.publishEvents(registrationEvents)
         }
+
+        contact.copyToVisor = riskService.activeVisorAndMappa(person)
 
         if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
             personRepository.updateIaps(person.id)
