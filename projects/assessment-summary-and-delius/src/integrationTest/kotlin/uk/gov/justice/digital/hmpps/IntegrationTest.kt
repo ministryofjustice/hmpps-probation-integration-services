@@ -13,11 +13,13 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.check
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
 import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -146,6 +148,10 @@ internal class IntegrationTest {
             equalTo(listOf(RiskOfSeriousHarmType.M.code, RiskOfSeriousHarmType.H.code))
         )
 
+        val prevAssessment = oasysAssessmentRepository.findByOasysId(PersonGenerator.LOW_ROSH.oasysId())!!
+        val prevAssessmentContact = prevAssessment.contact
+        assertThat(prevAssessmentContact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${prevAssessment.oasysId}"))
+
         channelManager.getChannel(queueName).publishAndWait(message)
 
         val person = personRepository.getByCrn(PersonGenerator.LOW_ROSH.crn)
@@ -157,15 +163,24 @@ internal class IntegrationTest {
         val reg = registrations.first()
         assertThat(reg.type.code, equalTo(RiskOfSeriousHarmType.L.code))
 
-        val assessment = oasysAssessmentRepository.findByOasysId(PersonGenerator.LOW_ROSH.oasysId())
-        assertThat(assessment?.court?.code, equalTo("CRT150"))
-        assertThat(assessment?.offence?.code, equalTo("80400"))
-        assertThat(assessment?.assessedBy, equalTo("John Smith"))
-        assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-07")))
-        assertThat(assessment?.totalScore, equalTo(94))
-        assertThat(assessment?.status?.code, equalTo("C"))
+        val assessment = oasysAssessmentRepository.findByOasysId(PersonGenerator.LOW_ROSH.oasysId())!!
+        assertThat(assessment.court?.code, equalTo("CRT150"))
+        assertThat(assessment.offence?.code, equalTo("80400"))
+        assertThat(assessment.assessedBy, equalTo("John Smith"))
+        assertThat(assessment.date, equalTo(LocalDate.parse("2023-12-07")))
+        assertThat(assessment.totalScore, equalTo(94))
+        assertThat(assessment.status?.code, equalTo("C"))
 
-        val scores = assessment?.sectionScores?.associate { it.id.level to it.score }!!
+        val contact = assessment.contact
+        assertThat(contact.date, equalTo(assessment.date))
+        assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
+        assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
+        assertThat(contact.copyToVisor, equalTo(true))
+
+        val prevContact = contactRepository.findByIdOrNull(prevAssessmentContact.id)!!
+        assertThat(prevContact.externalReference, equalTo(null))
+
+        val scores = assessment.sectionScores.associate { it.id.level to it.score }
         assertThat(scores[3L], equalTo(1))
         assertThat(scores[4L], equalTo(2))
         assertThat(scores[6L], equalTo(3))

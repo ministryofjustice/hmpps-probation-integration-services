@@ -15,7 +15,8 @@ object RegistrationGenerator {
 
     val TYPES = listOf(
         RiskOfSeriousHarmType.entries.map { generateType(it.code, it.colour, flag = ROSH_FLAG) },
-        RiskType.entries.map { generateType(it.code, "Amber", "Risk to ${it.name.lowercase()}") }
+        RiskType.entries.map { generateType(it.code, "Amber", "Risk to ${it.name.lowercase()}") },
+        listOf(generateType(RegisterType.Code.MAPPA.value), generateType(RegisterType.Code.VISOR.value))
     ).flatten().associateBy { it.code }
 
     val ALT_TYPE = generateType("ALT1", "Amber", "ALT Risk to prisoner")
@@ -38,17 +39,18 @@ object RegistrationGenerator {
         date: LocalDate,
         contact: Contact,
         type: RegisterType,
+        category: ReferenceData? = null,
         level: ReferenceData? = null,
         teamId: Long = ProviderGenerator.DEFAULT_TEAM_ID,
         staffId: Long = ProviderGenerator.DEFAULT_STAFF_ID,
         nextReviewDate: LocalDate? = type.reviewPeriod?.let { date.plusMonths(it) },
         notes: String? = null,
         softDeleted: Boolean = false,
-    ) = Registration(personId, date, contact, teamId, staffId, type, level, nextReviewDate, notes, softDeleted)
+    ) = Registration(personId, date, contact, teamId, staffId, type, category, level, nextReviewDate, notes, softDeleted)
 
     fun generateType(
         code: String,
-        colour: String,
+        colour: String? = null,
         description: String = "Description of $code",
         flag: ReferenceData = ReferenceDataGenerator.SAFEGUARDING_FLAG,
         registrationContactType: ContactType? = ContactGenerator.TYPES[ContactType.Code.REGISTRATION.value],

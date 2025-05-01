@@ -28,6 +28,12 @@ class RiskService(
     private val contactService: ContactService,
     private val ordsClient: OrdsClient
 ) {
+    fun activeVisorAndMappa(person: Person): Boolean {
+        val registerCounts: Map<String, Int> = registrationRepository.hasVisorAndMappa(person.id).associate { it.type to it.number }
+        return registerCounts.getOrDefault(RegisterType.Code.VISOR.value, 0) > 0 &&
+            registerCounts.getOrDefault(RegisterType.Code.MAPPA.value, 0) > 0
+    }
+
     fun recordRisk(person: Person, summary: AssessmentSummary, telemetryRecording: (String, String) -> Unit) =
         recordRiskOfSeriousHarm(person, summary, telemetryRecording) + recordOtherRisks(
             person,

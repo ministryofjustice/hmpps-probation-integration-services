@@ -30,26 +30,24 @@ class AssessmentService(
     private val contactService: ContactService,
     private val referenceDataRepository: ReferenceDataRepository,
 ) {
-    fun recordAssessment(person: Person, summary: AssessmentSummary) {
+    fun recordAssessment(person: Person, summary: AssessmentSummary): Contact {
         val previousAssessment = oasysAssessmentRepository.findByOasysId(summary.assessmentPk.toString())
 
         val eventNumber = summary.furtherInformation.cmsEventNumber?.toString()
             ?: eventRepository.findActiveCustodialEvents(person.id).singleOrNull()
             ?: throw IgnorableMessageException("No single active custodial event")
         val event = eventRepository.getByNumber(person.id, eventNumber)
-        val manager = checkNotNull(person.manager) { "Community Manager Not Found" }
-        val contact = previousAssessment?.contact?.withDateTeamAndStaff(
-            summary.dateCompleted,
-            manager.teamId,
-            manager.staffId
-        ) ?: contactService.createContact(
-            summary.contactDetail(summary.dateCompleted),
-            person,
-            event
-        )
+        checkNotNull(person.manager) { "Community Manager Not Found" }
+        val contactDetail = summary.contactDetail()
+        val contact = previousAssessment?.contact
+            ?.takeIf { it.type.code == contactDetail.typeCode.value }
+            ?.updateWithDetail(contactDetail)
+            ?: contactService.createContact(contactDetail, person, event)
+            .also { previousAssessment?.contact?.removeExternalReference() }
 
         previousAssessment?.also(oasysAssessmentRepository::delete)
         oasysAssessmentRepository.save(summary.oasysAssessment(person, event, contact))
+        return contact
     }
 
     fun AssessmentSummary.oasysAssessment(person: Person, event: Event, contact: Contact): OasysAssessment {
@@ -104,14 +102,14 @@ class AssessmentService(
     }
 }
 
-private fun AssessmentSummary.contactDetail(contactDate: LocalDate) =
+private fun AssessmentSummary.contactDetail() =
     ContactDetail(
         when (assessmentStatus) {
             "COMPLETE" -> ContactType.Code.OASYS_ASSESSMENT_COMPLETE
             "LOCKED_INCOMPLETE" -> ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE
             else -> throw IllegalArgumentException("Unexpected assessment status: $assessmentStatus")
         },
-        contactDate,
+        dateCompleted,
         "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}",
         "urn:uk:gov:hmpps:oasys:assessment:${assessmentPk}"
     )
