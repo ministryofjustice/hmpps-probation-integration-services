@@ -246,7 +246,8 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
     fun findByPersonIdAndTypeCodeIn(personId: Long, typeCodes: List<String>): List<Registration>
 
-    @Query("""
+    @Query(
+        """
         select r1.type.code as type, count(r1) as number from Registration r1
         where r1.personId = :personId and r1.type.code = 'AVIS'
         group by r1.type.code
@@ -255,7 +256,8 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         where r2.personId = :personId and r2.type.code = 'MAPP' 
         and r2.category.code in ('M1', 'M2', 'M3', 'M4') and r2.level.code in ('M1', 'M2', 'M3')
         group by r2.type.code
-    """)
+    """
+    )
     fun hasVisorAndMappa(personId: Long): List<RegisterTypeCount>
 }
 

@@ -150,7 +150,10 @@ internal class IntegrationTest {
 
         val prevAssessment = oasysAssessmentRepository.findByOasysId(PersonGenerator.LOW_ROSH.oasysId())!!
         val prevAssessmentContact = prevAssessment.contact
-        assertThat(prevAssessmentContact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${prevAssessment.oasysId}"))
+        assertThat(
+            prevAssessmentContact.externalReference,
+            equalTo("urn:uk:gov:hmpps:oasys:assessment:${prevAssessment.oasysId}")
+        )
 
         channelManager.getChannel(queueName).publishAndWait(message)
 

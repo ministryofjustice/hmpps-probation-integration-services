@@ -163,7 +163,14 @@ class DataLoader(
         val c1 = entityManager.merge(ContactGenerator.generateContact(this, contactType))
         val c2 = entityManager.merge(ContactGenerator.generateContact(this, contactType))
         val mappa =
-            RegistrationGenerator.generate(this.id, LocalDate.parse("2025-04-01"), c1, mappaType, category = MAPPA_CAT_1, level = MAPPA_LVL_2)
+            RegistrationGenerator.generate(
+                this.id,
+                LocalDate.parse("2025-04-01"),
+                c1,
+                mappaType,
+                category = MAPPA_CAT_1,
+                level = MAPPA_LVL_2
+            )
         val visor =
             RegistrationGenerator.generate(this.id, LocalDate.parse("2025-04-01"), c2, visorType)
         saveAll(mappa, visor)
