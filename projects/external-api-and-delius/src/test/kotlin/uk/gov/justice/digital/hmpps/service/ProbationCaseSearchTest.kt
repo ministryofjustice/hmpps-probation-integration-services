@@ -46,7 +46,14 @@ internal class ProbationCaseSearchTest {
 
         verify(telemetryService).trackEvent(
             eq("SearchMismatch"),
-            eq(mapOf("searchFields" to "firstName", "resultsSize" to "1 / 1")),
+            eq(
+                mapOf(
+                    "searchFields" to "firstName",
+                    "resultsSize" to "1 / 1",
+                    "searchResults" to "D123456",
+                    "dbResults" to "A123456",
+                )
+            ),
             eq(emptyMap())
         )
     }
