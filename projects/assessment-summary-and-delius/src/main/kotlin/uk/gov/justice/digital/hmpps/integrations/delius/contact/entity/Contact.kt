@@ -57,7 +57,7 @@ class Contact(
     var externalReference: String? = externalReference
         private set
 
-    @Column(name = "visor_exported") // TODO check whether this is the correct field or visor_contact
+    @Column(name = "visor_contact")
     @Convert(converter = YesNoConverter::class)
     var copyToVisor: Boolean? = null
 
