@@ -37,6 +37,10 @@ object ReferenceDataGenerator {
         .map { generateReferenceData(it.value, dataset = DOMAIN_EVENT_TYPE_DATASET) }
     val DISPOSAL_TYPE = generateDisposalType("NC")
 
+    val CATEGORY_DATASET = generateDataset(Dataset.Code.REGISTER_CATEGORY.value)
+    val MAPPA_CAT_1 = generateReferenceData("M1", "MAPPA Cat 1", CATEGORY_DATASET)
+    val MAPPA_LVL_2 = generateReferenceData("M2", "MAPPA Level 2", LEVELS_DATASET)
+
     fun generateReferenceData(
         code: String,
         description: String = "Description of $code",
