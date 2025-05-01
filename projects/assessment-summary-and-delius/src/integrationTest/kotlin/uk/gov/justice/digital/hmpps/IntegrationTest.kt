@@ -254,15 +254,21 @@ internal class IntegrationTest {
         val reg = registrations.first()
         assertThat(reg.type.code, equalTo(RegistrationGenerator.TYPES[RiskOfSeriousHarmType.H.code]?.code))
 
-        val assessment = oasysAssessmentRepository.findByOasysId(PersonGenerator.HIGH_ROSH.oasysId())
-        assertThat(assessment?.court?.code, equalTo("LVRPCC"))
-        assertThat(assessment?.offence?.code, equalTo("00857"))
-        assertThat(assessment?.assessedBy, equalTo("LevelTwo CentralSupport"))
-        assertThat(assessment?.date, equalTo(LocalDate.parse("2023-12-15")))
-        assertThat(assessment?.totalScore, equalTo(108))
-        assertThat(assessment?.status?.code, equalTo("C"))
+        val assessment = oasysAssessmentRepository.findByOasysId(PersonGenerator.HIGH_ROSH.oasysId())!!
+        assertThat(assessment.court?.code, equalTo("LVRPCC"))
+        assertThat(assessment.offence?.code, equalTo("00857"))
+        assertThat(assessment.assessedBy, equalTo("LevelTwo CentralSupport"))
+        assertThat(assessment.date, equalTo(LocalDate.parse("2023-12-15")))
+        assertThat(assessment.totalScore, equalTo(108))
+        assertThat(assessment.status?.code, equalTo("C"))
 
-        val scores = assessment?.sectionScores?.associate { it.id.level to it.score }!!
+        val contact = assessment.contact
+        assertThat(contact.date, equalTo(assessment.date))
+        assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
+        assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
+        assertThat(contact.copyToVisor, equalTo(true))
+
+        val scores = assessment.sectionScores.associate { it.id.level to it.score }
         assertThat(scores[3L], equalTo(8))
         assertThat(scores[4L], equalTo(7))
         assertThat(scores[6L], equalTo(4))

@@ -78,7 +78,7 @@ class DataLoader(
             .withAccreditedProgramRequirement()
             .withVisorAndMappa()
         PersonGenerator.MEDIUM_ROSH.withEvent().withRiskOfSeriousHarm(M)
-        PersonGenerator.HIGH_ROSH.withEvent().withRiskOfSeriousHarm(L, H)
+        PersonGenerator.HIGH_ROSH.withEvent().withRiskOfSeriousHarm(L, H).withVisorAndMappa()
         PersonGenerator.VERY_HIGH_ROSH.withEvent().withRiskOfSeriousHarm(L, M, H)
         saveAll(PersonGenerator.PERSON_NO_EVENT)
         PersonGenerator.PERSON_SOFT_DELETED_EVENT.withEvent(softDeleted = true).withRiskOfSeriousHarm(L, M, H)
