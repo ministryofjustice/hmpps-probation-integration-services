@@ -208,6 +208,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StreamingResponseBody"
+  /users/{username}/teams:
+    get:
+      tags:
+      - user-resource
+      summary: "Team, LAU, PDU and Provider hierarchy associated with a staff username"
+      description: "A list of teams for a staff username, along with the LAU (Local\
+        \ Admin Unit), PDU (Probation Delivery Unit) and Provider for each."
+      operationId: userTeams
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffTeamsResponse"
   /teams:
     get:
       tags:
@@ -993,17 +1014,6 @@ components:
       - length
       - type
     StreamingResponseBody: {}
-    TeamsResponse:
-      type: object
-      properties:
-        teams:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: "#/components/schemas/StaffMember"
-      required:
-      - teams
     LocalAdminUnit:
       type: object
       properties:
@@ -1062,6 +1072,17 @@ components:
       - code
       - description
       - localAdminUnit
+    TeamsResponse:
+      type: object
+      properties:
+        teams:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/StaffMember"
+      required:
+      - teams
     OfficerView:
       type: object
       properties:
