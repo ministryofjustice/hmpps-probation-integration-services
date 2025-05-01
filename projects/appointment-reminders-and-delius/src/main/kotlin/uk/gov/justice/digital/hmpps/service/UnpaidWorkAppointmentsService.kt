@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import io.sentry.Sentry
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.properties.UpwAppointmentRemindersJobProperties
@@ -28,7 +29,14 @@ class UnpaidWorkAppointmentsService(
                     val responses = templateIds.map { templateId ->
                         log.info("Sending SMS template $templateId to ${it.mobileNumber}")
                         val templateValues = mapOf("FirstName" to it.firstName, "NextWorkSession" to it.appointmentDate)
-                        notificationClient.sendSms(templateId, it.mobileNumber, templateValues, it.crn)
+                        try {
+                            notificationClient.sendSms(templateId, it.mobileNumber, templateValues, it.crn)
+                        } catch (e: Exception) {
+                            telemetryService.trackEvent("UnpaidWorkAppointmentReminderFailure", telemetryProperties)
+                            telemetryService.trackException(e, telemetryProperties)
+                            Sentry.captureException(e)
+                            return@forEach
+                        }
                     }
                     telemetryService.trackEvent(
                         "UnpaidWorkAppointmentReminderSent",
