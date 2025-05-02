@@ -91,9 +91,23 @@ class DocumentService(
         part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(name)
         part("author", "Service,Breach Notice", MediaType.TEXT_PLAIN)
         part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
-        part("entityType", tableName, MediaType.TEXT_PLAIN)
+
+        //entityType in Alfresco does not always correspond exactly to tableName in Delius.
+        // See https://github.com/ministryofjustice/delius/blob/0087df0cb1dd5305fb44f89f4bf78dfc6b3916f6/NDelius-lib/src/main/java/uk/co/bconline/ndelius/util/iwp/MetadataMapper.java#L18-L39
+        part("entityType", populateEntityType(tableName), MediaType.TEXT_PLAIN)
         part("entityId", primaryKeyId.toString(), MediaType.TEXT_PLAIN)
     }.build()
 
     private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
+
+    private fun populateEntityType(entityType: String): String {
+        return when (entityType) {
+            "APPROVED_PREMISES_REFERRAL" -> "APREFERRAL"
+            "COURT_REPORT" -> "COURTREPORT"
+            "INSTITUTIONAL_REPORT" -> "INSTITUTIONALREPORT"
+            "PERSONAL_CIRCUMSTANCE" -> "PERSONALCIRCUMSTANCE"
+            "UPW_APPOINTMENT" -> "UPWAPPOINTMENT"
+            else -> entityType
+        }
+    }
 }
