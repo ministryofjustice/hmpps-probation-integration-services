@@ -60,6 +60,21 @@ class Contact(
     @Column(name = "visor_contact")
     @Convert(converter = YesNoConverter::class)
     var copyToVisor: Boolean? = null
+        set(value) {
+            visorExported = if (value == true && visorExported == null) {
+                false
+            } else if (value != true) {
+                null
+            } else {
+                visorExported
+            }
+            field = value
+        }
+
+    @Column(name = "visor_exported")
+    @Convert(converter = YesNoConverter::class)
+    var visorExported: Boolean? = null
+        private set
 
     fun withDateTeamAndStaff(date: LocalDate, teamId: Long, staffId: Long): Contact {
         this.date = date
