@@ -50,6 +50,6 @@ class Provision(
     )
 
 interface ProvisionRepository : JpaRepository<Provision, Long> {
-    @EntityGraph(attributePaths = ["type","lastUpdatedUser","lastUpdatedUser.staff","lastUpdatedUser.staff.provider"])
+    @EntityGraph(attributePaths = ["type", "lastUpdatedUser", "lastUpdatedUser.staff", "lastUpdatedUser.staff.provider"])
     fun findByPersonId(personId: Long): List<Provision>
 }

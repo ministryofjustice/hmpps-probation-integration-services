@@ -131,7 +131,7 @@ interface PersonSummaryEntity {
 
 interface PersonRepository : JpaRepository<Person, Long> {
 
-    @EntityGraph(attributePaths = ["gender", "religion", "language", "sexualOrientation","genderIdentity", "lastUpdatedUser"])
+    @EntityGraph(attributePaths = ["gender", "religion", "language", "sexualOrientation", "genderIdentity", "lastUpdatedUser"])
     fun findByCrn(crn: String): Person?
 
     @Query(
