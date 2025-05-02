@@ -121,8 +121,11 @@ class Contact(
     fun endDateTime(): ZonedDateTime? =
         if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null
 
-    fun shouldHaveOutcomeRecorded(): Boolean {
-        return outcome != null && type.contactOutcomeFlag == true
+    fun shouldHaveOutcomeRecorded(): Boolean? {
+        if(type.contactOutcomeFlag != true){
+            return null
+        }
+        return outcome == null
     }
 
     fun isInitial(): Boolean = setOf(
