@@ -42,8 +42,7 @@ class AssessmentService(
         val contact = previousAssessment?.contact
             ?.takeIf { it.type.code == contactDetail.typeCode.value }
             ?.updateWithDetail(contactDetail)
-            ?: contactService.createContact(contactDetail, person, event)
-                .also { previousAssessment?.contact?.removeExternalReference() }
+            ?: contactService.createContact(contactDetail, person, event, previousAssessment?.contact)
 
         previousAssessment?.also(oasysAssessmentRepository::delete)
         oasysAssessmentRepository.save(summary.oasysAssessment(person, event, contact))

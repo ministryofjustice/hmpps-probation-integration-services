@@ -68,6 +68,7 @@ class DocumentService(
         val hasOtherDocuments = documentRepository
             .existsByTableNameAndPrimaryKeyIdAndIdNot(document.tableName, document.primaryKeyId, document.id)
 
+        // update deploy/database/access.yml if new tables are included
         val query = when (document.tableName) {
             "ADDRESSASSESSMENT" -> entityManager.createNativeQuery("update address_assessment set document_linked = :documentLinked where address_assessment_id = :primaryKeyId")
             "ASSESSMENT" -> entityManager.createNativeQuery("update assessment set document_linked = :documentLinked where assessment_id = :primaryKeyId")
