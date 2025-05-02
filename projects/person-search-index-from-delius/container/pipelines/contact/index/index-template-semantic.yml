@@ -1252,6 +1252,9 @@ template:
         type: text
         analyzer: probation_text_analyzer
         boost: 5
+        fields:
+          keyword:
+            type: keyword
       description:
         type: text
         analyzer: probation_text_analyzer
