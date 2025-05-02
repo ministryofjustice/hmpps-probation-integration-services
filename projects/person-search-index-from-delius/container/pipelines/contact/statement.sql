@@ -31,6 +31,7 @@ from (with page as (select * from contact where :contact_id = 0
                      'nationalStandard' value r_contact_type.national_standards_contact,
                      'systemGenerated' value decode(r_contact_type.sgc_flag, 1, 'Y', 0, 'N', null),
                      'outcomeRequiredFlag' value r_contact_type.contact_outcome_flag,
+                     'attendanceContact' value r_contact_type.attendance_contact,
                      'lastUpdatedDateTime' value contact.last_updated_datetime,
                      'typeCode' value r_contact_type.code,
                      'typeDescription' value r_contact_type.description,
