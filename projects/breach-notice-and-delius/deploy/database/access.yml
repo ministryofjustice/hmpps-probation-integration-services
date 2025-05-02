@@ -5,6 +5,13 @@ database:
     tables:
       - audited_interaction
       - document
+      - address_assessment
+      - assessment
+      - contact
+      - nsi
+      - referral
+      - registration
+      - upw_appointment
 
   audit:
     username: BreachNoticeAndDelius
