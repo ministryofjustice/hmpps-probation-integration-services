@@ -130,6 +130,17 @@ class UserService(
     fun getAppointmentsWithoutOutcomes(username: String, pageable: Pageable): UserDiary {
         val user = getUser(username)
 
+        // In mpop api getUserAppointments is called to populate mpop homepage.
+        // When api getUserAppointmentsWithoutOutcomes is then called when selecting a page link,
+        // this with quick.  However, if the user updates the browser with /caseload/appointments/no-outcome,
+        // this will result in api getUserAppointmentsWithoutOutcomes, which is slow.
+        // getUserAppointments was previously updated to improve sql performance, and adding the code below will load
+        // data in sql cache to speed up contactRepository.findAppointmentsWithoutOutcomesByUser
+        getSummaryOfAppointmentsWithoutOutcomes(
+            username,
+            PageRequest.of(0, 5).withSort(Sort.by(Sort.Direction.ASC, "c.contact_date", "c.contact_start_time"))
+        )
+
         return user.staff?.let {
             val contacts = contactRepository.findAppointmentsWithoutOutcomesByUser(
                 user.staff.id,
