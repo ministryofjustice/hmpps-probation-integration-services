@@ -87,6 +87,9 @@ interface RiskFlagRepository : JpaRepository<RiskFlag, Long> {
     @Query(
         """
         select r from RiskFlag r
+        left join fetch r.category c
+        left join fetch r.type t
+        left join fetch r.level l
         where r.type.code = 'MAPP'
         and r.personId = :offenderId
         and r.softDeleted = false
