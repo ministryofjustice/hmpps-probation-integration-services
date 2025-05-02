@@ -122,7 +122,7 @@ class Contact(
         if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null
 
     fun hasARequiredOutcome(): Boolean? {
-        if(type.contactOutcomeFlag != true){
+        if (type.contactOutcomeFlag != true) {
             return null
         }
         return outcome != null
