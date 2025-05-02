@@ -130,6 +130,8 @@ internal class IntegrationTest {
             .single { it.person.id == person.id && it.type.code == ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value }
         assertThat(contact.date, equalTo(assessment?.date))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment?.oasysId}"))
+        assertThat(contact.copyToVisor, equalTo(false))
+        assertThat(contact.visorExported, equalTo(null))
     }
 
     @Test
@@ -178,6 +180,7 @@ internal class IntegrationTest {
         assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(true))
+        assertThat(contact.visorExported, equalTo(false))
 
         val prevContact = contactRepository.findByIdOrNull(prevAssessmentContact.id)!!
         assertThat(prevContact.externalReference, equalTo(null))
@@ -267,6 +270,7 @@ internal class IntegrationTest {
         assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(true))
+        assertThat(contact.visorExported, equalTo(false))
 
         val scores = assessment.sectionScores.associate { it.id.level to it.score }
         assertThat(scores[3L], equalTo(8))
