@@ -41,10 +41,10 @@ class ComplianceService(
         fun sentenceActivity(eventNumber: String) = allActiveSentenceActivity.filter { it.eventNumber == eventNumber }
 
         fun getRarCategoryFromSentence(eventNumber: String) =
-            allActiveSentenceActivity.firstOrNull { it.eventNumber == eventNumber && it.isRarRelated }?.rarCategory
+            allActiveSentenceActivity.firstOrNull { it.eventNumber == eventNumber && it.isRarRelated == true }?.rarCategory
 
         fun rarActivity(eventNumber: String) =
-            allActiveSentenceActivity.filter { it.eventNumber == eventNumber && it.isRarRelated }
+            allActiveSentenceActivity.filter { it.eventNumber == eventNumber && it.isRarRelated == true }
 
         fun Event.toSentenceCompliance() = mainOffence?.offence?.let { offence ->
             SentenceCompliance(
@@ -66,7 +66,7 @@ class ComplianceService(
                         status = it.nsiStatus?.description
                     )
                 },
-                activity = toRarActivityCounts(
+                activity = toActivityCounts(
                     rarActivity(
                         eventNumber
                     )
@@ -104,7 +104,7 @@ class ComplianceService(
         )
 }
 
-fun toRarActivityCounts(activities: List<Activity>) = ActivityCount(
+fun toActivityCounts(activities: List<Activity>) = ActivityCount(
     waitingForEvidenceCount = activities.count { it.isPastAppointment && it.absentWaitingEvidence == true },
     absentCount = activities.count { it.isPastAppointment && it.wasAbsent == true },
     attendedButDidNotComplyCount = activities.count { it.isPastAppointment && it.wasAbsent == false && it.didTheyComply == false },

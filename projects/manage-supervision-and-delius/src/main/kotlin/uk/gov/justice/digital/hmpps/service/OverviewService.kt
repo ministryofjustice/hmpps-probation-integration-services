@@ -38,7 +38,7 @@ class OverviewService(
         val allContacts = contactRepository.findByPersonId(person.id)
         val previousAppointments = contactRepository.getPreviousAppointments(person.id)
         val previousAppointmentNoOutcome =
-            previousAppointments.filter { it.attended != false && it.outcome == null }.size
+            previousAppointments.filter { it.outcome == null && it.type.contactOutcomeFlag == true}.size
         val absentWithoutEvidence = previousAppointments.filter { it.attended == false && it.outcome == null }.size
         val schedule = Schedule(contactRepository.firstAppointment(person.id)?.toNextAppointment())
         val events = eventRepository.findByPersonId(person.id)
@@ -46,8 +46,8 @@ class OverviewService(
         val sentences = activeEvents.map { it.toSentence() }
         val allBreaches = nsiRepository.getAllBreaches(person.id)
         val previousOrders = events.filter { it.isInactiveEvent() }
-        val previousOrdersBreached = allBreaches.filter { it -> it.eventId in previousOrders.map { it.id } }.size
-        val compliance = toSentenceCompliance(previousAppointments.map { it.toActivity() }, allBreaches)
+        val previousOrdersBreached = allBreaches.filter { breach -> breach.eventId in previousOrders.map { it.id } }.size
+        val compliance = toSentenceCompliance(previousAppointments.map { it.toActivityOverview() }, allBreaches)
         val registrations = registrationRepository.findByPersonId(person.id)
         val mappa = riskFlagRepository.findActiveMappaRegistrationByOffenderId(person.id, PageRequest.of(0, 1))
             .firstOrNull()
@@ -60,7 +60,7 @@ class OverviewService(
             schedule = schedule,
             previousOrders = PreviousOrders(previousOrdersBreached, previousOrders.size),
             sentences = sentences.mapNotNull { it },
-            activity = toRarActivityCounts(allContacts.map { it.toActivity() }),
+            activity = toActivityCounts(allContacts.map { it.toActivityOverview() }),
             compliance = compliance,
             registrations = registrations.map { it.type.description },
             mappa = mappa?.toMappa()

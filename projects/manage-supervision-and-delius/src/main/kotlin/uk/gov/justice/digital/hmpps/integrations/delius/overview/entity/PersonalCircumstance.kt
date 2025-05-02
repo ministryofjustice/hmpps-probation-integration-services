@@ -62,6 +62,8 @@ interface PersonCircumstanceRepository : JpaRepository<PersonalCircumstance, Lon
     @Query(
         """
         select pc from PersonalCircumstance pc 
+        left join fetch pc.subType sub
+        left join fetch pc.type type
         where pc.personId = :personId
         and (pc.endDate is null or pc.endDate > current_date )
     """

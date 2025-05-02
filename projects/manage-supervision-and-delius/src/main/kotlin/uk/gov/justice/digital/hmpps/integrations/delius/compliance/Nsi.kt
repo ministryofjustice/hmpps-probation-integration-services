@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -93,7 +94,7 @@ class NsiType(
 }
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
-
+    @EntityGraph(attributePaths = ["type", "nsiStatus"])
     fun findByPersonIdAndTypeCode(personId: Long, typeCode: String): List<Nsi>
 }
 

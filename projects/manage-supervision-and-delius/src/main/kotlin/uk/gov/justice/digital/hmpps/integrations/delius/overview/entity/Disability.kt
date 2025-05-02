@@ -6,6 +6,7 @@ import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
@@ -49,5 +50,7 @@ class Disability(
     )
 
 interface DisabilityRepository : JpaRepository<Disability, Long> {
+
+    @EntityGraph(attributePaths = ["type", "lastUpdatedUser", "lastUpdatedUser.staff", "lastUpdatedUser.staff.provider"])
     fun findByPersonId(personId: Long): List<Disability>
 }

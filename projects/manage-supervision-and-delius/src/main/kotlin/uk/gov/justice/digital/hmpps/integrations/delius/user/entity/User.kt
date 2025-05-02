@@ -24,7 +24,7 @@ class User(
     @Column(name = "user_id")
     val id: Long,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
     val staff: Staff? = null,
 

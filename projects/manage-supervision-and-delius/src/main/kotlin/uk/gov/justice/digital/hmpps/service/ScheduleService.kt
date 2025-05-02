@@ -59,6 +59,41 @@ fun OfficeLocation.toOfficeAddress() = OfficeAddress.from(
     telephoneNumber = telephoneNumber
 )
 
+fun Contact.toActivityOverview() = Activity(
+    id = id,
+    type = type.description,
+    isNationalStandard = type.nationalStandardsContact,
+    isSensitive = sensitive,
+    didTheyComply = complied,
+    acceptableAbsence = outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true,
+    acceptableAbsenceReason = if (outcome?.outcomeAttendance == false && outcome.outcomeCompliantAcceptable == true)
+        outcome.description else null,
+    absentWaitingEvidence = attended == false && outcome == null,
+    startDateTime = startDateTime(),
+    endDateTime = endDateTime(),
+    hasOutcome = shouldHaveOutcomeRecorded(),
+    isInitial = isInitial(),
+    lastUpdated = lastUpdated,
+    lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),
+    wasAbsent = outcome?.outcomeAttendance == false,
+    nonComplianceReason = if (outcome?.outcomeCompliantAcceptable == false) type.description else null,
+    countsTowardsRAR = rarActivity,
+    rescheduled = rescheduledPop(),
+    rescheduledStaff = rescheduledPop() || rescheduledStaff(),
+    rescheduledPop = rescheduledPop(),
+    rearrangeOrCancelReason = if (rescheduled()) outcome?.description else null,
+    isAppointment = type.attendanceContact,
+    action = action?.description,
+    isSystemContact = type.systemGenerated,
+    isEmailOrTextFromPop = isEmailOrTextFromPop(),
+    isEmailOrTextToPop = isEmailOrTextToPop(),
+    isPhoneCallFromPop = isPhoneCallFromPop(),
+    isPhoneCallToPop = isPhoneCallToPop(),
+    isCommunication = isCommunication(),
+    description = description,
+    outcome = outcome?.description,
+)
+
 fun Contact.toActivity(noteId: Int? = null) = Activity(
     id = id,
     type = type.description,
@@ -72,7 +107,7 @@ fun Contact.toActivity(noteId: Int? = null) = Activity(
     documents = documents.map { it.toDocument() },
     startDateTime = startDateTime(),
     endDateTime = endDateTime(),
-    hasOutcome = canHaveOutcomeRecorded(),
+    hasOutcome = shouldHaveOutcomeRecorded(),
     isInitial = isInitial(),
     lastUpdated = lastUpdated,
     lastUpdatedBy = Name(forename = lastUpdatedUser.forename, surname = lastUpdatedUser.surname),

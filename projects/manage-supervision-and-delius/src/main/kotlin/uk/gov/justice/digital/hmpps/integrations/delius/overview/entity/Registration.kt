@@ -6,6 +6,7 @@ import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Immutable
@@ -36,6 +37,8 @@ class Registration(
 )
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
+
+    @EntityGraph(attributePaths = ["type"])
     fun findByPersonId(personId: Long): List<Registration>
 }
 
