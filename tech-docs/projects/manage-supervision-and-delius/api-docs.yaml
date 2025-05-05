@@ -2210,7 +2210,6 @@ components:
       - isInitial
       - isNationalStandard
       - isPastAppointment
-      - isRarRelated
       - lastUpdated
       - lastUpdatedBy
       - rescheduled
