@@ -73,6 +73,8 @@ interface EventRepository : JpaRepository<Event, Long> {
             "LEFT JOIN FETCH e.additionalOffences ao " +
             "LEFT JOIN FETCH m.offence mo " +
             "LEFT JOIN FETCH ao.offence aoo " +
+            "LEFT JOIN FETCH d.terminationReason tr " +
+            "LEFT JOIN FETCH d.lengthUnit lu " +
             "WHERE e.personId = :personId " +
             "ORDER BY e.dateCreated DESC"
     )

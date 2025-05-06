@@ -13,8 +13,6 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ContactTypeOutcome
-import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.LatestSentence
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
 import java.io.Serializable
@@ -35,11 +33,11 @@ class Contact(
     @Column(name = "offender_id")
     val personId: Long,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     val event: Event? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
 
@@ -65,11 +63,11 @@ class Contact(
     @Convert(converter = YesNoConverter::class)
     val complied: Boolean? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contact_outcome_type_id")
     val outcome: ContactOutcome? = null,
 
-    @OneToMany(mappedBy = "contact")
+    @OneToMany(mappedBy = "contact", fetch = FetchType.LAZY)
     val documents: List<ContactDocument> = emptyList(),
 
     @ManyToOne
@@ -100,10 +98,10 @@ class Contact(
 
     @Column(name = "last_updated_datetime")
     val lastUpdated: ZonedDateTime,
-
-    @ManyToOne
-    @JoinColumn(name = "offender_id", insertable = false, updatable = false)
-    val latestSentence: LatestSentence? = null,
+//
+//    @ManyToOne
+//    @JoinColumn(name = "offender_id", insertable = false, updatable = false)
+//    val latestSentence: LatestSentence? = null,
 
     @ManyToOne
     @JoinColumn(name = "last_updated_user_id")
@@ -123,12 +121,11 @@ class Contact(
     fun endDateTime(): ZonedDateTime? =
         if (endTime != null) ZonedDateTime.of(date, endTime.toLocalTime(), EuropeLondon) else null
 
-    fun canHaveOutcomeRecorded(): Boolean? {
-        val hasPossibleOutcome = type.possibleOutcomes.any { it.outcome.selectable }
-        return when (hasPossibleOutcome) {
-            true -> outcome != null
-            else -> null
+    fun hasARequiredOutcome(): Boolean? {
+        if (type.contactOutcomeFlag != true) {
+            return null
         }
+        return outcome != null
     }
 
     fun isInitial(): Boolean = setOf(
@@ -175,11 +172,8 @@ class ContactType(
     @Column
     val description: String,
 
-    @OneToMany(mappedBy = "id.contactTypeId")
+    @OneToMany(mappedBy = "id.contactTypeId", fetch = FetchType.LAZY)
     val categories: List<ContactCategory> = emptyList(),
-
-    @OneToMany(mappedBy = "id.contactTypeId")
-    val possibleOutcomes: List<ContactTypeOutcome> = emptyList(),
 
     @Column(name = "sgc_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -280,6 +274,29 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
+        left join fetch c.lastUpdatedUser u
+        left join fetch u.staff st
+        left join fetch st.provider prov
+        left join fetch c.requirement rqmnt
+        left join fetch rqmnt.mainCategory rmc
+        left join fetch rmc.unitDetails ud
+        left join fetch c.event e
+        left join fetch c.type t
+        left join fetch c.location l
+        left join fetch l.ldu old
+        left join fetch old.borough brgh
+        left join fetch c.outcome o
+        left join fetch t.categories cats
+        left join fetch c.action a
+        left join fetch a.contactType ct
+        left join fetch e.disposal d
+        left join fetch d.lengthUnit lu
+        left join fetch d.terminationReason tr
+        left join fetch e.court crt
+        left join fetch d.type dt
+        left join fetch e.mainOffence mo
+        left join fetch mo.offence moo
+        left join fetch rqmnt.subCategory rsc
         where c.personId = :personId
         order by c.date desc, c.startTime desc 
     """
@@ -297,6 +314,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             select c.*
             from contact c
             join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            left join r_contact_type_outcome cot on cot.contact_outcome_type_id = c.contact_outcome_type_id
             where c.offender_id = :personId and ct.attendance_contact = 'Y'
             and (to_char(c.contact_date, 'YYYY-MM-DD') > :dateNow
             or (to_char(c.contact_date, 'YYYY-MM-DD') = :dateNow and to_char(c.contact_start_time, 'HH24:MI') > :timeNow))

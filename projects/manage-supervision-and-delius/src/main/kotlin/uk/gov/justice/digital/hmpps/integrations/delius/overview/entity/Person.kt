@@ -7,6 +7,7 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -103,7 +104,7 @@ class Person(
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns(
         JoinColumn(
             name = "last_updated_user_id",
@@ -130,6 +131,7 @@ interface PersonSummaryEntity {
 
 interface PersonRepository : JpaRepository<Person, Long> {
 
+    @EntityGraph(attributePaths = ["gender", "religion", "language", "sexualOrientation", "genderIdentity", "lastUpdatedUser"])
     fun findByCrn(crn: String): Person?
 
     @Query(
