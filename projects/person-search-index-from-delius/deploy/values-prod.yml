@@ -5,6 +5,7 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     SAGEMAKER_ENDPOINT_NAME: hmpps-probation-search-prod
+    PIPELINES_ENABLED: person-incremental,contact-incremental
 
   namespace_secrets:
     common:
