@@ -99,16 +99,16 @@ class DocumentService(
     }.build()
 
     private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
+}
 
-    private fun populateEntityType(entityType: String): String {
-        return when (entityType) {
-            "APPROVED_PREMISES_REFERRAL" -> "APREFERRAL"
-            "COURT_REPORT" -> "COURTREPORT"
-            "INSTITUTIONAL_REPORT" -> "INSTITUTIONALREPORT"
-            "NSI" -> "PROCESSCONTACT"
-            "PERSONAL_CIRCUMSTANCE" -> "PERSONALCIRCUMSTANCE"
-            "UPW_APPOINTMENT" -> "UPWAPPOINTMENT"
-            else -> entityType
-        }
+fun populateEntityType(entityType: String): String {
+    return when (entityType) {
+        "APPROVED_PREMISES_REFERRAL" -> "APREFERRAL"
+        "COURT_REPORT" -> "COURTREPORT"
+        "INSTITUTIONAL_REPORT" -> "INSTITUTIONALREPORT"
+        "NSI" -> "PROCESSCONTACT"
+        "PERSONAL_CIRCUMSTANCE" -> "PERSONALCIRCUMSTANCE"
+        "UPW_APPOINTMENT" -> "UPWAPPOINTMENT"
+        else -> entityType
     }
 }
