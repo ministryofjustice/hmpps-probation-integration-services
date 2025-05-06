@@ -105,6 +105,7 @@ class DocumentService(
             "APPROVED_PREMISES_REFERRAL" -> "APREFERRAL"
             "COURT_REPORT" -> "COURTREPORT"
             "INSTITUTIONAL_REPORT" -> "INSTITUTIONALREPORT"
+            "NSI" -> "PROCESSCONTACT"
             "PERSONAL_CIRCUMSTANCE" -> "PERSONALCIRCUMSTANCE"
             "UPW_APPOINTMENT" -> "UPWAPPOINTMENT"
             else -> entityType
