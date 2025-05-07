@@ -50,7 +50,7 @@ generic-service:
     person-search-index-from-delius-contact-keyword-queue:
       CONTACT_KEYWORD_SQS_QUEUE_NAME: QUEUE_NAME
     person-search-index-from-delius-contact-queue:
-      CONTACT_SEMANTIC_SQS_NAME: QUEUE_NAME
+      CONTACT_SEMANTIC_SQS_QUEUE_NAME: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: person-search-index-from-delius
