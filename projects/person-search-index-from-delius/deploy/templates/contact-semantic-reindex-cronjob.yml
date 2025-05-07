@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: contact-reindex
+  name: contact-semantic-reindex
 spec:
-  schedule: {{ .Values.reindexing.contact_schedule }}
+  schedule: { { .Values.reindexing.contact_semantic_schedule } }
   concurrencyPolicy: Replace
   jobTemplate:
     spec:
@@ -34,17 +34,17 @@ spec:
                 - name: LS_JAVA_OPTS
                   value: -Xms3g -Xmx3g # = 75% of pod memory limit (see above)
                 - name: SENTRY_ENVIRONMENT
-                  value: {{ .Values.reindexing.sentry_environment }}
-                - name: CONTACT_KEYWORD_INDEX_PREFIX
-                  value: contact-search
-                - name: CONTACT_KEYWORD_REINDEXING_TIMEOUT
+                  value: { { .Values.reindexing.sentry_environment } }
+                - name: CONTACT_SEMANTIC_INDEX_PREFIX
+                  value: contact-semantic-search
+                - name: CONTACT_SEMANTIC_REINDEXING_TIMEOUT
                   value: '172800' # 48 hours
                 - name: PIPELINES_ENABLED
-                  value: contact-full-load
+                  value: contact-semantic-full-load
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '10000'
-                - name: JDBC_BATCH_SIZE # Maximum number of results to return from DB at a time
-                  value: '1000000'
+                - name: JDBC_BATCH_SIZE # Maximum number of cases to return from DB at a time, note: each case corresponds to >1000 events
+                  value: '100'
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
                   valueFrom:
                     secretKeyRef:
@@ -61,7 +61,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: common
-                      key: {{ index .Values "generic-service" "namespace_secrets" "common" "JDBC_CONNECTION_STRING" }}
+                      key: { { index .Values "generic-service" "namespace_secrets" "common" "JDBC_CONNECTION_STRING" } }
                       optional: false
                 - name: JDBC_USER
                   valueFrom:
