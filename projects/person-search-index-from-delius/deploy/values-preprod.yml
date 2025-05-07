@@ -8,18 +8,17 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: preprod
     SAGEMAKER_ENDPOINT_NAME: hmpps-probation-search-preprod
-    PIPELINES_ENABLED: contact-semantic
-    PIPELINE_BATCH_SIZE: "10000"
-    JDBC_BATCH_SIZE: "100000"
 
 generic-prometheus-alerts:
   businessHoursOnly: true
   sqsOldestAlertQueueNames:
     - probation-integration-preprod-person-search-index-from-delius-person-queue
     - probation-integration-preprod-person-search-index-from-delius-contact-queue
+    - probation-integration-preprod-person-search-index-from-delius-contact-kw-queue
 
 reindexing:
   person_schedule: 0 3 * * 1-5
   contact_schedule: 0 7 * * 2
+  contact_semantic_schedule: 0 18 * * 5
   sentry_environment: preprod
 

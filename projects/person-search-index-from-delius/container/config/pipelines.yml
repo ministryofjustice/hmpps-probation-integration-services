@@ -3,9 +3,12 @@
 - pipeline.id: person-incremental
   path.config: /pipelines/person/logstash-incremental.conf
 
-- pipeline.id: contact-full-load
-  path.config: /pipelines/contact/logstash-full-load.conf
-- pipeline.id: contact-incremental
-  path.config: /pipelines/contact/logstash-incremental.conf
-- pipeline.id: contact-semantic
-  path.config: /pipelines/contact/logstash-semantic.conf
+- pipeline.id: contact-keyword-full-load
+  path.config: /pipelines/contact-keyword/logstash-full-load.conf
+- pipeline.id: contact-keyword-incremental
+  path.config: /pipelines/contact-keyword/logstash-incremental.conf
+
+- pipeline.id: contact-semantic-full-load
+  path.config: /pipelines/contact-semantic/logstash-full-load.conf
+- pipeline.id: contact-semantic-incremental
+  path.config: /pipelines/contact-semantic/logstash-incremental.conf

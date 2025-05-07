@@ -23,7 +23,7 @@ echo Searching for existing connector...
 connector_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/connectors/_search" --data "{\"query\":{\"match\":{\"name.keyword\":\"sagemaker-embeddings\"}}}" | jq -r '.hits.hits[0]._id // ""')
 if [ -z "$connector_id" ]; then
   echo Creating connector...
-  connector_body=$(envsubst < /pipelines/contact/index/sagemaker-connector.json)
+  connector_body=$(envsubst < /pipelines/contact-semantic/index/sagemaker-connector.json)
   connector_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/connectors/_create" --data "$connector_body" | jq -r '.connector_id')
 else
   echo "Found connector with id=$connector_id"

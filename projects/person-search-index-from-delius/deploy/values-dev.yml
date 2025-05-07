@@ -15,8 +15,10 @@ generic-prometheus-alerts:
   sqsOldestAlertQueueNames:
     - probation-integration-dev-person-search-index-from-delius-person-queue
     - probation-integration-dev-person-search-index-from-delius-contact-queue
+    - probation-integration-dev-person-search-index-from-delius-contact-kw-queue
 
 reindexing:
   person_schedule: 0 9 * * 1-5
   contact_schedule: 0 9 * * 1
+  contact_semantic_schedule: 0 12 * * 1
   sentry_environment: dev
