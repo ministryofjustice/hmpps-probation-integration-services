@@ -879,6 +879,23 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td><span id="HOME_VISIT">HOME_VISIT</span></td>
+                                    <td>CHAR</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -962,92 +979,96 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>YES_OR_NO_ONLY_874373056</td>
+                                    <td>HOME_VISIT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
                                     <td>YES_OR_NO_412</td>
                                     <td>SENSITIVE_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_1089845492</td>
-                                    <td>SPG_OVERRIDE IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_1289205498</td>
-                                    <td>SPG_INTEREST IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO9</td>
-                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_OR_BOTH_ONLY1</td>
-                                    <td>CONTACT_LOCATION_FLAG IN (&#39;Y&#39;, &#39;N&#39;, &#39;B&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_409</td>
-                                    <td>NATIONAL_STANDARDS_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_OR_BOTH_ONLY</td>
-                                    <td>CONTACT_OUTCOME_FLAG IN (&#39;Y&#39;, &#39;N&#39;, &#39;B&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>DRUG_VIEW_TYPE_VALID_108622676</td>
-                                    <td>DRUG_VIEW_TYPE IN (&#39;A&#39;, &#39;T&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_416</td>
-                                    <td>LEGACY_ORDERS IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_415</td>
-                                    <td>OFFENDER_EVENT_0 IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_410</td>
-                                    <td>ATTENDANCE_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_407206540</td>
-                                    <td>DRUG_TEST_VIEW IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_1656616625</td>
-                                    <td>SGC_FLAG IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_418</td>
-                                    <td>DPA_EXCLUDE IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_414</td>
-                                    <td>SMS_MESSAGE_TEXT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_413</td>
-                                    <td>OFFENDER_LEVEL_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_130798902</td>
-                                    <td>PSS_RQMNT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_1112934154</td>
-                                    <td>RAR_ACTIVITY IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_417</td>
                                     <td>CJA_ORDERS IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
+                                    <td>YES_OR_NO_OR_BOTH_ONLY</td>
+                                    <td>CONTACT_OUTCOME_FLAG IN (&#39;Y&#39;, &#39;N&#39;, &#39;B&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_407206540</td>
+                                    <td>DRUG_TEST_VIEW IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_409</td>
+                                    <td>NATIONAL_STANDARDS_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_410</td>
+                                    <td>ATTENDANCE_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_413</td>
+                                    <td>OFFENDER_LEVEL_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>DRUG_VIEW_TYPE_VALID_108622676</td>
+                                    <td>DRUG_VIEW_TYPE IN (&#39;A&#39;, &#39;T&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_418</td>
+                                    <td>DPA_EXCLUDE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
                                     <td>YES_OR_NO_411</td>
                                     <td>RECORDED_HOURS_CREDITED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1089845492</td>
+                                    <td>SPG_OVERRIDE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_1112934154</td>
+                                    <td>RAR_ACTIVITY IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1289205498</td>
+                                    <td>SPG_INTEREST IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_1413652680</td>
+                                    <td>FUTURE_SCHEDULED_CONTACTS_FLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_130798902</td>
+                                    <td>PSS_RQMNT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1656616625</td>
+                                    <td>SGC_FLAG IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_415</td>
+                                    <td>OFFENDER_EVENT_0 IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY_46649825</td>
                                     <td>RM38_RAR_DAY IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_1413652680</td>
-                                    <td>FUTURE_SCHEDULED_CONTACTS_FLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_OR_BOTH_ONLY1</td>
+                                    <td>CONTACT_LOCATION_FLAG IN (&#39;Y&#39;, &#39;N&#39;, &#39;B&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_416</td>
+                                    <td>LEGACY_ORDERS IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO9</td>
+                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_414</td>
+                                    <td>SMS_MESSAGE_TEXT IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -1073,7 +1094,7 @@
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1233,5,1556,1267">
-<area shape="rect" id="node2" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="297,2795,761,3979">
+<area shape="rect" id="node2" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="297,2795,761,4008">
 <area shape="rect" id="node3" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="839,925,1156,1160">
 <area shape="rect" id="node11" href="CONTACT_TYPE_ICON.html" target="_top" title="CONTACT_TYPE_ICON" alt="" coords="5,3560,253,3736">
 <area shape="rect" id="node4" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="1600,523,1880,875">
@@ -1098,10 +1119,10 @@
                                     <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
 <area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1333,456,1656,1718">
-<area shape="rect" id="node2" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="397,1684,861,2868">
+<area shape="rect" id="node2" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="397,1683,861,2896">
 <area shape="rect" id="node3" href="USER_.html" target="_top" title="USER_" alt="" coords="5,888,353,1211">
 <area shape="rect" id="node4" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="939,688,1256,923">
-<area shape="rect" id="node12" href="CONTACT_TYPE_ICON.html" target="_top" title="CONTACT_TYPE_ICON" alt="" coords="55,2450,303,2626">
+<area shape="rect" id="node12" href="CONTACT_TYPE_ICON.html" target="_top" title="CONTACT_TYPE_ICON" alt="" coords="55,2448,303,2624">
 <area shape="rect" id="node5" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="1700,1364,1980,1716">
 <area shape="rect" id="node6" href="MANAGEMENT_TIER_EVENT.html" target="_top" title="MANAGEMENT_TIER_EVENT" alt="" coords="950,96,1245,390">
 <area shape="rect" id="node7" href="R_ASSESSMENT_TYPE.html" target="_top" title="R_ASSESSMENT_TYPE" alt="" coords="951,407,1243,671">
