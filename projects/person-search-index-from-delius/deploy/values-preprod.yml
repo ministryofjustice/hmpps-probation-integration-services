@@ -8,6 +8,9 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: preprod
     SAGEMAKER_ENDPOINT_NAME: hmpps-probation-search-preprod
+    PIPELINES_ENABLED: contact-semantic
+    PIPELINE_BATCH_SIZE: "10000"
+    JDBC_BATCH_SIZE: "100000"
 
 generic-prometheus-alerts:
   businessHoursOnly: true
