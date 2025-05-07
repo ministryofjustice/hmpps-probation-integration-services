@@ -14,6 +14,6 @@ class ContactResource(private val personRepository: PersonRepository) {
     @GetMapping("/case/{crn}/contacts")
     fun getContacts(@PathVariable crn: String) = personRepository.findByCrn(crn)
         ?.let { personRepository.getContacts(it.id) }
-        ?.map { ContactJsonResponse(it.contactId, it.json.characterStream.readText()) }
+        ?.map { ContactJsonResponse(it.contactId, it.version, it.json.characterStream.readText()) }
         ?: throw NotFoundException("Person", "CRN", crn)
 }

@@ -30,6 +30,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
                  'softDeleted' value contact.soft_deleted,
                  'rowVersion' value contact.row_version
                  returning clob) as "json",
+            contact.row_version  as "version",
             contact.contact_id   as "contactId"
             from contact
               left outer join offender on offender.offender_id = contact.offender_id
