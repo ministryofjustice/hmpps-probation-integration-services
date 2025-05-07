@@ -6,6 +6,7 @@ metadata:
   name: unpaid-work-appointment-reminders-{{ $jobName }}
 spec:
   schedule: {{ $config.schedule }}
+  timeZone: "Europe/London"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
