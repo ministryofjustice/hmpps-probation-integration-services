@@ -15,7 +15,7 @@ on:
         description: Used for encrypting the Gradle cache. See https://github.com/gradle/actions/blob/main/docs/setup-gradle.md#saving-configuration-cache-data
     outputs:
       version:
-        value: ${{ jobs.build-gradle.outputs.version }}
+        value: ${{ jobs.build-docker.outputs.version }}
   workflow_dispatch:
     inputs:
       push:
@@ -31,153 +31,15 @@ env:
   push: ${{ !(github.event_name == 'push' && github.ref_name != 'main') && inputs.push }}
 
 jobs:
-  build-gradle:
-    name: Gradle build
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        project:
-          - accredited-programmes-and-oasys
-          - appointment-reminders-and-delius
-          - approved-premises-and-delius
-          - approved-premises-and-oasys
-          - arns-and-delius
-          - assess-for-early-release-and-delius
-          - assessment-summary-and-delius
-          - breach-notice-and-delius
-          - cas2-and-delius
-          - cas3-and-delius
-          - common-platform-and-delius
-          - core-person-record-and-delius
-          - court-case-and-delius
-          - create-and-vary-a-licence-and-delius
-          - custody-key-dates-and-delius
-          - domain-events-and-delius
-          - dps-and-delius
-          - effective-proposal-framework-and-delius
-          - external-api-and-delius
-          - hdc-licences-and-delius
-          - hmpps-auth-and-delius
-          - ims-and-delius
-          - jitbit-and-delius
-          - justice-email-and-delius
-          - make-recall-decisions-and-delius
-          - manage-offences-and-delius
-          - manage-pom-cases-and-delius
-          - manage-supervision-and-delius
-          - oasys-and-delius
-          - offender-events-and-delius
-          - opd-and-delius
-          - pathfinder-and-delius
-          - pre-sentence-reports-to-delius
-          - prison-case-notes-to-probation
-          - prison-custody-status-to-delius
-          - prison-education-and-delius
-          - prison-identifier-and-delius
-          - prisoner-profile-and-delius
-          - probation-search-and-delius
-          - refer-and-monitor-and-delius
-          - resettlement-passport-and-delius
-          - risk-assessment-scores-to-delius
-          - sentence-plan-and-delius
-          - sentence-plan-and-oasys
-          - soc-and-delius
-          - subject-access-requests-and-delius
-          - tier-to-delius
-          - unpaid-work-and-delius
-          - workforce-allocations-to-delius
-          # ^ add new projects here
-          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
-          # See https://github.com/community/community/discussions/11795
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-      changes: ${{ steps.check-changes.outputs.changes }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
-        with:
-          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-
-      - name: Set version
-        id: version
-        run: |
-          version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
-          echo "VERSION=$version" | tee -a "$GITHUB_ENV"
-          echo "version=$version" | tee -a "$GITHUB_OUTPUT"
-
-      - name: Build and test
-        run: ./gradlew ${{ matrix.project }}:check
-        env:
-          SPRING_PROFILES_ACTIVE: oracle
-
-      - name: Push images
-        if: env.push == 'true'
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
-        with:
-          max_attempts: 3 # Pushing lots of new image versions at once can result in GitHub rate-limiting so we retry this step
-          timeout_minutes: 15
-          # Configuration cache is not yet supported for Jib - see: https://github.com/GoogleContainerTools/jib/issues/3132
-          command: ./gradlew ${{ matrix.project }}:jib --no-configuration-cache
-        env:
-          GITHUB_USERNAME: ${{ github.actor }}
-          GITHUB_PASSWORD: ${{ github.token }}
-          FORCE_DEPLOY: ${{ inputs.force-deploy }}
-
-      - name: Check changes
-        id: check-changes
-        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq -R . | jq -s -c '. // []')" | tee -a "$GITHUB_OUTPUT"
-
-      - name: Output changes
-        run: echo '${{ steps.check-changes.outputs.changes }}' > ${{ matrix.project }}-changes.json
-
-      - name: Store changes
-        uses: actions/upload-artifact@v4
-        with:
-          name: changes-${{ matrix.project }}
-          path: ${{ matrix.project }}-changes.json
-
-      - name: Store test artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-${{ matrix.project }}
-          path: |
-            **/build/jacoco
-            **/build/reports/jacoco/**/*.xml
-            **/build/test-results
-
-      - name: Prepare test report
-        if: failure()
-        run: |
-          report_dir=test-reports/$REF/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}/${{ matrix.project }}
-          mkdir -p projects/${{ matrix.project }}/build/reports/tests
-          sed "s|DEFAULT_PATH|$report_dir|" tools/github-browser.html > projects/${{ matrix.project }}/build/reports/tests/index.html
-          echo "report_dir=$report_dir" | tee -a "$GITHUB_ENV"
-        env:
-          REF: ${{ github.ref_name }}
-
-      - name: Publish test report
-        if: failure()
-        uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4
-        with:
-          folder: projects/${{ matrix.project }}/build/reports/tests
-          target-folder: ${{ env.report_dir }}
-
-      - name: Output HTML report link
-        if: failure()
-        run: echo "[🧪 Test Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/$report_dir)" | tee -a "$GITHUB_STEP_SUMMARY"
-        env:
-          report_dir: ${{ env.report_dir }}
-
   build-docker:
     name: Docker build
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     strategy:
       matrix:
         project:
           - person-search-index-from-delius
-          - redrive-dead-letter-queues
-          - feature-flags
     steps:
       - uses: actions/checkout@v4
 
