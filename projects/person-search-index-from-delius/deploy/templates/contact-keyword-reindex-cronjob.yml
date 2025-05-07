@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: contact-reindex
+  name: contact-keyword-reindex
 spec:
-  schedule: {{ .Values.reindexing.contact_schedule }}
+  schedule: {{ .Values.reindexing.contact_keyword_schedule }}
   concurrencyPolicy: Replace
   jobTemplate:
     spec:
