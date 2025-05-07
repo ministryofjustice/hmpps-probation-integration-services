@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: contact-semantic-reindex
 spec:
-  schedule: { { .Values.reindexing.contact_semantic_schedule } }
+  schedule: {{ .Values.reindexing.contact_semantic_schedule }}
   concurrencyPolicy: Replace
   jobTemplate:
     spec:
@@ -34,7 +34,7 @@ spec:
                 - name: LS_JAVA_OPTS
                   value: -Xms3g -Xmx3g # = 75% of pod memory limit (see above)
                 - name: SENTRY_ENVIRONMENT
-                  value: { { .Values.reindexing.sentry_environment } }
+                  value: {{ .Values.reindexing.sentry_environment }}
                 - name: CONTACT_SEMANTIC_INDEX_PREFIX
                   value: contact-semantic-search
                 - name: CONTACT_SEMANTIC_REINDEXING_TIMEOUT
@@ -61,7 +61,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: common
-                      key: { { index .Values "generic-service" "namespace_secrets" "common" "JDBC_CONNECTION_STRING" } }
+                      key: {{ index .Values "generic-service" "namespace_secrets" "common" "JDBC_CONNECTION_STRING" }}
                       optional: false
                 - name: JDBC_USER
                   valueFrom:
