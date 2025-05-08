@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: contact-index-deletion-script
+    data:
+      # language=bash
+      script.sh: |
+        #!/bin/bash
+        set -euo pipefail
+        
+        # Get any CRNs that were initially indexed over 30 days ago
+        curl -fsSL "$OPENSEARCH_URL/contact-semantic-search-primary/_search" --json '
+        {
+          "size": 0,
+          "query": {
+            "range": {
+              "@timestamp": {
+                "lt": "now-30d/d"
+              }
+            }
+          },
+          "aggs": {
+            "stale_crns": {
+              "terms": {
+                "field": "crn",
+                "size": 50000
+              }
+            }
+          }
+        }' | jq -r '.aggregations.stale_crns.buckets[].key' | sort > crns.txt
+        
+        # Split into chunks
+        split -l 100 crns.txt chunk_
+        chunks=(chunk_*)
+        total=${#chunks[@]}
+        
+        # Delete chunks
+        echo "Deleting $(wc -l < crns.txt)} cases in $total chunks of 100"
+        for i in "${!chunks[@]}"; do
+          chunk="${chunks[$i]}"
+          name_array=$(jq -s '.' "$chunk")
+        
+          echo "[ $i / $total ] Deleting $chunk..."
+          curl -fsSL "$OPENSEARCH_URL/contact-search-primary/delete_by_query" --json '{
+            "query": {
+              "terms": {
+                "crn": '"$name_array"'
+              }
+            }
+          }'
+        done
+  - apiVersion: batch/v1
+    kind: CronJob
+    metadata:
+      name: contact-index-deletion
+    spec:
+      schedule: 0 5 * * * # Every day at 5am
+      concurrencyPolicy: Replace
+      jobTemplate:
+        spec:
+          template:
+            spec:
+              serviceAccountName: person-search-index-from-delius
+              volumes:
+                - name: script-volume
+                  configMap:
+                    name: contact-index-deletion-script
+              containers:
+                - name: contact-index-deletion
+                  image: "ghcr.io/ministryofjustice/hmpps-devops-tools:latest"
+                  command: [ "bash", "/script.sh" ]
+                  volumeMounts:
+                    - name: script-volume
+                      mountPath: /script.sh
+                      subPath: script.sh
+                  env:
+                    - name: OPENSEARCH_URL
+                      valueFrom:
+                        secretKeyRef:
+                          name: person-search-index-from-delius-opensearch
+                          key: url
+                          optional: false
+                  securityContext:
+                    capabilities:
+                      drop:
+                        - ALL
+                    runAsNonRoot: true
+                    allowPrivilegeEscalation: false
+                    seccompProfile:
+                      type: RuntimeDefault
+              restartPolicy: Never
