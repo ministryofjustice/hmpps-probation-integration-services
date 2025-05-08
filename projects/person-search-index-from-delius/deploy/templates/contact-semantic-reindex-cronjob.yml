@@ -44,7 +44,7 @@ spec:
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '10000'
                 - name: JDBC_BATCH_SIZE # Maximum number of cases to return from DB at a time, note: each case corresponds to >1000 events
-                  value: '100'
+                  value: '1'
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
                   valueFrom:
                     secretKeyRef:

@@ -2,16 +2,12 @@ with next as (select nvl(offender_id, :sql_last_value + :batch_size) sql_next_va
               from offender
               where soft_deleted = 0
                 and offender_id >= :sql_last_value + :batch_size
-                and exists (select 1
-                            from event
-                            where event.offender_id = offender.offender_id
-                              and event.active_flag = 1
-                              and event.soft_deleted = 0)
-                and (select count(*)
-                     from contact
-                     where contact.offender_id = offender.offender_id and contact.soft_deleted = 0) > 1000
+                and exists (select 1 from event where event.offender_id = offender.offender_id and event.active_flag = 1 and event.soft_deleted = 0)
+                and (select count(*) from contact where contact.offender_id = offender.offender_id and contact.soft_deleted = 0) > 1000
               order by offender_id fetch next 1 row only)
-select "json", "contactId", (select sql_next_value from next) as "sql_next_value"
+select "json",
+       "contactId",
+       (select sql_next_value from next) as "sql_next_value"
 from (with page as (select contact.*
                     from contact
                     join (select offender_id
@@ -65,7 +61,7 @@ from (with page as (select contact.*
                      'rowVersion' value contact.row_version
                      returning clob) as "json",
              contact.contact_id      as "contactId"
-      from ( select * from page union all select * from single ) contact
+      from (select * from page union all select * from single) contact
       left outer join offender on offender.offender_id = contact.offender_id
       left outer join r_contact_type on r_contact_type.contact_type_id = contact.contact_type_id
       left outer join r_contact_outcome_type
