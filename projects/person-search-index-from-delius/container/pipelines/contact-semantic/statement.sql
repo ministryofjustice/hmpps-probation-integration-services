@@ -69,8 +69,8 @@ from (with page as (select contact.*
       where contact.soft_deleted = 0)
 union all
 select json_object('indexReady' value case when :sql_last_value >= (select max(contact_id) from contact) then 'true' else 'false' end format json,
-                   'lastValue' value :sql_last_value,
-                   'rowVersion' value :sql_last_value
+                   'lastValue' value (select sql_next_value from next),
+                   'rowVersion' value (select sql_next_value from next)
                    returning clob)       as "json",
        -1                                as "contactId",
        (select sql_next_value from next) as "sql_next_value"
