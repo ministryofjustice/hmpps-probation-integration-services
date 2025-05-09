@@ -374,10 +374,10 @@ SELECT JSON_OBJECT('indexReady'
                                                                    FROM OFFENDER_MANAGER om
                                                                    WHERE o.OFFENDER_ID = om.OFFENDER_ID
                                                                      AND om.ACTIVE_FLAG = 1
-                                                                     AND om.SOFT_DELETED = 0)) then 'true'
-                             ELSE 'false' END
-                   FORMAT JSON RETURNING CLOB) as "json",
-       -1                                      as "offenderId",
-       (SELECT SQL_NEXT_VALUE FROM NEXT)       AS "sql_next_value"
+                                                                     AND om.SOFT_DELETED = 0)) then 'true' ELSE 'false' END FORMAT JSON,
+                   'nextValue' VALUE (SELECT SQL_NEXT_VALUE FROM NEXT)
+                   RETURNING CLOB)       AS "json",
+       -1                                AS "offenderId",
+       (SELECT SQL_NEXT_VALUE FROM NEXT) AS "sql_next_value"
 FROM DUAL
 WHERE :offender_id = 0
