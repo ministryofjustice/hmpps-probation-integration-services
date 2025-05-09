@@ -49,10 +49,10 @@ from (with page as (select * from contact where :contact_id = 0
                                on r_contact_outcome_type.contact_outcome_type_id = contact.contact_outcome_type_id
       where contact.soft_deleted = 0)
 union all
-select json_object('indexReady'
-                   value case when :sql_last_value >= (select max(contact_id) from contact) then 'true' else 'false' end
-                   format json returning clob) as "json",
-       -1                                      as "contactId",
-       (select sql_next_value from next)       as "sql_next_value"
+
+select json_object('indexReady' value (select case when count(*) = 0 then 'true' else 'false' end from next) format json,
+                   'nextValue' value (select sql_next_value from next) returning clob) as "json",
+       -1                                                                              as "contactId",
+       (select sql_next_value from next)                                               as "sql_next_value"
 from dual
 where :contact_id = 0
