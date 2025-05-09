@@ -3,13 +3,11 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDate
 
 @Entity
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
-@EntityListeners(AuditingEntityListener::class)
 class Person(
     @Id
     @Column(name = "offender_id")
