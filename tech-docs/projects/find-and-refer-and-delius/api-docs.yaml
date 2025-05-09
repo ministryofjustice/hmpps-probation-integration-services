@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /person/find/{identifier}:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - Person
+      operationId: findPerson
       parameters:
-      - name: inputId
+      - name: identifier
         in: path
         required: true
         schema:
@@ -28,7 +28,44 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonResponse"
 components:
+  schemas:
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+      required:
+      - forename
+      - surname
+    PersonResponse:
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsNumber:
+          type: string
+        name:
+          $ref: "#/components/schemas/Name"
+        dateOfBirth:
+          type: string
+          format: date
+        ethnicity:
+          type: string
+        gender:
+          type: string
+      required:
+      - crn
+      - dateOfBirth
+      - name
   securitySchemes:
     hmpps-auth-token:
       type: http
