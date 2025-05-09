@@ -1,4 +1,4 @@
-with next as (select nvl(offender_id, :sql_last_value + :batch_size) sql_next_value
+with next as (select offender_id
               from offender
               where soft_deleted = 0
                 and offender_id >= :sql_last_value + :batch_size
@@ -7,7 +7,7 @@ with next as (select nvl(offender_id, :sql_last_value + :batch_size) sql_next_va
               order by offender_id fetch next 1 row only)
 select "json",
        "contactId",
-       (select sql_next_value from next) as "sql_next_value"
+       nvl((select offender_id from next), :sql_last_value + :batch_size) as "sql_next_value"
 from (with page as (select contact.*
                     from contact
                     join (select offender_id
@@ -65,10 +65,11 @@ from (with page as (select contact.*
       where contact.soft_deleted = 0)
 union all
 select json_object('indexReady' value (select case when count(*) = 0 then 'true' else 'false' end from next) format json,
-                   'rowVersion' value (select sql_next_value from next),
-                   'nextValue' value (select sql_next_value from next)
-                   returning clob)       as "json",
-       -1                                as "contactId",
-       (select sql_next_value from next) as "sql_next_value"
+                   'crn' value '-1',
+                   'rowVersion' value nvl((select offender_id from next), :sql_last_value + :batch_size),
+                   'nextValue' value nvl((select offender_id from next), :sql_last_value + :batch_size)
+                   returning clob)                                        as "json",
+       -1                                                                 as "contactId",
+       nvl((select offender_id from next), :sql_last_value + :batch_size) as "sql_next_value"
 from dual
 where :contact_id = 0
