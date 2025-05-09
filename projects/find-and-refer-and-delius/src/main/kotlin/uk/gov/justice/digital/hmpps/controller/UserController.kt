@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.service.UserService
+import uk.gov.justice.digital.hmpps.service.UserAccessService
 
 @Validated
 @RestController
 @RequestMapping("users/{username}")
 class UserController(
-    private val userService: UserService
+    private val userService: UserAccessService
 ) {
     @PreAuthorize("hasRole('PROBATION_API__FIND_AND_REFER__CASE_DETAIL')")
     @GetMapping("/access/{crn}")
