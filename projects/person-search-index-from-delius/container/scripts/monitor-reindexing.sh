@@ -111,6 +111,7 @@ function resume_indexing() {
   next_value=$(jq '._source.nextValue' <<< "$STATUS")
   resume_from_id=$((next_value-1))
   echo "Resuming from id=$resume_from_id ..."
+  mkdir -p /usr/share/logstash/data/plugins/inputs/jdbc
   echo '--- !ruby/object:BigDecimal '"'0:$(printf "0.%se%d" "$resume_from_id" "${#resume_from_id}")'" > /usr/share/logstash/data/plugins/inputs/jdbc/logstash_jdbc_last_run
 }
 
