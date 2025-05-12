@@ -47,7 +47,7 @@ internal class ContactResourceTest {
                 }
         }))
 
-        val results = contactResource.getContacts("A123456")5
+        val results = contactResource.getContacts("A123456")
         assertThat(results, hasSize(1))
         assertThat(results[0], equalTo(ContactJsonResponse(1, 1, "{}")))
     }
