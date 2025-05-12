@@ -40,6 +40,7 @@ internal class ContactResourceTest {
         whenever(personRepository.findByCrn(any())).thenReturn(PersonGenerator.DEFAULT)
         whenever(personRepository.getContacts(PersonGenerator.DEFAULT.id)).thenReturn(listOf(object : ContactJson {
             override val contactId: Long get() = 1
+            override val version: Long get() = 1
             override val json: Clob
                 get() = mock(Clob::class.java).apply {
                     whenever(characterStream).thenReturn(StringReader("{}"))
@@ -48,6 +49,6 @@ internal class ContactResourceTest {
 
         val results = contactResource.getContacts("A123456")
         assertThat(results, hasSize(1))
-        assertThat(results[0], equalTo(ContactJsonResponse(1, "{}")))
+        assertThat(results[0], equalTo(ContactJsonResponse(1, 1, "{}")))
     }
 }

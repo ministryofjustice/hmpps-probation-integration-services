@@ -1,0 +1,108 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: contact-keyword-reindex
+spec:
+  schedule: {{ .Values.reindexing.contact_keyword_schedule }}
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: person-search-index-from-delius
+          containers:
+            - name: contact-reindex
+              image: "ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius:{{ .Values.version }}"
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
+              resources:
+                requests:
+                  memory: 2Gi
+                  cpu: 1
+                limits:
+                  memory: 4Gi
+                  cpu: 2
+              env:
+                - name: AWS_REGION
+                  value: eu-west-2
+                - name: LS_JAVA_OPTS
+                  value: -Xms3g -Xmx3g # = 75% of pod memory limit (see above)
+                - name: SENTRY_ENVIRONMENT
+                  value: {{ .Values.reindexing.sentry_environment }}
+                - name: CONTACT_KEYWORD_INDEX_PREFIX
+                  value: contact-search
+                - name: CONTACT_KEYWORD_REINDEXING_TIMEOUT
+                  value: '172800' # 48 hours
+                - name: PIPELINES_ENABLED
+                  value: contact-full-load
+                - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
+                  value: '10000'
+                - name: JDBC_BATCH_SIZE # Maximum number of results to return from DB at a time
+                  value: '1000000'
+                - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+                  valueFrom:
+                    secretKeyRef:
+                      name: common
+                      key: APPLICATIONINSIGHTS_CONNECTION_STRING
+                      optional: false
+                - name: SEARCH_INDEX_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-opensearch
+                      key: url
+                      optional: false
+                - name: JDBC_CONNECTION_STRING
+                  valueFrom:
+                    secretKeyRef:
+                      name: common
+                      key: {{ index .Values "generic-service" "namespace_secrets" "common" "JDBC_CONNECTION_STRING" }}
+                      optional: false
+                - name: JDBC_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-database
+                      key: DB_USERNAME
+                      optional: false
+                - name: JDBC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-database
+                      key: DB_PASSWORD
+                      optional: false
+                - name: SENTRY_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: SENTRY_DSN
+                      optional: false
+                - name: SENTRY_AUTH_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: SENTRY_AUTH_TOKEN
+                      optional: false
+                - name: CONTACT_REINDEXING_SENTRY_MONITOR_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: CONTACT_REINDEXING_SENTRY_MONITOR_ID
+                      optional: false
+                - name: CONNECTOR_ROLE_ARN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-opensearch
+                      key: connector_role_arn
+                      optional: false
+                - name: CONNECTOR_EXTERNAL_ACCOUNT_ROLE_ARN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-opensearch
+                      key: connector_external_account_role_arn
+                      optional: false
+          restartPolicy: Never

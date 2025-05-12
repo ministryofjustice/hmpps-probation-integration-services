@@ -36,24 +36,30 @@ if grep -q 'person' <<<"$PIPELINES_ENABLED"; then
   fi
 fi
 
-if grep -q 'contact' <<<"$PIPELINES_ENABLED"; then
-  /scripts/setup-index.sh -i "$CONTACT_INDEX_PREFIX" -t /pipelines/contact/index/index-template-keyword.json
-  if grep -q 'contact-full-load' <<<"$PIPELINES_ENABLED"; then
-    sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_INDEX_PREFIX" -t "$CONTACT_REINDEXING_TIMEOUT" &
+if grep -q 'contact-keyword' <<<"$PIPELINES_ENABLED"; then
+  /scripts/setup-index.sh -i "$CONTACT_KEYWORD_INDEX_PREFIX" -t /pipelines/contact-keyword/index/index-template-keyword.json
+  if grep -q 'contact-keyword-full-load' <<<"$PIPELINES_ENABLED"; then
+    sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_KEYWORD_INDEX_PREFIX" -t "$CONTACT_KEYWORD_REINDEXING_TIMEOUT" &
   fi
+fi
 
+if grep -q 'contact-semantic' <<<"$PIPELINES_ENABLED"; then
   # Setup semantic search for contacts
   /scripts/deploy-semantic-model.sh
   model_id=$(curl_json -XPOST "${SEARCH_INDEX_HOST}/_plugins/_ml/models/_search" --data "{\"query\":{\"match\":{\"name.keyword\":\"sagemaker-embeddings\"}}}" | jq -r '.hits.hits[0]._id // ""')
   export model_id
   echo "Deployed semantic search model. model_id=${model_id}"
-  envsubst < /pipelines/contact/index/ingest-pipeline.tpl.json > /pipelines/contact/index/ingest-pipeline.json
-  envsubst < /pipelines/contact/index/search-pipeline.tpl.json > /pipelines/contact/index/search-pipeline.json
-  /scripts/setup-index.sh -i "contact-semantic-search" \
-    -p /pipelines/contact/index/ingest-pipeline.json \
-    -s /pipelines/contact/index/search-pipeline.json \
-    -t /pipelines/contact/index/index-template-semantic.json \
-    -y /pipelines/contact/index/index-state-management-policy.json
+  envsubst < /pipelines/contact-semantic/index/ingest-pipeline.tpl.json > /pipelines/contact-semantic/index/ingest-pipeline.json
+  envsubst < /pipelines/contact-semantic/index/search-pipeline.tpl.json > /pipelines/contact-semantic/index/search-pipeline.json
+
+  /scripts/setup-index.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" \
+    -p /pipelines/contact-semantic/index/ingest-pipeline.json \
+    -s /pipelines/contact-semantic/index/search-pipeline.json \
+    -t /pipelines/contact-semantic/index/index-template-semantic.json \
+    -y /pipelines/contact-semantic/index/index-state-management-policy.json
+  if grep -q 'contact-semantic-full-load' <<<"$PIPELINES_ENABLED"; then
+    sentry-cli monitors run "$CONTACT_REINDEXING_SENTRY_MONITOR_ID" -- /scripts/monitor-reindexing.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" -t "$CONTACT_SEMANTIC_REINDEXING_TIMEOUT" &
+  fi
 fi
 
 echo Starting Logstash...

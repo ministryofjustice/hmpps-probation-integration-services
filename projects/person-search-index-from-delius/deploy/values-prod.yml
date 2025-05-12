@@ -5,7 +5,7 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     SAGEMAKER_ENDPOINT_NAME: hmpps-probation-search-prod
-    PIPELINES_ENABLED: person-incremental,contact-incremental
+    PIPELINES_ENABLED: person-incremental,contact-keyword-incremental # contact-semantic-incremental is not ready for production yet
 
   namespace_secrets:
     common:
@@ -16,9 +16,11 @@ generic-service:
 reindexing:
   person_schedule: 0 3 * * 1-5
   contact_schedule: 0 7 * * 2
+  contact_semantic_schedule: 0 18 * * 5
   sentry_environment: prod
 
 generic-prometheus-alerts:
   sqsOldestAlertQueueNames:
     - probation-integration-prod-person-search-index-from-delius-person-queue
     - probation-integration-prod-person-search-index-from-delius-contact-queue
+    - probation-integration-prod-person-search-index-from-delius-contact-kw-queue
