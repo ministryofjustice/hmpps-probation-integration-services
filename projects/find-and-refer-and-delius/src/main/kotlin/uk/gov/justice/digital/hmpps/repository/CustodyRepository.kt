@@ -17,4 +17,5 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
     fun isInCustodyCount(personId: Long, statusCodes: List<String>): Int?
 }
 
-fun CustodyRepository.isInCustody(personId: Long) = (isInCustodyCount(personId, CustodialStatusCode.entries.map { it.code }) ?: 0) > 0
+fun CustodyRepository.isInCustody(personId: Long) =
+    (isInCustodyCount(personId, CustodialStatusCode.entries.map { it.code }) ?: 0) > 0
