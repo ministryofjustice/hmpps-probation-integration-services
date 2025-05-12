@@ -1231,15 +1231,12 @@ template:
       endTime:
         type: date
         format: hour_minute_second
-      textChunks:
-        type: keyword
       textEmbedding:
         type: nested
         properties:
           knn:
             type: knn_vector
-            data_type: byte
-            dimension: 1024
+            dimension: 256
             space_type: cosinesimil
             method:
               name: hnsw

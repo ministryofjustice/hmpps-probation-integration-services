@@ -12,6 +12,16 @@
       }
     },
     {
+      "gsub": {
+        "tag": "Remove any repeated non-alphanumeric strings. The pattern looks for 4 or more non-alphanumeric characters. For example '****PLEASE IGNORE****' or 'No way!!!! what the...???'",
+        "field": "notes",
+        "pattern": "[^A-Za-z0-9\\s]{4,}",
+        "replacement": " ",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
       "text_chunking": {
         "algorithm": {
           "fixed_token_length": {
@@ -32,6 +42,11 @@
         "field_map": {
           "textChunks": "textEmbedding"
         }
+      }
+    },
+    {
+      "remove": {
+        "field": "textChunks"
       }
     }
   ]

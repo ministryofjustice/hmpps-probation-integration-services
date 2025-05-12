@@ -1,6 +1,6 @@
 {
   "name": "sagemaker-embeddings",
-  "description": "Generate text embeddings using a model provided by a SageMaker endpoint in an external account",
+  "description": "Generate text embeddings using a model provided by a SageMaker endpoint in an external account. The post-processor truncates the embedding to 256 dimensions.",
   "version": 1,
   "protocol": "aws_sigv4",
   "credential": {
@@ -21,7 +21,7 @@
       },
       "request_body": "[${parameters.input}]",
       "pre_process_function": "connector.pre_process.default.embedding",
-      "post_process_function": "connector.post_process.default.embedding"
+      "post_process_function": "def result=params.result;StringBuilder sb=new StringBuilder('[');for(int i=0;i<result.length;i++){def vec=result[i].subList(0,256);sb.append('{\"name\":\"sentence_embedding\",\"data_type\":\"FLOAT32\",\"shape\":['+vec.size()+'],\"data\":'+vec+'}');if(i<result.length-1)sb.append(',');}sb.append(']');return sb.toString();"
     }
   ]
 }
