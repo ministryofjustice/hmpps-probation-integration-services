@@ -9,4 +9,6 @@ data class PersonResponse(
     val dateOfBirth: LocalDate,
     val ethnicity: String? = null,
     val gender: String? = null,
+    val probationDeliveryUnit: ProbationDeliveryUnit? = null,
+    val setting: String
 )

@@ -7,10 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
-import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessUserGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -47,6 +44,20 @@ class DataLoader(
             LimitedAccessGenerator.RESTRICTION,
             LimitedAccessGenerator.BOTH_EXCLUSION,
             LimitedAccessGenerator.BOTH_RESTRICTION,
+        )
+
+        entityManager.persistAll(
+            PersonManagerGenerator.DEFAULT_BOROUGH,
+            PersonManagerGenerator.DEFAULT_DISTRICT,
+            PersonManagerGenerator.DEFAULT_TEAM,
+            PersonManagerGenerator.PERSON_MANAGER,
+        )
+
+        entityManager.persistAll(
+            EventGenerator.CUSTODIAL_STATUS,
+            EventGenerator.EVENT,
+            EventGenerator.DISPOSAL,
+            EventGenerator.CUSTODY,
         )
     }
 
