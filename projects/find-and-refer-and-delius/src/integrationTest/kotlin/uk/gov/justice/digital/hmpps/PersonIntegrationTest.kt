@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.model.PersonResponse
+import uk.gov.justice.digital.hmpps.model.ProbationDeliveryUnit
 import uk.gov.justice.digital.hmpps.service.toPersonResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -30,7 +31,17 @@ internal class PersonIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonResponse>()
 
-        assertThat(response, equalTo(PersonGenerator.PERSON_1.toPersonResponse()))
+        assertThat(
+            response,
+            equalTo(
+                PersonGenerator.PERSON_1.toPersonResponse(
+                    ProbationDeliveryUnit(
+                        code = "A",
+                        description = "Test PDU"
+                    ), "Custody"
+                )
+            )
+        )
     }
 
     @Test
@@ -40,7 +51,7 @@ internal class PersonIntegrationTest {
             .andExpect(status().isOk)
             .andReturn().response.contentAsJson<PersonResponse>()
 
-        assertThat(response, equalTo(PersonGenerator.PERSON_2.toPersonResponse()))
+        assertThat(response, equalTo(PersonGenerator.PERSON_2.toPersonResponse(null, "Community")))
     }
 
     @Test
