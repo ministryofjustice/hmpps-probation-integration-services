@@ -43,10 +43,6 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: Event,
 
-    @OneToOne
-    @JoinColumn(name = "custody_id")
-    val custody: Custody? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
