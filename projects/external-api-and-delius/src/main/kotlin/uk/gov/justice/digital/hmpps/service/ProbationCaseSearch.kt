@@ -16,7 +16,7 @@ class ProbationCaseSearch(
     private val searchClient: ProbationSearchClient,
     private val telemetry: TelemetryService,
 ) {
-    fun find(request: SearchRequest): List<ProbationCaseDetail> {
+    fun find(request: SearchRequest, useSearch: Boolean): List<ProbationCaseDetail> {
         val psResult = searchClient.findAll(request).map { o ->
             ProbationCaseDetail(
                 o.otherIds.ids(),
@@ -35,7 +35,7 @@ class ProbationCaseSearch(
                 o.exclusionMessage,
             )
         }
-        try {
+        val dbResult = try {
             val dbResult = personRepository.findAll(request.asSpecification())
                 .map { p ->
                     ProbationCaseDetail(
@@ -67,11 +67,14 @@ class ProbationCaseSearch(
                     )
                 )
             }
+
+            dbResult
         } catch (ex: Exception) {
             telemetry.trackException(ex)
+            null
         }
 
-        return psResult
+        return if (useSearch) psResult else dbResult ?: psResult
     }
 
     private fun SearchRequest.asSpecification(): Specification<Person> = listOfNotNull(
