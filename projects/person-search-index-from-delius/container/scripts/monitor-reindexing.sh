@@ -66,9 +66,11 @@ function delete_ready_for_reindex() {
 function wait_for_index_to_complete() {
   echo 'Waiting for indexing to complete ...'
   SECONDS=0
-  until [ "$(get_status; jq '._source.indexReady' <<< "$STATUS")" = 'true' ]; do
+  get_status
+  until [ "$(jq '._source.indexReady' <<< "$STATUS")" = 'true' ]; do
     if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out after ${SECONDS}s." 'ProbationSearchIndexFailure'; fi
     sleep 60
+    get_status
   done
   COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
   echo "Indexing complete. The $STANDBY_INDEX index now has $COUNT documents"
@@ -90,8 +92,10 @@ function switch_aliases() {
 
 function get_status() {
   echo 'Getting status document ...'
-  ROUTING_REQUIRED=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_mappings" | jq '.["'"${STANDBY_INDEX}"'"].mappings._routing.required // false')
-  ROUTING_SUFFIX=$(if [ "$ROUTING_REQUIRED" = 'true' ]; then echo '?routing=-1'; else echo ''; fi)
+  if [ -z "$ROUTING_REQUIRED" ]; then
+    ROUTING_REQUIRED=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_mappings" | jq '.["'"${STANDBY_INDEX}"'"].mappings._routing.required // false')
+    ROUTING_SUFFIX=$(if [ "$ROUTING_REQUIRED" = 'true' ]; then echo '?routing=-1'; else echo ''; fi)
+  fi
   STATUS=$(curl_json --no-fail --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1${ROUTING_SUFFIX}")
 }
 
