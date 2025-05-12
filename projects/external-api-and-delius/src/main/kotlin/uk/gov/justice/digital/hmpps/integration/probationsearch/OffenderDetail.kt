@@ -78,6 +78,6 @@ fun OffenderDisability.asCaseDisability() = disabilityType?.let { type ->
 
 fun OffenderProfile.asProfile() = CaseProfile(
     ethnicity, nationality, religion, sexualOrientation,
-    disabilities?.mapNotNull { it.asCaseDisability() } ?: emptyList())
+    disabilities?.mapNotNull { it.asCaseDisability() }?.sortedByDescending { it.startDate } ?: emptyList())
 
 fun OffenderAlias.asCaseAlias() = CaseAlias(firstName, surname, dateOfBirth, gender, middleNames ?: emptyList())

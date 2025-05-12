@@ -11,7 +11,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "disability")
-@SQLRestriction("soft_deleted = 0 and (finish_date is null or finish_date > current_date)")
+@SQLRestriction("soft_deleted = 0")
 class Disability(
 
     @ManyToOne
