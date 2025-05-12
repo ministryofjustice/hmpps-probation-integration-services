@@ -1233,12 +1233,12 @@ template:
         format: hour_minute_second
       textChunks:
         type: keyword
+        index: false
       textEmbedding:
         type: nested
         properties:
           knn:
             type: knn_vector
-            data_type: byte
             dimension: 1024
             space_type: cosinesimil
             method:
