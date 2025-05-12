@@ -97,7 +97,7 @@ fun Person.profile() =
         nationality?.description,
         religion?.description,
         sexualOrientation?.description,
-        disabilities.map { it.asCaseDisability() }
+        disabilities.map { it.asCaseDisability() }.sortedByDescending { it.startDate }
     )
 
 fun Disability.asCaseDisability() = CaseDisability(
