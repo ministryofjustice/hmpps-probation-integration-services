@@ -1290,3 +1290,21 @@ template:
       rowVersion:
         type: double
         index: false
+      nationalStandard:
+        type: keyword
+      systemGenerated:
+        type: keyword
+      startDateTime:
+        type: date
+      endDateTime:
+        type: date
+      requiresOutcome:
+        type: keyword
+      attendanceContact:
+        type: keyword
+      outcomeRequiredFlag:
+        type: keyword
+      MessageId:
+        type: keyword
+      '@version':
+        type: integer
