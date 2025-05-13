@@ -27,12 +27,10 @@ data class PrisonCaseNote(
     val locationId: String = UNKNOWN_LOCATION,
     val amendments: List<CaseNoteAmendment>
 ) {
-    fun getStaffName(): StaffName =
-        if (authorName.contains(',')) {
-            StaffName(authorName.substringAfterLast(",").trim(), authorName.substringBeforeLast(",").trim())
-        } else {
-            StaffName(authorName.substringBeforeLast(" ").trim(), authorName.substringAfterLast(" ").trim())
-        }
+    fun getStaffName(): StaffName {
+        val name = authorName.trim().split("\\s+".toRegex())
+        return StaffName(name.first(), name.last())
+    }
 
     fun occurredAt(): ZonedDateTime = if (type == "ALERT") {
         /*
