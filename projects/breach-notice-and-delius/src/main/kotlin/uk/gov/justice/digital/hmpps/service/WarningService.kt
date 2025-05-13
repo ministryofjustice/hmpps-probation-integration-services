@@ -22,27 +22,31 @@ class WarningService(
 ) {
     fun getWarningTypes(crn: String, breachNoticeId: UUID): WarningTypesResponse {
         val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
-            ?.let { requireNotNull(disposalRepository.getByEventId(it)) { "Event with id $it is not sentenced" } }
-            ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
+            ?.let { crn.disposalForEvent(it) }
         return WarningTypesResponse(
             warningTypes = rdRepository
                 .findByDatasetCodeAndSelectableTrue(Dataset.BREACH_NOTICE_TYPE).codedDescriptions(),
             sentenceTypes = rdRepository
                 .findByDatasetCodeAndSelectableTrue(Dataset.BREACH_SENTENCE_TYPE).sentenceTypes(),
-            defaultSentenceTypeCode = disposal.type.defaultSentenceTypeCode()
+            defaultSentenceTypeCode = disposal!!.type.defaultSentenceTypeCode()
         )
     }
 
     fun getWarningDetails(crn: String, breachNoticeId: UUID): WarningDetails {
         val breachReasons = rdRepository.findByDatasetCodeAndSelectableTrue(Dataset.BREACH_REASON)
-        val eventId = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
-            ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
-        val enforceableContacts = contactRepository.findByEventIdAndOutcomeEnforceableTrue(eventId)
+        val disposal = documentRepository.findEventIdFromDocument(breachNoticeUrn(breachNoticeId))
+            ?.let { crn.disposalForEvent(it) }
+        val enforceableContacts = contactRepository.findByEventIdAndOutcomeEnforceableTrue(disposal!!.event.id)
         return WarningDetails(
             breachReasons = breachReasons.codedDescriptions(),
             enforceableContacts = enforceableContacts.map(Contact::toEnforceableContact),
         )
     }
+
+    private fun String.disposalForEvent(eventId: Long): Disposal =
+        requireNotNull(disposalRepository.getByEventId(eventId)) { "Event with id $eventId is not sentenced" }
+            .takeIf { this == it.event.person.crn }
+            ?: throw NotFoundException("Breach Notice not found")
 }
 
 fun Contact.toEnforceableContact() = EnforceableContact(

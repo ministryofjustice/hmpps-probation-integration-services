@@ -5,13 +5,16 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "event")
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Event(
+
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal?,
