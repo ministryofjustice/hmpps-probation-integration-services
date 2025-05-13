@@ -8,7 +8,7 @@ object PersonManagerGenerator {
 
     val DEFAULT_PROVIDER = Provider(IdGenerator.getAndIncrement(), "A", "Default Test Provider", true)
     val PROVIDER_1 = Provider(IdGenerator.getAndIncrement(), "B", "Test Provider 1", true)
-    val PROVIDER_2 = Provider(IdGenerator.getAndIncrement(), "C", "Test Provider 1", true)
+    val PROVIDER_2 = Provider(IdGenerator.getAndIncrement(), "C", "Test Provider 2", true)
     val DEFAULT_BOROUGH = Borough(IdGenerator.getAndIncrement(), "A", "Default Test PDU", DEFAULT_PROVIDER)
     val BOROUGH_1 = Borough(IdGenerator.getAndIncrement(), "B", "Test PDU 1", PROVIDER_1)
     val BOROUGH_2 = Borough(IdGenerator.getAndIncrement(), "C", "Test PDU 2", PROVIDER_2)
