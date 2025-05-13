@@ -37,7 +37,7 @@ internal class PersonIntegrationTest {
                 PersonGenerator.PERSON_1.toPersonResponse(
                     ProbationDeliveryUnit(
                         code = "A",
-                        description = "Test PDU"
+                        description = "Default Test PDU"
                     ), "Custody"
                 )
             )

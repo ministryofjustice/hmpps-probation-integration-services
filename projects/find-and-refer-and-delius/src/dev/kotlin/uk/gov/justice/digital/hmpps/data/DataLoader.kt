@@ -45,14 +45,31 @@ class DataLoader(
             LimitedAccessGenerator.BOTH_EXCLUSION,
             LimitedAccessGenerator.BOTH_RESTRICTION,
         )
-
+        entityManager.persistAll(
+            PersonManagerGenerator.DEFAULT_PROVIDER,
+            PersonManagerGenerator.PROVIDER_1,
+            PersonManagerGenerator.PROVIDER_2
+        )
+        entityManager.flush()
         entityManager.persistAll(
             PersonManagerGenerator.DEFAULT_BOROUGH,
+            PersonManagerGenerator.BOROUGH_1,
+            PersonManagerGenerator.BOROUGH_2,
             PersonManagerGenerator.DEFAULT_DISTRICT,
+            PersonManagerGenerator.DISTRICT_1,
+            PersonManagerGenerator.DISTRICT_2,
             PersonManagerGenerator.DEFAULT_TEAM,
+            PersonManagerGenerator.TEAM_1,
+            PersonManagerGenerator.TEAM_2,
             PersonManagerGenerator.PERSON_MANAGER,
         )
-
+        entityManager.flush()
+        entityManager.persistAll(
+            OfficeLocationGenerator.LOCATION_1,
+            OfficeLocationGenerator.LOCATION_2,
+            OfficeLocationGenerator.TEAM_OFFICE_1,
+            OfficeLocationGenerator.TEAM_OFFICE_2,
+        )
         entityManager.persistAll(
             EventGenerator.CUSTODIAL_STATUS,
             EventGenerator.EVENT,
