@@ -14,10 +14,12 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /users/{username}/access/{crn}:
+  /users/{username}/access/{identifier}:
     get:
       tags:
       - user-controller
+      summary: Provides the case access for a given user and case identifier (crn
+        or prisoner number)
       operationId: checkAccess
       parameters:
       - name: username
@@ -25,7 +27,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: crn
+      - name: identifier
         in: path
         required: true
         schema:
@@ -41,6 +43,7 @@ paths:
     get:
       tags:
       - Person
+      summary: Finds an offender with the provided identifier (crn or prisoner number)
       operationId: findPerson
       parameters:
       - name: identifier
@@ -102,10 +105,24 @@ components:
           type: string
         gender:
           type: string
+        probationDeliveryUnit:
+          $ref: "#/components/schemas/ProbationDeliveryUnit"
+        setting:
+          type: string
       required:
       - crn
       - dateOfBirth
       - name
+      - setting
+    ProbationDeliveryUnit:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      required:
+      - description
   securitySchemes:
     hmpps-auth-token:
       type: http

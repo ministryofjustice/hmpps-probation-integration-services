@@ -101,11 +101,15 @@ components:
         contactId:
           type: integer
           format: int64
+        version:
+          type: integer
+          format: int64
         json:
           type: string
       required:
       - contactId
       - json
+      - version
   securitySchemes:
     hmpps-auth-token:
       type: http
