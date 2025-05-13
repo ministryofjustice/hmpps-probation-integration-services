@@ -15,7 +15,7 @@ interface ProbationDeliveryUnitRepository : JpaRepository<Borough, Long> {
         join fetch d.teams teams
         where d.selectable = true
         and trim(b.provider.code) = :providerCode
-        order by b.description
+        order by b.description asc
         """
     )
     fun findPdus(providerCode: String): List<Borough>

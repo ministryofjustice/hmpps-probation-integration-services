@@ -11,7 +11,7 @@ interface ProviderRepository : JpaRepository<Provider, Long> {
         from Provider p 
         where p.selectable = true
         and (p.establishment is null or p.establishment)
-        order by p.description
+        order by p.description asc 
         """
     )
     fun findSelectableProviders(): List<Provider>

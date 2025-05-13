@@ -13,7 +13,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
         where d.selectable = true
         and trim(d.borough.code) = :pduCode
         and trim(d.borough.provider.code) = :providerCode
-        order by t.description
+        order by t.description asc
         """
     )
     fun getTeams(providerCode: String, pduCode: String): List<Team>
