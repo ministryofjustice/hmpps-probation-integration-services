@@ -6,7 +6,7 @@ template:
     default_pipeline: contact-semantic-search-pipeline
     index.search.default_pipeline: contact-semantic-search-search-pipeline
     index.knn: true
-    index.number_of_shards: 9
+    index.number_of_shards: 120
     index.number_of_replicas: 1
     index.mapping.ignore_malformed: true
     analysis:
