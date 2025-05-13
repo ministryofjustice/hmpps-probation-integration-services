@@ -40,7 +40,7 @@ spec:
                 - name: CONTACT_KEYWORD_REINDEXING_TIMEOUT
                   value: '259200' # 48 hours
                 - name: PIPELINES_ENABLED
-                  value: contact-full-load
+                  value: contact-keyword-full-load
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '10000'
                 - name: JDBC_BATCH_SIZE # Maximum number of results to return from DB at a time
